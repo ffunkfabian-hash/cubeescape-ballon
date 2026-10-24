@@ -4,10 +4,14 @@
 
 Fälle: (1) Kopf 130 mm angehoben → Lücke am Hals; (2) Kopf an die rechte Schulter versetzt (berührt den Schulterpanzer, Hals offen)
 → Lücke am Hals trotz Kontakt an anderer Stelle; (3) Oberschenkel 20 % dicker bei gleichen Teile-IDs → Spec veraltet;
-(4) Grundstand → alles in Ordnung.
+(4) Grundstand → alles in Ordnung; (5) --dry rendert und schreibt nichts; (6, 7) unbekanntes Argument bzw. unbekannte Ansicht
+(z. B. hangar) brechen ab.
 """
 import os
+import subprocess
 import sys
+
+import bpy
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -41,5 +45,24 @@ legs.parts = lambda: [(p[0], p[1], p[2], p[3], p[4], dict(p[5], pts=[(x * 1.2, y
                       if p[0] == 'thigh_body' else p for p in parts0()]
 run('Oberschenkel dicker', False, True)
 legs.parts = parts0
-print('test_robot: ' + ('; '.join(err) if err else '4 Fälle geprüft'))
+
+
+def cli(argv):
+    r = subprocess.run([bpy.app.binary_path, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'robot_build.py'), '--', *argv],
+                       capture_output=True, text=True)
+    return r.returncode, r.stdout
+
+
+# (5) --dry baut ready ohne Rendern und ohne Dateien; (6) unbekannte Argumente und Ansichten brechen ab, statt alles zu rendern
+out = os.path.join(RBB.OUT, 'robot')
+before = {f: os.path.getmtime(os.path.join(out, f)) for f in os.listdir(out)} if os.path.isdir(out) else {}
+rc, so = cli(['--dry'])
+after = {f: os.path.getmtime(os.path.join(out, f)) for f in os.listdir(out)} if os.path.isdir(out) else {}
+if rc or 'dry: Aufbau ready ohne Rendern' not in so or 'geschrieben' in so or before != after:
+    err.append('--dry rendert oder schreibt')
+for argv in (['--bogus'], ['--only', 'hangar']):
+    rc, so = cli(argv)
+    if rc == 0 or 'geschrieben' in so:
+        err.append(f'{argv} nicht abgelehnt')
+print('test_robot: ' + ('; '.join(err) if err else '7 Fälle geprüft'))
 sys.exit(1 if err else 0)
