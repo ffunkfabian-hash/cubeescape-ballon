@@ -571,5 +571,30 @@
     "notes": [
       "Mechanik-Bildfolgen des Piloten wurden erst mit der Familienprüfung (0.6) gerendert und gesichtet."
     ]
+  },
+  "BASIC-03-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur"
+    },
+    "actions": {
+      "fire_semi": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bildfolge motion/fire_semi, Bilder 0/3: Abzug, Verschluss zurück, Auswurfklappe offen"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bildfolge motion/reload_empty, Bilder 0/20/62: Magazin heraus und wieder eingesetzt"
+      }
+    },
+    "notes": [
+      "Formskizze: ~/Library/Caches/CubeEscapeBallon/sketch/BASIC-03-v2.1_skizze.blend"
+    ]
   }
 }

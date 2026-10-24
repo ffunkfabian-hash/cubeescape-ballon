@@ -99,6 +99,18 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
             p = next((x for x in W.PARTS if x['id'] == pid), None)
             if not p or 'move' not in p:
                 fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+    from basic.reticles import SIGHT   # Visier-Standard: Höhe 66 ± 4 mm, Augenabstand je Visiertyp
+    e = W.ANCHORS.get('Socket_Eye', {})
+    if not e.get('std') or e.get('sight_type') not in SIGHT['types']:
+        fail(f'{wid}: Socket_Eye nicht nach Visier-Standard (std, sight_type)')
+    else:
+        h = e['at'][1] - W.BORE
+        if abs(h - SIGHT['height_mm']) > SIGHT['height_tol_mm']:
+            fail(f'{wid}: Visierhöhe {h:.1f} mm außerhalb {SIGHT["height_mm"]:.0f} ± {SIGHT["height_tol_mm"]:.0f} mm')
+        T = SIGHT['types'][e['sight_type']]
+        rel = W.ANCHORS[T['ref']]['at'][0] - e['at'][0]
+        if abs(rel - T['eye_relief_mm']) > 0.5:
+            fail(f'{wid}: Augenabstand {rel:.1f} mm statt {T["eye_relief_mm"]:.0f} mm ({e["sight_type"]})')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})
@@ -119,6 +131,9 @@ else:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_ego.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Ego-Daten: ' + r.stdout.strip())
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_reticles.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Absehen-Export veraltet: python3 tools/export_reticles.py (' + r.stdout.strip() + ')')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')

@@ -483,12 +483,20 @@ def main():
             pc.clip_start = 0.005
             eo = bpy.data.objects.new('Eye', pc)
             bpy.context.scene.collection.objects.link(eo)
-            eye = anchors['Socket_Eye'].matrix_world.translation + Vector((0, 0.09, 0))
+            std = W.ANCHORS.get('Socket_Eye', {}).get('std')        # Visier-Standard: Socket_Eye ist die echte Augenposition
+            eye_off = 0.0 if std else 0.09
+            eye = anchors['Socket_Eye'].matrix_world.translation + Vector((0, eye_off, 0))
             eo.matrix_world = Matrix.Translation(eye) @ Vector((0, -1, 0)).to_track_quat('-Z', 'Y').to_matrix().to_4x4()
             bpy.context.scene.camera = eo
+            hid = [objs[p['id']] for p in W.PARTS if p.get('ads_hide') and p['id'] in objs]   # Visier-Standard: beim Zielen aus
+            for ob in hid:
+                ob.hide_render = True
             render(os.path.join(out, VDIR, 'sightline.png'))
-            meta['views']['sightline'] = dict(labels=labels(eo, objs, anchors, W), eye_offset_m=0.09,
-                                              note='Perspektive 50 mm, Kamera 90 mm hinter Socket_Eye auf der Visierlinie')
+            for ob in hid:
+                ob.hide_render = False
+            meta['views']['sightline'] = dict(labels=labels(eo, objs, anchors, W), eye_offset_m=eye_off,
+                                              note='Perspektive 50 mm, Kamera im Augenpunkt (Visier-Standard)' if std else
+                                              'Perspektive 50 mm, Kamera 90 mm hinter Socket_Eye auf der Visierlinie')
             bpy.context.scene.camera = cam
         if o['only'] is not None and not o['only'] & {'clay', 'silhouette', 'exploded', 'parts'}:
             o['views'] = False

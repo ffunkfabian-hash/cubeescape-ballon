@@ -12,7 +12,7 @@ Gleiche Grundkonstruktion, Anker und Mechanik wie basic/weapons/w01_auto_rifle.p
 Ausgabe getrennt (`BASIC-01-v2`), damit die Reihe unverändert bleibt, bis der Nutzer entscheidet.
 """
 import math
-from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, grip_rifle, selector, charging_handle, reticle,
+from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, grip_rifle, selector, charging_handle, reflex_sight_v21,
                           R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w01_auto_rifle as V1
 
@@ -124,42 +124,9 @@ P += [
 ]
 P += [dict(p, mat='anodized') for p in rail(-30, 50, RAIL_U)]
 P[-1]['cuts'] = [cut_box(-24 + 12 * i, -18 + 12 * i, RAIL_U + 4, RAIL_U + 9, 30) for i in range(7)]
-# ---------------------------------------------------------------- Visier (Reflex, ausgearbeitet)
-f, u = -6, RAIL_U + 8
-bt = u + 8
-cu = bt + 9 + 12
-P += [
-    box('sight_mount', 'Visier-Klemmfuß', 'Sight mount', 'sight', 'anodized', 'Klemmt das Visier auf die Schiene BRI-22',
-        'Klemmung auf Schiene (lösbar)', f, f + 50, u + 0.5, bt, 26, bevel=R_SMALL, iface='BRI-22',
-        cuts=[cut_box(f + 8, f + 42, u + 2, bt - 2, 4, x=13)],
-        move=dict(kind='translate', pivot=(f + 25, u, 0), vector_mm=(0, 70, 0), event='swap_sight', removable=True)),
-    part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Klemmfuß werkzeuglos',
-         'Drehachse links am Klemmfuß', bevel=R_FINE, parent_part='sight_mount',
-         pts=[(f + 14, u + 1), (f + 36, u + 1), (f + 38, u + 5), (f + 14, u + 6)], w=2.4, x=14.2),
-    prof('sight_body', 'Visiergehäuse', 'Sight housing', 'sight', 'anodized', 'Trägt Emitter, Batterie und Verstellung',
-         'auf Klemmfuß (fest)', [(f + 1, bt - 0.5), (f + 50, bt - 0.5), (f + 50, bt + 5), (f + 17, bt + 5), (f + 13, bt + 8),
-                                 (f + 1, bt + 8)], 26, bevel=R_SMALL, parent_part='sight_mount'),
-    part('sight_frame', 'Visierhaube', 'Sight hood', 'sight', 'multi', 'anodized', 'Haube um das Glas; nach vorn verjüngt',
-         'auf Visiergehäuse (fest)', bevel=R_SMALL, parent_part='sight_mount',
-         items=[dict(shape='prof', pts=[(f + 30, bt + 4), (f + 50, bt + 4), (f + 50, cu + 14.5), (f + 30, cu + 18.5)], w=3,
-                     x=sx * 16.5) for sx in (1, -1)]
-               + [dict(shape='prof', pts=[(f + 30, cu + 15), (f + 50, cu + 12.5), (f + 50, cu + 15.5), (f + 30, cu + 19)], w=36)]),
-    part('sight_frame_trim', 'Haubenkante', 'Hood trim', 'sight', 'frame', 'trim', 'Blanke Stirnkante der Haube',
-         'vorn an der Haube', bevel=0.4, parent_part='sight_mount', f0=f + 49.6, f1=f + 51, cu=cu - 0.5, ow=36, oh=32, iw=30, ih=25,
-         r_out=3, r_in=2),
-    part('sight_glass', 'Visierglas', 'Sight glass', 'sight', 'xbox', 'glass', 'Beschichtete Reflexscheibe',
-         'im Rahmen (fest)', bevel=0, parent_part='sight_mount', f0=f + 43.5, f1=f + 44.5, cu=cu, ww=31, hh=25),
-    box('sight_emitter', 'Emitter', 'Reticle emitter', 'sight', 'energy', 'Leuchtfenster des Absehen-Projektors',
-        'vorn im Emitterblock', f + 15.5, f + 17.5, bt + 5.2, bt + 7.4, 7, bevel=0.3, parent_part='sight_mount'),
-    reticle(f + 43.0, cu),
-    cyl('sight_knob_w', 'Seitenverstellung', 'Windage knob', 'sight', 'trim', 'Verstellt das Absehen seitlich',
-        'rechts am Gehäuse', 'x', (f + 26, bt + 2), -13, -17, 3.2, parent_part='sight_mount', segs=16),
-    cyl('sight_battery', 'Batteriedeckel', 'Battery cap', 'sight', 'anodized', 'Batteriefach links',
-        'links am Gehäuse (schraubbar)', 'x', (f + 26, bt + 2), 13, 16.5, 4.4, parent_part='sight_mount', segs=16),
-]
-SIGHT_ANCHORS = {'Socket_Sight': dict(at=(f + 1, cu, 0), part='sight_body'),
-                 'Socket_Reticle': dict(at=(f + 44, cu, 0), part='sight_glass'),
-                 'Socket_Eye': dict(at=(f + 30, cu, 0), part='sight_frame')}
+# ---------------------------------------------------------------- Visier (Familienbaustein, schlank; Visier-Standard)
+_sight, SIGHT_ANCHORS = reflex_sight_v21(-6, RAIL_U + 8)
+P += _sight
 # ---------------------------------------------------------------- Griff, Abzug, Bedienung
 _t = math.tan(math.radians(15))
 

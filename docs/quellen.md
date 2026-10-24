@@ -99,9 +99,13 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Ogma PR6 | Pulse Rifle | `…/screenshots/324584912.jpg` | geschlossener kastiger Vorderbau mit flacher, abgeschrägter Stirn; Mündung eingelassen; Bullpup (nicht übernommen, Vertrag 02 konventionell) |
 | Yesteryear | Pulse Rifle | `…/screenshots/4028000428.jpg` | keilförmig nach vorn abfallende Haube; gelochter Mündungsmantel; Bullpup |
 | Veles-X | Pulse Rifle | `…/screenshots/438540299.jpg` | Zweiton-Band über Gehäuse und Vorderbau, mehrstufige Mündung, Frontgriff (nicht übernommen: Leitmerkmal 06) |
+| Red Tape | Scout Rifle | `…/screenshots/736362511.jpg` | sehr lang und schlank, Lauf mit Unterrohr, kompaktes Gehäuse, Schaft mit kantigem Durchbruch |
+| Perses-D | Scout Rifle | `…/screenshots/1019000888.jpg` | schlanker geschlitzter Handschutz, kräftige mehrstufige Mündungsbremse, ein Farbband |
+| Vouchsafe | Scout Rifle | `…/screenshots/3218302023.jpg` | organische Hive-Form – nicht übernommen (passt nicht zu BASIC) |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
-Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung.
+Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
+legendary scout rifle light.gg“): übernommen lange flache Linie, geschlitzter Handschutz, Unterrohr, dreifach geschlitzte Bremse.
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).
@@ -115,6 +119,37 @@ Sechs Bildschirmfotos von Destiny-2-Panzerhandschuhen, vom Nutzer ausdrücklich 
 |---|---|---|
 | arm-v2 (4 Bilder: weiß-rote Titan-Stulpen, facettierte Panzer mit Leuchtkanten, ACD/0 Feedback Fence) | Panzer umschließt das Glied, Verjüngung, Facetten mit Grat, Stulpe überlappt die Hand | Hand und Finger (Rückenschale mit Grat); Facettenplatten am Unterarm wieder verworfen (wirkten klobig) |
 | arm-v3 (2 Bilder: dunkler und silber-goldener Handschuh mit Scheibe am Oberarm) | glatte große Schale mit Fasen und Pfeilschnitt, zweite Lage mit Bolzen, Kontraststreifen, Medaillon mit Ring | Ober-/Unterarm und Ellbogen v3 |
+
+## Q-D2-ZOOM · Zoom beim Zielen (gelesen 24.10.2026)
+
+Destiny 2 Wiki „Zoom“ (`d2.destinygamewiki.com/wiki/Zoom`, Messungen von u/gintellectual via Reddit), Status **beobachtet**
+(Community-Messung, ±0,05). Zoom = Grundzoom der Klasse + Visierbonus; Bildwinkel beim Zielen = Grundbildwinkel / Zoom.
+
+| Klasse | Grundzoom | | Visier (Beispiele) | Bonus |
+|---|---|---|---|---|
+| Automatikgewehr | 1,6 | | Red Dot | +0,4 |
+| Impulsgewehr | 1,7 | | Holo/Kreis (IS 5 Circle) | +0,15 |
+| Scoutgewehr | 2,1 | | Okulare (SRO-41/-52) | +0,8/+0,9 |
+| Handfeuerwaffe | 1,5 | | Reflex (Model 8 Red) | +0,6 |
+| Granatwerfer | 1,4 | | | |
+| MP, Seitenwaffe, Schrotflinte | 1,25 | | Visiere bringen bei diesen Klassen keinen Bonus | |
+| Scharfschütze | 5,1–8,0 (gesamt) | | | |
+
+Beispiele: Automatikgewehr mit Red Dot ≈ ×2,0; Scout mit Okular ≈ ×2,9–3,0. Verwendet für die Visierbild-Beispiele
+(`tools/sight_examples.py`) und als Grundlage für `reticles.SIGHT['…']['ads_zoom']`.
+
+## Q-D2-ADS · Visierbild beim Zielen (24.10.2026)
+
+Status **beobachtet**. Grundlage für den Visier-Standard v2 (`basic/reticles.py › SIGHT`) nach dem Nutzerhinweis „Visiere sehr
+klobig“.
+
+| Quelle | Beobachtung |
+|---|---|
+| YouTube `1ERmScNiOk4` („The most unique + rare Scout Rifle in Destiny 2“, Patron of Lost Causes), lokal geladen nach `~/Library/Caches/CubeEscapeBallon/refs/video/`, Zielbilder bei 3:30, 3:50, 5:50, 7:10, 7:30, 8:10, 8:40 | Scout im Zielen: man sieht den **Objektivring** (dünner Rand, farbige Innenkante), ≈ 25 % Bildbreite, ≈ 50 % Bildhöhe; in der Linse die **vergrößerte Welt** mit feinem Absehen (Bögen, Punkt); kein Okular, keine Augenmuschel, kein Rohrtunnel; darunter nur ein schmaler Fuß; die Welt um den Ring bleibt sichtbar |
+| Motiongen `docs/destiny2.md` (gemessene Clips) | Seitenwaffe Holo-Ring ≈ 10 % Bildhöhe, Körper ≈ 12 % Breite; Handfeuerwaffe ≈ 18–25 % Breite, Korn auf dem Kreuz; Impulsgewehr eckige Kimme ≈ 20 % Höhe, Körper ≈ 20 % Breite; Lineare Fusion „Bild in der Linse“; Scharfschütze Vollbild-Overlay |
+
+Folgerung: dünne Ränder um große Öffnungen; das Waffenmodell wird beim Zielen nicht vergrößert, nur die Welt; Zielfernrohr
+zeigt ein Linsenbild, die Teile hinter dem Auge sind beim Zielen ausgeblendet.
 
 ## Q-BG · Bungie-Startpunkte des Auftrags
 

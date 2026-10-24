@@ -499,6 +499,8 @@ def evaluate(sc, A, f, report, state):
     fps = {'L': blend_fingers(A.get('fL', [(0, 'underhand')]), f), 'R': blend_fingers(A.get('fR', [(0, 'trigger')]), f)}
     sc.hands({'L': HL, 'R': HR}, fps, report)
     sc.cam.matrix_world = sc.cam_base @ Matrix.Rotation(math.radians(cam_pitch), 4, 'X')
+    # Visier-Standard v2: das Waffenmodell wird beim Zielen nicht vergrößert (reticles.SIGHT['viewmodel_zoom'] = 1,0); nur die Welt zoomt
+    # (in Unity), hier gibt es keine Welt – die Ego-Kamera bleibt beim Grundbildwinkel.
 
 
 FPS_F = float(EG.FPS)

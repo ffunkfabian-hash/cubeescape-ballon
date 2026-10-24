@@ -17,19 +17,21 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Magazintrichter im Unterteil angeformt; Kammer schließt mit 1 mm Fuge an das Gehäuse an |
 | Ergonomie | Griff BGM-1 in v2.1-Form, gerades kurzes Magazin mit Sichtfenster, Griffpolster am Handschutz |
 
-Schlichtheitsbudget: Leuchten 2 Funktionen (Salvenanzeige, Visier-Emitter) · Grafik 1 Band · Schrift 1 · Orange 3 (Ladehebel,
+Absehen: Vorgabe `circle_cross` (basic/reticles.py › DEFAULTS), Glas klar.
+Schlichtheitsbudget: Leuchten 2 Funktionen (Salvenanzeige, Visier-Emitter mit Absehen) · Grafik 1 Band · Schrift 1 · Orange 3 (Ladehebel,
 Feuerwahl beidseitig, Magazinhalter) · Schrauben nur an Paneelen, Kammer und Schaft.
 Status: Maße entworfen (Länge an Toolgen-Bezug 0,862 m angelehnt), Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
                           grip_v21, reflex_sight_v21, R_BODY, R_MID, R_SMALL, R_FINE)
+from basic.reticles import DEFAULTS as RETICLE_DEFAULTS
 from basic.weapons import w02_pulse_rifle as V1
 
 META = dict(V1.META, variant='v2.1', name='Impuls v2.1', nick='Familie v2.1',
             summary='Impulsgewehr mit Dreier-Salve, geschlossener Impulskammer und Holo-Visier (Stil v2.1).')
 ASSEMBLIES = V1.ASSEMBLIES
 BORE = 100
-TOP = 134            # Oberkante Gehäuse / Schiene
+TOP = 130            # Oberkante Gehäuse / Schiene (Visier-Standard: Visierhöhe 68,5 mm)
 CH0, CH1 = 151, 460  # Impulskammer: Anfang (Fuge zum Gehäuse) und Stirn
 
 P = []
@@ -38,7 +40,7 @@ P += [
     prof('upper', 'Oberes Gehäuse', 'Upper receiver', 'receiver', 'shell', 'Tragkörper für Kammer, Verschluss und Schiene',
          'mit Unterem Gehäuse über zwei Querbolzen (fest)', [(-112, 82), (150, 82), (150, TOP), (-100, TOP), (-112, 124)], 44,
          cuts=[cut_box(22, 74, 92, 116, 18, x=-22),                       # Auswurffenster rechts
-               cut_box(-92, -52, 110, 122, 10, x=22),                     # Ladehebel-Nut links
+               cut_box(-92, -52, 108, 120, 10, x=22),                     # Ladehebel-Nut links
                cut_box(-96, -14, 90, 108, 3.0, x=22.6), cut_box(-96, -14, 90, 108, 3.0, x=-22.6)]),   # Paneel-Mulden
     prof('lower', 'Unteres Gehäuse', 'Lower receiver', 'receiver', 'graphite', 'Griffmodul, Abzugsgruppe, Magazinschacht',
          'unter dem Oberen Gehäuse, Fuge 1 mm; Magazintrichter angeformt',
@@ -71,7 +73,8 @@ P += [
 ]
 P += [dict(p, mat='anodized') for p in rail(-90, 120, TOP)]
 P[-1]['cuts'] = [cut_box(-84 + 14 * i, -77 + 14 * i, TOP + 4, TOP + 9, 30) for i in range(14)]
-_sight, SIGHT_ANCHORS = reflex_sight_v21(-12, TOP + 8, ww=40, wh=28)   # Holo-Visier: breiteres Fenster
+_sight, SIGHT_ANCHORS = reflex_sight_v21(-12, TOP + 8, ww=34, wh=26,       # Holo-Visier: etwas breiteres Fenster als 01
+                                         reticle_kind=RETICLE_DEFAULTS['pulse_rifle']['optic'])
 P += _sight
 # ---------------------------------------------------------------- Impulskammer (Leitmerkmal): Oberschale + Handschutz
 _recess = dict(shape='cyl', axis='f', c=(BORE, 0), a0=CH1 - 22, a1=CH1 + 12, r=16, segs=32)          # Mündungsmulde in der Stirn
@@ -79,8 +82,8 @@ _win = [cut_box(240, 340, 104, 121, 60)]                                    # Ka
 P += [
     prof('pulse_chamber', 'Impulskammer', 'Pulse chamber', 'barrel', 'shell',
          'Oberschale um Lauf und Impulsspulen; Keil-Oberseite, abgeschrägte Stirn', 'am Oberen Gehäuse verschraubt, Fuge 1 mm',
-         [(CH0, 99), (CH1 - 6, 99), (CH1, 104), (CH1 - 12, 121), (340, 130), (200, 138), (CH0, 138)], 44, bevel=R_BODY,
-         cuts=_win + [_recess, cut_box(CH0 + 30, CH0 + 31, 132, 142, 50)]),              # Fuge 1 mm quer über die Oberseite
+         [(CH0, 99), (CH1 - 6, 99), (CH1, 104), (CH1 - 12, 121), (340, 129), (200, TOP + 4), (CH0, TOP + 4)], 44, bevel=R_BODY,
+         cuts=_win + [_recess, cut_box(CH0 + 30, CH0 + 31, TOP - 2, TOP + 8, 50)]),              # Fuge 1 mm quer über die Oberseite
     prof('handguard', 'Handschutz', 'Handguard', 'support', 'graphite', 'Unterschale der Kammer; Griffbereich der Stützhand',
          'unter der Kammer-Oberschale, Fuge 1 mm', [(CH0, 64), (400, 64), (CH1 - 4, 86), (CH1, 98), (CH0, 98)], 44, bevel=R_BODY,
          cuts=[_recess] + [cut_box(250 + 30 * i, 262 + 30 * i, 70, 90, 8, x=sx * 22) for i in range(3) for sx in (1, -1)]),
@@ -125,7 +128,7 @@ P += [
 P += grip_v21(top=40)
 P += selector(4, 66, x=22.5)
 P += [dict(p, id='selector_r', de='Feuerwahlhebel rechts', en='Fire selector right', x=-22.5) for p in selector(4, 66)]
-P += charging_handle(-88, 116, x=22.5, travel=55)
+P += charging_handle(-88, 114, x=22.5, travel=55)
 _mc = (99, 62)
 _m = rifle_mag(80, 62, depth=38, length=104, tilt=4, w=24, curve=0)
 for p in _m:
@@ -178,7 +181,7 @@ ANCHORS = {
     'Socket_SupportHand': dict(at=(290, 80, 0), part='handguard', note='Mitte Handschutz unter der Kammer'),
     'Socket_Muzzle': dict(at=(CH1 + 52, BORE, 0), part='muzzle_crown', note='Stirn der Mündungskrone auf der Laufachse'),
     'Socket_MagWell': dict(at=(99, 62, 0), part='mag_well', note='Einrastpunkt Magazin (Schnittstelle BMW-R)'),
-    'Socket_Charge': dict(at=(-75, 116, 27), part='charging_handle', note='Griffpunkt Ladehebel für die Stützhand'),
+    'Socket_Charge': dict(at=(-75, 114, 27), part='charging_handle', note='Griffpunkt Ladehebel für die Stützhand'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
 ACTIONS = {

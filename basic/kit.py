@@ -34,6 +34,13 @@ MATERIALS = {
     'accent':   dict(color='#E0651E', rough=0.5, metal=0.0, de='Akzent Orange (Bedienelement)'),
     'energy':   dict(color='#5FD3E0', rough=0.3, metal=0.0, emit=3.0, de='Energieanzeige (leuchtend)'),
     'glass':    dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, de='Visierglas'),
+    # Glasvarianten (Nutzerwunsch 24.10.2026: „Muster und Formen, Risse, Körner … leicht und dezent“); Wirkung in aaa_nodes
+    'glass_dust':    dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, glass_fx=('dust',), de='Visierglas mit Staubkörnern'),
+    'glass_scratch': dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, glass_fx=('scratch',), de='Visierglas mit feinen Kratzern'),
+    'glass_crack':   dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, glass_fx=('crack',), de='Visierglas mit Riss in der Ecke'),
+    'glass_cells':   dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, glass_fx=('cells',), de='Visierglas mit Zellvergütung'),
+    'glass_scope':   dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, no_coat=True, de='Linse im Zielfernrohr (ohne Klarlack-Spiegelung)'),
+    'glass_worn':    dict(color='#BFE3EA', rough=0.0, metal=0.0, alpha=0.12, glass_fx=('dust', 'scratch'), de='Visierglas benutzt'),
     'string':   dict(color='#1E2024', rough=0.6, metal=0.0, de='Sehne'),
     # v2 (AAA-Pilot): zusätzliche Rollen für Materialbruch
     'rubber':   dict(color='#1A1B1E', rough=0.85, metal=0.0, de='Gummi mit Stippling', aaa_color='#111214', spec=0.2),
@@ -41,6 +48,12 @@ MATERIALS = {
     'anodized': dict(color='#202227', rough=0.4, metal=0.6, de='Schwarz eloxiert'),
     'brass':    dict(color='#B8913E', rough=0.3, metal=1.0, de='Messing (Patronen)'),
     'decal':    dict(color='#ECE8DF', rough=0.5, metal=0.0, de='Markierung hell'),
+    # Absehen-Farben (basic/reticles.COLORS): gedämpfte Leuchtstärke (AgX bleicht helle Lichter zu Weiß), damit dünne Linien ihre Farbe behalten
+    'reticle_cyan':  dict(color='#5FD3E0', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Absehen Cyan'),
+    'reticle_red':   dict(color='#FF3D2E', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Absehen Rot'),
+    'reticle_green': dict(color='#38E06E', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Absehen Grün'),
+    'reticle_amber': dict(color='#FFB01F', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Absehen Bernstein'),
+    'reticle_white': dict(color='#EEF2F5', rough=0.3, metal=0.0, emit=0.5, emit_only=True, de='Absehen Weiß'),
 }
 # Rollen mit Lack auf Metall: im AAA-Modus Kantenabrieb zum blanken Metall
 WEAR = {'shell': 1.0, 'accent': 0.8, 'graphite': 0.15, 'anodized': 0.3, 'dark_metal': 0.25}   # dunkle Teile dezent (schlicht)
@@ -124,6 +137,77 @@ def material(role, mode='color'):
     return m
 
 
+GLASS_FX_STRENGTH = 0.38    # höchste zusätzliche Deckkraft an der Maske (dezent)
+
+
+def glass_fx(N, L, b, fx):
+    """Dezente Glasoberfläche: Maske aus Staub (Körner), Kratzern (gestreckte Linien), Riss (Zellkanten, nur eine Ecke) und
+    Zellvergütung (Zellkanten, sehr schwach); an der Maske wird das Glas etwas matter und deckender."""
+    tc = N.new('ShaderNodeTexCoord')
+    parts = []
+
+    def ramp(sock, lo, hi, out=1.0, out0=0.0):
+        r = N.new('ShaderNodeMapRange')
+        r.inputs['From Min'].default_value, r.inputs['From Max'].default_value = lo, hi
+        r.inputs['To Min'].default_value, r.inputs['To Max'].default_value = out0, out
+        L.new(sock, r.inputs['Value'])
+        return r.outputs['Result']
+
+    def mul(a, c):
+        m = N.new('ShaderNodeMath')
+        m.operation = 'MULTIPLY'
+        L.new(a, m.inputs[0])
+        L.new(c, m.inputs[1])
+        return m.outputs['Value']
+    if 'dust' in fx:        # Körner ~0,3 mm, nur jede siebte Zelle
+        v = N.new('ShaderNodeTexVoronoi')
+        v.inputs['Scale'].default_value = 1400.0
+        L.new(tc.outputs['Object'], v.inputs['Vector'])
+        sep = N.new('ShaderNodeSeparateColor')
+        L.new(v.outputs['Color'], sep.inputs['Color'])
+        parts.append(mul(ramp(v.outputs['Distance'], 0.22, 0.12), ramp(sep.outputs['Red'], 0.84, 0.86)))
+    if 'scratch' in fx:     # feine Kratzer: Rauschen stark gestreckt und gedreht, schmale Schwelle
+        mp = N.new('ShaderNodeMapping')
+        mp.inputs['Rotation'].default_value = (0.0, 0.42, 0.0)
+        mp.inputs['Scale'].default_value = (2600.0, 30.0, 40.0)
+        L.new(tc.outputs['Object'], mp.inputs['Vector'])
+        nz = N.new('ShaderNodeTexNoise')
+        nz.inputs['Scale'].default_value = 1.0
+        nz.inputs['Detail'].default_value = 2.0
+        L.new(mp.outputs['Vector'], nz.inputs['Vector'])
+        parts.append(ramp(nz.outputs['Fac'], 0.70, 0.74, 0.8))
+    if 'crack' in fx:       # Rissnetz aus Zellkanten, nur in der oberen linken Ecke (Generated-Koordinaten)
+        v = N.new('ShaderNodeTexVoronoi')
+        v.feature = 'DISTANCE_TO_EDGE'
+        v.inputs['Scale'].default_value = 160.0
+        L.new(tc.outputs['Object'], v.inputs['Vector'])
+        sep = N.new('ShaderNodeSeparateXYZ')
+        L.new(tc.outputs['Generated'], sep.inputs['Vector'])
+        cx = N.new('ShaderNodeCombineXYZ')
+        L.new(sep.outputs['X'], cx.inputs['X'])
+        L.new(sep.outputs['Z'], cx.inputs['Y'])
+        dist = N.new('ShaderNodeVectorMath')
+        dist.operation = 'DISTANCE'
+        dist.inputs[1].default_value = (0.92, 0.9, 0.0)
+        L.new(cx.outputs['Vector'], dist.inputs[0])
+        parts.append(mul(ramp(v.outputs['Distance'], 0.035, 0.0), ramp(dist.outputs['Value'], 0.42, 0.1)))
+    if 'cells' in fx:       # Zellvergütung: sehr schwache Zellkanten über die ganze Scheibe
+        v = N.new('ShaderNodeTexVoronoi')
+        v.feature = 'DISTANCE_TO_EDGE'
+        v.inputs['Scale'].default_value = 420.0
+        L.new(tc.outputs['Object'], v.inputs['Vector'])
+        parts.append(ramp(v.outputs['Distance'], 0.05, 0.0, 0.35))
+    mask = parts[0]
+    for q in parts[1:]:
+        m = N.new('ShaderNodeMath')
+        m.operation = 'MAXIMUM'
+        L.new(mask, m.inputs[0])
+        L.new(q, m.inputs[1])
+        mask = m.outputs['Value']
+    L.new(ramp(mask, 0.0, 1.0, 0.08 + GLASS_FX_STRENGTH, 0.08), b.inputs['Alpha'])
+    L.new(ramp(mask, 0.0, 1.0, 0.45, 0.02), b.inputs['Roughness'])
+
+
 def aaa_nodes(m, role, d):
     """PBR-Material (Cycles): Grundfarbe, Rauheitsvariation, Mikrorelief, Kantenabrieb über den Bevel-Knoten."""
     nt = m.node_tree
@@ -146,12 +230,21 @@ def aaa_nodes(m, role, d):
     if d.get('emit'):
         b.inputs['Emission Color'].default_value = col
         b.inputs['Emission Strength'].default_value = d['emit'] * 1.6
+        if d.get('emit_only'):          # Absehen: nur Leuchten, keine beleuchtete Grundfarbe (sonst wirkt die Farbe pastellig)
+            b.inputs['Base Color'].default_value = (0.0, 0.0, 0.0, 1)
+            b.inputs['Specular IOR Level'].default_value = 0.0
     if d.get('alpha') is not None:
         b.inputs['Alpha'].default_value = 0.08
         b.inputs['Transmission Weight'].default_value = 1.0
         b.inputs['Roughness'].default_value = 0.02
         b.inputs['Coat Weight'].default_value = 0.6
         b.inputs['Coat Tint'].default_value = (0.75, 0.95, 1.0, 1)
+        if d.get('no_coat'):            # Linsen im Rohr: Studiolichter spiegeln sonst als grelle Flächen über dem Absehen
+            b.inputs['Coat Weight'].default_value = 0.0
+            b.inputs['Specular IOR Level'].default_value = 0.05
+            b.inputs['Alpha'].default_value = 0.04
+        if d.get('glass_fx'):
+            glass_fx(N, L, b, d['glass_fx'])
         return
     tc = N.new('ShaderNodeTexCoord')
     # Rauheitsvariation (großflächig, Objektraum in m)

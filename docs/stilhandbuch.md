@@ -18,6 +18,8 @@ dieses Handbuch ergänzt Detaildichte, Material, Varianten und den Arbeitsablauf
 | 24.10.2026 | Farb- und Texturvarianten erwünscht |
 | 24.10.2026 | Bloom „ganz weg oder sehr sehr dezent“ → Standard aus |
 | 24.10.2026 | „Der graue Hintergrund ist am besten“ → Standard `--bg mid` |
+| 24.10.2026 | Visier-Standard: Visierhöhe 66 ± 4 mm, Augenpunkt, Zoom, Prüfung in `./check`; nach „Visiere sehr klobig“ (Destiny-Video, Motiongen) als v2: Augenpunkt 110 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse, schlanke Visiere |
+| 24.10.2026 | Absehen-Katalog mit Formen, Farben, Linienstärken, Glasvarianten, Aufgehen und Spieleroptionen; „Pfeil von unten“ verworfen |
 
 ## 2 Gestaltungsregeln v2
 
@@ -131,6 +133,32 @@ Test), `removable`, `iface`. Gemeinsame Bausteine in `basic/common.py` (Griffmod
 Haube und Fenster ww × wh (liefert Teile und Anker) · `cut_box`, `screws`, `mirror` für Schneidkörper und Schraubbilder.
 Variante einer Reihenwaffe: `basic/pilot/wNN_<typ>_v21.py`, `META = dict(V1.META, variant='v2.1', …)`, Ausgabe `BASIC-NN-v2.1`.
 
+### Absehen und Visierglas
+
+Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md) (erzeugt), Laufzeitdaten `data/reticles.json`
+(`tools/export_reticles.py`), Katalogblatt und Aufgeh-Clip `tools/reticle_sheet.py`.
+- Jedes Reflexvisier hat ein Absehen (`reflex_sight_v21(…, reticle_kind, reticle_color, reticle_weight, glass)`); die Waffe nimmt
+  die Vorgabe ihres Typs (`DEFAULTS[type]['optic']`), Abweichungen im Docstring begründen.
+- Sieben Formen, fünf Farben, drei Linienstärken; jede Form in jeder Farbe und Stärke. Farben sind eigene Leuchtrollen
+  (`reticle_<farbe>`): reine Emission (`emit_only`, Grundfarbe schwarz) mit Stärke 0,6 – mit beleuchteter Grundfarbe oder
+  höherer Stärke wirken sie pastellig (Test im Blender per MCP, 24.10.2026).
+- Glas klar als Standard; Staub, Kratzer, Riss, Zellen, Benutzt nur dezent (höchstens +0,38 Deckkraft an der Maske).
+- Aufgehen beim Schießen und Spieleroptionen sind Laufzeitverhalten: im Modell steht der Ruhezustand, die Profile stehen in
+  `SPREAD`, die Optionen in `SETTINGS`.
+- **Visier-Standard v2** (`reticles.SIGHT`, Übersicht in [absehen.md](absehen.md); Nutzerentscheidung, überarbeitet nach
+  „Visiere sehr klobig“ mit Destiny-Video und Motiongen-Messungen, Quelle Q-D2-ADS):
+  - Visierhöhe 66 ± 4 mm über der Laufachse; Höhe über Gehäuse/Schiene einstellen, nicht über das Visier.
+  - `Socket_Eye` = Augenpunkt beim Zielen, 110 mm hinter der vorderen Visieröffnung (Reflex/Holo: Glas; Zielfernrohr:
+    Objektivring `Socket_Objective`), mit `std=True` und `sight_type`.
+  - Das Waffenmodell wird beim Zielen nicht vergrößert (eigene Viewmodel-Kamera); nur die Welt zoomt: Klassengrundzoom
+    (`CLASS_ZOOM`, Destiny) + Visierbonus. Zielbereich der Öffnung: Reflex/Holo 15–22 %, Zielfernrohr 22–30 % der Bildbreite.
+  - Zielfernrohr: Linsenbild; Teile hinter oder um das Auge (Rohr, Ringbänder, Okular, Türme) tragen `ads_hide` und sind beim
+    Zielen ausgeblendet; der Klemmfuß bleibt sichtbar.
+  - Formen schlank: Haubenbügel 1,6 mm, flaches Gehäuse, großes Glas; Zielfernrohr kurz mit großem Objektiv, dünnem Rand und
+    blanker Innenkante, ohne Gummimuschel. Prüfen mit `tools/sight_examples.py` gegen ein Destiny-Vergleichsbild.
+- Neue Form: Grundelemente mit Spreizrichtung in `RETICLES` ergänzen, `export_reticles.py` und `reticle_sheet.py` laufen lassen,
+  Katalogblatt sichten.
+
 ## 7 Arbeitsablauf für eine neue Waffe oder Variante
 
 1. **Recherche (beobachtet, nicht kopiert).** Bildersuche „destiny 2 legendary <typ> light.gg“; im Browser-Fenster die Original-
@@ -181,6 +209,9 @@ Variante einer Reihenwaffe: `basic/pilot/wNN_<typ>_v21.py`, `META = dict(V1.META
 - Bloom mit niedriger Schwelle lässt helle Lackflächen glimmen → aus.
 - Teile auf der linken Seite (Anzeigen, Kern) sind in der Standardkamera (rechts vorn) unsichtbar → Aktion mit `view` von links rendern.
 - Reflexvisier ohne Absehen: der Emitter allein zeigt keinen Zielpunkt → `reticle()` auf die Scheibe (Nutzerhinweis 24.10.2026).
+- Zielfernrohr mit massivem Mittelrohr: Absehen unsichtbar, kein Durchblick → Rohr hohl (`r_in`), Visierlinie prüfen.
+- Visiere wirken klobig, wenn Rahmen dick sind und das Waffenmodell beim Zielen mitgezoomt wird → dünne Bügel, Modell ungezoomt,
+  Augenpunkt 110 mm vor der Öffnung; beim Zielfernrohr ohne `ads_hide` blickt man in einen Tunnel aus Ringen und Okular.
 - Fenster in massiven Profilen bleiben Mulden: für sichtbare Innenteile quer durchschneiden (Schneidkörper breiter als das Teil).
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
 

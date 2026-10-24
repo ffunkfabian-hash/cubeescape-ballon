@@ -1,0 +1,822 @@
+{
+ "format": "cubeescape-ballon/reticles",
+ "format_version": 1,
+ "units": "mm auf der Scheibe bei Größe 1,0; x links, u oben",
+ "line_radius_mm": 0.3,
+ "reticles": {
+  "ring_dot": {
+   "de": "Ring mit Punkt",
+   "en": "Ring and dot",
+   "use": "Holo-Standard: schneller Fang im Ring, genauer Punkt",
+   "prims": [
+    {
+     "t": "ring",
+     "r": 3.2,
+     "ri": 2.5,
+     "grow": 1
+    },
+    {
+     "t": "dot",
+     "r": 0.8
+    }
+   ]
+  },
+  "dot": {
+   "de": "Leuchtpunkt",
+   "en": "Dot",
+   "use": "Minimal, verdeckt nichts; zeigt keine Spreizung",
+   "prims": [
+    {
+     "t": "dot",
+     "r": 1.0
+    }
+   ]
+  },
+  "cross": {
+   "de": "Fadenkreuz",
+   "en": "Crosshair",
+   "use": "Vier Balken mit Lücke und Mittelpunkt; Balken wandern nach außen",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      -7,
+      0
+     ],
+     "b": [
+      -1.6,
+      0
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      1.6,
+      0
+     ],
+     "b": [
+      7,
+      0
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0,
+      -7
+     ],
+     "b": [
+      0,
+      -1.6
+     ],
+     "d": [
+      0,
+      -1
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0,
+      1.6
+     ],
+     "b": [
+      0,
+      7
+     ],
+     "d": [
+      0,
+      1
+     ]
+    },
+    {
+     "t": "dot",
+     "r": 0.45
+    }
+   ]
+  },
+  "chevron": {
+   "de": "Winkel",
+   "en": "Chevron",
+   "use": "Spitze ist der Zielpunkt, Haltepunkt bleibt frei; zeigt keine Spreizung",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      -3.2,
+      -2.6
+     ],
+     "b": [
+      0,
+      0
+     ],
+     "d": [
+      0,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0,
+      0
+     ],
+     "b": [
+      3.2,
+      -2.6
+     ],
+     "d": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "t_post": {
+   "de": "T-Balken",
+   "en": "T-post",
+   "use": "Waagerechte zeigt Verkanten; Balken und Stachel wandern nach außen",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      -7,
+      0
+     ],
+     "b": [
+      -1.4,
+      0
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      1.4,
+      0
+     ],
+     "b": [
+      7,
+      0
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0,
+      -1.4
+     ],
+     "b": [
+      0,
+      -8
+     ],
+     "d": [
+      0,
+      -1
+     ]
+    },
+    {
+     "t": "dot",
+     "r": 0.4
+    }
+   ]
+  },
+  "circle_cross": {
+   "de": "Kreis mit Kreuzmarken",
+   "en": "Circle with ticks",
+   "use": "Großer Ring mit vier Marken; Ring und Marken gehen auf",
+   "prims": [
+    {
+     "t": "ring",
+     "r": 4.6,
+     "ri": 4.0,
+     "grow": 1
+    },
+    {
+     "t": "line",
+     "a": [
+      5.4,
+      0.0
+     ],
+     "b": [
+      7.4,
+      0.0
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5.4,
+      0.0
+     ],
+     "b": [
+      -7.4,
+      0.0
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0.0,
+      5.4
+     ],
+     "b": [
+      0.0,
+      7.4
+     ],
+     "d": [
+      0,
+      1
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0.0,
+      -5.4
+     ],
+     "b": [
+      0.0,
+      -7.4
+     ],
+     "d": [
+      0,
+      -1
+     ]
+    },
+    {
+     "t": "dot",
+     "r": 0.6
+    }
+   ]
+  },
+  "corners": {
+   "de": "Eckklammern",
+   "en": "Corner brackets",
+   "use": "Vier Winkel zeigen die Streuung, gehen diagonal auf",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      5,
+      5
+     ],
+     "b": [
+      5,
+      3
+     ],
+     "d": [
+      0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      -5
+     ],
+     "b": [
+      5,
+      -3
+     ],
+     "d": [
+      0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      5
+     ],
+     "b": [
+      -5,
+      3
+     ],
+     "d": [
+      -0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -5
+     ],
+     "b": [
+      -5,
+      -3
+     ],
+     "d": [
+      -0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      5
+     ],
+     "b": [
+      3,
+      5
+     ],
+     "d": [
+      0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      -5
+     ],
+     "b": [
+      3,
+      -5
+     ],
+     "d": [
+      0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      5
+     ],
+     "b": [
+      -3,
+      5
+     ],
+     "d": [
+      -0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -5
+     ],
+     "b": [
+      -3,
+      -5
+     ],
+     "d": [
+      -0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "dot",
+     "r": 0.6
+    }
+   ]
+  }
+ },
+ "colors": {
+  "cyan": {
+   "de": "Cyan",
+   "hex": "#5FD3E0",
+   "note": "Standard, Familienfarbe"
+  },
+  "red": {
+   "de": "Rot",
+   "hex": "#FF3D2E",
+   "note": "klassischer Leuchtpunkt"
+  },
+  "green": {
+   "de": "Grün",
+   "hex": "#38E06E",
+   "note": "hell auf dunklem Grund"
+  },
+  "amber": {
+   "de": "Bernstein",
+   "hex": "#FFB01F",
+   "note": "warm, gut auf Grau"
+  },
+  "white": {
+   "de": "Weiß",
+   "hex": "#EEF2F5",
+   "note": "neutral, für helle Skins dezent"
+  }
+ },
+ "weights": {
+  "fine": {
+   "de": "fein",
+   "factor": 0.65
+  },
+  "normal": {
+   "de": "normal",
+   "factor": 1.0
+  },
+  "bold": {
+   "de": "kräftig",
+   "factor": 1.6
+  }
+ },
+ "glass": {
+  "clean": {
+   "de": "Klar",
+   "note": "unbehandelt beschichtet"
+  },
+  "dust": {
+   "de": "Staub",
+   "note": "feine Körner (~0,3 mm), jede siebte Zelle"
+  },
+  "scratch": {
+   "de": "Kratzer",
+   "note": "dünne, schräg gestreckte Linien"
+  },
+  "crack": {
+   "de": "Riss",
+   "note": "feines Rissnetz, nur obere Ecke"
+  },
+  "cells": {
+   "de": "Zellen",
+   "note": "kaum sichtbare Zellvergütung über die Scheibe"
+  },
+  "worn": {
+   "de": "Benutzt",
+   "note": "Staub und Kratzer"
+  }
+ },
+ "spread": {
+  "auto": {
+   "de": "Dauerfeuer",
+   "base": 0.0,
+   "per_shot": 0.9,
+   "max": 5.0,
+   "recover_s": 0.28,
+   "move": 1.5,
+   "ads": 0.35
+  },
+  "burst": {
+   "de": "Salve",
+   "base": 0.0,
+   "per_shot": 1.2,
+   "max": 4.5,
+   "recover_s": 0.22,
+   "move": 1.4,
+   "ads": 0.3
+  },
+  "precision": {
+   "de": "Präzision",
+   "base": 0.0,
+   "per_shot": 2.2,
+   "max": 3.5,
+   "recover_s": 0.18,
+   "move": 1.0,
+   "ads": 0.15
+  },
+  "shotgun": {
+   "de": "Schrot",
+   "base": 2.0,
+   "per_shot": 2.5,
+   "max": 6.0,
+   "recover_s": 0.35,
+   "move": 1.0,
+   "ads": 0.6
+  },
+  "charge": {
+   "de": "Aufladen",
+   "base": 0.0,
+   "per_shot": 1.5,
+   "max": 4.0,
+   "recover_s": 0.25,
+   "move": 1.2,
+   "ads": 0.3,
+   "charge_from": 4.0
+  },
+  "explosive": {
+   "de": "Sprengwaffe",
+   "base": 0.5,
+   "per_shot": 1.8,
+   "max": 4.0,
+   "recover_s": 0.5,
+   "move": 0.8,
+   "ads": 0.5
+  },
+  "none": {
+   "de": "kein Aufgehen",
+   "base": 0.0,
+   "per_shot": 0.0,
+   "max": 0.0,
+   "recover_s": 0.2,
+   "move": 0.0,
+   "ads": 0.0
+  }
+ },
+ "defaults": {
+  "auto_rifle": {
+   "optic": "ring_dot",
+   "hip": "cross",
+   "spread": "auto"
+  },
+  "pulse_rifle": {
+   "optic": "circle_cross",
+   "hip": "cross",
+   "spread": "burst"
+  },
+  "scout_rifle": {
+   "optic": "chevron",
+   "hip": "cross",
+   "spread": "precision"
+  },
+  "hand_cannon": {
+   "optic": "dot",
+   "hip": "cross",
+   "spread": "precision"
+  },
+  "sidearm": {
+   "optic": "dot",
+   "hip": "cross",
+   "spread": "auto"
+  },
+  "submachine_gun": {
+   "optic": "dot",
+   "hip": "circle_cross",
+   "spread": "auto"
+  },
+  "shotgun": {
+   "optic": "corners",
+   "hip": "corners",
+   "spread": "shotgun"
+  },
+  "sniper_rifle": {
+   "optic": "t_post",
+   "hip": "dot",
+   "spread": "precision"
+  },
+  "fusion_rifle": {
+   "optic": "t_post",
+   "hip": "corners",
+   "spread": "charge"
+  },
+  "linear_fusion_rifle": {
+   "optic": "t_post",
+   "hip": "cross",
+   "spread": "charge"
+  },
+  "trace_rifle": {
+   "optic": "corners",
+   "hip": "circle_cross",
+   "spread": "auto"
+  },
+  "grenade_launcher": {
+   "optic": "chevron",
+   "hip": "circle_cross",
+   "spread": "explosive"
+  },
+  "rocket_launcher": {
+   "optic": "circle_cross",
+   "hip": "circle_cross",
+   "spread": "explosive"
+  },
+  "machine_gun": {
+   "optic": "circle_cross",
+   "hip": "cross",
+   "spread": "auto"
+  },
+  "combat_bow": {
+   "optic": "dot",
+   "hip": "chevron",
+   "spread": "charge"
+  },
+  "sword": {
+   "optic": null,
+   "hip": "dot",
+   "spread": "none"
+  },
+  "glaive": {
+   "optic": null,
+   "hip": "cross",
+   "spread": "auto"
+  }
+ },
+ "settings": {
+  "kind": {
+   "de": "Form",
+   "values": [
+    "ring_dot",
+    "dot",
+    "cross",
+    "chevron",
+    "t_post",
+    "circle_cross",
+    "corners"
+   ],
+   "default": "Vorgabe der Waffe"
+  },
+  "color": {
+   "de": "Farbe",
+   "values": [
+    "cyan",
+    "red",
+    "green",
+    "amber",
+    "white"
+   ],
+   "default": "cyan"
+  },
+  "weight": {
+   "de": "Linienstärke",
+   "values": [
+    "fine",
+    "normal",
+    "bold"
+   ],
+   "default": "normal"
+  },
+  "scale": {
+   "de": "Größe",
+   "min": 0.6,
+   "max": 1.6,
+   "default": 1.0
+  },
+  "opacity": {
+   "de": "Deckkraft",
+   "min": 0.3,
+   "max": 1.0,
+   "default": 0.9
+  },
+  "center_dot": {
+   "de": "Mittelpunkt",
+   "values": [
+    true,
+    false
+   ],
+   "default": true
+  },
+  "spread": {
+   "de": "Aufgehen beim Schießen",
+   "values": [
+    true,
+    false
+   ],
+   "default": true
+  },
+  "glass": {
+   "de": "Glas",
+   "values": [
+    "clean",
+    "dust",
+    "scratch",
+    "crack",
+    "cells",
+    "worn"
+   ],
+   "default": "clean"
+  }
+ },
+ "sight_standard": {
+  "height_mm": 66.0,
+  "height_tol_mm": 4.0,
+  "viewmodel_zoom": 1.0,
+  "types": {
+   "reflex": {
+    "de": "Reflex-/Holovisier",
+    "eye_relief_mm": 110.0,
+    "ref": "Socket_Reticle",
+    "zoom_bonus": 0.3,
+    "target_share": [
+     0.15,
+     0.22
+    ],
+    "ads_view": "glass"
+   },
+   "scope": {
+    "de": "Zielfernrohr",
+    "eye_relief_mm": 110.0,
+    "ref": "Socket_Objective",
+    "zoom_bonus": 0.8,
+    "target_share": [
+     0.22,
+     0.3
+    ],
+    "ads_view": "lens_picture"
+   }
+  }
+ },
+ "class_zoom": {
+  "auto_rifle": 1.6,
+  "pulse_rifle": 1.7,
+  "scout_rifle": 2.1,
+  "hand_cannon": 1.5,
+  "sidearm": 1.25,
+  "submachine_gun": 1.25,
+  "shotgun": 1.25,
+  "grenade_launcher": 1.4,
+  "sniper_rifle": 5.5,
+  "fusion_rifle": 1.5,
+  "linear_fusion_rifle": 3.0,
+  "trace_rifle": 1.5,
+  "rocket_launcher": 2.5,
+  "machine_gun": 1.6,
+  "combat_bow": 1.5,
+  "sword": 1.0,
+  "glaive": 1.25
+ },
+ "world_zoom": {
+  "auto_rifle": {
+   "reflex": 1.9,
+   "scope": 2.4
+  },
+  "pulse_rifle": {
+   "reflex": 2.0,
+   "scope": 2.5
+  },
+  "scout_rifle": {
+   "reflex": 2.4,
+   "scope": 2.9
+  },
+  "hand_cannon": {
+   "reflex": 1.5,
+   "scope": 1.5
+  },
+  "sidearm": {
+   "reflex": 1.25,
+   "scope": 1.25
+  },
+  "submachine_gun": {
+   "reflex": 1.25,
+   "scope": 1.25
+  },
+  "shotgun": {
+   "reflex": 1.25,
+   "scope": 1.25
+  },
+  "grenade_launcher": {
+   "reflex": 1.4,
+   "scope": 1.4
+  },
+  "sniper_rifle": {
+   "reflex": 5.5,
+   "scope": 5.5
+  },
+  "fusion_rifle": {
+   "reflex": 1.8,
+   "scope": 2.3
+  },
+  "linear_fusion_rifle": {
+   "reflex": 3.3,
+   "scope": 3.8
+  },
+  "trace_rifle": {
+   "reflex": 1.8,
+   "scope": 2.3
+  },
+  "rocket_launcher": {
+   "reflex": 2.8,
+   "scope": 3.3
+  },
+  "machine_gun": {
+   "reflex": 1.9,
+   "scope": 2.4
+  },
+  "combat_bow": {
+   "reflex": 1.8,
+   "scope": 2.3
+  },
+  "sword": {
+   "reflex": 1.3,
+   "scope": 1.8
+  },
+  "glaive": {
+   "reflex": 1.55,
+   "scope": 2.05
+  }
+ },
+ "spread_model": "s ← base(+move) + (s − base)·exp(−dt/recover_s); je Schuss s ← min(max, s + per_shot); beim Zielen s·ads; Linien wandern um s·d, Ringe wachsen um s·grow, Punkte bleiben"
+}

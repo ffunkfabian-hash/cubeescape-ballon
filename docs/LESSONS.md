@@ -19,3 +19,8 @@
 - Ego-Clips wirkten abgehackt: Ease je Schlüsselabschnitt stoppt an jedem Schlüssel; Kurven durch die Schlüssel, Feder-Nachlauf und volle Bildrate ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
 - Fenster in massiven Profilen zeigen nichts dahinter: quer durchschneiden; aufgesetzte Leisten müssen über der Oberfläche liegen (x > halbe Breite) ([w02 v2.1](../basic/pilot/w02_pulse_rifle_v21.py)).
 - Visiere brauchen ein Absehen im Glas, nicht nur einen Emitter ([common.reticle](../basic/common.py)).
+- Leuchtende dünne Linien wirken pastellig, solange die Grundfarbe mitbeleuchtet wird: reine Emission (`emit_only`) mit Stärke 0,6 ([kit.py](../basic/kit.py)).
+- Das interaktive Blender übersetzt neue Datennamen (deutsche Oberfläche): Skripte, die Knoten per Name suchen, dort mit `use_translate_new_dataname = False` laufen lassen und zurücksetzen.
+- Augenpunkte je Visier frei gesetzt ergaben 14 bis 192 mm Augenabstand und uneinheitliche Visierbilder: Visier-Standard mit echtem Augenpunkt ([absehen.md](absehen.md)).
+- Visiere wirkten klobig: dicke Rahmen und mitgezoomtes Waffenmodell; Destiny zoomt nur die Welt und zeigt beim Zielfernrohr das Linsenbild ([absehen.md](absehen.md), Q-D2-ADS).
+- Bei Visierfragen zuerst Motiongen (`cubeescape-reference/docs/destiny2.md`) lesen – dort stehen gemessene Bildanteile im Zielen.

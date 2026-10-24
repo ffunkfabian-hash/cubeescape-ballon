@@ -17,7 +17,7 @@ sauberen Anschlüssen und klaren Baugruppen – nicht aus Detail- oder Polygonza
 | Hauptkörper | Seitenprofile mit geraden Kanten und wenigen Schrägen (Gehäuse, Schaft, Handschutz); Rohre nur, wo die Funktion rund ist (Lauf, Fokusrohr, Abschussrohr, Trommel) |
 | Silhouette | Jede Klasse hat ein eigenes Leitmerkmal (Tabelle unten); geprüft als schwarze Silhouette im gleichen Maßstab |
 | Gehäuseteilung | Gewehrfamilie: Oberes und Unteres Gehäuse, Fuge 1 mm; das Untere ist 2 mm schmaler (sichtbare Stufe) |
-| Laufachse | liegt im oberen Drittel des Gehäuses; Visierlinie 60–80 mm darüber |
+| Laufachse | liegt im oberen Drittel des Gehäuses; Visierlinie 60–80 mm darüber (Familie v2.1: Visier-Standard 66 ± 4 mm, [absehen.md](absehen.md)) |
 | Länge | Bezug Toolgen-/Formgen-Länge je Typ (Abweichungen begründet in der Abdeckungsmatrix) |
 
 ## Radien, Fasen, Fugen

@@ -15,7 +15,8 @@ CAMERA = dict(h_fov_deg=75.0, aspect=(16, 9), near_m=0.03)          # T: viewmod
 POSES = {
     'hip':       dict(pos=(-0.20, -0.42, -0.165), aim=(0.02, -3.0, 0.10), roll=6,
                       src='E (Destiny-Hüfte: Griff unten rechts, Lauf zur Bildmitte); Toolgen-Hüfte (−0,21/−0,537/−0,176) als Start'),
-    'ads':       dict(eye=(0.0, -0.105, 0.0), aim_dir=(0, -1, 0), roll=0, src='E (Visierlinie = Kameraachse)'),
+    'ads':       dict(eye=(0.0, 0.0, 0.0), aim_dir=(0, -1, 0), roll=0,
+                      src='Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse'),
     'sprint':    dict(pos=(-0.10, -0.34, -0.23), aim=(1.2, -1.6, -0.55), roll=-35, src='E nach Destiny-Sprint (quer, gesenkt)'),
     'lowered':   dict(pos=(-0.17, -0.38, -0.25), aim=(0.4, -2.0, -1.2), roll=10, src='E'),
     'crouch':    dict(pos=(-0.19, -0.41, -0.18), aim=(0.02, -3.0, 0.05), roll=9, src='E'),
