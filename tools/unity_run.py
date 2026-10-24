@@ -46,12 +46,17 @@ def tests():
         log = os.path.join(EV, f'tests_{plat}.log')
         if os.path.exists(res):
             os.remove(res)
-        locked([UNITY, '-batchmode', '-projectPath', PROJ, '-runTests', '-testPlatform', plat, '-testResults', res, '-logFile', log], log)
+        code = locked([UNITY, '-batchmode', '-projectPath', PROJ, '-runTests', '-testPlatform', plat, '-testResults', res, '-logFile', log],
+                      log)
         if not os.path.exists(res):
             print(f'{plat}: keine Ergebnisse (Protokoll {log})')
             rc = 1
             continue
         t = ET.parse(res).getroot()
+        total = int(t.get('total', 0))
+        if code or t.get('result', '').split('(')[0] != 'Passed' or total == 0:
+            print(f"{plat}: Unity-Lauf Exit {code}, Ergebnis {t.get('result')}, {total} Tests – nicht grün")
+            rc = 1
         print(f"{plat}: {t.get('passed')} bestanden, {t.get('failed')} fehlgeschlagen, {t.get('skipped', '0')} übersprungen "
               f"({float(t.get('duration', 0)):.1f} s)")
         for c in t.iter('test-case'):

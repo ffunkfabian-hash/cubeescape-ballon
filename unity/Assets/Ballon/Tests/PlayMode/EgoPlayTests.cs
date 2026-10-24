@@ -7,6 +7,8 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.TestTools.Constraints;
+using Is = UnityEngine.TestTools.Constraints.Is;   // NUnit-Is plus AllocatingGCMemory
 
 namespace Ballon.Ego.Tests
 {
@@ -228,6 +230,44 @@ namespace Ballon.Ego.Tests
             Assert.Contains(("lowered", "Lowered"), m);
             Run(c, Idle, 0.6f);
             Assert.Contains(("lowered", "Ready"), m);
+        }
+
+        [Test]
+        public void Kein_GC_Muell_im_laufenden_Bild()
+        {
+            var c = Ready();
+            var states = new[]
+            {
+                new EgoIntent { grounded = true, look = new Vector2(0.4f, -0.2f), move = new Vector2(0.3f, 1), speed01 = 1 },
+                new EgoIntent { grounded = true, aim = true, fire = true, look = new Vector2(-0.3f, 0.1f) },
+                new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f },
+            };
+            foreach (var st in states)
+            {
+                c.ammo = 1000;
+                c.magSize = 1000;
+                Run(c, st, 1.5f);                     // Haltung erreicht, Zwischenspeicher gefüllt
+                var s = st;
+                NUnit.Framework.Assert.That(() => { for (int k = 0; k < 30; k++) c.Tick(Dt, s); },
+                    Is.Not.AllocatingGCMemory(), $"{c.ActionName}");
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Wandnaehe_im_Parcours_senkt_die_Waffe()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.input = new ScriptedInput().Add(0, 100);
+            p.deltaOverride = () => 1f / 30f;
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(-6f, 0.01f, -2.95f), 0f);     // vor Säule 1 (Vorderseite bei z −2,4)
+            for (int i = 0; i < 30; i++) yield return null;
+            Assert.IsTrue(p.NearWall(), "Säule vor dem Kopf erkannt");
+            Assert.AreEqual(EgoController.Stance.Lowered, p.C.CurrentStance);
+            p.Teleport(new Vector3(0f, 0.01f, 1.5f), 0f);         // frei: zurück zur Hüfte
+            for (int i = 0; i < 45; i++) yield return null;
+            Assert.IsFalse(p.NearWall());
+            Assert.AreEqual(EgoController.Stance.Hip, p.C.CurrentStance);
         }
 
         [UnityTest]

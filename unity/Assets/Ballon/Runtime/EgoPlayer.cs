@@ -21,6 +21,7 @@ namespace Ballon.Ego
 
     public sealed class EgoPlayer : MonoBehaviour
     {
+        public const int PlayerLayer = 2;           // eingebaute Ebene „Ignore Raycast“
         public EgoController C;
         public EgoRig rig;
         public IEgoInput input = new DeviceInput();
@@ -35,6 +36,7 @@ namespace Ballon.Ego
         public Func<float> deltaOverride;          // Aufnahme: feste Zeitschritte
 
         CharacterController _cc;
+        GUIStyle _big, _small;
         float _yaw, _pitch, _vy, _eye, _landDip, _landV, _hitFlash, _airT;
         Vector3 _vel;
         bool _grounded = true, _wasGrounded = true;
@@ -47,7 +49,7 @@ namespace Ballon.Ego
         public static EgoPlayer Create(EgoSolver S, GameObject weaponModel, GameObject armsModel, IDictionary<string, Material> roles,
                                        int vmLayer, Vector3 at, float yaw)
         {
-            var go = new GameObject("Player");
+            var go = new GameObject("Player") { layer = PlayerLayer };   // Strahlen für Wandnähe und Treffer übergehen den eigenen Collider
             go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
             var p = go.AddComponent<EgoPlayer>();
             p._yaw = yaw;
@@ -171,10 +173,10 @@ namespace Ballon.Ego
             head.localPosition = new Vector3(0, eye + _landDip, 0);
         }
 
-        bool NearWall()
+        public bool NearWall()
         {
             var o = head.position;
-            return Physics.SphereCast(o, 0.12f, head.forward, out var hit, move.wallCheck, ~(1 << gameObject.layer | 1 << rig.weaponRoot.gameObject.layer),
+            return Physics.SphereCast(o, 0.12f, head.forward, out var hit, move.wallCheck, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer),
                                       QueryTriggerInteraction.Ignore) && hit.collider.gameObject != gameObject;
         }
 
@@ -187,7 +189,7 @@ namespace Ballon.Ego
             float climb = move.climbView * Mathf.Lerp(1f, 0.5f, C.adsWeight);
             _pitch -= climb;           // bleibendes Hochziehen (Spieler gleicht aus)
             _viewClimb += climb;
-            if (Physics.Raycast(worldCam.transform.position, dir, out var hit, 300f, ~(1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(worldCam.transform.position, dir, out var hit, 300f, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
             {
                 var t = hit.collider.GetComponentInParent<RangeTarget>();
                 if (t != null)
@@ -246,8 +248,8 @@ namespace Ballon.Ego
                 Rect(cx - 7, cy + 3, 4, 4, col);
                 Rect(cx + 3, cy + 3, 4, 4, col);
             }
-            var big = new GUIStyle(GUI.skin.label) { fontSize = 34, alignment = TextAnchor.LowerRight, fontStyle = FontStyle.Bold };
-            var small = new GUIStyle(GUI.skin.label) { fontSize = 14 };
+            var big = _big ?? (_big = new GUIStyle(GUI.skin.label) { fontSize = 34, alignment = TextAnchor.LowerRight, fontStyle = FontStyle.Bold });
+            var small = _small ?? (_small = new GUIStyle(GUI.skin.label) { fontSize = 14 });
             big.normal.textColor = C.ammo == 0 ? new Color(1f, 0.5f, 0.3f) : Color.white;
             GUI.Label(new Rect(Screen.width - 260, Screen.height - 80, 230, 60), $"{C.ammo} / {C.magSize}", big);
             small.normal.textColor = new Color(1, 1, 1, 0.85f);

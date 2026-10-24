@@ -81,6 +81,7 @@ namespace Ballon.Ego
         readonly EgoAction _walk, _sprintA;
         bool _hasOutput, _firePrev;
         EgoIntent _intent;
+        Func<string, Matrix4x4> _pf;
 
         public EgoController(EgoSolver s, EgoTuning tuning = null)
         {
@@ -326,7 +327,7 @@ namespace Ballon.Ego
         {
             // Zielen-Anteil (aim_in 9 Bilder)
             float adsTarget = (_stance == Stance.Ads && (_t.A.name != "sprint_to_aim" || _t.frame >= K("sprint_to_aim", 1) * 0.5f)) ? 1 : 0;
-            adsWeight = Mathf.MoveTowards(adsWeight, adsTarget, dt * S.fps / 9f);
+            adsWeight = Mathf.MoveTowards(adsWeight, adsTarget, dt * S.fps / K("aim_in", 1));
 
             // Feuer mit fester Kadenz
             _triggerHeld = i.fire && CanFire;
@@ -354,9 +355,13 @@ namespace Ballon.Ego
             // Pendeln aus der Mausbewegung (gedämpfte Feder)
             var target = Vector2.ClampMagnitude(-i.look * tune.swayPerDeg, tune.swayMaxDeg) * Mathf.Lerp(1, tune.swayAds, adsWeight);
             float w = 2 * Mathf.PI * tune.swayFreq, z = tune.swayDamp;
-            var acc = (target - _sway) * (w * w) - _swayV * (2 * z * w);
-            _swayV += acc * dt;
-            _sway += _swayV * dt;
+            int sub = Mathf.Max(1, Mathf.CeilToInt(dt / 0.004f));             // stabil auch bei 30 fps und Rucklern bis 50 ms
+            for (int k = 0; k < sub; k++)
+            {
+                var acc = (target - _sway) * (w * w) - _swayV * (2 * z * w);
+                _swayV += acc * (dt / sub);
+                _sway += _swayV * (dt / sub);
+            }
             _tilt = Mathf.Lerp(_tilt, -i.move.x * tune.moveTiltDeg * (1 - adsWeight), 1 - Mathf.Exp(-dt * 8));
 
             // Wippen aus der Laufgeschwindigkeit (walk / sprint), Atmen in Ruhe
@@ -451,7 +456,7 @@ namespace Ballon.Ego
                     _mech[kv.Key] = kv.Value + (v - kv.Value) * e;
                 }
             S.SetWeapon(o, WM, _mech);
-            Func<string, Matrix4x4> pf = pid => S.PartFrame(o, pid);
+            var pf = _pf ?? (_pf = pid => S.PartFrame(output, pid));
             o.handL = S.BlendHand(A.L, f, pf);
             o.handR = S.BlendHand(A.R, f, pf);
             if (e < 1)

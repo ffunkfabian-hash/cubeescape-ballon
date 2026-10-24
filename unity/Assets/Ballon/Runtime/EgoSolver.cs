@@ -56,6 +56,8 @@ namespace Ballon.Ego
         readonly Vector3 _eyeLocal, _palmCenter;
         readonly List<EgoPart> _movers = new List<EgoPart>();
         readonly Dictionary<string, int> _seg = new Dictionary<string, int>();
+        readonly int[,] _fingerSeg;
+        readonly int[] _thumbSeg;
         readonly Matrix4x4 _magRelLocal;
 
         public EgoSolver(EgoFile d)
@@ -72,11 +74,16 @@ namespace Ballon.Ego
                 if (p.move.kind != "translate" && p.move.kind != "rotate" && p.move.kind != "glow")
                     throw new NotSupportedException($"Bewegungsart {p.move.kind} an {p.id}");
             for (int i = 0; i < d.arm.segments.Length; i++) _seg[d.arm.segments[i]] = i;
+            _fingerSeg = new int[d.arm.finger_x.Length, d.arm.finger_links.Length];
+            for (int i = 0; i < d.arm.finger_x.Length; i++)
+                for (int j = 0; j < d.arm.finger_links.Length; j++) _fingerSeg[i, j] = _seg[$"f{i}_{j}"];
+            _thumbSeg = new int[d.arm.thumb_links.Length];
+            for (int j = 0; j < _thumbSeg.Length; j++) _thumbSeg[j] = _seg[$"t_{j}"];
             if (d.HasPart("magazine"))   // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
                 _magRelLocal = GripHand("mag", _ => Matrix4x4.identity, Vector3.zero).inverse * Rest("magazine");
         }
 
-        public IReadOnlyList<EgoPart> Movers => _movers;
+        public List<EgoPart> Movers => _movers;
         public int SegmentIndex(string s) => _seg[s];
         public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length] };
 
@@ -108,11 +115,31 @@ namespace Ballon.Ego
         }
 
         /// <summary>ego_build.weapon_at (v2): Kurve durch alle Schlüssel der Aktion.</summary>
+        // Zwischenspeicher je Schlüsselliste (die Aktionen sind fest): keine Speicheranforderung im laufenden Bild
+        readonly Dictionary<object, float[]> _ts = new Dictionary<object, float[]>();
+        readonly Dictionary<WeaponKey[], Matrix4x4[]> _poseMs = new Dictionary<WeaponKey[], Matrix4x4[]>();
+        readonly Dictionary<FingerKey[], float[][]> _fingerVs = new Dictionary<FingerKey[], float[][]>();
+        readonly Dictionary<int, Matrix4x4[]> _handMs = new Dictionary<int, Matrix4x4[]>();
+        static readonly Dictionary<int, float[][]> _curveVs = new Dictionary<int, float[][]>();
+        static readonly float[] _curveOut = new float[7];
+
+        float[] Times<TK>(TK[] keys, Func<TK, float> f)     // f ohne Erfassung: der Compiler hält den Delegaten fest
+        {
+            if (_ts.TryGetValue(keys, out var ts)) return ts;
+            ts = new float[keys.Length];
+            for (int i = 0; i < ts.Length; i++) ts[i] = f(keys[i]);
+            return _ts[keys] = ts;
+        }
+
         public Matrix4x4 WeaponAt(WeaponKey[] keys, float f)
         {
-            var ts = new float[keys.Length];
-            var ms = new Matrix4x4[keys.Length];
-            for (int i = 0; i < keys.Length; i++) { ts[i] = keys[i].f; ms[i] = PoseCached(keys[i]); }
+            var ts = Times(keys, k => k.f);
+            if (!_poseMs.TryGetValue(keys, out var ms))
+            {
+                ms = new Matrix4x4[keys.Length];
+                for (int i = 0; i < keys.Length; i++) ms[i] = PoseCached(keys[i]);
+                _poseMs[keys] = ms;
+            }
             return MatsCurve(ts, ms, f);
         }
 
@@ -147,7 +174,12 @@ namespace Ballon.Ego
         /// <summary>ego_build.mats_curve: Lage und Quaternion (auf eine Halbkugel gelegt) komponentenweise, normiert.</summary>
         public static Matrix4x4 MatsCurve(float[] ts, Matrix4x4[] Ms, float f)
         {
-            var vs = new float[Ms.Length][];
+            if (!_curveVs.TryGetValue(Ms.Length, out var vs))
+            {
+                vs = new float[Ms.Length][];
+                for (int i = 0; i < vs.Length; i++) vs[i] = new float[7];
+                _curveVs[Ms.Length] = vs;
+            }
             Quaternion qp = default;
             for (int i = 0; i < Ms.Length; i++)
             {
@@ -155,12 +187,13 @@ namespace Ballon.Ego
                 if (i > 0 && Quaternion.Dot(q, qp) < 0) q = new Quaternion(-q.x, -q.y, -q.z, -q.w);
                 qp = q;
                 var p = Pos(Ms[i]);
-                vs[i] = new[] { p.x, p.y, p.z, q.w, q.x, q.y, q.z };
+                var r = vs[i];
+                r[0] = p.x; r[1] = p.y; r[2] = p.z; r[3] = q.w; r[4] = q.x; r[5] = q.y; r[6] = q.z;
             }
-            var v = new float[7];
+            var v = _curveOut;
             Curve(ts, vs, f, v);
-            var r = new Quaternion(v[4], v[5], v[6], v[3]).normalized;
-            return Matrix4x4.TRS(new Vector3(v[0], v[1], v[2]), r, Vector3.one);
+            var rq = new Quaternion(v[4], v[5], v[6], v[3]).normalized;
+            return Matrix4x4.TRS(new Vector3(v[0], v[1], v[2]), rq, Vector3.one);
         }
 
         /// <summary>ego_build.spring_step: gedämpfte Feder, halbimplizit in Unterschritten.</summary>
@@ -361,9 +394,9 @@ namespace Ballon.Ego
         public Matrix4x4 BlendHand(HandKey[] keys, float f, Func<string, Matrix4x4> partFrame)
         {
             if (keys.Length == 1) return HandTarget(keys[0], partFrame);
-            var ts = new float[keys.Length];
-            var ms = new Matrix4x4[keys.Length];
-            for (int i = 0; i < keys.Length; i++) { ts[i] = keys[i].f; ms[i] = HandTarget(keys[i], partFrame); }
+            var ts = Times(keys, k => k.f);
+            if (!_handMs.TryGetValue(keys.Length, out var ms)) _handMs[keys.Length] = ms = new Matrix4x4[keys.Length];
+            for (int i = 0; i < keys.Length; i++) ms[i] = HandTarget(keys[i], partFrame);
             return MatsCurve(ts, ms, f);
         }
 
@@ -377,13 +410,12 @@ namespace Ballon.Ego
         /// <summary>ego_build.blend_fingers (v2): Kurve über alle 15 Gelenkwinkel.</summary>
         public void BlendFingers(FingerKey[] keys, float f, float[] dst)
         {
-            var ts = new float[keys.Length];
-            var vs = new float[keys.Length][];
-            for (int i = 0; i < keys.Length; i++)
+            var ts = Times(keys, k => k.f);
+            if (!_fingerVs.TryGetValue(keys, out var vs))
             {
-                ts[i] = keys[i].f;
-                vs[i] = new float[15];
-                FingerPose(keys[i].pose, vs[i]);
+                vs = new float[keys.Length][];
+                for (int i = 0; i < keys.Length; i++) { vs[i] = new float[15]; FingerPose(keys[i].pose, vs[i]); }
+                _fingerVs[keys] = vs;
             }
             Curve(ts, vs, f, dst);
         }
@@ -422,7 +454,7 @@ namespace Ballon.Ego
                 for (int j = 0; j < nl; j++)
                 {
                     M = M * RotX(Rad(fp[i * nl + j]));
-                    seg[_seg[$"f{i}_{j}"]] = M;
+                    seg[_fingerSeg[i, j]] = M;
                     M = M * T(new Vector3(0, 0, A.finger_links[j] * A.finger_scale[i]));
                 }
             }
@@ -430,11 +462,10 @@ namespace Ballon.Ego
             var td = new Vector3(sx * A.thumb_dir[0], A.thumb_dir[1], A.thumb_dir[2]);
             float flex = fp[12], outw = fp[13], tip = fp[14];
             var Tm = H * FrameFrom(td, Vector3.up, tb) * RotY(Rad(-sx * (outw - 30)));
-            float[] ang = { flex, tip * 0.6f, tip };
             for (int j = 0; j < A.thumb_links.Length; j++)
             {
-                Tm = Tm * RotX(Rad(ang[j]));
-                seg[_seg[$"t_{j}"]] = Tm;
+                Tm = Tm * RotX(Rad(j == 0 ? flex : j == 1 ? tip * 0.6f : tip));
+                seg[_thumbSeg[j]] = Tm;
                 Tm = Tm * T(new Vector3(0, 0, A.thumb_links[j]));
             }
         }
