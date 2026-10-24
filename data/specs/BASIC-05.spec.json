@@ -1,0 +1,812 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-05",
+  "num": "05",
+  "type": "sidearm",
+  "type_de": "Pistole",
+  "type_en": "Sidearm",
+  "name": "Seitenwaffe",
+  "nick": "Standard",
+  "ammo": "primary",
+  "fire": "semi_auto",
+  "reference_length_m": 0.243,
+  "reference_length_source": "Toolgen 0.13 pistol (Formgen KG01 spec units)",
+  "summary": "Kompakte Schlittenpistole mit Magazin im Griff."
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "frame"
+   ]
+  },
+  {
+   "id": "barrel",
+   "de": "Lauf / Emitter",
+   "en": "Barrel / emitter",
+   "parts": [
+    "barrel"
+   ]
+  },
+  {
+   "id": "ammo",
+   "de": "Munitionsversorgung",
+   "en": "Ammunition feed",
+   "parts": [
+    "magazine",
+    "magazine_base"
+   ]
+  },
+  {
+   "id": "sight",
+   "de": "Visier",
+   "en": "Sight",
+   "parts": [
+    "rear_sight_l",
+    "rear_sight_r",
+    "front_sight"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "grip",
+    "trigger",
+    "trigger_guard",
+    "slide_stop",
+    "mag_release"
+   ]
+  },
+  {
+   "id": "mechanism",
+   "de": "Bewegliche Mechanik",
+   "en": "Moving mechanism",
+   "parts": [
+    "slide"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "frame",
+   "name_de": "Rahmen",
+   "name_en": "Frame",
+   "assembly": "receiver",
+   "function_de": "Trägt Schlitten, Abzug und Griff",
+   "attachment_de": "Grundkörper",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.156,
+     0.03
+    ],
+    "max": [
+     0.013,
+     0.03697,
+     0.046
+    ]
+   },
+   "size_mm": [
+    26.0,
+    193.0,
+    16.0
+   ],
+   "triangles": 136,
+   "volume_cm3": 74.56,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "slide",
+   "name_de": "Schlitten",
+   "name_en": "Slide",
+   "assembly": "mechanism",
+   "function_de": "Verschluss; läuft beim Schuss zurück",
+   "attachment_de": "auf den Rahmenschienen (gleitet)",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "slide",
+   "origin_m": [
+    0.0,
+    -0.06,
+    0.06
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.17,
+     0.046
+    ],
+    "max": [
+     0.013,
+     0.05,
+     0.074
+    ]
+   },
+   "size_mm": [
+    26.0,
+    220.0,
+    28.0
+   ],
+   "triangles": 192,
+   "volume_cm3": 154.62,
+   "moving": {
+    "kind": "translate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.06,
+     0.06
+    ],
+    "vector_m": [
+     0.0,
+     0.042,
+     0.0
+    ],
+    "travel_mm": 42.0
+   },
+   "removable": false
+  },
+  {
+   "id": "barrel",
+   "name_de": "Lauf",
+   "name_en": "Barrel",
+   "assembly": "barrel",
+   "function_de": "Führt das Geschoss; Mündung schaut aus dem Schlitten",
+   "attachment_de": "im Rahmen gelagert",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "barrel",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00588,
+     -0.174,
+     0.05212
+    ],
+    "max": [
+     0.00588,
+     -0.12,
+     0.06388
+    ]
+   },
+   "size_mm": [
+    11.8,
+    54.0,
+    11.8
+   ],
+   "triangles": 384,
+   "volume_cm3": 4.24,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Griff",
+   "name_en": "Grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand; Magazinschacht innen; trägt Socket_Hand",
+   "attachment_de": "Teil des Rahmens",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": "BGM-P",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.014,
+     -0.02585,
+     -0.066
+    ],
+    "max": [
+     0.014,
+     0.04285,
+     0.032
+    ]
+   },
+   "size_mm": [
+    28.0,
+    68.7,
+    98.0
+   ],
+   "triangles": 132,
+   "volume_cm3": 103.77,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "magazine",
+   "name_de": "Magazin",
+   "name_en": "Magazine",
+   "assembly": "ammo",
+   "function_de": "Hält die Patronen; steckt im Griff",
+   "attachment_de": "rastet im Griff ein (lösbar)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "magazine",
+   "origin_m": [
+    0.0,
+    0.0065,
+    -0.02
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01,
+     -0.01554,
+     -0.066
+    ],
+    "max": [
+     0.01,
+     0.03549,
+     0.02
+    ]
+   },
+   "size_mm": [
+    20.0,
+    51.0,
+    86.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 39.91,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": "Entnahme entlang der Griffachse nach unten",
+    "pivot_m": [
+     0.0,
+     0.0065,
+     -0.02
+    ],
+    "vector_m": [
+     0.0,
+     0.0371,
+     -0.1141
+    ],
+    "travel_mm": 120.0
+   },
+   "removable": true
+  },
+  {
+   "id": "magazine_base",
+   "name_de": "Magazinboden",
+   "name_en": "Magazine base plate",
+   "assembly": "ammo",
+   "function_de": "Greifkante; schließt den Griff unten ab",
+   "attachment_de": "am Magazin",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": "magazine",
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "magazine_base",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     0.00591,
+     -0.075
+    ],
+    "max": [
+     0.015,
+     0.04591,
+     -0.066
+    ]
+   },
+   "size_mm": [
+    30.0,
+    40.0,
+    9.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 10.07,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen",
+   "attachment_de": "Drehpunkt im Rahmen",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.033,
+    0.029
+   ],
+   "bounds_m": {
+    "min": [
+     -0.003,
+     -0.038,
+     0.00625
+    ],
+    "max": [
+     0.003,
+     -0.03013,
+     0.03
+    ]
+   },
+   "size_mm": [
+    6.0,
+    7.9,
+    23.7
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.74,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.033,
+     0.029
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "trigger_guard",
+   "name_de": "Abzugsbügel",
+   "name_en": "Trigger guard",
+   "assembly": "grip_controls",
+   "function_de": "Schützt den Abzug",
+   "attachment_de": "Teil des Rahmens",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "trigger_guard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.007,
+     -0.068,
+     -0.002
+    ],
+    "max": [
+     0.007,
+     -0.014,
+     0.031
+    ]
+   },
+   "size_mm": [
+    14.0,
+    54.0,
+    33.0
+   ],
+   "triangles": 192,
+   "volume_cm3": 7.41,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "slide_stop",
+   "name_de": "Schlittenfang",
+   "name_en": "Slide stop",
+   "assembly": "grip_controls",
+   "function_de": "Hält den Schlitten nach dem letzten Schuss offen",
+   "attachment_de": "links am Rahmen (dreht)",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "slide_stop",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0126,
+     -0.07,
+     0.042
+    ],
+    "max": [
+     0.015,
+     -0.046,
+     0.047
+    ]
+   },
+   "size_mm": [
+    2.4,
+    24.0,
+    5.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.27,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "mag_release",
+   "name_de": "Magazinhalter",
+   "name_en": "Magazine release",
+   "assembly": "grip_controls",
+   "function_de": "Löst das Magazin",
+   "attachment_de": "links im Rahmen",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "mag_release",
+   "origin_m": [
+    0.014,
+    -0.016,
+    0.036
+   ],
+   "bounds_m": {
+    "min": [
+     0.012,
+     -0.01992,
+     0.03208
+    ],
+    "max": [
+     0.0155,
+     -0.01208,
+     0.03992
+    ]
+   },
+   "size_mm": [
+    3.5,
+    7.8,
+    7.8
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.16,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.014,
+     -0.016,
+     0.036
+    ],
+    "vector_m": [
+     -0.0025,
+     0.0,
+     0.0
+    ],
+    "travel_mm": 2.5
+   },
+   "removable": false
+  },
+  {
+   "id": "rear_sight_l",
+   "name_de": "Kimme links",
+   "name_en": "Rear sight left",
+   "assembly": "sight",
+   "function_de": "Hintere Visiermarke; die Kerbe dazwischen",
+   "attachment_de": "auf Verschluss bzw. Rahmen (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "rear_sight_l",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.002,
+     0.032,
+     0.073
+    ],
+    "max": [
+     0.008,
+     0.04181,
+     0.081
+    ]
+   },
+   "size_mm": [
+    6.0,
+    9.8,
+    8.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.42,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "rear_sight_r",
+   "name_de": "Kimme rechts",
+   "name_en": "Rear sight right",
+   "assembly": "sight",
+   "function_de": "Hintere Visiermarke; die Kerbe dazwischen",
+   "attachment_de": "auf Verschluss bzw. Rahmen (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "rear_sight_r",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.008,
+     0.032,
+     0.073
+    ],
+    "max": [
+     -0.002,
+     0.04181,
+     0.081
+    ]
+   },
+   "size_mm": [
+    6.0,
+    9.8,
+    8.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.42,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "front_sight",
+   "name_de": "Korn",
+   "name_en": "Front sight",
+   "assembly": "sight",
+   "function_de": "Vordere Visiermarke",
+   "attachment_de": "auf Lauf bzw. Verschluss (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "front_sight",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0015,
+     -0.15981,
+     0.073
+    ],
+    "max": [
+     0.0015,
+     -0.15219,
+     0.081
+    ]
+   },
+   "size_mm": [
+    3.0,
+    7.6,
+    8.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.13,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.174,
+    0.058
+   ],
+   "part": "barrel",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Sight": {
+   "position_m": [
+    0.0,
+    0.042,
+    0.08
+   ],
+   "part": "rear_sight_l",
+   "note": "Kimme",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Eye": {
+   "position_m": [
+    0.0,
+    0.2,
+    0.08
+   ],
+   "part": "rear_sight_l",
+   "note": "Vorschlag: Augenabstand ausgestreckter Arm, Wert offen",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    1e-05,
+    -0.0421,
+    0.02241
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.015,
+    -0.174,
+    -0.075
+   ],
+   "max": [
+    0.0155,
+    0.05,
+    0.081
+   ]
+  },
+  "length_m": 0.224,
+  "height_m": 0.156,
+  "width_m": 0.0305,
+  "reference_length_m": 0.243,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 13,
+  "triangles": 2004,
+  "assemblies": 6
+ },
+ "actions": {
+  "fire_semi": {
+   "de": "Einzelschuss (Schlitten)",
+   "frames": 10,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "slide"
+   ],
+   "events": [
+    [
+     2,
+     "shot"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "reload_empty": {
+   "de": "Nachladen aus leerem Zustand",
+   "frames": 60,
+   "fps": 30,
+   "parts": [
+    "mag_release",
+    "magazine",
+    "slide"
+   ],
+   "events": [
+    [
+     14,
+     "mag_out"
+    ],
+    [
+     40,
+     "mag_seated"
+    ],
+    [
+     50,
+     "slide_release"
+    ],
+    [
+     54,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BGM-P"
+ ]
+}

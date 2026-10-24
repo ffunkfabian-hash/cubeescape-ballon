@@ -1,0 +1,6130 @@
+{
+ "BASIC-01": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_auto (Clip <EVIDENCE>/clips/BASIC-01_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (fire_auto); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_tactical); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_empty); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_tactical, reload_empty (Clip <EVIDENCE>/clips/BASIC-01_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-01_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-02": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_burst (Clip <EVIDENCE>/clips/BASIC-02_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (fire_burst); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_empty); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-02_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-02_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-03": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_semi (Clip <EVIDENCE>/clips/BASIC-03_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (fire_semi); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_empty); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-03_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-03_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-04": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_da (Clip <EVIDENCE>/clips/BASIC-04_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-04_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_da (Clip <EVIDENCE>/clips/BASIC-04_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-05": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_semi (Clip <EVIDENCE>/clips/BASIC-05_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (fire_semi); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sidearm“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_empty); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-05_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-05_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-06": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_auto (Clip <EVIDENCE>/clips/BASIC-06_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (fire_auto); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „submachine_gun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_empty); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-06_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-06_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-07": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Bogen nicht in CE)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "keine nachladbare Munition (Bogen: Pfeil, Schwert: Ladungen)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Verschluss zu betätigen (Energiewaffe, Bogen oder Nahkampf)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "bow_nock",
+   "de": "Pfeil auflegen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "bow_draw",
+   "de": "Ausziehen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (draw_hold_release); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "bow_hold",
+   "de": "Halten",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (draw_hold_release); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "bow_release",
+   "de": "Lösen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (draw_hold_release); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "bow_letdown",
+   "de": "Entspannen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (let_down); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "bow_renock",
+   "de": "Erneut auflegen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-08": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_pump (Clip <EVIDENCE>/clips/BASIC-08_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „shotgun“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (load_shell); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion load_shell (Clip <EVIDENCE>/clips/BASIC-08_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_pump (Clip <EVIDENCE>/clips/BASIC-08_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-09": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_cycle (Clip <EVIDENCE>/clips/BASIC-09_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload_empty); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload_empty (Clip <EVIDENCE>/clips/BASIC-09_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire_cycle, reload_empty (Clip <EVIDENCE>/clips/BASIC-09_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-10": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_fire (Clip <EVIDENCE>/clips/BASIC-10_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_fire (Clip <EVIDENCE>/clips/BASIC-10_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_fire (Clip <EVIDENCE>/clips/BASIC-10_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_cancel (Clip <EVIDENCE>/clips/BASIC-10_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-10_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Verschluss zu betätigen (Energiewaffe, Bogen oder Nahkampf)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-11": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „sniper (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_fire (Clip <EVIDENCE>/clips/BASIC-11_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_fire (Clip <EVIDENCE>/clips/BASIC-11_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion charge_fire (Clip <EVIDENCE>/clips/BASIC-11_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dieser Aktion im Modell nicht animiert"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-11_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Verschluss zu betätigen (Energiewaffe, Bogen oder Nahkampf)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-12": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion beam (Clip <EVIDENCE>/clips/BASIC-12_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „rifle (Annahme, Profil ungeprüft)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-12_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Verschluss zu betätigen (Energiewaffe, Bogen oder Nahkampf)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-13": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik definiert (fire), Clip noch nicht gesichtet"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "einschüssig: kein Teilnachladen"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-13_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dieser Aktion im Modell nicht animiert"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-14": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik definiert (fire), Clip noch nicht gesichtet"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "einschüssig: kein Teilnachladen"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-14_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dieser Aktion im Modell nicht animiert"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-15": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik definiert (fire_auto), Clip noch nicht gesichtet"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „heavy (Vorschlag)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-15_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dieser Aktion im Modell nicht animiert"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-16": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "nicht anwendbar",
+   "detail": "Schwert: Bereitschaftshaltung statt Hüftfeuer (Zeile sword_ready)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "nicht anwendbar",
+   "detail": "Schwert hat keinen Zielmodus; Blocken übernimmt die Haltung"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "Schwert hat keinen Zielmodus; Blocken übernimmt die Haltung"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "Schwert hat keinen Zielmodus; Blocken übernimmt die Haltung"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "anderer Feuermodus (Salve, Dauerfeuer, Aufladen oder Nahkampf)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "keine nachladbare Munition (Bogen: Pfeil, Schwert: Ladungen)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "Typ ohne Schusswaffenablauf (eigene Zeilen für Bogen bzw. Schwert)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Verschluss zu betätigen (Energiewaffe, Bogen oder Nahkampf)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sword_ready",
+   "de": "Bereitschaft",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sword_light",
+   "de": "Leichter Angriff",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sword_heavy",
+   "de": "Schwerer Angriff",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sword_combo",
+   "de": "Kombination",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sword_block",
+   "de": "Blocken",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (guard_charge); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "sword_recover",
+   "de": "Erholung",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "BASIC-17": [
+  {
+   "row": "pose_rest",
+   "de": "Ruhehaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_hip",
+   "de": "Hüftfeuerhaltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "pose_aim",
+   "de": "Zielhaltung (Visier/Zielfernrohr)",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_hip_aim",
+   "de": "Hüfte → Zielen",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "tr_aim_hip",
+   "de": "Zielen → Hüfte",
+   "cat": "Grundhaltung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "pose_lowered",
+   "de": "Gesenkte Haltung / Wandnähe",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "tr_lowered_return",
+   "de": "Rückkehr aus gesenkter Haltung",
+   "cat": "Grundhaltung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_walk",
+   "de": "Gehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_strafe",
+   "de": "Seitwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "move_back",
+   "de": "Rückwärts",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_in",
+   "de": "Sprintbeginn",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "sprint_loop",
+   "de": "Sprintschleife",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "sprint_out",
+   "de": "Sprintende",
+   "cat": "Bewegung",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "crouch",
+   "de": "Ducken",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "crouch_move",
+   "de": "Geduckte Bewegung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "jump_start",
+   "de": "Sprungbeginn",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "air",
+   "de": "Luftphase",
+   "cat": "Bewegung",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "land",
+   "de": "Landung",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "slide",
+   "de": "Rutschen",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Walk, Sprint, Crouch, Air, Lowered; Q-CE-07)"
+  },
+  {
+   "row": "climb",
+   "de": "Klettern",
+   "cat": "Bewegung",
+   "layer": "–",
+   "status": "nicht anwendbar",
+   "detail": "kein Zustand in CE `EquipmentPoseState.cs` (Q-CE-07)"
+  },
+  {
+   "row": "sway",
+   "de": "Nachschwingen beim Umsehen",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "inertia",
+   "de": "Bewegungsträgheit",
+   "cat": "Bewegung",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "regrip",
+   "de": "Griffkorrektur",
+   "cat": "Bewegung",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "draw",
+   "de": "Ziehen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "ready",
+   "de": "Einsatzbereitschaft",
+   "cat": "Aktion",
+   "layer": "Posendaten",
+   "status": "offen",
+   "detail": "Posendaten der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "holster",
+   "de": "Wegstecken",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "switch",
+   "de": "Waffenwechsel",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "fire_single",
+   "de": "Einzelschuss",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion fire (Clip <EVIDENCE>/clips/BASIC-17_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "fire_burst",
+   "de": "Salve",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "nur das Impulsgewehr feuert Salven (Burst-Rahmen anderer Typen zurückgestellt, EXT-12)"
+  },
+  {
+   "row": "fire_auto",
+   "de": "Dauerfeuer / Dauerstrahl",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Dauerfeuer bei diesem Typ"
+  },
+  {
+   "row": "recoil_mech",
+   "de": "Rückstoß und Mechanik, Rückkehr",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "recoil_camera",
+   "de": "Kamera-Feedback (getrennt)",
+   "cat": "Aktion",
+   "layer": "prozedural",
+   "status": "offen",
+   "detail": "prozedural der CE-Klasse „keine (Nahkampfprofil fehlt)“ nicht für das BASIC-Modell geprüft (fehlender Import, Q-CE-07)"
+  },
+  {
+   "row": "charge",
+   "de": "Aufladen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ (Bogen: Auszug in eigenen Zeilen)"
+  },
+  {
+   "row": "charge_hold",
+   "de": "Ladung halten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_release",
+   "de": "Ladung auslösen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "charge_cancel",
+   "de": "Aufladen abbrechen",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Aufladen bei diesem Typ"
+  },
+  {
+   "row": "reload_partial",
+   "de": "Nachladen mit Restmunition",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "reload_empty",
+   "de": "Nachladen aus leerem Zustand",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "reload_feed",
+   "de": "Munitionszufuhr (Magazin, Trommel, Gurt, Zelle, Einzelpatrone)",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion reload (Clip <EVIDENCE>/clips/BASIC-17_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "cycle",
+   "de": "Repetieren / Spannen / Verschluss / Auswurf",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "nicht anwendbar",
+   "detail": "kein Verschluss zu betätigen (Energiewaffe, Bogen oder Nahkampf)"
+  },
+  {
+   "row": "inspect",
+   "de": "Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "inspect_return",
+   "de": "Rückkehr aus Betrachten",
+   "cat": "Aktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "displace",
+   "de": "Verdrängung (Interaktion, Nahkampf, Fähigkeit)",
+   "cat": "Aktion",
+   "layer": "gemischt",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "glaive_shot",
+   "de": "Schuss",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (fire); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "glaive_reload",
+   "de": "Nachladen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Mechanik dargestellt (reload); Hand-/Armbewegung fehlt: Ego-Rig liegt in Toolgen, BASIC hat noch keinen Toolgen-Import"
+  },
+  {
+   "row": "glaive_shield",
+   "de": "Schild",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "dargestellt",
+   "detail": "Mechanik ohne Hände: Aktion shield (Clip <EVIDENCE>/clips/BASIC-17_<aktion>.mp4, gesichtet laut data/review.json)"
+  },
+  {
+   "row": "glaive_melee",
+   "de": "Stiche/Hiebe",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  },
+  {
+   "row": "glaive_switch",
+   "de": "Wechsel zwischen Aktionen",
+   "cat": "Typaktion",
+   "layer": "Clip",
+   "status": "offen",
+   "detail": "Clip mit Händen nicht erstellt (Toolgen-Ego-Clips, Q-CE-09)"
+  }
+ ],
+ "_transitions": [
+  {
+   "id": "tr_sprint_aim",
+   "de": "Sprint → Zielen",
+   "trigger": "Zieltaste im Sprint",
+   "priority": "ADS > Sprint",
+   "interrupt": "Sprint endet sofort",
+   "events": "SprintOut, Aimed",
+   "duration": "vorgeschlagen 0,25–0,35 s (ADS-Messungen Q-REF)"
+  },
+  {
+   "id": "tr_sprint_fire",
+   "de": "Sprint → Feuer",
+   "trigger": "Abzug im Sprint",
+   "priority": "Fire > Sprint",
+   "interrupt": "Sprint endet; Feuer nach SprintOut",
+   "events": "SprintOut, Fire",
+   "duration": "vorgeschlagen 0,15–0,25 s"
+  },
+  {
+   "id": "tr_draw_aimheld",
+   "de": "Ziehen bei gehaltenem Zielen",
+   "trigger": "Wechsel mit gehaltener Zieltaste",
+   "priority": "Draw > ADS",
+   "interrupt": "Draw nicht unterbrechbar; ADS danach",
+   "events": "Ready, Aimed",
+   "duration": "Ziehen gemessen 0,18–0,60 s je Typ (Q-REF)"
+  },
+  {
+   "id": "tr_reload_switch",
+   "de": "Nachladen → Wechsel",
+   "trigger": "Waffenwechsel während Reload",
+   "priority": "Holster/Draw > Reload",
+   "interrupt": "Reload bricht ab (CancelReason Switch)",
+   "events": "MagOut ohne MagIn → Magazin bleibt draußen (Regel offen)",
+   "duration": "Holster ab aktueller Stellung (Q-CE-06)"
+  },
+  {
+   "id": "tr_reload_cancel",
+   "de": "Erlaubter Nachladeabbruch",
+   "trigger": "Sprint oder Wechsel",
+   "priority": "Reload bis MagIn geschützt",
+   "interrupt": "nach MagIn gilt Nachladen als erfolgt",
+   "events": "MagIn, Chamber",
+   "duration": "abhängig vom Reload-Clip"
+  },
+  {
+   "id": "tr_charge_cancel",
+   "de": "Aufladen abbrechen",
+   "trigger": "Abzug loslassen vor Vollladung",
+   "priority": "Fire",
+   "interrupt": "jederzeit vor Auslösen",
+   "events": "charge_start, cancel",
+   "duration": "Fusion: Laden bis Strahl 0,52–0,87 s (Q-REF)"
+  },
+  {
+   "id": "tr_inspect_cancel",
+   "de": "Betrachten abbrechen",
+   "trigger": "jede Eingabe",
+   "priority": "Inspect niedrigste Priorität",
+   "interrupt": "sofort",
+   "events": "End",
+   "duration": "vorgeschlagen 0,15 s"
+  },
+  {
+   "id": "tr_fire_move",
+   "de": "Feuer während Bewegung",
+   "trigger": "Abzug beim Gehen",
+   "priority": "Fire > Walk",
+   "interrupt": "Bob gedämpft",
+   "events": "Fire",
+   "duration": "prozedural"
+  },
+  {
+   "id": "tr_fire_air",
+   "de": "Feuer in der Luft",
+   "trigger": "Abzug in Luftphase",
+   "priority": "Fire > Air",
+   "interrupt": "Landefeder läuft weiter",
+   "events": "Fire",
+   "duration": "prozedural"
+  },
+  {
+   "id": "tr_wall",
+   "de": "Wandabsenkung und Rückkehr",
+   "trigger": "Abstand zur Wand unter Waffenlänge",
+   "priority": "Lowered",
+   "interrupt": "Feuer gesperrt",
+   "events": "Lowered",
+   "duration": "vorgeschlagen 0,2 s"
+  },
+  {
+   "id": "tr_quick_switch",
+   "de": "Schneller erneuter Wechsel",
+   "trigger": "zweiter Wechsel während Draw",
+   "priority": "Holster/Draw",
+   "interrupt": "Holster ab aktueller Stellung",
+   "events": "Holstered, Ready",
+   "duration": "Waffenwechsel V06/V07 (Q-REF)"
+  },
+  {
+   "id": "tr_view",
+   "de": "Ego-/ISO-Wechsel",
+   "trigger": "Ansichtswechsel",
+   "priority": "View",
+   "interrupt": "CancelReason View",
+   "events": "–",
+   "duration": "Schwert: 0,15 + 0,33 s (Q-REF Sword)"
+  }
+ ]
+}

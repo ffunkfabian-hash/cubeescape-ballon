@@ -1,0 +1,1200 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-14",
+  "num": "14",
+  "type": "rocket_launcher",
+  "type_de": "Raketenwerfer",
+  "type_en": "Rocket Launcher",
+  "name": "Schulterrohr",
+  "nick": "Standard",
+  "ammo": "heavy",
+  "fire": "single_shot",
+  "reference_length_m": 0.725,
+  "reference_length_source": "Toolgen rocket_launcher (Formgen KG09 spec units); BASIC bewusst länger, siehe Bericht",
+  "reference_note": "Toolgens Raketenwerfer ist mit 0,725 m ein verdichtetes Spielmodell; BASIC zeigt das Schulterrohr in Gebrauchslänge (entworfen)",
+  "summary": "Einschüssiges Schulterrohr mit Heckladung."
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "tube",
+    "ready_light",
+    "rail"
+   ]
+  },
+  {
+   "id": "barrel",
+   "de": "Lauf / Emitter",
+   "en": "Barrel / emitter",
+   "parts": [
+    "muzzle",
+    "rear_ring"
+   ]
+  },
+  {
+   "id": "ammo",
+   "de": "Munitionsversorgung",
+   "en": "Ammunition feed",
+   "parts": [
+    "rocket",
+    "rocket_nose"
+   ]
+  },
+  {
+   "id": "sight",
+   "de": "Visier",
+   "en": "Sight",
+   "parts": [
+    "sight_riser",
+    "sight_mount",
+    "sight_clamp",
+    "sight_body",
+    "sight_frame",
+    "sight_glass",
+    "sight_emitter"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "trigger_housing",
+    "grip",
+    "trigger",
+    "trigger_guard"
+   ]
+  },
+  {
+   "id": "support",
+   "de": "Stützbereich",
+   "en": "Support",
+   "parts": [
+    "foregrip"
+   ]
+  },
+  {
+   "id": "stock",
+   "de": "Schaft",
+   "en": "Stock",
+   "parts": [
+    "shoulder_rest"
+   ]
+  },
+  {
+   "id": "mechanism",
+   "de": "Bewegliche Mechanik",
+   "en": "Moving mechanism",
+   "parts": [
+    "breech_cap"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "tube",
+   "name_de": "Abschussrohr",
+   "name_en": "Launch tube",
+   "assembly": "receiver",
+   "function_de": "Hauptkörper; führt die Rakete",
+   "attachment_de": "Grundkörper",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "tube",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04976,
+     -0.56,
+     0.06224
+    ],
+    "max": [
+     0.04976,
+     0.33,
+     0.16176
+    ]
+   },
+   "size_mm": [
+    99.5,
+    890.0,
+    99.5
+   ],
+   "triangles": 768,
+   "volume_cm3": 2499.53,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "muzzle",
+   "name_de": "Mündungsring",
+   "name_en": "Muzzle ring",
+   "assembly": "barrel",
+   "function_de": "Mündung; Socket_Muzzle",
+   "attachment_de": "auf das Rohr gepresst",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "muzzle",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05474,
+     -0.59,
+     0.05726
+    ],
+    "max": [
+     0.05474,
+     -0.54,
+     0.16674
+    ]
+   },
+   "size_mm": [
+    109.5,
+    50.0,
+    109.5
+   ],
+   "triangles": 768,
+   "volume_cm3": 221.62,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "rear_ring",
+   "name_de": "Heckring",
+   "name_en": "Rear ring",
+   "assembly": "barrel",
+   "function_de": "Trägt das Scharnier des Heckverschlusses",
+   "attachment_de": "auf das Rohr gepresst",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "rear_ring",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05474,
+     0.3,
+     0.05726
+    ],
+    "max": [
+     0.05474,
+     0.34,
+     0.16674
+    ]
+   },
+   "size_mm": [
+    109.5,
+    40.0,
+    109.5
+   ],
+   "triangles": 768,
+   "volume_cm3": 177.14,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "breech_cap",
+   "name_de": "Heckverschluss",
+   "name_en": "Breech cap",
+   "assembly": "mechanism",
+   "function_de": "Verschließt das Heck; klappt zum Laden auf",
+   "attachment_de": "Scharnier links am Heckring",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 3.0,
+   "blender_object": "breech_cap",
+   "origin_m": [
+    0.054,
+    0.348,
+    0.112
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05274,
+     0.34,
+     0.05926
+    ],
+    "max": [
+     0.05274,
+     0.356,
+     0.16474
+    ]
+   },
+   "size_mm": [
+    105.5,
+    16.0,
+    105.5
+   ],
+   "triangles": 380,
+   "volume_cm3": 138.56,
+   "moving": {
+    "kind": "rotate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.054,
+     0.348,
+     0.112
+    ],
+    "axis_blender": "Z",
+    "axis_sign": 1.0,
+    "range_deg": [
+     0,
+     -105
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "rocket",
+   "name_de": "Rakete",
+   "name_en": "Rocket",
+   "assembly": "ammo",
+   "function_de": "Eine Rakete im Rohr (Ruhelage verdeckt)",
+   "attachment_de": "im Rohr",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "rocket",
+   "origin_m": [
+    0.0,
+    -0.06,
+    0.112
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03569,
+     -0.42,
+     0.07631
+    ],
+    "max": [
+     0.03569,
+     0.29,
+     0.14769
+    ]
+   },
+   "size_mm": [
+    71.4,
+    710.0,
+    71.4
+   ],
+   "triangles": 284,
+   "volume_cm3": 2857.56,
+   "moving": {
+    "kind": "translate",
+    "event": "load",
+    "note": "Ruhelage = geladen; die Ladeaktion beginnt hinter dem Rohr",
+    "pivot_m": [
+     0.0,
+     -0.06,
+     0.112
+    ],
+    "vector_m": [
+     0.0,
+     0.88,
+     0.0
+    ],
+    "travel_mm": 880.0
+   },
+   "removable": true
+  },
+  {
+   "id": "rocket_nose",
+   "name_de": "Raketenspitze",
+   "name_en": "Rocket nose",
+   "assembly": "ammo",
+   "function_de": "Gefechtskopf",
+   "attachment_de": "an der Rakete",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "rocket",
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "rocket_nose",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03512,
+     -0.48,
+     0.07688
+    ],
+    "max": [
+     0.03512,
+     -0.418,
+     0.14712
+    ]
+   },
+   "size_mm": [
+    70.2,
+    62.0,
+    70.2
+   ],
+   "triangles": 284,
+   "volume_cm3": 112.54,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "shoulder_rest",
+   "name_de": "Schulterauflage",
+   "name_en": "Shoulder rest",
+   "assembly": "stock",
+   "function_de": "Liegt auf der Schulter",
+   "attachment_de": "unter das Rohr geschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "shoulder_rest",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.028,
+     0.11221,
+     0.05
+    ],
+    "max": [
+     0.028,
+     0.27779,
+     0.07
+    ]
+   },
+   "size_mm": [
+    56.0,
+    165.6,
+    20.0
+   ],
+   "triangles": 132,
+   "volume_cm3": 168.33,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger_housing",
+   "name_de": "Abzugsgehäuse",
+   "name_en": "Trigger housing",
+   "assembly": "grip_controls",
+   "function_de": "Verbindet Griffmodul und Rohr",
+   "attachment_de": "unter das Rohr geschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 3.0,
+   "blender_object": "trigger_housing",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.018,
+     -0.09,
+     0.044
+    ],
+    "max": [
+     0.018,
+     0.04,
+     0.07
+    ]
+   },
+   "size_mm": [
+    36.0,
+    130.0,
+    26.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 119.71,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "foregrip",
+   "name_de": "Vordergriff",
+   "name_en": "Foregrip",
+   "assembly": "support",
+   "function_de": "Griff der Stützhand",
+   "attachment_de": "unter das Rohr geschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "foregrip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.24975,
+     -0.008
+    ],
+    "max": [
+     0.015,
+     -0.21012,
+     0.066
+    ]
+   },
+   "size_mm": [
+    30.0,
+    39.6,
+    74.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 77.51,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_riser",
+   "name_de": "Visiersockel",
+   "name_en": "Sight riser",
+   "assembly": "sight",
+   "function_de": "Hebt das Visier über das Rohr",
+   "attachment_de": "auf dem Rohr verschraubt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 3.0,
+   "blender_object": "sight_riser",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.07,
+     0.158
+    ],
+    "max": [
+     0.015,
+     0.11,
+     0.17
+    ]
+   },
+   "size_mm": [
+    30.0,
+    180.0,
+    12.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 62.52,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "ready_light",
+   "name_de": "Bereitschaftsanzeige",
+   "name_en": "Ready light",
+   "assembly": "receiver",
+   "function_de": "Leuchtet, wenn eine Rakete geladen ist",
+   "attachment_de": "eingelassen",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "ready_light",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0499,
+     0.02,
+     0.12
+    ],
+    "max": [
+     0.0509,
+     0.06,
+     0.132
+    ]
+   },
+   "size_mm": [
+    1.0,
+    40.0,
+    12.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.47,
+   "moving": {
+    "kind": "glow",
+    "event": "charge",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "rail",
+   "name_de": "Schiene",
+   "name_en": "Top rail",
+   "assembly": "receiver",
+   "function_de": "Aufnahme für Visiere (BRI-22)",
+   "attachment_de": "auf Oberem Gehäuse (fest)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": "BRI-22",
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "rail",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.011,
+     -0.06,
+     0.1695
+    ],
+    "max": [
+     0.011,
+     0.1,
+     0.178
+    ]
+   },
+   "size_mm": [
+    22.0,
+    160.0,
+    8.5
+   ],
+   "triangles": 108,
+   "volume_cm3": 29.43,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_mount",
+   "name_de": "Visier-Klemmfuß",
+   "name_en": "Sight mount",
+   "assembly": "sight",
+   "function_de": "Klemmt das Visier auf die Schiene BRI-22",
+   "attachment_de": "Klemmung auf Schiene (lösbar)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": "BRI-22",
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_mount",
+   "origin_m": [
+    0.0,
+    0.045,
+    0.178
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     0.02,
+     0.1785
+    ],
+    "max": [
+     0.013,
+     0.07,
+     0.186
+    ]
+   },
+   "size_mm": [
+    26.0,
+    50.0,
+    7.5
+   ],
+   "triangles": 108,
+   "volume_cm3": 9.54,
+   "moving": {
+    "kind": "translate",
+    "event": "swap_sight",
+    "note": "nach Lösen der Klemmschraube senkrecht abnehmen",
+    "pivot_m": [
+     0.0,
+     0.045,
+     0.178
+    ],
+    "vector_m": [
+     0.0,
+     0.0,
+     0.07
+    ],
+    "travel_mm": 70.0
+   },
+   "removable": true
+  },
+  {
+   "id": "sight_clamp",
+   "name_de": "Klemmschraube",
+   "name_en": "Clamp screw",
+   "assembly": "sight",
+   "function_de": "Spannt den Klemmfuß (Werkzeuglos, Rändel)",
+   "attachment_de": "quer im Klemmfuß links",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_clamp",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.013,
+     0.03961,
+     0.17661
+    ],
+    "max": [
+     0.019,
+     0.05039,
+     0.18739
+    ]
+   },
+   "size_mm": [
+    6.0,
+    10.8,
+    10.8
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.54,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_body",
+   "name_de": "Visiergehäuse",
+   "name_en": "Sight housing",
+   "assembly": "sight",
+   "function_de": "Trägt Emitter und Batterie; hintere Kante = Socket_Sight",
+   "attachment_de": "auf Klemmfuß (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "sight_body",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     0.02,
+     0.1855
+    ],
+    "max": [
+     0.013,
+     0.069,
+     0.194
+    ]
+   },
+   "size_mm": [
+    26.0,
+    49.0,
+    8.5
+   ],
+   "triangles": 164,
+   "volume_cm3": 7.53,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame",
+   "name_de": "Haubenrahmen",
+   "name_en": "Sight hood frame",
+   "assembly": "sight",
+   "function_de": "Hält und schützt das Glas; offener Rahmen für freie Durchsicht",
+   "attachment_de": "auf Visiergehäuse (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "frame",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.027,
+     0.02,
+     0.19
+    ],
+    "max": [
+     0.027,
+     0.032,
+     0.23
+    ]
+   },
+   "size_mm": [
+    54.0,
+    12.0,
+    40.0
+   ],
+   "triangles": 480,
+   "volume_cm3": 9.52,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_glass",
+   "name_de": "Visierglas",
+   "name_en": "Sight glass",
+   "assembly": "sight",
+   "function_de": "Reflexscheibe; das Absehen erscheint auf ihr",
+   "attachment_de": "im Rahmen (fest)",
+   "material_role": "glass",
+   "material_de": "Visierglas",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xbox",
+   "bevel_mm": 0,
+   "blender_object": "sight_glass",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0225,
+     0.0255,
+     0.1945
+    ],
+    "max": [
+     0.0225,
+     0.0265,
+     0.2255
+    ]
+   },
+   "size_mm": [
+    45.0,
+    1.0,
+    31.0
+   ],
+   "triangles": 12,
+   "volume_cm3": 1.4,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_emitter",
+   "name_de": "Emitter",
+   "name_en": "Reticle emitter",
+   "assembly": "sight",
+   "function_de": "Leuchtfenster des Absehen-Projektors (zurückhaltend)",
+   "attachment_de": "vorn im Emitterblock",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "sight_emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     0.0525,
+     0.1912
+    ],
+    "max": [
+     0.0035,
+     0.0545,
+     0.1934
+    ]
+   },
+   "size_mm": [
+    7.0,
+    2.0,
+    2.2
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.03,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Pistolengriff",
+   "name_en": "Pistol grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand hält die Waffe; trägt Socket_Hand",
+   "attachment_de": "mit Unterem Gehäuse verschraubt (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": "BGM-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.03173,
+     -0.064
+    ],
+    "max": [
+     0.015,
+     0.03691,
+     0.044
+    ]
+   },
+   "size_mm": [
+    30.0,
+    68.6,
+    108.0
+   ],
+   "triangles": 196,
+   "volume_cm3": 132.66,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen (Zeigefinger)",
+   "attachment_de": "Drehpunkt im Unteren Gehäuse",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.04579,
+    0.041
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     -0.05179,
+     0.01719
+    ],
+    "max": [
+     0.0035,
+     -0.04396,
+     0.043
+    ]
+   },
+   "size_mm": [
+    7.0,
+    7.8,
+    25.8
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.89,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.04579,
+     0.041
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "trigger_guard",
+   "name_de": "Abzugsbügel",
+   "name_en": "Trigger guard",
+   "assembly": "grip_controls",
+   "function_de": "Schützt den Abzug, Fingerfreiraum ≥ 22 mm",
+   "attachment_de": "Griff vorn und Unteres Gehäuse (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "trigger_guard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.006,
+     -0.08379,
+     0.01
+    ],
+    "max": [
+     0.006,
+     -0.0262,
+     0.045
+    ]
+   },
+   "size_mm": [
+    12.0,
+    57.6,
+    35.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 6.87,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_SupportHand": {
+   "position_m": [
+    0.0,
+    -0.23,
+    0.03
+   ],
+   "part": "foregrip",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.59,
+    0.112
+   ],
+   "part": "muzzle",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Breech": {
+   "position_m": [
+    0.0,
+    0.356,
+    0.112
+   ],
+   "part": "breech_cap",
+   "note": "Ladeöffnung hinten",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Sight": {
+   "position_m": [
+    0.0,
+    0.069,
+    0.21
+   ],
+   "part": "sight_body",
+   "note": "hinteres Visierende auf der Visierlinie",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Reticle": {
+   "position_m": [
+    0.0,
+    0.026,
+    0.21
+   ],
+   "part": "sight_glass",
+   "note": "Mitte Glas",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Eye": {
+   "position_m": [
+    0.0,
+    0.032,
+    0.21
+   ],
+   "part": "sight_frame",
+   "note": "Vorschlag nach Formgen-Regel: hinterer Fensterrand (Reflexvisier ohne festen Augenabstand)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    0.0,
+    -0.07969,
+    0.10702
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.05474,
+    -0.59,
+    -0.064
+   ],
+   "max": [
+    0.05474,
+    0.356,
+    0.23
+   ]
+  },
+  "length_m": 0.946,
+  "height_m": 0.294,
+  "width_m": 0.1095,
+  "reference_length_m": 0.725,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 21,
+  "triangles": 5532,
+  "assemblies": 8
+ },
+ "actions": {
+  "fire": {
+   "de": "Abschuss",
+   "frames": 12,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "ready_light"
+   ],
+   "events": [
+    [
+     2,
+     "launch"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "reload": {
+   "de": "Heck öffnen, Rakete einschieben, schließen",
+   "frames": 96,
+   "fps": 30,
+   "parts": [
+    "breech_cap",
+    "rocket",
+    "ready_light"
+   ],
+   "events": [
+    [
+     14,
+     "breech_open"
+    ],
+    [
+     60,
+     "rocket_in"
+    ],
+    [
+     82,
+     "breech_closed"
+    ],
+    [
+     86,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BGM-1",
+  "BRI-22"
+ ]
+}

@@ -1,0 +1,836 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-17",
+  "num": "17",
+  "type": "glaive",
+  "type_de": "Glefe",
+  "type_en": "Glaive",
+  "name": "Schildwacht",
+  "nick": "Standard",
+  "ammo": "special",
+  "fire": "melee_projectile_shield",
+  "reference_length_m": 1.4,
+  "reference_length_source": "Formgen KG18 ref_len (Schätzung claude-0.10)",
+  "summary": "Glefe mit Projektil-Emitter, aufklappbarem Schild und Klingenkopf."
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "shaft",
+   "de": "Stange",
+   "en": "Shaft",
+   "parts": [
+    "shaft",
+    "counterweight"
+   ]
+  },
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "core"
+   ]
+  },
+  {
+   "id": "ammo",
+   "de": "Munitionsversorgung",
+   "en": "Ammunition feed",
+   "parts": [
+    "energy_cell",
+    "energy_cell_window"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "grip",
+    "trigger"
+   ]
+  },
+  {
+   "id": "support",
+   "de": "Stützbereich",
+   "en": "Support",
+   "parts": [
+    "support_grip"
+   ]
+  },
+  {
+   "id": "blade",
+   "de": "Klinge",
+   "en": "Blade",
+   "parts": [
+    "blade_mount",
+    "blade",
+    "emitter"
+   ]
+  },
+  {
+   "id": "shield",
+   "de": "Schild",
+   "en": "Shield",
+   "parts": [
+    "shield_l",
+    "shield_r"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "shaft",
+   "name_de": "Stange",
+   "name_en": "Shaft",
+   "assembly": "shaft",
+   "function_de": "Trägt alle Baugruppen",
+   "attachment_de": "durchgehend",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "shaft",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01256,
+     -0.66,
+     0.02744
+    ],
+    "max": [
+     0.01256,
+     0.3,
+     0.05256
+    ]
+   },
+   "size_mm": [
+    25.1,
+    960.0,
+    25.1
+   ],
+   "triangles": 140,
+   "volume_cm3": 486.62,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "counterweight",
+   "name_de": "Gegengewicht",
+   "name_en": "Counterweight",
+   "assembly": "shaft",
+   "function_de": "Balance und Stoßende",
+   "attachment_de": "Stangenende",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 3.0,
+   "blender_object": "counterweight",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01848,
+     0.296,
+     0.02152
+    ],
+    "max": [
+     0.01848,
+     0.334,
+     0.05848
+    ]
+   },
+   "size_mm": [
+    37.0,
+    38.0,
+    37.0
+   ],
+   "triangles": 220,
+   "volume_cm3": 41.86,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "core",
+   "name_de": "Kernkörper",
+   "name_en": "Core body",
+   "assembly": "receiver",
+   "function_de": "Abzugsmechanik und Zellenschacht",
+   "attachment_de": "um die Stange geklemmt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "core",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02,
+     -0.21,
+     0.018
+    ],
+    "max": [
+     0.02,
+     0.06,
+     0.07
+    ]
+   },
+   "size_mm": [
+    40.0,
+    270.0,
+    52.0
+   ],
+   "triangles": 176,
+   "volume_cm3": 540.64,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "support_grip",
+   "name_de": "Stützgriff",
+   "name_en": "Support grip",
+   "assembly": "support",
+   "function_de": "Griffbereich der Stützhand",
+   "attachment_de": "auf der Stange",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "support_grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01642,
+     -0.43,
+     0.02358
+    ],
+    "max": [
+     0.01642,
+     -0.3,
+     0.05642
+    ]
+   },
+   "size_mm": [
+    32.8,
+    130.0,
+    32.8
+   ],
+   "triangles": 140,
+   "volume_cm3": 112.57,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "blade_mount",
+   "name_de": "Klingenaufnahme",
+   "name_en": "Blade mount",
+   "assembly": "blade",
+   "function_de": "Fasst Klinge und Emitter",
+   "attachment_de": "am Stangenende",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 3.0,
+   "blender_object": "blade_mount",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.017,
+     -0.7,
+     0.018
+    ],
+    "max": [
+     0.017,
+     -0.64,
+     0.064
+    ]
+   },
+   "size_mm": [
+    34.0,
+    60.0,
+    46.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 92.42,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "blade",
+   "name_de": "Klinge",
+   "name_en": "Blade",
+   "assembly": "blade",
+   "function_de": "Blattförmige Klinge für Stiche und Hiebe",
+   "attachment_de": "in der Aufnahme",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "blade",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0045,
+     -1.08913,
+     0.008
+    ],
+    "max": [
+     0.0045,
+     -0.698,
+     0.072
+    ]
+   },
+   "size_mm": [
+    9.0,
+    391.1,
+    64.0
+   ],
+   "triangles": 104,
+   "volume_cm3": 157.64,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "emitter",
+   "name_de": "Emitter",
+   "name_en": "Emitter",
+   "assembly": "blade",
+   "function_de": "Gibt das Projektil ab; leuchtet beim Schuss",
+   "attachment_de": "in der Klingenaufnahme",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0058,
+     -0.76,
+     0.0342
+    ],
+    "max": [
+     0.0058,
+     -0.7,
+     0.0458
+    ]
+   },
+   "size_mm": [
+    11.6,
+    60.0,
+    11.6
+   ],
+   "triangles": 44,
+   "volume_cm3": 6.48,
+   "moving": {
+    "kind": "glow",
+    "event": "fire",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 6.0
+   },
+   "removable": false
+  },
+  {
+   "id": "shield_l",
+   "name_de": "Schildflügel links",
+   "name_en": "Shield wing left",
+   "assembly": "shield",
+   "function_de": "Klappt zum Blocken nach vorn-außen auf",
+   "attachment_de": "Scharnier vorn an der Klingenaufnahme",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "shield_l",
+   "origin_m": [
+    0.024,
+    -0.636,
+    0.04
+   ],
+   "bounds_m": {
+    "min": [
+     0.0215,
+     -0.636,
+     -0.00789
+    ],
+    "max": [
+     0.0265,
+     -0.47,
+     0.08789
+    ]
+   },
+   "size_mm": [
+    5.0,
+    166.0,
+    95.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 69.05,
+   "moving": {
+    "kind": "rotate",
+    "event": "shield",
+    "note": null,
+    "pivot_m": [
+     0.024,
+     -0.636,
+     0.04
+    ],
+    "axis_blender": "Z",
+    "axis_sign": 1.0,
+    "range_deg": [
+     0,
+     -70
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "shield_r",
+   "name_de": "Schildflügel rechts",
+   "name_en": "Shield wing right",
+   "assembly": "shield",
+   "function_de": "Klappt zum Blocken nach vorn-außen auf",
+   "attachment_de": "Scharnier vorn an der Klingenaufnahme",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "shield_r",
+   "origin_m": [
+    -0.024,
+    -0.636,
+    0.04
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0265,
+     -0.636,
+     -0.00789
+    ],
+    "max": [
+     -0.0215,
+     -0.47,
+     0.08789
+    ]
+   },
+   "size_mm": [
+    5.0,
+    166.0,
+    95.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 69.05,
+   "moving": {
+    "kind": "rotate",
+    "event": "shield",
+    "note": null,
+    "pivot_m": [
+     -0.024,
+     -0.636,
+     0.04
+    ],
+    "axis_blender": "Z",
+    "axis_sign": 1.0,
+    "range_deg": [
+     0,
+     70
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "energy_cell",
+   "name_de": "Energiezelle",
+   "name_en": "Energy cell",
+   "assembly": "ammo",
+   "function_de": "Speichert die Ladungen; austauschbar",
+   "attachment_de": "rastet im Zellenschacht ein (lösbar)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": "BEC-1",
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 3.0,
+   "blender_object": "energy_cell",
+   "origin_m": [
+    0.0,
+    -0.1,
+    0.078
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.16,
+     0.07
+    ],
+    "max": [
+     0.013,
+     -0.04,
+     0.086
+    ]
+   },
+   "size_mm": [
+    26.0,
+    120.0,
+    16.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 48.27,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.1,
+     0.078
+    ],
+    "vector_m": [
+     0.0,
+     0.0,
+     0.06
+    ],
+    "travel_mm": 60.0
+   },
+   "removable": true
+  },
+  {
+   "id": "energy_cell_window",
+   "name_de": "Ladefenster",
+   "name_en": "Charge window",
+   "assembly": "ammo",
+   "function_de": "Zeigt den Ladezustand",
+   "attachment_de": "in die Zelle eingelassen",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "energy_cell",
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "energy_cell_window",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0127,
+     -0.13,
+     0.076
+    ],
+    "max": [
+     0.0137,
+     -0.07,
+     0.08
+    ]
+   },
+   "size_mm": [
+    1.0,
+    60.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.23,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Pistolengriff",
+   "name_en": "Pistol grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand hält die Waffe; trägt Socket_Hand",
+   "attachment_de": "mit Unterem Gehäuse verschraubt (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": "BGM-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.02508,
+     -0.064
+    ],
+    "max": [
+     0.015,
+     0.03691,
+     0.02
+    ]
+   },
+   "size_mm": [
+    30.0,
+    62.0,
+    84.0
+   ],
+   "triangles": 196,
+   "volume_cm3": 103.2,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen (Zeigefinger)",
+   "attachment_de": "Drehpunkt im Unteren Gehäuse",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.03936,
+    0.017
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     -0.04536,
+     -0.00681
+    ],
+    "max": [
+     0.0035,
+     -0.03753,
+     0.019
+    ]
+   },
+   "size_mm": [
+    7.0,
+    7.8,
+    25.8
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.89,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.03936,
+     0.017
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": "hintere Hand mit Abzug",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_SupportHand": {
+   "position_m": [
+    0.0,
+    -0.365,
+    0.04
+   ],
+   "part": "support_grip",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.76,
+    0.04
+   ],
+   "part": "emitter",
+   "note": "Projektilaustritt",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_BladeCenter": {
+   "position_m": [
+    0.0,
+    -0.9,
+    0.04
+   ],
+   "part": "blade",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    0.0,
+    -0.25386,
+    0.03891
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.0265,
+    -1.08913,
+    -0.064
+   ],
+   "max": [
+    0.0265,
+    0.334,
+    0.08789
+   ]
+  },
+  "length_m": 1.4231,
+  "height_m": 0.1519,
+  "width_m": 0.053,
+  "reference_length_m": 1.4,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 13,
+  "triangles": 1692,
+  "assemblies": 7
+ },
+ "actions": {
+  "fire": {
+   "de": "Projektil abgeben",
+   "frames": 14,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "emitter"
+   ],
+   "events": [
+    [
+     2,
+     "shot"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "shield": {
+   "de": "Schild aufklappen, halten, schließen",
+   "frames": 40,
+   "fps": 30,
+   "parts": [
+    "shield_l",
+    "shield_r"
+   ],
+   "events": [
+    [
+     8,
+     "shield_up"
+    ],
+    [
+     38,
+     "shield_down"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "reload": {
+   "de": "Energiezelle wechseln",
+   "frames": 70,
+   "fps": 30,
+   "parts": [
+    "energy_cell"
+   ],
+   "events": [
+    [
+     16,
+     "cell_out"
+    ],
+    [
+     50,
+     "cell_in"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BEC-1",
+  "BGM-1"
+ ]
+}

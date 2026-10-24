@@ -1,0 +1,1266 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-07",
+  "num": "07",
+  "type": "combat_bow",
+  "type_de": "Bogen",
+  "type_en": "Combat Bow",
+  "name": "Sehnenzug",
+  "nick": "Standard",
+  "ammo": "primary",
+  "fire": "draw_release",
+  "reference_length_m": 1.018,
+  "reference_length_source": "Toolgen 0.13 bow, größte Ausdehnung (Formgen KG10 spec units)",
+  "reference_axis": "height_m",
+  "reference_note": "Bogen: Bezug ist die größte Ausdehnung (Höhe), Länge = Pfeilrichtung",
+  "summary": "Kampfbogen mit Recurve-Wurfarmen, Pfeilfenster und Ringvisier."
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "riser",
+   "de": "Mittelstück",
+   "en": "Riser",
+   "parts": [
+    "riser_lower",
+    "riser_upper",
+    "riser_bridge",
+    "arrow_rest"
+   ]
+  },
+  {
+   "id": "limbs",
+   "de": "Wurfarme",
+   "en": "Limbs",
+   "parts": [
+    "pocket_top",
+    "pocket_bottom",
+    "limb_top",
+    "limb_bottom",
+    "cam_top",
+    "cam_bottom"
+   ]
+  },
+  {
+   "id": "string",
+   "de": "Sehne",
+   "en": "String",
+   "parts": [
+    "string_top",
+    "string_bottom"
+   ]
+  },
+  {
+   "id": "arrow",
+   "de": "Pfeil",
+   "en": "Arrow",
+   "parts": [
+    "arrow_shaft",
+    "arrow_head",
+    "arrow_nock",
+    "fletch_top",
+    "fletch_l",
+    "fletch_r"
+   ]
+  },
+  {
+   "id": "sight",
+   "de": "Visier",
+   "en": "Sight",
+   "parts": [
+    "sight_arm",
+    "sight_ring",
+    "sight_pin",
+    "sight_pin_post"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "grip"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "grip",
+   "name_de": "Griff",
+   "name_en": "Grip",
+   "assembly": "grip_controls",
+   "function_de": "Bogenhand; trägt Socket_Hand",
+   "attachment_de": "auf das Mittelstück geschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.026,
+     -0.042
+    ],
+    "max": [
+     0.016,
+     0.025,
+     0.03
+    ]
+   },
+   "size_mm": [
+    32.0,
+    51.0,
+    72.0
+   ],
+   "triangles": 132,
+   "volume_cm3": 100.86,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "riser_lower",
+   "name_de": "Mittelstück unten",
+   "name_en": "Lower riser",
+   "assembly": "riser",
+   "function_de": "Trägt den unteren Wurfarm",
+   "attachment_de": "Grundkörper",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "riser_lower",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.05,
+     -0.246
+    ],
+    "max": [
+     0.016,
+     0.01788,
+     -0.038
+    ]
+   },
+   "size_mm": [
+    32.0,
+    67.9,
+    208.0
+   ],
+   "triangles": 156,
+   "volume_cm3": 353.3,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "riser_upper",
+   "name_de": "Mittelstück oben",
+   "name_en": "Upper riser",
+   "assembly": "riser",
+   "function_de": "Trägt den oberen Wurfarm und das Visier",
+   "attachment_de": "Grundkörper",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "riser_upper",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.05,
+     0.068
+    ],
+    "max": [
+     0.016,
+     0.01386,
+     0.246
+    ]
+   },
+   "size_mm": [
+    32.0,
+    63.9,
+    178.0
+   ],
+   "triangles": 156,
+   "volume_cm3": 301.25,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "riser_bridge",
+   "name_de": "Fensterbrücke",
+   "name_en": "Window bridge",
+   "assembly": "riser",
+   "function_de": "Verbindet beide Hälften links; rechts bleibt das Pfeilfenster frei",
+   "attachment_de": "Teil des Mittelstücks",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 3.0,
+   "blender_object": "riser_bridge",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.006,
+     -0.03,
+     0.024
+    ],
+    "max": [
+     0.016,
+     0.012,
+     0.074
+    ]
+   },
+   "size_mm": [
+    10.0,
+    42.0,
+    50.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 19.98,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "arrow_rest",
+   "name_de": "Pfeilauflage",
+   "name_en": "Arrow rest",
+   "assembly": "riser",
+   "function_de": "Führt den Pfeil im Fenster",
+   "attachment_de": "auf der Fensterbrücke",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "arrow_rest",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.004,
+     -0.016,
+     0.038
+    ],
+    "max": [
+     0.006,
+     0.002,
+     0.042
+    ]
+   },
+   "size_mm": [
+    10.0,
+    18.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.7,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "pocket_top",
+   "name_de": "Wurfarmaufnahme oben",
+   "name_en": "Upper limb pocket",
+   "assembly": "limbs",
+   "function_de": "Klemmt den oberen Wurfarm",
+   "attachment_de": "am Mittelstück",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "pocket_top",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.019,
+     -0.042,
+     0.238
+    ],
+    "max": [
+     0.019,
+     0.012,
+     0.258
+    ]
+   },
+   "size_mm": [
+    38.0,
+    54.0,
+    20.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 40.75,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "pocket_bottom",
+   "name_de": "Wurfarmaufnahme unten",
+   "name_en": "Lower limb pocket",
+   "assembly": "limbs",
+   "function_de": "Klemmt den unteren Wurfarm",
+   "attachment_de": "am Mittelstück",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "pocket_bottom",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.019,
+     -0.042,
+     -0.258
+    ],
+    "max": [
+     0.019,
+     0.012,
+     -0.238
+    ]
+   },
+   "size_mm": [
+    38.0,
+    54.0,
+    20.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 40.75,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "limb_top",
+   "name_de": "Wurfarm oben",
+   "name_en": "Upper limb",
+   "assembly": "limbs",
+   "function_de": "Speichert die Zugenergie (Recurve)",
+   "attachment_de": "in der Aufnahme geklemmt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "limb_top",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.017,
+     -0.042,
+     0.24804
+    ],
+    "max": [
+     0.017,
+     0.06183,
+     0.5084
+    ]
+   },
+   "size_mm": [
+    34.0,
+    103.8,
+    260.4
+   ],
+   "triangles": 180,
+   "volume_cm3": 191.74,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "limb_bottom",
+   "name_de": "Wurfarm unten",
+   "name_en": "Lower limb",
+   "assembly": "limbs",
+   "function_de": "Speichert die Zugenergie (Recurve)",
+   "attachment_de": "in der Aufnahme geklemmt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "limb_bottom",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.017,
+     -0.042,
+     -0.5084
+    ],
+    "max": [
+     0.017,
+     0.06183,
+     -0.24804
+    ]
+   },
+   "size_mm": [
+    34.0,
+    103.8,
+    260.4
+   ],
+   "triangles": 180,
+   "volume_cm3": 191.74,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "cam_top",
+   "name_de": "Rolle oben",
+   "name_en": "Upper cam",
+   "assembly": "limbs",
+   "function_de": "Sehnenende oben",
+   "attachment_de": "an der Wurfarmspitze",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "cam_top",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01,
+     0.05019,
+     0.49519
+    ],
+    "max": [
+     0.01,
+     0.06981,
+     0.51481
+    ]
+   },
+   "size_mm": [
+    20.0,
+    19.6,
+    19.6
+   ],
+   "triangles": 188,
+   "volume_cm3": 6.1,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "cam_bottom",
+   "name_de": "Rolle unten",
+   "name_en": "Lower cam",
+   "assembly": "limbs",
+   "function_de": "Sehnenende unten",
+   "attachment_de": "an der Wurfarmspitze",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "cam_bottom",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01,
+     0.05019,
+     -0.51481
+    ],
+    "max": [
+     0.01,
+     0.06981,
+     -0.49519
+    ]
+   },
+   "size_mm": [
+    20.0,
+    19.6,
+    19.6
+   ],
+   "triangles": 188,
+   "volume_cm3": 6.1,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "string_top",
+   "name_de": "Sehne oben",
+   "name_en": "Upper string",
+   "assembly": "string",
+   "function_de": "Obere Sehnenhälfte; folgt dem Nockpunkt",
+   "attachment_de": "zwischen Rolle und Nockpunkt",
+   "material_role": "string",
+   "material_de": "Sehne",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "string_top",
+   "origin_m": [
+    0.0,
+    0.06,
+    0.505
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00166,
+     0.05834,
+     0.046
+    ],
+    "max": [
+     0.00166,
+     0.06166,
+     0.505
+    ]
+   },
+   "size_mm": [
+    3.3,
+    3.3,
+    459.0
+   ],
+   "triangles": 28,
+   "volume_cm3": 4.21,
+   "moving": {
+    "kind": "segment",
+    "event": "draw",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     0.06,
+     0.505
+    ],
+    "vector_m": [
+     0.0,
+     0.38,
+     0.0
+    ],
+    "travel_mm": 380.0,
+    "tip_m": [
+     0.0,
+     0.06,
+     0.505
+    ],
+    "nock_rest_m": [
+     0.0,
+     0.06,
+     0.046
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "string_bottom",
+   "name_de": "Sehne unten",
+   "name_en": "Lower string",
+   "assembly": "string",
+   "function_de": "Untere Sehnenhälfte; folgt dem Nockpunkt",
+   "attachment_de": "zwischen Rolle und Nockpunkt",
+   "material_role": "string",
+   "material_de": "Sehne",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "string_bottom",
+   "origin_m": [
+    0.0,
+    0.06,
+    -0.505
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00166,
+     0.05834,
+     -0.505
+    ],
+    "max": [
+     0.00166,
+     0.06166,
+     0.046
+    ]
+   },
+   "size_mm": [
+    3.3,
+    3.3,
+    551.0
+   ],
+   "triangles": 28,
+   "volume_cm3": 5.05,
+   "moving": {
+    "kind": "segment",
+    "event": "draw",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     0.06,
+     -0.505
+    ],
+    "vector_m": [
+     0.0,
+     0.38,
+     0.0
+    ],
+    "travel_mm": 380.0,
+    "tip_m": [
+     0.0,
+     0.06,
+     -0.505
+    ],
+    "nock_rest_m": [
+     0.0,
+     0.06,
+     0.046
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "arrow_shaft",
+   "name_de": "Pfeilschaft",
+   "name_en": "Arrow shaft",
+   "assembly": "arrow",
+   "function_de": "Pfeil; wird mit der Sehne zurückgezogen",
+   "attachment_de": "auf der Auflage, Nocke an der Sehne",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "arrow_shaft",
+   "origin_m": [
+    0.0,
+    0.06,
+    0.046
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00336,
+     -0.56,
+     0.04267
+    ],
+    "max": [
+     0.00336,
+     0.06,
+     0.04933
+    ]
+   },
+   "size_mm": [
+    6.7,
+    620.0,
+    6.7
+   ],
+   "triangles": 276,
+   "volume_cm3": 21.63,
+   "moving": {
+    "kind": "translate",
+    "event": "draw",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     0.06,
+     0.046
+    ],
+    "vector_m": [
+     0.0,
+     0.38,
+     0.0
+    ],
+    "travel_mm": 380.0
+   },
+   "removable": true
+  },
+  {
+   "id": "arrow_head",
+   "name_de": "Pfeilspitze",
+   "name_en": "Arrow head",
+   "assembly": "arrow",
+   "function_de": "Spitze",
+   "attachment_de": "auf dem Schaft",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "arrow_shaft",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "arrow_head",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00688,
+     -0.616,
+     0.03997
+    ],
+    "max": [
+     0.00688,
+     -0.556,
+     0.05203
+    ]
+   },
+   "size_mm": [
+    13.8,
+    60.0,
+    12.1
+   ],
+   "triangles": 164,
+   "volume_cm3": 2.77,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "arrow_nock",
+   "name_de": "Nocke",
+   "name_en": "Nock",
+   "assembly": "arrow",
+   "function_de": "Rastet an der Sehne ein",
+   "attachment_de": "Schaftende",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "arrow_shaft",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "arrow_nock",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00436,
+     0.054,
+     0.04172
+    ],
+    "max": [
+     0.00436,
+     0.066,
+     0.05028
+    ]
+   },
+   "size_mm": [
+    8.7,
+    12.0,
+    8.6
+   ],
+   "triangles": 276,
+   "volume_cm3": 0.69,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "fletch_top",
+   "name_de": "Befiederung oben",
+   "name_en": "Top vane",
+   "assembly": "arrow",
+   "function_de": "Stabilisiert den Flug (Leitfeder)",
+   "attachment_de": "am Schaft",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "arrow_shaft",
+   "shape": "prof",
+   "bevel_mm": 0.3,
+   "blender_object": "fletch_top",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0006,
+     -0.01588,
+     0.046
+    ],
+    "max": [
+     0.0006,
+     0.04588,
+     0.05899
+    ]
+   },
+   "size_mm": [
+    1.2,
+    61.8,
+    13.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.82,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "fletch_l",
+   "name_de": "Befiederung links",
+   "name_en": "Left vane",
+   "assembly": "arrow",
+   "function_de": "Stabilisiert den Flug",
+   "attachment_de": "am Schaft",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "arrow_shaft",
+   "shape": "plan",
+   "bevel_mm": 0.3,
+   "blender_object": "fletch_l",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.002,
+     -0.01588,
+     0.0454
+    ],
+    "max": [
+     0.01399,
+     0.04588,
+     0.0466
+    ]
+   },
+   "size_mm": [
+    12.0,
+    61.8,
+    1.2
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.75,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "fletch_r",
+   "name_de": "Befiederung rechts",
+   "name_en": "Right vane",
+   "assembly": "arrow",
+   "function_de": "Stabilisiert den Flug",
+   "attachment_de": "am Schaft",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "arrow_shaft",
+   "shape": "plan",
+   "bevel_mm": 0.3,
+   "blender_object": "fletch_r",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01399,
+     -0.01588,
+     0.0454
+    ],
+    "max": [
+     -0.002,
+     0.04588,
+     0.0466
+    ]
+   },
+   "size_mm": [
+    12.0,
+    61.8,
+    1.2
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.75,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_arm",
+   "name_de": "Visierarm",
+   "name_en": "Sight arm",
+   "assembly": "sight",
+   "function_de": "Trägt den Visierring vor dem Mittelstück",
+   "attachment_de": "am Mittelstück verschraubt",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_arm",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.003,
+     -0.06,
+     0.078
+    ],
+    "max": [
+     0.003,
+     -0.026,
+     0.084
+    ]
+   },
+   "size_mm": [
+    6.0,
+    34.0,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 1.19,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_ring",
+   "name_de": "Visierring",
+   "name_en": "Sight ring",
+   "assembly": "sight",
+   "function_de": "Ringvisier; frei durchsichtig",
+   "attachment_de": "am Visierarm",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "frame",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_ring",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.06,
+     0.051
+    ],
+    "max": [
+     0.013,
+     -0.054,
+     0.077
+    ]
+   },
+   "size_mm": [
+    26.0,
+    6.0,
+    26.0
+   ],
+   "triangles": 480,
+   "volume_cm3": 1.48,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_pin",
+   "name_de": "Leuchtpin",
+   "name_en": "Sight pin",
+   "assembly": "sight",
+   "function_de": "Zielpunkt in Ringmitte",
+   "attachment_de": "im Visierring",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_pin",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0008,
+     -0.058,
+     0.063
+    ],
+    "max": [
+     0.0008,
+     -0.056,
+     0.066
+    ]
+   },
+   "size_mm": [
+    1.6,
+    2.0,
+    3.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_pin_post",
+   "name_de": "Pinträger",
+   "name_en": "Pin post",
+   "assembly": "sight",
+   "function_de": "Hält den Leuchtpin",
+   "attachment_de": "im Visierring",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_pin_post",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0006,
+     -0.058,
+     0.054
+    ],
+    "max": [
+     0.0006,
+     -0.056,
+     0.063
+    ]
+   },
+   "size_mm": [
+    1.2,
+    2.0,
+    9.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.02,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": "Bogenhand",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Nock": {
+   "position_m": [
+    0.0,
+    0.06,
+    0.046
+   ],
+   "part": "string_top",
+   "note": "Nockpunkt in Ruhe (Toolgen-Name)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_ArrowTip": {
+   "position_m": [
+    0.0,
+    -0.616,
+    0.046
+   ],
+   "part": "arrow_head",
+   "note": "Pfeilspitze in Ruhe (Toolgen-Name)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.008,
+    0.046
+   ],
+   "part": "arrow_rest",
+   "note": "Abgangspunkt des Pfeils an der Auflage",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Sight": {
+   "position_m": [
+    0.0,
+    -0.054,
+    0.064
+   ],
+   "part": "sight_ring",
+   "note": "Hinterkante Visierring",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Eye": {
+   "position_m": [
+    0.0,
+    0.47,
+    0.07
+   ],
+   "part": "sight_ring",
+   "note": "Vorschlag: Auge am Ankerpunkt bei vollem Auszug",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    0.00017,
+    -0.00907,
+    -0.00097
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.019,
+    -0.616,
+    -0.51481
+   ],
+   "max": [
+    0.019,
+    0.06981,
+    0.51481
+   ]
+  },
+  "length_m": 0.6858,
+  "height_m": 1.0296,
+  "width_m": 0.038,
+  "reference_length_m": 1.018,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 23,
+  "triangles": 3512,
+  "assemblies": 6
+ },
+ "actions": {
+  "draw_hold_release": {
+   "de": "Ausziehen, halten, lösen",
+   "frames": 60,
+   "fps": 30,
+   "parts": [
+    "arrow_shaft",
+    "string_top",
+    "string_bottom"
+   ],
+   "events": [
+    [
+     0,
+     "nocked"
+    ],
+    [
+     18,
+     "full_draw"
+    ],
+    [
+     40,
+     "release"
+    ],
+    [
+     42,
+     "shot"
+    ],
+    [
+     46,
+     "arrow_gone"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "let_down": {
+   "de": "Entspannen ohne Schuss",
+   "frames": 40,
+   "fps": 30,
+   "parts": [
+    "arrow_shaft",
+    "string_top",
+    "string_bottom"
+   ],
+   "events": [
+    [
+     16,
+     "full_draw"
+    ],
+    [
+     40,
+     "relaxed"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": []
+}

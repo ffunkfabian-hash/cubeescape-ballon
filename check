@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Schnelle Prüfung (quick, ohne Blender): Syntax, Datenmodule, Specs, Matrix, erzeugte Doku. Exit 1 bei Fehler."""
+import glob
+import importlib
+import json
+import os
+import subprocess
+import sys
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, ROOT)
+err = []
+
+
+def fail(msg):
+    err.append(msg)
+
+
+for f in glob.glob(os.path.join(ROOT, '**', '*.py'), recursive=True) + [os.path.join(ROOT, 'check')]:
+    try:
+        compile(open(f, encoding='utf-8').read(), f, 'exec')
+    except SyntaxError as e:
+        fail(f'Syntax: {f}: {e}')
+
+from basic import common, matrix  # noqa: E402
+
+types = set()
+for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
+    W = importlib.import_module('basic.weapons.' + os.path.basename(f)[:-3])
+    wid = W.META['id']
+    ids = [p['id'] for p in W.PARTS]
+    if len(ids) != len(set(ids)):
+        fail(f'{wid}: doppelte Bauteil-IDs')
+    if W.META['type'] in types:
+        fail(f'{wid}: Typ doppelt')
+    types.add(W.META['type'])
+    asm = {a['id'] for a in W.ASSEMBLIES}
+    for p in W.PARTS:
+        for k in ('de', 'en', 'func', 'attach', 'mat'):
+            if not p.get(k):
+                fail(f'{wid}/{p["id"]}: Feld {k} leer')
+        if p['asm'] not in asm:
+            fail(f'{wid}/{p["id"]}: Baugruppe {p["asm"]} fehlt')
+        if p.get('parent_part') and p['parent_part'] not in ids:
+            fail(f'{wid}/{p["id"]}: Elternteil fehlt')
+        if p.get('iface') and p['iface'] not in common.INTERFACES:
+            fail(f'{wid}/{p["id"]}: Schnittstelle {p["iface"]} unbekannt')
+    for k in ('Socket_Hand', 'Socket_Muzzle'):
+        if k not in W.ANCHORS:
+            fail(f'{wid}: Anker {k} fehlt')
+    for a, A in W.ACTIONS.items():
+        for pid in A['keys']:
+            p = next((x for x in W.PARTS if x['id'] == pid), None)
+            if not p or 'move' not in p:
+                fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+    sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')
+    if not os.path.exists(sp):
+        fail(f'{wid}: Spec fehlt (tools/sync_specs.py)')
+        continue
+    S = json.load(open(sp, encoding='utf-8'))
+    if S.get('format') != 'cubeescape-ballon/basic-spec' or S.get('format_version') != 1:
+        fail(f'{wid}: Spec-Format')
+    if [p['id'] for p in S['parts']] != ids:
+        fail(f'{wid}: Spec passt nicht zum Entwurf (neu bauen)')
+    if S['counts']['triangles'] > 10000:
+        fail(f'{wid}: {S["counts"]["triangles"]} Dreiecke > 10 000 (Toolgen-Weltbudget)')
+    for r, s, d in matrix.status(W.META, list(W.ACTIONS), ''):
+        if s not in ('dargestellt', 'nicht anwendbar', 'offen') or not d:
+            fail(f'{wid}/{r["id"]}: Matrixfeld leer')
+rv = json.load(open(os.path.join(ROOT, 'data', 'review.json'), encoding='utf-8'))
+for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
+    W = importlib.import_module('basic.weapons.' + os.path.basename(f)[:-3])
+    miss = set(W.ACTIONS) - set(rv.get(W.META['id'], {}).get('actions', {}))
+    if miss:
+        fail(f"{W.META['id']}: Sichtung fehlt in data/review.json für {sorted(miss)}")
+if len(types) != 17:
+    fail(f'{len(types)} Grundtypen statt 17')
+BL = os.environ.get('BLENDER', '/Applications/Blender.app/Contents/MacOS/Blender')
+if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_motion.py')], capture_output=True, text=True)
+    if r.returncode or 'Bewegungen geprüft' not in r.stdout:
+        fail('Drehsinn: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'test_motion' in ln))
+else:
+    fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')
+print('\n'.join(err) if err else 'check: alles in Ordnung (17 Grundtypen, Specs, Matrix, Doku)')
+sys.exit(1 if err else 0)
