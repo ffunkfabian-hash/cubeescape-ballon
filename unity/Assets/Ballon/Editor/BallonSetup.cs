@@ -148,6 +148,12 @@ namespace Ballon.Ego.Editor
             urp.shadowDistance = 70f;
             urp.supportsHDR = true;                    // 0.7: lineares HDR bis zur AgX-Abbildung am Ende des Stapels
             urp.supportsCameraDepthTexture = false;
+            foreach (var rd in new ScriptableRendererData[] { AssetDatabase.LoadAssetAtPath<UniversalRendererData>(Settings + "/URP_Renderer.asset") })
+                if (rd is UniversalRendererData ud)
+                {
+                    ud.intermediateTextureMode = IntermediateTextureMode.Always;   // HDR-Zwischenpuffer, sonst Abschneiden bei 1 vor AgX
+                    EditorUtility.SetDirty(ud);
+                }
             var su = new SerializedObject(urp);
             Set(su, "m_AdditionalLightsRenderingMode", 1);      // Per Pixel
             Set(su, "m_AdditionalLightShadowsSupported", 1);
@@ -162,6 +168,7 @@ namespace Ballon.Ego.Editor
                 outRd = ScriptableObject.CreateInstance<UniversalRendererData>();
                 AssetDatabase.CreateAsset(outRd, outPath);
             }
+            outRd.intermediateTextureMode = IntermediateTextureMode.Always;
             var agxMat = Agx();
             var feat = outRd.rendererFeatures.OfType<FullScreenPassRendererFeature>().FirstOrDefault();
             if (feat == null)
@@ -312,7 +319,7 @@ namespace Ballon.Ego.Editor
                 {
                     Emission(m, Color.black);
                     var e = Hex(r.color).linear * (r.emit * 1.6f);
-                    m.SetVector("_EmissionColor", new Vector4(e.r, e.g, e.b, 1));
+                    m.SetColor("_EmissionColor", new Color(e.r, e.g, e.b, 1).gamma);   // Materialfarben sind Gamma-Werte
                     if (r.emit_only) m.SetColor("_BaseColor", Color.black);
                 }
                 res["Role_" + r.role] = m;

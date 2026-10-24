@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/1",
+ "format": "ballon-ego/2",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen",
@@ -38,11 +38,11 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "193f8cbebd9e11bb461f16174ad936c44f3733c15194deeac61970b2d1298b72"
+    "sha256": "05c3a441df1d0a86d62a867060ca84c26fe57ce77c8cf65e08096b3626ed5ccd"
    },
    {
     "path": "tools/bake_unity.py",
-    "sha256": "37df941127f172f67b5909ab3a8a5d988d7e1520edeecffbe2c39b8f3090d7f7"
+    "sha256": "535e8f3aa4c863e93e86f53fb22e8775435792023d678deda1dbd3282148758e"
    }
   ]
  },
@@ -6578,10 +6578,10 @@
   },
   "lut": {
    "file": "agx_lut.png",
-   "size": 33,
+   "size": 34,
    "ev": [
-    -12.47393,
-    4.026069
+    -10.0,
+    6.5
    ],
    "mid_grey": 0.18,
    "view": "AgX",

@@ -1,4 +1,4 @@
-// Ego-Daten im Format ballon-ego/1, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
+// Ego-Daten im Format ballon-ego/2, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
 // Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -126,7 +126,7 @@ namespace Ballon.Ego
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
-        public const string Format = "ballon-ego/1";
+        public const string Format = "ballon-ego/2";     // 2: textures (Atlanten, AgX-LUT); /1 neu exportieren (tools/export_unity.py)
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;
@@ -139,7 +139,7 @@ namespace Ballon.Ego
         {
             var f = JsonUtility.FromJson<EgoFile>(json);
             if (f == null || f.format != Format)
-                throw new FormatException($"ego.json: Format {(f == null ? "leer" : f.format)} statt {Format}");
+                throw new FormatException($"ego.json: Format {(f == null ? "leer" : f.format)} statt {Format} – neu exportieren (tools/export_unity.py)");
             f.toUnity = ParseAxes(json);
             f.Index();
             return f;

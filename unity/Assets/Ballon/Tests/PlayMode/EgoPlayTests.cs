@@ -279,6 +279,45 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(EgoController.Stance.Hip, p.C.CurrentStance);
         }
 
+        /// <summary>AgX-Durchgang im gerenderten Bild: lineare Werte einer unbeleuchteten Fläche kommen wie Blender-AgX an
+        /// (0,18 → ≈ 0,44; ohne Abbildung würden 1 und 4 beide als 1,0 abgeschnitten).</summary>
+        [UnityTest]
+        public IEnumerator AgX_Tonwerte_im_Bild()
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            var cam = b.Player.worldCam;
+            var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            Object.Destroy(q.GetComponent<Collider>());
+            var m = new Material(b.backdrop);
+            q.GetComponent<Renderer>().sharedMaterial = m;
+            q.transform.SetParent(cam.transform, false);
+            q.transform.localPosition = new Vector3(0, 0, 0.5f);
+            q.transform.localScale = new Vector3(3, 3, 1);
+            var rt = Bootstrap.HdrTarget(64, 36, 1);
+            var old = cam.targetTexture;
+            cam.targetTexture = rt;
+            var tex = new Texture2D(64, 36, TextureFormat.RGB24, false);
+            var got = new Dictionary<float, float>();
+            foreach (var v in new[] { 0.18f, 1f, 4f })
+            {
+                m.SetColor("_BaseColor", new Color(v, v, v, 1).gamma);    // linear v (Materialfarben sind Gamma-Werte)
+                yield return null;                             // WaitForEndOfFrame kommt im Stapelbetrieb nicht
+                yield return null;
+                Bootstrap.ReadBack(rt, tex);
+                got[v] = tex.GetPixel(12, 28).r;               // oben links: kein Viewmodel davor
+                TestContext.WriteLine($"Wert {v}: Mitte {tex.GetPixel(32, 18)} oben links {tex.GetPixel(12, 28)} unten rechts {tex.GetPixel(52, 6)}");
+            }
+            var vd = UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(b.Player.viewCam);
+            TestContext.WriteLine($"HDR {cam.allowHDR}, rt {rt.format}, Stapel {vd.renderType}, Quad-Ebene {q.layer}, Maske {cam.cullingMask}, " +
+                                  $"Nebel {RenderSettings.fog} {RenderSettings.fogStartDistance}, Kamera {cam.transform.position} → {cam.transform.forward}");
+            cam.targetTexture = old;
+            Object.Destroy(q);
+            Assert.AreEqual(0.461f, got[0.18f], 0.02f, "Mittelgrau (Blender AgX MHC: 0,18 → 0,461)");
+            Assert.That(got[1f], Is.InRange(0.65f, 0.92f), "1,0 wird abgebildet, nicht abgeschnitten");
+            Assert.Greater(got[4f], got[1f] + 0.03f, "Spitzlichter über 1 bleiben unterscheidbar");
+            Assert.Less(got[4f], 0.995f);
+        }
+
         [UnityTest]
         public IEnumerator Szene_startet_und_spielt_den_Ablauf()
         {

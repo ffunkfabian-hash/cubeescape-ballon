@@ -1,4 +1,4 @@
-"""Export für das Unity-Projekt (0.4 „Firstfeel“): Pilotwaffe und Roboterarme als FBX, Ego-Daten als JSON (`ballon-ego/1`).
+"""Export für das Unity-Projekt (0.4 „Firstfeel“): Pilotwaffe und Roboterarme als FBX, Ego-Daten als JSON (`ballon-ego/2`).
 
   BALLON_BAKE_GPU=1 ce lock gpu -- blender -b --factory-startup -P <abs>/tools/export_unity.py   → unity/Assets/Ballon/Generated/
         BASIC-01-v2.1.fbx (Waffe: Wurzel → ASM_* → Teile, Anker als Leerknoten), arms.fbx (R_/L_-Segmente → Teile),
@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/1'
+FORMAT = 'ballon-ego/2'   # 2 (0.7): textures (Atlanten, AgX-LUT), roles.emit_only; ältere Exporte neu erzeugen
 WEAPON = 'pilot.w01_auto_rifle_v21'
 DST = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
 MM = 0.001

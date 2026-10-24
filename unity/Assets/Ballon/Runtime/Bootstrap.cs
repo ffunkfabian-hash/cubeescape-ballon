@@ -104,7 +104,7 @@ namespace Ballon.Ego
             const float dt = 1f / 30f;
             Player.deltaOverride = () => dt;
             Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
-            var rt = new RenderTexture(1280, 720, 24) { antiAliasing = 4 };
+            var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
             var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
             var markers = new List<string>();
@@ -117,10 +117,7 @@ namespace Ballon.Ego
             {
                 Player.Step(dt);
                 yield return new WaitForEndOfFrame();
-                RenderTexture.active = rt;
-                tex.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0);
-                tex.Apply();
-                RenderTexture.active = null;
+                ReadBack(rt, tex);
                 File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), tex.EncodeToPNG());
                 File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{Player.C.ammo}\n");
             }
@@ -130,6 +127,23 @@ namespace Ballon.Ego
         }
 
         int _f0;
+
+        /// <summary>HDR-Ziel (Half, linear): URP übernimmt das Zielformat für den Zwischenpuffer, ein 8-Bit-Ziel schnitte vor AgX bei 1 ab.</summary>
+        public static RenderTexture HdrTarget(int w, int h, int aa) =>
+            new RenderTexture(w, h, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear) { antiAliasing = aa };
+
+        /// <summary>HDR-Ziel (nach AgX: Anzeige-linear ≤ 1) → sRGB-kodierte Pixel in `tex` (RGB24).</summary>
+        public static void ReadBack(RenderTexture hdr, Texture2D tex)
+        {
+            var ldr = RenderTexture.GetTemporary(hdr.width, hdr.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            Graphics.Blit(hdr, ldr);
+            var prev = RenderTexture.active;
+            RenderTexture.active = ldr;
+            tex.ReadPixels(new Rect(0, 0, hdr.width, hdr.height), 0, 0);
+            tex.Apply();
+            RenderTexture.active = prev;
+            RenderTexture.ReleaseTemporary(ldr);
+        }
 
         /// <summary>Leistung im Parcours: Vorführablauf in Echtzeit ohne VSync, Bildzeiten (ms) nach `file` (Mittel, 95-, 99-Perzentil).</summary>
         IEnumerator Bench(string file)
@@ -162,8 +176,8 @@ namespace Ballon.Ego
         }
 
         /// <summary>Lichtmaßstab: Unity-Intensität = studioScale · P / π² aus der Blender-Leistung P (W) eines Flächenlichts.</summary>
-        public float studioScale = 1f;
-        public float emitScale = 0.1f;    // Anteil der Lichtflächen in der Sonde (1 = Blender-Strahldichte); Messreihe 0/0,1/0,25/0,5 → 0,1 am nächsten an Blender
+        [NonSerialized] public float studioScale = 1f;    // nicht in der Szene speichern: der Code-Wert gilt
+        [NonSerialized] public float emitScale = 1f;      // Anteil der Lichtflächen in der Sonde: 1 = Blender-Strahldichte; Messreihe 0/0,25/0,5/1 bestätigt 1
 
         static Color Lin(string hex)
         {
@@ -199,8 +213,8 @@ namespace Ballon.Ego
                     e.name = "Studio Fläche " + nm;
                     e.layer = StudioEmitLayer;
                     var em = new Material(backdrop);
-                    Vector4 c = Lin(hex) * (emitScale * studioScale * watt / (Mathf.PI * a * a));
-                    em.SetVector("_BaseColor", new Vector4(c.x, c.y, c.z, 1));
+                    var c = Lin(hex) * (emitScale * studioScale * watt / (Mathf.PI * a * a));
+                    em.SetColor("_BaseColor", new Color(c.r, c.g, c.b, 1).gamma);   // Materialfarben sind Gamma-Werte (Unity linearisiert)
                     e.GetComponent<Renderer>().sharedMaterial = em;
                     e.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                     e.transform.SetParent(Player.head, false);
@@ -261,7 +275,7 @@ namespace Ballon.Ego
             StudioLike(cam);
             yield return null;                      // Reflexionssonde rendern lassen
             yield return null;
-            var rt = new RenderTexture(1600, 900, 24) { antiAliasing = 8 };
+            var rt = HdrTarget(1600, 900, 8);
             cam.targetTexture = rt;
             cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
             var tex = new Texture2D(1600, 900, TextureFormat.RGB24, false);
@@ -270,10 +284,7 @@ namespace Ballon.Ego
                 var o = S.Evaluate(S.StillAction(pose), 0, new EgoState());
                 Player.rig.Apply(o);
                 yield return new WaitForEndOfFrame();
-                RenderTexture.active = rt;
-                tex.ReadPixels(new Rect(0, 0, 1600, 900), 0, 0);
-                tex.Apply();
-                RenderTexture.active = null;
+                ReadBack(rt, tex);
                 File.WriteAllBytes(Path.Combine(dir, $"{pose}_unity.png"), tex.EncodeToPNG());
             }
             Debug.Log($"[Ballon] Vergleichsbilder in {dir}");

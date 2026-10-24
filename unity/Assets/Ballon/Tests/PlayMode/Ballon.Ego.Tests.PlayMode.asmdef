@@ -3,6 +3,8 @@
     "rootNamespace": "Ballon.Ego.Tests",
     "references": [
         "Ballon.Ego",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

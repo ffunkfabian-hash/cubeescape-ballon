@@ -79,7 +79,7 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Falsches_Format_wird_abgelehnt()
         {
-            Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/0\"}"));
+            Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/1\"}"));    // alter Export ohne Texturen
         }
 
         // ---------------------------------------------------------------- Achsen
@@ -204,10 +204,13 @@ namespace Ballon.Ego.Tests
             var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{L.file}");
             Assert.AreEqual(L.size * L.size, t.width);
             Assert.AreEqual(L.size, t.height);
-            // Mittelgrau 0,18 → Gitterpunkt u = −ev0 / (ev1 − ev0); Blender AgX „Medium High Contrast“ ≈ 0,44 Anzeige
-            int i = Mathf.RoundToInt(-L.ev[0] / (L.ev[1] - L.ev[0]) * (L.size - 1));
+            // Mittelgrau 0,18 → Gitterpunkt u = −ev0 / (ev1 − ev0) (genau 20 bei 34 Punkten); Blender AgX „Medium High Contrast“: 0,461
+            float gi = -L.ev[0] / (L.ev[1] - L.ev[0]) * (L.size - 1);
+            Assert.AreEqual(Mathf.Round(gi), gi, 1e-4f, "Mittelgrau auf dem Gitter");
+            Assert.AreEqual(16.29f, L.mid_grey * Mathf.Pow(2, L.ev[1]), 0.05f, "obere Grenze wie AgX (log2 +4,03)");
+            int i = Mathf.RoundToInt(gi);
             var c = t.GetPixel(i + i * L.size, i);
-            Assert.AreEqual(0.443f, c.r, 0.02f, "Mittelgrau");
+            Assert.AreEqual(0.461f, c.r, 0.01f, "Mittelgrau (Blender AgX MHC: 0,18 → 0,461)");
             Assert.AreEqual(c.r, c.g, 0.005f);
             Assert.Less(t.GetPixel(0, 0).r, 0.01f, "Schwarz");
             Assert.Greater(t.GetPixel(t.width - 1, t.height - 1).r, 0.9f, "Weiß");
@@ -261,7 +264,7 @@ namespace Ballon.Ego.Tests
         public void Gleich_wie_Blender_Referenz()
         {
             var R = JsonUtility.FromJson<RefFile>(File.ReadAllText($"{Gen}/ego_reference.json"));
-            Assert.AreEqual("ballon-ego/1-reference", R.format);
+            Assert.AreEqual(EgoFile.Format + "-reference", R.format);
             var S = new EgoSolver(D);
             var byAction = R.samples.Where(s => !s.label.StartsWith("still:")).GroupBy(s => s.action).ToDictionary(g => g.Key, g => g.ToDictionary(s => s.frame));
             float worstP = 0, worstR = 0;

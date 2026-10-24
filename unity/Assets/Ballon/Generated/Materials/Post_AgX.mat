@@ -31,6 +31,6 @@ Material:
     m_Floats:
     - _Exposure: 0
     m_Colors:
-    - _LutParams: {r: 33, g: -12.47393, b: 4.026069, a: 0.18}
+    - _LutParams: {r: 34, g: -10, b: 6.5, a: 0.18}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

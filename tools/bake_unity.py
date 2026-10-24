@@ -7,7 +7,7 @@ in den aus `kit.aaa_nodes` gebacken wird:
   normal (linear)     Mikrorelief im Tangentenraum (NORMAL, OpenGL wie Unity)
   ao     (linear)     Umgebungsverdeckung (AO), für _OcclusionMap
 Glas, Absehen und Leuchtteile (Rollen mit emit oder alpha) werden nicht gebacken (eigene Materialien in Unity). Dazu `agx_lut`: die Blender-Ansicht AgX samt Look
-als 3D-LUT (33³ als Streifen 1089 × 33) hinter einer log2-Formung, damit Unity dieselbe Tonwertabbildung benutzt.
+als 3D-LUT (34³ als Streifen 1156 × 34) hinter einer log2-Formung, damit Unity dieselbe Tonwertabbildung benutzt.
 """
 import math
 import os
@@ -22,8 +22,8 @@ def _skip_roles():
 
 
 SKIP_ROLES = _skip_roles()
-LUT_N = 33
-LUT_EV = (-12.47393, 4.026069)      # log2-Bereich der Formung (AgX-Standard: 0,18 · 2^−10 … 0,18 · 2^6,5)
+LUT_N = 34                          # 33 Schritte: Mittelgrau (10 von 16,5 Blenden) liegt genau auf Gitterpunkt 20
+LUT_EV = (-10.0, 6.5)               # Blenden um Mittelgrau 0,18 wie AgX (absolut log2 −12,47 … +4,03, also 1,8·10⁻⁴ … 16,3)
 
 
 def role_of(ob):

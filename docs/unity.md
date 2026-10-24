@@ -48,7 +48,7 @@ Anzeige oben links, Einschläge bleiben als Punkte sichtbar.
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/1`), `ego_reference.json` |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/2`), `ego_reference.json` |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs` | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
@@ -78,7 +78,7 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 
 | Test | prüft |
 |---|---|
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/1`, 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/2`, 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |
@@ -110,7 +110,9 @@ Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blen
     wirft bei Lichtern dieser Größe kaum Schatten, die Kontaktschatten stecken im AO.
   - Der Hintergrundverlauf entspricht `BACKDROPS['mid']`.
   - Die Umgebung ist #8C96A3 × 0,45.
-  - Die Lichtflächen fließen zu 10 % in die Reflexionssonde ein (Messreihe 0 / 0,1 / 0,25 / 0,5).
+  - Die Lichtflächen liegen mit voller Blender-Strahldichte P/(π·A) in der Reflexionssonde (Messreihe 0 / 0,25 / 0,5 / 1).
+  - Gerendert wird in ein HDR-Ziel (`Bootstrap.HdrTarget`), weil URP das Zielformat für den Zwischenpuffer übernimmt.
+  - Materialfarben sind in Unity Gamma-Werte: lineare Werte über `SetColor(farbe.gamma)` setzen.
 - **Messung:** `compare` schreibt SSIM, PSNR und Helligkeit je Pose nach `compare/metrics.json`.
 
 ## Grenzen
