@@ -1,10 +1,11 @@
 """BASIC-Roboter (basic/robot): Aufbau, Prüfung, Standbilder, Explosionsansicht, Einzelblätter je Baugruppe.
 
-  blender -b --factory-startup -P tools/robot_build.py -- [--check] [--spec] [--only hero,nah,seite,explode,parts]
+  blender -b --factory-startup -P tools/robot_build.py -- [--check] [--spec] [--dry] [--only hero,nah,seite,explode,parts]
                                                           [--gpu] [--samples N] [--res 1000] [--preview] [--tag T]
 
---check   nur aufbauen (Grundhaltung idle, ohne Waffe) und die Anker prüfen: Kind- und Elternbaugruppe berühren sich an jedem
-          Anker (keine Lücke); Ausgabe eine Zeile „robot_check: …“, Exit 1 bei Fehler. Keine Bilder.
+--check   nur aufbauen (Grundhaltung idle, ohne Waffe) und prüfen: Kind- und Elternbaugruppe berühren sich am Anschluss jedes Ankers
+          (Umkreis ANCHOR_R_MM), Messwerte gleich data/robot.spec.json; Ausgabe „robot_check: …“, Exit 1 bei Fehler. Keine Bilder.
+--dry     Haltung ready aufbauen (IK an die Waffe), nichts rendern oder schreiben.
 --spec    zusätzlich data/robot.spec.json schreiben (gemessene Maße, Teile, Dreiecke je Baugruppe, Ankerabstände).
 --preview Workbench statt Cycles (Formskizze, schnell, kein schwerer Lauf).
 Renderings (Cycles) nur mit ~/Claude/cubeescape-nexogen/ce lock gpu -- … und --gpu.
@@ -34,19 +35,34 @@ from tools.paths import OUT  # noqa: E402
 
 MM = 0.001
 GAP_TOL_MM = 1.0
+ANCHOR_R_MM = 140.0      # Umkreis des Anschlusses um die Ankerlage
 SPEC = os.path.join(ROOT, 'data', 'robot.spec.json')
 ALL_VIEWS = ('hero', 'nah', 'seite', 'explode', 'parts')
 
 
+FLAGS = {'--gpu', '--check', '--spec', '--preview', '--dry'}
+VALUED = {'--samples', '--res', '--only', '--tag'}
+
+
 def args():
     a = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
-    o = dict(gpu='--gpu' in a, check='--check' in a, spec='--spec' in a, preview='--preview' in a, samples=96, res=1000,
-             only=set(ALL_VIEWS), tag='')
+    i = 0
+    while i < len(a):           # unbekannte Schalter ablehnen, statt still alles zu rendern
+        if a[i] in VALUED:
+            i += 2
+        elif a[i] in FLAGS:
+            i += 1
+        else:
+            sys.exit(f'robot_build: unbekanntes Argument {a[i]} (erlaubt: {sorted(FLAGS | VALUED)})')
+    o = dict(gpu='--gpu' in a, check='--check' in a, spec='--spec' in a, preview='--preview' in a, dry='--dry' in a,
+             samples=96, res=1000, only=set(ALL_VIEWS), tag='')
     for k in ('samples', 'res'):
         if f'--{k}' in a:
             o[k] = int(a[a.index(f'--{k}') + 1])
     if '--only' in a:
         o['only'] = set(a[a.index('--only') + 1].split(','))
+        if o['only'] - set(ALL_VIEWS):
+            sys.exit(f"robot_build: unbekannte Ansicht {sorted(o['only'] - set(ALL_VIEWS))}")
     if '--tag' in a:
         o['tag'] = a[a.index('--tag') + 1]
     return o
@@ -188,32 +204,53 @@ def build(pose, mode='aaa'):
 
 # ------------------------------------------------------------------ Prüfung
 
-def _bvh(obs):
+def _bvh(obs, center, radius):
+    """BVH aus den Flächen der Objekte, die mindestens eine Ecke im Umkreis radius (m) um center haben."""
     dg = bpy.context.evaluated_depsgraph_get()
     verts, polys = [], []
     for ob in obs:
         e = ob.evaluated_get(dg)
         me = e.to_mesh()
         off = len(verts)
-        verts += [e.matrix_world @ v.co for v in me.vertices]
-        polys += [[off + i for i in p.vertices] for p in me.polygons]
+        W = [e.matrix_world @ v.co for v in me.vertices]
+        verts += W
+        polys += [[off + i for i in p.vertices] for p in me.polygons if any((W[i] - center).length <= radius for i in p.vertices)]
         e.to_mesh_clear()
-    return BVHTree.FromPolygons(verts, polys), verts
+    used = sorted({i for p in polys for i in p})
+    return (BVHTree.FromPolygons(verts, polys) if polys else None), [verts[i] for i in used]
 
 
 def anchor_gaps(obs):
-    """Abstand (mm) zwischen Eltern- und Kindbaugruppe je Anker; 0 = Überschneidung. Seitenanker prüfen nur die Teile ihrer Seite."""
+    """Abstand (mm) zwischen Eltern- und Kindbaugruppe am Anschluss je Anker; 0 = Überschneidung. Geprüft wird nur Geometrie im
+    Umkreis ANCHOR_R_MM um die Ankerlage – ein Kontakt an anderer Stelle verdeckt keinen offenen Anschluss. Seitenanker prüfen nur
+    die Teile ihrer Seite; keine Geometrie im Umkreis = unendlich."""
     res = {}
     for k, A in RB.ANCHORS.items():
+        c, r = Vector(A['pos']) * MM, ANCHOR_R_MM * MM
         par = [o for o in obs.values() if o['asm'] == A['parent']]
         chi = [o for o in obs.values() if o['asm'] == A['child'] and (not A.get('side') or o['side'] == A['side'])]
-        tp, _ = _bvh(par)
-        tc, vc = _bvh(chi)
-        if tp.overlap(tc):
+        tp, _ = _bvh(par, c, r)
+        tc, vc = _bvh(chi, c, r)
+        if tp is None or tc is None:
+            res[k] = float('inf')
+        elif tp.overlap(tc):
             res[k] = 0.0
-            continue
-        res[k] = min(tp.find_nearest(v)[3] for v in vc) / MM
+        else:
+            res[k] = min(tp.find_nearest(v)[3] for v in vc) / MM
     return res
+
+
+def spec_drift(obs, gaps):
+    """Abweichungen der gemessenen Werte von data/robot.spec.json (Geometrie geändert, Spec nicht neu geschrieben)."""
+    if not os.path.exists(SPEC):
+        return ['Spec fehlt']
+    S = json.load(open(SPEC, encoding='utf-8'))
+    out = []
+    if S.get('measured') != measure(obs):
+        out.append('Messwerte')
+    if S.get('anchor_gap_mm') != {k: round(v, 2) for k, v in gaps.items()}:
+        out.append('Ankerabstände')
+    return out
 
 
 def measure(obs):
@@ -341,10 +378,20 @@ def main():
         bad = {k: v for k, v in gaps.items() if v > GAP_TOL_MM}
         if o['spec']:
             write_spec(F['obs'], gaps)
-        print('robot_check: ' + ('Lücke an ' + ', '.join(f'{k} {v:.1f} mm' for k, v in bad.items()) if bad
-                                 else f'{len(gaps)} Anker ohne Lücke'))
+        drift = spec_drift(F['obs'], gaps)
+        msg = []
+        if bad:
+            msg.append('Lücke an ' + ', '.join(f'{k} {v:.1f} mm' for k, v in bad.items()))
+        if drift:
+            msg.append('Spec veraltet (' + ', '.join(drift) + '): tools/robot_build.py --spec')
+        print('robot_check: ' + ('; '.join(msg) if msg else f'{len(gaps)} Anker ohne Lücke, Spec aktuell'))
         if o['check']:
-            sys.exit(1 if bad else 0)
+            sys.exit(1 if msg else 0)
+        return
+    if o['dry']:                # nur Aufbau und IK der Haltung ready prüfen, kein Rendern, nichts schreiben
+        kit.reset_scene()
+        build('ready', mode='color')
+        print('[robot] dry: Aufbau ready ohne Rendern')
         return
     mode = 'color' if o['preview'] else 'aaa'
     cam = None
