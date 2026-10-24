@@ -10,6 +10,7 @@ rechnet dort und wandelt erst am Ende nach Unity. Die Umrechnung steht **einmal*
 getestet: Unity (x rechts, y oben, z vorn, linkshändig) = (−x, z, −y). Autorenmaß (f, u, x) mm → Blender (x, −f, u) m.
 """
 import ast
+import hashlib
 import importlib
 import json
 import os
@@ -129,12 +130,16 @@ def data():
                thumb_dir=r6(RA.THUMB_DIR), thumb_links=r6([x * MM for x in RA.THUMB_LINKS]),
                segments=list(RA.SEGMENTS), fbx='arms.fbx',
                pieces=[dict(id=pid, segment=seg, role=role) for pid, de, seg, kind, role, p in RA.parts()], src=RA.SOURCE)
+    srcs = ['basic/pilot/w01_auto_rifle_v21.py', 'basic/weapons/w01_auto_rifle.py', 'basic/common.py', 'basic/kit.py',
+            'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py', 'tools/blender_build.py', 'tools/export_unity.py']
+    sources = dict(de='SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen',
+                   files=[dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in srcs])
     used = sorted({p['role'] for p in weapon['parts']} | {p['role'] for p in arm['pieces']})
     motion = dict(interp=EG.INTERP, time_scale=EG.TIME_SCALE, keep_time=sorted(EG.KEEP_TIME),
                   secondary=dict(freq_hz=EG.SECONDARY['freq_hz'], zeta=EG.SECONDARY['zeta']),
                   breathe_all={k: r6(v) for k, v in EG.BREATHE_ALL.items()}, recoil={k: r6(v) for k, v in EG.RECOIL.items()},
                   de='Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoßfeder, Tempo)')
-    return dict(format=FORMAT, generated_by='tools/export_unity.py', axes=AXES, fps=EG.FPS, motion=motion,
+    return dict(format=FORMAT, generated_by='tools/export_unity.py', sources=sources, axes=AXES, fps=EG.FPS, motion=motion,
                 camera=dict(h_fov_deg=EG.CAMERA['h_fov_deg'], aspect=list(EG.CAMERA['aspect']), near_m=EG.CAMERA['near_m']),
                 gameplay=GAMEPLAY, weapon=weapon, arm=arm, poses=poses, grips=grips, finger_poses=fingers,
                 actions=[action(k, A) for k, A in EG.ACTIONS.items()],

@@ -1,6 +1,47 @@
 {
  "format": "ballon-ego/1",
  "generated_by": "tools/export_unity.py",
+ "sources": {
+  "de": "SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen",
+  "files": [
+   {
+    "path": "basic/pilot/w01_auto_rifle_v21.py",
+    "sha256": "ef5b84f179db4d2736ae3bed9420737006a4b9d906a6ea04a3a87c0528c9cae7"
+   },
+   {
+    "path": "basic/weapons/w01_auto_rifle.py",
+    "sha256": "e8fff7faa7e8377e00e1973467dc542aa47b0dd38cbd2fa5e53bcdc2519acd3d"
+   },
+   {
+    "path": "basic/common.py",
+    "sha256": "cc589a23f61df8ea7745f8759a55813850caf64d8c0589a695626d7772c12975"
+   },
+   {
+    "path": "basic/kit.py",
+    "sha256": "1b69459bdc3cde9fb2c92df346e9b9cc7e5c23469ba494d706461344a1bc52a8"
+   },
+   {
+    "path": "basic/arms/robot_arm.py",
+    "sha256": "d713339efd85b3f2b24304133129094c550f55e62725dd9c72b1be0864ce29f5"
+   },
+   {
+    "path": "basic/arms/ego.py",
+    "sha256": "5c3e4d7362dfc2564a610b21ba3b9f096f6a6caf96b5d4463638ab248600a55d"
+   },
+   {
+    "path": "tools/ego_build.py",
+    "sha256": "9797578361e4b1378db958dc592036d6962142ca0a1a40eb25a9ca8f720e843b"
+   },
+   {
+    "path": "tools/blender_build.py",
+    "sha256": "32bfd8714283ed7cee2a95858f8f271d20b78f6e5bb2134a015e4486c78f17b6"
+   },
+   {
+    "path": "tools/export_unity.py",
+    "sha256": "f2dda912b27d01f4960714fa9b7ef12e9341610549f952264c9a53e0e4f2758f"
+   }
+  ]
+ },
  "axes": {
   "to_unity": [
    [

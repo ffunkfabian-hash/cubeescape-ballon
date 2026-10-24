@@ -10,7 +10,7 @@ bleibt die Referenz.** Unity rechnet die Bewegung live in C# aus denselben Daten
 ```bash
 ~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
     -P "$PWD/tools/export_unity.py"         # FBX + ego.json + ego_reference.json (absoluter Pfad: ce lock wechselt das Verzeichnis)
-python3 tools/export_unity.py --check       # ego.json passt zu basic/arms/*.py (läuft in ./check)
+python3 tools/export_unity.py --check       # ego.json passt zu den Daten und zu den Quellen (SHA-256), läuft in ./check
 python3 tools/unity_run.py setup            # URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
 python3 tools/unity_run.py test             # EditMode + PlayMode
 python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (Entwicklungsbuild)

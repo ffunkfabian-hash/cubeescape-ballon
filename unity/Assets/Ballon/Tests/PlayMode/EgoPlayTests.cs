@@ -143,6 +143,12 @@ namespace Ballon.Ego.Tests
             Run(c, new EgoIntent { grounded = true, fire = true }, 0.6f);
             Assert.AreNotEqual("inspect", c.ActionName);
             Assert.Greater(shots, 0, "nach dem Abbruch wird gefeuert");
+            // ein einzelner R-Druck beim Betrachten bricht ab und lädt nach
+            Run(c, Idle, 1.0f);
+            c.Tick(Dt, new EgoIntent { grounded = true, inspect = true });
+            Run(c, Idle, 0.3f);
+            c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            Assert.AreEqual("reload_tactical", c.ActionName);
         }
 
         [Test]

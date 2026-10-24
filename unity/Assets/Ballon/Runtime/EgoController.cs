@@ -285,7 +285,10 @@ namespace Ballon.Ego
                 holstered = false;
             }
             else if (inspecting && (i.fire || i.aim || i.reload || (i.sprint && i.move.y > 0.3f)))
-                Cancel(i);
+            {
+                if (i.reload && ammo < magSize) StartReload(i);     // R beim Betrachten: gleich nachladen
+                else Cancel(i);
+            }
             else if (!Busy)
             {
                 if (i.reload && ammo < magSize)

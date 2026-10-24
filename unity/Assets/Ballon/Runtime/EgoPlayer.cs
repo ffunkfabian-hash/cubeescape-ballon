@@ -251,15 +251,33 @@ namespace Ballon.Ego
             var big = _big ?? (_big = new GUIStyle(GUI.skin.label) { fontSize = 34, alignment = TextAnchor.LowerRight, fontStyle = FontStyle.Bold });
             var small = _small ?? (_small = new GUIStyle(GUI.skin.label) { fontSize = 14 });
             big.normal.textColor = C.ammo == 0 ? new Color(1f, 0.5f, 0.3f) : Color.white;
-            GUI.Label(new Rect(Screen.width - 260, Screen.height - 80, 230, 60), $"{C.ammo} / {C.magSize}", big);
+            UpdateHudText();
+            GUI.Label(new Rect(Screen.width - 260, Screen.height - 80, 230, 60), _ammoText, big);
             small.normal.textColor = new Color(1, 1, 1, 0.85f);
-            string tgt = range != null ? range.Summary() : "";
-            GUI.Label(new Rect(16, 12, 900, 22), $"BASIC-01 v2.1 · {C.ActionName} {C.Frame:0}  ·  {(Time.time - lastMarkerTime < 1.2f ? lastMarker : "")}", small);
-            GUI.Label(new Rect(16, 32, 900, 22), $"Treffer {hits}   {tgt}", small);
+            GUI.Label(new Rect(16, 12, 900, 22), _stateText, small);
+            GUI.Label(new Rect(16, 32, 900, 22), _hitText, small);
             if (Time.time < 12f || Cursor.lockState != CursorLockMode.Locked)
                 GUI.Label(new Rect(16, Screen.height - 46, 1200, 40),
                     "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
                     "F Betrachten · 1/2 Ziehen/Wegstecken · Esc Maus frei · H Anzeige", small);
+        }
+
+        // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild)
+        string _ammoText = "", _stateText = "", _hitText = "";
+        int _hAmmo = -1, _hFrame = -1, _hHits = -1;
+        string _hAction, _hMarker;
+
+        void UpdateHudText()
+        {
+            if (C.ammo != _hAmmo) { _hAmmo = C.ammo; _ammoText = $"{C.ammo} / {C.magSize}"; }
+            string mk = Time.time - lastMarkerTime < 1.2f ? lastMarker : "";
+            int fr = (int)C.Frame;
+            if (fr != _hFrame || !ReferenceEquals(C.ActionName, _hAction) || !ReferenceEquals(mk, _hMarker))
+            {
+                _hFrame = fr; _hAction = C.ActionName; _hMarker = mk;
+                _stateText = $"BASIC-01 v2.1 · {C.ActionName} {fr}  ·  {mk}";
+            }
+            if (hits != _hHits) { _hHits = hits; _hitText = $"Treffer {hits}   {(range != null ? range.Summary() : "")}"; }
         }
 
         static void Rect(float x, float y, float w, float h, Color c)
