@@ -48,15 +48,15 @@ LINE_R = 0.3          # Linienradius bei Stärke „normal“ (mm)
 # Visier-Standard v2 (Nutzerentscheidung 24.10.2026 „66 ± 4 mm, Augenpunkt, Zoom, Prüfung“; überarbeitet nach Nutzerhinweis
 # „Visiere sehr klobig“ mit Destiny-Video und Motiongen-Messungen, docs/quellen.md › Q-D2-ADS):
 # - Visierhöhe = Visierlinie (Socket_Eye) über der Laufachse, 66 ± 4 mm.
-# - Socket_Eye = Augenpunkt beim Zielen, 110 mm hinter der vorderen Visieröffnung: Reflex/Holo hinter dem Glas (Socket_Reticle),
+# - Socket_Eye = Augenpunkt beim Zielen, 90 mm hinter der vorderen Visieröffnung (Nutzer: „90 mm sieht ganz gut aus“): Reflex/Holo hinter dem Glas (Socket_Reticle),
 #   Zielfernrohr hinter dem Objektivring (Socket_Objective); Teile mit `ads_hide` (Rohr, Okular) sind beim Zielen ausgeblendet.
 # - Das Waffenmodell wird beim Zielen nicht vergrößert (viewmodel_zoom 1,0, eigene Viewmodel-Kamera); nur die Welt zoomt:
 #   world_zoom = Klassengrundzoom (CLASS_ZOOM) + Visierbonus (zoom_bonus). Zielfernrohr: Linsenbild (Welt vergrößert in der Linse).
 SIGHT = dict(height_mm=66.0, height_tol_mm=4.0, viewmodel_zoom=1.0,
-             types={'reflex': dict(de='Reflex-/Holovisier', eye_relief_mm=110.0, ref='Socket_Reticle', zoom_bonus=0.3,
-                                   target_share=(0.15, 0.22), ads_view='glass'),
-                    'scope': dict(de='Zielfernrohr', eye_relief_mm=110.0, ref='Socket_Objective', zoom_bonus=0.8,
-                                  target_share=(0.22, 0.30), ads_view='lens_picture')})
+             types={'reflex': dict(de='Reflex-/Holovisier', eye_relief_mm=90.0, ref='Socket_Reticle', zoom_bonus=0.3,
+                                   target_share=(0.18, 0.26), ads_view='glass'),
+                    'scope': dict(de='Zielfernrohr', eye_relief_mm=90.0, ref='Socket_Objective', zoom_bonus=0.8,
+                                  target_share=(0.26, 0.34), ads_view='lens_picture')})
 # Grundzoom der Welt beim Zielen je Waffentyp (Destiny 2, Q-D2-ZOOM; „entworfen“ = keine Messung, abgeleitet)
 CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 2.1, 'hand_cannon': 1.5, 'sidearm': 1.25, 'submachine_gun': 1.25,
               'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 5.5, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,

@@ -475,16 +475,16 @@ def scope_v21(f, u, length=140, r_obj=21, r_eye=12.5, r_tube=10.5, reticle_kind=
     """Kurzes Zielfernrohr v2.1 nach Destiny-Vorbild (Scout-Video 24.10.2026: großer Objektivring mit dünnem Rand, Bild in der Linse,
     feines Absehen, kein Okular-Tunnel): schlanke Ringe, Mittelrohr Graphit, Okular ohne Gummimuschel, großes Objektiv mit dünnem
     eloxiertem Rand und blanker Innenkante, Höhenturm (Akzent), Seitenturm, Linsen, Absehen direkt hinter der Objektivlinse.
-    Teile mit `ads_hide` (Rohr, Okular, Okularlinse) werden beim Zielen ausgeblendet – der Augenpunkt liegt 110 mm hinter dem
+    Teile mit `ads_hide` (Rohr, Okular, Okularlinse) werden beim Zielen ausgeblendet – der Augenpunkt liegt 90 mm hinter dem
     Objektivring (Visier-Standard), man sieht den Ring und das Linsenbild. Liefert (Teile, Anker, Rohrachse cu)."""
     from basic.reticles import SIGHT
     cu = u + 17 + r_obj
     f_eye, f_obj = f, f + length
-    def mount(pid, de, f0):       # flache Schienenklemme + schmaler dunkler Steg (im Zielen sichtbar wie der Steg bei Destiny)
-        return part(pid, de, de.replace('Zielfernrohr-Fuß', 'Scope mount'), 'sight', 'multi', 'dark_metal',
+    def mount(pid, de, f0, r_top):  # flache Schienenklemme + schmaler dunkler Steg bis zur Unterseite des Rohrs (Radius r_top)
+        return part(pid, de, de.replace('Zielfernrohr-Fuß', 'Scope mount'), 'sight', 'multi', 'anodized',
                     'Klemmt das Zielfernrohr auf die Schiene BRI-22', 'Klemmung auf Schiene (lösbar)', bevel=R_FINE, iface='BRI-22',
                     items=[dict(shape='box', f0=f0, f1=f0 + 16, u0=u + 0.5, u1=u + 5, w=22),
-                           dict(shape='box', f0=f0 + 3, f1=f0 + 13, u0=u + 4, u1=cu - r_tube + 1, w=7)]
+                           dict(shape='box', f0=f0 + 3, f1=f0 + 13, u0=u + 4, u1=cu - r_top + 1, w=7)]
                     + screws([(f0 + 4, u + 2.8), (f0 + 12, u + 2.8)], 11.0, r=1.2, h=0.6))
 
     def band(pid, de, f0):        # Ringband um das Rohr (im Zielen aus, sonst Tunnel vor dem Auge)
@@ -492,10 +492,11 @@ def scope_v21(f, u, length=140, r_obj=21, r_eye=12.5, r_tube=10.5, reticle_kind=
                    'auf dem Klemmfuß (fest)', 'f', (cu, 0), f0, f0 + 16, r_tube + 2.4, r_in=r_tube - 0.2, segs=40, bevel=R_SMALL,
                    ads_hide=True)
     P = [
-        mount('scope_mount_r', 'Zielfernrohr-Fuß hinten', f + 30),
-        mount('scope_mount_f', 'Zielfernrohr-Fuß vorn', f + length - 62),
+        mount('scope_mount_r', 'Zielfernrohr-Fuß hinten', f + 30, r_tube),
+        # vorderer Fuß unter dem Objektiv: der Steg endet am breiten Objektiv unterhalb der Linse und bleibt im Zielen ein dunkler
+        # Fuß unter dem Ring (Destiny-Bild), statt als Klotz zwischen Auge und Linse zu stehen (Nutzerhinweis 24.10.2026)
+        mount('scope_mount_f', 'Zielfernrohr-Fuß vorn', f + length - 24, r_tube + 1 + (r_obj - r_tube - 1) * (38 - 21) / 34),
         band('scope_band_r', 'Zielfernrohr-Ring hinten', f + 30),
-        band('scope_band_f', 'Zielfernrohr-Ring vorn', f + length - 62),
         cyl('scope_tube', 'Mittelrohr', 'Scope tube', 'sight', 'graphite', 'Verbindet Okular und Objektiv; hohl',
             'in den Ringen (fest)', 'f', (cu, 0), f + 24, f + length - 36, r_tube, r_in=r_tube - 1.5, segs=40, ads_hide=True),
         cyl('scope_eyepiece', 'Okular', 'Eyepiece', 'sight', 'graphite', 'Augenseite, schlank; Socket_Sight hinten', 'am Mittelrohr (fest)',
@@ -530,4 +531,60 @@ def scope_v21(f, u, length=140, r_obj=21, r_eye=12.5, r_tube=10.5, reticle_kind=
          'Socket_Reticle': dict(at=(f_obj - 6, cu, 0), part='sight_reticle', note='Absehen hinter der Objektivlinse'),
          'Socket_Eye': dict(at=(f_obj - rel, cu, 0), part='scope_objective', sight_type='scope', std=True,
                             note=f'Augenpunkt beim Zielen (Visier-Standard: {rel:.0f} mm hinter dem Objektivring, ads_hide-Teile aus)')}
+    return P, A, cu
+
+
+def box_scope_v21(f, u, style='prism', reticle_kind='chevron', reticle_color='cyan', reticle_weight='fine'):
+    """Kastenoptik v2.1 nach Destiny-Scouts (Nutzerbilder 24.10.2026): kompakter Kasten statt Rohr mit Ringen.
+    style 'prism': kurzer quadratischer Kasten (Graphit) mit runder Linse vorn, schmalem Okular, seitlichen Knöpfen, Sockel.
+    style 'flat' : flacher, langer Kasten zweifarbig (Creme oben, Graphit unten) mit rechteckiger Öffnung und Lüftungsschlitzen.
+    Der Kasten ist ein Rahmen mit durchgehender Bohrung; im Zielen (Augenpunkt 90 mm vor der Öffnung) sieht man durch ihn auf
+    Linse und Absehen; Okular/Augenring tragen `ads_hide`. Liefert (Teile, Anker, Visierlinie cu) wie scope_v21."""
+    from basic.reticles import SIGHT
+    if style == 'prism':
+        L, ow, oh, iw, ih, r_o, r_i, base_h = 64, 32, 30, 22, 22, 6, 11, 15      # Sockel für Visierhöhe 66 mm
+    else:
+        L, ow, oh, iw, ih, r_o, r_i, base_h = 108, 30, 20, 26, 14, 3, 2.5, 18    # Sockel für Visierhöhe 64 mm
+    cu = u + 8 + base_h + oh / 2                     # Rail-Oberkante u + 8, Sockel, halbe Kastenhöhe
+    f0, f1 = f, f + L                                # Kasten hinten / vorn
+    P = [
+        box('scope_mount_r', 'Optik-Sockel', 'Optic base', 'sight', 'anodized', 'Klemmt die Optik auf die Schiene BRI-22',
+            'Klemmung auf Schiene (lösbar)', f0 + 10, f1 - 10, u + 0.5, cu - oh / 2 + 1, 20, bevel=R_SMALL, iface='BRI-22',
+            move=dict(kind='translate', pivot=(f0 + L / 2, u, 0), vector_mm=(0, 80, 0), event='swap_sight', removable=True)),
+        part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Sockel werkzeuglos',
+             'links am Sockel', bevel=R_FINE, pts=[(f0 + 16, u + 1), (f0 + 34, u + 1), (f0 + 36, u + 4), (f0 + 16, u + 4.6)], w=2.0, x=10.6),
+        part('scope_body', 'Optikkasten', 'Optic housing', 'sight', 'frame', 'graphite' if style == 'prism' else 'shell',
+             'Kompakter Kasten mit durchgehender Bohrung', 'auf dem Sockel (fest)', bevel=R_MID if style == 'prism' else R_SMALL,
+             f0=f0, f1=f1, cu=cu, ow=ow, oh=oh, iw=iw, ih=ih, r_out=r_o, r_in=r_i,
+             cuts=[cut_box(f0 + 30 + 9 * i, f0 + 34 + 9 * i, cu + oh / 2 - 2, cu + oh / 2 + 2, 18) for i in range(6)]
+             if style == 'flat' else []),
+        part('scope_front', 'Optikfront', 'Optic front', 'sight', 'frame', 'trim', 'Blanke Stirnkante um die Öffnung',
+             'vorn am Kasten', bevel=0.3, f0=f1 - 0.6, f1=f1 + 1.0, cu=cu, ow=iw + 3, oh=ih + 3, iw=iw - 0.6, ih=ih - 0.6,
+             r_out=r_i + 1.5, r_in=r_i - 0.3),
+        part('scope_glass', 'Optiklinse', 'Optic lens', 'sight', 'xbox', 'glass_scope', 'Linse vorn; zeigt im Zielen das Linsenbild',
+             'in der Kastenfront (fest)', bevel=0, f0=f1 - 3, f1=f1 - 2.2, cu=cu, ww=iw - 0.6, hh=ih - 0.6),
+        reticle(f1 - 4, cu, reticle_kind, s=min(iw, ih) / 26, color=reticle_color, weight=reticle_weight, parent='scope_mount_r'),
+        cyl('scope_eyepiece', 'Okular', 'Eyepiece', 'sight', 'graphite', 'Kurzes Okular hinten', 'hinten am Kasten (fest)',
+            'f', (cu, 0), f0 - 10, f0 + 1, min(iw, ih) / 2 - 1, r_in=min(iw, ih) / 2 - 3, segs=40, bevel=R_SMALL, ads_hide=True),
+        cyl('scope_eye_trim', 'Okularring', 'Eyepiece ring', 'sight', 'trim', 'Blanker Ring am Okular', 'hinten am Okular',
+            'f', (cu, 0), f0 - 12, f0 - 9, min(iw, ih) / 2 - 0.4, r_in=min(iw, ih) / 2 - 2.6, segs=40, bevel=0.3, ads_hide=True),
+    ]
+    if style == 'prism':
+        P += [cyl('scope_turret', 'Seitenknopf', 'Side knob', 'sight', 'accent', 'Verstellung (Bedienelement)', 'links am Kasten',
+                  'x', (f0 + L / 2, cu - 4), ow / 2 - 1, ow / 2 + 4, 5.5, segs=32),
+              cyl('scope_turret_w', 'Seitenknopf rechts', 'Side knob right', 'sight', 'anodized', 'Verstellung', 'rechts am Kasten',
+                  'x', (f0 + L / 2, cu - 4), -(ow / 2 - 1), -(ow / 2 + 4), 5.5, segs=32)]
+    else:
+        P += [box('scope_lower', 'Kastenunterteil', 'Housing lower', 'sight', 'graphite', 'Dunkle untere Lage (Zweiton)',
+                  'unter den Kasten geschraubt', f0 + 4, f1 - 14, cu - oh / 2 - 1.5, cu - oh / 2 + 4, ow + 0.6, bevel=R_FINE),
+              box('scope_turret', 'Verstellknopf', 'Adjust button', 'sight', 'accent', 'Verstellung (Bedienelement)', 'links am Kasten',
+                  f0 + 14, f0 + 24, cu - 2, cu + 3, 2.0, bevel=0.4, x=ow / 2 + 0.8)]
+    for q in P[1:]:
+        q['parent_part'] = 'scope_mount_r'
+    rel = SIGHT['types']['scope']['eye_relief_mm']
+    A = {'Socket_Sight': dict(at=(f0 - 12, cu, 0), part='scope_eyepiece', note='hinteres Okularende'),
+         'Socket_Objective': dict(at=(f1 + 1.0, cu, 0), part='scope_front', note='Stirn der Kastenöffnung'),
+         'Socket_Reticle': dict(at=(f1 - 4, cu, 0), part='sight_reticle', note='Absehen hinter der Linse'),
+         'Socket_Eye': dict(at=(f1 + 1.0 - rel, cu, 0), part='scope_body', sight_type='scope', std=True,
+                            note=f'Augenpunkt beim Zielen (Visier-Standard: {rel:.0f} mm hinter der Öffnung, ads_hide-Teile aus)')}
     return P, A, cu

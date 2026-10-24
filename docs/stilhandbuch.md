@@ -18,7 +18,7 @@ dieses Handbuch ergänzt Detaildichte, Material, Varianten und den Arbeitsablauf
 | 24.10.2026 | Farb- und Texturvarianten erwünscht |
 | 24.10.2026 | Bloom „ganz weg oder sehr sehr dezent“ → Standard aus |
 | 24.10.2026 | „Der graue Hintergrund ist am besten“ → Standard `--bg mid` |
-| 24.10.2026 | Visier-Standard: Visierhöhe 66 ± 4 mm, Augenpunkt, Zoom, Prüfung in `./check`; nach „Visiere sehr klobig“ (Destiny-Video, Motiongen) als v2: Augenpunkt 110 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse, schlanke Visiere |
+| 24.10.2026 | Visier-Standard: Visierhöhe 66 ± 4 mm, Augenpunkt, Zoom, Prüfung in `./check`; nach „Visiere sehr klobig“ (Destiny-Video, Motiongen) als v2: Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse, schlanke Visiere |
 | 24.10.2026 | Absehen-Katalog mit Formen, Farben, Linienstärken, Glasvarianten, Aufgehen und Spieleroptionen; „Pfeil von unten“ verworfen |
 
 ## 2 Gestaltungsregeln v2
@@ -148,12 +148,12 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - **Visier-Standard v2** (`reticles.SIGHT`, Übersicht in [absehen.md](absehen.md); Nutzerentscheidung, überarbeitet nach
   „Visiere sehr klobig“ mit Destiny-Video und Motiongen-Messungen, Quelle Q-D2-ADS):
   - Visierhöhe 66 ± 4 mm über der Laufachse; Höhe über Gehäuse/Schiene einstellen, nicht über das Visier.
-  - `Socket_Eye` = Augenpunkt beim Zielen, 110 mm hinter der vorderen Visieröffnung (Reflex/Holo: Glas; Zielfernrohr:
+  - `Socket_Eye` = Augenpunkt beim Zielen, 90 mm hinter der vorderen Visieröffnung (Nutzerwahl aus 70/90/110 mm; Reflex/Holo: Glas; Zielfernrohr:
     Objektivring `Socket_Objective`), mit `std=True` und `sight_type`.
   - Das Waffenmodell wird beim Zielen nicht vergrößert (eigene Viewmodel-Kamera); nur die Welt zoomt: Klassengrundzoom
-    (`CLASS_ZOOM`, Destiny) + Visierbonus. Zielbereich der Öffnung: Reflex/Holo 15–22 %, Zielfernrohr 22–30 % der Bildbreite.
-  - Zielfernrohr: Linsenbild; Teile hinter oder um das Auge (Rohr, Ringbänder, Okular, Türme) tragen `ads_hide` und sind beim
-    Zielen ausgeblendet; der Klemmfuß bleibt sichtbar.
+    (`CLASS_ZOOM`, Destiny) + Visierbonus. Zielbereich der Öffnung: Reflex/Holo 18–26 %, Zielfernrohr 26–34 % der Bildbreite.
+  - Zielfernrohr: Linsenbild; Teile hinter oder um das Auge (Rohr, Ringbänder, Okular, Türme, hinterer Fuß) tragen `ads_hide` und
+    sind beim Zielen ausgeblendet; der vordere Fuß sitzt unter dem Objektiv, sein Steg endet unterhalb der Linse (kein Klotz im Bild).
   - Formen schlank: Haubenbügel 1,6 mm, flaches Gehäuse, großes Glas; Zielfernrohr kurz mit großem Objektiv, dünnem Rand und
     blanker Innenkante, ohne Gummimuschel. Prüfen mit `tools/sight_examples.py` gegen ein Destiny-Vergleichsbild.
 - Neue Form: Grundelemente mit Spreizrichtung in `RETICLES` ergänzen, `export_reticles.py` und `reticle_sheet.py` laufen lassen,
@@ -211,7 +211,8 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - Reflexvisier ohne Absehen: der Emitter allein zeigt keinen Zielpunkt → `reticle()` auf die Scheibe (Nutzerhinweis 24.10.2026).
 - Zielfernrohr mit massivem Mittelrohr: Absehen unsichtbar, kein Durchblick → Rohr hohl (`r_in`), Visierlinie prüfen.
 - Visiere wirken klobig, wenn Rahmen dick sind und das Waffenmodell beim Zielen mitgezoomt wird → dünne Bügel, Modell ungezoomt,
-  Augenpunkt 110 mm vor der Öffnung; beim Zielfernrohr ohne `ads_hide` blickt man in einen Tunnel aus Ringen und Okular.
+  Augenpunkt 90 mm vor der Öffnung; beim Zielfernrohr ohne `ads_hide` blickt man in einen Tunnel aus Ringen und Okular; ein Fuß
+  zwischen Auge und Objektiv ragt als Klotz in die Linse.
 - Fenster in massiven Profilen bleiben Mulden: für sichtbare Innenteile quer durchschneiden (Schneidkörper breiter als das Teil).
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
 

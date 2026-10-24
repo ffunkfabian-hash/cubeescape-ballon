@@ -91,8 +91,8 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 
 | Visiertyp | Name | Augenabstand | gemessen ab | Visierbonus | Ziel: Öffnung in % der Bildbreite | Zielbild |
 |---|---|---|---|---|---|---|
-| `reflex` | Reflex-/Holovisier | 110 mm | `Socket_Reticle` | +0.3 | 15–22 % | glass |
-| `scope` | Zielfernrohr | 110 mm | `Socket_Objective` | +0.8 | 22–30 % | lens_picture |
+| `reflex` | Reflex-/Holovisier | 90 mm | `Socket_Reticle` | +0.3 | 18–26 % | glass |
+| `scope` | Zielfernrohr | 90 mm | `Socket_Objective` | +0.8 | 26–34 % | lens_picture |
 
 | Waffentyp | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |
 |---|---|---|---|---|

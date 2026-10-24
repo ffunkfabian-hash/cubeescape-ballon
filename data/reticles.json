@@ -707,23 +707,23 @@
   "types": {
    "reflex": {
     "de": "Reflex-/Holovisier",
-    "eye_relief_mm": 110.0,
+    "eye_relief_mm": 90.0,
     "ref": "Socket_Reticle",
     "zoom_bonus": 0.3,
     "target_share": [
-     0.15,
-     0.22
+     0.18,
+     0.26
     ],
     "ads_view": "glass"
    },
    "scope": {
     "de": "Zielfernrohr",
-    "eye_relief_mm": 110.0,
+    "eye_relief_mm": 90.0,
     "ref": "Socket_Objective",
     "zoom_bonus": 0.8,
     "target_share": [
-     0.22,
-     0.3
+     0.26,
+     0.34
     ],
     "ads_view": "lens_picture"
    }
