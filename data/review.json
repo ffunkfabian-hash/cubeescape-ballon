@@ -1,395 +1,524 @@
 {
- "BASIC-01": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-01": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "reload_tactical": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; Ladehebel orange sichtbar"
+      },
+      "fire_auto": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Auswurfklappe öffnet nach außen-unten"
+      },
+      "safety": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Feuerwahlhebel 90°"
+      }
+    }
   },
-  "actions": {
-   "reload_tactical": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   },
-   "reload_empty": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; Ladehebel orange sichtbar"
-   },
-   "fire_auto": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Auswurfklappe öffnet nach außen-unten"
-   },
-   "safety": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Feuerwahlhebel 90°"
-   }
-  }
- },
- "BASIC-02": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-02": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_burst": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: drei Anzeigen schalten nacheinander"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "fire_burst": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: drei Anzeigen schalten nacheinander"
-   },
-   "reload_empty": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-03": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-03": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_semi": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; gleiche Auswurfklappe wie BASIC-01"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "fire_semi": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; gleiche Auswurfklappe wie BASIC-01"
-   },
-   "reload_empty": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-04": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-04": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_da": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Hahn nach hinten gespannt; Trommeldrehung rund und daher nicht sichtbar"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: Trommel schwenkt neben den Rahmen"
+      }
+    }
   },
-  "actions": {
-   "fire_da": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Hahn nach hinten gespannt; Trommeldrehung rund und daher nicht sichtbar"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: Trommel schwenkt neben den Rahmen"
-   }
-  }
- },
- "BASIC-05": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-05": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_semi": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; Schlittenweg in reload_empty sichtbar"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "fire_semi": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; Schlittenweg in reload_empty sichtbar"
-   },
-   "reload_empty": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-06": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-06": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_auto": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; Auswurfklappe"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "fire_auto": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png; Auswurfklappe"
-   },
-   "reload_empty": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-07": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-07": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "draw_hold_release": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Sehne folgt dem Nockpunkt, Pfeil fliegt ab"
+      },
+      "let_down": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "draw_hold_release": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Sehne folgt dem Nockpunkt, Pfeil fliegt ab"
-   },
-   "let_down": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-08": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-08": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_pump": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Pumpe 84 mm zurück"
+      },
+      "load_shell": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png, Ansicht von unten"
+      }
+    }
   },
-  "actions": {
-   "fire_pump": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Pumpe 84 mm zurück"
-   },
-   "load_shell": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png, Ansicht von unten"
-   }
-  }
- },
- "BASIC-09": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-09": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_cycle": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Kammerstängel hoch und zurück"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "fire_cycle": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Kammerstängel hoch und zurück"
-   },
-   "reload_empty": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-10": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-10": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "charge_fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: Anzeigen 1→3, Emitter"
+      },
+      "charge_cancel": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "charge_fire": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: Anzeigen 1→3, Emitter"
-   },
-   "charge_cancel": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-11": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-11": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "charge_fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Linearkern leuchtet auf"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "charge_fire": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Linearkern leuchtet auf"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
-  }
- },
- "BASIC-12": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-12": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "beam": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Fokuslinse leuchtet (klein)"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png, Ansicht links: Zelle seitlich"
+      }
+    }
   },
-  "actions": {
-   "beam": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Fokuslinse leuchtet (klein)"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png, Ansicht links: Zelle seitlich"
-   }
-  }
- },
- "BASIC-13": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-13": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire": {
+        "status": "unzureichend",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "nur verdeckter Abzug, keine sichtbare Mechanik"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Lauf kippt nach unten, Granate raus/rein"
+      }
+    }
   },
-  "actions": {
-   "fire": {
-    "status": "unzureichend",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "nur verdeckter Abzug, keine sichtbare Mechanik"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Lauf kippt nach unten, Granate raus/rein"
-   }
-  }
- },
- "BASIC-14": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-14": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire": {
+        "status": "unzureichend",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "nur verdeckter Abzug; Bereitschaftsanzeige liegt links außerhalb der Kamera"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Heckdeckel, Rakete hinter dem Deckel"
+      }
+    }
   },
-  "actions": {
-   "fire": {
-    "status": "unzureichend",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "nur verdeckter Abzug; Bereitschaftsanzeige liegt links außerhalb der Kamera"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Heckdeckel, Rakete hinter dem Deckel"
-   }
-  }
- },
- "BASIC-15": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-15": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire_auto": {
+        "status": "unzureichend",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "nur verdeckter Abzug, keine sichtbare Mechanik"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Deckel hinten hoch, Kasten raus/rein"
+      }
+    }
   },
-  "actions": {
-   "fire_auto": {
-    "status": "unzureichend",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "nur verdeckter Abzug, keine sichtbare Mechanik"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Deckel hinten hoch, Kasten raus/rein"
-   }
-  }
- },
- "BASIC-16": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-16": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "guard_charge": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: Ladeanzeige dimmt, Änderung schwach sichtbar"
+      }
+    }
   },
-  "actions": {
-   "guard_charge": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße), Ansicht links: Ladeanzeige dimmt, Änderung schwach sichtbar"
-   }
-  }
- },
- "BASIC-17": {
-  "static": {
-   "status": "geprüft",
-   "by": "Claude",
-   "date": "2026-10-24",
-   "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+  "BASIC-17": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Kontaktbögen hero, side (400 px/m), exploded; Visierlinie aus Socket_Eye; Blatt im Browser (Stichprobe BASIC-09)"
+    },
+    "actions": {
+      "fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Emitter leuchtet"
+      },
+      "shield": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Flügel öffnen nach außen"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
+      }
+    }
   },
-  "actions": {
-   "fire": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png: Emitter leuchtet"
-   },
-   "shield": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "vergrößerte Vorher/Nachher-Bilder (halbe Originalgröße): Flügel öffnen nach außen"
-   },
-   "reload": {
-    "status": "geprüft",
-    "by": "Claude",
-    "date": "2026-10-24",
-    "method": "Bewegungs-Kontaktbogen evidence/motion_<id>.png"
-   }
+  "_note": "Sichtungen von Hand eingetragen (tools/make_docs.py liest sie). status: geprüft | unzureichend | offen. Belege unter ~/Library/Caches/CubeEscapeBallon/evidence/.",
+  "BASIC-01-v2.1-ego": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Standbilder ego/stills (Ego- und Außenansicht) aller Haltungen mit Arm v3; Handgelenk ≤ 45°; inspect_r ohne linke Hand wie in der Aktion"
+    },
+    "actions": {
+      "idle_hip": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Atembewegung bewusst klein"
+      },
+      "draw": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Waffe kommt von unten, Stützhand greift bei Bild 13"
+      },
+      "holster": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "aim_in": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visierlinie mittig"
+      },
+      "aim_out": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "fire_hip": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bild 16): Rückstoß sichtbar, Stützhand am Handschutz"
+      },
+      "fire_ads": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visier springt leicht"
+      },
+      "reload_tactical": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bild 12): Hand zieht Magazin nach unten"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bilder 8, 20, 27, 38): Magazin fällt, neues von unten, eingesetzt; Hinweis: Hand am Ladehebel liegt am rechten Bildrand"
+      },
+      "inspect": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bilder 16, 62): Ego-Seite, dann Oberseite; rechte Hand umgreift den Griff"
+      },
+      "sprint": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bild 20) und Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "lowered": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "walk": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; liegende Acht bewusst klein"
+      },
+      "crouch": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "jump_land": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Anheben und Landefeder bewusst klein"
+      },
+      "sprint_to_aim": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "sprint_to_fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "draw_aim": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+      },
+      "reload_to_switch": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Arm v3 neu gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Abbruch bei Bild 14, Magazin bleibt eingesetzt"
+      }
+    },
+    "notes": [
+      "An der Hüfte ist die rechte Hand nicht im Bild (Haltung hoch genug für den Griff, Hand darunter)",
+      "Durchladen: linke Hand am Ladehebel teilweise außerhalb des Bildes",
+      "Arm v3 (24.10.2026): alle 19 Aktionen neu gerendert, Handgelenk max. 42,7° (Ziehen/Wegstecken); Drehgelenk zeigt die Panzerseite zur Kamera."
+    ]
   }
- },
- "_note": "Sichtungen von Hand eingetragen (tools/make_docs.py liest sie). status: geprüft | unzureichend | offen. Belege unter ~/Library/Caches/CubeEscapeBallon/evidence/."
 }

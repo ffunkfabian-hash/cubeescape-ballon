@@ -82,6 +82,9 @@ if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
         fail('Drehsinn: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'test_motion' in ln))
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_ego.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Ego-Daten: ' + r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')

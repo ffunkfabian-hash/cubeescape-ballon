@@ -100,6 +100,16 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).
 
+## Q-D2-ARM · Armreferenzen des Nutzers (24.10.2026)
+
+Sechs Bildschirmfotos von Destiny-2-Panzerhandschuhen, vom Nutzer ausdrücklich **nur als Inspiration** geschickt. Status
+**beobachtet**; Kopien außerhalb des Repos unter `~/Library/Caches/CubeEscapeBallon/refs/arm-v2/` und `…/arm-v3/`.
+
+| Satz | Beobachtetes Prinzip | Übernommen in |
+|---|---|---|
+| arm-v2 (4 Bilder: weiß-rote Titan-Stulpen, facettierte Panzer mit Leuchtkanten, ACD/0 Feedback Fence) | Panzer umschließt das Glied, Verjüngung, Facetten mit Grat, Stulpe überlappt die Hand | Hand und Finger (Rückenschale mit Grat); Facettenplatten am Unterarm wieder verworfen (wirkten klobig) |
+| arm-v3 (2 Bilder: dunkler und silber-goldener Handschuh mit Scheibe am Oberarm) | glatte große Schale mit Fasen und Pfeilschnitt, zweite Lage mit Bolzen, Kontraststreifen, Medaillon mit Ring | Ober-/Unterarm und Ellbogen v3 |
+
 ## Q-BG · Bungie-Startpunkte des Auftrags
 
 Bungie-Seiten aus dem Auftrag (Neuspieler-Guide, „Your Guardian“, Dev Insights, TWID 06.11./26.11.2025) waren über den

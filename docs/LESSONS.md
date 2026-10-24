@@ -12,3 +12,7 @@
 - Schwarzes Polymer wirkt unter Studiolicht grau, solange der Specular-Anteil 0,5 bleibt; 0,2–0,25 und dunklere Grundfarbe ([kit.py](../basic/kit.py)).
 - Kantenabrieb-Maske muss größer messen als die Modellfase (≥ 4 mm), sonst bleibt sie unsichtbar ([stilhandbuch](stilhandbuch.md#9-typische-fehler)).
 - Bloom mit Schwelle ≤ 4 erfasst helle Lackflächen; Nutzerwunsch: Bloom aus ([stilhandbuch](stilhandbuch.md#1-entscheidungen-des-nutzers)).
+- Ego-Kamera in Blender: 90° um X schaut nach +Y; für Blick −Y zusätzlich 180° um Z ([ego_build.py](../tools/ego_build.py)).
+- Viewmodel-Arme: Unterarm an der Hand ausrichten und den Knick begrenzen, statt die Schulter festzuhalten; Hände greifen von unten hinten ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
+- Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst.
+- Ego-Standbilder müssen die Handbelegung der Aktion übernehmen, sonst zeigt die Sichtung Fehler, die im Clip nicht auftreten ([ego_build.py](../tools/ego_build.py)).

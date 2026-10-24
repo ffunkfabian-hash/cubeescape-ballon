@@ -167,7 +167,53 @@ Test), `removable`, `iface`. Gemeinsame Bausteine in `basic/common.py` (Griffmod
 - Teile auf der linken Seite (Anzeigen, Kern) sind in der Standardkamera (rechts vorn) unsichtbar → Aktion mit `view` von links rendern.
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
 
-## 10 Stand
+## 10 Arme und Animation
 
-Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hintergrund); v2 als Vorstufe erhalten. Die 16 übrigen Waffen sind im Stil v1; Übertragung nach Freigabe
+Getrennt von Toolgen und Cube Escape (Nutzer 24.10.2026: „so wie die Waffen, möglichst separat halten“). Übersicht und Status je
+Aktion: [ego.md](ego.md) (erzeugt). Ergebnisseite als Artefakt „BASIC Ego-Animationen“.
+
+| Baustein | Datei | Inhalt |
+|---|---|---|
+| Arm-Rig v3 | `basic/arms/robot_arm.py` | Oberarm, Medaillon-Ellbogen, Unterarm (Graphitkörper mit Wölbung, Cremeschale mit Pfeilschnitt, dunkle Handgelenkplatte mit zwei Bolzen, eine Akzentlinie, Stulpe), Kardan-Handgelenk, Hand (Handfläche, Rückenschale mit Grat, Knöchelschutz), **vier Finger** und Daumen mit je drei Gliedern; `ARM_BULK`/`HAND_BULK`; Fingerstellungen `FINGER_POSES`; Längen aus Toolgen mit Quelle. v1 als Vorstufe in `robot_arm_v1.py` |
+| Formen | `tools/ego_build.py` | `box`, `cyl` (Achse x/y/z), `prism` (Achteck), `plate` (Facettenplatte mit Grat), `hull` (konvexe Hülle aus Querschnitten `section`/`section_top`; Pfeilschnitt über abweichendes z der Deckfläche) |
+| Arm-Vorschau | `tools/arm_preview.py` | rechter Arm ohne Waffe: Seite, schräg, Hand offen, Faust; `--rig v1\|v2`, `--k` (Querschnitt testen) |
+| Roboter (Spaß) | `basic/arms/robot_figure.py`, `tools/robot_build.py` | ganze Figur in derselben Formsprache, Arme v3 per IK an der Pilotwaffe; keine Spielfigur |
+| Ego-Daten | `basic/arms/ego.py` | Kamera (75° h), Haltungen `POSES` (Socket_Hand, Zielpunkt, Rollen; `ads` über Socket_Eye), Griffe `GRIPS` (Handfläche auf der Oberfläche, Fingerrichtung, Teil), Aktionen `ACTIONS` (Kanäle unten), Matrixzuordnung `ROWS` |
+| Szene und Render | `tools/ego_build.py` | baut Waffe und beide Arme, löst je Bild Haltung, Hände, Arme, Finger, Mechanik, Magazin, Rückstoß, Kamera-Feedback; `--stills`, `--actions all`, `--gpu` |
+| Belege und Doku | `tools/make_ego.py` | `clips`, `sheets`, `docs`, `page <datei>`, `--check` (in `./check`) |
+
+**Aktionskanäle:** `weapon` (Haltung oder Haltung mit Versatz `roll/pitch/yaw/up/right/back`; pitch positiv = Mündung hoch),
+`L`/`R` (Griff, Griff mit Versatz in mm, oder `('cam', Punkt)`), `fL`/`fR` (Fingerstellung), `mech` (Bauteilbewegung 0..1 wie
+in den Waffenmodulen), `carry` (Magazin folgt der linken Hand), `drop` (Magazin fällt), `fire` (Schussbilder, Rückstoß der Waffe und
+getrenntes Kamera-Feedback), `breathe`, `bob` (liegende Acht), `events` (Marker wie CE: HandOff, MagOut, MagIn, Chamber, HandOn,
+Ready, Aimed …), `src` (Herkunft T/M/E).
+
+**Formregeln Arm v3** (aus Nutzerbildern Q-D2-ARM, nur Prinzipien):
+- Glatte, große Schale statt Rohr plus Brett; der Unterarm wölbt sich unter dem Ellbogen (größte Breite bei etwa einem Drittel)
+  und verjüngt sich stark zum Handgelenk. Größte Breite ≈ 0,4 × Länge.
+- Zwei Lagen: helle Schale, darauf eine dunkle Platte mit Pfeilschnitt und zwei Bolzen; darunter sichtbarer Graphitkörper.
+- Medaillon (Scheibe, blanker Ring, Nabe) an Gelenken; das Wiedererkennungsmerkmal.
+- Je Glied höchstens eine Akzentlinie; kein Leuchten, keine Stacheln.
+- Vier Finger und Daumen (liest sich als Hand, Zeigefinger am Abzug).
+
+**Regeln für Arme und Haltungen**
+- Drehgelenk in der Stulpe: Ober- und Unterarm zeigen ihre Panzerseite zur Kamera, die Hand dreht frei
+  (sonst zeigt die Stützhand dem Spieler den Graphitkörper).
+- Unterarm folgt der Hand (Viewmodel-Konvention wie Toolgen `arm_pose.forearm`), gemischt mit einer Vorzugsrichtung nach hinten
+  unten außen; Handgelenk ≤ 45° (Toolgen-Ziel), Grenze 55°. Die Schulter folgt außerhalb des Bildes.
+- Griffe so legen, dass die Hand **von unten hinten** zugreift (Magazin, Ladehebel); Finger nach unten lassen den Arm von oben
+  vor die Kamera kommen.
+- Hüfte: Griff unten rechts, Lauf zur Bildmitte, Visier rechts oben; Zielen: Socket_Eye auf der Kameraachse.
+- Zeiten: gemessen (Q-REF) vor Toolgen-Startwert vor entworfen; jede Aktion nennt ihre Herkunft.
+- Sichtung je Aktion in `data/review.json` (`<waffe>-ego`); „dargestellt“ nur nach Sichtung mit Schlüsselbildern.
+
+**Typische Fehler:** Blender-Kamera mit nur 90° um X schaut nach +Y (zusätzlich 180° um Z); Toolgen-Schulterwerte knicken den Arm
+an anderen Haltungen zu stark (Schulter folgt); Nicken um die lokale X-Achse senkt die Mündung (Vorzeichen); Teile links vom
+Gewehr sind in der Standardkamera unsichtbar; nur den Querschnitt zu skalieren macht einen drahtigen Arm nicht kräftig (Form statt
+Dicke); Standbilder müssen die Handbelegung der Aktion übernehmen (inspect_r ohne linke Hand).
+
+## 11 Stand
+
+Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hintergrund); v2 als Vorstufe erhalten.
+Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Die 16 übrigen Waffen sind im Stil v1; Übertragung nach Freigabe
 des Nutzers nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.
