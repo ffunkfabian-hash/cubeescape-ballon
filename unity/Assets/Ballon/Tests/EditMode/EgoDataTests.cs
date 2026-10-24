@@ -164,6 +164,55 @@ namespace Ballon.Ego.Tests
                     Assert.That(at[side + s].position.magnitude, Is.LessThan(1e-5f), side + s);
         }
 
+        // ---------------------------------------------------------------- Material (0.7)
+        [Test]
+        public void Gebackene_Atlanten_und_UVs()
+        {
+            Assert.IsNotNull(D.textures?.weapon, "textures fehlt (Export mit Backen)");
+            int n = 0;
+            foreach (var (fbx, A) in new[] { (D.weapon.fbx, D.textures.weapon), (D.arm.fbx, D.textures.arms) })
+            {
+                foreach (var f in new[] { A.albedo, A.mask, A.normal, A.ao })
+                {
+                    var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                    Assert.IsNotNull(t, f);
+                    Assert.AreEqual(A.size, t.width, f);
+                }
+                var baked = new HashSet<string>(A.objects);
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{fbx}");
+                foreach (var mf in go.GetComponentsInChildren<MeshFilter>(true))
+                {
+                    if (!baked.Contains(mf.name)) continue;
+                    var uv = mf.sharedMesh.uv;
+                    Assert.AreEqual(mf.sharedMesh.vertexCount, uv.Length, $"{mf.name}: UVs");
+                    Assert.IsTrue(uv.All(u => u.x >= -1e-3f && u.x <= 1.001f && u.y >= -1e-3f && u.y <= 1.001f), $"{mf.name}: UV im Atlas");
+                    n++;
+                }
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{(fbx == D.weapon.fbx ? "weapon" : "arms")}.mat");
+                Assert.IsNotNull(m.GetTexture("_BaseMap"));
+                Assert.IsNotNull(m.GetTexture("_MetallicGlossMap"));
+                Assert.IsNotNull(m.GetTexture("_BumpMap"));
+                Assert.IsNotNull(m.GetTexture("_OcclusionMap"));
+            }
+            Assert.Greater(n, 150, "gebackene Netzobjekte");
+        }
+
+        [Test]
+        public void AgX_LUT_wie_Blender()
+        {
+            var L = D.textures.lut;
+            var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{L.file}");
+            Assert.AreEqual(L.size * L.size, t.width);
+            Assert.AreEqual(L.size, t.height);
+            // Mittelgrau 0,18 → Gitterpunkt u = −ev0 / (ev1 − ev0); Blender AgX „Medium High Contrast“ ≈ 0,44 Anzeige
+            int i = Mathf.RoundToInt(-L.ev[0] / (L.ev[1] - L.ev[0]) * (L.size - 1));
+            var c = t.GetPixel(i + i * L.size, i);
+            Assert.AreEqual(0.443f, c.r, 0.02f, "Mittelgrau");
+            Assert.AreEqual(c.r, c.g, 0.005f);
+            Assert.Less(t.GetPixel(0, 0).r, 0.01f, "Schwarz");
+            Assert.Greater(t.GetPixel(t.width - 1, t.height - 1).r, 0.9f, "Weiß");
+        }
+
         // ---------------------------------------------------------------- Arme
         static IEnumerable<(string, EgoOutput)> AllFrames()
         {

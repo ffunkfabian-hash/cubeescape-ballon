@@ -8,14 +8,17 @@ bleibt die Referenz.** Unity rechnet die Bewegung live in C# aus denselben Daten
 ## Ablauf
 
 ```bash
-~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
-    -P "$PWD/tools/export_unity.py"         # FBX + ego.json + ego_reference.json (absoluter Pfad: ce lock wechselt das Verzeichnis)
+BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
+    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + AgX-LUT + ego.json + Referenz (≈ 5 min; absoluter Pfad: ce lock wechselt das Verzeichnis)
+BASIC_OUT=~/Library/Caches/CubeEscapeBallon/unity/blender_out ~/Claude/cubeescape-nexogen/ce lock gpu -- \
+    /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P "$PWD/tools/ego_build.py" -- --stills --gpu   # frische Blender-Stills
 python3 tools/export_unity.py --check       # ego.json passt zu den Daten und zu den Quellen (SHA-256), läuft in ./check
 python3 tools/unity_run.py setup            # URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
 python3 tools/unity_run.py test             # EditMode + PlayMode
 python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (Entwicklungsbuild)
 python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + Kontaktbogen
-python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills
+python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
+python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 open unity/Build/BallonFirstfeel.app        # spielen
 ```
 
@@ -88,12 +91,36 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | `Wandnaehe_im_Parcours_senkt_die_Waffe` | vor Säule 1 senkt sich die Waffe (`lowered`), im Freien zurück zur Hüfte |
 | `Szene_startet_und_spielt_den_Ablauf` | Szene lädt, Viewmodel-Ebene, Vorführablauf feuert, lädt leer nach, betrachtet |
 
+## Material, Licht und Tonwerte wie Blender (0.7)
+
+Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blender bleibt die Quelle.
+
+- **Backen** (`tools/bake_unity.py`, im Export): Je FBX entsteht ein Atlas (Waffe 4096², Arme 2048²) aus `kit.aaa_nodes`:
+  - Grundfarbe mit Kantenabrieb und Schmutz;
+  - Metall und Glätte in einer Maske;
+  - Normale (Mikrorelief) und AO.
+  - Teile mit gleichem Objektraum backen als eine Kopie: 4 min statt 58 min.
+  - Leuchtende und durchsichtige Rollen (Energie, Absehen, Gläser) bleiben ungebacken. Sie haben eigene Materialien, mit
+    Leuchtstärke `emit · 1,6` wie in Blender.
+- **Tonwerte:** Die Blender-Ansicht AgX mit dem Look „Medium High Contrast“ ist als 3D-LUT gebacken, mit log2-Formung als
+  Eingang. Der Shader `Ballon/AgX` wendet sie als Vollbild-Durchgang am Ende des Kamerastapels an, im Renderer „Out“ der
+  Viewmodel-Kamera. Dafür ist HDR an; Bloom bleibt aus.
+- **Studio (Vergleichsmodus):**
+  - Die vier Flächenlichter aus `setup_aaa` sind weiche Spotlichter mit der Intensität P/π², ohne Echtzeitschatten. Cycles
+    wirft bei Lichtern dieser Größe kaum Schatten, die Kontaktschatten stecken im AO.
+  - Der Hintergrundverlauf entspricht `BACKDROPS['mid']`.
+  - Die Umgebung ist #8C96A3 × 0,45.
+  - Die Lichtflächen fließen zu 10 % in die Reflexionssonde ein (Messreihe 0 / 0,1 / 0,25 / 0,5).
+- **Messung:** `compare` schreibt SSIM, PSNR und Helligkeit je Pose nach `compare/metrics.json`.
+
 ## Grenzen
 
-- Materialien sind URP Lit je Rolle: Farbe, Glätte und Metall. Kantenabrieb, Schmutz, Mikrorelief und AO aus Blender fehlen.
-  Eloxierte und metallische Teile wirken deshalb dunkler als in Cycles. Das ist eine spätere Stufe.
-- Die Tonwerte unterscheiden sich: Blender rendert mit AgX, Unity ohne Nachbearbeitung (kein Bloom). Creme wirkt in Unity
-  wärmer.
+- Creme wirkt in Unity etwas kühler und grauer, Leuchtteile schwächer.
+  - Indirektes Licht (Mehrfachstreuung) fehlt; Unity hat nur einheitliches Umgebungslicht.
+  - Glanz kommt von Punktlichtern statt von Flächen.
+  - Glas hat keine Durchlässigkeit und keinen Klarlack.
+- Glasvarianten (Staub, Kratzer, Riss) sind noch einfaches transparentes Lit.
+- Im Parcours gelten dieselben Materialien und dieselbe LUT; das Licht dort ist entworfen, nicht aus Blender.
 - Wie in Blender: An der Hüfte ist die rechte Hand nicht im Bild, die Hand am Ladehebel ist teils außerhalb, und in der Faust
   hängt der Daumen nach unten.
 - Kein Ton, kein Mündungsfeuer, kein Hülsenauswurf (offene Entscheidung des Nutzers).

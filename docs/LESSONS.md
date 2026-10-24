@@ -27,3 +27,5 @@
 - Augenpunkte je Visier frei gesetzt ergaben 14 bis 192 mm Augenabstand und uneinheitliche Visierbilder: Visier-Standard mit echtem Augenpunkt ([absehen.md](absehen.md)).
 - Visiere wirkten klobig: dicke Rahmen und mitgezoomtes Waffenmodell; Destiny zoomt nur die Welt und zeigt beim Zielfernrohr das Linsenbild ([absehen.md](absehen.md), Q-D2-ADS).
 - Bei Visierfragen zuerst Motiongen (`cubeescape-reference/docs/destiny2.md`) lesen – dort stehen gemessene Bildanteile im Zielen.
+- Vor dem Abbrechen eines langen Laufs die Ursache belegen: eine mit `cut` gekürzte `ps`-Zeile ließ `--gpu` fehlen, der Lauf lief aber auf der GPU (CPU-Last unter 100 % war der Hinweis) – 37 min verloren. Lange Läufe geben je Schritt Zeit und Gerät aus (`print(..., flush=True)`, [bake_unity.py](../tools/bake_unity.py)).
+- Cycles backt jedes ausgewählte Objekt über den ganzen Atlas: 67 Teile in 4096² dauerten 58 min. Teile mit gleichem Objektraum vor dem Backen zu einer Kopie zusammenfügen (schon bei 4 Teilen 3× schneller, [bake_unity.py](../tools/bake_unity.py)).

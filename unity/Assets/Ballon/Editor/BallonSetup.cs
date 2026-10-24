@@ -16,6 +16,32 @@ namespace Ballon.Ego.Editor
 {
     public sealed class BallonModelImport : AssetPostprocessor
     {
+        /// <summary>Gebackene Atlanten und LUT aus Blender: Farbe sRGB, Masken und Normale linear, LUT ohne Mips und Kompression.</summary>
+        void OnPreprocessTexture()
+        {
+            if (!assetPath.StartsWith("Assets/Ballon/Generated/Textures/")) return;
+            var ti = (TextureImporter)assetImporter;
+            var f = Path.GetFileNameWithoutExtension(assetPath);
+            ti.maxTextureSize = 4096;
+            ti.textureCompression = TextureImporterCompression.CompressedHQ;
+            ti.sRGBTexture = f.EndsWith("_albedo");
+            ti.textureType = f.EndsWith("_normal") ? TextureImporterType.NormalMap : TextureImporterType.Default;
+            ti.alphaSource = f.EndsWith("_mask") ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
+            ti.anisoLevel = 8;
+            ti.mipmapEnabled = true;
+            if (f == "agx_lut")
+            {
+                ti.sRGBTexture = false;          // Werte sind Anzeige-sRGB, der Shader dekodiert selbst
+                ti.mipmapEnabled = false;
+                ti.textureCompression = TextureImporterCompression.Uncompressed;
+                ti.npotScale = TextureImporterNPOTScale.None;
+                ti.wrapMode = TextureWrapMode.Clamp;
+                ti.filterMode = FilterMode.Bilinear;
+                ti.anisoLevel = 0;
+                ti.isReadable = true;            // EditMode-Test liest Gitterpunkte
+            }
+        }
+
         void OnPreprocessModel()
         {
             if (!assetPath.StartsWith("Assets/Ballon/Generated/")) return;
@@ -120,8 +146,49 @@ namespace Ballon.Ego.Editor
             }
             urp.msaaSampleCount = 4;
             urp.shadowDistance = 70f;
-            urp.supportsHDR = false;
+            urp.supportsHDR = true;                    // 0.7: lineares HDR bis zur AgX-Abbildung am Ende des Stapels
             urp.supportsCameraDepthTexture = false;
+            var su = new SerializedObject(urp);
+            Set(su, "m_AdditionalLightsRenderingMode", 1);      // Per Pixel
+            Set(su, "m_AdditionalLightShadowsSupported", 1);
+            Set(su, "m_AdditionalLightsShadowmapResolution", 2048);
+            Set(su, "m_SoftShadowsSupported", 1);
+            Set(su, "m_MainLightShadowmapResolution", 2048);
+            // zweiter Renderer „Out“ für die Viewmodel-Kamera (letzte im Stapel): Vollbild-AgX wie Blender
+            var outPath = Settings + "/URP_Renderer_Out.asset";
+            var outRd = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(outPath);
+            if (outRd == null)
+            {
+                outRd = ScriptableObject.CreateInstance<UniversalRendererData>();
+                AssetDatabase.CreateAsset(outRd, outPath);
+            }
+            var agxMat = Agx();
+            var feat = outRd.rendererFeatures.OfType<FullScreenPassRendererFeature>().FirstOrDefault();
+            if (feat == null)
+            {
+                feat = ScriptableObject.CreateInstance<FullScreenPassRendererFeature>();
+                feat.name = "AgX";
+                AssetDatabase.AddObjectToAsset(feat, outRd);
+                outRd.rendererFeatures.Add(feat);
+            }
+            feat.passMaterial = agxMat;
+            feat.injectionPoint = FullScreenPassRendererFeature.InjectionPoint.BeforeRenderingPostProcessing;
+            feat.fetchColorBuffer = true;
+            feat.SetActive(true);
+            EditorUtility.SetDirty(feat);
+            EditorUtility.SetDirty(outRd);
+            AssetDatabase.SaveAssets();
+            var so = new SerializedObject(outRd);
+            var map = so.FindProperty("m_RendererFeatureMap");
+            map.arraySize = outRd.rendererFeatures.Count;
+            for (int i = 0; i < outRd.rendererFeatures.Count; i++)
+                if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(outRd.rendererFeatures[i], out _, out long id))
+                    map.GetArrayElementAtIndex(i).longValue = id;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            var list = su.FindProperty("m_RendererDataList");
+            if (list.arraySize < 2) list.arraySize = 2;
+            list.GetArrayElementAtIndex(OutRenderer).objectReferenceValue = outRd;
+            su.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(urp);
             GraphicsSettings.defaultRenderPipeline = urp;
             var names = QualitySettings.names;
@@ -132,6 +199,33 @@ namespace Ballon.Ego.Editor
                 QualitySettings.renderPipeline = urp;
             }
             QualitySettings.SetQualityLevel(cur, false);
+        }
+
+        public const int OutRenderer = 1;
+
+        static void Set(SerializedObject so, string prop, int v)
+        {
+            var p = so.FindProperty(prop);
+            if (p == null) { Debug.LogWarning($"[Ballon] URP-Einstellung {prop} fehlt"); return; }
+            if (p.propertyType == SerializedPropertyType.Boolean) p.boolValue = v != 0; else p.intValue = v;
+        }
+
+        /// <summary>Material des AgX-Durchgangs mit der LUT aus Blender (tools/bake_unity.agx_lut).</summary>
+        static Material Agx()
+        {
+            var path = $"{Gen}/Materials/Post_AgX.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m == null)
+            {
+                m = new Material(Shader.Find("Ballon/AgX")) { name = "Post_AgX" };
+                AssetDatabase.CreateAsset(m, path);
+            }
+            var D = EgoFile.Parse(File.ReadAllText($"{Gen}/ego.json"));
+            var L = D.textures.lut;
+            m.SetTexture("_Lut", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{L.file}"));
+            m.SetVector("_LutParams", new Vector4(L.size, L.ev[0], L.ev[1], L.mid_grey));
+            EditorUtility.SetDirty(m);
+            return m;
         }
 
         static void Layer()
@@ -214,9 +308,37 @@ namespace Ballon.Ego.Editor
             {
                 var m = Lit("Role_" + r.role, Hex(r.aaa_color), 1f - r.rough, r.metal);
                 if (r.alpha < 1f) { m.SetFloat("_Smoothness", 0.96f); Transparent(m, 0.12f); }
-                if (r.emit > 0f) Emission(m, Hex(r.color) * Mathf.Min(r.emit, 2f));
+                if (r.emit > 0f)          // wie kit.aaa_nodes: Stärke emit · 1,6, reine Leuchtteile ohne beleuchtete Grundfarbe
+                {
+                    Emission(m, Color.black);
+                    var e = Hex(r.color).linear * (r.emit * 1.6f);
+                    m.SetVector("_EmissionColor", new Vector4(e.r, e.g, e.b, 1));
+                    if (r.emit_only) m.SetColor("_BaseColor", Color.black);
+                }
                 res["Role_" + r.role] = m;
             }
+            foreach (var (key, A) in new[] { ("weapon", D.textures.weapon), ("arms", D.textures.arms) })   // 0.7: gebackene Atlanten
+            {
+                var m = Lit("Atlas_" + key, Color.white, 1f, 0f);
+                Texture2D T(string f) => AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                m.SetTexture("_BaseMap", T(A.albedo));
+                m.SetTexture("_MetallicGlossMap", T(A.mask));
+                m.SetTexture("_BumpMap", T(A.normal));
+                m.SetTexture("_OcclusionMap", T(A.ao));
+                m.SetFloat("_OcclusionStrength", 1f);
+                m.SetFloat("_BumpScale", 1f);
+                m.EnableKeyword("_METALLICSPECGLOSSMAP");
+                m.EnableKeyword("_NORMALMAP");
+                m.EnableKeyword("_OCCLUSIONMAP");
+                res["Atlas_" + key] = m;
+            }
+            var bd = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Studio_Backdrop.mat");
+            if (bd == null)
+            {
+                bd = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "Studio_Backdrop" };
+                AssetDatabase.CreateAsset(bd, $"{Gen}/Materials/Studio_Backdrop.mat");
+            }
+            res["backdrop"] = bd;
             res["floor"] = Lit("Range_Floor", Hex("#8A8E94"), 0.12f, 0);
             res["wall"] = Lit("Range_Wall", Hex("#A4A8AE"), 0.08f, 0);
             res["cover"] = Lit("Range_Cover", Hex("#6F747B"), 0.15f, 0);
@@ -239,7 +361,8 @@ namespace Ballon.Ego.Editor
             b.egoJson = AssetDatabase.LoadAssetAtPath<TextAsset>($"{Gen}/ego.json");
             b.weaponModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/BASIC-01-v2.1.fbx");
             b.armsModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/arms.fbx");
-            b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_")).Select(kv => kv.Value).ToArray();
+            b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")).Select(kv => kv.Value).ToArray();
+            b.backdrop = mats["backdrop"];
             b.floor = mats["floor"];
             b.wall = mats["wall"];
             b.cover = mats["cover"];

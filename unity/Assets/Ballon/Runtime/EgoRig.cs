@@ -47,6 +47,11 @@ namespace Ballon.Ego
             var role = new Dictionary<string, string>();
             foreach (var p in s.D.weapon.parts) role[p.id] = p.role;
             foreach (var p in s.D.arm.pieces) { role["R_" + p.id] = p.role; role["L_" + p.id] = p.role; }
+            if (s.D.textures?.weapon?.objects != null)        // gebackene Teile nehmen den Atlas statt der Rolle (0.7)
+            {
+                foreach (var nm in s.D.textures.weapon.objects) role[nm] = "Atlas_weapon";
+                foreach (var nm in s.D.textures.arms.objects) role[nm] = "Atlas_arms";
+            }
             foreach (var r in w.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
@@ -67,8 +72,8 @@ namespace Ballon.Ego
         {
             if (role.TryGetValue(r.name, out var ro) && mats.TryGetValue(ro, out var m)) r.sharedMaterial = m;
             else Debug.LogWarning($"[Ballon] keine Materialrolle für {r.name}");
-            r.shadowCastingMode = ShadowCastingMode.Off;
-            r.receiveShadows = false;
+            r.shadowCastingMode = ShadowCastingMode.On;      // Eigenschatten (Arm auf Waffe) wie in Cycles; die Weltkamera sieht die Ebene nicht
+            r.receiveShadows = true;
             r.lightProbeUsage = LightProbeUsage.Off;
             r.reflectionProbeUsage = ReflectionProbeUsage.BlendProbes;
         }

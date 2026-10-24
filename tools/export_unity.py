@@ -1,6 +1,6 @@
 """Export für das Unity-Projekt (0.4 „Firstfeel“): Pilotwaffe und Roboterarme als FBX, Ego-Daten als JSON (`ballon-ego/1`).
 
-  ce lock blender -- blender -b --factory-startup -P tools/export_unity.py   → unity/Assets/Ballon/Generated/
+  BALLON_BAKE_GPU=1 ce lock gpu -- blender -b --factory-startup -P <abs>/tools/export_unity.py   → unity/Assets/Ballon/Generated/
         BASIC-01-v2.1.fbx (Waffe: Wurzel → ASM_* → Teile, Anker als Leerknoten), arms.fbx (R_/L_-Segmente → Teile),
         ego.json (Daten), ego_reference.json (Blender-Auswertung von tools/ego_build.evaluate als Testreferenz)
   python3 tools/export_unity.py --check   → ego.json passt zu den Python-Daten (ohne Blender, Teil von ./check)
@@ -131,7 +131,8 @@ def data():
                segments=list(RA.SEGMENTS), fbx='arms.fbx',
                pieces=[dict(id=pid, segment=seg, role=role) for pid, de, seg, kind, role, p in RA.parts()], src=RA.SOURCE)
     srcs = ['basic/pilot/w01_auto_rifle_v21.py', 'basic/weapons/w01_auto_rifle.py', 'basic/common.py', 'basic/kit.py',
-            'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py', 'tools/blender_build.py', 'tools/export_unity.py']
+            'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py', 'tools/blender_build.py', 'tools/export_unity.py',
+            'tools/bake_unity.py']
     sources = dict(de='SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen',
                    files=[dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in srcs])
     used = sorted({p['role'] for p in weapon['parts']} | {p['role'] for p in arm['pieces']})
@@ -145,7 +146,8 @@ def data():
                 actions=[action(k, A) for k, A in EG.ACTIONS.items()],
                 roles=[dict(role=r, color=roles[r]['color'], aaa_color=roles[r].get('aaa_color', roles[r]['color']),
                             rough=roles[r]['rough'], metal=roles[r]['metal'], alpha=roles[r].get('alpha', 1.0),
-                            emit=roles[r].get('emit', 0.0), spec=roles[r].get('spec', 0.5), de=roles[r]['de']) for r in used])
+                            emit=roles[r].get('emit', 0.0), emit_only=bool(roles[r].get('emit_only')), spec=roles[r].get('spec', 0.5),
+                            de=roles[r]['de']) for r in used])
 
 
 def write_json(path, obj):
@@ -178,7 +180,9 @@ REF_SEGMENTS = ['upper', 'fore', 'hand', 'f0_0', 'f0_2', 'f3_1', 't_0', 't_2']
 def blender_main():
     import bpy
     from mathutils import Matrix
+    gpu = '--gpu' in sys.argv or os.environ.get('BALLON_BAKE_GPU') == '1'   # GPU-Backen (nur unter ce lock gpu; ce lock reicht '-- --gpu' nicht durch)
     sys.argv = [sys.argv[0]]                   # ego_build.args() liest nichts mehr
+    from tools import bake_unity as BK
     from tools import ego_build as EB
     W = importlib.import_module(f'basic.{WEAPON}')
     os.makedirs(DST, exist_ok=True)
@@ -222,6 +226,23 @@ def blender_main():
         for e in sc.arms[s][0].values():
             e.matrix_world = Matrix.Identity(4)
     bpy.context.view_layer.update()
+    # Material backen (0.7): je FBX ein Atlas aus kit.aaa_nodes, dazu die AgX-LUT der Blender-Ansicht
+    wobs = [sc.root] + list(sc.root.children_recursive)
+    aobs = [o for s in ('R', 'L') for e in sc.arms[s][0].values() for o in [e] + list(e.children)]
+    tex_dir = os.path.join(DST, 'Textures')
+    os.makedirs(tex_dir, exist_ok=True)
+    textures = {}
+    for key, obs, size in (('weapon', wobs, 4096), ('arms', aobs, 2048)):
+        meshes = [o for o in obs if o.type == 'MESH']
+        BK.apply_modifiers(meshes)
+        bake = [o for o in meshes if BK.bakeable(o)]
+        BK.unwrap(bake)
+        files = BK.bake_atlas(bake, key, size, tex_dir, gpu=gpu)
+        textures[key] = dict(size=size, objects=sorted(o.name for o in bake), **files)
+        print(f'[export_unity] Atlas {key}: {len(bake)} Objekte, {size}²')
+    textures['lut'] = BK.agx_lut(os.path.join(tex_dir, 'agx_lut.png'))
+    D['textures'] = dict(de='Gebackene Atlanten (kit.aaa_nodes, Skin standard) und AgX-LUT; nicht gebacken: Glas, Leuchtteile',
+                         **textures)
     bounds = {}
     dg = bpy.context.evaluated_depsgraph_get()
     for ob in bpy.context.scene.objects:
@@ -246,9 +267,7 @@ def blender_main():
                                  mesh_smooth_type='OFF', use_custom_props=False, add_leaf_bones=False, bake_anim=False,
                                  apply_unit_scale=True, apply_scale_options='FBX_SCALE_ALL', bake_space_transform=True,
                                  axis_forward='-Z', axis_up='Y', path_mode='STRIP', embed_textures=False)
-    wobs = [sc.root] + list(sc.root.children_recursive)
     export(os.path.join(DST, D['weapon']['fbx']), wobs)
-    aobs = [o for s in ('R', 'L') for e in sc.arms[s][0].values() for o in [e] + list(e.children)]
     export(os.path.join(DST, D['arm']['fbx']), aobs)
     write_json(os.path.join(DST, 'ego.json'), D)
     with open(os.path.join(DST, 'ego_reference.json'), 'w', encoding='utf-8') as fh:   # groß: kompakt, eine Probe je Zeile

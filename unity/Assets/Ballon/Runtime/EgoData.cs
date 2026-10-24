@@ -84,6 +84,7 @@ namespace Ballon.Ego
     {
         public string role, color, aaa_color, de;
         public float rough, metal, alpha, emit, spec;
+        public bool emit_only;
     }
 
     [Serializable] public class Spring { public float freq_hz, zeta; }
@@ -96,6 +97,12 @@ namespace Ballon.Ego
     [Serializable]
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
                           public BreatheAll breathe_all; public Recoil recoil; }
+
+    [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, mask, normal, ao; }
+    [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
+
+    /// <summary>Gebackene Atlanten (tools/bake_unity.py) und die AgX-LUT der Blender-Ansicht.</summary>
+    [Serializable] public class EgoTextures { public string de; public Atlas weapon, arms; public Lut lut; }
 
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
     [Serializable] public class MeshBounds { public string de; public MeshBound[] objects; }
@@ -116,6 +123,7 @@ namespace Ballon.Ego
         public EgoAction[] actions;
         public EgoRole[] roles;
         public MeshBounds mesh_bounds;
+        public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
         public const string Format = "ballon-ego/1";

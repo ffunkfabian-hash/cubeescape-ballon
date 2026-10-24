@@ -9,6 +9,16 @@
 - BASIC-03 Scoutgewehr v2.1 mit Zielfernrohr `scope_v21`; Formskizze per Blender-MCP.
 - Visier-Standard v2 nach Destiny-Video und Motiongen: schlanke Visiere, Zielfernrohr mit Linsenbild und `ads_hide`, Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse; Prüfung in `./check`, Beispiele `tools/sight_examples.py`.
 
+## 0.7.0 „Truecolor“ – unveröffentlicht (lokal)
+
+- Unity folgt Blender so nah wie möglich (dauerhafte Regel in AGENTS.md):
+  - Material aus `kit.aaa_nodes` in Atlanten gebacken (`tools/bake_unity.py`): Farbe mit Abrieb und Schmutz, Metall und
+    Glätte, Normale, AO.
+  - Blender-AgX als 3D-LUT im Vollbild-Durchgang, HDR an.
+  - Studiolicht und Hintergrund wie `setup_aaa`.
+- Vergleich mit Kennzahl (`unity_run.py compare`): SSIM 0,94–0,95 → 0,95–0,97, PSNR +3–5 dB. Leistungsmessung
+  (`unity_run.py bench`). Bericht [docs/versions/0.7-truecolor.md](docs/versions/0.7-truecolor.md).
+
 ## 0.4.0 „Firstfeel“ – unveröffentlicht (lokal)
 
 - Eigenes Unity-6-Projekt `unity/` (URP, Input System): Pilotwaffe BASIC-01 v2.1 mit Roboterarmen v3 spielbar aus der Ego-Perspektive im grauen Testparcours (Zielscheiben 10/25/50 m); macOS-Entwicklungsbuild.

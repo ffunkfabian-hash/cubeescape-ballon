@@ -5,9 +5,11 @@
   python3 tools/unity_run.py test       → EditMode- und PlayMode-Tests (JUnit-XML + Kurzfassung)
   python3 tools/unity_run.py build      → macOS-Entwicklungsbuild unity/Build/BallonFirstfeel.app
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
-  python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender
+  python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR)
+  python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
 """
 import glob
+import json
 import os
 import shutil
 import subprocess
@@ -20,7 +22,10 @@ UNITY = os.environ.get('UNITY_EDITOR', '/Applications/Unity/Hub/Editor/6000.6.2f
 LOCK = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
 EV = os.environ.get('BALLON_UNITY_EVIDENCE', os.path.expanduser('~/Library/Caches/CubeEscapeBallon/unity'))
 APP = os.path.join(PROJ, 'Build', 'BallonFirstfeel.app')
-BLENDER_STILLS = os.path.expanduser('~/Library/Caches/CubeEscapeBallon/out/BASIC-01-v2.1/ego/stills')
+# frische Blender-Stills für den Vergleich (eigener Ausgabeort, damit fremde Renderings unberührt bleiben):
+#   BASIC_OUT=<EV>/blender_out ce lock gpu -- blender -b --factory-startup -P <abs>/tools/ego_build.py -- --stills --gpu
+BLENDER_STILLS = os.path.join(EV, 'blender_out', 'BASIC-01-v2.1', 'ego', 'stills')
+CE = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
 FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 
 
@@ -124,13 +129,31 @@ def capture():
     return 0
 
 
-def compare():
+def lum(path):
+    r = subprocess.run(['magick', path, '-alpha', 'off', '-colorspace', 'Gray', '-format', '%[fx:mean]', 'info:'],
+                       capture_output=True, text=True)
+    return float(r.stdout or 0)
+
+
+def metrics(u, b):
+    """SSIM (ImageMagick 7 meldet 1 − SSIM), PSNR und mittlere Helligkeit beider Bilder."""
+    rgb = os.path.join(os.path.dirname(u), '_ref.png')          # Blender-PNG hat Alpha: für den Vergleich auf RGB
+    subprocess.run(['magick', b, '-alpha', 'off', rgb], check=True)
+
+    def m(kind):
+        return subprocess.run(['magick', 'compare', '-metric', kind, u, rgb, 'null:'], capture_output=True, text=True).stderr.strip()
+    dssim = float(m('SSIM').split('(')[1].rstrip(')'))
+    return dict(ssim=round(1 - dssim, 4), psnr_db=round(float(m('PSNR').split()[0]), 2),
+                lum_unity=round(lum(u), 4), lum_blender=round(lum(b), 4))
+
+
+def compare(extra=()):
     d = os.path.join(EV, 'compare')
     shutil.rmtree(d, ignore_errors=True)
-    rc = player(['-ballonCompare', d], os.path.join(EV, 'compare.log'))
+    rc = player(['-ballonCompare', d] + list(extra), os.path.join(EV, 'compare.log'))
     if rc:
         return rc
-    tiles = []
+    tiles, mets = [], {}
     for pose in ('hip', 'ads', 'reload', 'inspect_r'):
         u = os.path.join(d, f'{pose}_unity.png')
         b = os.path.join(BLENDER_STILLS, f'{pose}_ego.png')
@@ -143,12 +166,15 @@ def compare():
                         '-fill', '#FF7A1A', '-opaque', 'white', '-transparent', 'black', ')', '-composite', edge], check=True)
         mix = os.path.join(d, f'{pose}_mischung.png')
         subprocess.run(['magick', u, b, '-compose', 'blend', '-define', 'compose:args=50', '-composite', mix], check=True)
-        tiles += ['-label', f'{pose} · Blender (Cycles)', b, '-label', f'{pose} · Unity (URP)', u,
+        m = mets[pose] = metrics(u, b)
+        print(f"  {pose}: SSIM {m['ssim']}, PSNR {m['psnr_db']} dB, Helligkeit Unity {m['lum_unity']} / Blender {m['lum_blender']}")
+        tiles += ['-label', f'{pose} · Blender (Cycles)', b, '-label', f"{pose} · Unity (URP) · SSIM {m['ssim']}", u,
                   '-label', f'{pose} · Blender-Kanten über Unity', edge]
     sheet = os.path.join(EV, 'firstfeel_vergleich.png')
     subprocess.run(['magick', 'montage', *tiles, '-tile', '3x', '-geometry', '600x338+3+3', '-pointsize', '14', '-background', '#9EA4AC',
                     '-title', 'BALLON 0.4 · Standbildvergleich Blender gegen Unity (gleiche Haltung, Kamera 75° horizontal)', sheet],
                    check=True)
+    json.dump(mets, open(os.path.join(d, 'metrics.json'), 'w'), indent=1)
     print('Vergleich →', sheet)
     return 0
 
@@ -164,6 +190,11 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture())
+    if a == 'bench':
+        f = os.path.join(EV, 'bench.json')
+        rc = player(['-ballonBench', f], os.path.join(EV, 'bench.log'))
+        print(open(f).read() if os.path.exists(f) else 'keine Messung')
+        sys.exit(rc)
     if a == 'compare':
-        sys.exit(compare())
+        sys.exit(compare(sys.argv[2:]))
     print(__doc__)

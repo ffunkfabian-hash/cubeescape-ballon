@@ -73,6 +73,7 @@ namespace Ballon.Ego
             wd.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
             var vd = p.viewCam.GetUniversalAdditionalCameraData();
             vd.renderType = CameraRenderType.Overlay;
+            vd.SetRenderer(Bootstrap.OutRenderer);          // letzte Kamera im Stapel: AgX-Abbildung wie Blender
             vd.renderPostProcessing = false;
             wd.cameraStack.Add(p.viewCam);
             p.worldCam.clearFlags = CameraClearFlags.SolidColor;

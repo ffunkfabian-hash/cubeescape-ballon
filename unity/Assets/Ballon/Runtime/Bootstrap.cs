@@ -14,8 +14,10 @@ namespace Ballon.Ego
         public TextAsset egoJson;
         public GameObject weaponModel, armsModel;
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
-        public Material floor, wall, cover, target, targetRing, flash, post, decal;
-        public const int ViewmodelLayer = 31;     // Ebene „Viewmodel“ (in den Projekteinstellungen benannt)
+        public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
+        public const int ViewmodelLayer = 31;
+        public const int OutRenderer = 1;
+        public const int StudioEmitLayer = 30;   // Lichtflächen nur für die Reflexionssonde (Vergleichsmodus)         // Renderer „Out“ mit dem AgX-Durchgang (BallonSetup.OutRenderer)     // Ebene „Viewmodel“ (in den Projekteinstellungen benannt)
 
         public EgoFile D { get; private set; }
         public EgoSolver S { get; private set; }
@@ -67,7 +69,11 @@ namespace Ballon.Ego
             Player.range = Range;
             var args = Environment.GetCommandLineArgs();
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
-            if (cap != null) StartCoroutine(Capture(cap));
+            if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
+            if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
+            string bench = Arg(args, "-ballonBench");
+            if (bench != null) StartCoroutine(Bench(bench));
+            else if (cap != null) StartCoroutine(Capture(cap));
             else if (cmp != null) StartCoroutine(Compare(cmp));
             else Cursor.lockState = CursorLockMode.Locked;
         }
@@ -125,6 +131,124 @@ namespace Ballon.Ego
 
         int _f0;
 
+        /// <summary>Leistung im Parcours: Vorführablauf in Echtzeit ohne VSync, Bildzeiten (ms) nach `file` (Mittel, 95-, 99-Perzentil).</summary>
+        IEnumerator Bench(string file)
+        {
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = -1;
+            Player.hud = true;
+            Player.C.ReadyNow();
+            Player.C.ammo = 9;
+            Player.input = DemoScript();
+            for (int i = 0; i < 30; i++) yield return null;      // Aufwärmen
+            var ms = new List<float>();
+            float t = 0;
+            while (t < 10f)
+            {
+                yield return null;
+                ms.Add(Time.unscaledDeltaTime * 1000f);
+                t += Time.unscaledDeltaTime;
+            }
+            ms.Sort();
+            float mean = 0;
+            foreach (var v in ms) mean += v;
+            mean /= ms.Count;
+            var I = System.Globalization.CultureInfo.InvariantCulture;
+            File.WriteAllText(file, string.Format(I, "{{\"frames\": {0}, \"mean_ms\": {1:0.00}, \"p95_ms\": {2:0.00}, \"p99_ms\": {3:0.00}, " +
+                "\"width\": {4}, \"height\": {5}, \"gpu\": \"{6}\"}}\n", ms.Count, mean, ms[(int)(ms.Count * 0.95f)], ms[(int)(ms.Count * 0.99f)],
+                Screen.width, Screen.height, SystemInfo.graphicsDeviceName));
+            Debug.Log($"[Ballon] Leistung: {ms.Count} Bilder, Mittel {mean:0.00} ms");
+            Application.Quit();
+        }
+
+        /// <summary>Lichtmaßstab: Unity-Intensität = studioScale · P / π² aus der Blender-Leistung P (W) eines Flächenlichts.</summary>
+        public float studioScale = 1f;
+        public float emitScale = 0.1f;    // Anteil der Lichtflächen in der Sonde (1 = Blender-Strahldichte); Messreihe 0/0,1/0,25/0,5 → 0,1 am nächsten an Blender
+
+        static Color Lin(string hex)
+        {
+            ColorUtility.TryParseHtmlString(hex, out var c);
+            return c.linear;
+        }
+
+        /// <summary>Studio wie tools/blender_build.setup_aaa (bg 'mid'): vier Flächenlichter als weiche Spotlichter, Verlaufshintergrund
+        /// im Bildraum (#4C525A → #9EA4AC zwischen 5 und 95 % Höhe), Umgebung #8C96A3 × 0,45 für Licht und Spiegelungen.</summary>
+        public void StudioLike(Camera cam)
+        {
+            var amb = Lin("#8C96A3") * 0.45f;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = amb.gamma;
+            RenderSettings.ambientIntensity = 1f;
+            DynamicGI.UpdateEnvironment();
+            Player.viewCam.transform.localRotation = Quaternion.identity;
+            cam.cullingMask &= ~(1 << StudioEmitLayer);
+            var lights = new (string, Vector3, float, string)[]
+            {
+                ("Key", new Vector3(-0.9f, -0.9f, 1.3f), 170f, "#FFF4E6"), ("Fill", new Vector3(1.2f, -0.5f, 0.2f), 40f, "#DCE6F2"),
+                ("Rim", new Vector3(0.6f, 1.4f, 0.9f), 320f, "#E8F1FF"), ("Top", new Vector3(0f, 0f, 1.8f), 60f, "#FFFFFF"),
+            };
+            var sizes = new Dictionary<string, float> { ["Key"] = 1.2f, ["Fill"] = 2.5f, ["Rim"] = 0.9f, ["Top"] = 3.0f };
+            foreach (var (nm, p, watt, hex) in lights)
+            {
+                // Spiegelbild des Flächenlichts: leuchtende Fläche mit Strahldichte P / (π · A), nur für die Reflexionssonde sichtbar
+                if (backdrop != null)
+                {
+                    float a = sizes[nm];
+                    var e = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                    Destroy(e.GetComponent<Collider>());
+                    e.name = "Studio Fläche " + nm;
+                    e.layer = StudioEmitLayer;
+                    var em = new Material(backdrop);
+                    Vector4 c = Lin(hex) * (emitScale * studioScale * watt / (Mathf.PI * a * a));
+                    em.SetVector("_BaseColor", new Vector4(c.x, c.y, c.z, 1));
+                    e.GetComponent<Renderer>().sharedMaterial = em;
+                    e.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    e.transform.SetParent(Player.head, false);
+                    e.transform.localPosition = BMath.PointToUnity(D.toUnity, p);
+                    e.transform.localRotation = Quaternion.LookRotation(BMath.PointToUnity(D.toUnity, p - new Vector3(0, -0.1f, 0.1f)), Vector3.up);
+                    e.transform.localScale = new Vector3(a, a, 1);
+                }
+                var l = new GameObject("Studio " + nm).AddComponent<Light>();
+                l.type = LightType.Spot;
+                l.spotAngle = 150f;
+                l.innerSpotAngle = 60f;
+                l.range = 20f;
+                l.intensity = studioScale * watt / (Mathf.PI * Mathf.PI);
+                l.color = Lin(hex).gamma;
+                l.shadows = LightShadows.None;      // Cycles-Flächenlichter dieser Größe werfen kaum sichtbare Schatten; Kontaktschatten im AO
+                l.transform.SetParent(Player.head, false);
+                l.transform.localPosition = BMath.PointToUnity(D.toUnity, p);
+                l.transform.localRotation = Quaternion.LookRotation(BMath.PointToUnity(D.toUnity, new Vector3(0, -0.1f, 0.1f) - p), Vector3.up);
+            }
+            if (backdrop != null)
+            {
+                var g = new Texture2D(1, 256, TextureFormat.RGBAHalf, false, true) { wrapMode = TextureWrapMode.Clamp };
+                Color lo = Lin("#4C525A"), hi = Lin("#9EA4AC");
+                for (int y = 0; y < 256; y++) g.SetPixel(0, y, Color.Lerp(lo, hi, Mathf.Clamp01((y / 255f - 0.05f) / 0.9f)));
+                g.Apply();
+                var m = new Material(backdrop);
+                m.SetTexture("_BaseMap", g);
+                m.SetColor("_BaseColor", Color.white);
+                var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                Destroy(q.GetComponent<Collider>());
+                q.name = "Studio Hintergrund";
+                q.GetComponent<Renderer>().sharedMaterial = m;
+                q.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                q.transform.SetParent(cam.transform, false);
+                float d = 30f, hgt = 2 * d * Mathf.Tan(Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f) * Mathf.Deg2Rad / 2) * 1.02f;
+                q.transform.localPosition = new Vector3(0, 0, d);
+                q.transform.localScale = new Vector3(hgt * 16f / 9f, hgt, 1);
+            }
+            // Umgebung für Spiegelungen wie Blenders Nicht-Kamerastrahlen: einheitlich + die Lichtflächen
+            Probe.transform.position = Player.head.position;
+            Probe.resolution = 512;
+            Probe.size = new Vector3(20, 20, 20);
+            Probe.hdr = true;
+            Probe.cullingMask = 1 << StudioEmitLayer;
+            Probe.backgroundColor = amb.gamma;
+            Probe.RenderProbe();
+        }
+
         IEnumerator Compare(string dir)
         {
             Directory.CreateDirectory(dir);
@@ -133,32 +257,10 @@ namespace Ballon.Ego
             RangeRoot.gameObject.SetActive(false);
             Sun.enabled = false;
             RenderSettings.fog = false;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.42f, 0.45f, 0.5f);
             var cam = Player.worldCam;
-            cam.backgroundColor = new Color(0.44f, 0.47f, 0.51f);
-            Probe.backgroundColor = new Color(0.55f, 0.59f, 0.64f);     // Blender: Umgebung #8C96A3 für Nicht-Kamerastrahlen
-            Probe.RenderProbe();
-            Player.viewCam.transform.localRotation = Quaternion.identity;
-            // Studiolicht wie tools/blender_build.setup_aaa (Lage im Blender-Kameraraum, Ziel (0, −0,1, 0,1))
-            var lights = new (string, Vector3, float, Color)[]
-            {
-                ("Key", new Vector3(-0.9f, -0.9f, 1.3f), 1.25f, new Color(1f, 0.96f, 0.9f)),
-                ("Fill", new Vector3(1.2f, -0.5f, 0.2f), 0.35f, new Color(0.86f, 0.9f, 0.95f)),
-                ("Rim", new Vector3(0.6f, 1.4f, 0.9f), 1.1f, new Color(0.91f, 0.95f, 1f)),
-                ("Top", new Vector3(0f, 0f, 1.8f), 0.4f, Color.white),
-            };
-            foreach (var (nm, p, k, c) in lights)
-            {
-                var l = new GameObject("Studio " + nm).AddComponent<Light>();
-                l.type = LightType.Directional;
-                l.intensity = k;
-                l.color = c;
-                l.shadows = LightShadows.None;
-                l.transform.SetParent(Player.head, false);
-                var dirB = new Vector3(0, -0.1f, 0.1f) - p;
-                l.transform.localRotation = Quaternion.LookRotation(BMath.PointToUnity(D.toUnity, dirB), Vector3.up);
-            }
+            StudioLike(cam);
+            yield return null;                      // Reflexionssonde rendern lassen
+            yield return null;
             var rt = new RenderTexture(1600, 900, 24) { antiAliasing = 8 };
             cam.targetTexture = rt;
             cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
