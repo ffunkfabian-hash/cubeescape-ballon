@@ -319,6 +319,8 @@ def gallery(path):
 def main(argv):
     if '--gallery' in argv:
         return gallery(argv[argv.index('--gallery') + 1])
+    if '--family' in argv:
+        return family(argv[argv.index('--family') + 1])
     if '--pilot' in argv:
         return pilot(argv[argv.index('--pilot') + 1], *(argv[argv.index('--pilot') + 2:argv.index('--pilot') + 3]))
     dst = os.path.join(OUT, 'sheets')
@@ -400,6 +402,50 @@ def pilot(path, variant='v2.1'):
             '<section><h2>Stand</h2><p>Pilot in eigenem Modul (<code>basic/pilot/w01_auto_rifle_v21.py</code>, Vorgänger v2 erhalten); die Reihe ist unverändert. '
             'Mechanik und Anker wie v1. Toolgen-Budgets bewusst ignoriert (Vorgabe des Nutzers). Nach Freigabe folgen die übrigen 16.</p></section>')
     open(path, 'w', encoding='utf-8').write(page('Formstudie 01 v2', body, 'Pilot Destiny-Detaildichte und AAA-Material'))
+    print(path, f'{os.path.getsize(path) / 1e6:.1f} MB')
+
+
+def family(path):
+    """Familienseite Stil v2.1: alle Module basic/pilot/w*_v21.py mit Produktansicht, linker Seite, Ego-Ansicht, Explosion und
+    Skins; Kennzahlen aus den Specs, Sichtungsstand aus data/review.json, Checkliste aus dem Modul-Docstring."""
+    rv = json.load(open(os.path.join(ROOT, 'data', 'review.json'), encoding='utf-8'))
+    rows, heroes = '', ''
+    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
+        W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
+        wid = f"{W.META['id']}-{W.META['variant']}"
+        d = os.path.join(OUT, wid)
+        sp = os.path.join(d, f'{wid}.spec.json')
+        if not os.path.exists(sp):
+            continue
+        S = json.load(open(sp, encoding='utf-8'))
+        st = rv.get(wid, {}).get('static', {}).get('status', 'offen')
+        title = f"{W.META['id']} {W.META['type_de']}"
+        cap = (f"<b>{E(title)}</b> · {S['counts']['parts']} Teile, {S['counts']['triangles']} Dreiecke · Sichtung: {E(st)}")
+        heroes += fig(webp(os.path.join(d, 'views', 'hero_p.png'), 900, 88), title, cap, aspect='16/9')
+        cells = ''
+        for v, de in (('side_left', 'Linke Seite'), ('ego', 'Ego-nah'), ('exploded', 'Explosion')):
+            png = os.path.join(d, 'views', f'{v}.png')
+            if os.path.exists(png):
+                cells += fig(webp(png, 640, 85), de, f'<b>{de}</b>', aspect='16/9')
+        sk = ''.join(fig(webp(os.path.join(d, 'views', f'skin_{s}_hero.png'), 360, 82), s, s, aspect='16/9')
+                     for s in ('standard', 'nacht', 'polar', 'kobalt', 'wueste', 'tarnung', 'gebraucht', 'eloxal')
+                     if os.path.exists(os.path.join(d, 'views', f'skin_{s}_hero.png')))
+        doc = (W.__doc__ or '')
+        chk = ''
+        if '| Frage |' in doc:
+            lines = [ln for ln in doc[doc.index('| Frage |'):].splitlines() if ln.startswith('|') and '---' not in ln][1:]
+            chk = '<table><tbody>' + ''.join('<tr><th>{}</th><td>{}</td></tr>'.format(E(c[0].strip()), E(c[1].strip()))
+                                             for c in (ln.strip('|').split('|', 1) for ln in lines)) + '</tbody></table>'
+        rows += (f'<section><h2>{E(title)} · {E(W.META["name"])}</h2>'
+                 f'<div class="grid2">{fig(webp(os.path.join(d, "views", "hero_p.png"), 1200, 88), title, cap, aspect="16/9")}'
+                 f'<div style="overflow-x:auto">{chk}</div></div>'
+                 f'<div class="grid4" style="margin-top:12px">{cells}</div>'
+                 + (f'<h3>Skins</h3><div class="grid4">{sk}</div>' if sk else '') + '</section>')
+    body = ('<header><span class="eyebrow">cubeescape-ballon · Stil v2.1</span><h1>BASIC-Familie v2.1</h1>'
+            '<p class="muted">Destiny-Detaildichte, AAA-Material, schlicht. Gleiche Bausteine (Griff, Visier, Schrauben), eigene '
+            'Silhouette je Klasse. Grauer Hintergrund, ohne Bloom.</p></header>'
+            f'<section><h2>Familie</h2><div class="grid2">{heroes}</div></section>' + rows)
+    open(path, 'w', encoding='utf-8').write(page('BASIC-Familie v2.1', body, 'Waffenfamilie im Stil v2.1'))
     print(path, f'{os.path.getsize(path) / 1e6:.1f} MB')
 
 

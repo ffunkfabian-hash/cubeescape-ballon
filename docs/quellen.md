@@ -96,6 +96,12 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Positive Outlook | Auto Rifle | `…/screenshots/3625635456.jpg` | lange Haube über dem Lauf mit offenem Raum darunter, runder Leuchtkanister, Chevronband als Lackierung |
 | BrayTech Werewolf | Auto Rifle | `…/screenshots/3558681245.jpg` | Lackierung als Grafik über mehrere Bauteile, Bügel über dem Gehäuse, freiliegender Lauf mit Ringen |
 | Lethal Abundance | Auto Rifle | `…/screenshots/3428407746.jpg` | Zweiton-Lackierung, Zierlinien an Panelkanten, gerändelte Mündung |
+| Ogma PR6 | Pulse Rifle | `…/screenshots/324584912.jpg` | geschlossener kastiger Vorderbau mit flacher, abgeschrägter Stirn; Mündung eingelassen; Bullpup (nicht übernommen, Vertrag 02 konventionell) |
+| Yesteryear | Pulse Rifle | `…/screenshots/4028000428.jpg` | keilförmig nach vorn abfallende Haube; gelochter Mündungsmantel; Bullpup |
+| Veles-X | Pulse Rifle | `…/screenshots/438540299.jpg` | Zweiton-Band über Gehäuse und Vorderbau, mehrstufige Mündung, Frontgriff (nicht übernommen: Leitmerkmal 06) |
+
+Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
+Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung.
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).

@@ -73,6 +73,40 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
     miss = set(W.ACTIONS) - set(rv.get(W.META['id'], {}).get('actions', {}))
     if miss:
         fail(f"{W.META['id']}: Sichtung fehlt in data/review.json für {sorted(miss)}")
+# Stil-v2.1-Familie (basic/pilot/w*_v21.py): gleiche Strukturprüfung, Sichtung je Ansicht und Aktion in data/review.json
+for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
+    W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
+    wid = f"{W.META['id']}-{W.META['variant']}"
+    ids = [p['id'] for p in W.PARTS]
+    if len(ids) != len(set(ids)):
+        fail(f'{wid}: doppelte Bauteil-IDs')
+    asm = {a['id'] for a in W.ASSEMBLIES}
+    for p in W.PARTS:
+        for k in ('de', 'en', 'func', 'attach', 'mat'):
+            if not p.get(k):
+                fail(f'{wid}/{p["id"]}: Feld {k} leer')
+        if p['asm'] not in asm:
+            fail(f'{wid}/{p["id"]}: Baugruppe {p["asm"]} fehlt')
+        if p.get('parent_part') and p['parent_part'] not in ids:
+            fail(f'{wid}/{p["id"]}: Elternteil fehlt')
+        if p.get('iface') and p['iface'] not in common.INTERFACES:
+            fail(f'{wid}/{p["id"]}: Schnittstelle {p["iface"]} unbekannt')
+    for k in ('Socket_Hand', 'Socket_Muzzle', 'Socket_Eye'):
+        if k not in W.ANCHORS:
+            fail(f'{wid}: Anker {k} fehlt')
+    for a, A in W.ACTIONS.items():
+        for pid in A['keys']:
+            p = next((x for x in W.PARTS if x['id'] == pid), None)
+            if not p or 'move' not in p:
+                fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+    if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
+        fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
+    R = rv.get(wid, {})
+    if R.get('static', {}).get('status') != 'geprüft':
+        fail(f'{wid}: Sichtung der Ansichten fehlt in data/review.json')
+    miss = set(W.ACTIONS) - set(R.get('actions', {}))
+    if miss:
+        fail(f'{wid}: Sichtung fehlt in data/review.json für {sorted(miss)}')
 if len(types) != 17:
     fail(f'{len(types)} Grundtypen statt 17')
 BL = os.environ.get('BLENDER', '/Applications/Blender.app/Contents/MacOS/Blender')

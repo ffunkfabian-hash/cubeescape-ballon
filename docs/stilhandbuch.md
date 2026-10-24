@@ -126,6 +126,11 @@ Weitere Felder: `cuts` (Durchbrüche/Fugen, Exact-Boolean, sofort angewandt), `b
 `parent_part` (folgt beweglichem Elternteil), `move` (`translate`/`rotate`/`segment`/`glow`, Drehsinn siehe `kit.py`, `expect` für den
 Test), `removable`, `iface`. Gemeinsame Bausteine in `basic/common.py` (Griffmodul, Schiene, Visiere, Magazin, Lauf, Schäfte, Zelle).
 
+**Familienbausteine v2.1** (`basic/common.py`, aus dem Pilot übernommen; der Pilot führt sie noch inline):
+`grip_v21(top)` Griff mit Fingerauflagen und Griffboden · `reflex_sight_v21(f, u, ww, wh)` Reflexvisier mit Klemmhebel, verjüngter
+Haube und Fenster ww × wh (liefert Teile und Anker) · `cut_box`, `screws`, `mirror` für Schneidkörper und Schraubbilder.
+Variante einer Reihenwaffe: `basic/pilot/wNN_<typ>_v21.py`, `META = dict(V1.META, variant='v2.1', …)`, Ausgabe `BASIC-NN-v2.1`.
+
 ## 7 Arbeitsablauf für eine neue Waffe oder Variante
 
 1. **Recherche (beobachtet, nicht kopiert).** Bildersuche „destiny 2 legendary <typ> light.gg“; im Browser-Fenster die Original-
@@ -144,8 +149,18 @@ Test), `removable`, `iface`. Gemeinsame Bausteine in `basic/common.py` (Griffmod
    Volumenprüfung (Blender, `bmesh.calc_volume`).
 6. **Mechanik:** `move.expect` für jede Drehung, `./check` (enthält den Drehsinn-Test), Bildfolgen mit `--motion`, Sichtung in
    `data/review.json` eintragen (nur „geprüft“, was im Bild stimmt).
-7. **Doku und Blätter:** `tools/sync_specs.py`, `tools/make_docs.py`, `tools/make_sheets.py` (Pilotvergleich: `--pilot <datei>`),
-   Bericht in `docs/versions/`.
+7. **Doku und Blätter:** `tools/sync_specs.py`, `tools/make_docs.py`, `tools/make_sheets.py` (Pilotvergleich: `--pilot <datei>`,
+   Familienseite: `--family <datei>`), Bericht in `docs/versions/`.
+
+**Dokumentationspflicht je Waffe** (abhaken, bevor die Waffe als fertig gilt; `./check` prüft die mit ✓ markierten Punkte):
+- [ ] Recherche: 2–3 Vertreter in `docs/quellen.md › Q-D2-IMG` (Waffe, Typ, URL, beobachtetes Prinzip; was nicht übernommen wurde und warum)
+- [ ] ✓ Modul-Docstring: Recherche-Kurzfassung, Checkliste §3 als Tabelle, Schlichtheitsbudget gezählt, Status der Maße
+- [ ] Neue gemeinsame Bausteine in `basic/common.py` und hier in §6; neue Formtechniken in §3
+- [ ] ✓ Sichtung: Ansichten (`static`) und jede Aktion in `data/review.json` (Methode, Datum, Befund)
+- [ ] Belege außerhalb des Repos (Ansichten, Skins, Bildfolgen), Pfade im Bericht
+- [ ] Lehren als je eine Zeile in `docs/LESSONS.md`; Typische Fehler in §9
+- [ ] Bericht `docs/versions/<version>.md` (Runden, Befunde, offene Punkte, Belege) und CHANGELOG
+- [ ] Abweichungen vom Designvertrag nur mit Nutzerentscheidung (in §1 eintragen)
 
 ## 8 Rendern
 
@@ -165,6 +180,8 @@ Test), `removable`, `iface`. Gemeinsame Bausteine in `basic/common.py` (Griffmod
 - Schwarzes Polymer mit Specular 0,5 wirkt grau → 0,2–0,25.
 - Bloom mit niedriger Schwelle lässt helle Lackflächen glimmen → aus.
 - Teile auf der linken Seite (Anzeigen, Kern) sind in der Standardkamera (rechts vorn) unsichtbar → Aktion mit `view` von links rendern.
+- Reflexvisier ohne Absehen: der Emitter allein zeigt keinen Zielpunkt → `reticle()` auf die Scheibe (Nutzerhinweis 24.10.2026).
+- Fenster in massiven Profilen bleiben Mulden: für sichtbare Innenteile quer durchschneiden (Schneidkörper breiter als das Teil).
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
 
 ## 10 Arme und Animation

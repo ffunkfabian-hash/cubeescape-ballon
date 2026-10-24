@@ -353,3 +353,93 @@ def stock_s2(f0, ua, s=1.0):
 
 INTERFACES['BST-2'] = dict(de='Schaft S2', en='Stock S2', rule='Anlage 64 mm hoch am Gehäuseende, Laufachse 24 mm unter der Oberkante')
 INTERFACES['BST-T'] = dict(de='Einteilkörper Spurgewehr', en='Trace one-piece body', rule='Hinterkörper bündig am Gehäuse, Fuge 1 mm')
+
+
+# ------------------------------------------------------------------ Bausteine Stil v2.1 (Familie; aus dem Pilot übernommen)
+# Der Pilot basic/pilot/w01_auto_rifle_v21.py führt dieselben Formen noch inline (unverändert, damit seine Ausgabe gleich bleibt).
+
+def cut_box(f0, f1, u0, u1, w, x=0.0):
+    """Schneidkörper (Quader) für `cuts`."""
+    return dict(shape='box', f0=f0, f1=f1, u0=u0, u1=u1, w=w, x=x)
+
+
+def screws(pts, x, r=2.2, h=1.2, axis='x'):
+    """Schraubenköpfe (Zylinder quer) an (f,u)-Punkten auf der Seitenfläche x (Vorzeichen = Seite)."""
+    s = 1 if x > 0 else -1
+    return [dict(shape='cyl', axis=axis, c=(f, u), a0=x - s * 0.6, a1=x + s * h, r=r, segs=12) for f, u in pts]
+
+
+def mirror(items):
+    """Spiegelt Quer-Zylinder (`a0`/`a1`) auf die andere Seite und hängt sie an."""
+    return items + [dict(i, a0=-i['a0'], a1=-i['a1']) for i in items]
+
+
+def grip_v21(top=42, mat='rubber'):
+    """Griffmodul BGM-1 in v2.1-Form: Fingerauflagen (Wechsel 17/21 mm), Handballenwölbung, ausgestellter Boden (Griffboden)."""
+    t = math.tan(math.radians(15))
+
+    def A(u, d):
+        return (u * t + d, u)
+    P = []
+    for p in grip_rifle(top=top):
+        if p['id'] == 'grip':
+            p.update(mat=mat, pts=[A(top, -20), A(12, -23), A(-22, -26), A(-52, -22), A(-64, -25), A(-74, -22), A(-76, -12),
+                                   A(-76, 16), A(-70, 23), A(-60, 18), A(-50, 21), A(-40, 17), A(-30, 21), A(-20, 17), A(-8, 21),
+                                   A(16, 20), A(top, 21)])
+        if p['id'] == 'trigger_guard':
+            p['mat'] = 'anodized'
+        P.append(p)
+    P.append(prof('grip_cap', 'Griffboden', 'Grip cap', 'grip_controls', 'anodized', 'Ausgestellter Abschluss; schützt den Griff',
+                  'unten auf den Griff geschraubt', [A(-73, -23), A(-73, 24), A(-79, 22), A(-79, -21)], 32, bevel=R_SMALL))
+    return P
+
+
+def reticle(f, cu, r=3.2, dot=0.8, pid='sight_reticle'):
+    """Absehen (Ring mit Mittelpunkt) auf der Reflexscheibe bei Socket_Reticle; gehört zur Leuchtfunktion des Emitters."""
+    return part(pid, 'Absehen', 'Reticle', 'sight', 'multi', 'energy', 'Zielpunkt im Glas (Ring mit Mittelpunkt, vom Emitter projiziert)',
+                'auf der Reflexscheibe', bevel=0, parent_part='sight_mount', smooth=True,
+                items=[dict(shape='cyl', axis='f', c=(cu, 0), a0=f, a1=f + 0.4, r=r, r_in=r * 0.78, segs=32),
+                       dict(shape='cyl', axis='f', c=(cu, 0), a0=f, a1=f + 0.4, r=dot, segs=16)])
+
+
+def reflex_sight_v21(f, u, ww=31, wh=25):
+    """Reflexvisier v2.1 (Klemmfuß mit Klemmhebel, Gehäuse, nach vorn verjüngte Haube mit blanker Kante, Glas, Emitter,
+    Verstellknopf, Batteriedeckel). ww × wh = Glasfenster (Vertrag: 26 × 20 bis 44 × 30 mm). Liefert (Teile, Anker)."""
+    bt = u + 8
+    cu = bt + wh / 2 + 8.5
+    hw = ww / 2 + 1                     # Mitte der Haubenwände
+    top0, top1 = cu + wh / 2 + 2, cu + wh / 2 + 6   # Haubendach vorn / hinten (verjüngt nach vorn)
+    P = [
+        box('sight_mount', 'Visier-Klemmfuß', 'Sight mount', 'sight', 'anodized', 'Klemmt das Visier auf die Schiene BRI-22',
+            'Klemmung auf Schiene (lösbar)', f, f + 50, u + 0.5, bt, 26, bevel=R_SMALL, iface='BRI-22',
+            cuts=[cut_box(f + 8, f + 42, u + 2, bt - 2, 4, x=13)],
+            move=dict(kind='translate', pivot=(f + 25, u, 0), vector_mm=(0, 70, 0), event='swap_sight', removable=True)),
+        part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Klemmfuß werkzeuglos',
+             'Drehachse links am Klemmfuß', bevel=R_FINE, parent_part='sight_mount',
+             pts=[(f + 14, u + 1), (f + 36, u + 1), (f + 38, u + 5), (f + 14, u + 6)], w=2.4, x=14.2),
+        prof('sight_body', 'Visiergehäuse', 'Sight housing', 'sight', 'anodized', 'Trägt Emitter, Batterie und Verstellung',
+             'auf Klemmfuß (fest)', [(f + 1, bt - 0.5), (f + 50, bt - 0.5), (f + 50, bt + 5), (f + 17, bt + 5), (f + 13, bt + 8),
+                                     (f + 1, bt + 8)], max(26, ww - 4), bevel=R_SMALL, parent_part='sight_mount'),
+        part('sight_frame', 'Visierhaube', 'Sight hood', 'sight', 'multi', 'anodized', 'Haube um das Glas; nach vorn verjüngt',
+             'auf Visiergehäuse (fest)', bevel=R_SMALL, parent_part='sight_mount',
+             items=[dict(shape='prof', pts=[(f + 30, bt + 4), (f + 50, bt + 4), (f + 50, top0), (f + 30, top1)], w=3, x=sx * hw)
+                    for sx in (1, -1)]
+                   + [dict(shape='prof', pts=[(f + 30, top1 - 3.5), (f + 50, top0 - 2), (f + 50, top0 + 1), (f + 30, top1 + 0.5)],
+                           w=ww + 5)]),
+        part('sight_frame_trim', 'Haubenkante', 'Hood trim', 'sight', 'frame', 'trim', 'Blanke Stirnkante der Haube',
+             'vorn an der Haube', bevel=0.4, parent_part='sight_mount', f0=f + 49.6, f1=f + 51, cu=cu - 0.5, ow=ww + 5, oh=wh + 7,
+             iw=ww - 1, ih=wh, r_out=3, r_in=2),
+        part('sight_glass', 'Visierglas', 'Sight glass', 'sight', 'xbox', 'glass', 'Beschichtete Reflexscheibe',
+             'im Rahmen (fest)', bevel=0, parent_part='sight_mount', f0=f + 43.5, f1=f + 44.5, cu=cu, ww=ww, hh=wh),
+        box('sight_emitter', 'Emitter', 'Reticle emitter', 'sight', 'energy', 'Leuchtfenster des Absehen-Projektors',
+            'vorn im Emitterblock', f + 15.5, f + 17.5, bt + 5.2, bt + 7.4, 7, bevel=0.3, parent_part='sight_mount'),
+        reticle(f + 43.0, cu),
+        cyl('sight_knob_w', 'Seitenverstellung', 'Windage knob', 'sight', 'trim', 'Verstellt das Absehen seitlich',
+            'rechts am Gehäuse', 'x', (f + 26, bt + 2), -13, -17, 3.2, parent_part='sight_mount', segs=16),
+        cyl('sight_battery', 'Batteriedeckel', 'Battery cap', 'sight', 'anodized', 'Batteriefach links',
+            'links am Gehäuse (schraubbar)', 'x', (f + 26, bt + 2), 13, 16.5, 4.4, parent_part='sight_mount', segs=16),
+    ]
+    A = {'Socket_Sight': dict(at=(f + 1, cu, 0), part='sight_body'),
+         'Socket_Reticle': dict(at=(f + 44, cu, 0), part='sight_glass'),
+         'Socket_Eye': dict(at=(f + 30, cu, 0), part='sight_frame')}
+    return P, A

@@ -12,7 +12,7 @@ Gleiche Grundkonstruktion, Anker und Mechanik wie basic/weapons/w01_auto_rifle.p
 Ausgabe getrennt (`BASIC-01-v2`), damit die Reihe unverändert bleibt, bis der Nutzer entscheidet.
 """
 import math
-from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, grip_rifle, selector, charging_handle,
+from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, grip_rifle, selector, charging_handle, reticle,
                           R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w01_auto_rifle as V1
 
@@ -151,6 +151,7 @@ P += [
          'im Rahmen (fest)', bevel=0, parent_part='sight_mount', f0=f + 43.5, f1=f + 44.5, cu=cu, ww=31, hh=25),
     box('sight_emitter', 'Emitter', 'Reticle emitter', 'sight', 'energy', 'Leuchtfenster des Absehen-Projektors',
         'vorn im Emitterblock', f + 15.5, f + 17.5, bt + 5.2, bt + 7.4, 7, bevel=0.3, parent_part='sight_mount'),
+    reticle(f + 43.0, cu),
     cyl('sight_knob_w', 'Seitenverstellung', 'Windage knob', 'sight', 'trim', 'Verstellt das Absehen seitlich',
         'rechts am Gehäuse', 'x', (f + 26, bt + 2), -13, -17, 3.2, parent_part='sight_mount', segs=16),
     cyl('sight_battery', 'Batteriedeckel', 'Battery cap', 'sight', 'anodized', 'Batteriefach links',

@@ -521,5 +521,55 @@
       "Arm v3 (24.10.2026): alle 19 Aktionen neu gerendert, Handgelenk max. 42,7° (Ziehen/Wegstecken); Drehgelenk zeigt die Panzerseite zur Kamera.",
       "Bewegung v2 (24.10.2026): Kurven durch die Schlüssel, Feder-Nachlauf, Atmen überall, Rückstoßfeder, Tempo 1,25 (Zielen/Feuern ausgenommen), alle Clips 30 fps; Nachladen neu choreografiert, Haltung reload höher und mittiger – Einsetzen des Magazins jetzt sichtbar. Messung: inspect ohne Zwischenstopp, reload_empty nur gewollte Halte (Ausholen, vor dem Stoß)."
     ]
+  },
+  "BASIC-02-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Drei Runden: (1) Silhouette/Zweiton an hero_p und side_left – Kammerfenster war nur Mulde, quer durchgeschnitten; (2) Schichten/Negativraum an side_left (Ausschnitt) – Anzeigenleiste lag unter der Oberfläche, 1,8 mm herausgehoben; (3) Material/Budget an hero, exploded, sightline, ego und 8 Skins; Absehen ergänzt (Nutzerhinweis)"
+    },
+    "actions": {
+      "fire_burst": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bildfolge motion/fire_burst, Bilder 0/3/7/11: Salvenanzeigen leuchten nacheinander, Abzug und Auswurfklappe bewegen sich"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bildfolge motion/reload_empty, Bilder 0/16/32/64: Magazin entlang der Achse heraus und wieder eingesetzt, Ladehebel"
+      }
+    },
+    "notes": [
+      "Bullpup-Aufbau (Ogma PR6, Yesteryear) bewusst nicht übernommen: Designvertrag 02 ist konventionell; Entscheidung beim Nutzer."
+    ]
+  },
+  "BASIC-01-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-24",
+      "method": "Drei Sichtungsrunden laut docs/versions/0.2-pilot.md; Nachtrag: Absehen ergänzt, sightline und part_sight neu gesichtet"
+    },
+    "actions": {
+      "fire_auto": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bildfolge motion/fire_auto (Bilder 0/5/9, nachgeholt): Verschluss läuft zurück, Auswurfklappe öffnet"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-24",
+        "method": "Bildfolge motion/reload_empty (Bilder 0/16/60, nachgeholt): Magazin heraus und wieder eingesetzt"
+      }
+    },
+    "notes": [
+      "Mechanik-Bildfolgen des Piloten wurden erst mit der Familienprüfung (0.6) gerendert und gesichtet."
+    ]
   }
 }
