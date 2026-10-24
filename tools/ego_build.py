@@ -185,18 +185,94 @@ def pose_matrix(W, name, off=None):
     return R, pos
 
 
+def curve(ts, vs, f):
+    """Monotone kubische Hermite-Kurve durch Schlüsselwerte (Listen gleicher Länge) – EG.INTERP. Tangente je Komponente aus den
+    Nachbarsteigungen, 0 an Halt- und Umkehrpunkten und an den Enden (kein Überschwingen); ohne Tangenten entspricht sie ease()."""
+    n = len(ts)
+    if f <= ts[0]:
+        return list(vs[0])
+    if f >= ts[-1]:
+        return list(vs[-1])
+    i = max(k for k in range(n - 1) if ts[k] <= f)
+
+    def tan(k):
+        if k == 0 or k == n - 1:
+            return [0.0] * len(vs[k])
+        h0, h1 = ts[k] - ts[k - 1], ts[k + 1] - ts[k]
+        out = []
+        for a, b, c in zip(vs[k - 1], vs[k], vs[k + 1]):
+            d0 = (b - a) / h0 if h0 > 0 else 0.0
+            d1 = (c - b) / h1 if h1 > 0 else 0.0
+            if d0 * d1 <= 0:
+                out.append(0.0)
+            else:
+                m = (d0 + d1) / 2
+                lim = 3 * min(abs(d0), abs(d1))
+                out.append(max(-lim, min(lim, m)))
+        return out
+    h = ts[i + 1] - ts[i]
+    if h <= 0:
+        return list(vs[i + 1])
+    s = (f - ts[i]) / h
+    h00, h10, h01, h11 = 2 * s ** 3 - 3 * s ** 2 + 1, s ** 3 - 2 * s ** 2 + s, -2 * s ** 3 + 3 * s ** 2, s ** 3 - s ** 2
+    m0, m1 = tan(i), tan(i + 1)
+    return [h00 * a + h10 * h * ma + h01 * b + h11 * h * mb for a, b, ma, mb in zip(vs[i], vs[i + 1], m0, m1)]
+
+
+def mats_curve(ts, Ms, f):
+    """Kurve durch (Rotation, Position)-Schlüssel: Quaternionen auf eine Halbkugel gelegt, komponentenweise, normiert."""
+    vs, qp = [], None
+    for R, p in Ms:
+        q = R.to_quaternion()
+        if qp is not None and q.dot(qp) < 0:
+            q.negate()
+        qp = q
+        vs.append([p.x, p.y, p.z, q.w, q.x, q.y, q.z])
+    v = curve(ts, vs, f)
+    q = Quaternion(v[3:]).normalized()
+    return q.to_matrix(), Vector(v[:3])
+
+
 def weapon_at(W, keys, f):
     def ev(k):
         return pose_matrix(W, k) if isinstance(k, str) else pose_matrix(W, k[0], k[1])
-    if f <= keys[0][0]:
-        return ev(keys[0][1])
-    for (f0, k0), (f1, k1) in zip(keys, keys[1:]):
-        if f0 <= f <= f1:
-            (R0, p0), (R1, p1) = ev(k0), ev(k1)
-            t = ease((f - f0) / (f1 - f0)) if f1 > f0 else 1
-            q = R0.to_quaternion().slerp(R1.to_quaternion(), t)
-            return q.to_matrix(), p0.lerp(p1, t)
-    return ev(keys[-1][1])
+    return mats_curve([k[0] for k in keys], [ev(k[1]) for k in keys], f)
+
+
+def spring_step(x, v, target, w, zeta, dt, sub=4):
+    """Gedämpfte Feder (Vektor x folgt target), halbimplizit in Unterschritten."""
+    h = dt / sub
+    for _ in range(sub):
+        a = (target - x) * (w * w) - v * (2 * zeta * w)
+        v = v + a * h
+        x = x + v * h
+    return x, v
+
+
+def secondary(R, pos, f, state):
+    """EG.SECONDARY: Die Waffe folgt ihrer Kurve träge (Position und Drehung als Federn), dadurch Nachschwingen nach Bewegungen."""
+    S = EG.SECONDARY
+    w, z, dt = 2 * math.pi * S['freq_hz'], S['zeta'], 1.0 / EG.FPS
+    q_t = R.to_quaternion()
+    if 'sec' not in state:
+        state['sec'] = dict(p=pos.copy(), v=Vector(), q=q_t.copy(), av=Vector(), f=f)
+        return R, pos
+    st = state['sec']
+    steps = max(1, int(round(f - st['f'])))
+    for _ in range(steps):
+        st['p'], st['v'] = spring_step(st['p'], st['v'], pos, w, z, dt)
+        for _k in range(4):
+            dq = q_t @ st['q'].inverted()
+            if dq.w < 0:
+                dq.negate()
+            err = Vector(dq.axis) * dq.angle if dq.angle > 1e-9 else Vector()
+            h = dt / 4
+            st['av'] = st['av'] + (err * (w * w) - st['av'] * (2 * z * w)) * h
+            ang = st['av'].length * h
+            if ang > 1e-12:
+                st['q'] = Quaternion(st['av'].normalized(), ang) @ st['q']
+    st['f'] = f
+    return st['q'].to_matrix(), st['p'].copy()
 
 
 # ------------------------------------------------------------------ Hände
@@ -225,29 +301,17 @@ def hand_target(key, part_world, cam_rot=None):
 
 
 def blend_hand(keys, f, part_world):
-    if f <= keys[0][0]:
-        return hand_target(keys[0][1], part_world)[0]
-    for (f0, k0), (f1, k1) in zip(keys, keys[1:]):
-        if f0 <= f <= f1:
-            A, B = hand_target(k0, part_world)[0], hand_target(k1, part_world)[0]
-            t = ease((f - f0) / (f1 - f0)) if f1 > f0 else 1
-            q = A.to_quaternion().slerp(B.to_quaternion(), t)
-            return mat(q.to_matrix(), A.translation.lerp(B.translation, t))
-    return hand_target(keys[-1][1], part_world)[0]
+    return mat(*mats_curve([k[0] for k in keys], [(lambda H: (H.to_3x3(), H.translation))(hand_target(k[1], part_world)[0])
+                                                  for k in keys], f))
 
 
 def blend_fingers(keys, f):
-    def pose(n):
-        return RA.FINGER_POSES[n]
-    if f <= keys[0][0]:
-        return pose(keys[0][1])
-    for (f0, k0), (f1, k1) in zip(keys, keys[1:]):
-        if f0 <= f <= f1:
-            a, b = pose(k0), pose(k1)
-            t = ease((f - f0) / (f1 - f0)) if f1 > f0 else 1
-            return dict(f=[[x + (y - x) * t for x, y in zip(fa, fb)] for fa, fb in zip(a['f'], b['f'])],
-                        t=[x + (y - x) * t for x, y in zip(a['t'], b['t'])])
-    return pose(keys[-1][1])
+    def flat(n):
+        P = RA.FINGER_POSES[n]
+        return [x for fi in P['f'] for x in fi] + list(P['t'])
+    v = curve([k[0] for k in keys], [flat(k[1]) for k in keys], f)
+    nf, nl = len(RA.FINGER_X), len(RA.FINGER_LINKS)
+    return dict(f=[v[i * nl:(i + 1) * nl] for i in range(nf)], t=v[nf * nl:])
 
 
 def solve_arm(side, segs, H, fp, report):
@@ -368,8 +432,13 @@ class Scene:
 def evaluate(sc, A, f, report, state):
     W = sc.W
     R, pos = weapon_at(W, A['weapon'], f)
+    R, pos = secondary(R, pos, f, state)
     off_pos, off_rot = Vector(), Matrix.Identity(3)
     cam_pitch = 0.0
+    Bz = EG.BREATHE_ALL                      # dezentes Atmen in jeder Aktion (Echtzeit, unabhängig vom Ablauftempo)
+    ph_b = 2 * math.pi * f / (Bz['period_s'] * EG.FPS)
+    off_pos.z += Bz['up_m'] * math.sin(ph_b)
+    off_rot = Matrix.Rotation(math.radians(-Bz['pitch_deg'] * math.sin(ph_b + 0.8)), 3, 'X')
     if A.get('breathe'):
         off_pos.z += 0.0015 * math.sin(2 * math.pi * f / 60)
         off_rot = Matrix.Rotation(math.radians(-0.25 * math.sin(2 * math.pi * f / 60 + 1)), 3, 'X')
@@ -384,13 +453,21 @@ def evaluate(sc, A, f, report, state):
     for pid, keys in A.get('mech', {}).items():
         mech[pid] = BB.value_at(keys, f)
     shots = [s for s in A.get('fire', []) if s <= f]
-    if A.get('fire'):
-        k = A.get('kick', 1.0)
-        back = sum(0.0175 * k * math.exp(-(f - s) / 2.2) for s in shots)
-        pitch = sum(3.0 * k * math.exp(-(f - s) / 2.2) for s in shots) + 0.12 * k * len(shots) * math.exp(-max(0, f - A['fire'][-1]) / 8)
-        cam_pitch = sum(0.35 * k * math.exp(-(f - s) / 3.0) for s in shots)
-        off_pos += R @ Vector((0, back, 0))
-        off_rot = off_rot @ Matrix.Rotation(math.radians(-pitch), 3, 'X')   # Mündung steigt
+    if A.get('fire'):                        # EG.RECOIL: Impuls je Schuss in gedämpfte Federn (Waffe zurück/hoch, Kamera getrennt)
+        k, Rc, dt = A.get('kick', 1.0), EG.RECOIL, 1.0 / EG.FPS
+        rc = state.setdefault('rec', dict(x=Vector(), v=Vector(), cx=Vector(), cv=Vector(), f=f - 1))
+        for fr in range(int(rc['f']) + 1, int(f) + 1):
+            for s in A['fire']:
+                if fr - 1 < s <= fr:
+                    rc['v'] += Vector((Rc['back_mps'] * k, Rc['pitch_dps'] * k, 0))
+                    rc['cv'] += Vector((Rc['cam_dps'] * k, 0, 0))
+            rc['x'], rc['v'] = spring_step(rc['x'], rc['v'], Vector(), 2 * math.pi * Rc['freq_hz'], Rc['zeta'], dt)
+            rc['cx'], rc['cv'] = spring_step(rc['cx'], rc['cv'], Vector(), 2 * math.pi * Rc['cam_freq_hz'], Rc['cam_zeta'], dt)
+        rc['f'] = f
+        climb = Rc['climb_deg'] * k * len(shots) * math.exp(-max(0, f - A['fire'][-1]) / 8)
+        cam_pitch = rc['cx'].x
+        off_pos += R @ Vector((0, rc['x'].x, 0))
+        off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
         mech['trigger'] = 1.0 if A['fire'][0] - 1 <= f <= A['fire'][-1] + 1 else 0.0
         mech['bolt_carrier'] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         mech['port_cover'] = 1.0 if shots else 0.0

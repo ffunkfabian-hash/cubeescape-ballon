@@ -196,6 +196,17 @@ Ready, Aimed …), `src` (Herkunft T/M/E).
 - Je Glied höchstens eine Akzentlinie; kein Leuchten, keine Stacheln.
 - Vier Finger und Daumen (liest sich als Hand, Zeigefinger am Abzug).
 
+**Bewegungsgefühl** (`ego.py`: `INTERP`, `SECONDARY`, `BREATHE_ALL`, `RECOIL`, `TIME_SCALE`; Nutzer: „zu schnell, rappelig,
+abgehackt, statisch“):
+- Schlüssel sind Durchgangspunkte, keine Stopps: monotone kubische Hermite-Kurve; anhalten nur, wo ein Schlüssel wiederholt wird
+  oder die Richtung umkehrt.
+- Die Waffe folgt ihrer Kurve über eine gedämpfte Feder (3,2 Hz, ζ 0,55): Trägheit und leichtes Nachschwingen; Hände folgen über
+  die Griffe von selbst.
+- Jede Aktion atmet dezent (3,4 s, 1 mm, 0,15°). Rückstoß ist ein Impuls je Schuss in eine Feder, die Kamera federt getrennt.
+- Choreografie mit Akzenten: Ausholen vor großen Bewegungen, Stoß beim Einsetzen, Ruck beim Durchladen, Nachfedern am Ende.
+- Ablauftempo 1,25 gegenüber der Destiny-Messung (lesbar ohne Ton und Bewegungsunschärfe); Zielen und Feuern bleiben schnell
+  (`KEEP_TIME`). Clips immer mit vollen 30 fps rendern (kein `step`).
+
 **Regeln für Arme und Haltungen**
 - Drehgelenk in der Stulpe: Ober- und Unterarm zeigen ihre Panzerseite zur Kamera, die Hand dreht frei
   (sonst zeigt die Stützhand dem Spieler den Graphitkörper).

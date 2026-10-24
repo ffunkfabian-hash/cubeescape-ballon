@@ -16,3 +16,4 @@
 - Viewmodel-Arme: Unterarm an der Hand ausrichten und den Knick begrenzen, statt die Schulter festzuhalten; Hände greifen von unten hinten ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
 - Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst.
 - Ego-Standbilder müssen die Handbelegung der Aktion übernehmen, sonst zeigt die Sichtung Fehler, die im Clip nicht auftreten ([ego_build.py](../tools/ego_build.py)).
+- Ego-Clips wirkten abgehackt: Ease je Schlüsselabschnitt stoppt an jedem Schlüssel; Kurven durch die Schlüssel, Feder-Nachlauf und volle Bildrate ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
