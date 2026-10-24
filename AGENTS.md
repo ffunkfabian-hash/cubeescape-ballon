@@ -23,4 +23,8 @@ Schlichtheitsbudget, Materialrollen, Skins, Baukasten, Arbeitsablauf.
 - **Nicht hier:** Formgen-Blätter, Toolgen-Assets/Clips, Cube-Escape-Code. Diese Repos nur lesen.
 - **Zurückgestellt bleibt zurückgestellt:** Einträge in [docs/erweiterungen.md](docs/erweiterungen.md) nicht ohne Auftrag bauen.
 - Commit, Push, Remote, Tag, Release nur auf Wunsch des Nutzers; nie auf `main` committen.
+- **Unity folgt Blender so nah wie möglich** (Nutzerwunsch 24.10.2026, dauerhaft). Das gilt für Form, Bewegung, Material,
+  Licht und Tonwerte. Blender bleibt die Quelle: Material backen statt in Unity neu erfinden. Jede sichtbare Unity-Änderung
+  wird gegen frisch gerenderte Blender-Stills verglichen (`tools/unity_run.py compare`); Abweichungen messen und im Bericht
+  begründen ([docs/unity.md](docs/unity.md)).
 - Vor Commit: `./check`.
