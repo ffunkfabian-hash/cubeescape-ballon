@@ -10,9 +10,9 @@
   "depth_mm": 375,
   "assemblies": {
    "head": {
-    "objects": 21,
-    "parts": 21,
-    "triangles": 5540,
+    "objects": 23,
+    "parts": 23,
+    "triangles": 6860,
     "size_mm": [
      200,
      237,
@@ -30,29 +30,29 @@
     ]
    },
    "upper_body": {
-    "objects": 38,
-    "parts": 38,
-    "triangles": 9634,
+    "objects": 48,
+    "parts": 48,
+    "triangles": 12146,
     "size_mm": [
      618,
      321,
-     490
+     493
     ]
    },
    "lower_body": {
-    "objects": 7,
-    "parts": 7,
-    "triangles": 1524,
+    "objects": 13,
+    "parts": 13,
+    "triangles": 2940,
     "size_mm": [
-     298,
+     398,
      185,
      220
     ]
    },
    "legs": {
-    "objects": 52,
-    "parts": 26,
-    "triangles": 11920,
+    "objects": 62,
+    "parts": 31,
+    "triangles": 14120,
     "size_mm": [
      556,
      331,
@@ -80,9 +80,11 @@
    "neck_piston_r_cyl",
    "neck_piston_r_rod",
    "neck_cable_r",
+   "throat_cable_r",
    "neck_piston_l_cyl",
    "neck_piston_l_rod",
    "neck_cable_l",
+   "throat_cable_l",
    "head_core",
    "helmet",
    "helmet_cap",
@@ -190,6 +192,11 @@
    "shoulder_r_disc",
    "shoulder_r_ring",
    "shoulder_r_hub",
+   "shoulder_joint_r",
+   "shoulder_cable_r",
+   "pauldron_bolt_r_0",
+   "pauldron_bolt_r_1",
+   "chest_seam_r",
    "abs_piston_r_cyl",
    "abs_piston_r_rod",
    "flank_cable_r",
@@ -198,6 +205,11 @@
    "shoulder_l_disc",
    "shoulder_l_ring",
    "shoulder_l_hub",
+   "shoulder_joint_l",
+   "shoulder_cable_l",
+   "pauldron_bolt_l_0",
+   "pauldron_bolt_l_1",
+   "chest_seam_l",
    "abs_piston_l_cyl",
    "abs_piston_l_rod",
    "flank_cable_l"
@@ -209,7 +221,13 @@
    "tasset",
    "tasset_edge",
    "hip_joint_r",
-   "hip_joint_l"
+   "hip_med_r_disc",
+   "hip_med_r_ring",
+   "hip_med_r_hub",
+   "hip_joint_l",
+   "hip_med_l_disc",
+   "hip_med_l_ring",
+   "hip_med_l_hub"
   ],
   "legs": [
    "thigh_body",
@@ -218,6 +236,8 @@
    "thigh_bolt_b",
    "thigh_piston_cyl",
    "thigh_piston_rod",
+   "thigh_piston_in_cyl",
+   "thigh_piston_in_rod",
    "knee",
    "knee_cap",
    "knee_med_disc",
@@ -230,12 +250,15 @@
    "shin_bolt_b",
    "calf_piston_cyl",
    "calf_piston_rod",
+   "heel_piston_cyl",
+   "heel_piston_rod",
    "ankle_med_disc",
    "ankle_med_ring",
    "ankle_med_hub",
    "ankle",
    "foot_body",
    "toe_cap",
+   "ankle_guard",
    "heel",
    "sole"
   ]

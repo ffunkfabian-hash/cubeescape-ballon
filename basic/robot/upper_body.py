@@ -20,6 +20,22 @@ def chest_front(z):
     raise ValueError(z)
 
 
+def chest_surface(x, z):
+    """Vorderfläche der Brustplatte bei (x, z): Vorderkante y1 plus Mittelwölbung, die zur Fase hin ausläuft."""
+    for (z0, w0, y0), (z1, w1, y1) in zip(CHEST, CHEST[1:]):
+        if z0 <= z <= z1:
+            t = (z - z0) / (z1 - z0)
+            w, y = w0 + (w1 - w0) * t, y0 + (y1 - y0) * t
+            return y + BULGE * max(0.0, 1 - abs(x) / (w / 2 - 22))
+    raise ValueError(z)
+
+
+def seam(pid, de, a, b, width=3.0):
+    """Dunkle Fuge auf der Brustplatte von a=(x, z) nach b=(x, z), 1,2 mm eingelassen, 1 mm erhaben."""
+    return (pid, de, 'torso', 'hull', 'anodized',
+            dict(pts=[(x + dx, chest_surface(x, z) + dy, z) for x, z in (a, b) for dx in (-width / 2, width / 2) for dy in (-1.2, 1.0)]))
+
+
 def parts():
     # Taillengelenk: Graphitkern mit Wirbelringen (sichtbare Mechanik in der schmalen Taille)
     P = [('waist_joint', 'Taillengelenk', 'torso', 'cyl', 'graphite', dict(axis='z', r=50, len=80, c=(0, -4, 6)))]
@@ -59,6 +75,13 @@ def parts():
               (f'pauldron_rim_{side}', 'Schulterrand', 'torso', 'hull', 'graphite',
                dict(pts=dome(sx, (4, 368), [(136, 186, 152, 34), (152, 188, 154, 34)], n=1)))]
         P += medallion(f'shoulder_{side}', 'torso', (sx * 300, 4, 374), 30, 10)
+        # Details nach Zielbild: Schultergelenk unter dem Panzer, Kabel von der Brust zur Schulter, zwei Schrauben oben auf dem Panzer,
+        # schräge Fuge (Facette) in der Brustplatte
+        P.append((f'shoulder_joint_{side}', 'Schultergelenk', 'torso', 'cyl', 'dark_metal', dict(axis='x', r=46, len=74, c=(sx * 200, 0, 330))))
+        P += cable(f'shoulder_cable_{side}', 'Schulterkabel', 'torso', [(sx * 150, 70, 230), (sx * 182, 62, 286), (sx * 214, 40, 322)], r=5)
+        P += [(f'pauldron_bolt_{side}_{k}', 'Schraube', 'torso', 'cyl', 'trim', dict(axis='z', r=4.2, len=4, c=(sx * 214, y, 457)))
+              for k, y in enumerate((-44, 44))]
+        P.append(seam(f'chest_seam_{side}', 'Brustfuge', (sx * 46, 262), (sx * 98, 166)))
         # sichtbare Mechanik: Bauchhydraulik vorn seitlich, Kabel von der Flanke zur Taille
         P += piston(f'abs_piston_{side}', 'Bauchhydraulik', 'torso', (sx * 72, 56, -6), (sx * 86, 72, 136), r=8)
         P += cable(f'flank_cable_{side}', 'Flankenkabel', 'torso', [(sx * 124, -30, 236), (sx * 120, 0, 150), (sx * 96, 22, 70),

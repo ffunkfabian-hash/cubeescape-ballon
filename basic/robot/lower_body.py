@@ -2,7 +2,7 @@
 
 0.5: schmaler (Becken 210 statt 240 mm), Lendenplatte kürzer, sichtbare dunkle Hüftgelenke statt eines Blocks (Nutzer: „klotzig“).
 """
-from .shapes import rsection, rsection_top
+from .shapes import rsection, rsection_top, medallion
 
 SEGMENTS = ['pelvis']
 HIP_Z = 40          # Hüftgelenk über dem Segmentursprung (= Socket_Hip)
@@ -20,5 +20,7 @@ def parts():
          ('tasset_edge', 'Lendenplattenkante', 'pelvis', 'hull', 'dark_metal',
           dict(pts=rsection_top(78, 61, 86, 8, -50, n=1) + rsection_top(74, 60, 86, 8, -64, n=1)))]
     for side, sx in (('r', -1), ('l', 1)):
-        P.append((f'hip_joint_{side}', 'Hüftgelenk', 'pelvis', 'cyl', 'dark_metal', dict(axis='x', r=46, len=74, c=(sx * 112, 0, HIP_Z))))
+        # Hüftachse durch den Oberschenkel bis außen, dort Medaillon wie am Knie (Zielbild: sichtbare Gelenke)
+        P.append((f'hip_joint_{side}', 'Hüftgelenk', 'pelvis', 'cyl', 'dark_metal', dict(axis='x', r=40, len=150, c=(sx * 112, 0, HIP_Z))))
+        P += medallion(f'hip_med_{side}', 'pelvis', (sx * 190, 0, HIP_Z), 34, 10)
     return P

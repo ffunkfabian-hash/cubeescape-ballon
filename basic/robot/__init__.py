@@ -45,8 +45,8 @@ POSES = {
 }
 
 # Material: Skin mit leichten Gebrauchsspuren (Zielbild: „gepflegter Einsatzroboter, kein Schrottroboter“) – mehr Kantenabrieb und
-# Schmutz als der Standard, weniger als „gebraucht“ (wear 3,2 / grime 2,2) der Waffen
-SKIN = dict(name='einsatz', de='Einsatz (leicht gebraucht)', kind='Textur', roles={}, wear=2.3, grime=1.8)
+# Schmutz als der Standard, etwas weniger als „gebraucht“ (wear 3,2 / grime 2,2) der Waffen; Elfenbein wärmer wie im Zielbild
+SKIN = dict(name='einsatz', de='Einsatz (leicht gebraucht)', kind='Textur', roles={'shell': '#D3C4A4'}, wear=2.8, grime=2.1)
 
 # Explosionsansicht (mm, Welt): grafische Auseinanderziehung entlang der Anker, Oberkörper bleibt stehen
 EXPLODE = {'head': (0, 0, 260), 'upper_body': (0, 0, 0), 'arms': (300, 0, 40), 'lower_body': (0, 0, -170), 'legs': (90, 0, -360)}

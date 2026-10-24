@@ -37,6 +37,8 @@ def parts():
         N += piston(f'neck_piston_{side}', 'Halshydraulik', 'head', (sx * 30, -40, -10), (sx * 36, -52, 150), r=7)
         N += cable(f'neck_cable_{side}', 'Nackenkabel', 'head', [(sx * 20, -50, -6), (sx * 30, -60, 60), (sx * 22, -62, 130),
                                                                   (sx * 12, -56, 176)], r=5)
+        N += cable(f'throat_cable_{side}', 'Halskabel', 'head', [(sx * 24, 36, -4), (sx * 30, 44, 60), (sx * 22, 42, 124),
+                                                                (sx * 14, 36, 156)], r=4.5)
     return N + P
 
 

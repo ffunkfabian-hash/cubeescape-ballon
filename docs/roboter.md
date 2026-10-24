@@ -10,11 +10,11 @@ Gemessen in der Grundhaltung `idle` (ohne Waffe): Höhe 1909 mm, Breite 702 mm, 
 
 | Baugruppe | ID | Segmente | Teile | Objekte im Modell | Dreiecke | Größe B × T × H (mm) |
 |---|---|---|---:|---:|---:|---|
-| Kopf | `head` | `head` | 21 | 21 | 5540 | 200 × 237 × 387 |
+| Kopf | `head` | `head` | 23 | 23 | 6860 | 200 × 237 × 387 |
 | Arme | `arms` | `upper`, `fore`, `hand`, `f0_0`, `f0_1`, `f0_2` … | 67 | 134 | 23072 | 702 × 268 × 744 |
-| Oberkörper | `upper_body` | `torso` | 38 | 38 | 9634 | 618 × 321 × 490 |
-| Unterkörper | `lower_body` | `pelvis` | 7 | 7 | 1524 | 298 × 185 × 220 |
-| Beine | `legs` | `thigh`, `shin`, `foot` | 26 | 52 | 11920 | 556 × 331 × 1066 |
+| Oberkörper | `upper_body` | `torso` | 48 | 48 | 12146 | 618 × 321 × 493 |
+| Unterkörper | `lower_body` | `pelvis` | 13 | 13 | 2940 | 398 × 185 × 220 |
+| Beine | `legs` | `thigh`, `shin`, `foot` | 31 | 62 | 14120 | 556 × 331 × 1066 |
 
 Seitige Baugruppen (Arme, Beine) führen jedes Teil einmal; im Modell steht es rechts und links (Spiegelung an X).
 
@@ -50,7 +50,7 @@ Grafischer Versatz je Baugruppe (mm; X gilt für die linke Seite, rechts gespieg
 
 ## Teile je Baugruppe
 
-### Kopf (`head`, 21 Teile)
+### Kopf (`head`, 23 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
@@ -63,9 +63,11 @@ Grafischer Versatz je Baugruppe (mm; X gilt für die linke Seite, rechts gespieg
 | `neck_piston_r_cyl` | Halshydraulik | `head` | Hülle | `dark_metal` |
 | `neck_piston_r_rod` | Halshydraulik (Stange) | `head` | Hülle | `trim` |
 | `neck_cable_r` | Nackenkabel | `head` | Hüllenkette | `rubber` |
+| `throat_cable_r` | Halskabel | `head` | Hüllenkette | `rubber` |
 | `neck_piston_l_cyl` | Halshydraulik | `head` | Hülle | `dark_metal` |
 | `neck_piston_l_rod` | Halshydraulik (Stange) | `head` | Hülle | `trim` |
 | `neck_cable_l` | Nackenkabel | `head` | Hüllenkette | `rubber` |
+| `throat_cable_l` | Halskabel | `head` | Hüllenkette | `rubber` |
 | `head_core` | Kopfkern | `head` | Hülle | `graphite` |
 | `helmet` | Helmband | `head` | Hülle | `shell` |
 | `helmet_cap` | Helmkappe | `head` | Hülle | `shell` |
@@ -76,7 +78,7 @@ Grafischer Versatz je Baugruppe (mm; X gilt für die linke Seite, rechts gespieg
 | `ear_ring` | Medaillonring | `head` | Zylinder | `trim` |
 | `ear_hub` | Medaillonnabe | `head` | Zylinder | `graphite` |
 
-Materialrollen: `dark_metal` 6, `energy` 1, `graphite` 7, `rubber` 2, `shell` 2, `trim` 3
+Materialrollen: `dark_metal` 6, `energy` 1, `graphite` 7, `rubber` 4, `shell` 2, `trim` 3
 
 ### Arme (`arms`, 67 Teile)
 
@@ -152,7 +154,7 @@ Materialrollen: `dark_metal` 6, `energy` 1, `graphite` 7, `rubber` 2, `shell` 2,
 
 Materialrollen: `accent` 2, `anodized` 1, `dark_metal` 20, `graphite` 21, `shell` 18, `trim` 5
 
-### Oberkörper (`upper_body`, 38 Teile)
+### Oberkörper (`upper_body`, 48 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
@@ -183,6 +185,11 @@ Materialrollen: `accent` 2, `anodized` 1, `dark_metal` 20, `graphite` 21, `shell
 | `shoulder_r_disc` | Medaillon | `torso` | Zylinder | `graphite` |
 | `shoulder_r_ring` | Medaillonring | `torso` | Zylinder | `trim` |
 | `shoulder_r_hub` | Medaillonnabe | `torso` | Zylinder | `graphite` |
+| `shoulder_joint_r` | Schultergelenk | `torso` | Zylinder | `dark_metal` |
+| `shoulder_cable_r` | Schulterkabel | `torso` | Hüllenkette | `rubber` |
+| `pauldron_bolt_r_0` | Schraube | `torso` | Zylinder | `trim` |
+| `pauldron_bolt_r_1` | Schraube | `torso` | Zylinder | `trim` |
+| `chest_seam_r` | Brustfuge | `torso` | Hülle | `anodized` |
 | `abs_piston_r_cyl` | Bauchhydraulik | `torso` | Hülle | `dark_metal` |
 | `abs_piston_r_rod` | Bauchhydraulik (Stange) | `torso` | Hülle | `trim` |
 | `flank_cable_r` | Flankenkabel | `torso` | Hüllenkette | `rubber` |
@@ -191,13 +198,18 @@ Materialrollen: `accent` 2, `anodized` 1, `dark_metal` 20, `graphite` 21, `shell
 | `shoulder_l_disc` | Medaillon | `torso` | Zylinder | `graphite` |
 | `shoulder_l_ring` | Medaillonring | `torso` | Zylinder | `trim` |
 | `shoulder_l_hub` | Medaillonnabe | `torso` | Zylinder | `graphite` |
+| `shoulder_joint_l` | Schultergelenk | `torso` | Zylinder | `dark_metal` |
+| `shoulder_cable_l` | Schulterkabel | `torso` | Hüllenkette | `rubber` |
+| `pauldron_bolt_l_0` | Schraube | `torso` | Zylinder | `trim` |
+| `pauldron_bolt_l_1` | Schraube | `torso` | Zylinder | `trim` |
+| `chest_seam_l` | Brustfuge | `torso` | Hülle | `anodized` |
 | `abs_piston_l_cyl` | Bauchhydraulik | `torso` | Hülle | `dark_metal` |
 | `abs_piston_l_rod` | Bauchhydraulik (Stange) | `torso` | Hülle | `trim` |
 | `flank_cable_l` | Flankenkabel | `torso` | Hüllenkette | `rubber` |
 
-Materialrollen: `anodized` 1, `dark_metal` 5, `graphite` 15, `rubber` 2, `shell` 6, `trim` 9
+Materialrollen: `anodized` 3, `dark_metal` 7, `graphite` 15, `rubber` 4, `shell` 6, `trim` 13
 
-### Unterkörper (`lower_body`, 7 Teile)
+### Unterkörper (`lower_body`, 13 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
@@ -207,11 +219,17 @@ Materialrollen: `anodized` 1, `dark_metal` 5, `graphite` 15, `rubber` 2, `shell`
 | `tasset` | Lendenplatte | `pelvis` | Hülle | `shell` |
 | `tasset_edge` | Lendenplattenkante | `pelvis` | Hülle | `dark_metal` |
 | `hip_joint_r` | Hüftgelenk | `pelvis` | Zylinder | `dark_metal` |
+| `hip_med_r_disc` | Medaillon | `pelvis` | Zylinder | `graphite` |
+| `hip_med_r_ring` | Medaillonring | `pelvis` | Zylinder | `trim` |
+| `hip_med_r_hub` | Medaillonnabe | `pelvis` | Zylinder | `graphite` |
 | `hip_joint_l` | Hüftgelenk | `pelvis` | Zylinder | `dark_metal` |
+| `hip_med_l_disc` | Medaillon | `pelvis` | Zylinder | `graphite` |
+| `hip_med_l_ring` | Medaillonring | `pelvis` | Zylinder | `trim` |
+| `hip_med_l_hub` | Medaillonnabe | `pelvis` | Zylinder | `graphite` |
 
-Materialrollen: `dark_metal` 3, `graphite` 2, `shell` 2
+Materialrollen: `dark_metal` 3, `graphite` 6, `shell` 2, `trim` 2
 
-### Beine (`legs`, 26 Teile)
+### Beine (`legs`, 31 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
@@ -221,6 +239,8 @@ Materialrollen: `dark_metal` 3, `graphite` 2, `shell` 2
 | `thigh_bolt_b` | Bolzen | `thigh` | Zylinder | `trim` |
 | `thigh_piston_cyl` | Oberschenkelhydraulik | `thigh` | Hülle | `dark_metal` |
 | `thigh_piston_rod` | Oberschenkelhydraulik (Stange) | `thigh` | Hülle | `trim` |
+| `thigh_piston_in_cyl` | Oberschenkelhydraulik innen | `thigh` | Hülle | `dark_metal` |
+| `thigh_piston_in_rod` | Oberschenkelhydraulik innen (Stange) | `thigh` | Hülle | `trim` |
 | `knee` | Kniegelenk | `shin` | Zylinder | `dark_metal` |
 | `knee_cap` | Kniekappe | `shin` | Hülle | `shell` |
 | `knee_med_disc` | Medaillon | `shin` | Zylinder | `graphite` |
@@ -233,13 +253,16 @@ Materialrollen: `dark_metal` 3, `graphite` 2, `shell` 2
 | `shin_bolt_b` | Bolzen | `shin` | Zylinder | `trim` |
 | `calf_piston_cyl` | Wadenhydraulik | `shin` | Hülle | `dark_metal` |
 | `calf_piston_rod` | Wadenhydraulik (Stange) | `shin` | Hülle | `trim` |
+| `heel_piston_cyl` | Fersenhydraulik | `shin` | Hülle | `dark_metal` |
+| `heel_piston_rod` | Fersenhydraulik (Stange) | `shin` | Hülle | `trim` |
 | `ankle_med_disc` | Medaillon | `foot` | Zylinder | `graphite` |
 | `ankle_med_ring` | Medaillonring | `foot` | Zylinder | `trim` |
 | `ankle_med_hub` | Medaillonnabe | `foot` | Zylinder | `graphite` |
 | `ankle` | Knöchel | `foot` | Zylinder | `dark_metal` |
 | `foot_body` | Fuß | `foot` | Hülle | `graphite` |
 | `toe_cap` | Zehenkappe | `foot` | Hülle | `shell` |
+| `ankle_guard` | Knöchelschutz | `foot` | Hülle | `shell` |
 | `heel` | Fersenplatte | `foot` | Hülle | `shell` |
 | `sole` | Sohle | `foot` | Hülle | `rubber` |
 
-Materialrollen: `anodized` 1, `dark_metal` 4, `graphite` 7, `rubber` 1, `shell` 5, `trim` 8
+Materialrollen: `anodized` 1, `dark_metal` 6, `graphite` 7, `rubber` 1, `shell` 6, `trim` 10

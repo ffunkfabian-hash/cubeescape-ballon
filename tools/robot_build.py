@@ -39,7 +39,7 @@ GAP_TOL_MM = 1.0
 # Umkreis des Anschlusses um die Ankerlage (entworfen): größer als der halbe Gelenkdurchmesser (Hals-/Taillenring ≤ 66 mm, Hüftgelenk
 # 46 mm, Oberarm-Halbbreite 60 mm), kleiner als der Abstand Hals–Schulterpanzer (~150 mm), damit ein Kontakt dort nicht zählt
 ANCHOR_R_MM = 140.0
-AMBIENT = 0.5            # Anteil des Umgebungslichts von --bg mid (Roboter: mehr Schatten, Zielbild)
+AMBIENT = 0.35           # Anteil des Umgebungslichts von --bg mid (Roboter: mehr Schatten, Zielbild)
 SPEC = os.path.join(ROOT, 'data', 'robot.spec.json')
 ALL_VIEWS = ('hero', 'nah', 'seite', 'explode', 'parts')
 
@@ -313,7 +313,7 @@ def floor():
 
 def lights():
     # wie im Zielbild: großflächiges warmweißes Hauptlicht, kühles Kantenlicht von hinten rechts, wenig Fülllicht
-    for nm, loc, en, size, col in (('Key', (-3.6, -1.4, 3.2), 520, 1.6, '#FFE7CC'), ('Fill', (2.6, -2.8, 1.4), 70, 3.0, '#D2DEEC'),
+    for nm, loc, en, size, col in (('Key', (-3.6, -1.4, 3.2), 560, 1.6, '#FFDDB8'), ('Fill', (2.6, -2.8, 1.4), 45, 3.0, '#D2DEEC'),
                                    ('Rim', (1.8, 2.8, 2.6), 950, 1.8, '#A9D3FF')):
         o = bpy.data.objects.get(nm)
         if o is None:
