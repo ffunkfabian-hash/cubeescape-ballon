@@ -35,7 +35,9 @@ from tools.paths import OUT  # noqa: E402
 
 MM = 0.001
 GAP_TOL_MM = 1.0
-ANCHOR_R_MM = 140.0      # Umkreis des Anschlusses um die Ankerlage
+# Umkreis des Anschlusses um die Ankerlage (entworfen): größer als der halbe Gelenkdurchmesser (Hals-/Taillenring ≤ 66 mm, Hüftgelenk
+# 46 mm, Oberarm-Halbbreite 60 mm), kleiner als der Abstand Hals–Schulterpanzer (~150 mm), damit ein Kontakt dort nicht zählt
+ANCHOR_R_MM = 140.0
 SPEC = os.path.join(ROOT, 'data', 'robot.spec.json')
 ALL_VIEWS = ('hero', 'nah', 'seite', 'explode', 'parts')
 
