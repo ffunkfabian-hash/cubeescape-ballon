@@ -82,11 +82,22 @@ if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
         fail('Drehsinn: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'test_motion' in ln))
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
+# BASIC-Roboter (basic/robot): Baugruppen, Teile, Anker; Lücken an den Ankern in Blender (~1 s); Spec und docs/roboter.md aktuell
+from basic import robot  # noqa: E402
+err += [f'Roboter: {e}' for e in robot.validate()]
+if os.path.exists(BL):
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'robot_build.py'), '--', '--check'],
+                       capture_output=True, text=True)
+    if r.returncode or 'robot_check:' not in r.stdout:
+        fail('Roboter: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'robot_check' in ln or 'Error' in ln))
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'robot_doc.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Roboter: ' + r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_ego.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Ego-Daten: ' + r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')
-print('\n'.join(err) if err else 'check: alles in Ordnung (17 Grundtypen, Specs, Matrix, Doku)')
+print('\n'.join(err) if err else 'check: alles in Ordnung (17 Grundtypen, Specs, Matrix, Doku, Roboter)')
 sys.exit(1 if err else 0)

@@ -16,3 +16,7 @@
 - Viewmodel-Arme: Unterarm an der Hand ausrichten und den Knick begrenzen, statt die Schulter festzuhalten; Hände greifen von unten hinten ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
 - Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst.
 - Ego-Standbilder müssen die Handbelegung der Aktion übernehmen, sonst zeigt die Sichtung Fehler, die im Clip nicht auftreten ([ego_build.py](../tools/ego_build.py)).
+- `ce lock gpu -- blender -P …` startet im Nexogen-Ordner: Skriptpfad absolut angeben (`"$PWD/tools/…"`), sonst endet der Lauf sofort mit „could not be opened“.
+- Hochformat orthografisch: `ortho_scale` gilt für die längere Bildseite; `blender_build.aim` rechnet für Querformat ([robot_build.fit](../tools/robot_build.py)).
+- Boden als Schattenfänger (`is_shadow_catcher`) statt Platte: Schatten auf dem grauen Verlauf ohne harte Horizontkante ([robot_build.py](../tools/robot_build.py)).
+- Roboterschalen: flache Fasen (`rsection(..., n=1)`) plus leichte Wölbung (`bulge`) lesen sich wie das Zielbild; runde Querschnitte wirkten klotzig, Metallrollen in der Unterstruktur spiegeln den Hintergrund grau – Graphit nehmen ([basic/robot](../basic/robot/__init__.py)).
