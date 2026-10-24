@@ -63,8 +63,8 @@ namespace Ballon.Ego
         public sealed class Step
         {
             public float t0, t1;
-            public string hold = "";       // z. B. "aim fire"
-            public string press = "";      // einmalig bei t0
+            public string[] hold;          // z. B. {"aim", "fire"}
+            public string[] press;         // einmalig bei t0
             public Vector2 move, lookPerS;
         }
 
@@ -74,7 +74,7 @@ namespace Ballon.Ego
 
         public ScriptedInput Add(float t0, float t1, string hold = "", string press = "", Vector2 move = default, Vector2 lookPerS = default)
         {
-            steps.Add(new Step { t0 = t0, t1 = t1, hold = hold, press = press, move = move, lookPerS = lookPerS });
+            steps.Add(new Step { t0 = t0, t1 = t1, hold = hold.Split(' '), press = press.Split(' '), move = move, lookPerS = lookPerS });
             return this;
         }
 
@@ -89,10 +89,10 @@ namespace Ballon.Ego
                 {
                     r.move += s.move;
                     r.lookDeg += s.lookPerS * dt;
-                    foreach (var h in s.hold.Split(' ')) Set(ref r, h);
+                    foreach (var h in s.hold) Set(ref r, h);
                 }
                 if (t0 <= s.t0 && s.t0 < t1)
-                    foreach (var p in s.press.Split(' ')) Set(ref r, p);
+                    foreach (var p in s.press) Set(ref r, p);
             }
             return r;
         }

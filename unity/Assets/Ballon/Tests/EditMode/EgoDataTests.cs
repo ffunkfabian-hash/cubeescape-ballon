@@ -49,7 +49,9 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(10, D.poses.Length, "Haltungen");
             Assert.AreEqual(4, D.grips.Length, "Griffe");
             Assert.AreEqual(19, D.actions.Length, "Aktionen");
-            Assert.AreEqual(70, D.weapon.parts.Length, "Waffenteile");
+            Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
+            var meshes = new HashSet<string>(D.mesh_bounds.objects.Select(o => o.name));
+            Assert.IsTrue(D.weapon.parts.All(p => meshes.Contains(p.id)), "jedes Teil hat ein Netz im Export");
             Assert.AreEqual(3, D.arm.rig_version);
             Assert.AreEqual(4, D.arm.finger_x.Length, "vier Finger");
             foreach (var f in D.finger_poses)

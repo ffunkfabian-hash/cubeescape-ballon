@@ -251,6 +251,9 @@ namespace Ballon.Ego.Tests
                 NUnit.Framework.Assert.That(() => { for (int k = 0; k < 30; k++) c.Tick(Dt, s); },
                     Is.Not.AllocatingGCMemory(), $"{c.ActionName}");
             }
+            var demo = Bootstrap.DemoScript();                   // Eingabeablauf der Aufnahme
+            demo.Read(Dt, 1);
+            NUnit.Framework.Assert.That(() => { for (int k = 0; k < 300; k++) demo.Read(Dt, 1); }, Is.Not.AllocatingGCMemory(), "ScriptedInput");
         }
 
         [UnityTest]

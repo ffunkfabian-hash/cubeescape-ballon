@@ -958,6 +958,32 @@
     }
    },
    {
+    "id": "sight_reticle",
+    "asm": "sight",
+    "role": "energy",
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "move": {
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "a0": 0.0,
+     "a1": 0.0
+    }
+   },
+   {
     "id": "sight_knob_w",
     "asm": "sight",
     "role": "trim",
@@ -8589,6 +8615,20 @@
      0.1584
     ],
     "tris": 108
+   },
+   {
+    "name": "sight_reticle",
+    "min": [
+     -0.003185,
+     -0.0374,
+     0.168815
+    ],
+    "max": [
+     0.003185,
+     -0.037,
+     0.175185
+    ],
+    "tris": 316
    },
    {
     "name": "sight_knob_w",

@@ -120,8 +120,8 @@ namespace Ballon.Ego
         readonly Dictionary<WeaponKey[], Matrix4x4[]> _poseMs = new Dictionary<WeaponKey[], Matrix4x4[]>();
         readonly Dictionary<FingerKey[], float[][]> _fingerVs = new Dictionary<FingerKey[], float[][]>();
         readonly Dictionary<int, Matrix4x4[]> _handMs = new Dictionary<int, Matrix4x4[]>();
-        static readonly Dictionary<int, float[][]> _curveVs = new Dictionary<int, float[][]>();
-        static readonly float[] _curveOut = new float[7];
+        readonly Dictionary<int, float[][]> _curveVs = new Dictionary<int, float[][]>();
+        readonly float[] _curveOut = new float[7];
 
         float[] Times<TK>(TK[] keys, Func<TK, float> f)     // f ohne Erfassung: der Compiler hält den Delegaten fest
         {
@@ -172,7 +172,7 @@ namespace Ballon.Ego
         }
 
         /// <summary>ego_build.mats_curve: Lage und Quaternion (auf eine Halbkugel gelegt) komponentenweise, normiert.</summary>
-        public static Matrix4x4 MatsCurve(float[] ts, Matrix4x4[] Ms, float f)
+        public Matrix4x4 MatsCurve(float[] ts, Matrix4x4[] Ms, float f)
         {
             if (!_curveVs.TryGetValue(Ms.Length, out var vs))
             {
