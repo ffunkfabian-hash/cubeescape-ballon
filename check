@@ -134,6 +134,9 @@ if r.returncode:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_reticles.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Absehen-Export veraltet: python3 tools/export_reticles.py (' + r.stdout.strip() + ')')
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Unity-Daten: ' + r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')

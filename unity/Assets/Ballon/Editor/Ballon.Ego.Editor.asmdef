@@ -1,0 +1,14 @@
+{
+    "name": "Ballon.Ego.Editor",
+    "rootNamespace": "Ballon.Ego.Editor",
+    "references": [
+        "Ballon.Ego",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Editor",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "autoReferenced": true
+}

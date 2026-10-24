@@ -1,0 +1,14 @@
+{
+    "name": "Ballon.Ego",
+    "rootNamespace": "Ballon.Ego",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": false
+}

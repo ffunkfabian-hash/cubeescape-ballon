@@ -19,7 +19,9 @@ Stand **0.1.0 „First Light“** (24.10.2026) · lokales Repo, kein Remote · E
 | [docs/erweiterungen.md](docs/erweiterungen.md) | Zurückgestellte Sondervarianten und Exoten |
 | [docs/spec.md](docs/spec.md) | Datenformat `data/specs/BASIC-NN.spec.json` |
 | `basic/` | Entwurf als Python-Daten (`weapons/wNN_*.py`), Bausteine (`common.py`), Blender-Baukasten (`kit.py`), Matrixregeln (`matrix.py`) |
-| `tools/` | Bau, Blätter, Clips, Kontaktbögen, Doku, Prüfung |
+| [docs/unity.md](docs/unity.md) | Unity-Spürtest 0.4: Pilotwaffe mit Armen aus der Ego-Perspektive spielen, Export, Tests, Build |
+| `unity/` | Unity-6-Projekt (URP, Input System), Ego-Laufzeit in C# aus `basic/arms/ego.py` |
+| `tools/` | Bau, Blätter, Clips, Kontaktbögen, Doku, Prüfung, Unity-Export (`export_unity.py`, `unity_run.py`) |
 
 ## Bauen und prüfen
 

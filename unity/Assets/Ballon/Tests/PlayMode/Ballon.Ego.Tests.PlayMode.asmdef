@@ -1,0 +1,15 @@
+{
+    "name": "Ballon.Ego.Tests.PlayMode",
+    "rootNamespace": "Ballon.Ego.Tests",
+    "references": [
+        "Ballon.Ego",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "overrideReferences": true,
+    "precompiledReferences": ["nunit.framework.dll"],
+    "autoReferenced": false,
+    "defineConstraints": ["UNITY_INCLUDE_TESTS"]
+}

@@ -9,6 +9,12 @@
 - BASIC-03 Scoutgewehr v2.1 mit Zielfernrohr `scope_v21`; Formskizze per Blender-MCP.
 - Visier-Standard v2 nach Destiny-Video und Motiongen: schlanke Visiere, Zielfernrohr mit Linsenbild und `ads_hide`, Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse; Prüfung in `./check`, Beispiele `tools/sight_examples.py`.
 
+## 0.4.0 „Firstfeel“ – unveröffentlicht (lokal)
+
+- Eigenes Unity-6-Projekt `unity/` (URP, Input System): Pilotwaffe BASIC-01 v2.1 mit Roboterarmen v3 spielbar aus der Ego-Perspektive im grauen Testparcours (Zielscheiben 10/25/50 m); macOS-Entwicklungsbuild.
+- `tools/export_unity.py` (FBX + `ego.json` im Format `ballon-ego/1` + Blender-Referenz), `tools/unity_run.py` (Einrichten, Tests, Build, Aufnahme, Vergleich); `./check` prüft, ob `ego.json` aktuell ist.
+- Ego-Laufzeit in C# aus denselben Daten und Formeln wie `tools/ego_build.py` (Bewegung v2), live mit Rückstoßfeder, Feder-Nachlauf, Pendeln, Wippen, Atmen; 8 EditMode- und 9 PlayMode-Tests. Doku [docs/unity.md](docs/unity.md), Bericht [docs/versions/0.4-firstfeel.md](docs/versions/0.4-firstfeel.md).
+
 ## 0.3.0-ego „Handshake“ – unveröffentlicht (lokal)
 
 - Eigenes Roboterarm-Rig (`basic/arms/robot_arm.py`) und Ego-Daten (`basic/arms/ego.py`): 10 Haltungen, 4 Griffe, 19 Aktionen inkl. Übergänge; getrennt von Toolgen/Cube Escape.
