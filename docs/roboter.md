@@ -4,17 +4,17 @@
 
 Eigenständiges Modell `BASIC-ROBOT` (Version 0.5, Entwurf (Spaßfigur, nicht exportiert)). Quelle: `basic/robot/`; Aufbau, Bilder und Ankerprüfung: `tools/robot_build.py`. Die Arme sind an den Ego-Arm gekoppelt (`basic/arms/robot_arm.py`, Entscheidung des Nutzers 24.10.2026); Roboter-eigene Abwandlungen nur in `basic/robot/arms.py`.
 
-Gemessen in der Grundhaltung `idle` (ohne Waffe): Höhe 1871 mm, Breite 702 mm, Tiefe 375 mm.
+Gemessen in der Grundhaltung `idle` (ohne Waffe): Höhe 1909 mm, Breite 702 mm, Tiefe 375 mm.
 
 ## Baugruppen
 
 | Baugruppe | ID | Segmente | Teile | Objekte im Modell | Dreiecke | Größe B × T × H (mm) |
 |---|---|---|---:|---:|---:|---|
-| Kopf | `head` | `head` | 17 | 17 | 3748 | 222 × 263 × 348 |
+| Kopf | `head` | `head` | 21 | 21 | 5540 | 200 × 237 × 387 |
 | Arme | `arms` | `upper`, `fore`, `hand`, `f0_0`, `f0_1`, `f0_2` … | 67 | 134 | 23072 | 702 × 268 × 744 |
-| Oberkörper | `upper_body` | `torso` | 32 | 32 | 7434 | 662 × 317 × 472 |
-| Unterkörper | `lower_body` | `pelvis` | 7 | 7 | 1524 | 298 × 185 × 270 |
-| Beine | `legs` | `thigh`, `shin`, `foot` | 28 | 56 | 12416 | 440 × 320 × 1056 |
+| Oberkörper | `upper_body` | `torso` | 38 | 38 | 9634 | 618 × 321 × 490 |
+| Unterkörper | `lower_body` | `pelvis` | 7 | 7 | 1524 | 298 × 185 × 220 |
+| Beine | `legs` | `thigh`, `shin`, `foot` | 26 | 52 | 11920 | 556 × 331 × 1066 |
 
 Seitige Baugruppen (Arme, Beine) führen jedes Teil einmal; im Modell steht es rechts und links (Spiegelung an X).
 
@@ -50,14 +50,22 @@ Grafischer Versatz je Baugruppe (mm; X gilt für die linke Seite, rechts gespieg
 
 ## Teile je Baugruppe
 
-### Kopf (`head`, 17 Teile)
+### Kopf (`head`, 21 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
 | `neck` | Hals | `head` | Zylinder | `graphite` |
 | `neck_ring_0` | Halsring | `head` | Zylinder | `dark_metal` |
-| `neck_ring_1` | Halsring | `head` | Zylinder | `dark_metal` |
+| `neck_ring_1` | Halsring | `head` | Zylinder | `graphite` |
 | `neck_ring_2` | Halsring | `head` | Zylinder | `dark_metal` |
+| `neck_ring_3` | Halsring | `head` | Zylinder | `graphite` |
+| `neck_ring_4` | Halsring | `head` | Zylinder | `dark_metal` |
+| `neck_piston_r_cyl` | Halshydraulik | `head` | Hülle | `dark_metal` |
+| `neck_piston_r_rod` | Halshydraulik (Stange) | `head` | Hülle | `trim` |
+| `neck_cable_r` | Nackenkabel | `head` | Hüllenkette | `rubber` |
+| `neck_piston_l_cyl` | Halshydraulik | `head` | Hülle | `dark_metal` |
+| `neck_piston_l_rod` | Halshydraulik (Stange) | `head` | Hülle | `trim` |
+| `neck_cable_l` | Nackenkabel | `head` | Hüllenkette | `rubber` |
 | `head_core` | Kopfkern | `head` | Hülle | `graphite` |
 | `helmet` | Helmband | `head` | Hülle | `shell` |
 | `helmet_cap` | Helmkappe | `head` | Hülle | `shell` |
@@ -67,12 +75,8 @@ Grafischer Versatz je Baugruppe (mm; X gilt für die linke Seite, rechts gespieg
 | `ear_disc` | Medaillon | `head` | Zylinder | `graphite` |
 | `ear_ring` | Medaillonring | `head` | Zylinder | `trim` |
 | `ear_hub` | Medaillonnabe | `head` | Zylinder | `graphite` |
-| `neck_piston_r_cyl` | Halshydraulik | `head` | Hülle | `dark_metal` |
-| `neck_piston_r_rod` | Halshydraulik (Stange) | `head` | Hülle | `trim` |
-| `neck_piston_l_cyl` | Halshydraulik | `head` | Hülle | `dark_metal` |
-| `neck_piston_l_rod` | Halshydraulik (Stange) | `head` | Hülle | `trim` |
 
-Materialrollen: `dark_metal` 6, `energy` 1, `graphite` 5, `shell` 2, `trim` 3
+Materialrollen: `dark_metal` 6, `energy` 1, `graphite` 7, `rubber` 2, `shell` 2, `trim` 3
 
 ### Arme (`arms`, 67 Teile)
 
@@ -148,7 +152,7 @@ Materialrollen: `dark_metal` 6, `energy` 1, `graphite` 5, `shell` 2, `trim` 3
 
 Materialrollen: `accent` 2, `anodized` 1, `dark_metal` 20, `graphite` 21, `shell` 18, `trim` 5
 
-### Oberkörper (`upper_body`, 32 Teile)
+### Oberkörper (`upper_body`, 38 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
@@ -179,13 +183,19 @@ Materialrollen: `accent` 2, `anodized` 1, `dark_metal` 20, `graphite` 21, `shell
 | `shoulder_r_disc` | Medaillon | `torso` | Zylinder | `graphite` |
 | `shoulder_r_ring` | Medaillonring | `torso` | Zylinder | `trim` |
 | `shoulder_r_hub` | Medaillonnabe | `torso` | Zylinder | `graphite` |
+| `abs_piston_r_cyl` | Bauchhydraulik | `torso` | Hülle | `dark_metal` |
+| `abs_piston_r_rod` | Bauchhydraulik (Stange) | `torso` | Hülle | `trim` |
+| `flank_cable_r` | Flankenkabel | `torso` | Hüllenkette | `rubber` |
 | `pauldron_l` | Schulterpanzer | `torso` | Hülle | `shell` |
 | `pauldron_rim_l` | Schulterrand | `torso` | Hülle | `graphite` |
 | `shoulder_l_disc` | Medaillon | `torso` | Zylinder | `graphite` |
 | `shoulder_l_ring` | Medaillonring | `torso` | Zylinder | `trim` |
 | `shoulder_l_hub` | Medaillonnabe | `torso` | Zylinder | `graphite` |
+| `abs_piston_l_cyl` | Bauchhydraulik | `torso` | Hülle | `dark_metal` |
+| `abs_piston_l_rod` | Bauchhydraulik (Stange) | `torso` | Hülle | `trim` |
+| `flank_cable_l` | Flankenkabel | `torso` | Hüllenkette | `rubber` |
 
-Materialrollen: `anodized` 1, `dark_metal` 3, `graphite` 15, `shell` 6, `trim` 7
+Materialrollen: `anodized` 1, `dark_metal` 5, `graphite` 15, `rubber` 2, `shell` 6, `trim` 9
 
 ### Unterkörper (`lower_body`, 7 Teile)
 
@@ -201,14 +211,12 @@ Materialrollen: `anodized` 1, `dark_metal` 3, `graphite` 15, `shell` 6, `trim` 7
 
 Materialrollen: `dark_metal` 3, `graphite` 2, `shell` 2
 
-### Beine (`legs`, 28 Teile)
+### Beine (`legs`, 26 Teile)
 
 | ID | Bezeichnung | Segment | Form | Material |
 |---|---|---|---|---|
 | `thigh_body` | Oberschenkel | `thigh` | Hülle | `graphite` |
 | `thigh_shell` | Oberschenkelschale | `thigh` | Hülle | `shell` |
-| `thigh_shell_low` | Oberschenkelschale unten | `thigh` | Hülle | `shell` |
-| `thigh_side` | Oberschenkelseitenplatte | `thigh` | Hülle | `shell` |
 | `thigh_bolt_a` | Bolzen | `thigh` | Zylinder | `trim` |
 | `thigh_bolt_b` | Bolzen | `thigh` | Zylinder | `trim` |
 | `thigh_piston_cyl` | Oberschenkelhydraulik | `thigh` | Hülle | `dark_metal` |
@@ -234,4 +242,4 @@ Materialrollen: `dark_metal` 3, `graphite` 2, `shell` 2
 | `heel` | Fersenplatte | `foot` | Hülle | `shell` |
 | `sole` | Sohle | `foot` | Hülle | `rubber` |
 
-Materialrollen: `anodized` 1, `dark_metal` 4, `graphite` 7, `rubber` 1, `shell` 7, `trim` 8
+Materialrollen: `anodized` 1, `dark_metal` 4, `graphite` 7, `rubber` 1, `shell` 5, `trim` 8

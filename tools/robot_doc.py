@@ -15,7 +15,7 @@ from basic import robot as RB  # noqa: E402
 HEAD = '<!-- erzeugt von tools/robot_doc.py – nicht von Hand ändern -->\n'
 DOC = os.path.join(ROOT, 'docs', 'roboter.md')
 SPEC = os.path.join(ROOT, 'data', 'robot.spec.json')
-FORM = {'hull': 'Hülle', 'cyl': 'Zylinder', 'box': 'Quader', 'plate': 'Facettenplatte', 'prism': 'Achtkant'}
+FORM = {'hull': 'Hülle', 'hulls': 'Hüllenkette', 'cyl': 'Zylinder', 'box': 'Quader', 'plate': 'Facettenplatte', 'prism': 'Achtkant'}
 
 
 def spec():

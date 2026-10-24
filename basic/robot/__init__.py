@@ -36,13 +36,17 @@ ANCHORS = {
     'Socket_Hip_L': dict(pos=legs.JOINTS['L'][0], parent='lower_body', child='legs', side='L', de='Hüfte links'),
 }
 
-# Armhaltungen. ready: Pilotwaffe tief vor dem Körper (Griff rechts an der Hüfte, Mündung vorn links unten), Hände an den Griffen
+# Armhaltungen. ready (nach Zielbild): Pilotwaffe diagonal vor dem Körper, Griff rechts vor dem Bauch, Mündung vorn links gesenkt, Hände an den Griffen
 # aus basic/arms/ego.GRIPS, Zwei-Knochen-IK mit Ellbogen-Pol. idle: ohne Waffe, Arme hängen leicht gebeugt (Richtungen je Glied).
 POSES = {
-    'ready': dict(weapon='pilot.w01_auto_rifle_v21', pos=(-150, -200, 1095), rot_z=38, rot_x=22,
+    'ready': dict(weapon='pilot.w01_auto_rifle_v21', pos=(-120, -235, 1190), rot_z=34, rot_x=24,
                   hands={'R': dict(grip='grip', pole=(-0.6, 0.5, -0.5)), 'L': dict(grip='support', pole=(0.7, 0.2, -0.6))}),
     'idle': dict(weapon=None, upper=(-0.16, 0.02, -1.0), fore=(-0.03, -0.30, -1.0), fingers='relaxed'),
 }
+
+# Material: Skin mit leichten Gebrauchsspuren (Zielbild: „gepflegter Einsatzroboter, kein Schrottroboter“) – mehr Kantenabrieb und
+# Schmutz als der Standard, weniger als „gebraucht“ (wear 3,2 / grime 2,2) der Waffen
+SKIN = dict(name='einsatz', de='Einsatz (leicht gebraucht)', kind='Textur', roles={}, wear=2.3, grime=1.8)
 
 # Explosionsansicht (mm, Welt): grafische Auseinanderziehung entlang der Anker, Oberkörper bleibt stehen
 EXPLODE = {'head': (0, 0, 260), 'upper_body': (0, 0, 0), 'arms': (300, 0, 40), 'lower_body': (0, 0, -170), 'legs': (90, 0, -360)}
@@ -94,7 +98,7 @@ def validate():
             seen[pid] = a['id']
             if seg_owner.get(seg) != a['id']:
                 err.append(f"Teil {pid}: Segment {seg} gehört nicht zu {a['id']}")
-            if not de or kind not in ('hull', 'cyl', 'box', 'plate', 'prism'):
+            if not de or kind not in ('hull', 'hulls', 'cyl', 'box', 'plate', 'prism'):
                 err.append(f'Teil {pid}: Bezeichnung oder Form fehlt')
     segs = {s[0]: s for s in segments()}
     joint = {'Socket_Neck': [segs['head'][1], segs['torso'][2]], 'Socket_Waist': [segs['torso'][1], segs['pelvis'][2]],

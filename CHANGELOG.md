@@ -4,7 +4,7 @@
 
 - BASIC-Roboter als eigenständiges Modell `basic/robot/`, zerlegt in Kopf, Arme, Oberkörper, Unterkörper, Beine mit Ankern `Socket_Neck`, `Socket_Shoulder_L/R`, `Socket_Waist`, `Socket_Hip_L/R`; Arme an den Ego-Arm gekoppelt (Nutzerentscheidung); löst `basic/arms/robot_figure.py` ab.
 - `tools/robot_build.py`: Haltungen `ready`/`idle`, Explosionsansicht, Einzelblätter je Baugruppe, Kontaktbogen, Ankerprüfung (`--check`, in `./check`), Spec `data/robot.spec.json`; `tools/robot_doc.py` erzeugt [docs/roboter.md](docs/roboter.md).
-- Form nach Nutzerkritik („viel zu kantig“ = klotzig) und Konzeptbild: schlanker, lange Beine, schmale Taille, Trapezbrust mit Sensor, Fasen statt runder Blöcke; Bericht [docs/versions/0.5-teardown.md](docs/versions/0.5-teardown.md).
+- Form nach Nutzerkritik („viel zu kantig“ = klotzig) und Konzeptbild: schlanker, lange Beine, schmale Taille, Trapezbrust mit Sensor, Fasen statt runder Blöcke; danach Abgleich mit dem Konzeptbild (kleiner Kopf auf langem Hals, kastige Schulterpanzer, hohes Knie, Kabel und Hydraulik, Gebrauchsspuren, Licht warm/kühl); Bericht [docs/versions/0.5-teardown.md](docs/versions/0.5-teardown.md).
 
 ## 0.3.0-ego „Handshake“ – unveröffentlicht (lokal)
 

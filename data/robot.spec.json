@@ -5,18 +5,18 @@
  "version": "0.5",
  "pose": "idle",
  "measured": {
-  "height_mm": 1871,
+  "height_mm": 1909,
   "width_mm": 702,
   "depth_mm": 375,
   "assemblies": {
    "head": {
-    "objects": 17,
-    "parts": 17,
-    "triangles": 3748,
+    "objects": 21,
+    "parts": 21,
+    "triangles": 5540,
     "size_mm": [
-     222,
-     263,
-     348
+     200,
+     237,
+     387
     ]
    },
    "arms": {
@@ -30,13 +30,13 @@
     ]
    },
    "upper_body": {
-    "objects": 32,
-    "parts": 32,
-    "triangles": 7434,
+    "objects": 38,
+    "parts": 38,
+    "triangles": 9634,
     "size_mm": [
-     662,
-     317,
-     472
+     618,
+     321,
+     490
     ]
    },
    "lower_body": {
@@ -46,17 +46,17 @@
     "size_mm": [
      298,
      185,
-     270
+     220
     ]
    },
    "legs": {
-    "objects": 56,
-    "parts": 28,
-    "triangles": 12416,
+    "objects": 52,
+    "parts": 26,
+    "triangles": 11920,
     "size_mm": [
-     440,
-     320,
-     1056
+     556,
+     331,
+     1066
     ]
    }
   }
@@ -75,6 +75,14 @@
    "neck_ring_0",
    "neck_ring_1",
    "neck_ring_2",
+   "neck_ring_3",
+   "neck_ring_4",
+   "neck_piston_r_cyl",
+   "neck_piston_r_rod",
+   "neck_cable_r",
+   "neck_piston_l_cyl",
+   "neck_piston_l_rod",
+   "neck_cable_l",
    "head_core",
    "helmet",
    "helmet_cap",
@@ -83,11 +91,7 @@
    "crest",
    "ear_disc",
    "ear_ring",
-   "ear_hub",
-   "neck_piston_r_cyl",
-   "neck_piston_r_rod",
-   "neck_piston_l_cyl",
-   "neck_piston_l_rod"
+   "ear_hub"
   ],
   "arms": [
    "upper_body",
@@ -186,11 +190,17 @@
    "shoulder_r_disc",
    "shoulder_r_ring",
    "shoulder_r_hub",
+   "abs_piston_r_cyl",
+   "abs_piston_r_rod",
+   "flank_cable_r",
    "pauldron_l",
    "pauldron_rim_l",
    "shoulder_l_disc",
    "shoulder_l_ring",
-   "shoulder_l_hub"
+   "shoulder_l_hub",
+   "abs_piston_l_cyl",
+   "abs_piston_l_rod",
+   "flank_cable_l"
   ],
   "lower_body": [
    "pelvis_core",
@@ -204,8 +214,6 @@
   "legs": [
    "thigh_body",
    "thigh_shell",
-   "thigh_shell_low",
-   "thigh_side",
    "thigh_bolt_a",
    "thigh_bolt_b",
    "thigh_piston_cyl",

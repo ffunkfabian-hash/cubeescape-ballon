@@ -1,7 +1,7 @@
 """Formhilfen des BASIC-Roboters (mm): gerundete/gefaste Querschnitte, Kuppel, Motive Bolzen und Medaillon.
 
 Aus basic/arms/robot_figure.py (v2) übernommen. Teile sind Tupel wie beim Arm: (id, de, segment, form, rolle, params);
-Formen hull (konvexe Hülle aus pts) und cyl (axis, r, len, c), gebaut von tools/ego_build.piece_mesh.
+Formen hull (konvexe Hülle aus pts), hulls (mehrere Hüllen in einem Teil, parts) und cyl (axis, r, len, c), gebaut von tools/ego_build.piece_mesh.
 """
 import math
 
@@ -58,6 +58,11 @@ def piston(name, de, seg, a, b, r=7):
     m = [(a[i] + b[i]) / 2 for i in range(3)]
     return [(f'{name}_cyl', de, seg, 'hull', 'dark_metal', dict(pts=_tube(a, m, r))),
             (f'{name}_rod', de + ' (Stange)', seg, 'hull', 'trim', dict(pts=_tube(m, b, r * 0.55)))]
+
+
+def cable(name, de, seg, path, r=6, role='rubber'):
+    """Kabel entlang einer Polylinie (mm im Segmentrahmen): Kette aus Achtkantrohren, Form hulls (eine Hülle je Abschnitt)."""
+    return [(name, de, seg, 'hulls', role, dict(parts=[_tube(a, b, r) for a, b in zip(path, path[1:])]))]
 
 
 def _tube(a, b, r, n=8):

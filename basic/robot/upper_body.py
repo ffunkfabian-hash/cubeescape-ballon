@@ -4,11 +4,11 @@ Rückenmodul, Schulterpanzer mit Medaillon. Segment torso (Ursprung Socket_Waist
 0.5 nach Nutzerkritik („viel zu kantig“ = klotzig) und Zielbild: schmale Taille (180 mm), Brust 330 statt 376 mm, Brustplatte als
 Trapez mit präzisen Fasen statt runder Schale, kleinere Schulterkuppeln, dunkles Taillengelenk sichtbar.
 """
-from .shapes import rsection, rsection_top, dome, medallion
+from .shapes import rsection, rsection_top, dome, medallion, piston, cable
 
 SEGMENTS = ['torso']
 # Brustplatte: (z, Breite, Vorderkante y1) – Trapez, unten schmal
-CHEST = ((146, 196, 104), (296, 336, 122), (352, 292, 108))
+CHEST = ((140, 214, 106), (292, 364, 126), (356, 316, 110))
 BULGE = 6
 
 
@@ -36,7 +36,7 @@ def parts():
          ('collar', 'Kragen', 'torso', 'hull', 'graphite', dict(pts=rsection(204, -80, 70, 40, 346) + rsection(150, -60, 54, 34, 398)))]
     P += medallion('chest_core', 'torso', (0, round(chest_front(286) + 1), 286), 28, 10, axis='y')
     # Schrauben an den Ecken der Brustplatte (Vorderfläche außerhalb der Mittelwölbung, + 1 mm)
-    for k, (x, z, y) in enumerate(((-118, 330, 115.5), (118, 330, 115.5), (-78, 172, 108.5), (78, 172, 108.5))):
+    for k, (x, z, y) in enumerate(((-130, 330, 118), (130, 330, 118), (-84, 172, 112), (84, 172, 112))):
         P.append((f'chest_bolt_{k}', 'Schraube', 'torso', 'cyl', 'trim', dict(axis='y', r=4.2, len=4, c=(x, y, z))))
     # Flankenplatten unter den Armen (hell, mit Fase), liegen 3 mm auf dem Rumpf
     for side, sx in (('r', -1), ('l', 1)):
@@ -52,9 +52,15 @@ def parts():
           ('pack_plate', 'Rückenplatte', 'torso', 'hull', 'shell',
            dict(pts=rsection(172, -176, -160, 8, 180, n=1) + rsection(194, -180, -164, 8, 318, n=1)))]
     for side, sx in (('r', -1), ('l', 1)):
+        # Schulterpanzer nach Zielbild: kastiger Block mit Fasen (n=1), flache Oberseite, Medaillon außen
         P += [(f'pauldron_{side}', 'Schulterpanzer', 'torso', 'hull', 'shell',
-               dict(pts=dome(sx, (4, 350), [(150, 188, 152, 58), (228, 212, 176, 74), (294, 170, 134, 56), (320, 102, 76, 34)]))),
+               dict(pts=dome(sx, (4, 374), [(146, 176, 140, 30), (166, 192, 160, 38), (262, 192, 164, 40), (290, 158, 134, 32),
+                                            (298, 110, 92, 22)], n=1))),
               (f'pauldron_rim_{side}', 'Schulterrand', 'torso', 'hull', 'graphite',
-               dict(pts=dome(sx, (4, 343), [(140, 204, 168, 62), (164, 206, 170, 62)])))]
-        P += medallion(f'shoulder_{side}', 'torso', (sx * 322, 4, 350), 34, 10)
+               dict(pts=dome(sx, (4, 368), [(136, 186, 152, 34), (152, 188, 154, 34)], n=1)))]
+        P += medallion(f'shoulder_{side}', 'torso', (sx * 300, 4, 374), 30, 10)
+        # sichtbare Mechanik: Bauchhydraulik vorn seitlich, Kabel von der Flanke zur Taille
+        P += piston(f'abs_piston_{side}', 'Bauchhydraulik', 'torso', (sx * 72, 56, -6), (sx * 86, 72, 136), r=8)
+        P += cable(f'flank_cable_{side}', 'Flankenkabel', 'torso', [(sx * 124, -30, 236), (sx * 120, 0, 150), (sx * 96, 22, 70),
+                                                                     (sx * 70, 30, -10)], r=6)
     return P

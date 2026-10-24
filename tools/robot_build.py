@@ -20,6 +20,7 @@ import os
 import subprocess
 import sys
 
+import bmesh
 import bpy
 from mathutils import Vector, Matrix
 from mathutils.bvhtree import BVHTree
@@ -38,6 +39,7 @@ GAP_TOL_MM = 1.0
 # Umkreis des Anschlusses um die Ankerlage (entworfen): größer als der halbe Gelenkdurchmesser (Hals-/Taillenring ≤ 66 mm, Hüftgelenk
 # 46 mm, Oberarm-Halbbreite 60 mm), kleiner als der Abstand Hals–Schulterpanzer (~150 mm), damit ein Kontakt dort nicht zählt
 ANCHOR_R_MM = 140.0
+AMBIENT = 0.5            # Anteil des Umgebungslichts von --bg mid (Roboter: mehr Schatten, Zielbild)
 SPEC = os.path.join(ROOT, 'data', 'robot.spec.json')
 ALL_VIEWS = ('hero', 'nah', 'seite', 'explode', 'parts')
 
@@ -78,15 +80,36 @@ def _mirror(kind, p, sx):
         p['c'] = [sx * p['c'][0], p['c'][1], p['c'][2]]
     if kind == 'hull':
         p['pts'] = [(sx * x, y, z) for x, y, z in p['pts']]
+    if kind == 'hulls':
+        p['parts'] = [[(sx * x, y, z) for x, y, z in pts] for pts in p['parts']]
     if kind == 'plate':
         p['phi'] = sx * p.get('phi', 0.0)
         p['u'] = sx * p.get('u', 0.0)
     return p
 
 
+def _hulls(name, p):
+    """Mehrere konvexe Hüllen als ein Objekt (Form hulls, z. B. Kabel)."""
+    bm = bmesh.new()
+    for pts in p['parts']:
+        b2 = bmesh.new()
+        EB.hull_verts(b2, pts)
+        tmp = bpy.data.meshes.new('tmp')
+        b2.to_mesh(tmp)
+        b2.free()
+        bm.from_mesh(tmp)
+        bpy.data.meshes.remove(tmp)
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(ob)
+    return ob
+
+
 def _piece(name, kind, p, role, asm, pid, side, parent):
-    ob = EB.piece_mesh(name, kind, p)
-    if kind == 'hull':          # gerundete Querschnitte glatt, echte Kanten (Fasen, Pfeilschnitte) bleiben scharf
+    ob = _hulls(name, p) if kind == 'hulls' else EB.piece_mesh(name, kind, p)
+    if kind in ('hull', 'hulls'):          # gerundete Querschnitte glatt, echte Kanten (Fasen, Pfeilschnitte) bleiben scharf
         for f in ob.data.polygons:
             f.use_smooth = True
         ob.data.set_sharp_from_angle(angle=math.radians(p.get('sharp', 40)))
@@ -94,7 +117,7 @@ def _piece(name, kind, p, role, asm, pid, side, parent):
     if p.get('bevel'):
         kit.add_bevel(ob, p['bevel'])
     else:
-        kit.add_bevel(ob, {'cyl': 0.8, 'hull': 2.0, 'prism': 1.6, 'plate': 1.0, 'box': 1.0}.get(kind, 1.0))
+        kit.add_bevel(ob, {'cyl': 0.8, 'hull': 2.0, 'hulls': 1.0, 'prism': 1.6, 'plate': 1.0, 'box': 1.0}.get(kind, 1.0))
     ob.parent = parent
     ob.matrix_parent_inverse = Matrix.Identity(4)
     ob['asm'], ob['part'], ob['side'] = asm, pid, side
@@ -289,8 +312,9 @@ def floor():
 
 
 def lights():
-    for nm, loc, en, size, col in (('Key', (-2.6, -3.0, 3.4), 520, 3.0, '#FFF4E6'), ('Fill', (3.0, -1.8, 1.6), 110, 3.0, '#DCE6F2'),
-                                   ('Rim', (1.0, 3.2, 3.0), 600, 2.5, '#E8F1FF')):
+    # wie im Zielbild: großflächiges warmweißes Hauptlicht, kühles Kantenlicht von hinten rechts, wenig Fülllicht
+    for nm, loc, en, size, col in (('Key', (-3.6, -1.4, 3.2), 520, 1.6, '#FFE7CC'), ('Fill', (2.6, -2.8, 1.4), 70, 3.0, '#D2DEEC'),
+                                   ('Rim', (1.8, 2.8, 2.6), 950, 1.8, '#A9D3FF')):
         o = bpy.data.objects.get(nm)
         if o is None:
             o = bpy.data.objects.new(nm, bpy.data.lights.new(nm, 'AREA'))
@@ -339,7 +363,12 @@ def render_to(path):
 
 def setup(o, aspect=(4, 5)):
     kit.reset_scene()
+    kit.SKINS[RB.SKIN['name']] = {k: v for k, v in RB.SKIN.items() if k != 'name'}
+    kit.SKIN['name'] = RB.SKIN['name']
     BB.setup_render(o['res'], o['samples'], aspect=aspect, gpu=o['gpu'], aaa=True, bloom=False, bg='mid')
+    for n in bpy.context.scene.world.node_tree.nodes:   # Umgebungslicht dämpfen (mehr Form im Elfenbein), Hintergrund bleibt
+        if n.type == 'BACKGROUND' and not n.inputs['Color'].links:
+            n.inputs['Strength'].default_value *= AMBIENT
     if o['preview']:
         sc = bpy.context.scene
         sc.render.engine = 'BLENDER_WORKBENCH'
@@ -399,14 +428,14 @@ def main():
     cam = None
     # Haltung ready mit Waffe: Hero, Nah, Seite (grauer Hintergrund, Schattenfänger statt Horizont)
     if o['only'] & {'hero', 'nah', 'seite'}:
-        setup(o)
+        setup(o, aspect=(2, 3))         # Hochformat wie das Zielbild
         lights()
         floor()
         build('ready', mode)
         cam = BB.camera()
-        for name, pos, at, lens in (('hero', (-1.75, -3.6, 1.05), (0.02, 0, 0.95), 55),
-                                    ('nah', (-1.15, -1.9, 1.55), (0.0, -0.12, 1.32), 50),
-                                    ('seite', (-3.8, -1.2, 1.1), (0, 0, 0.95), 60)):
+        for name, pos, at, lens in (('hero', (-1.9, -3.4, 0.62), (0.0, 0.0, 0.98), 60),     # wie Zielbild: niedrig, Dreiviertel
+                                    ('nah', (-1.15, -1.9, 1.55), (0.0, -0.12, 1.36), 50),
+                                    ('seite', (-3.8, -1.2, 1.0), (0, 0, 0.98), 60)):
             if name in o['only']:
                 camera_persp(cam, pos, at, lens)
                 render_to(os.path.join(out, f'{name}{tag}.png'))

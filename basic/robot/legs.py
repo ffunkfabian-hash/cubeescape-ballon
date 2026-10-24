@@ -1,30 +1,30 @@
 """Baugruppe Beine: Oberschenkel, Knie mit Medaillon, Schienbein mit Wadenhydraulik, Fuß – je Seite. Segmente thigh/shin/foot
 (Ursprung Socket_Hip, Knie, Knöchel); Teile im Rahmen der rechten Seite (+X zur Körpermitte), die linke ist an X gespiegelt.
 
-0.5 nach Nutzerkritik („klotzig“) und Zielbild: Hüfte 1000 statt 960 mm (lange Beine), Oberschenkel verjüngt sich von 156 auf 100 mm,
+0.5 nach Nutzerkritik („klotzig“) und Zielbild: Hüfte 1000 statt 960 mm (lange Beine), Knie hoch (lange Schienbeine), Oberschenkel
+verjüngt sich von 156 auf 100 mm,
 Schalen mit Fasen und leicht gewölbter Front, Wade mit Wölbung nach hinten, schmalere Füße.
 """
 from .shapes import rsection, rsection_top, medallion, bolts, piston
 
 SEGMENTS = ['thigh', 'shin', 'foot']
-# Gelenkpunkte (mm, Welt) je Seite: Hüfte, Knie, Knöchel, Zehenspitze (Ruhehaltung, leichtes Standbein links)
-JOINTS = {'R': ((-110, 0, 1000), (-122, -30, 545), (-130, 10, 92), (-146, -190, 30)),
-          'L': ((110, 0, 1000), (130, -10, 540), (148, 26, 92), (186, -160, 30))}
+# Gelenkpunkte (mm, Welt) je Seite: Hüfte, Knie, Knöchel, Zehenspitze 
+# Stand nach Zielbild: breiter und entspannt, Füße leicht auswärts, Standbein links
+JOINTS = {'R': ((-110, 0, 1000), (-140, -34, 664), (-176, 6, 92), (-214, -176, 30)),
+          'L': ((110, 0, 1000), (146, -6, 660), (188, 30, 92), (250, -146, 30))}
+# Knie wie im Zielbild bei ~36 % der Höhe (vorher 30 %): Teile entlang der Glieder gestreckt bzw. gestaucht (Entwurf für 455 mm)
+LEN_K = {'thigh': 0.74, 'shin': 1.26}
 
 
 def parts():
     P = [('thigh_body', 'Oberschenkel', 'thigh', 'hull', 'graphite',
           dict(pts=rsection(150, -76, 72, 44, 10, bulge=4) + rsection(156, -80, 80, 48, 150, bulge=6) + rsection(120, -62, 62, 38, 320)
                + rsection(100, -54, 54, 34, 440))),
-         # Oberschenkelschale in zwei Segmenten (Fuge 6 mm bei z 262–268)
+         # Oberschenkelschale wie im Zielbild als eine lange Platte von der Schritthöhe bis über das Knie; darüber und außen bleibt die
+         # dunkle Mechanik sichtbar
          ('thigh_shell', 'Oberschenkelschale', 'thigh', 'hull', 'shell',
-          dict(pts=rsection_top(158, -4, 92, 34, 50, n=1, bulge=6) + rsection_top(150, -4, 92, 34, 190, n=1, bulge=6)
-               + rsection_top(137, -3, 84, 32, 262, n=1, bulge=4))),
-         ('thigh_shell_low', 'Oberschenkelschale unten', 'thigh', 'hull', 'shell',
-          dict(pts=rsection_top(134, -3, 83, 31, 268, n=1, bulge=4) + rsection_top(112, -2, 70, 28, 384, n=1))),
-         ('thigh_side', 'Oberschenkelseitenplatte', 'thigh', 'hull', 'shell',
-          dict(pts=[(x, y, z) for z, y0, y1 in ((90, -54, 30), (300, -40, 22)) for y in (y0, y1) for x in (-80, -88)]
-               + [(-92, -12, 196)]))]
+          dict(pts=rsection_top(150, -4, 92, 34, 150, n=1, bulge=6) + rsection_top(146, -4, 91, 34, 200, n=1, bulge=6)
+               + rsection_top(130, -3, 82, 30, 300, n=1, bulge=4) + rsection_top(112, -2, 70, 28, 404, n=1)))]
     P += bolts('thigh', 89, 230, dx=34, r=4.0)
     P += piston('thigh_piston', 'Oberschenkelhydraulik', 'thigh', (-70, -66, 70), (-58, -52, 400), r=8)
     P += [('knee', 'Kniegelenk', 'shin', 'cyl', 'dark_metal', dict(axis='x', r=48, len=120, c=(0, 0, 0))),
@@ -53,4 +53,18 @@ def parts():
           ('heel', 'Fersenplatte', 'foot', 'hull', 'shell',
            dict(pts=rsection(104, -84, 10, 22, -80, n=2) + rsection(106, -84, 16, 22, -40, n=2))),
           ('sole', 'Sohle', 'foot', 'hull', 'rubber', dict(pts=rsection(110, -96, -84, 5, -78) + rsection(104, -96, -84, 5, 198)))]
-    return P
+    return [_stretch(p) for p in P]
+
+
+def _stretch(p):
+    """Längen (z) der Teile auf Oberschenkel und Schienbein mit LEN_K anpassen; Gelenke am Ursprung (Knie) bleiben rund."""
+    pid, de, seg, kind, role, q = p
+    k = LEN_K.get(seg, 1.0)
+    if k == 1.0:
+        return p
+    q = dict(q)
+    if 'pts' in q:
+        q['pts'] = [(x, y, z * k if z > 0 else z) for x, y, z in q['pts']]
+    if 'c' in q and q['c'][2] > 0:
+        q['c'] = (q['c'][0], q['c'][1], q['c'][2] * k)
+    return (pid, de, seg, kind, role, q)
