@@ -6,7 +6,7 @@
   "files": [
    {
     "path": "basic/pilot/w01_auto_rifle_v21.py",
-    "sha256": "ef5b84f179db4d2736ae3bed9420737006a4b9d906a6ea04a3a87c0528c9cae7"
+    "sha256": "17aba49fd9c4222ad38c33f2a98d5175376da4b30a142aadb6fc7633f081cad8"
    },
    {
     "path": "basic/weapons/w01_auto_rifle.py",
@@ -14,11 +14,11 @@
    },
    {
     "path": "basic/common.py",
-    "sha256": "cc589a23f61df8ea7745f8759a55813850caf64d8c0589a695626d7772c12975"
+    "sha256": "b960c9312774022de565149c8dcf1ba4d4bad21dfa20f1ef763b4a53400b9286"
    },
    {
     "path": "basic/kit.py",
-    "sha256": "1b69459bdc3cde9fb2c92df346e9b9cc7e5c23469ba494d706461344a1bc52a8"
+    "sha256": "520347d7375b1a172c7b833767920d18520d0de1bc42c9b537856e43ea960ebc"
    },
    {
     "path": "basic/arms/robot_arm.py",
@@ -26,15 +26,15 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "5c3e4d7362dfc2564a610b21ba3b9f096f6a6caf96b5d4463638ab248600a55d"
+    "sha256": "0370d8e69569eba1c7cd078fed18956d23c4cea41b6e38ee1fcd210dd3668fab"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "9797578361e4b1378db958dc592036d6962142ca0a1a40eb25a9ca8f720e843b"
+    "sha256": "3998545bf869bc5fb41781868cc60896b23a43fee6b4c0140f32f9bfbc812719"
    },
    {
     "path": "tools/blender_build.py",
-    "sha256": "32bfd8714283ed7cee2a95858f8f271d20b78f6e5bb2134a015e4486c78f17b6"
+    "sha256": "81d5b02d55747b71285dd9d1b1066a6b12a6f6658ae89c776c4ecb919dc26f12"
    },
    {
     "path": "tools/export_unity.py",
@@ -823,7 +823,7 @@
     "parent": "",
     "rest": [
      0.0,
-     -0.019,
+     -0.017,
      0.143
     ],
     "move": {
@@ -870,6 +870,32 @@
    },
    {
     "id": "sight_body",
+    "asm": "sight",
+    "role": "anodized",
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "move": {
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "a0": 0.0,
+     "a1": 0.0
+    }
+   },
+   {
+    "id": "sight_base",
     "asm": "sight",
     "role": "anodized",
     "parent": "sight_mount",
@@ -1001,7 +1027,7 @@
    {
     "id": "sight_reticle",
     "asm": "sight",
-    "role": "energy",
+    "role": "reticle_cyan",
     "parent": "sight_mount",
     "rest": [
      0.0,
@@ -2013,7 +2039,7 @@
     "pos": [
      0.0,
      0.005,
-     0.172
+     0.1695
     ]
    },
    {
@@ -2021,8 +2047,8 @@
     "part": "sight_glass",
     "pos": [
      0.0,
-     -0.038,
-     0.172
+     -0.0344,
+     0.1695
     ]
    },
    {
@@ -2030,8 +2056,8 @@
     "part": "sight_frame",
     "pos": [
      0.0,
-     -0.024,
-     0.172
+     0.0556,
+     0.1695
     ]
    }
   ]
@@ -2491,7 +2517,7 @@
    "name": "ads",
    "ads": true,
    "roll": 0.0,
-   "src": "E (Visierlinie = Kameraachse)",
+   "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
    "pos": [
     0.0,
     0.0,
@@ -2504,7 +2530,7 @@
    ],
    "eye": [
     0.0,
-    -0.105,
+    0.0,
     0.0
    ],
    "aim_dir": [
@@ -6269,6 +6295,17 @@
    "de": "Funktionsmetall"
   },
   {
+   "role": "reticle_cyan",
+   "color": "#5FD3E0",
+   "aaa_color": "#5FD3E0",
+   "rough": 0.3,
+   "metal": 0.0,
+   "alpha": 1.0,
+   "emit": 0.6,
+   "spec": 0.5,
+   "de": "Absehen Cyan"
+  },
+  {
    "role": "rubber",
    "color": "#1A1B1E",
    "aaa_color": "#111214",
@@ -8562,70 +8599,84 @@
    {
     "name": "sight_mount",
     "min": [
-     -0.013,
-     -0.025,
+     -0.0115,
+     -0.023,
      0.0005
     ],
     "max": [
-     0.013,
-     0.025,
-     0.008
+     0.0115,
+     0.023,
+     0.006
     ],
     "tris": 220
    },
    {
     "name": "sight_clamp",
     "min": [
-     0.013,
-     -0.031684,
+     0.0114,
+     -0.027682,
      0.144
     ],
     "max": [
-     0.0154,
-     -0.008,
-     0.148967
+     0.0134,
+     -0.006,
+     0.147578
     ],
     "tris": 108
    },
    {
     "name": "sight_body",
     "min": [
-     -0.013,
-     -0.044,
-     0.1505
+     -0.0105,
+     -0.04,
+     0.1485
     ],
     "max": [
-     0.013,
+     0.0105,
      0.005,
-     0.159
+     0.1555
     ],
     "tris": 164
    },
    {
-    "name": "sight_frame",
+    "name": "sight_base",
     "min": [
-     -0.018,
-     -0.044,
-     0.155
+     -0.0171,
+     -0.0406,
+     0.1485
     ],
     "max": [
-     0.018,
-     -0.024,
-     0.190741
+     0.0171,
+     -0.025,
+     0.1518
+    ],
+    "tris": 108
+   },
+   {
+    "name": "sight_frame",
+    "min": [
+     -0.0171,
+     -0.04,
+     0.1515
+    ],
+    "max": [
+     0.0171,
+     -0.028,
+     0.1844
     ],
     "tris": 324
    },
    {
     "name": "sight_frame_trim",
     "min": [
-     -0.018,
-     -0.045,
-     0.1555
+     -0.0171,
+     -0.0406,
+     0.1556
     ],
     "max": [
-     0.018,
-     -0.0436,
-     0.1875
+     0.0171,
+     -0.0396,
+     0.1842
     ],
     "tris": 480
    },
@@ -8633,69 +8684,69 @@
     "name": "sight_glass",
     "min": [
      -0.0155,
-     -0.0385,
-     0.1595
+     -0.0348,
+     0.157
     ],
     "max": [
      0.0155,
-     -0.0375,
-     0.1845
+     -0.034,
+     0.182
     ],
     "tris": 12
    },
    {
     "name": "sight_emitter",
     "min": [
-     -0.0035,
+     -0.003,
      -0.0115,
-     0.1562
+     0.1526
     ],
     "max": [
-     0.0035,
+     0.003,
      -0.0095,
-     0.1584
+     0.1548
     ],
     "tris": 108
    },
    {
     "name": "sight_reticle",
     "min": [
-     -0.003185,
-     -0.0374,
-     0.168815
+     -0.003193,
+     -0.0338,
+     0.166307
     ],
     "max": [
-     0.003185,
-     -0.037,
-     0.175185
+     0.003193,
+     -0.0334,
+     0.172693
     ],
-    "tris": 316
+    "tris": 444
    },
    {
     "name": "sight_knob_w",
     "min": [
-     -0.017,
-     -0.023139,
-     0.149861
+     -0.012,
+     -0.02255,
+     0.14825
     ],
     "max": [
-     -0.013,
-     -0.016861,
-     0.156139
+     -0.0095,
+     -0.01745,
+     0.15335
     ],
     "tris": 188
    },
    {
     "name": "sight_battery",
     "min": [
-     0.013,
-     -0.024315,
-     0.148685
+     0.0095,
+     -0.023335,
+     0.147465
     ],
     "max": [
-     0.0165,
-     -0.015685,
-     0.157315
+     0.012,
+     -0.016665,
+     0.154135
     ],
     "tris": 188
    },

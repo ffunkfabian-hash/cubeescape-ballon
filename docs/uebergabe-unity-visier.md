@@ -16,9 +16,13 @@ Opus 5.5 `high`, Grund: Spielgefühl und Darstellung (Shader, Kameras).
 
 ## Voraussetzung
 
-Die Daten liegen erst im Arbeitsstand der Hauptsitzung (`~/Claude/cubeescape-ballon`, Branch `claude/basic-first-light`) und
-sind noch nicht committet. **Erst beginnen, wenn sie auf `claude/basic-first-light` committet sind.** Dann diesen Branch
-(`claude/ballon-0.4-firstfeel`, ab `6071376`) darauf setzen oder ihn zuerst mergen.
+Erfüllt: Die Daten sind seit `cd27a66` und `8205514` (Augenpunkt 90 mm, Zielbereiche 18–26 % bzw. 26–34 %) auf
+`claude/basic-first-light` committet, und 0.4 ist dorthin gemergt. Die Designsprache der Visiere ist noch offen (Analyse
+„Visiere in Videospielen“): an den Visierformen nichts Endgültiges bauen; Absehen, Aufgehen, Weltzoom und Linsenbild sind
+davon unabhängig.
+Die Arbeit beginnt von `claude/basic-first-light`. Modelle und Unity-Daten sind beim Merge schon neu exportiert (72 Teile,
+Visier v2 mit `sight_reticle`). Ändert die Hauptsitzung danach die Visierformen in `basic/common.py`, meldet `./check`
+„ego.json veraltet“; dann erneut exportieren.
 
 Quellen der Daten (nur lesen):
 
@@ -60,7 +64,7 @@ Quellen der Daten (nur lesen):
    - Teile mit `ads_hide` beim Zielen ausblenden; der Klemmfuß bleibt.
    - `Socket_Eye` liegt 110 mm hinter der vorderen Öffnung (`Socket_Objective`).
 7. **Prüfen.**
-   - Öffnung am Bildschirm: Reflex/Holo 15–22 %, Zielfernrohr 22–30 % der Bildbreite. Messen im Vergleichsmodus (`compare`);
+   - Öffnung am Bildschirm: Reflex/Holo 18–26 %, Zielfernrohr 26–34 % der Bildbreite. Messen im Vergleichsmodus (`compare`);
      als Test aus der projizierten Öffnung.
    - Belege: Standbild ADS je Absehenform, ein MP4 des Aufgehens beim Feuern (Bewegung geändert), Vergleich mit
      `sight_examples_v2.png`.
