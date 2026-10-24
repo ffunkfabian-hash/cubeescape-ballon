@@ -135,14 +135,20 @@ namespace Ballon.Ego
         /// <summary>HDR-Ziel (nach AgX: Anzeige-linear ≤ 1) → sRGB-kodierte Pixel in `tex` (RGB24).</summary>
         public static void ReadBack(RenderTexture hdr, Texture2D tex)
         {
-            var ldr = RenderTexture.GetTemporary(hdr.width, hdr.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
-            Graphics.Blit(hdr, ldr);
             var prev = RenderTexture.active;
-            RenderTexture.active = ldr;
-            tex.ReadPixels(new Rect(0, 0, hdr.width, hdr.height), 0, 0);
-            tex.Apply();
-            RenderTexture.active = prev;
-            RenderTexture.ReleaseTemporary(ldr);
+            var ldr = RenderTexture.GetTemporary(hdr.width, hdr.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            try
+            {
+                Graphics.Blit(hdr, ldr);
+                RenderTexture.active = ldr;
+                tex.ReadPixels(new Rect(0, 0, hdr.width, hdr.height), 0, 0);
+                tex.Apply();
+            }
+            finally
+            {
+                RenderTexture.active = prev;
+                RenderTexture.ReleaseTemporary(ldr);
+            }
         }
 
         /// <summary>Leistung im Parcours: Vorführablauf in Echtzeit ohne VSync, Bildzeiten (ms) nach `file` (Mittel, 95-, 99-Perzentil).</summary>
@@ -286,6 +292,26 @@ namespace Ballon.Ego
                 yield return new WaitForEndOfFrame();
                 ReadBack(rt, tex);
                 File.WriteAllBytes(Path.Combine(dir, $"{pose}_unity.png"), tex.EncodeToPNG());
+            }
+            // Maske von Waffe und Armen (weiß auf schwarz) für Kennzahlen nur über dem Viewmodel
+            var white = new Material(backdrop);
+            white.SetColor("_BaseColor", Color.white);
+            white.SetTexture("_BaseMap", Texture2D.whiteTexture);
+            foreach (var r in Player.rig.space.GetComponentsInChildren<Renderer>(true))
+            {
+                var ms = r.sharedMaterials;
+                for (int k = 0; k < ms.Length; k++) ms[k] = white;
+                r.sharedMaterials = ms;
+            }
+            cam.cullingMask = 0;
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = Color.black;
+            foreach (var pose in new[] { "hip", "ads", "reload", "inspect_r" })
+            {
+                Player.rig.Apply(S.Evaluate(S.StillAction(pose), 0, new EgoState()));
+                yield return new WaitForEndOfFrame();
+                ReadBack(rt, tex);
+                File.WriteAllBytes(Path.Combine(dir, $"{pose}_mask.png"), tex.EncodeToPNG());
             }
             Debug.Log($"[Ballon] Vergleichsbilder in {dir}");
             Application.Quit();

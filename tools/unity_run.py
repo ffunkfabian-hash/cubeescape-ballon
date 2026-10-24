@@ -135,16 +135,46 @@ def lum(path):
     return float(r.stdout or 0)
 
 
-def metrics(u, b):
-    """SSIM (ImageMagick 7 meldet 1 − SSIM), PSNR und mittlere Helligkeit beider Bilder."""
-    rgb = os.path.join(os.path.dirname(u), '_ref.png')          # Blender-PNG hat Alpha: für den Vergleich auf RGB
+def _num(cmd):
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    return float((r.stdout or r.stderr).strip().split()[0])
+
+
+def metrics(u, b, mask=None):
+    """Kennzahlen Unity gegen Blender. SSIM: ImageMagick 7 meldet DSSIM = (1 − SSIM) / 2, also SSIM = 1 − 2·DSSIM
+    (geprüft: Schwarz gegen Weiß ergibt 0,49995). Mit Maske zusätzlich mittlere Abweichung, PSNR und Helligkeit nur über dem
+    Viewmodel sowie SSIM im Ausschnitt der Maske."""
+    d = os.path.dirname(u)
+    rgb = os.path.join(d, '_ref.png')                         # Blender-PNG hat Alpha: für den Vergleich auf RGB
     subprocess.run(['magick', b, '-alpha', 'off', rgb], check=True)
 
-    def m(kind):
-        return subprocess.run(['magick', 'compare', '-metric', kind, u, rgb, 'null:'], capture_output=True, text=True).stderr.strip()
-    dssim = float(m('SSIM').split('(')[1].rstrip(')'))
-    return dict(ssim=round(1 - dssim, 4), psnr_db=round(float(m('PSNR').split()[0]), 2),
-                lum_unity=round(lum(u), 4), lum_blender=round(lum(b), 4))
+    def m(kind, x, y):
+        txt = subprocess.run(['magick', 'compare', '-metric', kind, x, y, 'null:'], capture_output=True, text=True).stderr.strip()
+        return float(txt.split('(')[1].rstrip(')')) if kind == 'SSIM' else float(txt.split()[0])
+    res = dict(ssim=round(1 - 2 * m('SSIM', u, rgb), 4), psnr_db=round(m('PSNR', u, rgb), 2),
+               lum_unity=round(lum(u), 4), lum_blender=round(lum(b), 4))
+    if mask and os.path.exists(mask):
+        mk = os.path.join(d, '_mask.png')
+        subprocess.run(['magick', mask, '-colorspace', 'Gray', '-threshold', '20%', mk], check=True)
+        area = _num(['magick', mk, '-format', '%[fx:mean]', 'info:'])
+        sq = os.path.join(d, '_sq.png')
+        subprocess.run(['magick', u, rgb, '-compose', 'difference', '-composite', '-colorspace', 'Gray', '-depth', '16',
+                        sq], check=True)
+        mae = _num(['magick', sq, mk, '-compose', 'multiply', '-composite', '-format', '%[fx:mean]', 'info:']) / area
+        mse = _num(['magick', sq, '-evaluate', 'pow', '2', mk, '-compose', 'multiply', '-composite', '-format', '%[fx:mean]',
+                    'info:']) / area
+        lu = _num(['magick', u, '-colorspace', 'Gray', mk, '-compose', 'multiply', '-composite', '-format', '%[fx:mean]',
+                   'info:']) / area
+        lb = _num(['magick', rgb, '-colorspace', 'Gray', mk, '-compose', 'multiply', '-composite', '-format', '%[fx:mean]',
+                   'info:']) / area
+        box = subprocess.run(['magick', mk, '-format', '%@', 'info:'], capture_output=True, text=True).stdout.strip()
+        cu, cb = os.path.join(d, '_cu.png'), os.path.join(d, '_cb.png')
+        subprocess.run(['magick', u, '-crop', box, '+repage', cu], check=True)
+        subprocess.run(['magick', rgb, '-crop', box, '+repage', cb], check=True)
+        import math
+        res.update(vm_area=round(area, 3), vm_mae=round(mae, 4), vm_psnr_db=round(10 * math.log10(1 / max(mse, 1e-9)), 2),
+                   vm_lum_unity=round(lu, 4), vm_lum_blender=round(lb, 4), vm_ssim_box=round(1 - 2 * m('SSIM', cu, cb), 4))
+    return res
 
 
 def compare(extra=()):
@@ -166,8 +196,9 @@ def compare(extra=()):
                         '-fill', '#FF7A1A', '-opaque', 'white', '-transparent', 'black', ')', '-composite', edge], check=True)
         mix = os.path.join(d, f'{pose}_mischung.png')
         subprocess.run(['magick', u, b, '-compose', 'blend', '-define', 'compose:args=50', '-composite', mix], check=True)
-        m = mets[pose] = metrics(u, b)
-        print(f"  {pose}: SSIM {m['ssim']}, PSNR {m['psnr_db']} dB, Helligkeit Unity {m['lum_unity']} / Blender {m['lum_blender']}")
+        m = mets[pose] = metrics(u, b, os.path.join(d, f'{pose}_mask.png'))
+        print(f"  {pose}: SSIM {m['ssim']}, PSNR {m['psnr_db']} dB | Viewmodel: Abweichung {m.get('vm_mae')}, PSNR {m.get('vm_psnr_db')} dB, "
+              f"SSIM (Ausschnitt) {m.get('vm_ssim_box')}, Helligkeit {m.get('vm_lum_unity')} / {m.get('vm_lum_blender')}")
         tiles += ['-label', f'{pose} · Blender (Cycles)', b, '-label', f"{pose} · Unity (URP) · SSIM {m['ssim']}", u,
                   '-label', f'{pose} · Blender-Kanten über Unity', edge]
     sheet = os.path.join(EV, 'firstfeel_vergleich.png')

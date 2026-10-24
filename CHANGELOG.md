@@ -16,7 +16,8 @@
     Glätte, Normale, AO.
   - Blender-AgX als 3D-LUT im Vollbild-Durchgang, HDR an.
   - Studiolicht und Hintergrund wie `setup_aaa`.
-- Vergleich mit Kennzahl (`unity_run.py compare`): SSIM 0,94–0,95 → 0,95–0,97, PSNR +3–5 dB. Leistungsmessung
+- Vergleich mit Kennzahl über Waffe und Arme (`unity_run.py compare`, Maske): Abweichung −14 bis −31 %, SSIM im Ausschnitt
+  0,74–0,81 → 0,78–0,85. Ganzes Bild PSNR +3–5 dB. Leistungsmessung
   (`unity_run.py bench`). Bericht [docs/versions/0.7-truecolor.md](docs/versions/0.7-truecolor.md).
 
 ## 0.4.0 „Firstfeel“ – unveröffentlicht (lokal)

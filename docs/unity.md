@@ -56,6 +56,9 @@ Anzeige oben links, Einschläge bleiben als Punkte sichtbar.
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
+**Format.** `ego.json` hat das Format `ballon-ego/2` (ab 0.7: Texturen, AgX-LUT, `emit_only`). Der Abnehmer ist `unity/` ab
+0.7. Ältere Exporte (`/1`) lehnt `EgoFile.Parse` ab; sie müssen neu exportiert werden.
+
 **Achsen.** Die Umrechnung steht einmal in `ego.json › axes.to_unity`: Unity = (−x, z, −y) aus Blender. Matrizen werden als
 M·B·Mᵀ umgerechnet. Gerechnet wird überall im Blender-Raum, umgerechnet erst beim Setzen der Transforms. Die Netze kommen aus dem
 FBX (mit „Apply Transform“). Die Lagen der Knoten setzt der Importer aus `ego.json`, weil das FBX die Kindknoten der Waffe verdreht
