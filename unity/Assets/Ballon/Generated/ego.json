@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/3",
+ "format": "ballon-ego/4",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen",
@@ -26,11 +26,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "0370d8e69569eba1c7cd078fed18956d23c4cea41b6e38ee1fcd210dd3668fab"
+    "sha256": "a459b1bd2b1c09f7d1f2c8248f43c52671d4128dd3aa09189a629bb304465a1e"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "3998545bf869bc5fb41781868cc60896b23a43fee6b4c0140f32f9bfbc812719"
+    "sha256": "ffa804b90691564f1542a841ba1f5d75ef82ee5f6325b1c4ef015056729193e1"
    },
    {
     "path": "tools/blender_build.py",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "86dd9059519e403e5c62acbc55af632f54b07f5a4651e58a62ec9aad340fe378"
+    "sha256": "04c354d2d69ea583d38acff7d282d31a4ed3370b1b28b2a860f49bdd28a763b4"
    },
    {
     "path": "tools/bake_unity.py",
@@ -80,7 +80,9 @@
   ],
   "secondary": {
    "freq_hz": 3.2,
-   "zeta": 0.55
+   "zeta": 0.55,
+   "aim_freq_hz": 10.0,
+   "aim_zeta": 1.0
   },
   "breathe_all": {
    "period_s": 3.4,
@@ -4982,7 +4984,7 @@
    "de": "Sprint: Beginn, Schleife, Ende",
    "frames": 60,
    "time_scale": 1.25,
-   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); Rhythmus Robogen SprintFull 0,33 s je Doppelschritt",
+   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 20 Bilder = 0,67 s → 3 Schritte/s bei 6,8 m/s (Schritt ≈ 2,3 m). 0.10: vorher 10 = 6 Schritte/s („tapsig“)",
    "weapon": [
     {
      "f": 0.0,
@@ -5084,7 +5086,7 @@
     "enabled": true,
     "start": 10.0,
     "end": 47.5,
-    "period": 10.0,
+    "period": 20.0,
     "amp": [
      0.012,
      0.01

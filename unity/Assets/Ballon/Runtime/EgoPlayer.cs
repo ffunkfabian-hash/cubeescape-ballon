@@ -278,12 +278,8 @@ namespace Ballon.Ego
         {
             if (!hud) return;
             float cx = Screen.width / 2f, cy = Screen.height / 2f;
-            float gap = Mathf.Lerp(10f, 3f, C.adsWeight) + Mathf.Lerp(move.spreadHipDeg, move.spreadAdsDeg, C.adsWeight) * 4f;
-            var col = _hitFlash > 0 ? new Color(1f, 0.45f, 0.2f) : new Color(1, 1, 1, 0.9f);
-            Rect(cx - gap - 8, cy - 1, 8, 2, col);
-            Rect(cx + gap, cy - 1, 8, 2, col);
-            Rect(cx - 1, cy - gap - 8, 2, 8, col);
-            Rect(cx - 1, cy + gap, 2, 8, col);
+            // kein ständiges Fadenkreuz (Nutzer 25.10.2026): gezielt wird über das Visier, nur Treffer zeigen kurz eine Marke
+            var col = new Color(1f, 0.45f, 0.2f);
             if (_hitFlash > 0)
             {
                 Rect(cx - 7, cy - 7, 4, 4, col);

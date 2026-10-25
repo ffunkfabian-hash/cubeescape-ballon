@@ -12,11 +12,14 @@ BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blend
     -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + 8 Skins + AgX-LUT + ego.json + Referenz (≈ 20 min; absoluter Pfad: ce lock wechselt das Verzeichnis)
 BASIC_OUT=~/Library/Caches/CubeEscapeBallon/unity/blender_out ~/Claude/cubeescape-nexogen/ce lock gpu -- \
     /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P "$PWD/tools/ego_build.py" -- --stills --gpu   # frische Blender-Stills
+BALLON_EXPORT_DATA_ONLY=1 ~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b \
+    --factory-startup -P "$PWD/tools/export_unity.py"   # nur Bewegung/Daten geändert: ego.json + Referenz, ohne Backen (2 s, keine GPU-Sperre)
 python3 tools/export_unity.py --check       # ego.json passt zu den Daten und zu den Quellen (SHA-256), läuft in ./check
 python3 tools/unity_run.py setup            # URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
 python3 tools/unity_run.py test             # EditMode + PlayMode
 python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (Entwicklungsbuild)
 python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + Kontaktbogen
+python3 tools/unity_run.py feel             # MP4 Bewegungsgefühl: Sprint, Zielen aus dem Stand, Sprint → Zielen (0.10)
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
@@ -50,13 +53,14 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 
 Der Parcours ist grau: Boden mit Meterraster, Wände, Brüstung, Deckungen, Rampe mit Podest, Treppe, ein niedriger Durchgang
 zum Ducken und Säulen zum Testen der Wandnähe (`lowered`). Zielscheiben stehen in 10, 25 und 50 m, je drei. Treffer zählt die
-Anzeige oben links, Einschläge bleiben als Punkte sichtbar.
+Anzeige oben links, Einschläge bleiben als Punkte sichtbar. Ein ständiges Fadenkreuz gibt es seit 0.10 nicht mehr (Nutzerwunsch
+25.10.2026). Gezielt wird über das Visier, nur ein Treffer zeigt kurz (0,12 s) eine orange Marke in der Mitte.
 
 ## Aufbau
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/3`), `ego_reference.json` |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/4`), `ego_reference.json` |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs` | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
@@ -65,11 +69,15 @@ Anzeige oben links, Einschläge bleiben als Punkte sichtbar.
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/3`. Der Abnehmer ist `unity/` ab 0.7.2. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/4`. Der Abnehmer ist `unity/` ab 0.10. Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
-- 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`.
+- 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
+- 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
+  `sprint_to_aim`, `draw_aim`, `fire_ads`), folgen ihrer Kurve mit einer schnellen, kritisch gedämpften Feder (10 Hz, ζ 1). So schwingt das
+  Visier nicht mehr über die Mitte (0.9: 3,3°) und hängt nicht nach (am Ende von `aim_in` 0,8°). Alle übrigen Aktionen behalten
+  3,2 Hz bei ζ 0,55.
 
-Ältere Exporte (`/1`, `/2`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
+Ältere Exporte (`/1` bis `/3`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
 
 **Achsen.** Die Umrechnung steht einmal in `ego.json › axes.to_unity`: Unity = (−x, z, −y) aus Blender. Matrizen werden als
 M·B·Mᵀ umgerechnet. Gerechnet wird überall im Blender-Raum, umgerechnet erst beim Setzen der Transforms. Die Netze kommen aus dem
@@ -93,7 +101,7 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 
 | Test | prüft |
 |---|---|
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/3`, 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/4` (`/1` bis `/3` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |

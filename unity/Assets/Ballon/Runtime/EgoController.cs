@@ -423,9 +423,10 @@ namespace Ballon.Ego
         }
 
         /// <summary>Feder-Nachlauf (ego.SECONDARY) in Echtzeit über alle Spuren hinweg: glättet auch Spurwechsel.</summary>
-        Matrix4x4 SecondaryLive(Matrix4x4 target)
+        Matrix4x4 SecondaryLive(Matrix4x4 target, bool aim)
         {
             var S2 = S.D.motion.secondary;
+            float z = aim ? S2.aim_zeta : S2.zeta;            // im Zielen ankommen: kritisch gedämpft (kein Überschwingen am Visier)
             var qt = QuatFrom(target);
             if (!_hasSec)
             {
@@ -433,9 +434,9 @@ namespace Ballon.Ego
                 _secP = Pos(target); _secV = Vector3.zero; _secQ = qt; _secAv = Vector3.zero;
                 return target;
             }
-            float w = 2 * Mathf.PI * S2.freq_hz;
-            EgoSolver.SpringStep(ref _secP, ref _secV, Pos(target), w, S2.zeta, _dt);
-            EgoSolver.SpringRot(ref _secQ, ref _secAv, qt, w, S2.zeta, _dt);
+            float w = 2 * Mathf.PI * (aim ? S2.aim_freq_hz : S2.freq_hz);
+            EgoSolver.SpringStep(ref _secP, ref _secV, Pos(target), w, z, _dt);
+            EgoSolver.SpringRot(ref _secQ, ref _secAv, qt, w, z, _dt);
             return Matrix4x4.TRS(_secP, _secQ, Vector3.one);
         }
 
@@ -448,7 +449,7 @@ namespace Ballon.Ego
             float e = Ease(_fade);
             if (e < 1) baseW = Blend(_fromBase, baseW, e);
             _lastBase = baseW;
-            baseW = _t.scripted ? S.Secondary(baseW, f, _t.st) : SecondaryLive(baseW);
+            baseW = _t.scripted ? S.Secondary(baseW, f, _t.st, A.EndsInAds) : SecondaryLive(baseW, A.EndsInAds);
             var L = _t.scripted ? S.Scripted(A, f, Rot3(baseW), _t.st) : LiveLayers(Rot3(baseW));
             var WM = EgoSolver.Apply(baseW, L);
             S.MechAt(A, f, L, _mech);

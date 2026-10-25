@@ -1,4 +1,4 @@
-// Ego-Daten im Format ballon-ego/3, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
+// Ego-Daten im Format ballon-ego/4, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
 // Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -74,6 +74,9 @@ namespace Ballon.Ego
         public FrameRange drop;
         public int[] fire;
         public float kick;
+
+        /// <summary>Endet in der Haltung „ads“ (ego.ends_in_ads): Feder-Nachlauf dann mit aim_zeta.</summary>
+        public bool EndsInAds => weapon != null && weapon.Length > 0 && weapon[weapon.Length - 1].pose == "ads";
         public bool breathe;
         public Bob bob;
         public Marker[] events;
@@ -87,7 +90,7 @@ namespace Ballon.Ego
         public bool emit_only;
     }
 
-    [Serializable] public class Spring { public float freq_hz, zeta; }
+    [Serializable] public class Spring { public float freq_hz, zeta, aim_freq_hz, aim_zeta; }     // aim_*: Aktionen, die im Zielen enden (ego.ends_in_ads)
     [Serializable] public class BreatheAll { public float period_s, up_m, pitch_deg; }
 
     [Serializable]
@@ -127,7 +130,7 @@ namespace Ballon.Ego
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
-        public const string Format = "ballon-ego/3";     // 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
+        public const string Format = "ballon-ego/4";     // 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;
