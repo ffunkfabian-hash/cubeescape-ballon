@@ -449,7 +449,8 @@ def evaluate(sc, A, f, report, state):
         if B['start'] <= f <= B['end']:
             w = min(1.0, (f - B['start']) / 4, (B['end'] - f) / 4)
             ph = 2 * math.pi * (f - B['start']) / B['period']
-            off_pos += Vector((B['amp'][0] * math.sin(ph) * w, 0, B['amp'][1] * math.sin(2 * ph) * w))
+            up = -math.cos(2 * ph) if B.get('shape') == 'u' else math.sin(2 * ph)   # u: oben an den Seitenumkehren (Destiny-Sprint)
+            off_pos += Vector((B['amp'][0] * math.sin(ph) * w, 0, B['amp'][1] * up * w))
             off_rot = off_rot @ Matrix.Rotation(math.radians(B['roll'] * math.sin(ph) * w), 3, 'Y')
     mech = {}
     for pid, keys in A.get('mech', {}).items():

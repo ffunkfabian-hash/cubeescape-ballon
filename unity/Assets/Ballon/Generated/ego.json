@@ -26,11 +26,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "a459b1bd2b1c09f7d1f2c8248f43c52671d4128dd3aa09189a629bb304465a1e"
+    "sha256": "64c1ea3d13acc12d741b64cc38b28dab474a498620cb4105d3b8ae25872f256a"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "ffa804b90691564f1542a841ba1f5d75ef82ee5f6325b1c4ef015056729193e1"
+    "sha256": "79243e71caa95ce4fe3315edbaa7d72f4b4385578d99ddbc385783970fdafcf0"
    },
    {
     "path": "tools/blender_build.py",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "04c354d2d69ea583d38acff7d282d31a4ed3370b1b28b2a860f49bdd28a763b4"
+    "sha256": "8da28a3c3d1c5803b22f86dcc75e53c402bc21aea3e07d3c86688ea2675fe1be"
    },
    {
     "path": "tools/bake_unity.py",
@@ -4984,7 +4984,7 @@
    "de": "Sprint: Beginn, Schleife, Ende",
    "frames": 60,
    "time_scale": 1.25,
-   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 20 Bilder = 0,67 s → 3 Schritte/s bei 6,8 m/s (Schritt ≈ 2,3 m). 0.10: vorher 10 = 6 Schritte/s („tapsig“)",
+   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“)",
    "weapon": [
     {
      "f": 0.0,
@@ -5086,12 +5086,13 @@
     "enabled": true,
     "start": 10.0,
     "end": 47.5,
-    "period": 20.0,
+    "period": 19.0,
     "amp": [
      0.012,
      0.01
     ],
-    "roll": 4.0
+    "roll": 3.5,
+    "u": true
    },
    "events": [
     {
@@ -5321,7 +5322,8 @@
      0.007,
      0.004
     ],
-    "roll": 1.2
+    "roll": 1.2,
+    "u": false
    },
    "events": []
   },

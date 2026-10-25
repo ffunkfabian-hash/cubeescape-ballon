@@ -57,7 +57,7 @@ namespace Ballon.Ego
     [Serializable] public class ValueKey { public float f; public float v; }
     [Serializable] public class MechTrack { public string part; public ValueKey[] keys; }
     [Serializable] public class FrameRange { public float a, b; }
-    [Serializable] public class Bob { public bool enabled; public float start, end, period; public float[] amp; public float roll; }
+    [Serializable] public class Bob { public bool enabled, u; public float start, end, period; public float[] amp; public float roll; }   // u: U-Bogen (−cos 2φ) statt liegender Acht (sin 2φ)
     [Serializable] public class Marker { public int f; public string name; }
 
     [Serializable]

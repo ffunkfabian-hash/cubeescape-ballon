@@ -49,7 +49,7 @@
 - Szenen baut Unity erst beim ersten Zeigen: Aufnahmen und Tests zuerst `ShowScene`, dann `LoadedSceneAt` prüfen ([Bootstrap.cs](../unity/Assets/Ballon/Runtime/Bootstrap.cs)).
 - `CourseRun.RunsFinished` zählt über `Reset` hinweg: Tests vergleichen gegen den Stand vor dem Lauf ([ScenePlayTests.cs](../unity/Assets/Ballon/Tests/PlayMode/ScenePlayTests.cs)).
 - `unity_run.py scenes`/`course`/`bench` nutzen den Build, nicht den Editor: nach Codeänderungen zuerst `build` ([unity.md](unity.md)).
-- Wippen mit `sin(ph)` seitlich und `sin(2·ph)` vertikal: `period` ist der Doppelschritt. 10 Bilder ergaben 6 Schritte/s im Sprint („tapsig“); 20 Bilder sind 3/s ([ego.py](../basic/arms/ego.py)).
+- Wippen mit `sin(ph)` seitlich und `sin(2·ph)` vertikal: `period` ist der Doppelschritt. 10 Bilder ergaben 6 Schritte/s im Sprint („tapsig“); Destiny 2 hat 3,16 Hz mit U-Bogen, also 19 Bilder und −cos 2φ ([ego.py](../basic/arms/ego.py)).
 - Ein unterkritischer Feder-Nachlauf (ζ 0,55) schwingt das Visier im Zielen 3,3° über die Mitte. Kritisch (ζ 1) bei 3,2 Hz hängt es 10° nach; für Zielen eine schnelle, kritische Feder (10 Hz). Destiny 2 hat beim Zielen kein Überschwingen ([unity.md](unity.md)).
 - `ce session reserve --repo .` läuft im Nexogen-Verzeichnis und reserviert dann Nexogen (Branch auf dessen origin). BALLON hat kein Remote; reservieren erst nach dem Veröffentlichen, aus dem eigenen Worktree.
 - Reine Bewegungsänderungen nicht mit dem vollen Export (20 min GPU, sperrt andere Repos): `BALLON_EXPORT_DATA_ONLY=1` unter `ce lock blender` (2 s, [export_unity.py](../tools/export_unity.py)).

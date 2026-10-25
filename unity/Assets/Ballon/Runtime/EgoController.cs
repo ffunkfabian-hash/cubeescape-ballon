@@ -405,9 +405,11 @@ namespace Ballon.Ego
             L.rot = RotX(Rad(-Bz.pitch_deg * Mathf.Sin(phb + 0.8f) - 0.25f * bw * Mathf.Sin(2 * Mathf.PI * _breathePh / 60 + 1)));
             // Wippen (liegende Acht) aus walk und sprint
             float bobK = Mathf.Lerp(1, tune.bobAds, adsWeight);
-            var ampW = new Vector2(_walk.bob.amp[0], _walk.bob.amp[1]) * _bobW + new Vector2(_sprintA.bob.amp[0], _sprintA.bob.amp[1]) * _sprintW;
+            float side = _walk.bob.amp[0] * _bobW + _sprintA.bob.amp[0] * _sprintW;
+            float s2 = Mathf.Sin(2 * _bobPh), u2 = -Mathf.Cos(2 * _bobPh);           // liegende Acht bzw. U-Bogen je Aktion (Bob.u)
+            float up = _walk.bob.amp[1] * _bobW * (_walk.bob.u ? u2 : s2) + _sprintA.bob.amp[1] * _sprintW * (_sprintA.bob.u ? u2 : s2);
             float rollW = _walk.bob.roll * _bobW + _sprintA.bob.roll * _sprintW;
-            L.pos += new Vector3(ampW.x * Mathf.Sin(_bobPh), 0, ampW.y * Mathf.Sin(2 * _bobPh)) * bobK;
+            L.pos += new Vector3(side * Mathf.Sin(_bobPh), 0, up) * bobK;
             L.rot = L.rot * RotY(Rad(rollW * Mathf.Sin(_bobPh) * bobK + _tilt));
             // Pendeln: Gieren um die Hochachse der Waffe, Nicken um die Querachse, leichte Lageverschiebung
             L.rot = L.rot * RotZ(Rad(_sway.x)) * RotX(Rad(_sway.y));

@@ -13,7 +13,7 @@
 
 ## 0.10.0 „Stride“ – unveröffentlicht (lokal)
 
-- Sprint-Wippen mit 3 statt 6 Schritten/s. Das Zielen endet ohne Überschwingen (0.9: 3,3° über die Mitte), mit eigener schneller,
+- Sprint-Wippen wie in Destiny 2 gemessen (Motiongen REF 0.23): 3,16 statt 6 Schritte/s, U-Bogen, Rollen ±3,5°. Das Zielen endet ohne Überschwingen (0.9: 3,3° über die Mitte), mit eigener schneller,
   kritisch gedämpfter Feder; Format `ballon-ego/4`. Das ständige Fadenkreuz ist entfernt, nur Treffer zeigen kurz eine Marke.
 - Datenexport ohne Backen (`BALLON_EXPORT_DATA_ONLY=1`, 2 s, `ce lock blender`). Beleg `unity_run.py feel`. Übergabe an Motiongen
   je Waffentyp. Bericht [docs/versions/0.10-stride.md](docs/versions/0.10-stride.md).

@@ -97,9 +97,10 @@ ACTIONS = {
                     fL=[(0, 'underhand'), (42, 'open'), (50, 'relaxed'), (86, 'open'), (94, 'underhand')],
                     events=[(16, 'Start'), (94, 'End')], src='E nach Destiny-Inspektion (Ego-Seite, dann Oberseite)'),
     'sprint': dict(de='Sprint: Beginn, Schleife, Ende', frames=48, weapon=[(0, 'hip'), (8, 'sprint'), (38, 'sprint'), (48, 'hip')],
-                   bob=dict(start=8, end=38, period=20, amp=(0.012, 0.010), roll=4), events=[(8, 'SprintLoop'), (48, 'Ready')],
+                   bob=dict(start=8, end=38, period=19, amp=(0.012, 0.010), roll=3.5, shape='u'), events=[(8, 'SprintLoop'), (48, 'Ready')],
                    src='E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: '
-                       '20 Bilder = 0,67 s → 3 Schritte/s bei 6,8 m/s (Schritt ≈ 2,3 m). 0.10: vorher 10 = 6 Schritte/s („tapsig“)'),
+                       '19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) '
+                       'nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“)'),
     'lowered': dict(de='Gesenkte Haltung / Wandnähe', frames=36, weapon=[(0, 'hip'), (8, 'lowered'), (26, 'lowered'), (36, 'hip')],
                     events=[(8, 'Lowered'), (36, 'Ready')], src='E'),
     'walk': dict(de='Gehen (liegende Acht)', frames=48, weapon=[(0, 'hip'), (48, 'hip')],

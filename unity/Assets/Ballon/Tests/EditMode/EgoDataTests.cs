@@ -116,13 +116,14 @@ namespace Ballon.Ego.Tests
             Assert.GreaterOrEqual(n, 3, "aim_in, sprint_to_aim, draw_aim");
         }
 
-        /// <summary>Sprint-Wippen: vertikal ein Hub je Schritt (2 je Periode), 2,5–3,5 Schritte/s – vorher 6/s („tapsig“).</summary>
+        /// <summary>Sprint-Wippen: vertikal ein Hub je Schritt (2 je Periode), wie Destiny 2 ≈ 3,16 Schritte/s – vorher 6/s („tapsig“).</summary>
         [Test]
         public void Sprintschritt_wie_ein_Laeufer()
         {
             var B = D.Action("sprint").bob;
             float steps = 2f * D.fps / B.period;
-            Assert.That(steps, Is.InRange(2.5f, 3.5f), $"Sprint: {steps:0.0} Schritte/s");
+            Assert.That(steps, Is.InRange(2.9f, 3.4f), $"Sprint: {steps:0.00} Schritte/s (Destiny 2: 3,16 Hz, Motiongen REF 0.23)");
+            Assert.IsTrue(B.u, "Sprint-Bahn als U-Bogen (oben an den Seitenumkehren) wie Destiny 2");
             var W = D.Action("walk").bob;
             Assert.Less(2f * D.fps / W.period, steps, "Gehen langsamer als Sprint");
         }
