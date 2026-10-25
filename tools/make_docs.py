@@ -16,7 +16,6 @@ from basic import matrix, common  # noqa: E402
 
 HEAD = '<!-- erzeugt von tools/make_docs.py – nicht von Hand ändern -->\n'
 REVIEW = os.path.join(ROOT, 'data', 'review.json')
-CLIPS = os.path.join(os.path.expanduser('~/Library/Caches/CubeEscapeBallon/evidence'), 'clips', 'clips.json')
 
 
 def review():
@@ -24,10 +23,10 @@ def review():
 
 
 def shown_actions(W):
-    """Aktionen, die als dargestellt gelten: Clip vorhanden und Sichtung in data/review.json 'geprüft'."""
+    """Aktionen, die als dargestellt gelten: Sichtung in data/review.json 'geprüft' (eine Sichtung setzt den Clip voraus).
+    Nur Repo-Daten, keine lokalen Belege: die erzeugte Doku ist auf jedem Rechner gleich (PR-Check auf Linux)."""
     rv = review().get(W.META['id'], {}).get('actions', {})
-    clips = json.load(open(CLIPS)) if os.path.exists(CLIPS) else {}
-    return [a for a in W.ACTIONS if rv.get(a, {}).get('status') == 'geprüft' and f"{W.META['id']}_{a}.mp4" in clips]
+    return [a for a in W.ACTIONS if rv.get(a, {}).get('status') == 'geprüft']
 
 
 def static_status(W):
