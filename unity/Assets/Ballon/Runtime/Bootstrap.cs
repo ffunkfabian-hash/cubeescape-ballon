@@ -368,7 +368,7 @@ namespace Ballon.Ego
             {
                 ShowScene(i);
                 Player.input = new ScriptedInput().Add(0, 100);
-                for (int li = 0; li < LightingCount; li++)           // je Lichtszene ein Paar; die erste behält den Namen <szene>_…, weitere <szene>-<licht>_…
+                for (int li = 0; li < LightingCount; li++)           // je Lichtszene ein Paar <szene>_<licht>_…, wie das Blender-Referenzbild <szene>_<licht>_ref.png
                 {
                     ShowLighting(li);
                     for (int k = 0; k < 20; k++) yield return null;      // Sonde, Spieler steht
@@ -376,7 +376,7 @@ namespace Ballon.Ego
                     Player.Teleport(sp, LoadedSceneAt(i).spawnYaw, 0);
                     cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
                     int vmMask = Player.viewCam.cullingMask;
-                    string stem = li == 0 ? _scenes[i].data.name : $"{_scenes[i].data.name}-{_scenes[i].data.lightings[li].name}";
+                    string stem = $"{_scenes[i].data.name}_{_scenes[i].data.lightings[li].name}";
                     foreach (var withVm in new[] { false, true })
                     {
                         Player.viewCam.cullingMask = withVm ? vmMask : 0;   // Kamera bleibt an: an ihr hängt der AgX-Durchgang

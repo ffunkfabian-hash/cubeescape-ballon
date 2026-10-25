@@ -230,9 +230,11 @@ if __name__ == '__main__':
         shutil.rmtree(d, ignore_errors=True)
         rc = player(['-ballonSceneShots', d], os.path.join(EV, 'scene_shots.log'))
         for f in sorted(glob.glob(os.path.join(d, '*_umgebung.png'))):
-            name = os.path.basename(f).split('_')[0]
+            name = os.path.basename(f)[:-len('_umgebung.png')]   # <szene>_<licht>
             ref = os.path.join(EV, 'scenes', f'{name}_ref.png')
-            if os.path.exists(ref):
+            if not os.path.exists(ref):
+                print(f'  {name}: kein Blender-Referenzbild {ref}')
+            else:
                 m = metrics(f, ref)
                 print(f"  {name}: SSIM {m['ssim']}, PSNR {m['psnr_db']} dB, Helligkeit Unity {m['lum_unity']} / Blender {m['lum_blender']}")
                 out = os.path.join(EV, f'szene_{name}_vergleich.png')
