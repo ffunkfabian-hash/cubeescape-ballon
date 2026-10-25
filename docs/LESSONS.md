@@ -40,3 +40,9 @@
 - `Is.Not.AllocatingGCMemory` zählt auch den ersten Aufruf (Übersetzung der Getter): Anzeigetexte und Zeittabelle vor der Messung einmal lesen/bauen; Laufzeit je Bild als Zehntel aus einer vorgebauten Tabelle statt `string.Format` ([ScenePlayTests.cs](../unity/Assets/Ballon/Tests/PlayMode/ScenePlayTests.cs)).
 - Eine veraltete Szenendatei beim Start mit `Debug.LogError` zu melden lässt jeden PlayMode-Test scheitern: überspringen mit `LogWarning` ([Bootstrap.cs](../unity/Assets/Ballon/Runtime/Bootstrap.cs)).
 - Ein neuer Worktree importiert ganz Unity neu: `cp -cR <Hauptprojekt>/unity/Library unity/Library` (APFS-Klon, Unity beendet) spart den Erstimport ([unity.md](unity.md)).
+- Lightmap-Packen mit festem Inselabstand: tausende Kleinteile fressen den Atlas (Testlauf mit ¼-Atlas: 0 % Belegung). Verdeckte Flächen weglassen und Smart UV 66° statt 50°: Zone `nah` 42 → 71 % ([szenen.md](szenen.md)).
+- Fasenringe an Zylindern zerfallen in Smart UV zu Bogeninseln mit großem Rahmen: Zylinder glatt ohne Fase, nur Kästen fasen ([scenes/__init__.py](../basic/scenes/__init__.py)).
+- Teure Knoten (Bevel-Abrieb, AO-Schmutz) nur einmal in einen Albedo-Atlas backen, die Lichtszenen danach mit dem Albedo-Bild: vier Lichtszenen ohne vierfache Knotenkosten ([scene_build.py](../tools/scene_build.py)).
+- Jeder Cycles-Backaufruf überträgt die ganze Szene neu (≈ 30 s auf der M5-GPU): alle Zonen in einem Aufruf backen, je Zone eigene Materialkopien und Zielbild (4,1 → 2,9 min je Lichtszene).
+- Lightmaps mit OIDN über den Kompositor entrauschen (Blender 5: `scene.compositing_node_group`, `NodeGroupOutput`; Führung Albedo + Normalen): 64 Samples + OIDN statt 128 ohne, sichtbar sauberer ([scene_build.py](../tools/scene_build.py)).
+- Blender 5.2 backt Normalen nur im Objekt- oder Tangentenraum (`normal_space` ohne WORLD); bei Objekten im Ursprung ist Objektraum = Welt.
