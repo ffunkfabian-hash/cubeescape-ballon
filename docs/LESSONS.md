@@ -53,3 +53,4 @@
 - Ein unterkritischer Feder-Nachlauf (ζ 0,55) schwingt das Visier im Zielen 3,3° über die Mitte. Kritisch (ζ 1) bei 3,2 Hz hängt es 10° nach; für Zielen eine schnelle, kritische Feder (10 Hz). Destiny 2 hat beim Zielen kein Überschwingen ([unity.md](unity.md)).
 - `ce session reserve --repo .` läuft im Nexogen-Verzeichnis und reserviert dann Nexogen (Branch auf dessen origin). BALLON hat kein Remote; reservieren erst nach dem Veröffentlichen, aus dem eigenen Worktree.
 - Reine Bewegungsänderungen nicht mit dem vollen Export (20 min GPU, sperrt andere Repos): `BALLON_EXPORT_DATA_ONLY=1` unter `ce lock blender` (2 s, [export_unity.py](../tools/export_unity.py)).
+- `gh repo create --source=.` erkennt einen Git-Worktree nicht als Repo („not a git repository“): aus dem Hauptcheckout aufrufen. Löschen braucht den Scope `delete_repo` (Nutzer: `gh auth refresh -s delete_repo`).

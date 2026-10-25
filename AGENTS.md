@@ -1,7 +1,8 @@
 # Regeln für Agenten in cubeescape-ballon
 
 Zentraler Einstieg: [Nexogen](https://github.com/ffunkfabian-hash/cubeescape-nexogen) (`~/Claude/cubeescape-nexogen`), globale Regeln
-dort (`~/.claude/CLAUDE.md`). Dieses Repo ist dort **noch nicht** in `repos.json` eingetragen (offen, braucht Freigabe des Nutzers).
+dort (`~/.claude/CLAUDE.md`). Dieses Repo ist dort **noch nicht** in `repos.json` eingetragen. **BALLON bleibt lokal** (Entscheidung des Nutzers 25.10.2026:
+„Ballon bleibt lokal“): kein Remote, kein öffentliches Repo; Merges nur nach Ja des Nutzers in der Sitzung, per `--ff-only`.
 
 ## Was hier liegt
 
