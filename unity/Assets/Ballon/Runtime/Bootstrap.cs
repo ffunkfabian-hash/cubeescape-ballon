@@ -333,7 +333,8 @@ namespace Ballon.Ego
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = 9;
-            const float dt = 1f / 30f;
+            float fps = float.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonFps") ?? "", out var fp) ? fp : 30f;   // Messläufe: 60
+            float dt = 1f / fps;
             Player.deltaOverride = () => dt;
             string sc = Arg(Environment.GetCommandLineArgs(), "-ballonScene");      // Aufnahme in einer Szene statt im Parcours
             int si = -1;
@@ -348,6 +349,12 @@ namespace Ballon.Ego
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
+            if (Arg(Environment.GetCommandLineArgs(), "-ballonKey") != null)         // Messlauf: nur Waffe und Arme auf Magenta
+            {
+                Player.worldCam.cullingMask = 0;
+                Player.worldCam.clearFlags = CameraClearFlags.SolidColor;
+                Player.worldCam.backgroundColor = new Color(1, 0, 1);
+            }
             var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
             var markers = new List<string>();
             Player.C.Marker += (a, m) => markers.Add($"{Time.frameCount - _f0},{a},{m}");
@@ -362,6 +369,7 @@ namespace Ballon.Ego
                 ReadBack(rt, tex);
                 File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), tex.EncodeToPNG());
                 File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{Player.C.ammo}\n");
+                File.AppendAllText(Path.Combine(dir, "zoom.csv"), $"{i},{Player.C.adsWeight:0.0000},{Player.worldCam.fieldOfView:0.000}\n");
             }
             File.WriteAllLines(Path.Combine(dir, "markers.csv"), markers);
             Debug.Log($"[Ballon] Aufnahme: {n} Bilder in {dir}");
