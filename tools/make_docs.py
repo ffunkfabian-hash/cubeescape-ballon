@@ -1,6 +1,7 @@
 """Erzeugt die abgeleiteten Dokumente aus den Waffenmodulen und den gemessenen Specs (data/specs/).
 
-  python3 tools/make_docs.py          → docs/abdeckung.md, docs/haltungen.md, docs/bauteile/BASIC-NN.md, data/matrix.json
+  python3 tools/make_docs.py          → docs/abdeckung.md, docs/haltungen.md, docs/bauteile/BASIC-NN.md, data/matrix.json,
+                                         docs/familienmasse.md (Stil v2.1, aus data/specs/*-v2.1.spec.json)
   python3 tools/make_docs.py --check  → nur prüfen, ob die Dateien aktuell sind (Exit 1 bei Abweichung)
 Die erzeugten Dateien nicht von Hand ändern; Quelle sind basic/weapons/*.py, basic/matrix.py und data/specs/*.json.
 """
@@ -244,6 +245,61 @@ def poses(ws):
     return '\n'.join(L), js
 
 
+def family_dims():
+    """Familienmaße Stil v2.1: Lagen und Größen aus den gemessenen Specs der Module basic/pilot/w*_v21.py (Startpunkt für neue
+    Waffen). Lagen in mm relativ zu Socket_Hand, f vorn, u oben (Spec: −Y vorn, +Z oben)."""
+    from basic.reticles import SIGHT
+    def fu(p):
+        return -p[1] * 1000, p[2] * 1000
+    rows, sizes = [], []
+    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
+        W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
+        wid = f"{W.META['id']}-{W.META['variant']}"
+        sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')
+        if not os.path.exists(sp):
+            continue
+        S = json.load(open(sp, encoding='utf-8'))
+        A = {k: fu(v['position_m']) for k, v in S['anchors'].items()}
+        D = S['dimensions']
+        e = W.ANCHORS['Socket_Eye']
+        ref = SIGHT['types'][e['sight_type']]['ref']
+        mf, mu = A['Socket_Muzzle']
+        rear = -D['bounds_m']['max'][1] * 1000
+        rows.append(f"| {wid} {W.META['type_de']} | {D['length_m'] * 1000:.0f} × {D['height_m'] * 1000:.0f} × {D['width_m'] * 1000:.0f} | "
+                    f"{mu:.0f} | {mf:.0f} | {rear:.0f} | {A['Socket_Eye'][1]:.0f} | {A['Socket_Eye'][1] - mu:.1f} | "
+                    f"{A[ref][0] - A['Socket_Eye'][0]:.0f} ({SIGHT['types'][e['sight_type']]['de']}) | "
+                    f"{A['Socket_SupportHand'][0]:.0f} / {A['Socket_SupportHand'][1]:.0f} | "
+                    f"{A['Socket_MagWell'][0]:.0f} / {A['Socket_MagWell'][1]:.0f} | "
+                    f"{A['Socket_CenterOfMass'][0]:.0f} / {A['Socket_CenterOfMass'][1]:.0f} | "
+                    f"{S['counts']['parts']} / {S['counts']['triangles']} |")
+        box = {}
+        for q in S['parts']:
+            for key in (q['assembly'], q['id']):
+                lo, hi = box.get(key, (q['bounds_m']['min'], q['bounds_m']['max']))
+                box[key] = ([min(a, b) for a, b in zip(lo, q['bounds_m']['min'])], [max(a, b) for a, b in zip(hi, q['bounds_m']['max'])])
+        cell = [(f"{(box[k][1][1] - box[k][0][1]) * 1000:.0f} × {(box[k][1][2] - box[k][0][2]) * 1000:.0f} × "
+                 f"{(box[k][1][0] - box[k][0][0]) * 1000:.0f}" if k in box else '–')
+                for k in ('receiver', 'support', 'stock', 'sight', 'grip', 'magazine')]
+        sizes.append(f"| {wid} | " + ' | '.join(cell) + ' |')
+    L = [HEAD.rstrip('\n'), '# Familienmaße Stil v2.1', '',
+         'Gemessen am gebauten Modell (`data/specs/<Waffe>-v2.1.spec.json`, mit Fasen, Visier montiert, Ruhelage). Startpunkt für',
+         'neue Waffen der Familie: ähnliche Klasse suchen, Lagen übernehmen, Abweichungen im Modul-Docstring begründen',
+         '([stilhandbuch.md](stilhandbuch.md) §6/§7). Nach jedem Vollrendering `tools/sync_specs.py` und `tools/make_docs.py`.', '',
+         '## Lagen', '',
+         'mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der Mündung, Heck f = hinterste Kante',
+         '(negativ = hinter dem Griff). Visierhöhe = Visierlinie über der Laufachse (Soll '
+         f"{SIGHT['height_mm']:.0f} ± {SIGHT['height_tol_mm']:.0f} mm), Augenabstand = Augenpunkt bis Glas bzw. Objektiv.", '',
+         '| Waffe | L × H × B | Laufachse u | Mündung f | Heck f | Visierlinie u | Visierhöhe | Augenabstand | Stützhand f / u | '
+         'Magazinschacht f / u | Schwerpunkt f / u | Teile / Dreiecke |',
+         '|---|---|---|---|---|---|---|---|---|---|---|---|'] + rows + [
+         '', '## Größen der Hauptteile', '',
+         'Außenmaße L × H × B in mm (Länge entlang f, Höhe u, Breite x): Baugruppen als Hülle aller ihrer Teile, Griff und Magazin',
+         'als einzelne Teile.', '',
+         '| Waffe | Gehäuse `receiver` | Vorderbau `support` | Schaft `stock` | Visier `sight` | Griff `grip` | Magazin `magazine` |',
+         '|---|---|---|---|---|---|---|'] + sizes
+    return '\n'.join(L) + '\n'
+
+
 def main(argv):
     ws = weapons()
     files = {os.path.join(ROOT, 'docs', 'abdeckung.md'): coverage(ws) + ergonomics(ws)}
@@ -252,6 +308,7 @@ def main(argv):
     files[os.path.join(ROOT, 'data', 'matrix.json')] = json.dumps(js, ensure_ascii=False, indent=1) + '\n'
     for W, S in ws:
         files[os.path.join(ROOT, 'docs', 'bauteile', f"{W.META['id']}.md")] = parts_doc(W, S)
+    files[os.path.join(ROOT, 'docs', 'familienmasse.md')] = family_dims()
     if '--check' in argv:
         bad = [f for f, t in files.items() if not os.path.exists(f) or open(f, encoding='utf-8').read() != t]
         print('veraltet:', [os.path.relpath(f, ROOT) for f in bad] or 'nichts')

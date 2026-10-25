@@ -135,10 +135,38 @@ Weitere Felder: `cuts` (Durchbrüche/Fugen, Exact-Boolean, sofort angewandt), `b
 `parent_part` (folgt beweglichem Elternteil), `move` (`translate`/`rotate`/`segment`/`glow`, Drehsinn siehe `kit.py`, `expect` für den
 Test), `removable`, `iface`. Gemeinsame Bausteine in `basic/common.py` (Griffmodul, Schiene, Visiere, Magazin, Lauf, Schäfte, Zelle).
 
-**Familienbausteine v2.1** (`basic/common.py`, aus dem Pilot übernommen; der Pilot führt sie noch inline):
-`grip_v21(top)` Griff mit Fingerauflagen und Griffboden · `reflex_sight_v21(f, u, ww, wh)` Reflexvisier mit Klemmhebel, verjüngter
-Haube und Fenster ww × wh (liefert Teile und Anker) · `cut_box`, `screws`, `mirror` für Schneidkörper und Schraubbilder.
-Variante einer Reihenwaffe: `basic/pilot/wNN_<typ>_v21.py`, `META = dict(V1.META, variant='v2.1', …)`, Ausgabe `BASIC-NN-v2.1`.
+**Familienbausteine v2.1** (`basic/common.py`; Maße in mm, `f` vorn, `u` oben, Ursprung `Socket_Hand`). Gemessene Lagen und
+Größen der fertigen Familie stehen in [familienmasse.md](familienmasse.md) (erzeugt aus den Specs) – dort die ähnlichste Klasse als
+Startpunkt nehmen.
+
+| Baustein | Liefert | Wichtige Parameter | Genutzt in |
+|---|---|---|---|
+| `grip_v21(top)` | Griff mit Fingerauflagen und Griffboden, Abzug, Abzugsbügel (`anodized`) | `top` = Griffoberkante (Unterkante Unteres Gehäuse); Griffachse um 15° nach hinten geneigt, f = u·tan 15° + Versatz | 02, 03, 06 (01 inline) |
+| `reflex_sight_v21(f, u, ww, wh, reticle_kind, …)` | Holo nach Visier-Standard 3: Trapezsockel, Glas ww × wh, Absehen; gibt `(Teile, Anker)` zurück | `f` Lage auf der Schiene, `u` = Schienenoberkante; Absehen aus `RETICLE_DEFAULTS[typ]['optic']` | 01, 02, 06 |
+| `scope_v21(f, u, length, r_obj, …)` | kurzes Ring-Zielfernrohr auf Trapezhals, Absehen im Rohr, `ads_hide`; gibt `(Teile, Anker)` zurück | `length` 120, Objektiv Ø 33 mm | 03 |
+| `box_scope_v21(f, u, style)` | Kastenoptik (`prism`/`flat`) – nur als Variante | `style` | – |
+| `reticle(f, cu, kind, …)` | Absehen aus `basic/reticles.py` (sonst über die Visierbausteine) | `kind`, `color`, `weight` | über Visiere |
+| `rifle_mag(f_well, u_top, depth, length, tilt, w, curve)` | Magazin, Boden, oberste Patrone; Entnahme entlang der Magazinachse | `tilt` > 0 unten nach vorn; im Griff (06): `tilt=-15` und Mitte auf der Griffachse | 01, 02, 03, 06 |
+| `rail(f0, f1, u)` | Schiene BRI-22 | Rillen per `cuts` im Modul (Material `anodized`) | 01, 02, 03, 06 |
+| `selector(f, u, x)` | Feuerwahlhebel (Akzent); rechts als Kopie mit `id='selector_r'`, `x` negativ | `x` = Seitenfläche + 1,5 mm | 01, 02, 03, 06 |
+| `charging_handle(f, u, x, travel)` | Ladehebel (Akzent) mit Bewegung `charge` | `travel` Weg nach hinten | 01, 02, 03, 06 |
+| `stock_s1(f0, ua, s, cheek)` | Schaft S1: Verbindung, Rohr, Schulterstütze, Kappe | `f0` Gehäusehinterkante, `ua` Laufachse, `s` Längenfaktor (06: 0,72, ohne Wange) | 06 (01 inline) |
+| `stock_s2(f0, ua, s)` | Schaft S2 einteilig (Energie/Impuls) | wie S1 | 02 und 03 bauen S2 inline (Daumenloch, Wange) |
+| `prof` / `box` / `cyl` | Bauteil mit allen Pflichtfeldern | siehe Formen oben | alle |
+| `cut_box(f0, f1, u0, u1, w, x)` | Schneidkörper für `cuts` (Fenster, Schlitze, Nuten) | quer durch: `w` breiter als das Teil | alle |
+| `screws(pts, x)` + `mirror(items)` | Schraubenköpfe auf einer Seite, gespiegelt auf beide | nur an Paneelen, Panzern, Ringen (Budget) | alle |
+| `rot(pts, c, deg)` | dreht (f,u)-Punkte um `c`; für Fenster und Patronen in geneigten Magazinen gleich wie der Körper | positiv = unteres Ende nach vorn | 01, 02, 03, 06 |
+
+**Muster im Waffenmodul:**
+- *Variante einer Reihenwaffe:* `basic/pilot/wNN_<typ>_v21.py`, `META = dict(V1.META, variant='v2.1', …)`, `ASSEMBLIES = V1.ASSEMBLIES`,
+  Aktionen aus V1 übernehmen oder neu schlüsseln; Ausgabe `BASIC-NN-v2.1`.
+- *Familienteil anpassen:* Teile aus einem Baustein nach dem Aufruf in `P` per `id` suchen und mit `p.update(...)` oder
+  `dict(p, ...)` ändern (06: Abzugsbügel dicker als Band zum Bügel, Punkte aus `grip_rifle(top)` berechnet; Magazin: `de`, `func`,
+  `cuts`, Material). Feste Zahlen nur, wenn sie aus den Baustein-Formeln berechnet sind.
+- *Sichtfenster mit Inhalt:* Fenster als `cuts` im Träger, Inhalt als eigenes `multi`-Teil mit `parent_part` (02, 06: Patronen;
+  02: Spulen), damit es der Bewegung folgt.
+- *Anker:* `ANCHORS` mit `Socket_Hand`, `Socket_SupportHand`, `Socket_Muzzle`, `Socket_MagWell`, `Socket_Charge`; die Visieranker
+  kommen aus dem Visierbaustein (`ANCHORS.update(SIGHT_ANCHORS)`). `./check` vergleicht die Anker mit dem Spec.
 
 ### Absehen und Visierglas
 
