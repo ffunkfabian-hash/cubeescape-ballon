@@ -38,11 +38,11 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "05c3a441df1d0a86d62a867060ca84c26fe57ce77c8cf65e08096b3626ed5ccd"
+    "sha256": "2b9daa48fe710d8896b7a948208cffec3f4fcb6a9dc0d7556bb7d192915b7929"
    },
    {
     "path": "tools/bake_unity.py",
-    "sha256": "535e8f3aa4c863e93e86f53fb22e8775435792023d678deda1dbd3282148758e"
+    "sha256": "71e3b6c11ae4f934dd164fd90b1e4a15924e5f5625487383fdc706edfc2ff176"
    }
   ]
  },
@@ -6429,7 +6429,7 @@
     "upper"
    ],
    "albedo": "weapon_albedo.png",
-   "mask": "weapon_mask.png",
+   "spec": "weapon_spec.png",
    "normal": "weapon_normal.png",
    "ao": "weapon_ao.png"
   },
@@ -6572,7 +6572,7 @@
     "R_wrist_pin"
    ],
    "albedo": "arms_albedo.png",
-   "mask": "arms_mask.png",
+   "spec": "arms_spec.png",
    "normal": "arms_normal.png",
    "ao": "arms_ao.png"
   },

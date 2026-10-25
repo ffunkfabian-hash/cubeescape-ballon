@@ -11,6 +11,11 @@
 - BASIC-03 Scoutgewehr v2.1 mit Zielfernrohr `scope_v21`; Formskizze per Blender-MCP.
 - Visier-Standard v2 nach Destiny-Video und Motiongen: schlanke Visiere, Zielfernrohr mit Linsenbild und `ads_hide`, Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse; Prüfung in `./check`, Beispiele `tools/sight_examples.py`.
 
+## 0.7.1 – unveröffentlicht (lokal)
+
+- Spezular-Modus mit gebackener Spiegelfarbe (Polymer wieder mattschwarz). Armsegmente werden zum Backen auseinandergelegt (keine
+  schwarzen Streifen am Handrücken), Abrieb mit 64 Samples. Über Waffe und Arme Abweichung −25 bis −40 % gegenüber 0.7.
+
 ## 0.7.0 „Truecolor“ – unveröffentlicht (lokal)
 
 - Unity folgt Blender so nah wie möglich (dauerhafte Regel in AGENTS.md):

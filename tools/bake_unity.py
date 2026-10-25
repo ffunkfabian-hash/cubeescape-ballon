@@ -2,8 +2,9 @@
 
 Die generierten Teile haben keine UVs. Je FBX entsteht ein gemeinsamer Atlas (alle Objekte zusammen abgewickelt und gepackt),
 in den aus `kit.aaa_nodes` gebacken wird:
-  albedo (sRGB)       Grundfarbe mit Kantenabrieb, Schmutz und Muster (Emission-Trick, EMIT)
-  mask   (linear)     R Metall, A Glätte = 1 − Rauheit (Unity URP Lit: _MetallicGlossMap)
+  albedo (sRGB)       Diffusfarbe = Grundfarbe · (1 − Metall), mit Kantenabrieb, Schmutz und Muster (Emission-Trick, EMIT)
+  spec   (sRGB+A)     Spiegelfarbe F0 = Mix(0,08 · Specular IOR Level, Grundfarbe, Metall), A Glätte = 1 − Rauheit
+                      (Unity URP Lit im Spezular-Modus: _SpecGlossMap; trifft Blenders geringe Spiegelung von Graphit/Gummi)
   normal (linear)     Mikrorelief im Tangentenraum (NORMAL, OpenGL wie Unity)
   ao     (linear)     Umgebungsverdeckung (AO), für _OcclusionMap
 Glas, Absehen und Leuchtteile (Rollen mit emit oder alpha) werden nicht gebacken (eigene Materialien in Unity). Dazu `agx_lut`: die Blender-Ansicht AgX samt Look
@@ -91,6 +92,50 @@ def _source(nt, b, name):
     return None, (tuple(v) if hasattr(v, '__len__') else (v, v, v, 1.0))
 
 
+def _link_or_set(N, L, b, name, target, gray=False):
+    sock, val = _source(None, b, name)
+    if sock is not None:
+        L.new(sock, target)
+    else:
+        target.default_value = (val[0], val[0], val[0], 1.0) if gray else val
+
+
+def _channel(N, L, b, channel, target):
+    """Kanal für den Emission-Trick an `target` hängen; gibt Hilfsknoten zum Aufräumen zurück. Spezular-Modell wie Unity URP:
+    diffuse = Grundfarbe · (1 − Metall), spec = Mix(F0 Dielektrikum = 0,08 · Specular IOR Level, Grundfarbe, Metall)."""
+    if channel in ('rough', 'metal'):
+        _link_or_set(N, L, b, {'rough': 'Roughness', 'metal': 'Metallic'}[channel], target, gray=True)
+        return []
+    mix = N.new('ShaderNodeMix')
+    mix.data_type = 'RGBA'
+    mix.blend_type = 'MIX'
+    fac, a_in, b_in, res = mix.inputs[0], mix.inputs[6], mix.inputs[7], mix.outputs[2]
+    sm, vm = _source(None, b, 'Metallic')
+    if sm is not None:
+        L.new(sm, fac)
+    else:
+        fac.default_value = vm[0]
+    extra = [mix]
+    if channel == 'diffuse':
+        _link_or_set(N, L, b, 'Base Color', a_in)
+        b_in.default_value = (0.0, 0.0, 0.0, 1.0)
+    else:   # spec
+        ss, vs = _source(None, b, 'Specular IOR Level')
+        if ss is not None:
+            mul = N.new('ShaderNodeMath')
+            mul.operation = 'MULTIPLY'
+            mul.inputs[1].default_value = 0.08
+            L.new(ss, mul.inputs[0])
+            L.new(mul.outputs[0], a_in)
+            extra.append(mul)
+        else:
+            f0 = 0.08 * vs[0]
+            a_in.default_value = (f0, f0, f0, 1.0)
+        _link_or_set(N, L, b, 'Base Color', b_in)
+    L.new(res, target)
+    return extra
+
+
 def _bake(obs, mats, image, kind, samples, channel=None, margin=8):
     """Backt `kind` (EMIT mit Kanal albedo/rough/metal, NORMAL, AO) für alle Objekte in `image`."""
     undo = []
@@ -106,13 +151,9 @@ def _bake(obs, mats, image, kind, samples, channel=None, margin=8):
             out = next(n for n in N if n.type == 'OUTPUT_MATERIAL' and n.is_active_output)
             old = out.inputs['Surface'].links[0].from_socket if out.inputs['Surface'].is_linked else None
             em = N.new('ShaderNodeEmission')
-            sock, val = _source(nt, b, {'albedo': 'Base Color', 'rough': 'Roughness', 'metal': 'Metallic'}[channel])
-            if sock is not None:
-                L.new(sock, em.inputs['Color'])
-            else:
-                em.inputs['Color'].default_value = val if channel == 'albedo' else (val[0], val[0], val[0], 1.0)
+            extra = _channel(N, L, b, channel, em.inputs['Color'])
             L.new(em.outputs['Emission'], out.inputs['Surface'])
-            undo[-1] = (m, tex, (em, out, old))
+            undo[-1] = (m, tex, (em, out, old, extra))
     for o in bpy.context.view_layer.objects:
         o.select_set(False)
     for ob in obs:
@@ -132,19 +173,21 @@ def _bake(obs, mats, image, kind, samples, channel=None, margin=8):
     for m, tex, em in undo:
         nt = m.node_tree
         if em:
-            e, out, old = em
+            e, out, old, extra = em
+            for x in extra:
+                nt.nodes.remove(x)
             nt.nodes.remove(e)
             if old is not None:
                 nt.links.new(old, out.inputs['Surface'])
         nt.nodes.remove(tex)
 
 
-def _joined(obs):
+def _joined(obs, join_all=False):
     """Teile ohne eigene Verschiebung (Objektraum = Waffenraum) als eine Kopie zusammenfügen: Cycles backt je Objekt über den
     ganzen Atlas, eine Kopie statt 60 Teilen spart ein Vielfaches (gemessen 3× schon bei 4 Teilen). Rauschmuster im Objektraum
     bleiben gleich, weil sich deren Koordinaten nicht ändern; verschobene Teile (Drehpunkte) backen einzeln."""
     from mathutils import Matrix
-    same = [o for o in obs if o.matrix_world == Matrix.Identity(4)]
+    same = list(obs) if join_all else [o for o in obs if o.matrix_world == Matrix.Identity(4)]
     rest = [o for o in obs if o not in same]
     if len(same) < 2:
         return obs, None
@@ -154,8 +197,10 @@ def _joined(obs):
     for o in same:
         c = o.copy()
         c.data = o.data.copy()
+        mw = o.matrix_world.copy()
         c.parent = None
         bpy.context.scene.collection.objects.link(c)
+        c.data.transform(mw)                  # Lage ins Netz (join_all: auseinandergelegte Armsegmente)
         c.matrix_world = Matrix.Identity(4)
         c.select_set(True)
         cps.append(c)
@@ -165,8 +210,9 @@ def _joined(obs):
     return [j] + rest, j
 
 
-def bake_atlas(obs, name, size, out_dir, gpu=False, samples=12):
-    """Backt den Atlas `name` für `obs` und schreibt <name>_albedo/_mask/_normal/_ao.png nach out_dir."""
+def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False):
+    """Backt den Atlas `name` für `obs` und schreibt <name>_albedo/_spec/_normal/_ao.png nach out_dir. 64 Samples: der Kantenabrieb
+    (Bevel-Knoten) ist ein Zufallsverfahren und krisselt bei 12."""
     sc = bpy.context.scene
     sc.render.engine = 'CYCLES'
     if gpu:
@@ -180,47 +226,40 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=12):
     sc.cycles.use_denoising = False
     if sc.world:
         sc.world.light_settings.distance = 0.03          # AO-Reichweite 3 cm (Viewmodel-Maßstab)
-    obs, tmp = _joined(obs)
+    obs, tmp = _joined(obs, join_all)
     mats = {s.material for o in obs for s in o.material_slots if s.material}
     res = {}
     import time
     t0 = time.time()
-    al = _image(f'{name}_albedo', size, True)
-    _bake(obs, mats, al, 'EMIT', samples, 'albedo')
+    al = _image(f'{name}_albedo', size, True)                  # Diffusfarbe (Spezular-Modell), sRGB
+    _bake(obs, mats, al, 'EMIT', samples, 'diffuse')
+    sp = _image(f'{name}_spec', size, True, alpha=True)          # Spiegelfarbe F0 (sRGB), Alpha = Glätte
+    _bake(obs, mats, sp, 'EMIT', samples, 'spec')
     ro = _image(f'{name}_rough', size, False)
-    _bake(obs, mats, ro, 'EMIT', max(4, samples // 2), 'rough')
-    me = _image(f'{name}_metal', size, False)
-    _bake(obs, mats, me, 'EMIT', 4, 'metal')
+    _bake(obs, mats, ro, 'EMIT', samples, 'rough')
     nm = _image(f'{name}_normal', size, False)
     _bake(obs, mats, nm, 'NORMAL', 4)
     ao = _image(f'{name}_ao', size, False)
     _bake(obs, mats, ao, 'AO', 32)
-    # Metall + Glätte in eine RGBA-Maske (R Metall, A Glätte)
     n = size * size * 4
-    r, m_ = np.empty(n, np.float32), np.empty(n, np.float32)
+    r, px = np.empty(n, np.float32), np.empty(n, np.float32)
     ro.pixels.foreach_get(r)
-    me.pixels.foreach_get(m_)
-    mask = np.zeros(n, np.float32)
-    mask[0::4] = m_[0::4]
-    mask[1::4] = m_[0::4]
-    mask[2::4] = m_[0::4]
-    mask[3::4] = 1.0 - r[0::4]
-    mk = _image(f'{name}_mask', size, False, alpha=True)
-    mk.pixels.foreach_set(mask)
-    for im, key in ((al, 'albedo'), (mk, 'mask'), (nm, 'normal'), (ao, 'ao')):
+    sp.pixels.foreach_get(px)
+    px[3::4] = 1.0 - r[0::4]                                     # Alpha ist nie gammakodiert
+    sp.pixels.foreach_set(px)
+    for im, key in ((al, 'albedo'), (sp, 'spec'), (nm, 'normal'), (ao, 'ao')):
         path = os.path.join(out_dir, f'{name}_{key}.png')
         im.filepath_raw = path
         im.file_format = 'PNG'
-        if key == 'albedo':
+        if key in ('albedo', 'spec'):
             im.save()
         else:                                            # lineare Daten unverändert (16 bit; Non-Color wird nicht transformiert)
             sc.render.image_settings.file_format = 'PNG'
             sc.render.image_settings.color_depth = '16'
-            sc.render.image_settings.color_mode = 'RGBA' if key == 'mask' else 'RGB'
+            sc.render.image_settings.color_mode = 'RGB'
             im.save_render(path, scene=sc)
         res[key] = os.path.basename(path)
-    for im in (ro, me):
-        bpy.data.images.remove(im)
+    bpy.data.images.remove(ro)
     if tmp is not None:
         bpy.data.objects.remove(tmp)
     print(f'[bake_unity] {name}: {len(obs)} Backobjekte, {size}², {time.time() - t0:.0f} s', flush=True)

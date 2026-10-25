@@ -172,7 +172,7 @@ namespace Ballon.Ego.Tests
             int n = 0;
             foreach (var (fbx, A) in new[] { (D.weapon.fbx, D.textures.weapon), (D.arm.fbx, D.textures.arms) })
             {
-                foreach (var f in new[] { A.albedo, A.mask, A.normal, A.ao })
+                foreach (var f in new[] { A.albedo, A.spec, A.normal, A.ao })
                 {
                     var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
                     Assert.IsNotNull(t, f);
@@ -190,7 +190,8 @@ namespace Ballon.Ego.Tests
                 }
                 var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{(fbx == D.weapon.fbx ? "weapon" : "arms")}.mat");
                 Assert.IsNotNull(m.GetTexture("_BaseMap"));
-                Assert.IsNotNull(m.GetTexture("_MetallicGlossMap"));
+                Assert.IsNotNull(m.GetTexture("_SpecGlossMap"));
+                Assert.AreEqual(0f, m.GetFloat("_WorkflowMode"), "Spezular-Modus");
                 Assert.IsNotNull(m.GetTexture("_BumpMap"));
                 Assert.IsNotNull(m.GetTexture("_OcclusionMap"));
             }

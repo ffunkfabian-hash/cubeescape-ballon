@@ -237,7 +237,17 @@ def blender_main():
         BK.apply_modifiers(meshes)
         bake = [o for o in meshes if BK.bakeable(o)]
         BK.unwrap(bake)
-        files = BK.bake_atlas(bake, key, size, tex_dir, gpu=gpu)
+        if key == 'arms':       # Segmente stehen in Ruhe alle im Ursprung: zum Backen auseinanderlegen, sonst sehen Abrieb und AO
+            for si, s in enumerate(('R', 'L')):         # Finger, Handfläche und Handrücken ineinander (schwarze Streifen)
+                for i, e in enumerate(sc.arms[s][0].values()):
+                    e.matrix_world = Matrix.Translation((i * 0.5, si * 1.0, 0.0))
+            bpy.context.view_layer.update()
+        files = BK.bake_atlas(bake, key, size, tex_dir, gpu=gpu, join_all=(key == 'arms'))
+        if key == 'arms':
+            for s in ('R', 'L'):
+                for e in sc.arms[s][0].values():
+                    e.matrix_world = Matrix.Identity(4)
+            bpy.context.view_layer.update()
         textures[key] = dict(size=size, objects=sorted(o.name for o in bake), **files)
         print(f'[export_unity] Atlas {key}: {len(bake)} Objekte, {size}²')
     textures['lut'] = BK.agx_lut(os.path.join(tex_dir, 'agx_lut.png'))

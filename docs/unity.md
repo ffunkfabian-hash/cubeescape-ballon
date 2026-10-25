@@ -99,10 +99,14 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blender bleibt die Quelle.
 
 - **Backen** (`tools/bake_unity.py`, im Export): Je FBX entsteht ein Atlas (Waffe 4096², Arme 2048²) aus `kit.aaa_nodes`:
-  - Grundfarbe mit Kantenabrieb und Schmutz;
-  - Metall und Glätte in einer Maske;
+  - Diffusfarbe mit Kantenabrieb und Schmutz;
+  - Spiegelfarbe F0 je Pixel mit Glätte (Spezular-Modus, 0.7.1). F0 = 0,08 · Specular IOR Level, so wie Blender Graphit und
+    Gummi nur etwa 2 % spiegeln lässt;
   - Normale (Mikrorelief) und AO.
   - Teile mit gleichem Objektraum backen als eine Kopie: 4 min statt 58 min.
+  - Die Armsegmente werden zum Backen nebeneinandergelegt. In Ruhe stehen sie alle im Ursprung, und dann rechnen Abrieb und AO
+    fremde Finger mit.
+  - Der Abrieb wird mit 64 Samples gebacken.
   - Leuchtende und durchsichtige Rollen (Energie, Absehen, Gläser) bleiben ungebacken. Sie haben eigene Materialien, mit
     Leuchtstärke `emit · 1,6` wie in Blender.
 - **Tonwerte:** Die Blender-Ansicht AgX mit dem Look „Medium High Contrast“ ist als 3D-LUT gebacken, mit log2-Formung als

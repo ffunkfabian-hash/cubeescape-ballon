@@ -98,7 +98,7 @@ namespace Ballon.Ego
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
                           public BreatheAll breathe_all; public Recoil recoil; }
 
-    [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, mask, normal, ao; }
+    [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, spec, normal, ao; }
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
 
     /// <summary>Gebackene Atlanten (tools/bake_unity.py) und die AgX-LUT der Blender-Ansicht.</summary>

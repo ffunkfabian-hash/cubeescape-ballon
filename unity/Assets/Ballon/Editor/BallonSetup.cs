@@ -24,9 +24,9 @@ namespace Ballon.Ego.Editor
             var f = Path.GetFileNameWithoutExtension(assetPath);
             ti.maxTextureSize = 4096;
             ti.textureCompression = TextureImporterCompression.CompressedHQ;
-            ti.sRGBTexture = f.EndsWith("_albedo");
+            ti.sRGBTexture = f.EndsWith("_albedo") || f.EndsWith("_spec");   // Spiegelfarbe ist eine Farbe (sRGB), Alpha bleibt linear
             ti.textureType = f.EndsWith("_normal") ? TextureImporterType.NormalMap : TextureImporterType.Default;
-            ti.alphaSource = f.EndsWith("_mask") ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
+            ti.alphaSource = f.EndsWith("_spec") ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
             ti.anisoLevel = 8;
             ti.mipmapEnabled = true;
             if (f == "agx_lut")
@@ -328,8 +328,12 @@ namespace Ballon.Ego.Editor
             {
                 var m = Lit("Atlas_" + key, Color.white, 1f, 0f);
                 Texture2D T(string f) => AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
-                m.SetTexture("_BaseMap", T(A.albedo));
-                m.SetTexture("_MetallicGlossMap", T(A.mask));
+                m.SetTexture("_BaseMap", T(A.albedo));                 // Diffusfarbe = Grundfarbe · (1 − Metall)
+                m.SetFloat("_WorkflowMode", 0f);                         // Spezular: Spiegelfarbe je Pixel wie Blender
+                m.EnableKeyword("_SPECULAR_SETUP");
+                m.SetTexture("_SpecGlossMap", T(A.spec));
+                m.SetColor("_SpecColor", Color.white);
+                m.SetFloat("_SmoothnessTextureChannel", 0f);             // Glätte im Alpha der Spiegelkarte
                 m.SetTexture("_BumpMap", T(A.normal));
                 m.SetTexture("_OcclusionMap", T(A.ao));
                 m.SetFloat("_OcclusionStrength", 1f);
