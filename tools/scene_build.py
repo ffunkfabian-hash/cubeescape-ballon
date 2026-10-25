@@ -67,6 +67,7 @@ def data(S):
         lo, hi = SC.bounds(p)
         cols.append(dict(name=p['id'], center=r6([(a + b) / 2 for a, b in zip(lo, hi)]), size=r6([b - a for a, b in zip(lo, hi)])))
     lights = [dict(name=L['name'], kind=L['kind'], pos=r6(L['pos']), dir=r6(L['dir']), power_w=r6(L['power_w']), size_m=r6(L['size_m']),
+                   angle_deg=r6(L.get('angle_deg', 90.0 if L['kind'] == 'spot' else 0.0)),
                    color=L['color']) for L in S.LIGHTS]
     sp = S.SPAWN['pos']
     R = S.REFERENCE
@@ -329,6 +330,7 @@ def build(S):
         elif L['kind'] == 'spot':
             ld = bpy.data.lights.new(L['name'], 'SPOT')
             ld.shadow_soft_size = L['size_m']
+            ld.spot_size = math.radians(L.get('angle_deg', 90.0))      # Öffnungswinkel, gleich wie Unity (scene.lights[].angle_deg)
         else:
             ld = bpy.data.lights.new(L['name'], 'POINT')
             ld.shadow_soft_size = L['size_m']

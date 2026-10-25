@@ -102,6 +102,20 @@ namespace Ballon.Ego.Tests
 
         static Material Unlit() => new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "Test_Atlas" };
 
+        /// <summary>Spieler nach jedem Test zurück auf Tastatur, echte Zeit und Parcours (Tests hängen nicht voneinander ab).</summary>
+        [UnityTearDown]
+        public IEnumerator Zuruecksetzen()
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            if (b != null && b.Player != null)
+            {
+                b.Player.deltaOverride = null;
+                b.Player.input = new DeviceInput();
+                if (b.CurrentScene != -1) b.ShowScene(-1);
+            }
+            yield return null;
+        }
+
         static void Idle(EgoPlayer p)
         {
             p.input = new ScriptedInput().Add(0, 1000);
@@ -251,6 +265,10 @@ namespace Ballon.Ego.Tests
             int idx = b.AddScene(SceneFile.Parse(Room), env, Unlit());
             Keyboard kb = null;
             bool added = false;
+            var oldBg = InputSystem.settings.backgroundBehavior;                 // globale Einstellungen sichern, im finally zurück
+#if UNITY_EDITOR
+            var oldEd = InputSystem.settings.editorInputBehaviorInPlayMode;
+#endif
             try
             {
 #if UNITY_EDITOR
@@ -278,6 +296,10 @@ namespace Ballon.Ego.Tests
             {
                 if (added) InputSystem.RemoveDevice(kb);
                 b.RemoveScene(idx);
+                InputSystem.settings.backgroundBehavior = oldBg;
+#if UNITY_EDITOR
+                InputSystem.settings.editorInputBehaviorInPlayMode = oldEd;
+#endif
             }
         }
 

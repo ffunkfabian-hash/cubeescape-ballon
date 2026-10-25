@@ -6837,6 +6837,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6854,6 +6855,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6871,6 +6873,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6888,6 +6891,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6905,6 +6909,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6922,6 +6927,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6939,6 +6945,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6956,6 +6963,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6973,6 +6981,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -6990,6 +6999,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7007,6 +7017,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7024,6 +7035,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7041,6 +7053,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7058,6 +7071,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7075,6 +7089,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7092,6 +7107,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7109,6 +7125,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7126,6 +7143,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7143,6 +7161,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7160,6 +7179,7 @@
    ],
    "power_w": 320.0,
    "size_m": 1.0,
+   "angle_deg": 0.0,
    "color": "#FFF1DC"
   },
   {
@@ -7177,6 +7197,7 @@
    ],
    "power_w": 7.0,
    "size_m": 0.0,
+   "angle_deg": 1.5,
    "color": "#FFF0D8"
   }
  ],
@@ -7278,7 +7299,7 @@
   },
   {
    "path": "tools/scene_build.py",
-   "sha256": "30fd320094bf1288f245f77147f8ac9bfe18916af4bb92a3717b64ae001933bb"
+   "sha256": "527280751ec4d25f02dfc760d50f875ad935ea99d22580d553f25c650054801d"
   }
  ]
 }

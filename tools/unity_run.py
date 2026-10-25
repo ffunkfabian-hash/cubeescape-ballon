@@ -60,8 +60,9 @@ def tests():
             continue
         t = ET.parse(res).getroot()
         total = int(t.get('total', 0))
-        if code or t.get('result', '').split('(')[0].split(':')[0] not in ('Passed', 'Skipped') or total == 0 or t.get('failed') != '0':
-            print(f"{plat}: Unity-Lauf Exit {code}, Ergebnis {t.get('result')}, {total} Tests – nicht grün")
+        passed = int(t.get('passed', 0))
+        if code or t.get('result', '').split('(')[0].split(':')[0] not in ('Passed', 'Skipped') or passed == 0 or t.get('failed') != '0':
+            print(f"{plat}: Unity-Lauf Exit {code}, Ergebnis {t.get('result')}, {total} Tests, {passed} bestanden – nicht grün")
             rc = 1
         print(f"{plat}: {t.get('passed')} bestanden, {t.get('failed')} fehlgeschlagen, {t.get('skipped', '0')} übersprungen "
               f"({float(t.get('duration', 0)):.1f} s)")

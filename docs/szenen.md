@@ -44,7 +44,8 @@ python3 tools/scene_build.py --check      # Teil von ./check: Datei passt zu den
 - `targets[].distance` ist der Abstand zum Startpunkt entlang −Y (Scheibenmitte 1,45 m, seitliche Lagen wie `Range.cs`).
 - `lights[]`: 20 Flächenlichter (Quadrat 1 m, nach unten) und die Sonne (`kind: sun`, `power_w` = Stärke in W/m², `size_m` 0;
   im Blender-Bau zusätzlich 1,5° Winkel).
-- Der Atlas enthält Licht × Farbe. Werte über 1 werden abgeschnitten (Hangar: 0,43 % der Texel, Höchstwert 2,46 – sonnenbeschienene
+- Der Atlas enthält Licht × Farbe, gespeichert als Licht / `light_atlas.scale` (Hangar: 3). Unity multipliziert mit scale, so
+  bleibt auch der Höchstwert 2,46 erhalten (vorher bei 1 abgeschnitten: 0,43 % der Texel, sonnenbeschienene
   helle Flächen am Tor).
 
 ## Hangar (`basic/scenes/hangar.py`)

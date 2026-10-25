@@ -111,7 +111,12 @@ namespace Ballon.Ego
             {
                 case "sun": l.type = LightType.Directional; break;
                 case "point": l.type = LightType.Point; l.range = 60f; break;
-                case "spot": l.type = LightType.Spot; l.spotAngle = 90f; l.innerSpotAngle = 54f; l.range = 60f; break;
+                case "spot":
+                    l.type = LightType.Spot;
+                    l.spotAngle = s.angle_deg > 0f ? s.angle_deg : 90f;     // aus den Szenendaten, wie Blender spot_size
+                    l.innerSpotAngle = l.spotAngle * 0.6f;
+                    l.range = 60f;
+                    break;
                 default: l.type = LightType.Spot; l.spotAngle = 150f; l.innerSpotAngle = 60f; l.range = 60f; break;   // Fläche wie StudioLike
             }
             L.lights.Add(l);

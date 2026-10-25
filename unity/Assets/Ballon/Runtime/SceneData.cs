@@ -15,6 +15,7 @@ namespace Ballon.Ego
         public string name, kind, color;      // kind: area | sun | point | spot
         public float[] pos, dir;              // dir = Leuchtrichtung
         public float power_w, size_m;
+        public float angle_deg;          // Öffnungswinkel für spot (Blender spot_size), fehlt: 90
     }
     [Serializable] public class SceneTarget { public float[] pos; public float distance; }
 
