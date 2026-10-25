@@ -1,4 +1,4 @@
-"""Export für das Unity-Projekt (0.4 „Firstfeel“): Pilotwaffe und Roboterarme als FBX, Ego-Daten als JSON (`ballon-ego/3`).
+"""Export für das Unity-Projekt (0.4 „Firstfeel“): Pilotwaffe und Roboterarme als FBX, Ego-Daten als JSON (`ballon-ego/4`).
 
   BALLON_BAKE_GPU=1 ce lock gpu -- blender -b --factory-startup -P <abs>/tools/export_unity.py   → unity/Assets/Ballon/Generated/
         BASIC-01-v2.1.fbx (Waffe: Wurzel → ASM_* → Teile, Anker als Leerknoten), arms.fbx (R_/L_-Segmente → Teile),
@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/3'   # 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/4'   # 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 WEAPON = 'pilot.w01_auto_rifle_v21'
 DST = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
 MM = 0.001
@@ -74,7 +74,8 @@ def action(name, A):
         carry=[dict(a=r6(a), b=r6(b)) for a, b in A.get('carry', [])],
         drop=dict(a=r6(A['drop'][0]), b=r6(A['drop'][1])) if A.get('drop') else dict(a=-1.0, b=-1.0),
         fire=list(A.get('fire', [])), kick=r6(A.get('kick', 1.0)), breathe=bool(A.get('breathe')),
-        bob=dict(enabled=True, start=r6(B['start']), end=r6(B['end']), period=r6(B['period']), amp=r6(B['amp']), roll=r6(B['roll']))
+        bob=dict(enabled=True, start=r6(B['start']), end=r6(B['end']), period=r6(B['period']), amp=r6(B['amp']), roll=r6(B['roll']),
+                 u=B.get('shape') == 'u')
         if B else dict(enabled=False, start=0.0, end=0.0, period=1.0, amp=[0.0, 0.0], roll=0.0),
         events=[dict(f=f, name=n) for f, n in A.get('events', [])])
 
@@ -137,7 +138,8 @@ def data():
                    files=[dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in srcs])
     used = sorted({p['role'] for p in weapon['parts']} | {p['role'] for p in arm['pieces']})
     motion = dict(interp=EG.INTERP, time_scale=EG.TIME_SCALE, keep_time=sorted(EG.KEEP_TIME),
-                  secondary=dict(freq_hz=EG.SECONDARY['freq_hz'], zeta=EG.SECONDARY['zeta']),
+                  secondary=dict(freq_hz=EG.SECONDARY['freq_hz'], zeta=EG.SECONDARY['zeta'],
+                                 aim_freq_hz=EG.SECONDARY['aim_freq_hz'], aim_zeta=EG.SECONDARY['aim_zeta']),
                   breathe_all={k: r6(v) for k, v in EG.BREATHE_ALL.items()}, recoil={k: r6(v) for k, v in EG.RECOIL.items()},
                   de='Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoßfeder, Tempo)')
     return dict(format=FORMAT, generated_by='tools/export_unity.py', sources=sources, axes=AXES, fps=EG.FPS, motion=motion,
@@ -154,6 +156,32 @@ def write_json(path, obj):
     with open(path, 'w', encoding='utf-8') as fh:
         json.dump(obj, fh, ensure_ascii=False, indent=1, sort_keys=False)
         fh.write('\n')
+
+
+MOTION_SOURCES = {'basic/arms/ego.py', 'tools/ego_build.py', 'tools/export_unity.py'}   # dürfen sich im Datenexport ändern
+
+
+def data_only_allowed(D):
+    """(altes ego.json, Grund) – Grund None, wenn nur Bewegungsquellen anders sind als beim letzten vollen Export; sonst wären
+    FBX, Atlanten und Netzgrenzen veraltet, während --check „aktuell“ meldet (Richter 0.10)."""
+    p = os.path.join(DST, 'ego.json')
+    if not os.path.exists(p):
+        return None, 'kein ego.json'
+    with open(p, encoding='utf-8') as fh:
+        old = json.load(fh)
+    if 'textures' not in old or 'mesh_bounds' not in old:
+        return None, f"altes ego.json ({old.get('format')}) ohne Atlanten oder Netzgrenzen"
+    was = {f['path']: f['sha256'] for f in old.get('sources', {}).get('files', [])}
+    changed = [f['path'] for f in D['sources']['files'] if f['path'] not in MOTION_SOURCES and was.get(f['path']) != f['sha256']]
+    if changed:
+        return None, 'Form- oder Materialquellen geändert: ' + ', '.join(changed)
+    return old, None
+
+
+def write_reference(ref):
+    with open(os.path.join(DST, 'ego_reference.json'), 'w', encoding='utf-8') as fh:   # groß: kompakt, eine Probe je Zeile
+        fh.write('{' + ', '.join(f'"{k}": {json.dumps(v, ensure_ascii=False)}' for k, v in ref.items() if k != 'samples')
+                 + ', "samples": [\n' + ',\n'.join(json.dumps(s, separators=(',', ':')) for s in ref['samples']) + '\n]}\n')
 
 
 def check():
@@ -187,6 +215,12 @@ def blender_main():
     W = importlib.import_module(f'basic.{WEAPON}')
     os.makedirs(DST, exist_ok=True)
     D = data()
+    data_only = os.environ.get('BALLON_EXPORT_DATA_ONLY') == '1'
+    if data_only:                                      # vor jeder Arbeit: darf der Datenexport Atlanten, Netze und FBX übernehmen?
+        old, why = data_only_allowed(D)
+        if why:
+            print(f'[export_unity] nur Daten nicht möglich: {why} – voller Export nötig (ohne BALLON_EXPORT_DATA_ONLY)', flush=True)
+            sys.exit(2)
     sc = EB.Scene(W, dict(stills=False, actions=[], gpu=False, samples=1, weapon=WEAPON))
 
     def flat(M):
@@ -226,6 +260,12 @@ def blender_main():
         for e in sc.arms[s][0].values():
             e.matrix_world = Matrix.Identity(4)
     bpy.context.view_layer.update()
+    if data_only:                                      # nur Bewegung/Daten geändert (0.10): Atlanten, Netzgrenzen und FBX bleiben
+        D['textures'], D['mesh_bounds'] = old['textures'], old['mesh_bounds']
+        write_json(os.path.join(DST, 'ego.json'), D)
+        write_reference(ref)
+        print(f'[export_unity] nur Daten: ego.json + Referenz ({len(samples)} Proben), Atlanten und FBX unverändert', flush=True)
+        return
     # Material backen (0.7): je FBX ein Atlas aus kit.aaa_nodes, dazu die AgX-LUT der Blender-Ansicht
     wobs = [sc.root] + list(sc.root.children_recursive)
     aobs = [o for s in ('R', 'L') for e in sc.arms[s][0].values() for o in [e] + list(e.children)]
@@ -296,9 +336,7 @@ def blender_main():
     export(os.path.join(DST, D['weapon']['fbx']), wobs)
     export(os.path.join(DST, D['arm']['fbx']), aobs)
     write_json(os.path.join(DST, 'ego.json'), D)
-    with open(os.path.join(DST, 'ego_reference.json'), 'w', encoding='utf-8') as fh:   # groß: kompakt, eine Probe je Zeile
-        fh.write('{' + ', '.join(f'"{k}": {json.dumps(v, ensure_ascii=False)}' for k, v in ref.items() if k != 'samples')
-                 + ', "samples": [\n' + ',\n'.join(json.dumps(s, separators=(',', ':')) for s in samples) + '\n]}\n')
+    write_reference(ref)
     tri_w = sum(b['tris'] for k, b in bounds.items() if k in {p['id'] for p in D['weapon']['parts']})
     print(f"[export_unity] {len(wobs)} Waffenobjekte ({tri_w} Dreiecke), {len(aobs)} Armobjekte, {len(samples)} Referenzproben → {DST}")
 

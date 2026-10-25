@@ -249,10 +249,12 @@ def spring_step(x, v, target, w, zeta, dt, sub=4):
     return x, v
 
 
-def secondary(R, pos, f, state):
-    """EG.SECONDARY: Die Waffe folgt ihrer Kurve träge (Position und Drehung als Federn), dadurch Nachschwingen nach Bewegungen."""
+def secondary(R, pos, f, state, aim=False):
+    """EG.SECONDARY: Die Waffe folgt ihrer Kurve träge (Position und Drehung als Federn), dadurch Nachschwingen nach Bewegungen.
+    aim: Aktion endet im Zielen, dann kritisch gedämpft (aim_zeta), damit das Visier nicht über die Mitte schwingt."""
     S = EG.SECONDARY
-    w, z, dt = 2 * math.pi * S['freq_hz'], S['zeta'], 1.0 / EG.FPS
+    w = 2 * math.pi * (S['aim_freq_hz'] if aim else S['freq_hz'])
+    z, dt = S['aim_zeta'] if aim else S['zeta'], 1.0 / EG.FPS
     q_t = R.to_quaternion()
     if 'sec' not in state:
         state['sec'] = dict(p=pos.copy(), v=Vector(), q=q_t.copy(), av=Vector(), f=f)
@@ -432,7 +434,7 @@ class Scene:
 def evaluate(sc, A, f, report, state):
     W = sc.W
     R, pos = weapon_at(W, A['weapon'], f)
-    R, pos = secondary(R, pos, f, state)
+    R, pos = secondary(R, pos, f, state, EG.ends_in_ads(A))
     off_pos, off_rot = Vector(), Matrix.Identity(3)
     cam_pitch = 0.0
     Bz = EG.BREATHE_ALL                      # dezentes Atmen in jeder Aktion (Echtzeit, unabhängig vom Ablauftempo)
@@ -447,7 +449,8 @@ def evaluate(sc, A, f, report, state):
         if B['start'] <= f <= B['end']:
             w = min(1.0, (f - B['start']) / 4, (B['end'] - f) / 4)
             ph = 2 * math.pi * (f - B['start']) / B['period']
-            off_pos += Vector((B['amp'][0] * math.sin(ph) * w, 0, B['amp'][1] * math.sin(2 * ph) * w))
+            up = -math.cos(2 * ph) if B.get('shape') == 'u' else math.sin(2 * ph)   # u: oben an den Seitenumkehren (Destiny-Sprint)
+            off_pos += Vector((B['amp'][0] * math.sin(ph) * w, 0, B['amp'][1] * up * w))
             off_rot = off_rot @ Matrix.Rotation(math.radians(B['roll'] * math.sin(ph) * w), 3, 'Y')
     mech = {}
     for pid, keys in A.get('mech', {}).items():

@@ -181,7 +181,7 @@ namespace Ballon.Ego
         {
             var i = _intent;
             holstered = false;
-            if (_t.A.weapon[_t.A.weapon.Length - 1].pose == "ads")      // draw_aim, sprint_to_aim: im Zielen ankommen
+            if (_t.A.EndsInAds)                                         // draw_aim, sprint_to_aim: im Zielen ankommen
             {
                 _stance = Stance.Ads;
                 _t.stance = Stance.Ads;
@@ -405,9 +405,11 @@ namespace Ballon.Ego
             L.rot = RotX(Rad(-Bz.pitch_deg * Mathf.Sin(phb + 0.8f) - 0.25f * bw * Mathf.Sin(2 * Mathf.PI * _breathePh / 60 + 1)));
             // Wippen (liegende Acht) aus walk und sprint
             float bobK = Mathf.Lerp(1, tune.bobAds, adsWeight);
-            var ampW = new Vector2(_walk.bob.amp[0], _walk.bob.amp[1]) * _bobW + new Vector2(_sprintA.bob.amp[0], _sprintA.bob.amp[1]) * _sprintW;
+            float side = _walk.bob.amp[0] * _bobW + _sprintA.bob.amp[0] * _sprintW;
+            float s2 = Mathf.Sin(2 * _bobPh), u2 = -Mathf.Cos(2 * _bobPh);           // liegende Acht bzw. U-Bogen je Aktion (Bob.u)
+            float up = _walk.bob.amp[1] * _bobW * (_walk.bob.u ? u2 : s2) + _sprintA.bob.amp[1] * _sprintW * (_sprintA.bob.u ? u2 : s2);
             float rollW = _walk.bob.roll * _bobW + _sprintA.bob.roll * _sprintW;
-            L.pos += new Vector3(ampW.x * Mathf.Sin(_bobPh), 0, ampW.y * Mathf.Sin(2 * _bobPh)) * bobK;
+            L.pos += new Vector3(side * Mathf.Sin(_bobPh), 0, up) * bobK;
             L.rot = L.rot * RotY(Rad(rollW * Mathf.Sin(_bobPh) * bobK + _tilt));
             // Pendeln: Gieren um die Hochachse der Waffe, Nicken um die Querachse, leichte Lageverschiebung
             L.rot = L.rot * RotZ(Rad(_sway.x)) * RotX(Rad(_sway.y));
@@ -423,9 +425,10 @@ namespace Ballon.Ego
         }
 
         /// <summary>Feder-Nachlauf (ego.SECONDARY) in Echtzeit über alle Spuren hinweg: glättet auch Spurwechsel.</summary>
-        Matrix4x4 SecondaryLive(Matrix4x4 target)
+        Matrix4x4 SecondaryLive(Matrix4x4 target, bool aim)
         {
             var S2 = S.D.motion.secondary;
+            float z = aim ? S2.aim_zeta : S2.zeta;            // im Zielen ankommen: kritisch gedämpft (kein Überschwingen am Visier)
             var qt = QuatFrom(target);
             if (!_hasSec)
             {
@@ -433,9 +436,9 @@ namespace Ballon.Ego
                 _secP = Pos(target); _secV = Vector3.zero; _secQ = qt; _secAv = Vector3.zero;
                 return target;
             }
-            float w = 2 * Mathf.PI * S2.freq_hz;
-            EgoSolver.SpringStep(ref _secP, ref _secV, Pos(target), w, S2.zeta, _dt);
-            EgoSolver.SpringRot(ref _secQ, ref _secAv, qt, w, S2.zeta, _dt);
+            float w = 2 * Mathf.PI * (aim ? S2.aim_freq_hz : S2.freq_hz);
+            EgoSolver.SpringStep(ref _secP, ref _secV, Pos(target), w, z, _dt);
+            EgoSolver.SpringRot(ref _secQ, ref _secAv, qt, w, z, _dt);
             return Matrix4x4.TRS(_secP, _secQ, Vector3.one);
         }
 
@@ -448,7 +451,7 @@ namespace Ballon.Ego
             float e = Ease(_fade);
             if (e < 1) baseW = Blend(_fromBase, baseW, e);
             _lastBase = baseW;
-            baseW = _t.scripted ? S.Secondary(baseW, f, _t.st) : SecondaryLive(baseW);
+            baseW = _t.scripted ? S.Secondary(baseW, f, _t.st, A.EndsInAds) : SecondaryLive(baseW, A.EndsInAds);
             var L = _t.scripted ? S.Scripted(A, f, Rot3(baseW), _t.st) : LiveLayers(Rot3(baseW));
             var WM = EgoSolver.Apply(baseW, L);
             S.MechAt(A, f, L, _mech);

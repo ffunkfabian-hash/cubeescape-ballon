@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/3",
+ "format": "ballon-ego/4",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen",
@@ -26,11 +26,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "0370d8e69569eba1c7cd078fed18956d23c4cea41b6e38ee1fcd210dd3668fab"
+    "sha256": "64c1ea3d13acc12d741b64cc38b28dab474a498620cb4105d3b8ae25872f256a"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "3998545bf869bc5fb41781868cc60896b23a43fee6b4c0140f32f9bfbc812719"
+    "sha256": "79243e71caa95ce4fe3315edbaa7d72f4b4385578d99ddbc385783970fdafcf0"
    },
    {
     "path": "tools/blender_build.py",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "86dd9059519e403e5c62acbc55af632f54b07f5a4651e58a62ec9aad340fe378"
+    "sha256": "10addb16eb7bfc78f86142705076acf45d3c9fd02e7c87fe8d4df187ad22ed26"
    },
    {
     "path": "tools/bake_unity.py",
@@ -80,7 +80,9 @@
   ],
   "secondary": {
    "freq_hz": 3.2,
-   "zeta": 0.55
+   "zeta": 0.55,
+   "aim_freq_hz": 10.0,
+   "aim_zeta": 1.0
   },
   "breathe_all": {
    "period_s": 3.4,
@@ -4982,7 +4984,7 @@
    "de": "Sprint: Beginn, Schleife, Ende",
    "frames": 60,
    "time_scale": 1.25,
-   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); Rhythmus Robogen SprintFull 0,33 s je Doppelschritt",
+   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“)",
    "weapon": [
     {
      "f": 0.0,
@@ -5084,12 +5086,13 @@
     "enabled": true,
     "start": 10.0,
     "end": 47.5,
-    "period": 10.0,
+    "period": 19.0,
     "amp": [
      0.012,
      0.01
     ],
-    "roll": 4.0
+    "roll": 3.5,
+    "u": true
    },
    "events": [
     {
@@ -5319,7 +5322,8 @@
      0.007,
      0.004
     ],
-    "roll": 1.2
+    "roll": 1.2,
+    "u": false
    },
    "events": []
   },

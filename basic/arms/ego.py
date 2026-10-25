@@ -97,8 +97,10 @@ ACTIONS = {
                     fL=[(0, 'underhand'), (42, 'open'), (50, 'relaxed'), (86, 'open'), (94, 'underhand')],
                     events=[(16, 'Start'), (94, 'End')], src='E nach Destiny-Inspektion (Ego-Seite, dann Oberseite)'),
     'sprint': dict(de='Sprint: Beginn, Schleife, Ende', frames=48, weapon=[(0, 'hip'), (8, 'sprint'), (38, 'sprint'), (48, 'hip')],
-                   bob=dict(start=8, end=38, period=10, amp=(0.012, 0.010), roll=4), events=[(8, 'SprintLoop'), (48, 'Ready')],
-                   src='E (CE: Waffe senkt sich und rollt zur Mitte); Rhythmus Robogen SprintFull 0,33 s je Doppelschritt'),
+                   bob=dict(start=8, end=38, period=19, amp=(0.012, 0.010), roll=3.5, shape='u'), events=[(8, 'SprintLoop'), (48, 'Ready')],
+                   src='E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: '
+                       '19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) '
+                       'nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“)'),
     'lowered': dict(de='Gesenkte Haltung / Wandnähe', frames=36, weapon=[(0, 'hip'), (8, 'lowered'), (26, 'lowered'), (36, 'hip')],
                     events=[(8, 'Lowered'), (36, 'Ready')], src='E'),
     'walk': dict(de='Gehen (liegende Acht)', frames=48, weapon=[(0, 'hip'), (48, 'hip')],
@@ -129,7 +131,15 @@ ACTIONS = {
 TIME_SCALE = 1.25        # Ablauftempo: 25 % langsamer als die Destiny-Messung (lesbar ohne Ton/Bewegungsunschärfe)
 KEEP_TIME = {'fire_hip', 'fire_ads', 'aim_in', 'aim_out', 'sprint_to_aim', 'sprint_to_fire'}   # Spielgefühl: Zielen/Feuern bleiben schnell
 INTERP = 'hermite_monotone'   # Kurven durch die Schlüssel (Tangente aus den Nachbarn, 0 bei Halt/Umkehr) statt Stopp an jedem Schlüssel
-SECONDARY = dict(freq_hz=3.2, zeta=0.55)    # Waffe folgt ihrer Kurve über eine gedämpfte Feder: Trägheit und leichtes Nachschwingen
+SECONDARY = dict(freq_hz=3.2, zeta=0.55,    # Waffe folgt ihrer Kurve über eine gedämpfte Feder: Trägheit und leichtes Nachschwingen
+                 aim_freq_hz=10.0, aim_zeta=1.0)  # Aktionen, die im Zielen enden: schneller und kritisch gedämpft, das Visier landet
+                                                  # ohne Überschwingen und ohne Nachhängen (0.10; 3,2 Hz kritisch hing 10° hinterher)
+
+
+def ends_in_ads(A):
+    """Endet die Aktion in der Haltung 'ads' (aim_in, sprint_to_aim, draw_aim, fire_ads …)? Dann gilt SECONDARY['aim_zeta']."""
+    k = A['weapon'][-1][1]
+    return (k[0] if isinstance(k, tuple) else k) == 'ads'
 BREATHE_ALL = dict(period_s=3.4, up_m=0.0010, pitch_deg=0.15)   # dezentes Atmen in jeder Aktion
 RECOIL = dict(freq_hz=5.0, zeta=0.5, back_mps=0.62, pitch_dps=115.0, climb_deg=0.12,    # Rückstoß als Federimpuls je Schuss
               cam_freq_hz=4.0, cam_zeta=0.6, cam_dps=18.0)

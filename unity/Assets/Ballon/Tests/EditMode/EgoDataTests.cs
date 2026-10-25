@@ -82,6 +82,51 @@ namespace Ballon.Ego.Tests
             Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/1\"}"));    // alter Export ohne Texturen
             var ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/2\"}"));   // 0.7: mask statt spec, keine Skins
             StringAssert.Contains("neu exportieren", ex.Message);
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/3\"}"));          // 0.9: ohne secondary.aim_zeta
+            StringAssert.Contains("neu exportieren", ex.Message);
+        }
+
+        // ---------------------------------------------------------------- Bewegungsgefühl 0.10
+        /// <summary>Jede Aktion, die im Zielen endet, bringt das Absehen von seiner Seite auf die Mitte, ohne darüber hinaus zu schwingen
+        /// (0.9: 3,3° über die Mitte bei aim_in, „Wippen kurz vor dem Visier“). Gemessen wie in Blender: Richtung Auge → Socket_Reticle.</summary>
+        [Test]
+        public void Zielen_landet_ohne_Ueberschwingen()
+        {
+            var S = new EgoSolver(D);
+            Vector3 ret = Vector3.zero;
+            foreach (var a in D.weapon.anchors) if (a.id == "Socket_Reticle") ret = new Vector3(a.pos[0], a.pos[1], a.pos[2]);
+            int n = 0;
+            foreach (var A in D.actions)
+            {
+                if (!A.EndsInAds || A.name == "fire_ads") continue;
+                var st = new EgoState();
+                float first = float.NaN, worst = 0, atEnd = 0;
+                for (int f = 0; f <= A.frames + 20; f++)
+                {
+                    var t = S.Evaluate(A, Mathf.Min(f, A.frames), st).weapon.MultiplyPoint3x4(ret);
+                    float az = Mathf.Atan2(-t.x, -t.y) * Mathf.Rad2Deg;             // Blender-Kameraraum: rechts −X, vorn −Y
+                    if (float.IsNaN(first)) first = az;
+                    worst = Mathf.Max(worst, -Mathf.Sign(first) * az);            // Ausschlag über die Mitte zur anderen Seite
+                    if (f == A.frames) atEnd = Mathf.Abs(az);
+                }
+                TestContext.WriteLine($"{A.name}: Start {first:0.00}°, Überschwingen {worst:0.00}°, Rest am Ende {atEnd:0.00}°");
+                Assert.Less(worst, 0.3f, $"{A.name}: Absehen schwingt {worst:0.00}° über die Mitte (Start {first:0.0}°)");
+                Assert.Less(atEnd, 1.5f, $"{A.name}: Absehen hängt am Ende der Aktion {atEnd:0.0}° hinterher");
+                n++;
+            }
+            Assert.GreaterOrEqual(n, 3, "aim_in, sprint_to_aim, draw_aim");
+        }
+
+        /// <summary>Sprint-Wippen: vertikal ein Hub je Schritt (2 je Periode), wie Destiny 2 ≈ 3,16 Schritte/s – vorher 6/s („tapsig“).</summary>
+        [Test]
+        public void Sprintschritt_wie_ein_Laeufer()
+        {
+            var B = D.Action("sprint").bob;
+            float steps = 2f * D.fps / B.period;
+            Assert.That(steps, Is.InRange(2.9f, 3.4f), $"Sprint: {steps:0.00} Schritte/s (Destiny 2: 3,16 Hz, Motiongen REF 0.23)");
+            Assert.IsTrue(B.u, "Sprint-Bahn als U-Bogen (oben an den Seitenumkehren) wie Destiny 2");
+            var W = D.Action("walk").bob;
+            Assert.Less(2f * D.fps / W.period, steps, "Gehen langsamer als Sprint");
         }
 
         // ---------------------------------------------------------------- Achsen

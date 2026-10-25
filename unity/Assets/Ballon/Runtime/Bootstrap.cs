@@ -315,11 +315,21 @@ namespace Ballon.Ego
             .Add(6.4f, 6.5f, press: "inspect")                 // Betrachten (nach dem Nachladen, 2,5 s bei Tempo 1,25)
             .Add(6.5f, 10.9f);
 
+        /// <summary>Bewegungsgefühl (0.10): Sprint, Zielen aus dem Stand, Sprint → Zielen – zum Prüfen von Sprint-Rhythmus und Visier-Anflug.</summary>
+        public static ScriptedInput FeelScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)                                                   // Ruhe
+            .Add(0.6f, 2.4f, hold: "sprint", move: new Vector2(0, 1))          // Sprint
+            .Add(2.4f, 3.2f)                                                   // Sprint-Ende, Hüfte
+            .Add(3.2f, 4.6f, hold: "aim")                                      // Zielen aus dem Stand
+            .Add(4.6f, 5.4f)                                                   // zurück zur Hüfte
+            .Add(5.4f, 6.8f, hold: "sprint", move: new Vector2(0, 1))          // Sprint
+            .Add(6.8f, 8.2f, hold: "aim")                                      // Sprint → Zielen
+            .Add(8.2f, 9.0f);
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
             Player.hud = false;
-            var demo = DemoScript();
+            var demo = Arg(Environment.GetCommandLineArgs(), "-ballonDemo") == "feel" ? FeelScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = 9;

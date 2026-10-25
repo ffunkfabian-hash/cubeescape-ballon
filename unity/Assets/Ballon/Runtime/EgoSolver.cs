@@ -230,10 +230,10 @@ namespace Ballon.Ego
         }
 
         /// <summary>ego_build.secondary: Waffe folgt ihrer Kurve über Federn (ganze Bilder, wie die Blender-Auswertung).</summary>
-        public Matrix4x4 Secondary(Matrix4x4 target, float f, EgoState st)
+        public Matrix4x4 Secondary(Matrix4x4 target, float f, EgoState st, bool aim = false)
         {
             var S2 = D.motion.secondary;
-            float w = 2 * Mathf.PI * S2.freq_hz, z = S2.zeta, dt = 1f / fps;
+            float w = 2 * Mathf.PI * (aim ? S2.aim_freq_hz : S2.freq_hz), z = aim ? S2.aim_zeta : S2.zeta, dt = 1f / fps;
             var qt = QuatFrom(target);
             var pos = Pos(target);
             if (!st.hasSec)
@@ -270,7 +270,8 @@ namespace Ballon.Ego
                 var B = A.bob;
                 float w = Mathf.Min(1f, Mathf.Min((f - B.start) / 4f, (B.end - f) / 4f));
                 float ph = 2 * Mathf.PI * (f - B.start) / B.period;
-                L.pos += new Vector3(B.amp[0] * Mathf.Sin(ph) * w, 0, B.amp[1] * Mathf.Sin(2 * ph) * w);
+                float up = B.u ? -Mathf.Cos(2 * ph) : Mathf.Sin(2 * ph);   // u: oben an den Seitenumkehren (ego_build.evaluate)
+                L.pos += new Vector3(B.amp[0] * Mathf.Sin(ph) * w, 0, B.amp[1] * up * w);
                 L.rot = L.rot * RotY(Rad(B.roll * Mathf.Sin(ph) * w));
             }
             if (A.fire != null && A.fire.Length > 0)
@@ -506,7 +507,7 @@ namespace Ballon.Ego
         public EgoOutput Evaluate(EgoAction A, float f, EgoState st, EgoOutput o = null)
         {
             o = o ?? NewOutput();
-            var baseW = Secondary(WeaponAt(A.weapon, f), f, st);
+            var baseW = Secondary(WeaponAt(A.weapon, f), f, st, A.EndsInAds);
             var L = Scripted(A, f, Rot3(baseW), st);
             var WM = Apply(baseW, L);
             MechAt(A, f, L, o.mech);

@@ -89,10 +89,11 @@ def player(args, log):
     return locked([exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0', '-logFile', log] + args, log)
 
 
-def capture(scene=None):
-    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}')
+def capture(scene=None, demo=None):
+    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '')
     shutil.rmtree(d, ignore_errors=True)
-    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []), os.path.join(EV, 'capture.log'))
+    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []) + (['-ballonDemo', demo] if demo else []),
+                os.path.join(EV, 'capture.log'))
     frames = sorted(glob.glob(os.path.join(d, '[0-9]*.png')))
     if rc or not frames:
         print('Aufnahme fehlgeschlagen', rc)
@@ -105,30 +106,34 @@ def capture(scene=None):
     rows = {int(r.split(',')[0]): r.strip().split(',') for r in open(os.path.join(d, 'frames.csv'), encoding='utf-8')}
     lab = os.path.join(d, '_lab')
     os.makedirs(lab, exist_ok=True)
+    head = ('BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen, Sprint → Zielen' if demo == 'feel'
+            else 'BALLON 0.4 Firstfeel · Unity · BASIC-01 v2.1')
     cur, until = '', -1
     for i, p in enumerate(frames):
         if i in marks:
             cur, until = marks[i][-1], i + 18
         _, act, fr, ammo = rows.get(i, [i, '', '', ''])
         cmd = ['magick', p, '-font', FONT, '-fill', '#F2F3F4', '-stroke', '#00000060', '-pointsize', '20', '-annotate', '+18+34',
-               'BALLON 0.4 Firstfeel · Unity · BASIC-01 v2.1', '-pointsize', '16', '-annotate', '+18+58',
+               head, '-pointsize', '16', '-annotate', '+18+58',
                f'Bild {i} · {i * 1000 / 30:.0f} ms · {act} {fr}', '-gravity', 'SouthEast', '-pointsize', '30', '-annotate', '+26+22',
-               f'{ammo} / 30', '-gravity', 'Center', '-stroke', 'none', '-fill', '#FFFFFFD0', '-draw', 'rectangle 628,359 638,361',
-               '-draw', 'rectangle 642,359 652,361', '-draw', 'rectangle 639,346 641,356', '-draw', 'rectangle 639,364 641,374']
+               f'{ammo} / 30']
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
-    out = os.path.join(EV, 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
+    out = os.path.join(EV, f'gefuehl_{scene or "parcours"}.mp4' if demo else 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
                     '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', out], check=True)
     shutil.rmtree(lab)
-    sheet = os.path.join(EV, 'firstfeel_ablauf.png' if not scene else f'firstfeel_{scene}.png')
+    sheet = os.path.join(EV, f'gefuehl_{scene or "parcours"}.png' if demo else 'firstfeel_ablauf.png' if not scene else f'firstfeel_{scene}.png')
     pick = sorted({0, len(frames) - 1, *[f for f in marks if any(k in ' '.join(marks[f]) for k in
                                                                   ('Aimed', 'MagOut', 'MagIn', 'Chamber', 'inspect › Start'))]})
+    if demo:                                                     # Bewegungsgefühl: gleichmäßig über den Ablauf
+        pick = [round(k * (len(frames) - 1) / 11) for k in range(12)]
     subprocess.run(['magick', 'montage', *[x for f in pick for x in ('-label', f'Bild {f} · {" / ".join(marks.get(f, ["Start/Ende"]))}',
                                                                         frames[f])],
                     '-tile', '4x', '-geometry', '480x270+3+3', '-pointsize', '12', '-background', '#9EA4AC',
-                    '-title', 'BALLON 0.4 Firstfeel · Zielen → Feuerstoß → leeres Nachladen → Betrachten (Unity-Build)', sheet], check=True)
+                    '-title', head if demo else 'BALLON 0.4 Firstfeel · Zielen → Feuerstoß → leeres Nachladen → Betrachten (Unity-Build)',
+                    sheet], check=True)
     print(f'{len(frames)} Bilder ({len(frames) / 30:.1f} s) → {out}\nKontaktbogen → {sheet}')
     return 0
 
@@ -156,9 +161,7 @@ def course(lighting='tag', scene='hangar'):
                f'BALLON 0.9 Parcours · Unity · {scene.capitalize()} · {lighting.capitalize()}', '-pointsize', '16', '-annotate', '+18+58',
                f'Vorführlauf (automatisch) · Bild {i} · Wegpunkt {wp}', '-gravity', 'NorthEast', '-pointsize', '26', '-annotate', '+22+34',
                f'{float(t):.1f} s' if state != 'Bereit' else 'bereit', '-pointsize', '16', '-annotate', '+22+64',
-               f'Kontrollpunkte {cps} · Treffer {hits}', '-gravity', 'Center', '-stroke', 'none', '-fill', '#FFFFFFD0',
-               '-draw', 'rectangle 628,359 638,361', '-draw', 'rectangle 642,359 652,361', '-draw', 'rectangle 639,346 641,356',
-               '-draw', 'rectangle 639,364 641,374']
+               f'Kontrollpunkte {cps} · Treffer {hits}']
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
 
     from concurrent.futures import ThreadPoolExecutor
@@ -270,6 +273,8 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
+    if a == 'feel':                                              # Sprint und Visier-Anflug (0.10), optional in einer Szene
+        sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo='feel'))
     if a == 'scenes':
         d = os.path.join(EV, 'scene_shots')
         shutil.rmtree(d, ignore_errors=True)

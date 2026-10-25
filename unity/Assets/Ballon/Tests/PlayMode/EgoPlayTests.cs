@@ -131,6 +131,64 @@ namespace Ballon.Ego.Tests
             Assert.That(new Vector2(eye.x, eye.z).magnitude, Is.LessThan(0.004f), $"Auge {eye:F4}");
         }
 
+        /// <summary>Live (EgoController, wie im Spiel und im feel-MP4): Zielen aus der Hüfte bringt das Absehen ohne Überschwingen auf die
+        /// Mitte und hängt nach 0,45 s nicht mehr nach (0.10; Destiny 2 hat beim Zielen kein Überschwingen).</summary>
+        [Test]
+        public void Zielen_live_ohne_Ueberschwingen()
+        {
+            var c = Ready();
+            var ret = BMath.V(D.Anchor("Socket_Reticle").pos);
+            float first = float.NaN, worst = 0, at045 = 0;
+            for (int k = 0; k < 60; k++)                           // 1 s bei 60 Bildern/s
+            {
+                c.Tick(Dt, new EgoIntent { grounded = true, aim = true });
+                var t = c.output.weapon.MultiplyPoint3x4(ret);
+                float az = Mathf.Atan2(-t.x, -t.y) * Mathf.Rad2Deg;   // Blender-Kameraraum: rechts −X, vorn −Y
+                if (float.IsNaN(first)) first = az;
+                worst = Mathf.Max(worst, -Mathf.Sign(first) * az);
+                if (k == 26) at045 = Mathf.Abs(az);
+            }
+            TestContext.WriteLine($"live aim_in: Start {first:0.00}°, Überschwingen {worst:0.00}°, Rest nach 0,45 s {at045:0.00}°");
+            Assert.Less(worst, 0.3f, $"Absehen schwingt {worst:0.00}° über die Mitte");
+            Assert.Less(at045, 1.0f, $"Absehen hängt nach 0,45 s {at045:0.00}° nach");
+        }
+
+        /// <summary>Live-Sprint (EgoController.LiveLayers): vertikal 2,9–3,4 Hochpunkte je Sekunde, Hochpunkte an den Seitenumkehren
+        /// (U-Bogen wie Destiny 2, Motiongen REF 0.23), nicht in der Mitte.</summary>
+        [Test]
+        public void Sprint_live_im_Destiny_Rhythmus()
+        {
+            var c = Ready();
+            var sprint = new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f };
+            Run(c, sprint, 1.5f);                                  // in die Schleife, Gewichte eingeschwungen
+            int n = 180;                                           // 3 s
+            var x = new float[n]; var z = new float[n];
+            for (int k = 0; k < n; k++)
+            {
+                c.Tick(Dt, sprint);
+                var p = c.output.weapon.GetColumn(3);
+                x[k] = p.x; z[k] = p.z;
+            }
+            float mx = 0, mz = 0;
+            for (int k = 0; k < n; k++) { mx += x[k] / n; mz += z[k] / n; }
+            int peaks = 0;
+            float atSide = 0, atMid = 0; int nSide = 0, nMid = 0;
+            float ax = 0;
+            for (int k = 0; k < n; k++) ax = Mathf.Max(ax, Mathf.Abs(x[k] - mx));
+            for (int k = 1; k < n - 1; k++)
+            {
+                if (z[k] > z[k - 1] && z[k] >= z[k + 1] && z[k] > mz) peaks++;
+                float s = Mathf.Abs(x[k] - mx) / ax;
+                if (s > 0.8f) { atSide += z[k] - mz; nSide++; }
+                if (s < 0.2f) { atMid += z[k] - mz; nMid++; }
+            }
+            float hz = peaks / (n * Dt);
+            atSide /= Mathf.Max(1, nSide); atMid /= Mathf.Max(1, nMid);
+            TestContext.WriteLine($"live sprint: {hz:0.00} Hochpunkte/s, Höhe an den Seiten {atSide * 1000:0.0} mm, in der Mitte {atMid * 1000:0.0} mm");
+            Assert.That(hz, Is.InRange(2.9f, 3.4f), "Schritte je Sekunde");
+            Assert.Greater(atSide, atMid, "U-Bogen: oben an den Seitenumkehren, unten in der Mitte");
+        }
+
         [Test]
         public void Betrachten_bricht_beim_Feuern_ab()
         {
