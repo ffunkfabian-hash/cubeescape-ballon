@@ -72,7 +72,7 @@ def doc():
                      f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['frame_max']} × Öffnung | {T['ads_view']} |")
         else:
             L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
-    L += ['', '| Waffentyp | Visier (Designsprache v3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']
+    L += ['', '| Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']
     L += [f"| `{k}` | {RT.SIGHT_KIND_DE[RT.SIGHT_KIND[k]]} | ×{z} | {RT.CLASS_ZOOM_STATUS.get(k, 'entworfen')} | "
           f"×{RT.world_zoom(k, 'reflex')} | ×{RT.world_zoom(k, 'scope')} |" for k, z in RT.CLASS_ZOOM.items()]
     F = RT.ADS_FEEDBACK

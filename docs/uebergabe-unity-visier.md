@@ -35,7 +35,7 @@ Quellen der Daten (nur lesen):
   - `~/Library/Caches/CubeEscapeBallon/evidence/clips/reticle_spread.mp4`
   - `…/evidence/sight_examples_v2.png`
 
-## Nachtrag 25.10.2026: Visier-Designsprache v3 (geht den Punkten unten vor)
+## Nachtrag 25.10.2026: Visier-Standard 3, anfangs „Visier-Designsprache v3“ (geht den Punkten unten vor)
 
 Der Nutzer hat die Empfehlungen aus Motiongen REF 0.14 „Eyebox“ übernommen („Mach alles so wie du empfiehlst“) und den
 Augenabstand 90 mm bestätigt. Gegenüber den Punkten unten gilt:

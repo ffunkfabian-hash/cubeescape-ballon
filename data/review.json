@@ -596,5 +596,30 @@
     "notes": [
       "Formskizze: ~/Library/Caches/CubeEscapeBallon/sketch/BASIC-03-v2.1_skizze.blend"
     ]
+  },
+  "BASIC-06-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-25",
+      "method": "Drei Runden: (1) Silhouette/Zweiton an side_left, hero_p, ego, silhouette – Magazin saß 11 mm hinter der Griffachse und stand hinten aus dem Griff → auf die Griffachse, 165 mm, Sichtfenster mit Patronen unter dem Griffboden; Bügel wirkte wie Draht → Abzugsbügel und Bügel als ein Band (anodized, 9–13 mm); (2) Schichten/Negativraum an exploded und ego ohne Befund; (3) Material/Budget an 8 Skins (hero, side_left) und Visierlinie sightline (Absehen dot mittig, Glas klar); Budget 2 Leuchten, 1 Band, 1 Schrift, 3 Orange"
+    },
+    "actions": {
+      "fire_auto": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-25",
+        "method": "Bildfolge motion/fire_auto, Bilder 0/3: Auswurfklappe offen, Verschluss läuft (24 Bilder)"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-25",
+        "method": "Bildfolge motion/reload_empty, Bilder 0/20/40/62: Magazin entlang der geneigten Griffachse heraus und wieder eingesetzt, Ladehebel gezogen"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-06-v2.1/ (views/, motion/, .blend, .glb, Spec)"
+    ]
   }
 }

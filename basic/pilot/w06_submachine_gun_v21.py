@@ -11,16 +11,16 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Schichten | Oberes Gehäuse (Creme) → Seitenpaneele; Unteres Gehäuse (Graphit); Vorbau (Graphit) mit Creme-Deckleiste |
 | Negativraum | Bügel umschließt den Raum für die Stützhand; Lüftungsschlitze quer durch den Vorbau |
 | Blickfang | Munitionsanzeige links (eine Leuchtfunktion) |
-| Zweiton-Blockung | Oberteil und Deckleiste Lack (`shell`), Unterteil, Vorbau, Bügel, Griffe Polymer (`graphite`/`rubber`) |
+| Zweiton-Blockung | Oberteil und Deckleiste Lack (`shell`), Unterteil, Vorbau, Griffe Polymer (`graphite`/`rubber`); Abzugsbügel und Bügel ein Band (`anodized`) |
 | Grafik | ein Chevronband am Vorbau, ein Schriftzug „BASIC SM-06“ |
 | Front | flache Vorbaustirn mit Mündungsmulde, kurzer Kompensator mit blanker Krone |
 | Übergänge | Bügel geht aus dem Abzugsbügel hervor und endet im Vordergriff; Magazin tritt unten aus dem Griffboden |
-| Ergonomie | Griff BGM-1 in v2.1-Form, Vordergriff mit Fingerauflagen, Magazin mit Sichtfenster |
+| Ergonomie | Griff BGM-1 in v2.1-Form, Vordergriff mit Fingerauflagen, Magazin auf der Griffachse mit Sichtfenster (Patronen) unter dem Griffboden |
 
-Visier: offenes Holo nach Designsprache v3 (`SIGHT_KIND['submachine_gun'] = 'holo'`), Absehen-Vorgabe `dot`.
+Visier: offenes Holo nach Visier-Standard 3 (`SIGHT_KIND['submachine_gun'] = 'holo'`), Absehen-Vorgabe `dot`.
 Schlichtheitsbudget: Leuchten 2 Funktionen (Munitionsanzeige, Visier-Emitter mit Absehen) · Grafik 1 Band · Schrift 1 · Orange 3
 (Ladehebel, Feuerwahl, Magazinhalter) · Schrauben nur an Paneelen und Vorbau.
-Status: Maße entworfen (Länge an Toolgen-Bezug 0,616 m angelehnt), Formprinzipien abgeleitet aus den Bildreferenzen.
+Status: Maße entworfen (Länge an Toolgen-Bezug 0,616 m angelehnt; gemessen 0,547 m, spec.json), Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
                           grip_v21, reflex_sight_v21, stock_s1, R_BODY, R_MID, R_SMALL, R_FINE)
@@ -97,20 +97,31 @@ P += grip_v21(top=40)
 P += selector(-26, 62, x=20.5)
 P += [dict(p, id='selector_r', de='Feuerwahlhebel rechts', en='Fire selector right', x=-20.5) for p in selector(-26, 62)]
 P += charging_handle(-72, 97, x=20.5, travel=42)
-_mc = (-2, 40)
-_m = rifle_mag(-17, 40, depth=30, length=150, tilt=-15, w=22, curve=0)
+_mc = (9, 40)                       # Magazinachse = Griffachse (Runde 1: saß 11 mm dahinter und stand hinten aus dem Griff)
+_m = rifle_mag(-6, 40, depth=30, length=165, tilt=-15, w=22, curve=0)
+_win_u = [-92 - 5.4 * i for i in range(5)]                     # Patronen im Fenster (unterhalb des Griffbodens)
 for p in _m:
     if p['id'] == 'magazine':
         p['de'], p['func'] = 'Magazin im Griff', 'Langes Magazin im Griff; tritt unten aus dem Griffboden; entnehmbar'
-        p['cuts'] = [dict(shape='prof', pts=rot([(-11, -60), (5, -60), (5, -96), (-11, -96)], _mc, -15), w=8, x=9.5)]
+        p['cuts'] = [dict(shape='prof', pts=rot([(1, -88), (17, -88), (17, -116), (1, -116)], _mc, -15), w=8, x=10)]
     if p['id'] == 'magazine_base':
         p['mat'] = 'anodized'
     if p['id'] == 'magazine_round':
         p['mat'] = 'brass'
 P += _m
 P += [
-    prof('loop', 'Bügel', 'Support loop', 'support', 'graphite', 'Verbindet Abzugsbügel und Vordergriff; umschließt die Stützhand',
-         'am Abzugsbügel und am Vordergriff (fest)', [(52, 10), (214, -2), (214, -10), (52, 2)], 14, bevel=R_SMALL),
+    part('mag_rounds', 'Patronen im Fenster', 'Visible rounds', 'ammo', 'multi', 'brass', 'Zeigt den Füllstand', 'im Magazin',
+         bevel=0.3, parent_part='magazine', smooth=True,
+         items=[dict(shape='cyl', axis='f', c=(rot([(9, u)], _mc, -15)[0][1], 4 if i % 2 else -2),
+                     a0=rot([(9, u)], _mc, -15)[0][0] - 12, a1=rot([(9, u)], _mc, -15)[0][0] + 12, r=4.4, segs=12)
+                for i, u in enumerate(_win_u)]),
+]
+for p in P:
+    if p['id'] == 'trigger_guard':      # Runde 1: Bügel wirkte wie Draht – Abzugsbügel und Bügel als ein Band, 9–12 mm hoch
+        p.update(pts=[(24.7, 4), (82.7, 4), (82.7, 41), (75.7, 41), (75.7, 13), (26.7, 13)], w=14)
+P += [
+    prof('loop', 'Bügel', 'Support loop', 'support', 'anodized', 'Verbindet Abzugsbügel und Vordergriff; umschließt die Stützhand',
+         'am Abzugsbügel und am Vordergriff (fest)', [(70, 4), (213, -7), (213, 6), (70, 13)], 14, bevel=R_SMALL),
     prof('foregrip', 'Vordergriff', 'Foregrip', 'support', 'graphite', 'Senkrechter Griff der Stützhand; Socket_SupportHand',
          'unter den Vorbau geschraubt', [(214, 58), (246, 58), (244, 30), (248, 20), (244, 8), (246, -6), (236, -12), (216, -12),
                                          (212, -4)], 26, bevel=R_BODY),
@@ -123,7 +134,7 @@ ANCHORS = {
     'Socket_Hand': dict(at=(0, 0, 0), part='grip', note='Haupthand, auf der Griffachse'),
     'Socket_SupportHand': dict(at=(230, 24, 0), part='foregrip', note='Mitte Vordergriff'),
     'Socket_Muzzle': dict(at=(FR1 + 34, BORE, 0), part='muzzle_crown', note='Stirn der Mündungskrone auf der Laufachse'),
-    'Socket_MagWell': dict(at=(-2, 40, 0), part='grip', note='Magazinschacht im Griff'),
+    'Socket_MagWell': dict(at=(9, 40, 0), part='grip', note='Magazinschacht im Griff'),
     'Socket_Charge': dict(at=(-60, 97, 25), part='charging_handle', note='Griffpunkt Ladehebel für die Stützhand'),
 }
 ANCHORS.update(SIGHT_ANCHORS)

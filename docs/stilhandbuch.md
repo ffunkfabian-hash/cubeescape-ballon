@@ -7,6 +7,11 @@ dieses Handbuch ergänzt Detaildichte, Material, Varianten und den Arbeitsablauf
 
 **Aktuelle Referenz: v2.1** (`basic/pilot/w01_auto_rifle_v21.py`, Ausgabe `BASIC-01-v2.1`); v2 bleibt als Vorstufe erhalten.
 
+**Namen (Nutzer 25.10.2026, Wahl (a)):** Versionen zählen getrennt. **Stil v2.1** ist der Waffenstil (Form, Material, Budget).
+**Visier-Standard 3** sind die Visierregeln in §6 (Stufe 1: Höhe 66 ± 4 mm, Stufe 2: schlanke Visiere, Stufe 3: REF 0.14
+„Eyebox“); früher „Visier-Designsprache v3“, in Code-Kommentaren von `common.py`/`kit.py` weiter kurz „v3“. **Arm v3** ist das
+Arm-Rig. Ein Waffenstil v3 existiert nicht.
+
 ## 1 Entscheidungen des Nutzers
 
 | Datum | Entscheidung |
@@ -20,7 +25,8 @@ dieses Handbuch ergänzt Detaildichte, Material, Varianten und den Arbeitsablauf
 | 24.10.2026 | „Der graue Hintergrund ist am besten“ → Standard `--bg mid` |
 | 24.10.2026 | Visier-Standard: Visierhöhe 66 ± 4 mm, Augenpunkt, Zoom, Prüfung in `./check`; nach „Visiere sehr klobig“ (Destiny-Video, Motiongen) als v2: Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse, schlanke Visiere |
 | 24.10.2026 | Absehen-Katalog mit Formen, Farben, Linienstärken, Glasvarianten, Aufgehen und Spieleroptionen; „Pfeil von unten“ verworfen |
-| 25.10.2026 | Visier-Designsprache v3 nach Motiongen REF 0.14 „Eyebox“: „Mach alles so wie du empfiehlst“ (Augenpunkt bleibt 90 mm, kleinere Öffnungen; Impuls bleibt Holo) |
+| 25.10.2026 | Visier-Standard 3 (anfangs „Visier-Designsprache v3“) nach Motiongen REF 0.14 „Eyebox“: „Mach alles so wie du empfiehlst“ (Augenpunkt bleibt 90 mm, kleinere Öffnungen; Impuls bleibt Holo) |
+| 25.10.2026 | Kein Waffenstil v3: Familie bleibt im Stil v2.1, nur die Namen werden geklärt (Wahl (a) auf „Warum wird nicht erst v3 gemacht?“); weiter mit der Maschinenpistole |
 
 ## 2 Gestaltungsregeln v2
 
@@ -146,7 +152,7 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - Glas klar als Standard; Staub, Kratzer, Riss, Zellen, Benutzt nur dezent (höchstens +0,38 Deckkraft an der Maske).
 - Aufgehen beim Schießen und Spieleroptionen sind Laufzeitverhalten: im Modell steht der Ruhezustand, die Profile stehen in
   `SPREAD`, die Optionen in `SETTINGS`.
-- **Visier-Designsprache v3** (`reticles.SIGHT`, `SIGHT_KIND`, `ADS_FEEDBACK`; Übersicht [absehen.md](absehen.md); Nutzer
+- **Visier-Standard 3** (`reticles.SIGHT`, `SIGHT_KIND`, `ADS_FEEDBACK`; Übersicht [absehen.md](absehen.md); Nutzer
   25.10.2026 „Mach alles so wie du empfiehlst“; Grundlage Motiongen REF 0.14 „Eyebox“, `cubeescape-reference/docs/visiere.md`):
   1. **Typ je Klasse, Farbe nach Familie:** Automatik, MP, Spur, MG, Impuls → offenes Holo; Scout, Lineare Fusion → kurzes
      Ring-Zielfernrohr auf Trapezhals; Handfeuerwaffe, Seitenwaffe, Schrot → Kimme/Korn mit Leuchtklammern; Scharfschütze →
@@ -223,6 +229,8 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
   zwischen Auge und Objektiv ragt als Klotz in die Linse.
 - Fenster in massiven Profilen bleiben Mulden: für sichtbare Innenteile quer durchschneiden (Schneidkörper breiter als das Teil).
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
+- Magazin im Griff neben die Griffachse gesetzt steht hinten aus dem Griff und versteckt sein Sichtfenster → Magazinmitte auf
+  der Griffachse von `grip_v21` (f = u·tan 15° − 1,5 mm), Fenster in den Teil unter dem Griffboden (BASIC-06 v2.1).
 
 ## 10 Arme und Animation
 
@@ -283,5 +291,6 @@ Dicke); Standbilder müssen die Handbelegung der Aktion übernehmen (inspect_r o
 ## 11 Stand
 
 Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hintergrund); v2 als Vorstufe erhalten.
-Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Die 16 übrigen Waffen sind im Stil v1; Übertragung nach Freigabe
-des Nutzers nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.
+Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Familie Stil v2.1 mit Visier-Standard 3: BASIC-01, 02, 03 und
+06 (Maschinenpistole, 0.11 „Compact“). Die 13 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
+nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.

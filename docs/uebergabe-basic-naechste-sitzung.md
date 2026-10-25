@@ -42,6 +42,8 @@ Waffenstil heißt weiter v2.1. Offen ist seine Wahl:
 
 Der Nutzer wollte erst Motiongen und die Analysen abwarten und meldet sich mit einem OK. Vor dem OK nichts bauen.
 
+**Entschieden 25.10.2026: (a).** Namen in `docs/stilhandbuch.md` (Kopf und §1) geklärt: Stil v2.1, Visier-Standard 3, Arm v3.
+
 ### 2. Maschinenpistole BASIC-06 v2.1 (bei Wahl (a))
 
 - Der Entwurf liegt in `basic/pilot/entwurf/w06_submachine_gun_v21.py`. Er ist geparkt, damit `./check` grün bleibt: Die Prüfung
