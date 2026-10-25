@@ -36,7 +36,7 @@ namespace Ballon.Ego
         public Func<float> deltaOverride;          // Aufnahme: feste Zeitschritte
 
         CharacterController _cc;
-        GUIStyle _big, _small;
+        GUIStyle _big, _small, _time;
         float _yaw, _pitch, _vy, _eye, _landDip, _landV, _hitFlash, _airT;
         Vector3 _vel;
         bool _grounded = true, _wasGrounded = true;
@@ -57,18 +57,33 @@ namespace Ballon.Ego
             _hHits = -1;                     // Anzeige neu bauen
         }
         public RangeTargets range;
+        public CourseRun course;         // Parcours der gezeigten Szene (null: keiner); Step prüft die Tore, die Anzeige zeigt den Lauf
         public string sceneLabel;        // null = keine Szenen vorhanden, dann nennt die Anzeige keine
+        public string lightLabel;        // gezeigte Lichtszene (null im Parcours)
+        int _lightCount;
         const string HelpA = "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
                              "F Betrachten · 1/2 Ziehen/Wegstecken · K Skin · ";
         const string HelpB = "Esc Maus frei · H Anzeige";
         string _help = HelpA + HelpB;
 
-        /// <summary>Szene (Name für die Anzeige) und ihre Zielscheiben setzen; die Anzeige baut ihren Text neu.</summary>
-        public void SetScene(string label, RangeTargets targets)
+        /// <summary>Szene (Name für die Anzeige), ihre Zielscheiben und ihren Parcours setzen; die Anzeige baut ihren Text neu.</summary>
+        public void SetScene(string label, RangeTargets targets, CourseRun courseRun = null)
         {
             sceneLabel = label;
-            _help = HelpA + "L Szene · " + HelpB;
+            lightLabel = null;
+            _lightCount = 0;
+            _help = HelpA + "L Szene · T Start · " + HelpB;
             range = targets;
+            course = courseRun;
+            _hHits = -1;
+        }
+
+        /// <summary>Lichtszene für die Anzeige (Name, Anzahl der Lichtszenen der Szene).</summary>
+        public void SetLighting(string label, int count)
+        {
+            lightLabel = label;
+            _lightCount = count;
+            _help = HelpA + (count > 1 ? "L Szene · N Licht · T Start · " : "L Szene · T Start · ") + HelpB;
             _hHits = -1;
         }
 
@@ -153,6 +168,7 @@ namespace Ballon.Ego
             worldCam.fieldOfView = 2 * Mathf.Atan(Mathf.Tan(v * Mathf.Deg2Rad / 2) / Zoom) * Mathf.Rad2Deg;
             _hitFlash = Mathf.Max(0, _hitFlash - dt);
             _viewClimb *= Mathf.Exp(-dt * 3f);
+            course?.Tick(transform.position + Vector3.up * CourseRun.BodyCenter, dt);
         }
 
         void Look(RawInput r)
@@ -283,6 +299,14 @@ namespace Ballon.Ego
             small.normal.textColor = new Color(1, 1, 1, 0.85f);
             GUI.Label(new Rect(16, 12, 900, 22), _stateText, small);
             GUI.Label(new Rect(16, 32, 900, 22), _hitText, small);
+            if (course != null)
+            {
+                var tm = _time ?? (_time = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Bold });
+                tm.normal.textColor = course.State == CourseRun.Phase.Ziel && course.LastValid ? new Color(0.55f, 1f, 0.6f) : Color.white;
+                GUI.Label(new Rect(16, 54, 150, 34), course.TimeLabel, tm);
+                GUI.Label(new Rect(170, 62, 900, 22), course.StateText, small);
+                GUI.Label(new Rect(16, 90, 1200, 22), course.InfoText, small);
+            }
             if (Time.time < 12f || Cursor.lockState != CursorLockMode.Locked)
                 GUI.Label(new Rect(16, Screen.height - 46, 1200, 40), _help, small);
         }
@@ -309,7 +333,9 @@ namespace Ballon.Ego
                 _hHits = hits;
                 string sk = skinNames != null && skinNames.Length > 0 ? $"   Skin {skinNames[skin]} (K)" : "";
                 string sz = sceneLabel != null ? $"   Szene {sceneLabel} (L)" : "";
-                _hitText = $"Treffer {hits}   {(range != null ? range.Summary() : "")}{sk}{sz}";
+                string lt = lightLabel != null ? (_lightCount > 1 ? $"   Licht {lightLabel} (N)" : $"   Licht {lightLabel}") : "";
+                string rs = course == null && range != null ? range.Summary() : "";          // mit Parcours zählt die Lauf-Anzeige die Ziele
+                _hitText = $"Treffer {hits}   {rs}{sk}{sz}{lt}";
             }
         }
 

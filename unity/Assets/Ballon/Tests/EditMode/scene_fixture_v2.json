@@ -1,0 +1,53 @@
+{
+  "format": "ballon-scene/2",
+  "name": "testkurs",
+  "de": "Testkurs",
+  "fbx": "testkurs.fbx",
+  "zones": [
+    {"name": "nah", "objects": ["Boden", "Kiste"], "size": 1024, "texel_m": 0.02},
+    {"name": "fern", "objects": ["Wand_N"], "size": 512, "texel_m": 0.08}
+  ],
+  "objects": ["Boden", "Kiste", "Wand_N"],
+  "colliders": [
+    {"name": "Boden", "center": [0, 0, -0.05], "size": [40, 60, 0.1]},
+    {"name": "Kiste", "center": [3, -4, 0.5], "size": [1, 2, 1]}
+  ],
+  "spawn": {"pos": [0, 20, 0], "yaw_deg": 30},
+  "lightings": [
+    {"name": "tag", "de": "Tag",
+     "atlases": {"nah": "testkurs_tag_nah.png", "fern": "testkurs_tag_fern.png"}, "scale": 3.0,
+     "sky": {"color": "#9FB4C8", "strength": 1.3},
+     "ambient": {"color": "#8C96A3", "strength": 0.45},
+     "lights": [
+       {"name": "Strahler_1", "kind": "area", "pos": [0, 0, 13], "dir": [0, 0, -1], "power_w": 800, "size_m": 1.5, "color": "#FFF2E0"},
+       {"name": "Sonne", "kind": "sun", "pos": [0, 0, 30], "dir": [0.3, 0.2, -1], "power_w": 3, "size_m": 0, "color": "#FFFFFF"}
+     ],
+     "reference": {"png": "testkurs_tag_ref.png", "camera_pos": [0, 20, 1.62], "yaw_deg": 30, "pitch_deg": 0, "h_fov_deg": 75}},
+    {"name": "nacht", "de": "Nacht",
+     "atlases": {"nah": "testkurs_nacht_nah.png", "fern": "testkurs_nacht_fern.png"}, "scale": 1.5,
+     "sky": {"color": "#10182A", "strength": 0.6},
+     "ambient": {"color": "#2A3550", "strength": 0.3},
+     "lights": [
+       {"name": "Spot_1", "kind": "spot", "pos": [5, 5, 4], "dir": [0, 0, -1], "power_w": 400, "size_m": 0.1, "angle_deg": 70, "color": "#FFFFFF"},
+       {"name": "Punkt_1", "kind": "point", "pos": [-5, 5, 2], "power_w": 100, "size_m": 0.1, "color": "#FFD9A0"},
+       {"name": "Strahler_2", "kind": "area", "pos": [0, 8, 6], "dir": [0, 0, -1], "power_w": 200, "size_m": 1.0, "color": "#B0C8FF"}
+     ]}
+  ],
+  "course": {
+    "start":  {"center": [0, 16, 1.2], "size": [6, 0.4, 2.4]},
+    "finish": {"center": [0, -12, 1.2], "size": [6, 0.4, 2.4]},
+    "checkpoints": [
+      {"name": "Links", "center": [-8, 4, 1.2], "size": [3, 3, 2.4]},
+      {"name": "Rechts hinten", "center": [6, -6, 1.2], "size": [3, 3, 2.4]}
+    ],
+    "targets": [
+      {"name": "T01", "pos": [-6, 8, 1.6], "normal": [0, 1, 0], "radius": 0.3},
+      {"name": "T02", "pos": [6, -2, 1.6], "normal": [-1, 0, 0], "radius": 0.45},
+      {"name": "T03", "pos": [0, -8, 2.0], "normal": [0, 1, 0], "radius": 0.3}
+    ],
+    "route": [[0, 18, 0], [0, 16, 0], [-8, 4, 0], [6, -6, 0], [0, -12, 0]],
+    "par_time_s": 45
+  },
+  "targets": [],
+  "sources": [{"path": "basic/scenes/testkurs.py", "sha256": "0000"}]
+}

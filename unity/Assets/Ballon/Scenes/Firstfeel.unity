@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &642323895
+--- !u!1 &378617698
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,8 +127,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 642323897}
-  - component: {fileID: 642323896}
+  - component: {fileID: 378617700}
+  - component: {fileID: 378617699}
   m_Layer: 0
   m_Name: Firstfeel
   m_TagString: Untagged
@@ -136,13 +136,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &642323896
+--- !u!114 &378617699
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642323895}
+  m_GameObject: {fileID: 378617698}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20087572eab344f5aaf16962429f0fb2, type: 3}
@@ -185,19 +185,17 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4866ec44c2aa64dbdadfcb353611247d, type: 2}
   - {fileID: 2100000, guid: 5a760764c37f04acca3b8a9001319681, type: 2}
   - {fileID: 2100000, guid: 258086df2222641c4aaf36262d2c7df8, type: 2}
-  sceneJson:
-  - {fileID: 4900000, guid: b775ad8cc1a964a98bbe297310c86d3d, type: 3}
-  scenePrefabs:
-  - {fileID: 919132149155446097, guid: cf3475ed55ced4f10be46003b2bf5182, type: 3}
-  sceneMaterials:
-  - {fileID: 2100000, guid: 101e487a3a85f4c09accef67b4f00ec2, type: 2}
---- !u!4 &642323897
+  sceneJson: []
+  scenePrefabs: []
+  sceneMaterials: []
+  sceneAtlases: []
+--- !u!4 &378617700
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642323895}
+  m_GameObject: {fileID: 378617698}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -210,4 +208,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 642323897}
+  - {fileID: 378617700}
