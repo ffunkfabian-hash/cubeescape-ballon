@@ -11,7 +11,7 @@
 - BASIC-03 Scoutgewehr v2.1 mit Zielfernrohr `scope_v21`; Formskizze per Blender-MCP.
 - Visier-Standard v2 nach Destiny-Video und Motiongen: schlanke Visiere, Zielfernrohr mit Linsenbild und `ads_hide`, Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse; Prüfung in `./check`, Beispiele `tools/sight_examples.py`.
 
-## 0.10.0 „Stride“ – unveröffentlicht (lokal)
+## 0.10.0 „Stride“ – in Arbeit (Branch `claude/ballon-0.10-stride`, öffentliches Repo)
 
 - Sprint-Wippen wie in Destiny 2 gemessen (Motiongen REF 0.23): 3,16 statt 6 Schritte/s, U-Bogen, Rollen ±3,5°. Das Zielen endet ohne Überschwingen (0.9: 3,3° über die Mitte), mit eigener schneller,
   kritisch gedämpfter Feder; Format `ballon-ego/4`. Das ständige Fadenkreuz ist entfernt, nur Treffer zeigen kurz eine Marke.

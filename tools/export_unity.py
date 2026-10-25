@@ -158,6 +158,26 @@ def write_json(path, obj):
         fh.write('\n')
 
 
+MOTION_SOURCES = {'basic/arms/ego.py', 'tools/ego_build.py', 'tools/export_unity.py'}   # dürfen sich im Datenexport ändern
+
+
+def data_only_allowed(D):
+    """(altes ego.json, Grund) – Grund None, wenn nur Bewegungsquellen anders sind als beim letzten vollen Export; sonst wären
+    FBX, Atlanten und Netzgrenzen veraltet, während --check „aktuell“ meldet (Richter 0.10)."""
+    p = os.path.join(DST, 'ego.json')
+    if not os.path.exists(p):
+        return None, 'kein ego.json'
+    with open(p, encoding='utf-8') as fh:
+        old = json.load(fh)
+    if 'textures' not in old or 'mesh_bounds' not in old:
+        return None, f"altes ego.json ({old.get('format')}) ohne Atlanten oder Netzgrenzen"
+    was = {f['path']: f['sha256'] for f in old.get('sources', {}).get('files', [])}
+    changed = [f['path'] for f in D['sources']['files'] if f['path'] not in MOTION_SOURCES and was.get(f['path']) != f['sha256']]
+    if changed:
+        return None, 'Form- oder Materialquellen geändert: ' + ', '.join(changed)
+    return old, None
+
+
 def write_reference(ref):
     with open(os.path.join(DST, 'ego_reference.json'), 'w', encoding='utf-8') as fh:   # groß: kompakt, eine Probe je Zeile
         fh.write('{' + ', '.join(f'"{k}": {json.dumps(v, ensure_ascii=False)}' for k, v in ref.items() if k != 'samples')
@@ -195,6 +215,12 @@ def blender_main():
     W = importlib.import_module(f'basic.{WEAPON}')
     os.makedirs(DST, exist_ok=True)
     D = data()
+    data_only = os.environ.get('BALLON_EXPORT_DATA_ONLY') == '1'
+    if data_only:                                      # vor jeder Arbeit: darf der Datenexport Atlanten, Netze und FBX übernehmen?
+        old, why = data_only_allowed(D)
+        if why:
+            print(f'[export_unity] nur Daten nicht möglich: {why} – voller Export nötig (ohne BALLON_EXPORT_DATA_ONLY)', flush=True)
+            sys.exit(2)
     sc = EB.Scene(W, dict(stills=False, actions=[], gpu=False, samples=1, weapon=WEAPON))
 
     def flat(M):
@@ -234,8 +260,7 @@ def blender_main():
         for e in sc.arms[s][0].values():
             e.matrix_world = Matrix.Identity(4)
     bpy.context.view_layer.update()
-    if os.environ.get('BALLON_EXPORT_DATA_ONLY') == '1':   # nur Bewegung/Daten geändert (0.10): Atlanten, Netzgrenzen und FBX bleiben
-        old = json.load(open(os.path.join(DST, 'ego.json'), encoding='utf-8'))   # ohne Backen, unter ce lock blender statt gpu
+    if data_only:                                      # nur Bewegung/Daten geändert (0.10): Atlanten, Netzgrenzen und FBX bleiben
         D['textures'], D['mesh_bounds'] = old['textures'], old['mesh_bounds']
         write_json(os.path.join(DST, 'ego.json'), D)
         write_reference(ref)

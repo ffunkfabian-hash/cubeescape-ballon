@@ -181,7 +181,7 @@ namespace Ballon.Ego
         {
             var i = _intent;
             holstered = false;
-            if (_t.A.weapon[_t.A.weapon.Length - 1].pose == "ads")      // draw_aim, sprint_to_aim: im Zielen ankommen
+            if (_t.A.EndsInAds)                                         // draw_aim, sprint_to_aim: im Zielen ankommen
             {
                 _stance = Stance.Ads;
                 _t.stance = Stance.Ads;

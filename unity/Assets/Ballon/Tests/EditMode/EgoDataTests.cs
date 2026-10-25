@@ -109,6 +109,7 @@ namespace Ballon.Ego.Tests
                     worst = Mathf.Max(worst, -Mathf.Sign(first) * az);            // Ausschlag über die Mitte zur anderen Seite
                     if (f == A.frames) atEnd = Mathf.Abs(az);
                 }
+                TestContext.WriteLine($"{A.name}: Start {first:0.00}°, Überschwingen {worst:0.00}°, Rest am Ende {atEnd:0.00}°");
                 Assert.Less(worst, 0.3f, $"{A.name}: Absehen schwingt {worst:0.00}° über die Mitte (Start {first:0.0}°)");
                 Assert.Less(atEnd, 1.5f, $"{A.name}: Absehen hängt am Ende der Aktion {atEnd:0.0}° hinterher");
                 n++;

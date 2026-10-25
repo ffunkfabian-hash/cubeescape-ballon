@@ -23,7 +23,7 @@ Ergebnis je Thema ist eine Tabelle mit einer Zeile je Typ. Die Belegstärke ist 
 oder „offen“. Nichts erfinden. Reihenfolge: zuerst Automatikgewehr, Impulsgewehr, Handfeuerwaffe, Maschinenpistole und
 Scharfschützengewehr, dann die übrigen.
 
-1. Sprint (BALLON vorher: Waffe vertikal 6 Hz, seitlich 3 Hz, Hub 10 mm, Rollen 4°, „tapsig“; 0.10: vertikal 3 Hz)
+1. Sprint (BALLON vorher: Waffe vertikal 6 Hz, seitlich 3 Hz, Hub 10 mm, Rollen 4°, „tapsig“; 0.10: vertikal 3,16 Hz, seitlich 1,58 Hz, U-Bogen, Rollen ±3,5° nach REF 0.23)
    - Wippfrequenz der Waffe über mindestens 4 Zyklen an einem festen Bildanker, getrennt vertikal (je Schritt) und seitlich
      (je Doppelschritt), mit Zeitstempeln je Umkehr.
    - Hub vertikal und seitlich in % Bildhöhe bzw. -breite, Rollen in Grad, Trageform je Klasse (Gewehr tief/vorn-unten?
