@@ -198,7 +198,8 @@ Treppe, Sprünge und Herunterspringen 20,4 m mit Gehtempo 4,2 m/s = 4,9 s; je Sp
 - Glanz fehlt in Unity (Diffus-Atlas); Metall ist darum überall nicht metallisch gemalt.
 - Leistung in Unity gemessen (`unity_run.py bench hangar`, M5, 1280 × 720): Mittel 0,70 ms, p99 1,02 ms; eine Spitze von 40 ms in 10 s mit
   drei Lichtwechseln (Ursache nicht getrennt gemessen) ([0.9](versions/0.9-parcours.md)).
-- Die PNG-Atlanten sind groß (16 Dateien, zusammen ≈ 205 MB); Unity komprimiert sie beim Import.
+- Die PNG-Atlanten sind groß (16 Dateien, zusammen ≈ 207 MB); Unity komprimiert sie beim Import. Sie bleiben im Repo
+  (Nutzerentscheidung 25.10.2026); jeder neue Bake fügt die Größe in der Geschichte erneut hinzu, also nur bei echter Änderung backen.
 - Lichtband offen (ohne Glas): in Unity zeigt es den Himmel; Glas mit Durchsicht passt nicht zur unbeleuchteten Umgebung.
 - Schrift ist eine einfache Strichschrift (Großbuchstaben, Ziffern, Ö); Schilder unter ≈ 30 Texeln Höhe bleiben unscharf.
 - Ölflecken haben im Atlas keinen eigenen Glanz (nur in der Grundfarbe).
