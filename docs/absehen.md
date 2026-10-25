@@ -95,7 +95,7 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 | `scope` | Zielfernrohr | 90 mm | `Socket_Objective` | +0.8 | 20–26 % | 0.15 × Öffnung | glass |
 | `fullscreen` | Vollbild (Scharfschütze) | – | – | – | – | – | overlay: eigene Kontur je Waffe, außen schwarz |
 
-| Waffentyp | Visier (Designsprache v3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |
+| Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |
 |---|---|---|---|---|---|
 | `auto_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.6 | beobachtet | ×1.9 | ×2.4 |
 | `pulse_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.7 | beobachtet | ×2.0 | ×2.5 |

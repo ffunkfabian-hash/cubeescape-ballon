@@ -52,7 +52,7 @@ LINE_R = 0.3          # Linienradius bei Stärke „normal“ (mm)
 #   Zielfernrohr hinter dem Objektivring (Socket_Objective); Teile mit `ads_hide` (Rohr, Okular) sind beim Zielen ausgeblendet.
 # - Das Waffenmodell wird beim Zielen nicht vergrößert (viewmodel_zoom 1,0, eigene Viewmodel-Kamera); nur die Welt zoomt:
 #   world_zoom = Klassengrundzoom (CLASS_ZOOM) + Visierbonus (zoom_bonus). Zielfernrohr: Linsenbild (Welt vergrößert in der Linse).
-# v3 (Nutzer 25.10.2026 „Mach alles so wie du empfiehlst“, Grundlage Motiongen REF 0.14 „Eyebox“ docs/visiere.md › 11):
+# Visier-Standard 3 (anfangs „Designsprache v3“; Nutzer 25.10.2026 „Mach alles so wie du empfiehlst“, Grundlage Motiongen REF 0.14 „Eyebox“ docs/visiere.md › 11):
 # Öffnung im Zielen kleiner (Destiny: offene Visiere 12–20 % Bildbreite, Scout-Ring 21 %), Augenpunkt bleibt 90 mm (Nutzerwahl) –
 # dafür kleinere Öffnungen; Bezugsbildwinkel 75° horizontal (der Anteil wächst mit dem Bildwinkel); Weltzoom ist ein
 # Bildmaßstab (tan(Bildwinkel/2) wird durch den Zoom geteilt); eine Kamera: das Glas zeigt dasselbe Weltbild (kein eigenes

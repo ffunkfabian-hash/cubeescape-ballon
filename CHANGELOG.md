@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.11.0 „Compact“ – in Arbeit (Branch `claude/ballon-0.11-compact`)
+
+- BASIC-06 Maschinenpistole im Stil v2.1: Kastenvorbau, Abzugsbügel und Bügel als ein Band, Magazin auf der Griffachse mit
+  Sichtfenster, Holo mit Absehen `dot`; drei Sichtungsrunden, 8 Skins, Bewegung gesichtet.
+- Namen geklärt (Nutzerwahl (a)): Stil v2.1 = Waffenstil, Visier-Standard 3 = Visierregeln (früher „Visier-Designsprache v3“), kein Waffenstil v3.
+  Bericht [docs/versions/0.11-compact.md](docs/versions/0.11-compact.md).
+
 ## 0.6.0 „Riflekin“ – unveröffentlicht (lokal, in Arbeit)
 
 - Visier-Designsprache v3 nach Motiongen REF 0.14 „Eyebox“: Typ je Klasse, dünne Rahmen, kleinere Öffnungen (geprüft), Trapezsockel/-hals, eine Kamera, Absehen fein ohne Aufgehen im Zielen, Glasspuren nur am Rand.

@@ -102,10 +102,16 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Red Tape | Scout Rifle | `…/screenshots/736362511.jpg` | sehr lang und schlank, Lauf mit Unterrohr, kompaktes Gehäuse, Schaft mit kantigem Durchbruch |
 | Perses-D | Scout Rifle | `…/screenshots/1019000888.jpg` | schlanker geschlitzter Handschutz, kräftige mehrstufige Mündungsbremse, ein Farbband |
 | Vouchsafe | Scout Rifle | `…/screenshots/3218302023.jpg` | organische Hive-Form – nicht übernommen (passt nicht zu BASIC) |
+| Parabellum | Submachine Gun | `…/screenshots/3769072067.jpg` | kastiger Vorbau über dem Lauf, kräftiger gebogener Bügel vom Abzugsbügel nach vorn, langes Magazin im Griff tritt unten aus, kurzer Schaft |
+| The Recluse | Submachine Gun | `…/screenshots/1050806815.jpg` | schlanke, nach vorn abfallende Linie; großer Bügel als Handstütze unter dem Lauf; Magazin im Griff |
+| New City | Submachine Gun | `…/screenshots/2414612776.jpg` | gleiche Grundform wie Parabellum: Kastenvorbau, Bügel, Magazin im Griff mit geripptem Unterteil |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
-legendary scout rifle light.gg“): übernommen lange flache Linie, geschlitzter Handschutz, Unterrohr, dreifach geschlitzte Bremse.
+legendary scout rifle light.gg“): übernommen lange flache Linie, geschlitzter Handschutz, Unterrohr, dreifach geschlitzte Bremse. Für BASIC-06 v2.1 (Namen aus der
+Vorsitzung, Bilder am 25.10.2026 selbst gesichtet): übernommen Kastenvorbau, Bügel aus dem Abzugsbügel, Magazin im Griff mit
+Austritt unten; nicht übernommen der gebogene Bügel ohne Vordergriff (Designvertrag 06 verlangt den Vordergriff; gerades Band ist
+schlichter) und das gerippte Magazin (Schlichtheitsbudget).
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).
@@ -155,7 +161,7 @@ zeigt ein Linsenbild, die Teile hinter dem Auge sind beim Zielen ausgeblendet.
 
 `cubeescape-reference` Branch `claude/ref-0.14-eyebox`, [PR ffunkfabian-hash/cubeescape-motiongen#42](https://github.com/ffunkfabian-hash/cubeescape-motiongen/pull/42),
 `docs/visiere.md` (31 Spiele, Destiny 2 mit 8 Herstellern/31 Waffen, gemessene Bildanteile, fünf Darstellungsarten) und
-`data/visiere.json`; Abschnitt 11 „Empfehlungen für BASIC“ ist die Grundlage der Visier-Designsprache v3. Status der Werte dort.
+`data/visiere.json`; Abschnitt 11 „Empfehlungen für BASIC“ ist die Grundlage des Visier-Standards 3 (anfangs „Visier-Designsprache v3“). Status der Werte dort.
 
 ## Q-BG · Bungie-Startpunkte des Auftrags
 
