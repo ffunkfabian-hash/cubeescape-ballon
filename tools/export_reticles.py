@@ -27,7 +27,8 @@ def data():
                 weights={k: dict(de=v[0], factor=v[1]) for k, v in RT.WEIGHTS.items()},
                 glass={k: dict(de=v[0], note=v[1]) for k, v in RT.GLASS.items()},
                 spread=RT.SPREAD, defaults=RT.DEFAULTS, settings=RT.SETTINGS, sight_standard=RT.SIGHT, class_zoom=RT.CLASS_ZOOM,
-                world_zoom={k: {s: RT.world_zoom(k, s) for s in RT.SIGHT['types']} for k in RT.CLASS_ZOOM},
+                world_zoom={k: {s: RT.world_zoom(k, s) for s in ('reflex', 'scope')} for k in RT.CLASS_ZOOM},
+                sight_kind=RT.SIGHT_KIND, sight_kind_de={str(k): v for k, v in RT.SIGHT_KIND_DE.items()}, ads_feedback=RT.ADS_FEEDBACK,
                 spread_model='s ← base(+move) + (s − base)·exp(−dt/recover_s); je Schuss s ← min(max, s + per_shot); '
                              'beim Zielen s·ads; Linien wandern um s·d, Ringe wachsen um s·grow, Punkte bleiben')
 
@@ -59,16 +60,25 @@ def doc():
     L += ['', '## Visier-Standard', '',
           f"Visierhöhe (Socket_Eye über der Laufachse) {S['height_mm']:.0f} ± {S['height_tol_mm']:.0f} mm. Socket_Eye ist der Augenpunkt "
           'beim Zielen, gemessen ab der vorderen Visieröffnung. Das Waffenmodell wird nicht vergrößert '
-          f"(Viewmodel-Zoom ×{S['viewmodel_zoom']}); nur die Welt zoomt: Klassengrundzoom + Visierbonus. Teile mit `ads_hide` "
-          '(Zielfernrohr-Rohr und Okular) sind beim Zielen ausgeblendet. Geprüft in `./check`. Herleitung: Destiny-Video und '
-          'Motiongen-Messungen (`docs/quellen.md` › Q-D2-ADS, Q-D2-ZOOM).', '',
-          '| Visiertyp | Name | Augenabstand | gemessen ab | Visierbonus | Ziel: Öffnung in % der Bildbreite | Zielbild |',
-          '|---|---|---|---|---|---|---|']
-    L += [f"| `{k}` | {T['de']} | {T['eye_relief_mm']:.0f} mm | `{T['ref']}` | +{T['zoom_bonus']} | "
-          f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['ads_view']} |" for k, T in S['types'].items()]
-    L += ['', '| Waffentyp | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|']
-    L += [f"| `{k}` | ×{z} | {RT.CLASS_ZOOM_STATUS.get(k, 'entworfen')} | ×{RT.world_zoom(k, 'reflex')} | ×{RT.world_zoom(k, 'scope')} |"
-          for k, z in RT.CLASS_ZOOM.items()]
+          f"(Viewmodel-Zoom ×{S['viewmodel_zoom']}); nur die Welt zoomt ({S['zoom_kind']}: tan(Bildwinkel/2) geteilt durch den Zoom), "
+          f"Bezugsbildwinkel {S['fov_ref_deg']:.0f}° horizontal. Eine Kamera: das Glas zeigt dasselbe Weltbild; Teile mit `ads_hide` "
+          '(Zielfernrohr-Rohr, Okular, Türme) sind beim Zielen ausgeblendet. Geprüft in `./check`. Herleitung: Destiny-Video, '
+          'Motiongen-Messungen und REF 0.14 „Eyebox“ (`cubeescape-reference/docs/visiere.md`).', '',
+          '| Visiertyp | Name | Augenabstand | gemessen ab | Visierbonus | Öffnung im Zielen (% Bildbreite) | Rahmen höchstens | Zielbild |',
+          '|---|---|---|---|---|---|---|---|']
+    for k, T in S['types'].items():
+        if 'eye_relief_mm' in T:
+            L.append(f"| `{k}` | {T['de']} | {T['eye_relief_mm']:.0f} mm | `{T['ref']}` | +{T['zoom_bonus']} | "
+                     f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['frame_max']} × Öffnung | {T['ads_view']} |")
+        else:
+            L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
+    L += ['', '| Waffentyp | Visier (Designsprache v3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']
+    L += [f"| `{k}` | {RT.SIGHT_KIND_DE[RT.SIGHT_KIND[k]]} | ×{z} | {RT.CLASS_ZOOM_STATUS.get(k, 'entworfen')} | "
+          f"×{RT.world_zoom(k, 'reflex')} | ×{RT.world_zoom(k, 'scope')} |" for k, z in RT.CLASS_ZOOM.items()]
+    F = RT.ADS_FEEDBACK
+    L += ['', f"Im Zielen: Leuchtpunkt am Zielpunkt getrennt vom Glas ({F['hud_dot']['share_h'] * 100:.1f} % Bildhöhe), "
+          f"kein Aufgehen (×{F['spread_in_ads']}), Schuss = kurzer Ring ({F['shot_ring']['share_h'] * 100:.0f} % Höhe, "
+          f"{F['shot_ring']['frames']} Bild), Treffer = X ({F['hit_x']['share_h'] * 100:.1f} % Höhe, ≥ {F['hit_x']['min_s']} s)."]
     L += ['', '## Spieleroptionen', '', '| Option | Name | Werte | Vorgabe |', '|---|---|---|---|']
     for k, S in RT.SETTINGS.items():
         vals = ', '.join(f'`{v}`' for v in S['values']) if 'values' in S else f"{S['min']} – {S['max']}"

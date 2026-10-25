@@ -111,6 +111,18 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         rel = W.ANCHORS[T['ref']]['at'][0] - e['at'][0]
         if abs(rel - T['eye_relief_mm']) > 0.5:
             fail(f'{wid}: Augenabstand {rel:.1f} mm statt {T["eye_relief_mm"]:.0f} mm ({e["sight_type"]})')
+        # v3: Öffnung im Zielen (Anteil der Bildbreite beim Bezugsbildwinkel) und Visiertyp passend zur Klasse
+        import math as _m
+        from basic.reticles import SIGHT_KIND
+        byid = {p['id']: p for p in W.PARTS}
+        width = byid['sight_glass']['ww'] if e['sight_type'] == 'reflex' else 2 * byid['scope_rim']['r']
+        share = width / (2 * T['eye_relief_mm'] * _m.tan(_m.radians(SIGHT['fov_ref_deg'] / 2)))
+        lo, hi = T['target_share']
+        if not lo <= share <= hi:
+            fail(f'{wid}: Öffnung im Zielen {share * 100:.1f} % außerhalb {lo * 100:.0f}–{hi * 100:.0f} %')
+        want = {'holo': 'reflex', 'ring_scope': 'scope'}.get(SIGHT_KIND.get(W.META['type']))
+        if want and want != e['sight_type']:
+            fail(f'{wid}: Visiertyp {e["sight_type"]} passt nicht zur Klasse (Designsprache v3: {SIGHT_KIND[W.META["type"]]})')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})

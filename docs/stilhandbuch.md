@@ -20,6 +20,7 @@ dieses Handbuch ergänzt Detaildichte, Material, Varianten und den Arbeitsablauf
 | 24.10.2026 | „Der graue Hintergrund ist am besten“ → Standard `--bg mid` |
 | 24.10.2026 | Visier-Standard: Visierhöhe 66 ± 4 mm, Augenpunkt, Zoom, Prüfung in `./check`; nach „Visiere sehr klobig“ (Destiny-Video, Motiongen) als v2: Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse, schlanke Visiere |
 | 24.10.2026 | Absehen-Katalog mit Formen, Farben, Linienstärken, Glasvarianten, Aufgehen und Spieleroptionen; „Pfeil von unten“ verworfen |
+| 25.10.2026 | Visier-Designsprache v3 nach Motiongen REF 0.14 „Eyebox“: „Mach alles so wie du empfiehlst“ (Augenpunkt bleibt 90 mm, kleinere Öffnungen; Impuls bleibt Holo) |
 
 ## 2 Gestaltungsregeln v2
 
@@ -145,17 +146,24 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - Glas klar als Standard; Staub, Kratzer, Riss, Zellen, Benutzt nur dezent (höchstens +0,38 Deckkraft an der Maske).
 - Aufgehen beim Schießen und Spieleroptionen sind Laufzeitverhalten: im Modell steht der Ruhezustand, die Profile stehen in
   `SPREAD`, die Optionen in `SETTINGS`.
-- **Visier-Standard v2** (`reticles.SIGHT`, Übersicht in [absehen.md](absehen.md); Nutzerentscheidung, überarbeitet nach
-  „Visiere sehr klobig“ mit Destiny-Video und Motiongen-Messungen, Quelle Q-D2-ADS):
-  - Visierhöhe 66 ± 4 mm über der Laufachse; Höhe über Gehäuse/Schiene einstellen, nicht über das Visier.
-  - `Socket_Eye` = Augenpunkt beim Zielen, 90 mm hinter der vorderen Visieröffnung (Nutzerwahl aus 70/90/110 mm; Reflex/Holo: Glas; Zielfernrohr:
-    Objektivring `Socket_Objective`), mit `std=True` und `sight_type`.
-  - Das Waffenmodell wird beim Zielen nicht vergrößert (eigene Viewmodel-Kamera); nur die Welt zoomt: Klassengrundzoom
-    (`CLASS_ZOOM`, Destiny) + Visierbonus. Zielbereich der Öffnung: Reflex/Holo 18–26 %, Zielfernrohr 26–34 % der Bildbreite.
-  - Zielfernrohr: Linsenbild; Teile hinter oder um das Auge (Rohr, Ringbänder, Okular, Türme, hinterer Fuß) tragen `ads_hide` und
-    sind beim Zielen ausgeblendet; der vordere Fuß sitzt unter dem Objektiv, sein Steg endet unterhalb der Linse (kein Klotz im Bild).
-  - Formen schlank: Haubenbügel 1,6 mm, flaches Gehäuse, großes Glas; Zielfernrohr kurz mit großem Objektiv, dünnem Rand und
-    blanker Innenkante, ohne Gummimuschel. Prüfen mit `tools/sight_examples.py` gegen ein Destiny-Vergleichsbild.
+- **Visier-Designsprache v3** (`reticles.SIGHT`, `SIGHT_KIND`, `ADS_FEEDBACK`; Übersicht [absehen.md](absehen.md); Nutzer
+  25.10.2026 „Mach alles so wie du empfiehlst“; Grundlage Motiongen REF 0.14 „Eyebox“, `cubeescape-reference/docs/visiere.md`):
+  1. **Typ je Klasse, Farbe nach Familie:** Automatik, MP, Spur, MG, Impuls → offenes Holo; Scout, Lineare Fusion → kurzes
+     Ring-Zielfernrohr auf Trapezhals; Handfeuerwaffe, Seitenwaffe, Schrot → Kimme/Korn mit Leuchtklammern; Scharfschütze →
+     Zielfernrohr außen, im Zielen Vollbild; Fusion → Ring/Doppelring; Werfer → runde Linse mit Winkel; Kastenoptiken nur als Variante.
+  2. **Rahmen:** Holo ≤ 0,10 × Öffnung (Bügel 1,6 mm, Dach 1,2 mm), Ring ≤ 0,15 × Öffnung. „Klobig“ kommt von großen, hohen
+     Gehäusen und Block-Sockeln.
+  3. **Öffnung im Zielen** bei 90 mm Augenabstand (Standard; Spieleroption `ads_eye_relief` 70/90/110 mm, Nutzerwunsch: 70 mm
+     optional) und 75° Bezugsbildwinkel: Holo 12–20 %, Zielfernrohr 20–26 % der Bildbreite
+     (Holo-Fenster 26 × 20 bzw. 27 × 21 mm, Objektiv Ø 33 mm); `./check` prüft Anteil, Höhe 66 ± 4 mm und Augenabstand.
+  4. **Eine Kamera:** das Glas zeigt dasselbe Weltbild (kein eigenes Linsenbild); Waffenmodell ungezoomt, Weltzoom je Klasse als
+     Bildmaßstab; Zielfernrohr-Rohr, Okular und Türme `ads_hide`.
+  5. **Sockel:** gestuftes Trapez bis zur Fensterunterkante (nichts schwebt), Anzeigen unter der Visierlinie; Zielfernrohr auf
+     einem Hals nahe am Auge, der im Zielen unter der Linse bleibt.
+  6. **Absehen:** Standard fein, im Zielen kein Aufgehen; Leuchtpunkt am Zielpunkt getrennt vom Glas, Schuss = kurzer Ring,
+     Treffer = X (Laufzeit, `ADS_FEEDBACK`).
+  7. **Glas:** Tönung ≤ 5 %, Gebrauchsspuren nur am Rand (≤ +0,15 Deckkraft), Mitte klar.
+  8. **Farbe:** Gehäuse neutral (anodized/graphite) mit einem Akzent; Absehen in Familienfarbe Cyan.
 - Neue Form: Grundelemente mit Spreizrichtung in `RETICLES` ergänzen, `export_reticles.py` und `reticle_sheet.py` laufen lassen,
   Katalogblatt sichten.
 

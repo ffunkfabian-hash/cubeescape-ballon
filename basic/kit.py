@@ -137,12 +137,12 @@ def material(role, mode='color'):
     return m
 
 
-GLASS_FX_STRENGTH = 0.38    # höchste zusätzliche Deckkraft an der Maske (dezent)
+GLASS_FX_STRENGTH = 0.15    # höchste zusätzliche Deckkraft an der Maske (v3: dezent, Mitte klar – REF 0.14 › 8)
 
 
 def glass_fx(N, L, b, fx):
     """Dezente Glasoberfläche: Maske aus Staub (Körner), Kratzern (gestreckte Linien), Riss (Zellkanten, nur eine Ecke) und
-    Zellvergütung (Zellkanten, sehr schwach); an der Maske wird das Glas etwas matter und deckender."""
+    Zellvergütung (Zellkanten, sehr schwach); an der Maske wird das Glas etwas matter und deckender. v3: nur am Rand, Mitte klar."""
     tc = N.new('ShaderNodeTexCoord')
     parts = []
 
@@ -204,6 +204,17 @@ def glass_fx(N, L, b, fx):
         L.new(mask, m.inputs[0])
         L.new(q, m.inputs[1])
         mask = m.outputs['Value']
+    # v3: Gebrauchsspuren nur am Rand – zur Scheibenmitte (Generated x/z) auf null ausblenden
+    sg = N.new('ShaderNodeSeparateXYZ')
+    L.new(tc.outputs['Generated'], sg.inputs['Vector'])
+    cg = N.new('ShaderNodeCombineXYZ')
+    L.new(sg.outputs['X'], cg.inputs['X'])
+    L.new(sg.outputs['Z'], cg.inputs['Y'])
+    dc = N.new('ShaderNodeVectorMath')
+    dc.operation = 'DISTANCE'
+    dc.inputs[1].default_value = (0.5, 0.5, 0.0)
+    L.new(cg.outputs['Vector'], dc.inputs[0])
+    mask = mul(mask, ramp(dc.outputs['Value'], 0.26, 0.46))
     L.new(ramp(mask, 0.0, 1.0, 0.08 + GLASS_FX_STRENGTH, 0.08), b.inputs['Alpha'])
     L.new(ramp(mask, 0.0, 1.0, 0.45, 0.02), b.inputs['Roughness'])
 

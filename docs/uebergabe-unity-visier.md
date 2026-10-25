@@ -35,6 +35,24 @@ Quellen der Daten (nur lesen):
   - `~/Library/Caches/CubeEscapeBallon/evidence/clips/reticle_spread.mp4`
   - `…/evidence/sight_examples_v2.png`
 
+## Nachtrag 25.10.2026: Visier-Designsprache v3 (geht den Punkten unten vor)
+
+Der Nutzer hat die Empfehlungen aus Motiongen REF 0.14 „Eyebox“ übernommen („Mach alles so wie du empfiehlst“) und den
+Augenabstand 90 mm bestätigt. Gegenüber den Punkten unten gilt:
+
+- **Eine Kamera statt Render-Textur:** Das Glas des Zielfernrohrs zeigt dasselbe Weltbild wie außen (kein eigenes Linsenbild,
+  kostet Bildrate). Punkt 6 entfällt bis auf `ads_hide` (Rohr, Okular, Okularlinse, Türme ausblenden; der Trapezhals bleibt).
+- **Augenpunkt 90 mm** vor der vorderen Öffnung (nicht 110 mm). Zielbereiche: Holo **12–20 %**, Zielfernrohr **20–26 %** der
+  Bildbreite bei 75° horizontal (`SIGHT['fov_ref_deg']`). Weltzoom ist ein Bildmaßstab (`SIGHT['zoom_kind']`).
+- **Spieleroption Visiernähe** `SETTINGS['ads_eye_relief']` 70/90/110 mm (Nutzer: 70 mm optional): beim Zielen rückt das
+  Waffenmodell um (90 − Wert) mm entlang der Visierlinie näher an die Kamera; Standard 90.
+- **Kein Aufgehen im Zielen** (`SPREAD[*]['ads'] = 0`): stattdessen `ADS_FEEDBACK` – Leuchtpunkt am Zielpunkt getrennt vom Glas,
+  Schuss = kurzer Ring (1 Bild), Treffer = X (≥ 0,17 s). Das Aufgehen gilt nur dem Hüft-Fadenkreuz.
+- **Absehen-Standard fein**, Glasspuren nur am Rand (Mitte klar).
+- **Visiertyp je Klasse** `SIGHT_KIND` (Pilot: `holo`); neue Visierformen: Holo mit Trapezsockel bis zur Fensterunterkante,
+  kurzes Ring-Zielfernrohr auf Trapezhals – Modelle neu exportiert (siehe Commit der Hauptsitzung).
+- Referenzbild: `~/Library/Caches/CubeEscapeBallon/evidence/sight_examples.png` (v3, 70/90/110 mm).
+
 ## Was zu tun ist
 
 1. **Neu exportieren.** Das Visier ist schlanker und hat jetzt ein Absehen-Teil. `./check` meldet „ego.json veraltet“, sobald

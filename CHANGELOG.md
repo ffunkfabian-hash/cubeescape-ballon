@@ -2,6 +2,8 @@
 
 ## 0.6.0 „Riflekin“ – unveröffentlicht (lokal, in Arbeit)
 
+- Visier-Designsprache v3 nach Motiongen REF 0.14 „Eyebox“: Typ je Klasse, dünne Rahmen, kleinere Öffnungen (geprüft), Trapezsockel/-hals, eine Kamera, Absehen fein ohne Aufgehen im Zielen, Glasspuren nur am Rand.
+
 - BASIC-02 Impulsgewehr im Stil v2.1 (geschlossene Impulskammer, Spulenfenster, Salvenanzeigen, Holo-Visier, S2 mit Daumenloch).
 - Familienbausteine `grip_v21`, `reflex_sight_v21`, `reticle`, `cut_box`, `screws`, `mirror`; Absehen auch im Pilot.
 - `./check` prüft die v2.1-Familie; Familienseite `make_sheets.py --family`; Stilhandbuch §7 Dokumentationspflicht.

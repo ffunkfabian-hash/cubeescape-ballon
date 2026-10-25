@@ -73,7 +73,7 @@ P += [
 ]
 P += [dict(p, mat='anodized') for p in rail(-90, 120, TOP)]
 P[-1]['cuts'] = [cut_box(-84 + 14 * i, -77 + 14 * i, TOP + 4, TOP + 9, 30) for i in range(14)]
-_sight, SIGHT_ANCHORS = reflex_sight_v21(-12, TOP + 8, ww=34, wh=26,       # Holo-Visier: etwas breiteres Fenster als 01
+_sight, SIGHT_ANCHORS = reflex_sight_v21(-12, TOP + 8, ww=27, wh=21,       # Holo: etwas größer als 01 (Designsprache v3)
                                          reticle_kind=RETICLE_DEFAULTS['pulse_rifle']['optic'])
 P += _sight
 # ---------------------------------------------------------------- Impulskammer (Leitmerkmal): Oberschale + Handschutz

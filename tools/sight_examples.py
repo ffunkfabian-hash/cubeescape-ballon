@@ -23,9 +23,9 @@ DST = os.path.join(OUT, 'sight_examples')
 FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 HFOV = 75.0
 # (Modul, Visiertyp, Fensterbreite mm, Augenabstände mm, Zoomwerte)
-CASES = [('pilot.w01_auto_rifle_v21', 'reflex', 31, (70, 90, 110), (1.0,)),
-         ('pilot.w02_pulse_rifle_v21', 'reflex', 34, (70, 90, 110), (1.0,)),
-         ('pilot.w03_scout_rifle_v21', 'scope', 2 * 21.6, (70, 90, 110), (1.0,))]
+CASES = [('pilot.w01_auto_rifle_v21', 'reflex', 26, (70, 90, 110), (1.0,)),
+         ('pilot.w02_pulse_rifle_v21', 'reflex', 27, (70, 90, 110), (1.0,)),
+         ('pilot.w03_scout_rifle_v21', 'scope', 2 * 16.5, (70, 90, 110), (1.0,))]
 REF = os.path.expanduser('~/Library/Caches/CubeEscapeBallon/refs/video/scout_frames/f_520.png')
 
 

@@ -52,11 +52,31 @@ LINE_R = 0.3          # Linienradius bei Stärke „normal“ (mm)
 #   Zielfernrohr hinter dem Objektivring (Socket_Objective); Teile mit `ads_hide` (Rohr, Okular) sind beim Zielen ausgeblendet.
 # - Das Waffenmodell wird beim Zielen nicht vergrößert (viewmodel_zoom 1,0, eigene Viewmodel-Kamera); nur die Welt zoomt:
 #   world_zoom = Klassengrundzoom (CLASS_ZOOM) + Visierbonus (zoom_bonus). Zielfernrohr: Linsenbild (Welt vergrößert in der Linse).
-SIGHT = dict(height_mm=66.0, height_tol_mm=4.0, viewmodel_zoom=1.0,
+# v3 (Nutzer 25.10.2026 „Mach alles so wie du empfiehlst“, Grundlage Motiongen REF 0.14 „Eyebox“ docs/visiere.md › 11):
+# Öffnung im Zielen kleiner (Destiny: offene Visiere 12–20 % Bildbreite, Scout-Ring 21 %), Augenpunkt bleibt 90 mm (Nutzerwahl) –
+# dafür kleinere Öffnungen; Bezugsbildwinkel 75° horizontal (der Anteil wächst mit dem Bildwinkel); Weltzoom ist ein
+# Bildmaßstab (tan(Bildwinkel/2) wird durch den Zoom geteilt); eine Kamera: das Glas zeigt dasselbe Weltbild (kein eigenes
+# Linsenbild, kostet Bildrate); Scharfschütze im Zielen als 2D-Vollbild mit eigener Kontur.
+SIGHT = dict(height_mm=66.0, height_tol_mm=4.0, viewmodel_zoom=1.0, fov_ref_deg=75.0, zoom_kind='Bildmaßstab',
              types={'reflex': dict(de='Reflex-/Holovisier', eye_relief_mm=90.0, ref='Socket_Reticle', zoom_bonus=0.3,
-                                   target_share=(0.18, 0.26), ads_view='glass'),
+                                   target_share=(0.12, 0.20), ads_view='glass', frame_max=0.10),
                     'scope': dict(de='Zielfernrohr', eye_relief_mm=90.0, ref='Socket_Objective', zoom_bonus=0.8,
-                                  target_share=(0.26, 0.34), ads_view='lens_picture')})
+                                  target_share=(0.20, 0.26), ads_view='glass', frame_max=0.15),
+                    'fullscreen': dict(de='Vollbild (Scharfschütze)', ads_view='overlay', zoom_bonus=0.0,
+                                       note='eigene Kontur je Waffe, außen schwarz')})
+# Visiertyp je Waffentyp (Form nach Visiertyp, Farbe nach Familie/Hersteller – Destiny-Muster, REF 0.14 › 3)
+SIGHT_KIND = {'auto_rifle': 'holo', 'submachine_gun': 'holo', 'trace_rifle': 'holo', 'machine_gun': 'holo', 'pulse_rifle': 'holo',
+              'scout_rifle': 'ring_scope', 'linear_fusion_rifle': 'ring_scope', 'hand_cannon': 'irons_brackets',
+              'sidearm': 'irons_brackets', 'shotgun': 'irons_brackets', 'sniper_rifle': 'fullscreen', 'fusion_rifle': 'ring',
+              'grenade_launcher': 'lens_chevron', 'rocket_launcher': 'lens_chevron', 'combat_bow': 'arrow_tip', 'sword': None,
+              'glaive': None}
+SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr auf Trapezhals',
+                 'irons_brackets': 'Kimme und Korn mit leuchtenden Klammern', 'fullscreen': 'Zielfernrohr außen, im Zielen Vollbild',
+                 'ring': 'Ring oder Doppelring', 'lens_chevron': 'runde Linse mit Winkel', 'arrow_tip': 'Pfeilspitze, kein Visier',
+                 None: 'kein Visier'}
+# Im Zielen (Destiny, REF 0.14 › 7): Leuchtpunkt am Zielpunkt getrennt vom Glas, kein Aufgehen, Schuss = kurzer Ring, Treffer = X
+ADS_FEEDBACK = dict(hud_dot=dict(share_h=0.011, color='cyan'), shot_ring=dict(share_h=0.02, frames=1),
+                    hit_x=dict(share_h=0.045, min_s=0.17), spread_in_ads=0.0)
 # Grundzoom der Welt beim Zielen je Waffentyp (Destiny 2, Q-D2-ZOOM; „entworfen“ = keine Messung, abgeleitet)
 CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 2.1, 'hand_cannon': 1.5, 'sidearm': 1.25, 'submachine_gun': 1.25,
               'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 5.5, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,
@@ -72,21 +92,22 @@ def world_zoom(weapon_type, sight_type):
     return round(base + (0.0 if no_bonus else SIGHT['types'][sight_type]['zoom_bonus']), 2)
 
 
-# Glasvarianten der Reflexscheibe (Rolle glass_<id>, Wirkung in kit.glass_fx; dezent, höchstens +0,38 Deckkraft an der Maske)
-GLASS = {'clean': ('Klar', 'unbehandelt beschichtet'), 'dust': ('Staub', 'feine Körner (~0,3 mm), jede siebte Zelle'),
+# Glasvarianten der Reflexscheibe (Rolle glass_<id>, Wirkung in kit.glass_fx; v3: nur am Rand, Mitte klar, höchstens +0,15 Deckkraft)
+GLASS = {'clean': ('Klar', 'unbehandelt beschichtet, Tönung ≤ 5 %'), 'dust': ('Staub', 'feine Körner (~0,3 mm), jede siebte Zelle'),
          'scratch': ('Kratzer', 'dünne, schräg gestreckte Linien'), 'crack': ('Riss', 'feines Rissnetz, nur obere Ecke'),
          'cells': ('Zellen', 'kaum sichtbare Zellvergütung über die Scheibe'), 'worn': ('Benutzt', 'Staub und Kratzer')}
 
 # Aufgehen beim Schießen (entworfen, an Shooter-Konventionen angelehnt): Spreizung s in mm auf der Scheibe bei Größe 1,0.
 # s folgt base + Σ Schussimpulse, begrenzt auf max, klingt mit Zeitkonstante recover_s ab; Laufen addiert move, Zielen
-# multipliziert mit ads (Visierabsehen beim Zielen: meist ruhig). charge: Spreizung schrumpft während des Aufladens auf base.
+# multipliziert mit ads – v3: im Zielen 0 (Destiny: kein Aufgehen, stattdessen Schuss-Ring, ADS_FEEDBACK); das Aufgehen gilt dem
+# Hüft-Fadenkreuz. charge: Spreizung schrumpft während des Aufladens auf base.
 SPREAD = {
-    'auto':      dict(de='Dauerfeuer', base=0.0, per_shot=0.9, max=5.0, recover_s=0.28, move=1.5, ads=0.35),
-    'burst':     dict(de='Salve', base=0.0, per_shot=1.2, max=4.5, recover_s=0.22, move=1.4, ads=0.3),
-    'precision': dict(de='Präzision', base=0.0, per_shot=2.2, max=3.5, recover_s=0.18, move=1.0, ads=0.15),
-    'shotgun':   dict(de='Schrot', base=2.0, per_shot=2.5, max=6.0, recover_s=0.35, move=1.0, ads=0.6),
-    'charge':    dict(de='Aufladen', base=0.0, per_shot=1.5, max=4.0, recover_s=0.25, move=1.2, ads=0.3, charge_from=4.0),
-    'explosive': dict(de='Sprengwaffe', base=0.5, per_shot=1.8, max=4.0, recover_s=0.5, move=0.8, ads=0.5),
+    'auto':      dict(de='Dauerfeuer', base=0.0, per_shot=0.9, max=5.0, recover_s=0.28, move=1.5, ads=0.0),
+    'burst':     dict(de='Salve', base=0.0, per_shot=1.2, max=4.5, recover_s=0.22, move=1.4, ads=0.0),
+    'precision': dict(de='Präzision', base=0.0, per_shot=2.2, max=3.5, recover_s=0.18, move=1.0, ads=0.0),
+    'shotgun':   dict(de='Schrot', base=2.0, per_shot=2.5, max=6.0, recover_s=0.35, move=1.0, ads=0.0),
+    'charge':    dict(de='Aufladen', base=0.0, per_shot=1.5, max=4.0, recover_s=0.25, move=1.2, ads=0.0, charge_from=4.0),
+    'explosive': dict(de='Sprengwaffe', base=0.5, per_shot=1.8, max=4.0, recover_s=0.5, move=0.8, ads=0.0),
     'none':      dict(de='kein Aufgehen', base=0.0, per_shot=0.0, max=0.0, recover_s=0.2, move=0.0, ads=0.0),
 }
 # Vorgabe je Waffentyp (META['type']): Absehen im Visier (Optik) und Hüft-Fadenkreuz (HUD) mit Aufgehverhalten
@@ -113,12 +134,15 @@ DEFAULTS = {
 SETTINGS = {
     'kind':       dict(de='Form', values=list(RETICLES), default='Vorgabe der Waffe'),
     'color':      dict(de='Farbe', values=list(COLORS), default='cyan'),
-    'weight':     dict(de='Linienstärke', values=list(WEIGHTS), default='normal'),
+    'weight':     dict(de='Linienstärke', values=list(WEIGHTS), default='fine'),
     'scale':      dict(de='Größe', min=0.6, max=1.6, default=1.0),
     'opacity':    dict(de='Deckkraft', min=0.3, max=1.0, default=0.9),
     'center_dot': dict(de='Mittelpunkt', values=[True, False], default=True),
     'spread':     dict(de='Aufgehen beim Schießen', values=[True, False], default=True),
     'glass':      dict(de='Glas', values=list(GLASS), default='clean'),
+    # Nutzer 25.10.2026: „Wir nehmen die 90 mm. Wären die 70 mm optional möglich?“ – Standard bleibt 90 mm (Modelle, Prüfung);
+    # die Option rückt das Waffenmodell beim Zielen um (90 − Wert) mm entlang der Visierlinie näher an die Kamera (Laufzeit).
+    'ads_eye_relief': dict(de='Visiernähe beim Zielen (mm)', values=[70, 90, 110], default=90),
 }
 
 

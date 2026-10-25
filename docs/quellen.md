@@ -151,6 +151,12 @@ klobig“.
 Folgerung: dünne Ränder um große Öffnungen; das Waffenmodell wird beim Zielen nicht vergrößert, nur die Welt; Zielfernrohr
 zeigt ein Linsenbild, die Teile hinter dem Auge sind beim Zielen ausgeblendet.
 
+## Q-REF-EYEBOX · Visiere in Videospielen (Motiongen REF 0.14)
+
+`cubeescape-reference` Branch `claude/ref-0.14-eyebox`, [PR ffunkfabian-hash/cubeescape-motiongen#42](https://github.com/ffunkfabian-hash/cubeescape-motiongen/pull/42),
+`docs/visiere.md` (31 Spiele, Destiny 2 mit 8 Herstellern/31 Waffen, gemessene Bildanteile, fünf Darstellungsarten) und
+`data/visiere.json`; Abschnitt 11 „Empfehlungen für BASIC“ ist die Grundlage der Visier-Designsprache v3. Status der Werte dort.
+
 ## Q-BG · Bungie-Startpunkte des Auftrags
 
 Bungie-Seiten aus dem Auftrag (Neuspieler-Guide, „Your Guardian“, Dev Insights, TWID 06.11./26.11.2025) waren über den

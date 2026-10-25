@@ -449,7 +449,7 @@
  "glass": {
   "clean": {
    "de": "Klar",
-   "note": "unbehandelt beschichtet"
+   "note": "unbehandelt beschichtet, Tönung ≤ 5 %"
   },
   "dust": {
    "de": "Staub",
@@ -480,7 +480,7 @@
    "max": 5.0,
    "recover_s": 0.28,
    "move": 1.5,
-   "ads": 0.35
+   "ads": 0.0
   },
   "burst": {
    "de": "Salve",
@@ -489,7 +489,7 @@
    "max": 4.5,
    "recover_s": 0.22,
    "move": 1.4,
-   "ads": 0.3
+   "ads": 0.0
   },
   "precision": {
    "de": "Präzision",
@@ -498,7 +498,7 @@
    "max": 3.5,
    "recover_s": 0.18,
    "move": 1.0,
-   "ads": 0.15
+   "ads": 0.0
   },
   "shotgun": {
    "de": "Schrot",
@@ -507,7 +507,7 @@
    "max": 6.0,
    "recover_s": 0.35,
    "move": 1.0,
-   "ads": 0.6
+   "ads": 0.0
   },
   "charge": {
    "de": "Aufladen",
@@ -516,7 +516,7 @@
    "max": 4.0,
    "recover_s": 0.25,
    "move": 1.2,
-   "ads": 0.3,
+   "ads": 0.0,
    "charge_from": 4.0
   },
   "explosive": {
@@ -526,7 +526,7 @@
    "max": 4.0,
    "recover_s": 0.5,
    "move": 0.8,
-   "ads": 0.5
+   "ads": 0.0
   },
   "none": {
    "de": "kein Aufgehen",
@@ -657,7 +657,7 @@
     "normal",
     "bold"
    ],
-   "default": "normal"
+   "default": "fine"
   },
   "scale": {
    "de": "Größe",
@@ -698,12 +698,23 @@
     "worn"
    ],
    "default": "clean"
+  },
+  "ads_eye_relief": {
+   "de": "Visiernähe beim Zielen (mm)",
+   "values": [
+    70,
+    90,
+    110
+   ],
+   "default": 90
   }
  },
  "sight_standard": {
   "height_mm": 66.0,
   "height_tol_mm": 4.0,
   "viewmodel_zoom": 1.0,
+  "fov_ref_deg": 75.0,
+  "zoom_kind": "Bildmaßstab",
   "types": {
    "reflex": {
     "de": "Reflex-/Holovisier",
@@ -711,10 +722,11 @@
     "ref": "Socket_Reticle",
     "zoom_bonus": 0.3,
     "target_share": [
-     0.18,
-     0.26
+     0.12,
+     0.2
     ],
-    "ads_view": "glass"
+    "ads_view": "glass",
+    "frame_max": 0.1
    },
    "scope": {
     "de": "Zielfernrohr",
@@ -722,10 +734,17 @@
     "ref": "Socket_Objective",
     "zoom_bonus": 0.8,
     "target_share": [
-     0.26,
-     0.34
+     0.2,
+     0.26
     ],
-    "ads_view": "lens_picture"
+    "ads_view": "glass",
+    "frame_max": 0.15
+   },
+   "fullscreen": {
+    "de": "Vollbild (Scharfschütze)",
+    "ads_view": "overlay",
+    "zoom_bonus": 0.0,
+    "note": "eigene Kontur je Waffe, außen schwarz"
    }
   }
  },
@@ -817,6 +836,50 @@
    "reflex": 1.55,
    "scope": 2.05
   }
+ },
+ "sight_kind": {
+  "auto_rifle": "holo",
+  "submachine_gun": "holo",
+  "trace_rifle": "holo",
+  "machine_gun": "holo",
+  "pulse_rifle": "holo",
+  "scout_rifle": "ring_scope",
+  "linear_fusion_rifle": "ring_scope",
+  "hand_cannon": "irons_brackets",
+  "sidearm": "irons_brackets",
+  "shotgun": "irons_brackets",
+  "sniper_rifle": "fullscreen",
+  "fusion_rifle": "ring",
+  "grenade_launcher": "lens_chevron",
+  "rocket_launcher": "lens_chevron",
+  "combat_bow": "arrow_tip",
+  "sword": null,
+  "glaive": null
+ },
+ "sight_kind_de": {
+  "holo": "offenes Holo (abgerundetes Rechteck)",
+  "ring_scope": "kurzes Ring-Zielfernrohr auf Trapezhals",
+  "irons_brackets": "Kimme und Korn mit leuchtenden Klammern",
+  "fullscreen": "Zielfernrohr außen, im Zielen Vollbild",
+  "ring": "Ring oder Doppelring",
+  "lens_chevron": "runde Linse mit Winkel",
+  "arrow_tip": "Pfeilspitze, kein Visier",
+  "None": "kein Visier"
+ },
+ "ads_feedback": {
+  "hud_dot": {
+   "share_h": 0.011,
+   "color": "cyan"
+  },
+  "shot_ring": {
+   "share_h": 0.02,
+   "frames": 1
+  },
+  "hit_x": {
+   "share_h": 0.045,
+   "min_s": 0.17
+  },
+  "spread_in_ads": 0.0
  },
  "spread_model": "s ← base(+move) + (s − base)·exp(−dt/recover_s); je Schuss s ← min(max, s + per_shot); beim Zielen s·ads; Linien wandern um s·d, Ringe wachsen um s·grow, Punkte bleiben"
 }

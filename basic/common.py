@@ -419,48 +419,52 @@ def reticle(f, cu, kind='ring_dot', s=1.0, pid='sight_reticle', color='cyan', we
                 smooth=True, reticle=dict(kind=kind, color=color, weight=weight), items=items)
 
 
-def reflex_sight_v21(f, u, ww=31, wh=25, reticle_kind='ring_dot', reticle_color='cyan', reticle_weight='normal', glass='clean'):
-    """Reflex-/Holovisier v2.1, schlank (Nutzer 24.10.2026: Visiere „sehr klobig“; Destiny-Vorbild: dünne Ränder um große Öffnung,
-    Motiongen: Holo-Ring ≈ 10 % Bildhöhe). Flacher Klemmfuß mit Klemmhebel, niedriges Gehäuse, offene Haube aus 1,6-mm-Bügeln,
-    blanke Stirnkante, Glas in der Haube, Emitter, kleine Verstellknöpfe; Absehen `reticle_*` aus basic/reticles.py, Glasvariante
-    `glass` aus reticles.GLASS. ww × wh = Glasfenster (Vertrag: 26 × 20 bis 44 × 30 mm). Liefert (Teile, Anker)."""
+def reflex_sight_v21(f, u, ww=26, wh=20, reticle_kind='ring_dot', reticle_color='cyan', reticle_weight='fine', glass='clean'):
+    """Offenes Holovisier v2.1, Designsprache v3 (Nutzer 25.10.2026; Motiongen REF 0.14 „Eyebox“): kleine Öffnung (bei 90 mm
+    Augenabstand 12–20 % der Bildbreite), Rahmen ≤ 0,10 × Öffnung (Bügel 1,6 mm, Dach 1,2 mm), gestufter Trapezsockel bis zur
+    Fensterunterkante (nichts schwebt, Anzeigen unter der Visierlinie), neutrales Gehäuse mit einem Akzent (Klemmhebel), Absehen
+    fein in Familienfarbe. ww × wh = Glasfenster (Vertrag: 26 × 20 bis 44 × 30 mm). Liefert (Teile, Anker)."""
     from basic.reticles import SIGHT
     bt = u + 6                              # Oberkante Klemmfuß
-    cu = bt + wh / 2 + 8                    # Visierlinie
+    cu = bt + wh / 2 + 10                   # Visierlinie
     hw = ww / 2 + 0.8                       # Mitte der Haubenbügel
     top = cu + wh / 2 + 0.8                 # Unterkante Haubendach
+    gb = cu - wh / 2 - 0.4                  # Fensterunterkante (Oberkante Sockel)
     fg = f + 40                             # Glasebene
     P = [
-        box('sight_mount', 'Visier-Klemmfuß', 'Sight mount', 'sight', 'anodized', 'Klemmt das Visier auf die Schiene BRI-22',
-            'Klemmung auf Schiene (lösbar)', f, f + 46, u + 0.5, bt, 23, bevel=R_SMALL, iface='BRI-22',
-            cuts=[cut_box(f + 8, f + 38, u + 1.5, bt - 1.5, 3, x=11.5)],
-            move=dict(kind='translate', pivot=(f + 23, u, 0), vector_mm=(0, 70, 0), event='swap_sight', removable=True)),
+        part('sight_mount', 'Visier-Klemmfuß', 'Sight mount', 'sight', 'multi', 'anodized',
+             'Klemmt das Visier auf die Schiene BRI-22; gestuftes Trapez', 'Klemmung auf Schiene (lösbar)', bevel=R_SMALL, iface='BRI-22',
+             items=[dict(shape='box', f0=f, f1=f + 46, u0=u + 0.5, u1=u + 3.5, w=23),
+                    dict(shape='box', f0=f + 2, f1=f + 44, u0=u + 3, u1=bt, w=18)],
+             move=dict(kind='translate', pivot=(f + 23, u, 0), vector_mm=(0, 70, 0), event='swap_sight', removable=True)),
         part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Klemmfuß werkzeuglos',
              'Drehachse links am Klemmfuß', bevel=R_FINE, parent_part='sight_mount',
-             pts=[(f + 12, u + 1), (f + 32, u + 1), (f + 34, u + 4), (f + 12, u + 4.6)], w=2.0, x=12.4),
-        prof('sight_body', 'Visiergehäuse', 'Sight housing', 'sight', 'anodized', 'Trägt Emitter, Batterie und Verstellung; flach',
-             'auf Klemmfuß (fest)', [(f + 1, bt - 0.5), (f + 46, bt - 0.5), (f + 46, bt + 3.5), (f + 18, bt + 3.5), (f + 14, bt + 6.5),
-                                     (f + 1, bt + 6.5)], max(20, ww - 10), bevel=R_SMALL, parent_part='sight_mount'),
-        box('sight_base', 'Haubensockel', 'Hood base', 'sight', 'anodized', 'Trägt die Haubenbügel; volle Haubenbreite',
-            'auf Klemmfuß und Gehäuse (fest)', f + 31, f + 46.6, bt - 0.5, bt + 2.8, ww + 3.2, bevel=R_FINE, parent_part='sight_mount'),
-        part('sight_frame', 'Visierhaube', 'Sight hood', 'sight', 'multi', 'anodized', 'Offene Haube aus zwei Bügeln und Dach',
-             'auf Visiergehäuse (fest)', bevel=0.6, parent_part='sight_mount',
-             items=[dict(shape='prof', pts=[(f + 34, bt + 2.5), (f + 46, bt + 2.5), (f + 46, top + 1.6), (f + 34, top + 1.6)], w=1.6,
+             pts=[(f + 12, u + 0.8), (f + 32, u + 0.8), (f + 34, u + 3.2), (f + 12, u + 3.6)], w=1.8, x=12.4),
+        prof('sight_body', 'Visiergehäuse', 'Sight housing', 'sight', 'anodized', 'Trägt Emitter und Batterie; flach, hinten',
+             'auf Klemmfuß (fest)', [(f + 1, bt - 0.5), (f + 30, bt - 0.5), (f + 30, bt + 3.5), (f + 18, bt + 3.5), (f + 14, bt + 6),
+                                     (f + 1, bt + 6)], 16, bevel=R_SMALL, parent_part='sight_mount'),
+        part('sight_base', 'Haubensockel', 'Hood base', 'sight', 'prof', 'anodized',
+             'Trägt Haube und Glas bis zur Fensterunterkante; trapezförmig verjüngt, Anzeigen unter der Visierlinie',
+             'auf Klemmfuß (fest)', bevel=R_FINE, parent_part='sight_mount',
+             pts=[(f + 29, bt - 0.5), (f + 46.6, bt - 0.5), (f + 46.6, gb), (f + 33, gb)], w=ww + 3.2),
+        part('sight_frame', 'Visierhaube', 'Sight hood', 'sight', 'multi', 'anodized', 'Offene Haube aus zwei Bügeln und dünnem Dach',
+             'auf dem Haubensockel (fest)', bevel=0.5, parent_part='sight_mount',
+             items=[dict(shape='prof', pts=[(f + 34, gb - 0.5), (f + 46, gb - 0.5), (f + 46, top + 1.2), (f + 36, top + 1.2)], w=1.6,
                          x=sx * hw) for sx in (1, -1)]
-                   + [dict(shape='prof', pts=[(f + 34, top), (f + 46, top), (f + 46, top + 1.6), (f + 34, top + 1.6)], w=ww + 3.2)]),
+                   + [dict(shape='prof', pts=[(f + 36, top), (f + 46, top), (f + 46, top + 1.2), (f + 36, top + 1.2)], w=ww + 3.2)]),
         part('sight_frame_trim', 'Haubenkante', 'Hood trim', 'sight', 'frame', 'trim', 'Blanke Stirnkante der Haube (dünn)',
-             'vorn an der Haube', bevel=0.3, parent_part='sight_mount', f0=f + 45.6, f1=f + 46.6, cu=cu + 0.4, ow=ww + 3.2,
-             oh=wh + 3.6, iw=ww, ih=wh + 0.4, r_out=2, r_in=1.5),
+             'vorn an der Haube', bevel=0.3, parent_part='sight_mount', f0=f + 45.6, f1=f + 46.6, cu=cu + 0.2, ow=ww + 3.2,
+             oh=wh + 3.0, iw=ww, ih=wh + 0.4, r_out=2, r_in=1.5),
         part('sight_glass', 'Visierglas', 'Sight glass', 'sight', 'xbox', 'glass' if glass == 'clean' else f'glass_{glass}',
              'Beschichtete Reflexscheibe' + ('' if glass == 'clean' else f' ({glass})'), 'in der Haube (fest)', bevel=0,
              parent_part='sight_mount', f0=fg, f1=fg + 0.8, cu=cu, ww=ww, hh=wh),
-        box('sight_emitter', 'Emitter', 'Reticle emitter', 'sight', 'energy', 'Leuchtfenster des Absehen-Projektors',
-            'vorn im Emitterblock', f + 15.5, f + 17.5, bt + 3.6, bt + 5.8, 6, bevel=0.3, parent_part='sight_mount'),
+        box('sight_emitter', 'Emitter', 'Reticle emitter', 'sight', 'energy', 'Leuchtfenster des Absehen-Projektors (unter der Visierlinie)',
+            'vorn im Emitterblock', f + 15.5, f + 17.5, bt + 3.6, bt + 5.4, 6, bevel=0.3, parent_part='sight_mount'),
         reticle(fg - 0.6, cu, reticle_kind, color=reticle_color, weight=reticle_weight),
         cyl('sight_knob_w', 'Seitenverstellung', 'Windage knob', 'sight', 'trim', 'Verstellt das Absehen seitlich',
-            'rechts am Gehäuse', 'x', (f + 26, bt + 1.8), -9.5, -12, 2.6, parent_part='sight_mount', segs=16),
+            'rechts am Gehäuse', 'x', (f + 24, bt + 1.8), -7.5, -10, 2.4, parent_part='sight_mount', segs=16),
         cyl('sight_battery', 'Batteriedeckel', 'Battery cap', 'sight', 'anodized', 'Batteriefach links',
-            'links am Gehäuse (schraubbar)', 'x', (f + 26, bt + 1.8), 9.5, 12, 3.4, parent_part='sight_mount', segs=16),
+            'links am Gehäuse (schraubbar)', 'x', (f + 24, bt + 1.8), 7.5, 10, 3.2, parent_part='sight_mount', segs=16),
     ]
     rel = SIGHT['types']['reflex']['eye_relief_mm']
     A = {'Socket_Sight': dict(at=(f + 1, cu, 0), part='sight_body'),
@@ -470,59 +474,54 @@ def reflex_sight_v21(f, u, ww=31, wh=25, reticle_kind='ring_dot', reticle_color=
     return P, A
 
 
-def scope_v21(f, u, length=140, r_obj=21, r_eye=12.5, r_tube=10.5, reticle_kind='chevron', reticle_color='cyan',
+def scope_v21(f, u, length=120, r_obj=16, r_eye=11, r_tube=9.5, reticle_kind='chevron', reticle_color='cyan',
               reticle_weight='fine'):
-    """Kurzes Zielfernrohr v2.1 nach Destiny-Vorbild (Scout-Video 24.10.2026: großer Objektivring mit dünnem Rand, Bild in der Linse,
-    feines Absehen, kein Okular-Tunnel): schlanke Ringe, Mittelrohr Graphit, Okular ohne Gummimuschel, großes Objektiv mit dünnem
-    eloxiertem Rand und blanker Innenkante, Höhenturm (Akzent), Seitenturm, Linsen, Absehen direkt hinter der Objektivlinse.
-    Teile mit `ads_hide` (Rohr, Okular, Okularlinse) werden beim Zielen ausgeblendet – der Augenpunkt liegt 90 mm hinter dem
-    Objektivring (Visier-Standard), man sieht den Ring und das Linsenbild. Liefert (Teile, Anker, Rohrachse cu)."""
+    """Kurzes Ring-Zielfernrohr, Designsprache v3 (Nutzer 25.10.2026; Motiongen REF 0.14 „Eyebox“; Destiny-Scout: dünner Ring,
+    trapezförmiger Hals, Öffnung ≈ 21 % Bildbreite): kurzes Rohr, Objektiv mit dünnem Rand (Rahmen ≤ 0,15 × Öffnung) und blanker
+    Innenkante, ein gestufter Trapezhals statt zweier Ringe, Höhenturm (Akzent), Linsen, feines Absehen hinter der Objektivlinse.
+    Teile mit `ads_hide` (Rohr, Okular, Okularlinse, Türme) sind beim Zielen ausgeblendet; der Augenpunkt liegt 90 mm hinter dem
+    Objektivring (Visier-Standard), der Hals bleibt unterhalb der Linse sichtbar. Liefert (Teile, Anker, Rohrachse cu)."""
     from basic.reticles import SIGHT
-    cu = u + 17 + r_obj
+    cu = u + 21 + r_obj
     f_eye, f_obj = f, f + length
-    def mount(pid, de, f0, r_top):  # flache Schienenklemme + schmaler dunkler Steg bis zur Unterseite des Rohrs (Radius r_top)
-        return part(pid, de, de.replace('Zielfernrohr-Fuß', 'Scope mount'), 'sight', 'multi', 'anodized',
-                    'Klemmt das Zielfernrohr auf die Schiene BRI-22', 'Klemmung auf Schiene (lösbar)', bevel=R_FINE, iface='BRI-22',
-                    items=[dict(shape='box', f0=f0, f1=f0 + 16, u0=u + 0.5, u1=u + 5, w=22),
-                           dict(shape='box', f0=f0 + 3, f1=f0 + 13, u0=u + 4, u1=cu - r_top + 1, w=7)]
-                    + screws([(f0 + 4, u + 2.8), (f0 + 12, u + 2.8)], 11.0, r=1.2, h=0.6))
-
-    def band(pid, de, f0):        # Ringband um das Rohr (im Zielen aus, sonst Tunnel vor dem Auge)
-        return cyl(pid, de, de.replace('Zielfernrohr-Ring', 'Scope ring band'), 'sight', 'anodized', 'Umschließt das Mittelrohr',
-                   'auf dem Klemmfuß (fest)', 'f', (cu, 0), f0, f0 + 16, r_tube + 2.4, r_in=r_tube - 0.2, segs=40, bevel=R_SMALL,
-                   ads_hide=True)
+    fb = f_obj - 36                                   # Beginn des Objektivs
     P = [
-        mount('scope_mount_r', 'Zielfernrohr-Fuß hinten', f + 30, r_tube),
-        # vorderer Fuß unter dem Objektiv: der Steg endet am breiten Objektiv unterhalb der Linse und bleibt im Zielen ein dunkler
-        # Fuß unter dem Ring (Destiny-Bild), statt als Klotz zwischen Auge und Linse zu stehen (Nutzerhinweis 24.10.2026)
-        mount('scope_mount_f', 'Zielfernrohr-Fuß vorn', f + length - 24, r_tube + 1 + (r_obj - r_tube - 1) * (38 - 21) / 34),
-        band('scope_band_r', 'Zielfernrohr-Ring hinten', f + 30),
+        part('scope_mount_r', 'Zielfernrohr-Hals', 'Scope neck', 'sight', 'multi', 'anodized',
+             'Trägt das Zielfernrohr auf der Schiene BRI-22; gestuftes Trapez', 'Klemmung auf Schiene (lösbar)', bevel=R_SMALL,
+             iface='BRI-22',
+             items=[dict(shape='box', f0=f + 34, f1=f + 70, u0=u + 0.5, u1=u + 5, w=22),
+                    dict(shape='prof', pts=[(f + 37, u + 4.5), (f + 67, u + 4.5), (f + 62, cu - r_tube + 1), (f + 42, cu - r_tube + 1)],
+                         w=15),
+                    dict(shape='prof', pts=[(f + 44, u + 4.5), (f + 60, u + 4.5), (f + 58, cu - r_tube + 1), (f + 46, cu - r_tube + 1)],
+                         w=18)]
+             + screws([(f + 40, u + 2.8), (f + 64, u + 2.8)], 11.0, r=1.2, h=0.6)),
+        part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Hals werkzeuglos',
+             'links am Hals', bevel=R_FINE, pts=[(f + 40, u + 0.8), (f + 58, u + 0.8), (f + 60, u + 3.2), (f + 40, u + 3.6)], w=1.8,
+             x=11.6),
         cyl('scope_tube', 'Mittelrohr', 'Scope tube', 'sight', 'graphite', 'Verbindet Okular und Objektiv; hohl',
-            'in den Ringen (fest)', 'f', (cu, 0), f + 24, f + length - 36, r_tube, r_in=r_tube - 1.5, segs=40, ads_hide=True),
+            'auf dem Hals (fest)', 'f', (cu, 0), f + 20, fb + 2, r_tube, r_in=r_tube - 1.5, segs=40, ads_hide=True),
         cyl('scope_eyepiece', 'Okular', 'Eyepiece', 'sight', 'graphite', 'Augenseite, schlank; Socket_Sight hinten', 'am Mittelrohr (fest)',
-            'f', (cu, 0), f_eye, f + 26, r_eye, r1=r_tube + 0.5, r_in=r_eye - 2, segs=40, bevel=R_SMALL, ads_hide=True),
+            'f', (cu, 0), f_eye, f + 22, r_eye, r1=r_tube + 0.5, r_in=r_eye - 2, segs=40, bevel=R_SMALL, ads_hide=True),
         cyl('scope_eye_trim', 'Okularkante', 'Eyepiece trim', 'sight', 'trim', 'Blanke Kante am Okular', 'hinten am Okular',
             'f', (cu, 0), f_eye - 1, f_eye + 1.5, r_eye + 0.4, r_in=r_eye - 1.5, segs=40, bevel=0.3, ads_hide=True),
-        cyl('scope_objective', 'Objektiv', 'Objective bell', 'sight', 'graphite', 'Lichteintritt vorn; großer Durchmesser',
-            'am Mittelrohr (fest)', 'f', (cu, 0), f + length - 38, f_obj - 4, r_tube + 1, r1=r_obj, r_in=r_obj - 2.5, segs=48,
-            bevel=R_SMALL),
+        cyl('scope_objective', 'Objektiv', 'Objective bell', 'sight', 'graphite', 'Lichteintritt vorn', 'am Mittelrohr (fest)',
+            'f', (cu, 0), fb, f_obj - 4, r_tube + 1, r1=r_obj, r_in=r_obj - 2.0, segs=48, bevel=R_SMALL),
         cyl('scope_rim', 'Objektivrand', 'Objective rim', 'sight', 'anodized', 'Dünner Rand um die Linse', 'vorn auf dem Objektiv',
-            'f', (cu, 0), f_obj - 4, f_obj, r_obj + 0.6, r_in=r_obj - 1.4, segs=48, bevel=0.5),
+            'f', (cu, 0), f_obj - 4, f_obj, r_obj + 0.5, r_in=r_obj - 1.2, segs=48, bevel=0.4),
         cyl('scope_crown', 'Objektivkante', 'Objective trim', 'sight', 'trim', 'Blanke Innenkante (Blickfang im Zielen)',
-            'innen am Rand', 'f', (cu, 0), f_obj - 6, f_obj - 0.4, r_obj - 1.4, r_in=r_obj - 2.6, segs=48, bevel=0.2),
+            'innen am Rand', 'f', (cu, 0), f_obj - 6, f_obj - 0.4, r_obj - 1.2, r_in=r_obj - 2.0, segs=48, bevel=0.2),
         cyl('scope_turret', 'Höhenturm', 'Elevation turret', 'sight', 'accent', 'Höhenverstellung (Bedienelement)',
-            'oben am Mittelrohr (fest)', 'u', (f + length / 2 - 8, 0), cu + r_tube - 2, cu + r_tube + 7, 6.5, segs=32, ads_hide=True),
+            'oben am Mittelrohr (fest)', 'u', (f + 52, 0), cu + r_tube - 2, cu + r_tube + 6, 5.5, segs=32, ads_hide=True),
         cyl('scope_turret_w', 'Seitenturm', 'Windage turret', 'sight', 'anodized', 'Seitenverstellung', 'rechts am Mittelrohr (fest)',
-            'x', (f + length / 2 - 8, cu), -(r_tube - 2), -(r_tube + 6), 5.5, segs=32, ads_hide=True),
-        cyl('scope_glass', 'Objektivlinse', 'Objective lens', 'sight', 'glass_scope', 'Linse vorn; zeigt im Zielen das Linsenbild',
-            'im Objektiv (fest)', 'f', (cu, 0), f_obj - 5, f_obj - 4, r_obj - 2.5, segs=48, bevel=0),
+            'x', (f + 52, cu), -(r_tube - 2), -(r_tube + 5), 4.5, segs=32, ads_hide=True),
+        cyl('scope_glass', 'Objektivlinse', 'Objective lens', 'sight', 'glass_scope', 'Linse vorn (im Zielen dasselbe Weltbild)',
+            'im Objektiv (fest)', 'f', (cu, 0), f_obj - 5, f_obj - 4, r_obj - 2.0, segs=48, bevel=0),
         cyl('scope_ocular_glass', 'Okularlinse', 'Ocular lens', 'sight', 'glass_scope', 'Augenlinse', 'im Okular (fest)', 'f', (cu, 0),
             f_eye + 3, f_eye + 4, r_eye - 2, segs=40, bevel=0, ads_hide=True),
         reticle(f_obj - 6, cu, reticle_kind, s=r_obj / 13, color=reticle_color, weight=reticle_weight, parent='scope_mount_r'),
     ]
-    P[0]['move'] = dict(kind='translate', pivot=(f + 38, u, 0), vector_mm=(0, 80, 0), event='swap_sight',
-                        note='beide Ringe lösen, Zielfernrohr senkrecht abnehmen', removable=True)
-    P[0]['ads_hide'] = True       # hinterer Fuß liegt am Auge: im Zielen aus (sonst Platte vor dem Bild)
+    P[0]['move'] = dict(kind='translate', pivot=(f + 52, u, 0), vector_mm=(0, 80, 0), event='swap_sight',
+                        note='Klemmhebel lösen, Zielfernrohr senkrecht abnehmen', removable=True)
     for q in P[1:]:
         q['parent_part'] = 'scope_mount_r'
     rel = SIGHT['types']['scope']['eye_relief_mm']
