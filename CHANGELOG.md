@@ -11,6 +11,15 @@
 - BASIC-03 Scoutgewehr v2.1 mit Zielfernrohr `scope_v21`; Formskizze per Blender-MCP.
 - Visier-Standard v2 nach Destiny-Video und Motiongen: schlanke Visiere, Zielfernrohr mit Linsenbild und `ads_hide`, Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse; Prüfung in `./check`, Beispiele `tools/sight_examples.py`.
 
+## 0.8.0 „Hangar“ – unveröffentlicht (lokal)
+
+- Hintergrundszene Hangar aus Python-Daten (`basic/scenes/hangar.py`), in Blender gebaut mit gebackenem Cycles-Licht
+  (`tools/scene_build.py`). Format `ballon-scene/1` ([docs/szenen-format.md](docs/szenen-format.md)).
+- Unity: Szenenlader, Taste L (Parcours ↔ Hangar), Viewmodel-Licht aus denselben Daten. Vergleich vom Startpunkt: SSIM 0,885,
+  PSNR 26,0 dB.
+- Fix: AO beim Backen der Waffe war zu dunkel (Originale unter der zusammengefügten Kopie). Gebaut mit zwei Unteragenten;
+  Bericht [docs/versions/0.8-hangar.md](docs/versions/0.8-hangar.md).
+
 ## 0.7.2 – unveröffentlicht (lokal)
 
 - Acht Waffen-Skins aus `kit.SKINS` gebacken (Farbe und Glanz je Skin, Normale und AO geteilt). In Unity schaltet Taste K

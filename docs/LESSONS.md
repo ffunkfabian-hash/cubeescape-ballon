@@ -34,3 +34,4 @@
 - Backen einer zusammengefügten Kopie: die Originale liegen deckungsgleich darunter und verfälschen das direkte Licht (Abweichung zum Render 12,8 → 7,2/255) – beim Backen `hide_render` ([scene_build.py](../tools/scene_build.py)); `bake_unity._joined` lässt sie sichtbar (AO prüfen).
 - Lightmap-Atlas mit Tausenden kleiner Inseln: große Flächen in Felder teilen (Nähte in Fugen/hinter Stützen) und Wellblech als Relief statt Geometrie – 24 % → 63 % Belegung ([szenen.md](szenen.md)).
 - Ein heller Fleck im Cycles-Render kann Glanz im Gegenlicht sein, den kein Diffus-Atlas zeigt: Atlas und Render mit gleicher Kamera nebeneinander prüfen (`<name>_atlas_view.png`, [szenen.md](szenen.md)).
+- Beim Backen einer zusammengefügten Kopie die Originale aus dem Render nehmen: deckungsgleiche Flächen verdunkeln AO (gemessen 0,43 statt 0,64; gefunden vom Hangar-Unteragenten, [bake_unity.py](../tools/bake_unity.py)).

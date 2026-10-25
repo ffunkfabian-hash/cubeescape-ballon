@@ -72,9 +72,9 @@ def data(S):
     R = S.REFERENCE
     return dict(
         format=FORMAT, name=name, de=S.META['de'], fbx=f'{name}.fbx',
-        light_atlas=dict(file=f'{name}_light.png', size=S.BAKE['size'],
-                         de='Diffuses Cycles-Licht (direkt + indirekt) mal Farbe, dazu Leuchtflächen, ohne Glanz; sRGB 8 bit, '
-                            'Werte über 1 abgeschnitten; Umgebung in Unity unbeleuchtet'),
+        light_atlas=dict(file=f'{name}_light.png', size=S.BAKE['size'], scale=r6(S.BAKE.get('scale', 1.0)),
+                         de='Diffuses Cycles-Licht (direkt + indirekt) mal Farbe, dazu Leuchtflächen, ohne Glanz; gespeichert '
+                            'Licht / scale als sRGB 8 bit, Unity multipliziert mit scale; Umgebung in Unity unbeleuchtet'),
         objects=groups(S), colliders=cols,
         spawn=dict(pos=r6(sp), yaw_deg=r6(S.SPAWN['yaw_deg'])),
         sky=dict(color=S.SKY['color'], strength=r6(S.SKY['strength'])),
@@ -505,7 +505,9 @@ def bake(objs, S, size, samples, out_path):
     rgb = px.reshape(-1, 4)[:, :3]
     clip = float((rgb.max(axis=1) > 1.0).mean())
     vmax = float(rgb.max())
-    lin = np.clip(rgb, 0.0, 1.0)
+    k = float(S.BAKE.get('scale', 1.0))
+    clip = float((rgb.max(axis=1) > k).mean())           # über k wird abgeschnitten
+    lin = np.clip(rgb / k, 0.0, 1.0)
     s = np.where(lin <= 0.0031308, 12.92 * lin, 1.055 * np.power(lin, 1 / 2.4) - 0.055)
     rng = np.random.default_rng(1)
     s = s + (rng.random(s.shape, dtype=np.float32) - rng.random(s.shape, dtype=np.float32)) / 255.0   # Dreiecks-Dither ±1 LSB
@@ -523,7 +525,7 @@ def bake(objs, S, size, samples, out_path):
         bpy.data.objects.remove(joined)
     for o in objs:
         o.hide_render = False
-    log(f'Atlas {os.path.basename(out_path)}: max {vmax:.2f}, {clip * 100:.2f} % der Texel über 1', t0)
+    log(f'Atlas {os.path.basename(out_path)}: max {vmax:.2f}, Skala {k:g}, {clip * 100:.2f} % der Texel über {k:g}', t0)
     return dict(bake_s=tb, clip=clip, vmax=vmax)
 
 
@@ -577,6 +579,7 @@ def atlas_view(S, objs, atlas, path):
     tex.image = bpy.data.images.load(atlas)
     tex.image.colorspace_settings.name = 'sRGB'
     em = N.new('ShaderNodeEmission')
+    em.inputs['Strength'].default_value = float(S.BAKE.get('scale', 1.0))   # wie Unity: Atlas mal scale
     nt.links.new(tex.outputs['Color'], em.inputs['Color'])
     out = next(n for n in N if n.type == 'OUTPUT_MATERIAL')
     nt.links.new(em.outputs['Emission'], out.inputs['Surface'])

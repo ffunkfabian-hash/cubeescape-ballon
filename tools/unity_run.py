@@ -88,10 +88,10 @@ def player(args, log):
     return locked([exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0', '-logFile', log] + args, log)
 
 
-def capture():
-    d = os.path.join(EV, 'capture')
+def capture(scene=None):
+    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}')
     shutil.rmtree(d, ignore_errors=True)
-    rc = player(['-ballonCapture', d], os.path.join(EV, 'capture.log'))
+    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []), os.path.join(EV, 'capture.log'))
     frames = sorted(glob.glob(os.path.join(d, '[0-9]*.png')))
     if rc or not frames:
         print('Aufnahme fehlgeschlagen', rc)
@@ -117,11 +117,11 @@ def capture():
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
-    out = os.path.join(EV, 'firstfeel_ablauf.mp4')
+    out = os.path.join(EV, 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
                     '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', out], check=True)
     shutil.rmtree(lab)
-    sheet = os.path.join(EV, 'firstfeel_ablauf.png')
+    sheet = os.path.join(EV, 'firstfeel_ablauf.png' if not scene else f'firstfeel_{scene}.png')
     pick = sorted({0, len(frames) - 1, *[f for f in marks if any(k in ' '.join(marks[f]) for k in
                                                                   ('Aimed', 'MagOut', 'MagIn', 'Chamber', 'inspect › Start'))]})
     subprocess.run(['magick', 'montage', *[x for f in pick for x in ('-label', f'Bild {f} · {" / ".join(marks.get(f, ["Start/Ende"]))}',
@@ -223,7 +223,23 @@ if __name__ == '__main__':
     if a == 'test':
         sys.exit(tests())
     if a == 'capture':
-        sys.exit(capture())
+        sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
+    if a == 'scenes':
+        d = os.path.join(EV, 'scene_shots')
+        shutil.rmtree(d, ignore_errors=True)
+        rc = player(['-ballonSceneShots', d], os.path.join(EV, 'scene_shots.log'))
+        for f in sorted(glob.glob(os.path.join(d, '*_umgebung.png'))):
+            name = os.path.basename(f).split('_')[0]
+            ref = os.path.join(EV, 'scenes', f'{name}_ref.png')
+            if os.path.exists(ref):
+                m = metrics(f, ref)
+                print(f"  {name}: SSIM {m['ssim']}, PSNR {m['psnr_db']} dB, Helligkeit Unity {m['lum_unity']} / Blender {m['lum_blender']}")
+                out = os.path.join(EV, f'szene_{name}_vergleich.png')
+                subprocess.run(['magick', 'montage', '-label', 'Blender (Cycles)', ref, '-label', f"Unity · SSIM {m['ssim']}", f,
+                                '-label', 'Unity mit Waffe', f.replace('_umgebung', '_waffe'), '-tile', '3x', '-geometry', '640x360+3+3',
+                                '-pointsize', '14', '-background', '#9EA4AC', out], check=True)
+                print('  →', out)
+        sys.exit(rc)
     if a == 'skins':
         d = os.path.join(EV, 'skins')
         shutil.rmtree(d, ignore_errors=True)

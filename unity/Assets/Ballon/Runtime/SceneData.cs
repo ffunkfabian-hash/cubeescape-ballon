@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Ballon.Ego
 {
-    [Serializable] public class SceneAtlasInfo { public string file; public int size; public string de; }
+    [Serializable] public class SceneAtlasInfo { public string file; public int size; public float scale; public string de; }
     [Serializable] public class SceneCollider { public string name; public float[] center, size; }
     [Serializable] public class SceneSpawn { public float[] pos; public float yaw_deg; }
     [Serializable] public class SceneSky { public string color; public float strength; }

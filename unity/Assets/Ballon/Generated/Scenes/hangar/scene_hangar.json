@@ -6,7 +6,8 @@
  "light_atlas": {
   "file": "hangar_light.png",
   "size": 4096,
-  "de": "Diffuses Cycles-Licht (direkt + indirekt) mal Farbe, dazu Leuchtflächen, ohne Glanz; sRGB 8 bit, Werte über 1 abgeschnitten; Umgebung in Unity unbeleuchtet"
+  "scale": 3.0,
+  "de": "Diffuses Cycles-Licht (direkt + indirekt) mal Farbe, dazu Leuchtflächen, ohne Glanz; gespeichert Licht / scale als sRGB 8 bit, Unity multipliziert mit scale; Umgebung in Unity unbeleuchtet"
  },
  "objects": [
   "Boden",
@@ -7273,11 +7274,11 @@
   },
   {
    "path": "basic/scenes/hangar.py",
-   "sha256": "04c79e2e4f168c79ba9a827212cf9cbf7c525cf60fb017b77ad0c1cc2748a728"
+   "sha256": "575aa40849d049ae52cd7bf18994e9da4251801e2accb9bd873092f92f160ee6"
   },
   {
    "path": "tools/scene_build.py",
-   "sha256": "860285ade5e0d64ac111ac83ca259854623ce54b721178c66b084fdc624103a3"
+   "sha256": "30fd320094bf1288f245f77147f8ac9bfe18916af4bb92a3717b64ae001933bb"
   }
  ]
 }

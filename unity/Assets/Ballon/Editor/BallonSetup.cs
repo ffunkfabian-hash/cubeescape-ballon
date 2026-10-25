@@ -423,7 +423,8 @@ namespace Ballon.Ego.Editor
                     AssetDatabase.CreateAsset(m, mp);
                 }
                 m.SetTexture("_BaseMap", atlas);        // Umgebung trägt ihr Licht im Atlas: unbeleuchtet, ein Material für alle Teile
-                m.SetColor("_BaseColor", Color.white);
+                float k = f.light_atlas.scale > 0 ? f.light_atlas.scale : 1f;        // Atlas = Licht / scale
+                m.SetColor("_BaseColor", new Color(k, k, k, 1).gamma);                 // Materialfarben sind Gamma-Werte
                 EditorUtility.SetDirty(m);
                 res.Add((json, prefab, m));
             }

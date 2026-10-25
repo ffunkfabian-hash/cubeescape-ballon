@@ -341,4 +341,5 @@ SPAWN = dict(pos=(0.0, 25.0, 0.0), yaw_deg=0.0, de='Hinter der Schusslinie (y = 
 TARGETS = [dict(pos=(x, SPAWN['pos'][1] - d, 1.45), distance=d) for d, xs in ((10, (-3, 0, 3)), (25, (-6, 0, 6)), (50, (-8, 0, 8)))
            for x in xs]
 REFERENCE = dict(eye_m=1.62, h_fov_deg=75.0, res=(1600, 900), view='AgX', look='AgX - Medium High Contrast', samples=256)
-BAKE = dict(size=4096, samples=256, margin_px=2, pack_margin_px=3, bounces=6, clamp_indirect=4.0)
+BAKE = dict(size=4096, samples=256, margin_px=2, pack_margin_px=3, bounces=6, clamp_indirect=4.0,
+            scale=3.0)   # Atlas speichert Licht / scale (8 bit sRGB), Unity rechnet mal scale: Sonnenflecken bis ≈ 2,5 bleiben erhalten

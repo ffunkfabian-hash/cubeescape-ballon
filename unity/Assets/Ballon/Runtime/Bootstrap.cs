@@ -71,6 +71,8 @@ namespace Ballon.Ego
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
             if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
+            string shotDir = Arg(args, "-ballonSceneShots");
+            if (shotDir != null) { StartCoroutine(SceneShots(shotDir)); return; }
             string skinsDir = Arg(args, "-ballonSkins");
             if (skinsDir != null) { StartCoroutine(SkinSheet(skinsDir)); return; }
             string bench = Arg(args, "-ballonBench");
@@ -238,7 +240,17 @@ namespace Ballon.Ego
             Player.C.ammo = 9;
             const float dt = 1f / 30f;
             Player.deltaOverride = () => dt;
-            Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
+            string sc = Arg(Environment.GetCommandLineArgs(), "-ballonScene");      // Aufnahme in einer Szene statt im Parcours
+            int si = -1;
+            for (int i = 0; i < SceneCount; i++) if (_scenes[i].data.name == sc) si = i;
+            if (si >= 0)
+            {
+                ShowScene(si);
+                for (int k = 0; k < 10; k++) yield return null;
+                var L = LoadedSceneAt(si);
+                Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
+            }
+            else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
             var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
@@ -262,6 +274,39 @@ namespace Ballon.Ego
         }
 
         int _f0;
+
+        /// <summary>Je Szene ein Bild vom Startpunkt (1600 × 900, ohne Viewmodel) wie das Blender-Referenzbild, dazu eins mit Waffe.</summary>
+        IEnumerator SceneShots(string dir)
+        {
+            Directory.CreateDirectory(dir);
+            Player.hud = false;
+            Player.C.ReadyNow();
+            var cam = Player.worldCam;
+            var rt = HdrTarget(1600, 900, 8);
+            cam.targetTexture = rt;
+            var tex = new Texture2D(1600, 900, TextureFormat.RGB24, false);
+            for (int i = 0; i < SceneCount; i++)
+            {
+                ShowScene(i);
+                Player.input = new ScriptedInput().Add(0, 100);
+                for (int k = 0; k < 20; k++) yield return null;      // Sonde, Spieler steht
+                var sp = LoadedSceneAt(i).spawnPos;
+                Player.Teleport(sp, LoadedSceneAt(i).spawnYaw, 0);
+                cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
+                int vmMask = Player.viewCam.cullingMask;
+                foreach (var withVm in new[] { false, true })
+                {
+                    Player.viewCam.cullingMask = withVm ? vmMask : 0;   // Kamera bleibt an: an ihr hängt der AgX-Durchgang
+                    yield return new WaitForEndOfFrame();
+                    yield return new WaitForEndOfFrame();
+                    ReadBack(rt, tex);
+                    File.WriteAllBytes(Path.Combine(dir, $"{_scenes[i].data.name}_{(withVm ? "waffe" : "umgebung")}.png"), tex.EncodeToPNG());
+                }
+                Player.viewCam.cullingMask = vmMask;
+            }
+            Debug.Log($"[Ballon] Szenenbilder in {dir}");
+            Application.Quit();
+        }
 
         /// <summary>Jeder Skin einmal in der Haltung hip und inspect_l im Studiolicht (Beleg Skins).</summary>
         IEnumerator SkinSheet(string dir)

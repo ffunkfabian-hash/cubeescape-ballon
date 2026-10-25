@@ -12,7 +12,7 @@ gilt dieselbe Umrechnung wie in `ego.json › axes.to_unity`: Unity = (−x, z, 
   "name": "hangar",
   "de": "Hangar",
   "fbx": "hangar.fbx",
-  "light_atlas": {"file": "hangar_light.png", "size": 4096,
+  "light_atlas": {"file": "hangar_light.png", "size": 4096, "scale": 3.0,
                   "de": "Diffuses Cycles-Licht (direkt + indirekt) mal Farbe, sRGB; Umgebung in Unity unbeleuchtet"},
   "objects": ["Boden", "Wand_N", "..."],
   "colliders": [{"name": "Boden", "center": [0, 0, -0.05], "size": [40, 60, 0.1]}],
@@ -28,6 +28,8 @@ gilt dieselbe Umrechnung wie in `ego.json › axes.to_unity`: Unity = (−x, z, 
 }
 ```
 
+- `light_atlas.scale`: Der Atlas speichert Licht / scale (8 bit sRGB), der Abnehmer multipliziert mit scale. So bleiben
+  Sonnenflecken über 1 erhalten (fehlt der Wert: 1).
 - `kind` ist `area`, `sun`, `point` oder `spot`. `dir` ist die Leuchtrichtung, `power_w` die Blender-Leistung, `size_m` die
   Kantenlänge der Fläche bzw. der Radius.
 - Unity beleuchtet die Umgebung nicht. Sie trägt ihr Licht im Atlas. Die Lichter dienen nur dem Viewmodel: Spots mit

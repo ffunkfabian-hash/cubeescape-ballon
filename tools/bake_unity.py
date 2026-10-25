@@ -207,6 +207,9 @@ def _joined(obs, join_all=False):
     bpy.context.view_layer.objects.active = cps[0]
     bpy.ops.object.join()
     j = bpy.context.view_layer.objects.active
+    for o in same:          # Originale liegen deckungsgleich unter der Kopie: AO sähe sie als Verdeckung (gemessen 0,43 statt 0,64)
+        o.hide_render = True
+    j['ballon_hidden'] = [o.name for o in same]
     return [j] + rest, j
 
 
@@ -262,6 +265,9 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False, 
         res[key] = os.path.basename(path)
     bpy.data.images.remove(ro)
     if tmp is not None:
+        for nm in tmp.get('ballon_hidden', []):
+            if nm in bpy.data.objects:
+                bpy.data.objects[nm].hide_render = False
         bpy.data.objects.remove(tmp)
     print(f'[bake_unity] {name}: {len(obs)} Backobjekte, {size}², {time.time() - t0:.0f} s', flush=True)
     return res
