@@ -1,4 +1,4 @@
-// Ego-Daten im Format ballon-ego/2, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
+// Ego-Daten im Format ballon-ego/3, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
 // Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -127,7 +127,7 @@ namespace Ballon.Ego
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
-        public const string Format = "ballon-ego/2";     // 2: textures (Atlanten, AgX-LUT); /1 neu exportieren (tools/export_unity.py)
+        public const string Format = "ballon-ego/3";     // 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;

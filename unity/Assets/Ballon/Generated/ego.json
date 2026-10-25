@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/2",
+ "format": "ballon-ego/3",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "637203c1bc202b0802bb5526de66124187b550848a8fa33d8faebd7669d42b0e"
+    "sha256": "86dd9059519e403e5c62acbc55af632f54b07f5a4651e58a62ec9aad340fe378"
    },
    {
     "path": "tools/bake_unity.py",

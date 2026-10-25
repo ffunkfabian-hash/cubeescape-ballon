@@ -80,6 +80,8 @@ namespace Ballon.Ego.Tests
         public void Falsches_Format_wird_abgelehnt()
         {
             Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/1\"}"));    // alter Export ohne Texturen
+            var ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/2\"}"));   // 0.7: mask statt spec, keine Skins
+            StringAssert.Contains("neu exportieren", ex.Message);
         }
 
         // ---------------------------------------------------------------- Achsen
