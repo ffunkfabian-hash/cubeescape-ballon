@@ -30,10 +30,21 @@ namespace Ballon.Ego
     {
         public readonly List<RangeTarget> targets = new List<RangeTarget>();
 
+        readonly List<float> _dist = new List<float>();
+
+        /// <summary>Treffer je Entfernung, aufsteigend („10 m: 3   25 m: 0 …“); läuft nur bei geänderter Anzeige.</summary>
         public string Summary()
         {
+            _dist.Clear();
+            foreach (var t in targets)
+            {
+                bool known = false;
+                foreach (var d in _dist) if (Mathf.Approximately(d, t.distance)) { known = true; break; }
+                if (!known) _dist.Add(t.distance);
+            }
+            _dist.Sort();
             var b = new StringBuilder();
-            foreach (var g in new[] { 10f, 25f, 50f })
+            foreach (var g in _dist)
             {
                 int n = 0;
                 foreach (var t in targets) if (Mathf.Approximately(t.distance, g)) n += t.hits;
@@ -112,7 +123,10 @@ namespace Ballon.Ego
             return g;
         }
 
-        static RangeTarget Target(Transform root, Vector3 at, float distance, float radius, Mats m)
+        /// <summary>Radius der Scheibe nach Entfernung: 0,30 m bis ≈ 17 m, 0,45 m bis ≈ 37 m, sonst 0,60 m (wie die Parcours-Stufen 10/25/50).</summary>
+        public static float TargetRadius(float distance) => distance < 17.5f ? 0.3f : distance < 37.5f ? 0.45f : 0.6f;
+
+        public static RangeTarget Target(Transform root, Vector3 at, float distance, float radius, Mats m)
         {
             float h = 1.45f;
             var post = GameObject.CreatePrimitive(PrimitiveType.Cylinder);

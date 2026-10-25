@@ -19,6 +19,19 @@ namespace Ballon.Ego.Editor
         /// <summary>Gebackene Atlanten und LUT aus Blender: Farbe sRGB, Masken und Normale linear, LUT ohne Mips und Kompression.</summary>
         void OnPreprocessTexture()
         {
+            if (assetPath.StartsWith("Assets/Ballon/Generated/Scenes/") && assetPath.EndsWith("_light.png"))
+            {
+                var li = (TextureImporter)assetImporter;     // Lichtatlas einer Szene (ballon-scene/1): sRGB-Farbe, im Shader unbeleuchtet
+                li.textureType = TextureImporterType.Default;
+                li.sRGBTexture = true;
+                li.alphaSource = TextureImporterAlphaSource.None;
+                li.maxTextureSize = 4096;
+                li.textureCompression = TextureImporterCompression.CompressedHQ;
+                li.mipmapEnabled = true;
+                li.anisoLevel = 8;
+                li.wrapMode = TextureWrapMode.Clamp;
+                return;
+            }
             if (!assetPath.StartsWith("Assets/Ballon/Generated/Textures/")) return;
             var ti = (TextureImporter)assetImporter;
             var f = Path.GetFileNameWithoutExtension(assetPath);
@@ -377,6 +390,46 @@ namespace Ballon.Ego.Editor
             return res;
         }
 
+        /// <summary>Szenen aus Generated/Scenes/*/scene_*.json (Blender, tools/scene_build.py): JSON, FBX der Umgebung und ein Unlit-Material
+        /// mit dem Lichtatlas. Unvollständige oder falsch formatierte Szenen werden übersprungen (Warnung), Fehlen aller ist normal.</summary>
+        static List<(TextAsset json, GameObject prefab, Material mat)> SceneAssets()
+        {
+            var res = new List<(TextAsset, GameObject, Material)>();
+            var dir = Gen + "/Scenes";
+            if (!Directory.Exists(dir)) return res;
+            var files = Directory.GetFiles(dir, "scene_*.json", SearchOption.AllDirectories).Select(f => f.Replace('\\', '/')).ToList();
+            files.Sort(System.StringComparer.Ordinal);
+            foreach (var path in files)
+            {
+                SceneFile f;
+                try { f = SceneFile.Parse(File.ReadAllText(path)); }
+                catch (System.Exception e) { Debug.LogWarning($"[Ballon] {path} übersprungen: {e.Message}"); continue; }
+                var d = Path.GetDirectoryName(path).Replace('\\', '/');
+                foreach (var a in new[] { path, $"{d}/{f.fbx}", $"{d}/{f.light_atlas.file}" })
+                    if (File.Exists(a)) AssetDatabase.ImportAsset(a, ImportAssetOptions.ForceSynchronousImport);
+                var json = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{d}/{f.fbx}");
+                var atlas = AssetDatabase.LoadAssetAtPath<Texture2D>($"{d}/{f.light_atlas.file}");
+                if (json == null || prefab == null || atlas == null)
+                {
+                    Debug.LogWarning($"[Ballon] {path} übersprungen: FBX {f.fbx} oder Lichtatlas {f.light_atlas.file} fehlt");
+                    continue;
+                }
+                var mp = $"{Gen}/Materials/Scene_{f.name}.mat";
+                var m = AssetDatabase.LoadAssetAtPath<Material>(mp);
+                if (m == null)
+                {
+                    m = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = $"Scene_{f.name}" };
+                    AssetDatabase.CreateAsset(m, mp);
+                }
+                m.SetTexture("_BaseMap", atlas);        // Umgebung trägt ihr Licht im Atlas: unbeleuchtet, ein Material für alle Teile
+                m.SetColor("_BaseColor", Color.white);
+                EditorUtility.SetDirty(m);
+                res.Add((json, prefab, m));
+            }
+            return res;
+        }
+
         static void Scene(Dictionary<string, Material> mats)
         {
             var sc = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -397,6 +450,11 @@ namespace Ballon.Ego.Editor
             b.flash = mats["flash"];
             b.post = mats["post"];
             b.decal = mats["decal"];
+            var scenes = SceneAssets();
+            b.sceneJson = scenes.Select(x => x.json).ToArray();
+            b.scenePrefabs = scenes.Select(x => x.prefab).ToArray();
+            b.sceneMaterials = scenes.Select(x => x.mat).ToArray();
+            Debug.Log($"[Ballon] {scenes.Count} Szene(n) in {ScenePath}: {string.Join(", ", scenes.Select(x => x.json.name))}");
             EditorSceneManager.SaveScene(sc, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
         }

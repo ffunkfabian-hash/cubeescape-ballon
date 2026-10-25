@@ -60,7 +60,7 @@ def tests():
             continue
         t = ET.parse(res).getroot()
         total = int(t.get('total', 0))
-        if code or t.get('result', '').split('(')[0] != 'Passed' or total == 0:
+        if code or t.get('result', '').split('(')[0].split(':')[0] not in ('Passed', 'Skipped') or total == 0 or t.get('failed') != '0':
             print(f"{plat}: Unity-Lauf Exit {code}, Ergebnis {t.get('result')}, {total} Tests – nicht grün")
             rc = 1
         print(f"{plat}: {t.get('passed')} bestanden, {t.get('failed')} fehlgeschlagen, {t.get('skipped', '0')} übersprungen "
@@ -68,7 +68,9 @@ def tests():
         for c in t.iter('test-case'):
             out = c.find('output')
             msg = c.find('failure/message')
-            if c.get('result') != 'Passed':
+            if c.get('result') == 'Skipped':          # Assert.Ignore (z. B. „keine Szene exportiert“) ist kein Fehler
+                print('  ⊘', c.get('name'), '–', (c.find('reason/message').text or '').strip()[:120] if c.find('reason/message') is not None else 'übersprungen')
+            elif c.get('result') != 'Passed':
                 rc = 1
                 print('  ✗', c.get('name'), (msg.text or '').strip()[:400] if msg is not None else '')
             elif out is not None and out.text:
