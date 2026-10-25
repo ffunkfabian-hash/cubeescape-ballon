@@ -6,6 +6,8 @@
   Sichtfenster, Holo mit Absehen `dot`; drei Sichtungsrunden, 8 Skins, Bewegung gesichtet.
 - Namen geklärt (Nutzerwahl (a)): Stil v2.1 = Waffenstil, Visier-Standard 3 = Visierregeln (früher „Visier-Designsprache v3“), kein Waffenstil v3.
   Bericht [docs/versions/0.11-compact.md](docs/versions/0.11-compact.md).
+- Patch: Familienmaße v2.1 aus den Specs ([docs/familienmasse.md](docs/familienmasse.md), `make_docs.py`); v2.1-Specs in `data/specs/`,
+  `./check` vergleicht sie mit dem Entwurf. Stilhandbuch §6: alle Familienbausteine mit Parametern und Nutzung, Muster im Waffenmodul.
 
 ## 0.6.0 „Riflekin“ – unveröffentlicht (lokal, in Arbeit)
 

@@ -99,6 +99,18 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
             p = next((x for x in W.PARTS if x['id'] == pid), None)
             if not p or 'move' not in p:
                 fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+    sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')     # Quelle der Familienmaße (docs/familienmasse.md)
+    if not os.path.exists(sp):
+        fail(f'{wid}: Spec fehlt in data/specs (Vollrendering, dann tools/sync_specs.py)')
+    else:
+        S = json.load(open(sp, encoding='utf-8'))
+        if [p['id'] for p in S['parts']] != ids:
+            fail(f'{wid}: Spec passt nicht zum Entwurf (neu bauen, tools/sync_specs.py)')
+        for k, A in W.ANCHORS.items():
+            q = S['anchors'].get(k, {}).get('position_m')
+            at = list(A['at']) + [0] * (3 - len(A['at']))
+            if not q or max(abs(-q[1] * 1000 - at[0]), abs(q[2] * 1000 - at[1]), abs(q[0] * 1000 - at[2])) > 0.6:
+                fail(f'{wid}: Anker {k} im Spec weicht vom Entwurf ab (neu bauen, tools/sync_specs.py)')
     from basic.reticles import SIGHT   # Visier-Standard: Höhe 66 ± 4 mm, Augenabstand je Visiertyp
     e = W.ANCHORS.get('Socket_Eye', {})
     if not e.get('std') or e.get('sight_type') not in SIGHT['types']:
