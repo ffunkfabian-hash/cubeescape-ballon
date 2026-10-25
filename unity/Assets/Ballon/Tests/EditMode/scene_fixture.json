@@ -1,0 +1,28 @@
+{
+  "format": "ballon-scene/1",
+  "name": "testraum",
+  "de": "Testraum",
+  "fbx": "testraum.fbx",
+  "light_atlas": {"file": "testraum_light.png", "size": 1024, "de": "Fixture ohne Bild"},
+  "objects": ["Boden", "Wand_N"],
+  "colliders": [
+    {"name": "Boden", "center": [0, 0, -0.05], "size": [40, 60, 0.1]},
+    {"name": "Kiste", "center": [3, -4, 0.5], "size": [1, 2, 1]}
+  ],
+  "spawn": {"pos": [0, 20, 0], "yaw_deg": 30},
+  "sky": {"color": "#9FB4C8", "strength": 1.0},
+  "ambient": {"color": "#8C96A3", "strength": 0.45},
+  "lights": [
+    {"name": "Strahler_1", "kind": "area", "pos": [0, 0, 13], "dir": [0, 0, -1], "power_w": 800, "size_m": 1.5, "color": "#FFF2E0"},
+    {"name": "Spot_1", "kind": "spot", "pos": [5, 5, 4], "dir": [0, 0, -1], "power_w": 400, "size_m": 0.1, "color": "#FFFFFF"},
+    {"name": "Punkt_1", "kind": "point", "pos": [-5, 5, 2], "power_w": 100, "size_m": 0.1, "color": "#FFFFFF"},
+    {"name": "Sonne", "kind": "sun", "pos": [0, 0, 30], "dir": [0.3, 0.2, -1], "power_w": 3, "size_m": 0, "color": "#FFFFFF"}
+  ],
+  "targets": [
+    {"pos": [0, -10, 1.45], "distance": 10},
+    {"pos": [3, -25, 1.45], "distance": 25}
+  ],
+  "reference": {"png": "testraum_ref.png", "camera_pos": [0, 20, 1.62], "yaw_deg": 0, "pitch_deg": 0, "h_fov_deg": 75,
+                "view": "AgX", "look": "AgX - Medium High Contrast"},
+  "sources": [{"path": "basic/scenes/testraum.py", "sha256": "0000"}]
+}

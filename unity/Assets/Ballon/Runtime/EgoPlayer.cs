@@ -57,6 +57,20 @@ namespace Ballon.Ego
             _hHits = -1;                     // Anzeige neu bauen
         }
         public RangeTargets range;
+        public string sceneLabel;        // null = keine Szenen vorhanden, dann nennt die Anzeige keine
+        const string HelpA = "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
+                             "F Betrachten · 1/2 Ziehen/Wegstecken · K Skin · ";
+        const string HelpB = "Esc Maus frei · H Anzeige";
+        string _help = HelpA + HelpB;
+
+        /// <summary>Szene (Name für die Anzeige) und ihre Zielscheiben setzen; die Anzeige baut ihren Text neu.</summary>
+        public void SetScene(string label, RangeTargets targets)
+        {
+            sceneLabel = label;
+            _help = HelpA + "L Szene · " + HelpB;
+            range = targets;
+            _hHits = -1;
+        }
 
         public static EgoPlayer Create(EgoSolver S, GameObject weaponModel, GameObject armsModel, IDictionary<string, Material> roles,
                                        int vmLayer, Vector3 at, float yaw)
@@ -270,17 +284,17 @@ namespace Ballon.Ego
             GUI.Label(new Rect(16, 12, 900, 22), _stateText, small);
             GUI.Label(new Rect(16, 32, 900, 22), _hitText, small);
             if (Time.time < 12f || Cursor.lockState != CursorLockMode.Locked)
-                GUI.Label(new Rect(16, Screen.height - 46, 1200, 40),
-                    "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
-                    "F Betrachten · 1/2 Ziehen/Wegstecken · K Skin · Esc Maus frei · H Anzeige", small);
+                GUI.Label(new Rect(16, Screen.height - 46, 1200, 40), _help, small);
         }
 
         // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild)
         string _ammoText = "", _stateText = "", _hitText = "";
+        public string HudHitText => _hitText;
         int _hAmmo = -1, _hFrame = -1, _hHits = -1;
         string _hAction, _hMarker;
 
-        void UpdateHudText()
+        /// <summary>Anzeigetexte aktualisieren; baut nur bei geänderten Werten neu (öffentlich für den GC-Test).</summary>
+        public void UpdateHudText()
         {
             if (C.ammo != _hAmmo) { _hAmmo = C.ammo; _ammoText = $"{C.ammo} / {C.magSize}"; }
             string mk = Time.time - lastMarkerTime < 1.2f ? lastMarker : "";
@@ -294,7 +308,8 @@ namespace Ballon.Ego
             {
                 _hHits = hits;
                 string sk = skinNames != null && skinNames.Length > 0 ? $"   Skin {skinNames[skin]} (K)" : "";
-                _hitText = $"Treffer {hits}   {(range != null ? range.Summary() : "")}{sk}";
+                string sz = sceneLabel != null ? $"   Szene {sceneLabel} (L)" : "";
+                _hitText = $"Treffer {hits}   {(range != null ? range.Summary() : "")}{sk}{sz}";
             }
         }
 

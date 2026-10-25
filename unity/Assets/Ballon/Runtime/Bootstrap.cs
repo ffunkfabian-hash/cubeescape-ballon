@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Ballon.Ego
 {
@@ -17,6 +18,9 @@ namespace Ballon.Ego
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
         public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
         public Material[] skinMaterials;         // Waffen-Skins in der Reihenfolge von ego.json › textures.skins (0 = standard)
+        public TextAsset[] sceneJson;            // Szenen (ballon-scene/1), von BallonSetup aus Generated/Scenes/*/scene_*.json gesetzt;
+        public GameObject[] scenePrefabs;        // gleiche Reihenfolge: FBX der Umgebung
+        public Material[] sceneMaterials;        // und Unlit-Material mit dem Lichtatlas
         public const int ViewmodelLayer = 31;
         public const int OutRenderer = 1;
         public const int StudioEmitLayer = 30;   // Lichtflächen nur für die Reflexionssonde (Vergleichsmodus)         // Renderer „Out“ mit dem AgX-Durchgang (BallonSetup.OutRenderer)     // Ebene „Viewmodel“ (in den Projekteinstellungen benannt)
@@ -37,15 +41,7 @@ namespace Ballon.Ego
             S = new EgoSolver(D);
             var roles = new Dictionary<string, Material>();
             foreach (var m in roleMaterials) roles[m.name.Replace("Role_", "")] = m;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.62f, 0.66f, 0.72f);
-            RenderSettings.ambientEquatorColor = new Color(0.46f, 0.48f, 0.5f);
-            RenderSettings.ambientGroundColor = new Color(0.28f, 0.28f, 0.29f);
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(0.62f, 0.66f, 0.70f);
-            RenderSettings.fogStartDistance = 60;
-            RenderSettings.fogEndDistance = 220;
+            ParcoursLook();
             Sun = new GameObject("Sonne").AddComponent<Light>();
             Sun.type = LightType.Directional;
             Sun.intensity = 1.25f;
@@ -53,24 +49,24 @@ namespace Ballon.Ego
             Sun.shadows = LightShadows.Soft;
             Sun.transform.rotation = Quaternion.Euler(48, -35, 0);
             RangeRoot = new GameObject("Parcours").transform;
-            Range = RangeBuilder.Build(RangeRoot, new RangeBuilder.Mats { floor = floor, wall = wall, cover = cover, target = target,
-                                                                          targetRing = targetRing, flash = flash, post = post });
+            _targetMats = new RangeBuilder.Mats { floor = floor, wall = wall, cover = cover, target = target,
+                                                  targetRing = targetRing, flash = flash, post = post };
+            Range = RangeBuilder.Build(RangeRoot, _targetMats);
             Probe = new GameObject("Reflexion").AddComponent<ReflectionProbe>();   // Metalle spiegeln den Parcours statt Schwarz
-            Probe.transform.position = new Vector3(0, 1.6f, 6);
             Probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
             Probe.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;
             Probe.timeSlicingMode = UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.NoTimeSlicing;
-            Probe.size = new Vector3(44, 24, 120);
-            Probe.resolution = 128;
-            Probe.cullingMask = ~(1 << ViewmodelLayer);
             Probe.clearFlags = UnityEngine.Rendering.ReflectionProbeClearFlags.SolidColor;
-            Probe.backgroundColor = RenderSettings.fogColor;
+            ParcoursProbe();
             Probe.RenderProbe();
-            Player = EgoPlayer.Create(S, weaponModel, armsModel, roles, ViewmodelLayer, new Vector3(0, 0.01f, 1.5f), 0);
+            Player = EgoPlayer.Create(S, weaponModel, armsModel, roles, ViewmodelLayer, ParcoursStart, 0);
+            _parcoursBg = Player.worldCam.backgroundColor;
+            _worldMask = Player.worldCam.cullingMask;
             Player.decalMat = decal;
             Player.skins = skinMaterials;
             Player.skinNames = D.textures?.skins?.Select(s => s.de).ToArray();
             Player.range = Range;
+            LoadScenes();
             var args = Environment.GetCommandLineArgs();
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
@@ -82,6 +78,139 @@ namespace Ballon.Ego
             else if (cap != null) StartCoroutine(Capture(cap));
             else if (cmp != null) StartCoroutine(Compare(cmp));
             else Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        // ------------------------------------------------------------------------------------------------ Parcours
+        public static readonly Vector3 ParcoursStart = new Vector3(0, 0.01f, 1.5f);
+        RangeBuilder.Mats _targetMats;
+        Color _parcoursBg;
+        int _worldMask;
+
+        /// <summary>Licht und Nebel des Parcours (Awake und Rückkehr aus einer Szene).</summary>
+        void ParcoursLook()
+        {
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor = new Color(0.62f, 0.66f, 0.72f);
+            RenderSettings.ambientEquatorColor = new Color(0.46f, 0.48f, 0.5f);
+            RenderSettings.ambientGroundColor = new Color(0.28f, 0.28f, 0.29f);
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = new Color(0.62f, 0.66f, 0.70f);
+            RenderSettings.fogStartDistance = 60;
+            RenderSettings.fogEndDistance = 220;
+        }
+
+        void ParcoursProbe()
+        {
+            Probe.transform.position = new Vector3(0, 1.6f, 6);
+            Probe.center = Vector3.zero;
+            Probe.size = new Vector3(44, 24, 120);
+            Probe.resolution = 128;
+            Probe.hdr = true;
+            Probe.cullingMask = ~(1 << ViewmodelLayer);
+            Probe.backgroundColor = RenderSettings.fogColor;
+        }
+
+        // ------------------------------------------------------------------------------------------------ Szenen (0.8)
+        sealed class SceneEntry { public SceneFile data; public GameObject prefab; public Material mat; public LoadedScene loaded; }
+        readonly List<SceneEntry> _scenes = new List<SceneEntry>();
+
+        /// <summary>-1 = Parcours, sonst Index der Szene.</summary>
+        public int CurrentScene { get; private set; } = -1;
+        public int SceneCount => _scenes.Count;
+        public string SceneName(int i) => i < 0 ? "Parcours" : string.IsNullOrEmpty(_scenes[i].data.de) ? _scenes[i].data.name : _scenes[i].data.de;
+        /// <summary>Die gebaute Szene i, oder null, solange sie noch nie gezeigt wurde.</summary>
+        public LoadedScene LoadedSceneAt(int i) => _scenes[i].loaded;
+
+        void LoadScenes()
+        {
+            if (sceneJson == null) return;
+            for (int i = 0; i < sceneJson.Length; i++)
+            {
+                if (sceneJson[i] == null) continue;
+                try
+                {
+                    AddScene(SceneFile.Parse(sceneJson[i].text), scenePrefabs != null && i < scenePrefabs.Length ? scenePrefabs[i] : null,
+                             sceneMaterials != null && i < sceneMaterials.Length ? sceneMaterials[i] : null);
+                }
+                catch (FormatException e)
+                {
+                    Debug.LogError($"[Ballon] {sceneJson[i].name}: {e.Message}");
+                }
+            }
+        }
+
+        /// <summary>Szene anmelden (gebaut wird erst beim ersten Zeigen); gibt ihren Index zurück.</summary>
+        public int AddScene(SceneFile f, GameObject prefab, Material atlasMaterial)
+        {
+            if (prefab == null) Debug.LogWarning($"[Ballon] Szene {f.name}: kein FBX – nur Collider, Lichter und Ziele");
+            if (atlasMaterial == null) Debug.LogWarning($"[Ballon] Szene {f.name}: kein Atlas-Material");
+            _scenes.Add(new SceneEntry { data = f, prefab = prefab, mat = atlasMaterial });
+            if (Player != null && _scenes.Count == 1) Player.SetScene(SceneName(CurrentScene), Range);   // Anzeige nennt ab jetzt die Szene
+            return _scenes.Count - 1;
+        }
+
+        public void RemoveScene(int i)
+        {
+            if (CurrentScene == i) ShowScene(-1);
+            if (_scenes[i].loaded != null) Destroy(_scenes[i].loaded.root.gameObject);
+            _scenes.RemoveAt(i);
+            if (CurrentScene > i) CurrentScene--;
+        }
+
+        /// <summary>Taste L: Parcours → Szene 0 → … → letzte Szene → Parcours.</summary>
+        public void NextScene() => ShowScene(CurrentScene + 1 >= _scenes.Count ? -1 : CurrentScene + 1);
+
+        /// <summary>Parcours (-1) oder Szene i zeigen: Umgebung, Licht, Himmel, Reflexionssonde, Ziele und Spieler wechseln gemeinsam.</summary>
+        public void ShowScene(int i)
+        {
+            if (i < -1 || i >= _scenes.Count) throw new ArgumentOutOfRangeException(nameof(i), $"Szene {i} (von {_scenes.Count})");
+            if (i == CurrentScene) return;
+            if (CurrentScene >= 0 && _scenes[CurrentScene].loaded != null) _scenes[CurrentScene].loaded.root.gameObject.SetActive(false);
+            CurrentScene = i;
+            var cam = Player.worldCam;
+            if (i < 0)
+            {
+                RangeRoot.gameObject.SetActive(true);
+                Sun.enabled = true;
+                ParcoursLook();
+                cam.backgroundColor = _parcoursBg;
+                cam.cullingMask = _worldMask;
+                ParcoursProbe();
+                Probe.RenderProbe();
+                Player.SetScene("Parcours", Range);
+                Player.Teleport(ParcoursStart, 0, 0);
+                return;
+            }
+            var e = _scenes[i];
+            var L = e.loaded ?? (e.loaded = SceneLoader.Build(e.data, e.prefab, e.mat, backdrop, _targetMats));
+            RangeRoot.gameObject.SetActive(false);
+            Sun.enabled = false;
+            L.root.gameObject.SetActive(true);
+            RenderSettings.fog = false;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = L.ambientGamma;
+            RenderSettings.ambientIntensity = 1f;
+            DynamicGI.UpdateEnvironment();
+            cam.backgroundColor = L.skyGamma;                       // Himmel: Farbe × Stärke aus der Szene
+            cam.cullingMask = _worldMask & ~(1 << StudioEmitLayer);  // Lichtflächen sieht nur die Sonde
+            var eye = L.spawnPos + Vector3.up * Player.move.eye;
+            Probe.transform.position = eye;
+            Probe.center = L.bounds.center - eye;
+            Probe.size = L.bounds.size + Vector3.one * 2f;
+            Probe.resolution = 256;
+            Probe.hdr = true;
+            Probe.cullingMask = ~(1 << ViewmodelLayer);              // unbeleuchtete Umgebung plus Lichtflächen
+            Probe.backgroundColor = L.skyGamma;
+            Probe.RenderProbe();
+            Player.SetScene(SceneName(i), L.targets);
+            Player.Teleport(L.spawnPos, L.spawnYaw, 0);
+        }
+
+        void Update()
+        {
+            var k = Keyboard.current;
+            if (k != null && k.lKey.wasPressedThisFrame && _scenes.Count > 0) NextScene();
         }
 
         static string Arg(string[] a, string k)
