@@ -149,6 +149,28 @@ namespace Ballon.Ego.Tests
             return r;
         }
 
+        /// <summary>Bestzeiten der echten Szenen sichern und danach zurückschreiben (die Tests löschen sie, um frisch zu prüfen).</summary>
+        sealed class KeepBest : IDisposable
+        {
+            readonly List<(string key, bool had, float value)> _saved = new List<(string, bool, float)>();
+
+            public KeepBest(Bootstrap b)
+            {
+                for (int i = 0; i < b.SceneCount; i++)
+                {
+                    string k = CourseRun.PrefsKey(b.SceneDataAt(i).name);
+                    _saved.Add((k, PlayerPrefs.HasKey(k), PlayerPrefs.GetFloat(k, 0f)));
+                }
+            }
+
+            public void Dispose()
+            {
+                foreach (var s in _saved)
+                    if (s.had) PlayerPrefs.SetFloat(s.key, s.value); else PlayerPrefs.DeleteKey(s.key);
+                PlayerPrefs.Save();
+            }
+        }
+
         static void Idle(EgoPlayer p)
         {
             p.input = new ScriptedInput().Add(0, 1000);
@@ -755,6 +777,7 @@ namespace Ballon.Ego.Tests
             var oldInput = p.input;
             Idle(p);
             var before = Snapshot.Take(b);
+            var keep = new KeepBest(b);
             try
             {
                 for (int i = 0; i < b.SceneCount; i++)
@@ -815,6 +838,7 @@ namespace Ballon.Ego.Tests
             finally
             {
                 p.input = oldInput;
+                keep.Dispose();
                 if (b.CurrentScene != -1) b.ShowScene(-1);
             }
         }
@@ -827,6 +851,7 @@ namespace Ballon.Ego.Tests
             var b = B;
             var p = b.Player;
             int ran = 0;
+            var keep = new KeepBest(b);
             try
             {
                 for (int i = 0; i < b.SceneCount; i++)
@@ -864,6 +889,7 @@ namespace Ballon.Ego.Tests
             finally
             {
                 p.enabled = true;
+                keep.Dispose();
                 if (b.CurrentScene != -1) b.ShowScene(-1);
             }
         }

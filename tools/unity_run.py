@@ -142,6 +142,9 @@ def course(lighting='tag', scene='hangar'):
     if not frames:
         print('Aufnahme fehlgeschlagen', rc)
         return 1
+    if not os.path.exists(os.path.join(d, 'result.txt')):
+        print('Aufnahme unvollständig (kein result.txt), Protokoll:', os.path.join(EV, 'course.log'))
+        return 1
     result = open(os.path.join(d, 'result.txt'), encoding='utf-8').read().split('\n')[0]
     rows = [ln.strip().split(',') for ln in open(os.path.join(d, 'frames.csv'), encoding='utf-8')]
     lab = os.path.join(d, '_lab')
@@ -286,7 +289,7 @@ if __name__ == '__main__':
                 print('  →', out)
         sys.exit(rc)
     if a == 'course':
-        sys.exit(course(*sys.argv[2:3]))
+        sys.exit(course(*sys.argv[2:4]))                         # course [<licht> [<szene>]]
     if a == 'skins':
         d = os.path.join(EV, 'skins')
         shutil.rmtree(d, ignore_errors=True)

@@ -138,6 +138,7 @@ namespace Ballon.Ego
         public int SceneCount => _scenes.Count;
         /// <summary>Anzahl der Lichtszenen der gezeigten Szene (0 im Parcours).</summary>
         public int LightingCount => CurrentScene < 0 ? 0 : _scenes[CurrentScene].data.lightings.Length;
+        public SceneFile SceneDataAt(int i) => _scenes[i].data;
         public string SceneName(int i) => i < 0 ? "Parcours" : string.IsNullOrEmpty(_scenes[i].data.de) ? _scenes[i].data.name : _scenes[i].data.de;
         /// <summary>Die gebaute Szene i, oder null, solange sie noch nie gezeigt wurde.</summary>
         public LoadedScene LoadedSceneAt(int i) => _scenes[i].loaded;
@@ -166,6 +167,9 @@ namespace Ballon.Ego
         static Texture2D[][] Shape(SceneFile f, Texture2D[] flat)
         {
             var r = new Texture2D[f.lightings.Length][];
+            if (flat != null && flat.Length != f.lightings.Length * f.zones.Length)
+                Debug.LogWarning($"[Ballon] Szene {f.name}: {flat.Length} Atlanten eingetragen, erwartet {f.lightings.Length} Lichtszenen × {f.zones.Length} Zonen – " +
+                                 "python3 tools/unity_run.py setup erneut ausführen");
             for (int li = 0; li < r.Length; li++)
             {
                 r[li] = new Texture2D[f.zones.Length];

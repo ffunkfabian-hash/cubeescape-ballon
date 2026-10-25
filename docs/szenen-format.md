@@ -38,7 +38,7 @@ gilt dieselbe Umrechnung wie in `ego.json › axes.to_unity`: Unity = (−x, z, 
   ],
   "course": {
     "start":  {"center": [0, 22, 1.2], "size": [6, 0.4, 2.4]},
-    "finish": {"center": [0, 22, 1.2], "size": [6, 0.4, 2.4]},
+    "finish": {"center": [8, 22, 1.2], "size": [6, 0.4, 2.4]},
     "checkpoints": [{"name": "Gerüst oben", "center": [-12, 0, 5.2], "size": [3, 1, 2.4]}],
     "targets": [{"name": "T01", "pos": [-6, 10, 1.6], "normal": [0, 1, 0], "radius": 0.3}],
     "route": [[0, 22, 0], [-6, 12, 0], [-12, 0, 4.5]],
@@ -56,8 +56,13 @@ gilt dieselbe Umrechnung wie in `ego.json › axes.to_unity`: Unity = (−x, z, 
 - **Atlanten:** speichern Licht / `scale` (8 bit sRGB). Unity multipliziert mit `scale`, so bleiben Sonnenflecken über 1
   erhalten.
 - **Beleuchtung:** Unity beleuchtet die Umgebung nicht, sie trägt ihr Licht im Atlas. Die Lichter dienen nur dem Viewmodel:
-  - Flächenlicht und Spot mit P/π², Punktlicht mit P/(4π²), Sonne mit S/π;
+  - Flächenlicht mit P/π², Spot und Punktlicht mit P/(4π²), Sonne mit S/π;
   - dazu Lichtflächen in der Reflexionssonde mit P/(π·A), wie `Bootstrap.StudioLike`.
 - **Parcours:** Tore und Kontrollpunkte sind achsparallele Auslösequader. Die Zielscheiben baut Unity an `course.targets`:
-  Mitte `pos`, Blickrichtung `normal`, Radius `radius`. `route` ist die Strecke für Wegmarken am Boden.
+  Mitte `pos`, Blickrichtung `normal`, Radius `radius`. `route` ist die Strecke für Wegmarken am Boden; `z` ist die Höhe der
+  Lauffläche (auf Kisten und Gerüst ungleich 0). Start und Ziel dürfen derselbe Quader sein (Runde): Dann gewinnt das Ziel, sobald alle
+  Kontrollpunkte passiert sind, sonst startet das Tor den Lauf neu.
+- **Pflicht und optional:** Pflicht sind `format`, `name`, `fbx`, `zones` (mit `name`, `objects`, `size`), `objects`, `colliders`,
+  `spawn`, `lightings` (mit `name`, `atlases` für jede Zone, `scale` > 0, `sky`, `ambient`, `lights`). Optional sind `de`, `texel_m`,
+  `reference`, `course`, `targets` und `sources`; Unity liest `reference` und `sources` nicht.
 - **`sources`** geht in den Abgleich in `./check` ein, wie bei `ego.json`.
