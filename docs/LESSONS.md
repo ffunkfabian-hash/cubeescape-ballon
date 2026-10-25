@@ -35,3 +35,9 @@
 - Lightmap-Atlas mit Tausenden kleiner Inseln: große Flächen in Felder teilen (Nähte in Fugen/hinter Stützen) und Wellblech als Relief statt Geometrie – 24 % → 63 % Belegung ([szenen.md](szenen.md)).
 - Ein heller Fleck im Cycles-Render kann Glanz im Gegenlicht sein, den kein Diffus-Atlas zeigt: Atlas und Render mit gleicher Kamera nebeneinander prüfen (`<name>_atlas_view.png`, [szenen.md](szenen.md)).
 - Beim Backen einer zusammengefügten Kopie die Originale aus dem Render nehmen: deckungsgleiche Flächen verdunkeln AO (gemessen 0,43 statt 0,64; gefunden vom Hangar-Unteragenten, [bake_unity.py](../tools/bake_unity.py)).
+- Lightmap-Packen mit festem Inselabstand: tausende Kleinteile fressen den Atlas (Testlauf mit ¼-Atlas: 0 % Belegung). Verdeckte Flächen weglassen und Smart UV 66° statt 50°: Zone `nah` 42 → 71 % ([szenen.md](szenen.md)).
+- Fasenringe an Zylindern zerfallen in Smart UV zu Bogeninseln mit großem Rahmen: Zylinder glatt ohne Fase, nur Kästen fasen ([scenes/__init__.py](../basic/scenes/__init__.py)).
+- Teure Knoten (Bevel-Abrieb, AO-Schmutz) nur einmal in einen Albedo-Atlas backen, die Lichtszenen danach mit dem Albedo-Bild: vier Lichtszenen ohne vierfache Knotenkosten ([scene_build.py](../tools/scene_build.py)).
+- Jeder Cycles-Backaufruf überträgt die ganze Szene neu (≈ 30 s auf der M5-GPU): alle Zonen in einem Aufruf backen, je Zone eigene Materialkopien und Zielbild (4,1 → 2,9 min je Lichtszene).
+- Lightmaps mit OIDN über den Kompositor entrauschen (Blender 5: `scene.compositing_node_group`, `NodeGroupOutput`; Führung Albedo + Normalen): 64 Samples + OIDN statt 128 ohne, sichtbar sauberer ([scene_build.py](../tools/scene_build.py)).
+- Blender 5.2 backt Normalen nur im Objekt- oder Tangentenraum (`normal_space` ohne WORLD); bei Objekten im Ursprung ist Objektraum = Welt.
