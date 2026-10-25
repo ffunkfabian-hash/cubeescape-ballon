@@ -92,7 +92,7 @@ Halle 40 × 60 m, Dach innen 14 m; offenes Tor 34 × 11 m bei y = −30, davor V
 
 **Kennzahlen (gemessen):** 21 Objekte, 3139 Netzbauteile, **68 946 Dreiecke** (Budget 160 000), 536 Kollisionsquader.
 Leistung in Unity: die Umgebung ist unbeleuchtet, 21 Objekte mit je einem Material ihrer Zone (≈ 21 Zeichenaufrufe);
-69 000 Dreiecke sind sechsmal so viele wie in 0.8 (11 740), liegen aber deutlich unter dem Budget (in Unity zu messen, siehe Grenzen).
+69 000 Dreiecke sind sechsmal so viele wie in 0.8 (11 740), liegen aber deutlich unter dem Budget (in Unity gemessen, siehe Grenzen).
 
 ### Zonen und Texeldichte
 
@@ -196,7 +196,8 @@ Treppe, Sprünge und Herunterspringen 20,4 m mit Gehtempo 4,2 m/s = 4,9 s; je Sp
 ## Grenzen
 
 - Glanz fehlt in Unity (Diffus-Atlas); Metall ist darum überall nicht metallisch gemalt.
-- Leistung in Unity (≤ 16,7 ms) ist hier nicht gemessen – das misst der Unity-Lader.
+- Leistung in Unity gemessen (`unity_run.py bench hangar`, M5, 1280 × 720): Mittel 0,70 ms, p99 1,02 ms; eine Spitze von 40 ms in 10 s mit
+  drei Lichtwechseln (Ursache nicht getrennt gemessen) ([0.9](versions/0.9-parcours.md)).
 - Die PNG-Atlanten sind groß (16 Dateien, zusammen ≈ 205 MB); Unity komprimiert sie beim Import.
 - Lichtband offen (ohne Glas): in Unity zeigt es den Himmel; Glas mit Durchsicht passt nicht zur unbeleuchteten Umgebung.
 - Schrift ist eine einfache Strichschrift (Großbuchstaben, Ziffern, Ö); Schilder unter ≈ 30 Texeln Höhe bleiben unscharf.

@@ -133,6 +133,48 @@ def capture(scene=None):
     return 0
 
 
+def course(lighting='tag', scene='hangar'):
+    """Vorführlauf durch den Parcours (RouteRunner im Build) → MP4 mit Laufzeit, Kontrollpunkten und Treffern, dazu Kontaktbogen."""
+    d = os.path.join(EV, f'course_{scene}_{lighting}')
+    shutil.rmtree(d, ignore_errors=True)
+    rc = player(['-ballonCourse', d, '-ballonScene', scene, '-ballonLighting', lighting], os.path.join(EV, 'course.log'))
+    frames = sorted(glob.glob(os.path.join(d, '[0-9]*.png')))
+    if not frames:
+        print('Aufnahme fehlgeschlagen', rc)
+        return 1
+    result = open(os.path.join(d, 'result.txt'), encoding='utf-8').read().split('\n')[0]
+    rows = [ln.strip().split(',') for ln in open(os.path.join(d, 'frames.csv'), encoding='utf-8')]
+    lab = os.path.join(d, '_lab')
+    os.makedirs(lab, exist_ok=True)
+
+    def label(i):
+        _, state, t, cps, hits, wp = rows[i]
+        cmd = ['magick', frames[i], '-font', FONT, '-fill', '#F2F3F4', '-stroke', '#00000060', '-pointsize', '20', '-annotate', '+18+34',
+               f'BALLON 0.9 Parcours · Unity · {scene.capitalize()} · {lighting.capitalize()}', '-pointsize', '16', '-annotate', '+18+58',
+               f'Vorführlauf (automatisch) · Bild {i} · Wegpunkt {wp}', '-gravity', 'NorthEast', '-pointsize', '26', '-annotate', '+22+34',
+               f'{float(t):.1f} s' if state != 'Bereit' else 'bereit', '-pointsize', '16', '-annotate', '+22+64',
+               f'Kontrollpunkte {cps} · Treffer {hits}', '-gravity', 'Center', '-stroke', 'none', '-fill', '#FFFFFFD0',
+               '-draw', 'rectangle 628,359 638,361', '-draw', 'rectangle 642,359 652,361', '-draw', 'rectangle 639,346 641,356',
+               '-draw', 'rectangle 639,364 641,374']
+        subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
+
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(8) as ex:
+        list(ex.map(label, range(len(frames))))
+    out = os.path.join(EV, f'parcours_{scene}_{lighting}.mp4')
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
+                    '-c:v', 'libx264', '-crf', '21', '-movflags', '+faststart', out], check=True)
+    sheet = os.path.join(EV, f'parcours_{scene}_{lighting}.png')
+    pick = [round(k * (len(frames) - 1) / 11) for k in range(12)]
+    subprocess.run(['magick', 'montage', *[x for f in pick for x in ('-label', f'{float(rows[f][2]):.1f} s · Kontrollpunkte {rows[f][3]} · '
+                                                                        f'Treffer {rows[f][4]}', os.path.join(lab, f'{f:04d}.png'))],
+                    '-tile', '4x', '-geometry', '480x270+3+3', '-pointsize', '12', '-background', '#9EA4AC',
+                    '-title', f'BALLON 0.9 Parcours · Vorführlauf {scene} / {lighting} · {result}', sheet], check=True)
+    shutil.rmtree(lab)
+    print(f'{len(frames)} Bilder ({len(frames) / 30:.1f} s) → {out}\nKontaktbogen → {sheet}\n{result}')
+    return rc
+
+
 def lum(path):
     r = subprocess.run(['magick', path, '-alpha', 'off', '-colorspace', 'Gray', '-format', '%[fx:mean]', 'info:'],
                        capture_output=True, text=True)
@@ -243,6 +285,8 @@ if __name__ == '__main__':
                                 '-pointsize', '14', '-background', '#9EA4AC', out], check=True)
                 print('  →', out)
         sys.exit(rc)
+    if a == 'course':
+        sys.exit(course(*sys.argv[2:3]))
     if a == 'skins':
         d = os.path.join(EV, 'skins')
         shutil.rmtree(d, ignore_errors=True)
@@ -257,8 +301,9 @@ if __name__ == '__main__':
         print('Skins →', out)
         sys.exit(0)
     if a == 'bench':
-        f = os.path.join(EV, 'bench.json')
-        rc = player(['-ballonBench', f], os.path.join(EV, 'bench.log'))
+        sc = sys.argv[2] if len(sys.argv) > 2 else None              # z. B. hangar: Vorführlauf durch den Parcours, Lichtszenen wechseln
+        f = os.path.join(EV, f'bench_{sc}.json' if sc else 'bench.json')
+        rc = player(['-ballonBench', f] + (['-ballonScene', sc] if sc else []), os.path.join(EV, 'bench.log'))
         print(open(f).read() if os.path.exists(f) else 'keine Messung')
         sys.exit(rc)
     if a == 'compare':

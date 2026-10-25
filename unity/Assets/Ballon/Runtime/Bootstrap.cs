@@ -79,8 +79,10 @@ namespace Ballon.Ego
             if (shotDir != null) { StartCoroutine(SceneShots(shotDir)); return; }
             string skinsDir = Arg(args, "-ballonSkins");
             if (skinsDir != null) { StartCoroutine(SkinSheet(skinsDir)); return; }
+            string courseDir = Arg(args, "-ballonCourse");
+            if (courseDir != null) { StartCoroutine(CourseCapture(courseDir, Arg(args, "-ballonScene") ?? "hangar", Arg(args, "-ballonLighting"))); return; }
             string bench = Arg(args, "-ballonBench");
-            if (bench != null) StartCoroutine(Bench(bench));
+            if (bench != null) StartCoroutine(Bench(bench, Arg(args, "-ballonScene")));
             else if (cap != null) StartCoroutine(Capture(cap));
             else if (cmp != null) StartCoroutine(Compare(cmp));
             else Cursor.lockState = CursorLockMode.Locked;
@@ -354,6 +356,64 @@ namespace Ballon.Ego
 
         int _f0;
 
+        /// <summary>Vorführlauf durch den Parcours der Szene (RouteRunner), 1280 × 720 bei 30 Bildern/s; je Bild Laufzeit, Kontrollpunkte
+        /// und Treffer in frames.csv (für die Beschriftung in unity_run.py course).</summary>
+        IEnumerator CourseCapture(string dir, string scene, string lighting)
+        {
+            Directory.CreateDirectory(dir);
+            int si = -1;
+            for (int i = 0; i < SceneCount; i++) if (_scenes[i].data.name == scene) si = i;
+            if (si >= 0) ShowScene(si);                                               // lädt die Szene beim ersten Zeigen
+            var L = si >= 0 ? LoadedSceneAt(si) : null;
+            if (L?.course == null || L.data.course.route == null)
+            {
+                Debug.LogError($"[Ballon] Szene {scene} hat keinen Parcours");
+                Application.Quit(1);
+                yield break;
+            }
+            int li = 0;
+            for (int k = 0; k < L.data.lightings.Length; k++) if (L.data.lightings[k].name == lighting) li = k;
+            ShowLighting(li);
+            Player.hud = false;
+            Player.C.ReadyNow();
+            Player.Teleport(L.spawnPos, L.spawnYaw, 4f);
+            for (int k = 0; k < 10; k++) yield return null;
+            var route = new List<Vector3>();
+            foreach (var b in L.data.course.route) route.Add(SceneConvert.Point(b));
+            var runner = new RouteRunner(Player, route, L.targets.targets);
+            Player.input = runner;
+            const float dt = 1f / 30f;
+            Player.deltaOverride = () => dt;
+            var rt = HdrTarget(1280, 720, 4);
+            Player.worldCam.targetTexture = rt;
+            var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
+            string result = "";
+            L.course.Result += m => result = m;
+            string key = CourseRun.PrefsKey(L.data.name);                            // Vorführlauf ändert die Bestzeit des Spielers nicht
+            bool hadBest = PlayerPrefs.HasKey(key);
+            float best = PlayerPrefs.GetFloat(key, 0f);
+            Player.enabled = false;
+            var csv = new System.Text.StringBuilder();
+            int n = 0, after = -1;
+            while (n < 120 * 30 && (after < 0 || n < after))
+            {
+                Player.Step(dt);
+                yield return new WaitForEndOfFrame();
+                ReadBack(rt, tex);
+                File.WriteAllBytes(Path.Combine(dir, $"{n:0000}.png"), tex.EncodeToPNG());
+                var c = L.course;
+                csv.Append(FormattableString.Invariant($"{n},{c.State},{c.Elapsed:0.00},{c.CheckpointsDone}/{c.CheckpointCount},{c.TargetsHit}/{c.TargetCount},{runner.Waypoint}/{route.Count}\n"));
+                n++;
+                if (after < 0 && (c.RunsFinished > 0 || runner.Done)) after = n + 45;       // 1,5 s Auslauf
+            }
+            if (hadBest) PlayerPrefs.SetFloat(key, best); else PlayerPrefs.DeleteKey(key);
+            PlayerPrefs.Save();
+            File.WriteAllText(Path.Combine(dir, "frames.csv"), csv.ToString());
+            File.WriteAllText(Path.Combine(dir, "result.txt"), $"{result}\nlicht={L.data.lightings[li].name}\n");
+            Debug.Log($"[Ballon] Parcourslauf: {n} Bilder in {dir} · {result}");
+            Application.Quit(L.course.LastValid ? 0 : 2);
+        }
+
         /// <summary>Je Szene ein Bild vom Startpunkt (1600 × 900, ohne Viewmodel) wie das Blender-Referenzbild, dazu eins mit Waffe.</summary>
         IEnumerator SceneShots(string dir)
         {
@@ -380,6 +440,7 @@ namespace Ballon.Ego
                     foreach (var withVm in new[] { false, true })
                     {
                         Player.viewCam.cullingMask = withVm ? vmMask : 0;   // Kamera bleibt an: an ihr hängt der AgX-Durchgang
+                        if (LoadedSceneAt(i).routeMarkers != null) LoadedSceneAt(i).routeMarkers.SetActive(withVm);   // Wegpfeile gibt es in Blender nicht
                         yield return new WaitForEndOfFrame();
                         yield return new WaitForEndOfFrame();
                         ReadBack(rt, tex);
@@ -448,7 +509,9 @@ namespace Ballon.Ego
         }
 
         /// <summary>Leistung im Parcours: Vorführablauf in Echtzeit ohne VSync, Bildzeiten (ms) nach `file` (Mittel, 95-, 99-Perzentil).</summary>
-        IEnumerator Bench(string file)
+        /// <summary>Bildzeiten über 10 s: im Parcours der Vorführablauf, in einer Szene (-ballonScene) der Vorführlauf durch ihren
+        /// Parcours, dabei alle 2,5 s die nächste Lichtszene (Umschalten zählt mit).</summary>
+        IEnumerator Bench(string file, string scene)
         {
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = -1;
@@ -456,14 +519,29 @@ namespace Ballon.Ego
             Player.C.ReadyNow();
             Player.C.ammo = 9;
             Player.input = DemoScript();
+            LoadedScene L = null;
+            for (int i = 0; i < SceneCount; i++)
+                if (_scenes[i].data.name == scene) { ShowScene(i); L = LoadedSceneAt(i); }
+            if (L != null)
+            {
+                Player.Teleport(L.spawnPos, L.spawnYaw, 4f);
+                if (L.data.course?.route != null)
+                {
+                    var route = new List<Vector3>();
+                    foreach (var b in L.data.course.route) route.Add(SceneConvert.Point(b));
+                    Player.input = new RouteRunner(Player, route, L.targets.targets);
+                }
+            }
             for (int i = 0; i < 30; i++) yield return null;      // Aufwärmen
             var ms = new List<float>();
             float t = 0;
+            int lit = 0;
             while (t < 10f)
             {
                 yield return null;
                 ms.Add(Time.unscaledDeltaTime * 1000f);
                 t += Time.unscaledDeltaTime;
+                if (L != null && t > 2.5f * (lit + 1) && L.data.lightings.Length > 1) ShowLighting(++lit % L.data.lightings.Length);
             }
             ms.Sort();
             float mean = 0;
@@ -471,8 +549,8 @@ namespace Ballon.Ego
             mean /= ms.Count;
             var I = System.Globalization.CultureInfo.InvariantCulture;
             File.WriteAllText(file, string.Format(I, "{{\"frames\": {0}, \"mean_ms\": {1:0.00}, \"p95_ms\": {2:0.00}, \"p99_ms\": {3:0.00}, " +
-                "\"width\": {4}, \"height\": {5}, \"gpu\": \"{6}\"}}\n", ms.Count, mean, ms[(int)(ms.Count * 0.95f)], ms[(int)(ms.Count * 0.99f)],
-                Screen.width, Screen.height, SystemInfo.graphicsDeviceName));
+                "\"width\": {4}, \"height\": {5}, \"gpu\": \"{6}\", \"scene\": \"{7}\", \"max_ms\": {8:0.00}}}\n", ms.Count, mean, ms[(int)(ms.Count * 0.95f)],
+                ms[(int)(ms.Count * 0.99f)], Screen.width, Screen.height, SystemInfo.graphicsDeviceName, L?.data.name ?? "parcours", ms[ms.Count - 1]));
             Debug.Log($"[Ballon] Leistung: {ms.Count} Bilder, Mittel {mean:0.00} ms");
             Application.Quit();
         }

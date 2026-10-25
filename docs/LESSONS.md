@@ -46,3 +46,6 @@
 - Jeder Cycles-Backaufruf überträgt die ganze Szene neu (≈ 30 s auf der M5-GPU): alle Zonen in einem Aufruf backen, je Zone eigene Materialkopien und Zielbild (4,1 → 2,9 min je Lichtszene).
 - Lightmaps mit OIDN über den Kompositor entrauschen (Blender 5: `scene.compositing_node_group`, `NodeGroupOutput`; Führung Albedo + Normalen): 64 Samples + OIDN statt 128 ohne, sichtbar sauberer ([scene_build.py](../tools/scene_build.py)).
 - Blender 5.2 backt Normalen nur im Objekt- oder Tangentenraum (`normal_space` ohne WORLD); bei Objekten im Ursprung ist Objektraum = Welt.
+- Szenen baut Unity erst beim ersten Zeigen: Aufnahmen und Tests zuerst `ShowScene`, dann `LoadedSceneAt` prüfen ([Bootstrap.cs](../unity/Assets/Ballon/Runtime/Bootstrap.cs)).
+- `CourseRun.RunsFinished` zählt über `Reset` hinweg: Tests vergleichen gegen den Stand vor dem Lauf ([ScenePlayTests.cs](../unity/Assets/Ballon/Tests/PlayMode/ScenePlayTests.cs)).
+- `unity_run.py scenes`/`course`/`bench` nutzen den Build, nicht den Editor: nach Codeänderungen zuerst `build` ([unity.md](unity.md)).

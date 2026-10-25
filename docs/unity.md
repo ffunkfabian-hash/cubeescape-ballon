@@ -19,6 +19,9 @@ python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (E
 python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + Kontaktbogen
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
+python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
+python3 tools/unity_run.py scenes           # je Szene und Lichtszene Bild vom Start gegen <szene>_<licht>_ref.png (SSIM/PSNR)
+python3 tools/unity_run.py course tag       # Vorführlauf durch den Hangar-Parcours als MP4 + Kontaktbogen (Lichtszene wählbar)
 open unity/Build/BallonFirstfeel.app        # spielen
 ```
 
@@ -106,7 +109,7 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | Parcours, EditMode (10) | `CourseTests`: gültiger Lauf mit Zeit, Kontrollpunkten und Treffern; falsche Reihenfolge und fehlende Kontrollpunkte ergeben keine Zeit; Neustart über den Start; Start nach dem Ziel; Spawn im Quader und Reset (T); Treffer vor dem Start; Bestzeit nur wenn besser und in `PlayerPrefs`; Anzeigetexte ohne Speicher je Bild; Wegmarken (Anzahl, flach, nach oben) |
 | Szenen, PlayMode (6) | `ScenePlayTests` mit der Fixture-Szene „Testkurs“ (Umgebung als Quader im Test, kein FBX; Atlanten als kleine Testtexturen): Lader (Zonenmaterialien, Atlas der Lichtszene, `_BaseColor`, Collider, Lichtgruppen, Ziele mit Normale und Radius, Wegmarken, Spieler steht am Start auf dem Boden, Anzeige ohne GC); Schießstand-Ziele ohne Parcours; Lichtszene N tauscht Atlas, Himmel, Umgebungslicht, Lichter, Sonde ohne Neuaufbau der Geometrie und ohne GC; Tasten N und T; L hin und zurück mit Tastenereignis; Parcours danach unverändert |
 | Parcours, PlayMode (3) | gültiger Lauf per Teleport durch Start, Kontrollpunkte und Ziel (mit echtem Schuss auf ein Ziel, Bestzeit in `PlayerPrefs`, Marker im Log, Neustart über den Start); falsche Reihenfolge ergibt keine Zeit; kein GC je Bild im laufenden Lauf (`Step`, Zeit, Anzeigetexte) |
-| Exportierte Szenen, PlayMode (1) | lädt alle exportierten Szenen, wechselt jede Lichtszene (Atlas in jeder Zone, Himmel, eine Lichtgruppe an), läuft jeden Parcours der Reihe nach durch; überspringt sich mit „keine Szene exportiert“, solange keine `ballon-scene/2`-Szene da ist (einmal mit einer temporären Szene aus Quader-OBJ, vier Einfarb-PNG und der Fixture bestanden; nicht eingecheckt) |
+| Exportierte Szenen, PlayMode (2) | `Exportierte_Szenen_…`: lädt alle exportierten Szenen (0.9: Hangar), wechselt jede Lichtszene (Atlas in jeder Zone, Himmel, eine Lichtgruppe an), läuft jeden Parcours per Teleport der Reihe nach durch. `Vorfuehrlauf_schafft_jeden_Parcours`: der `RouteRunner` läuft jeden Parcours mit festen Schritten (1/30 s) und echten Bewegungen (Springen, Ducken, Kollision) und muss gültig unter der Richtzeit ankommen (Hangar: 32,1 s, 9/14 Treffer) – fällt ein Hindernis aus Sprunghöhe oder Kapselhöhe, schlägt er fehl. Beide überspringen sich ohne exportierte Szene |
 
 ## Szenen und Parcours (0.8 Hangar, 0.9 Parcours)
 
@@ -186,6 +189,21 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
   (keine Drehung); der Prüfpunkt ist eine Höhe, nicht der ganze Körper: ein sehr dünner Quader kann bei hoher Geschwindigkeit und
   niedriger Bildrate übersprungen werden (Sprint 6,8 m/s bei 60 Bildern/s = 0,11 m je Schritt; Quader mindestens 0,3 m dick bauen).
   Die Bestzeit ist pro Rechner (PlayerPrefs), ohne Bestenliste. Ein Referenzbild (`reference`) und `sources` liest Unity nicht.
+
+### Vorführlauf, Vergleich und Leistung (0.9)
+
+- **Vorführlauf** (`Runtime/RouteRunner.cs`, eine `IEgoInput`): läuft die Wegpunkte von `course.route` ab (erreicht bei 0,7 m
+  waagrecht), dreht mit 240°/s, sprintet auf geraden Stücken über 6 m. Vor einem Hindernis in 0,45 m Höhe springt er, vor einem
+  Balken in 1,5 m Höhe bei freier Kniehöhe (und solange eine Decke unter 1,75 m über ihm ist) duckt er sich; steckt er 1,2 s fest,
+  springt er. Scheiben bis 20 m in ±55° zur Laufrichtung mit freier Sicht und Ringseite zum Läufer visiert er an (160°/s, Zielen)
+  und schießt, sobald das Fadenkreuz unter 1,2° liegt; höchstens 2,5 s je Scheibe. Entworfen für Belege und den Test, kein Spielerersatz.
+- **MP4** (`unity_run.py course <licht>`): Build mit `-ballonCourse <dir> -ballonScene hangar -ballonLighting <licht>`, 1280 × 720,
+  30 Bilder/s mit festen Schritten, Beschriftung mit Laufzeit, Kontrollpunkten und Treffern aus `frames.csv`, Kontaktbogen mit 12
+  Bildern. Die Bestzeit des Spielers in `PlayerPrefs` stellt der Vorführlauf danach wieder her. Exit 2, wenn der Lauf ungültig war.
+- **Vergleich je Lichtszene** (`unity_run.py scenes`): Bilder `<szene>_<licht>_umgebung.png` (ohne Waffe und ohne Wegpfeile, die es
+  in Blender nicht gibt) und `<szene>_<licht>_waffe.png`, Vergleich gegen `scenes/<szene>_<licht>_ref.png` aus `scene_build.py`.
+- **Leistung** (`unity_run.py bench hangar`): Vorführlauf durch den Parcours, alle 2,5 s die nächste Lichtszene; Ergebnis in
+  `bench_hangar.json` mit Mittel, p95, p99 und Höchstwert. Werte stehen im Versionsbericht [0.9](versions/0.9-parcours.md).
 
 ## Material, Licht und Tonwerte wie Blender (0.7)
 

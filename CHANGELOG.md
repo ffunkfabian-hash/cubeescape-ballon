@@ -11,6 +11,14 @@
 - BASIC-03 Scoutgewehr v2.1 mit Zielfernrohr `scope_v21`; Formskizze per Blender-MCP.
 - Visier-Standard v2 nach Destiny-Video und Motiongen: schlanke Visiere, Zielfernrohr mit Linsenbild und `ads_hide`, Augenpunkt 90 mm vor der Öffnung, Modell ungezoomt, Weltzoom je Klasse; Prüfung in `./check`, Beispiele `tools/sight_examples.py`.
 
+## 0.9.0 „Parcours“ – unveröffentlicht (lokal)
+
+- Hangar mit Detail wie die Waffe (Fasen, Trapezblech, Nieten, Fugen, Schilder, Abrieb, Schmutz; 68 946 Dreiecke), Zonen-Atlanten
+  bis 1,23 cm je Texel, vier Lichtszenen Tag/Abend/Nacht/Bewölkt (Taste N). Format `ballon-scene/2`.
+- Parcours mit 151 m Strecke, 5 Kontrollpunkten, 14 Zielscheiben, Richtzeit 45 s und Bestzeit; Taste T zurück zum Start.
+- Vorführlauf (`RouteRunner`): MP4 `unity_run.py course`, Leistung `bench hangar`, Test „Vorführlauf schafft jeden Parcours“.
+  Bericht [docs/versions/0.9-parcours.md](docs/versions/0.9-parcours.md).
+
 ## 0.8.0 „Hangar“ – unveröffentlicht (lokal)
 
 - Hintergrundszene Hangar aus Python-Daten (`basic/scenes/hangar.py`), in Blender gebaut mit gebackenem Cycles-Licht

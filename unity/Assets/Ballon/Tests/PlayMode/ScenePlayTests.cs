@@ -818,5 +818,54 @@ namespace Ballon.Ego.Tests
                 if (b.CurrentScene != -1) b.ShowScene(-1);
             }
         }
+
+        /// <summary>Der Vorführlauf (RouteRunner: Route, Springen, Ducken) schafft jeden exportierten Parcours gültig unter der Richtzeit –
+        /// fällt ein Hindernis aus der Reichweite der Bewegungen (Sprunghöhe, Kapselhöhe), schlägt dieser Test fehl.</summary>
+        [UnityTest]
+        public IEnumerator Vorfuehrlauf_schafft_jeden_Parcours()
+        {
+            var b = B;
+            var p = b.Player;
+            int ran = 0;
+            try
+            {
+                for (int i = 0; i < b.SceneCount; i++)
+                {
+                    b.ShowScene(i);
+                    yield return null;
+                    var L = b.LoadedSceneAt(i);
+                    if (L.data.course?.route == null) continue;
+                    PlayerPrefs.DeleteKey(CourseRun.PrefsKey(L.data.name));
+                    L.course.Reset();
+                    p.C.ReadyNow();
+                    p.Teleport(L.spawnPos, L.spawnYaw, 4f);
+                    var route = new List<Vector3>();
+                    foreach (var r in L.data.course.route) route.Add(SceneConvert.Point(r));
+                    var runner = new RouteRunner(p, route, L.targets.targets);
+                    p.input = runner;
+                    p.enabled = false;                          // Schritte hier mit fester Zeit, unabhängig von der Bildrate
+                    const float dt = 1f / 30f;
+                    int runs0 = L.course.RunsFinished;          // zählt über Reset hinweg (frühere Tests)
+                    for (int n = 0; n < 120 * 30 && L.course.RunsFinished == runs0 && !runner.Done; n++)
+                    {
+                        p.Step(dt);
+                        if (n % 30 == 0) yield return null;
+                    }
+                    p.enabled = true;
+                    Assert.IsTrue(L.course.LastValid, $"{L.data.name}: Lauf gültig (Wegpunkt {runner.Waypoint}/{route.Count}, " +
+                                                      $"Kontrollpunkte {L.course.CheckpointsDone}/{L.course.CheckpointCount}, Spieler {p.transform.position})");
+                    Assert.Less(L.course.LastTime, L.course.ParTime, $"{L.data.name}: unter der Richtzeit");
+                    Debug.Log($"[Ballon] Vorführlauf {L.data.name}: {L.course.LastTime:0.0} s, Treffer {L.course.TargetsHit}/{L.course.TargetCount}");
+                    PlayerPrefs.DeleteKey(CourseRun.PrefsKey(L.data.name));
+                    ran++;
+                }
+                if (ran == 0) Assert.Ignore("keine Szene mit Parcours exportiert");
+            }
+            finally
+            {
+                p.enabled = true;
+                if (b.CurrentScene != -1) b.ShowScene(-1);
+            }
+        }
     }
 }
