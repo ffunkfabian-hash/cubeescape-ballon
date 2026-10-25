@@ -24,7 +24,8 @@ open unity/Build/BallonFirstfeel.app        # spielen
 
 Alle Unity-Läufe gehen über `ce lock unity`. Protokolle, Testergebnisse und Belege liegen unter
 `~/Library/Caches/CubeEscapeBallon/unity/`. Nach jeder Änderung an `basic/arms/*.py` oder der Pilotwaffe den Export wiederholen,
-danach `setup` (Materialien, Szene) und `test`.
+danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuerst `cp -cR <Hauptprojekt>/unity/Library unity/Library`
+(bei beendetem Unity; APFS-Klon, Sekunden), sonst importiert der erste Lauf das ganze Projekt neu.
 
 ## Steuerung
 
@@ -39,7 +40,9 @@ danach `setup` (Materialien, Szene) und `test`.
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
 | 1 / 2 | ziehen / wegstecken (beim Nachladen: `reload_to_switch`) |
 | K | Waffen-Skin weiterschalten |
-| L | Szene wechseln: Parcours → Szene 1 → … → Parcours (nur wenn Szenen exportiert sind, siehe „Szenen“) |
+| L | Szene wechseln: Parcours → Szene 1 → … → Parcours (nur wenn Szenen exportiert sind, siehe „Szenen und Parcours“) |
+| N | nächste Lichtszene der gezeigten Szene (Tag → Nacht → …); im grauen Parcours ohne Wirkung |
+| T | zurück zum Startpunkt der Szene, ein laufender Lauf wird verworfen; ein Lauf startet auch beim erneuten Durchschreiten des Starts |
 | Esc, Klick, H | Maus freigeben, Maus fangen, Anzeige ein/aus |
 
 Der Parcours ist grau: Boden mit Meterraster, Wände, Brüstung, Deckungen, Rampe mit Podest, Treppe, ein niedriger Durchgang
@@ -55,7 +58,7 @@ Anzeige oben links, Einschläge bleiben als Punkte sichtbar.
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs` | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
 | Szene | `Runtime/EgoPlayer.cs`, `EgoRig.cs`, `Range.cs`, `Bootstrap.cs` | Bewegung, Kameras (Welt + Overlay), Treffer, Anzeige, Parcours, Aufnahme- und Vergleichsmodus |
-| Szenen (0.8) | `Runtime/SceneData.cs`, `SceneLoader.cs` | Format `ballon-scene/1`, Umrechnung Blender → Unity, Lader (Umgebung, Collider, Lichter, Ziele) |
+| Szenen (0.8, 0.9) | `Runtime/SceneData.cs`, `MiniJson.cs`, `SceneLoader.cs`, `Course.cs` | Format `ballon-scene/2` (Leser mit Prüfung, JsonUtility kann keine Wörterbücher), Umrechnung Blender → Unity, Lader (Zonenmaterialien, Collider, Lichtszenen, Ziele, Wegmarken), Parcours-Lauf (`CourseRun`) |
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
@@ -99,49 +102,90 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife: kein Speicher im laufenden Bild |
 | `Wandnaehe_im_Parcours_senkt_die_Waffe` | vor Säule 1 senkt sich die Waffe (`lowered`), im Freien zurück zur Hüfte |
 | `Szene_startet_und_spielt_den_Ablauf` | Szene lädt, Viewmodel-Ebene, Vorführablauf feuert, lädt leer nach, betrachtet |
-| Szenen, EditMode (6) | `SceneDataTests` mit Fixture `Tests/EditMode/scene_fixture.json`: Format und Umfang, Ablehnung falscher/lückenhafter Dateien, Umrechnung gleich `ego.json › axes.to_unity`, Collider, Startpunkt und Gier, Lichtmaßstab |
-| Szenen, PlayMode (4) | `ScenePlayTests`: synthetische Szene „Testraum“ (Umgebung als Quader im Test, kein FBX nötig): Lader, Collider, Lichter, Lichtflächen, Ziel mit Treffer, Spieler steht am Start auf dem Boden, Anzeige ohne GC; L hin und zurück mit Tastenereignis; Parcours danach unverändert (Umgebungslicht, Nebel, Sonne, Kamera, Sonde, Spielerstart). Der vierte Test lädt alle exportierten Szenen und überspringt sich mit „keine Szene exportiert“, solange keine da ist (einmal mit einem temporären Mini-FBX aus Blender, 2 Quader, gelaufen und bestanden: Einrichten, Import, Material, Laden; nicht eingecheckt) |
+| Szenen, EditMode (11) | `SceneDataTests` mit Fixture `Tests/EditMode/scene_fixture_v2.json` (2 Zonen, 2 Lichtszenen, Kurs mit 2 Kontrollpunkten und 3 Zielen): Format und Umfang, Atlas je Zone und Lichtszene, `ballon-scene/1` und `/0` mit Hinweis „neu bauen (tools/scene_build.py)“ abgelehnt (Fixture `scene_fixture_v1.json`), 19 Lücken und Widersprüche abgelehnt, Szene ohne Parcours gültig, Umrechnung gleich `ego.json › axes.to_unity`, Collider, Startpunkt und Gier, Auslösequader, Zielscheiben und Strecke, Lichtmaßstab und Atlas-Helligkeit, `MiniJson` |
+| Parcours, EditMode (10) | `CourseTests`: gültiger Lauf mit Zeit, Kontrollpunkten und Treffern; falsche Reihenfolge und fehlende Kontrollpunkte ergeben keine Zeit; Neustart über den Start; Start nach dem Ziel; Spawn im Quader und Reset (T); Treffer vor dem Start; Bestzeit nur wenn besser und in `PlayerPrefs`; Anzeigetexte ohne Speicher je Bild; Wegmarken (Anzahl, flach, nach oben) |
+| Szenen, PlayMode (6) | `ScenePlayTests` mit der Fixture-Szene „Testkurs“ (Umgebung als Quader im Test, kein FBX; Atlanten als kleine Testtexturen): Lader (Zonenmaterialien, Atlas der Lichtszene, `_BaseColor`, Collider, Lichtgruppen, Ziele mit Normale und Radius, Wegmarken, Spieler steht am Start auf dem Boden, Anzeige ohne GC); Schießstand-Ziele ohne Parcours; Lichtszene N tauscht Atlas, Himmel, Umgebungslicht, Lichter, Sonde ohne Neuaufbau der Geometrie und ohne GC; Tasten N und T; L hin und zurück mit Tastenereignis; Parcours danach unverändert |
+| Parcours, PlayMode (3) | gültiger Lauf per Teleport durch Start, Kontrollpunkte und Ziel (mit echtem Schuss auf ein Ziel, Bestzeit in `PlayerPrefs`, Marker im Log, Neustart über den Start); falsche Reihenfolge ergibt keine Zeit; kein GC je Bild im laufenden Lauf (`Step`, Zeit, Anzeigetexte) |
+| Exportierte Szenen, PlayMode (1) | lädt alle exportierten Szenen, wechselt jede Lichtszene (Atlas in jeder Zone, Himmel, eine Lichtgruppe an), läuft jeden Parcours der Reihe nach durch; überspringt sich mit „keine Szene exportiert“, solange keine `ballon-scene/2`-Szene da ist (einmal mit einer temporären Szene aus Quader-OBJ, vier Einfarb-PNG und der Fixture bestanden; nicht eingecheckt) |
 
-## Szenen (0.8 Hangar)
+## Szenen und Parcours (0.8 Hangar, 0.9 Parcours)
 
-Neben dem grauen Parcours lädt Unity Räume aus Blender im Format `ballon-scene/1` ([szenen-format.md](szenen-format.md), Erzeuger
-`tools/scene_build.py`). Die Dateien liegen in `unity/Assets/Ballon/Generated/Scenes/<name>/`: `scene_<name>.json`, `<name>.fbx`,
-Lichtatlas `<name>_light.png`.
+Neben dem grauen Parcours lädt Unity Räume aus Blender im Format `ballon-scene/2` ([szenen-format.md](szenen-format.md), Erzeuger
+`tools/scene_build.py`). Die Dateien liegen in `unity/Assets/Ballon/Generated/Scenes/<name>/`: `scene_<name>.json`, `<name>.fbx` und je
+Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateien (`ballon-scene/1`) lehnt `SceneFile.Parse` mit
+„neu bauen (tools/scene_build.py)“ ab; `setup` überspringt sie mit einer Warnung, das Spiel läuft ohne sie weiter.
 
-- **Einrichten:** `python3 tools/unity_run.py setup` sucht `Generated/Scenes/*/scene_*.json`, legt je Szene ein Material
-  `Generated/Materials/Scene_<name>.mat` an (URP Unlit, `_BaseMap` = Atlas) und trägt JSON, FBX und Material in die
-  `Bootstrap`-Felder `sceneJson`, `scenePrefabs`, `sceneMaterials` der Szene ein. Der Atlas wird als sRGB-Farbe importiert
-  (4096², Mips, Clamp). Unvollständige Szenen (FBX oder Atlas fehlt, falsches Format) überspringt `setup` mit einer Warnung.
-  Ohne Szenen läuft alles wie zuvor.
-- **Umschalten:** Taste L (`Bootstrap.NextScene`): Parcours → Szene 1 → … → letzte Szene → Parcours. Gebaut wird eine Szene beim
-  ersten Zeigen und bleibt danach (ausgeschaltet) im Speicher. Die Anzeige nennt die Szene („Szene Hangar (L)“) und zählt die
-  Treffer an den Zielen der gerade gezeigten Szene. Den Text baut sie nur bei Änderung neu (kein GC je Bild, Test).
+- **Einrichten:** `python3 tools/unity_run.py setup` sucht `Generated/Scenes/*/scene_*.json`, importiert JSON, FBX und alle Atlanten
+  (Atlas = jede PNG der Szene außer `*_ref.png` und `*_view.png`: sRGB-Farbe, 4096², Mips, Clamp), legt je Szene eine Unlit-Vorlage
+  `Generated/Materials/Scene_<name>.mat` an und trägt JSON, FBX, Vorlage und die Atlasliste (Lichtszene · Zonenzahl + Zone, wie im
+  JSON) in die `Bootstrap`-Felder `sceneJson`, `scenePrefabs`, `sceneMaterials`, `sceneAtlases` ein. Unvollständige Szenen (FBX oder ein
+  Atlas fehlt, falsches Format) überspringt `setup`. Ohne Szenen läuft alles wie zuvor.
+- **Tasten:**
+
+  | Taste | Wirkung |
+  |---|---|
+  | L | Szene wechseln: Parcours (grau) → Szene 1 → … → Parcours |
+  | N | nächste Lichtszene der gezeigten Szene (Tag → Nacht → … → Tag); im grauen Parcours ohne Wirkung |
+  | T | zurück zum Startpunkt der Szene, ein laufender Lauf wird verworfen (im grauen Parcours: zum Parcours-Start) |
+  | R | bleibt Nachladen (und lädt nichts neu) |
+
+  Den Neustart eines Laufs gibt es zweimal: erneut den Starttor-Quader durchschreiten oder T drücken.
+- **Umschalten der Szene:** Gebaut wird eine Szene beim ersten Zeigen und bleibt danach (ausgeschaltet) im Speicher. Die Anzeige nennt
+  Szene und Licht („Szene Hangar (L)   Licht Tag (N)“). Den Text baut sie nur bei Änderung neu (kein GC je Bild, Test).
+- **Umschalten der Lichtszene (N):** tauscht nur die Atlanten der Zonenmaterialien (`_BaseMap`, `_BaseColor`), die Gruppe der Viewmodel-
+  Lichter samt Lichtflächen, Umgebungslicht, Himmel (Kamerahintergrund und Sondenhintergrund) und rendert die Reflexionssonde neu.
+  Geometrie, Collider, Materialinstanzen, Zielscheiben und Lauf bleiben unberührt. Alle Lichtgruppen entstehen beim Laden der Szene
+  (ausgeschaltet), so kostet das Umschalten selbst nur ein paar Materialeigenschaften und eine Sonde; je Bild fällt danach kein Speicher an
+  (Test). Die zuletzt gezeigte Lichtszene einer Szene bleibt beim Szenenwechsel erhalten.
+- **Zonen:** Je Zone eine Kopie der Unlit-Vorlage mit dem Atlas der aktiven Lichtszene in `_BaseMap` und `_BaseColor` = `scale` als
+  `.gamma` (Materialfarben sind Gamma-Werte; Atlas = Licht / `scale`). Jeder Renderer des FBX bekommt das Material der Zone, deren
+  `objects` seinen Knotennamen (oder den eines Elternknotens) nennen; ohne Treffer gilt Zone 1 mit einer Warnung im Log. Alle Renderer
+  ohne Schatten und ohne Sondenspiegelung, der FBX braucht die Atlas-UVs im ersten UV-Satz. Kollision kommt nur aus `colliders`
+  (Quader, Blender → Unity wie `axes.to_unity`: Mitte (−x, z, −y), Kantenlängen (x, z, y)), nicht aus dem FBX.
 - **Spieler:** Start an `spawn.pos` (Füße, 2 cm Spiel), Blick nach `spawn.yaw_deg`. Blender dreht gegen den Uhrzeigersinn positiv,
   Unity im Uhrzeigersinn, daher Unity-Gier = −`yaw_deg`. Zurück im Parcours steht der Spieler wieder am Start (0 / 0,01 / 1,5).
-- **Umgebung unbeleuchtet:** Alle Renderer des FBX bekommen dasselbe Unlit-Material mit dem Atlas (Cycles-Licht mal Farbe), ohne
-  Schatten und ohne Sondenspiegelung. Der FBX braucht dafür die Atlas-UVs im ersten UV-Satz. Kollision kommt nur aus `colliders`
-  (Quader, Blender → Unity wie `axes.to_unity`: Mitte (−x, z, −y), Kantenlängen (x, z, y)), nicht aus dem FBX.
-- **Himmel und Umgebungslicht:** `sky` = Kamerahintergrund und Hintergrund der Reflexionssonde (Farbe × Stärke, linear gerechnet,
-  als Gamma-Wert gesetzt). `ambient` = einheitliches Umgebungslicht für das Viewmodel. Kein Nebel, keine Sonne des Parcours.
+- **Himmel und Umgebungslicht:** `sky` = Kamerahintergrund und Hintergrund der Reflexionssonde (Farbe × Stärke, linear gerechnet, als
+  Gamma-Wert gesetzt). `ambient` = einheitliches Umgebungslicht für das Viewmodel. Kein Nebel, keine Sonne des Parcours.
 - **Lichter nur für das Viewmodel:** `Light.cullingMask` = Ebene „Viewmodel“, ohne Echtzeitschatten. Intensität in Unity-Einheiten:
 
   | Art | Unity-Intensität | Form |
   |---|---|---|
   | `area` | P/π² | Spotlicht 150° / 60° wie `StudioLike`, zusätzlich leuchtende Fläche (Kante `size_m`, Strahldichte P/(π·A)) auf der Ebene `StudioEmitLayer`, die nur die Reflexionssonde sieht |
-  | `spot` | P/(4π²) | Spotlicht 90° / 54° (der Öffnungswinkel steht nicht im Format) |
+  | `spot` | P/(4π²) | Spotlicht mit `angle_deg` (fehlt er: 90°), innen 60 % davon |
   | `point` | P/(4π²) | Punktlicht |
   | `sun` | S/π | Richtungslicht |
 
   P/(4π²) für Spot und Punkt ist aus der Strahlstärke P/(4π) von Cycles abgeleitet (nicht gemessen, anders als P/π² für Flächen).
-- **Reflexionssonde:** Wird beim Wechsel neu gerendert (256², HDR, auf Augenhöhe am Start, Größe = Umgebung + 2 m). Sie sieht die
-  unbeleuchtete Umgebung plus die Lichtflächen, nicht das Viewmodel.
-- **Ziele:** Eines je Eintrag in `targets` (Aufbau wie im Parcours). `pos` ist die Scheibenmitte (Blender), der Pfosten steht 1,45 m
-  tiefer, die Ringseite zeigt zum Startpunkt. Radius nach Entfernung: 0,30 m (bis ≈ 17 m), 0,45 m (bis ≈ 37 m), sonst 0,60 m.
-  Die Anzeige führt die Treffer je Entfernung.
-- **Grenzen:** URP beleuchtet ein Objekt mit höchstens vier Zusatzlichtern (die nächsten); bei mehr Lichtern in der Szene sehen
-  Waffe und Arme nur diese. Das Viewmodel wirft Schatten nur auf sich selbst, nicht auf die Umgebung, und die Umgebung keine auf
-  das Viewmodel. Die Sonde sitzt am Startpunkt (kein Wechsel beim Gehen). Flächenlichter sind Spotlichter, keine echten Flächen.
-  Was Cycles aus dem Raum zurückwirft (indirektes Licht auf die Waffe), fehlt, soweit es nicht in den Flächenlichtern steckt.
+- **Reflexionssonde:** Wird beim Wechsel der Szene und der Lichtszene neu gerendert (256², HDR, auf Augenhöhe am Start, Größe =
+  Umgebung + 2 m). Sie sieht die unbeleuchtete Umgebung plus die Lichtflächen der aktiven Lichtszene, nicht das Viewmodel.
+- **Zielscheiben:** `course.targets`: Mitte `pos`, Ringseite entlang `normal` (waagerecht gedreht), Radius `radius`. Der Pfosten reicht von
+  der Scheibe bis zur Oberkante des höchsten Colliders darunter (sonst 1,45 m). Zusätzlich wie in 0.8 `targets` (Schießstand ohne
+  Strecke: Pfosten 1,45 m, Radius nach Entfernung 0,30 / 0,45 / 0,60 m, Anzeige führt die Treffer je Entfernung).
+- **Parcours-Lauf** (`Runtime/Course.cs`, `CourseRun`): Start, Kontrollpunkte und Ziel sind achsparallele Auslösequader
+  (`course.start`, `checkpoints`, `finish`); geprüft wird der Körpermittelpunkt des Spielers (Füße + 0,9 m) je Spielschritt.
+  - *Start:* Zeit läuft ab dem Durchschreiten des Start-Quaders (Eintritt, nicht Verweilen). Erneutes Durchschreiten startet neu und
+    setzt Kontrollpunkte, Zeit und Trefferzählung zurück. Steht der Spieler beim Laden schon im Quader, startet das nichts (der
+    erste Schritt merkt sich nur den Stand).
+  - *Kontrollpunkte:* in der Reihenfolge der Daten. Ein späterer Kontrollpunkt zuerst zählt nicht, die Anzeige nennt den fehlenden.
+  - *Ziel:* nur wenn alle Kontrollpunkte in Reihenfolge passiert sind, stoppt die Zeit und gilt als Lauf. Ohne alle Kontrollpunkte
+    bleibt der Lauf offen, die Anzeige sagt „Ziel nicht gewertet“, es gibt keine Zeit. Fallen Start und Ziel in denselben Quader
+    (Runde), gewinnt das Ziel, sobald alle Kontrollpunkte da sind; sonst startet das Tor neu.
+  - *Treffer:* getroffene Zielscheiben dieses Laufs von allen („Ziele n/m“); Treffer vor dem Start zählen nicht, mehrere Treffer an
+    derselben Scheibe zählen einmal.
+  - *Anzeige:* oben links Laufzeit (Zehntel, groß), Zustand, darunter Kontrollpunkte n/m, Ziele n/m, Richtzeit (`par_time_s`),
+    Bestzeit und Hinweise. Die Zeit kommt aus einer Tabelle, der Rest wird nur bei Änderung neu gebaut: kein Speicher je Bild.
+  - *Bestzeit:* je Szene in `PlayerPrefs` (`Ballon.Best.<szene>`), nur gültige Läufe, nur wenn besser.
+  - *Ergebnis im Log (für Tests und Belege):*
+    `[Ballon] Lauf: gültig szene=… zeit=… kontrollpunkte=2/2 treffer=1/3 richtzeit=… bestzeit=… neue_bestzeit=ja|nein`
+    bzw. `[Ballon] Lauf: ungültig szene=… kontrollpunkte=1/2 treffer=…` (Ziel ohne alle Kontrollpunkte).
+  - *Wegmarken:* flache Pfeile alle 1,5 m entlang `route` (ein Netz, Unlit, dezentes Blau, 3 cm über dem Boden, ohne Schatten).
+- **Grenzen:** URP beleuchtet ein Objekt mit höchstens vier Zusatzlichtern (die nächsten); bei mehr Lichtern in der Szene sehen Waffe und
+  Arme nur diese. Das Viewmodel wirft Schatten nur auf sich selbst, nicht auf die Umgebung, und die Umgebung keine auf das Viewmodel.
+  Die Sonde sitzt am Startpunkt (kein Wechsel beim Gehen). Flächenlichter sind Spotlichter, keine echten Flächen. Was Cycles aus dem Raum
+  zurückwirft (indirektes Licht auf die Waffe), fehlt, soweit es nicht in den Flächenlichtern steckt. Auslösequader sind achsparallel
+  (keine Drehung); der Prüfpunkt ist eine Höhe, nicht der ganze Körper: ein sehr dünner Quader kann bei hoher Geschwindigkeit und
+  niedriger Bildrate übersprungen werden (Sprint 6,8 m/s bei 60 Bildern/s = 0,11 m je Schritt; Quader mindestens 0,3 m dick bauen).
+  Die Bestzeit ist pro Rechner (PlayerPrefs), ohne Bestenliste. Ein Referenzbild (`reference`) und `sources` liest Unity nicht.
 
 ## Material, Licht und Tonwerte wie Blender (0.7)
 

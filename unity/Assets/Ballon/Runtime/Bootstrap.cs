@@ -18,9 +18,13 @@ namespace Ballon.Ego
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
         public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
         public Material[] skinMaterials;         // Waffen-Skins in der Reihenfolge von ego.json › textures.skins (0 = standard)
-        public TextAsset[] sceneJson;            // Szenen (ballon-scene/1), von BallonSetup aus Generated/Scenes/*/scene_*.json gesetzt;
+        public TextAsset[] sceneJson;            // Szenen (ballon-scene/2), von BallonSetup aus Generated/Scenes/*/scene_*.json gesetzt;
         public GameObject[] scenePrefabs;        // gleiche Reihenfolge: FBX der Umgebung
-        public Material[] sceneMaterials;        // und Unlit-Material mit dem Lichtatlas
+        public Material[] sceneMaterials;        // Unlit-Vorlage (je Zone entsteht eine Kopie)
+        public SceneAssetSet[] sceneAtlases;     // Atlanten der Szene, flach: Lichtszene · Zonenzahl + Zone (Reihenfolge wie im JSON)
+
+        /// <summary>Alle Lichtatlanten einer Szene, flach: Index = Lichtszene · Zonenzahl + Zone.</summary>
+        [Serializable] public class SceneAssetSet { public Texture2D[] textures; }
         public const int ViewmodelLayer = 31;
         public const int OutRenderer = 1;
         public const int StudioEmitLayer = 30;   // Lichtflächen nur für die Reflexionssonde (Vergleichsmodus)         // Renderer „Out“ mit dem AgX-Durchgang (BallonSetup.OutRenderer)     // Ebene „Viewmodel“ (in den Projekteinstellungen benannt)
@@ -113,13 +117,25 @@ namespace Ballon.Ego
             Probe.backgroundColor = RenderSettings.fogColor;
         }
 
-        // ------------------------------------------------------------------------------------------------ Szenen (0.8)
-        sealed class SceneEntry { public SceneFile data; public GameObject prefab; public Material mat; public LoadedScene loaded; }
+        // ------------------------------------------------------------------------------------------------ Szenen (0.8, Lichtszenen 0.9)
+        sealed class SceneEntry
+        {
+            public SceneFile data;
+            public GameObject prefab;
+            public Material mat;
+            public Texture2D[][] atlases;       // [Lichtszene][Zone]
+            public LoadedScene loaded;
+            public int lighting;                // zuletzt gezeigte Lichtszene dieser Szene
+        }
         readonly List<SceneEntry> _scenes = new List<SceneEntry>();
 
         /// <summary>-1 = Parcours, sonst Index der Szene.</summary>
         public int CurrentScene { get; private set; } = -1;
+        /// <summary>Aktive Lichtszene der gezeigten Szene; -1 im grauen Parcours.</summary>
+        public int CurrentLighting { get; private set; } = -1;
         public int SceneCount => _scenes.Count;
+        /// <summary>Anzahl der Lichtszenen der gezeigten Szene (0 im Parcours).</summary>
+        public int LightingCount => CurrentScene < 0 ? 0 : _scenes[CurrentScene].data.lightings.Length;
         public string SceneName(int i) => i < 0 ? "Parcours" : string.IsNullOrEmpty(_scenes[i].data.de) ? _scenes[i].data.name : _scenes[i].data.de;
         /// <summary>Die gebaute Szene i, oder null, solange sie noch nie gezeigt wurde.</summary>
         public LoadedScene LoadedSceneAt(int i) => _scenes[i].loaded;
@@ -132,22 +148,42 @@ namespace Ballon.Ego
                 if (sceneJson[i] == null) continue;
                 try
                 {
-                    AddScene(SceneFile.Parse(sceneJson[i].text), scenePrefabs != null && i < scenePrefabs.Length ? scenePrefabs[i] : null,
-                             sceneMaterials != null && i < sceneMaterials.Length ? sceneMaterials[i] : null);
+                    var f = SceneFile.Parse(sceneJson[i].text);
+                    var flat = sceneAtlases != null && i < sceneAtlases.Length && sceneAtlases[i] != null ? sceneAtlases[i].textures : null;
+                    AddScene(f, scenePrefabs != null && i < scenePrefabs.Length ? scenePrefabs[i] : null,
+                             sceneMaterials != null && i < sceneMaterials.Length ? sceneMaterials[i] : null, Shape(f, flat));
                 }
                 catch (FormatException e)
                 {
-                    Debug.LogError($"[Ballon] {sceneJson[i].name}: {e.Message}");
+                    Debug.LogWarning($"[Ballon] {sceneJson[i].name} übersprungen: {e.Message}");     // z. B. ältere Szene: neu bauen (tools/scene_build.py)
                 }
             }
         }
 
-        /// <summary>Szene anmelden (gebaut wird erst beim ersten Zeigen); gibt ihren Index zurück.</summary>
-        public int AddScene(SceneFile f, GameObject prefab, Material atlasMaterial)
+        /// <summary>Flache Atlasliste (Lichtszene · Zonenzahl + Zone) in [Lichtszene][Zone] ordnen.</summary>
+        static Texture2D[][] Shape(SceneFile f, Texture2D[] flat)
+        {
+            var r = new Texture2D[f.lightings.Length][];
+            for (int li = 0; li < r.Length; li++)
+            {
+                r[li] = new Texture2D[f.zones.Length];
+                for (int zi = 0; zi < f.zones.Length; zi++)
+                {
+                    int k = li * f.zones.Length + zi;
+                    if (flat != null && k < flat.Length) r[li][zi] = flat[k];
+                }
+            }
+            return r;
+        }
+
+        /// <summary>Szene anmelden (gebaut wird erst beim ersten Zeigen); gibt ihren Index zurück.
+        /// `atlases` = [Lichtszene][Zone], `atlasMaterial` = Unlit-Vorlage (je Zone entsteht eine Kopie).</summary>
+        public int AddScene(SceneFile f, GameObject prefab, Material atlasMaterial, Texture2D[][] atlases = null)
         {
             if (prefab == null) Debug.LogWarning($"[Ballon] Szene {f.name}: kein FBX – nur Collider, Lichter und Ziele");
             if (atlasMaterial == null) Debug.LogWarning($"[Ballon] Szene {f.name}: kein Atlas-Material");
-            _scenes.Add(new SceneEntry { data = f, prefab = prefab, mat = atlasMaterial });
+            if (atlases == null) Debug.LogWarning($"[Ballon] Szene {f.name}: keine Lichtatlanten");
+            _scenes.Add(new SceneEntry { data = f, prefab = prefab, mat = atlasMaterial, atlases = atlases });
             if (Player != null && _scenes.Count == 1) Player.SetScene(SceneName(CurrentScene), Range);   // Anzeige nennt ab jetzt die Szene
             return _scenes.Count - 1;
         }
@@ -163,7 +199,24 @@ namespace Ballon.Ego
         /// <summary>Taste L: Parcours → Szene 0 → … → letzte Szene → Parcours.</summary>
         public void NextScene() => ShowScene(CurrentScene + 1 >= _scenes.Count ? -1 : CurrentScene + 1);
 
-        /// <summary>Parcours (-1) oder Szene i zeigen: Umgebung, Licht, Himmel, Reflexionssonde, Ziele und Spieler wechseln gemeinsam.</summary>
+        /// <summary>Taste N: nächste Lichtszene der gezeigten Szene (im Parcours ohne Wirkung).</summary>
+        public void NextLighting()
+        {
+            int n = LightingCount;
+            if (n > 1) ShowLighting((CurrentLighting + 1) % n);
+        }
+
+        /// <summary>Taste T: zurück zum Startpunkt der gezeigten Szene (Parcours: Parcours-Start); ein laufender Lauf wird verworfen.</summary>
+        public void ResetToStart()
+        {
+            if (CurrentScene < 0) { Player.Teleport(ParcoursStart, 0, 0); return; }
+            var L = _scenes[CurrentScene].loaded;
+            Player.Teleport(L.spawnPos, L.spawnYaw, 0);
+            L.course?.Reset();
+        }
+
+        /// <summary>Parcours (-1) oder Szene i zeigen: Umgebung, Licht, Himmel, Reflexionssonde, Ziele und Spieler wechseln gemeinsam.
+        /// Die Lichtszene ist die zuletzt gezeigte dieser Szene (anfangs die erste).</summary>
         public void ShowScene(int i)
         {
             if (i < -1 || i >= _scenes.Count) throw new ArgumentOutOfRangeException(nameof(i), $"Szene {i} (von {_scenes.Count})");
@@ -173,6 +226,7 @@ namespace Ballon.Ego
             var cam = Player.worldCam;
             if (i < 0)
             {
+                CurrentLighting = -1;
                 RangeRoot.gameObject.SetActive(true);
                 Sun.enabled = true;
                 ParcoursLook();
@@ -185,16 +239,11 @@ namespace Ballon.Ego
                 return;
             }
             var e = _scenes[i];
-            var L = e.loaded ?? (e.loaded = SceneLoader.Build(e.data, e.prefab, e.mat, backdrop, _targetMats));
+            var L = e.loaded ?? (e.loaded = SceneLoader.Build(e.data, e.prefab, e.mat, e.atlases, backdrop, _targetMats));
             RangeRoot.gameObject.SetActive(false);
             Sun.enabled = false;
             L.root.gameObject.SetActive(true);
             RenderSettings.fog = false;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = L.ambientGamma;
-            RenderSettings.ambientIntensity = 1f;
-            DynamicGI.UpdateEnvironment();
-            cam.backgroundColor = L.skyGamma;                       // Himmel: Farbe × Stärke aus der Szene
             cam.cullingMask = _worldMask & ~(1 << StudioEmitLayer);  // Lichtflächen sieht nur die Sonde
             var eye = L.spawnPos + Vector3.up * Player.move.eye;
             Probe.transform.position = eye;
@@ -203,16 +252,46 @@ namespace Ballon.Ego
             Probe.resolution = 256;
             Probe.hdr = true;
             Probe.cullingMask = ~(1 << ViewmodelLayer);              // unbeleuchtete Umgebung plus Lichtflächen
-            Probe.backgroundColor = L.skyGamma;
-            Probe.RenderProbe();
-            Player.SetScene(SceneName(i), L.targets);
+            Player.SetScene(SceneName(i), L.targets, L.course);
+            ApplyLighting(e, Mathf.Clamp(e.lighting, 0, e.data.lightings.Length - 1));
             Player.Teleport(L.spawnPos, L.spawnYaw, 0);
+            L.course?.Reset();
+        }
+
+        /// <summary>Lichtszene li der gezeigten Szene: tauscht nur Atlanten, Lichtgruppe, Umgebungslicht, Himmel und Sonde (keine Geometrie).</summary>
+        public void ShowLighting(int li)
+        {
+            if (CurrentScene < 0) throw new InvalidOperationException("Lichtszenen gibt es nur in einer Szene, nicht im Parcours");
+            var e = _scenes[CurrentScene];
+            if (li < 0 || li >= e.data.lightings.Length) throw new ArgumentOutOfRangeException(nameof(li), $"Lichtszene {li} (von {e.data.lightings.Length})");
+            ApplyLighting(e, li);
+        }
+
+        void ApplyLighting(SceneEntry e, int li)
+        {
+            var L = e.loaded;
+            e.lighting = li;
+            CurrentLighting = li;
+            for (int k = 0; k < L.lightings.Length; k++) L.lightings[k].group.SetActive(k == li);
+            var LL = L.lightings[li];
+            L.ApplyAtlas(li);
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = LL.ambientGamma;
+            RenderSettings.ambientIntensity = 1f;
+            DynamicGI.UpdateEnvironment();
+            Player.worldCam.backgroundColor = LL.skyGamma;           // Himmel: Farbe × Stärke aus der Lichtszene
+            Probe.backgroundColor = LL.skyGamma;
+            Probe.RenderProbe();
+            Player.SetLighting(e.data.LightingLabel(li), e.data.lightings.Length);
         }
 
         void Update()
         {
             var k = Keyboard.current;
-            if (k != null && k.lKey.wasPressedThisFrame && _scenes.Count > 0) NextScene();
+            if (k == null) return;
+            if (k.lKey.wasPressedThisFrame && _scenes.Count > 0) NextScene();
+            if (k.nKey.wasPressedThisFrame) NextLighting();
+            if (k.tKey.wasPressedThisFrame) ResetToStart();
         }
 
         static string Arg(string[] a, string k)
@@ -289,20 +368,25 @@ namespace Ballon.Ego
             {
                 ShowScene(i);
                 Player.input = new ScriptedInput().Add(0, 100);
-                for (int k = 0; k < 20; k++) yield return null;      // Sonde, Spieler steht
-                var sp = LoadedSceneAt(i).spawnPos;
-                Player.Teleport(sp, LoadedSceneAt(i).spawnYaw, 0);
-                cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
-                int vmMask = Player.viewCam.cullingMask;
-                foreach (var withVm in new[] { false, true })
+                for (int li = 0; li < LightingCount; li++)           // je Lichtszene ein Paar; die erste behält den Namen <szene>_…, weitere <szene>-<licht>_…
                 {
-                    Player.viewCam.cullingMask = withVm ? vmMask : 0;   // Kamera bleibt an: an ihr hängt der AgX-Durchgang
-                    yield return new WaitForEndOfFrame();
-                    yield return new WaitForEndOfFrame();
-                    ReadBack(rt, tex);
-                    File.WriteAllBytes(Path.Combine(dir, $"{_scenes[i].data.name}_{(withVm ? "waffe" : "umgebung")}.png"), tex.EncodeToPNG());
+                    ShowLighting(li);
+                    for (int k = 0; k < 20; k++) yield return null;      // Sonde, Spieler steht
+                    var sp = LoadedSceneAt(i).spawnPos;
+                    Player.Teleport(sp, LoadedSceneAt(i).spawnYaw, 0);
+                    cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
+                    int vmMask = Player.viewCam.cullingMask;
+                    string stem = li == 0 ? _scenes[i].data.name : $"{_scenes[i].data.name}-{_scenes[i].data.lightings[li].name}";
+                    foreach (var withVm in new[] { false, true })
+                    {
+                        Player.viewCam.cullingMask = withVm ? vmMask : 0;   // Kamera bleibt an: an ihr hängt der AgX-Durchgang
+                        yield return new WaitForEndOfFrame();
+                        yield return new WaitForEndOfFrame();
+                        ReadBack(rt, tex);
+                        File.WriteAllBytes(Path.Combine(dir, $"{stem}_{(withVm ? "waffe" : "umgebung")}.png"), tex.EncodeToPNG());
+                    }
+                    Player.viewCam.cullingMask = vmMask;
                 }
-                Player.viewCam.cullingMask = vmMask;
             }
             Debug.Log($"[Ballon] Szenenbilder in {dir}");
             Application.Quit();

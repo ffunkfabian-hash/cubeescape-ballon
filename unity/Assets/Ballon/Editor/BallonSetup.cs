@@ -19,9 +19,9 @@ namespace Ballon.Ego.Editor
         /// <summary>Gebackene Atlanten und LUT aus Blender: Farbe sRGB, Masken und Normale linear, LUT ohne Mips und Kompression.</summary>
         void OnPreprocessTexture()
         {
-            if (assetPath.StartsWith("Assets/Ballon/Generated/Scenes/") && assetPath.EndsWith("_light.png"))
+            if (assetPath.StartsWith("Assets/Ballon/Generated/Scenes/") && assetPath.EndsWith(".png") && !assetPath.EndsWith("_ref.png") && !assetPath.EndsWith("_view.png"))
             {
-                var li = (TextureImporter)assetImporter;     // Lichtatlas einer Szene (ballon-scene/1): sRGB-Farbe, im Shader unbeleuchtet
+                var li = (TextureImporter)assetImporter;     // Lichtatlas einer Zone und Lichtszene (ballon-scene/2; nicht Referenzbild _ref, nicht _view): sRGB-Farbe, im Shader unbeleuchtet
                 li.textureType = TextureImporterType.Default;
                 li.sRGBTexture = true;
                 li.alphaSource = TextureImporterAlphaSource.None;
@@ -390,11 +390,12 @@ namespace Ballon.Ego.Editor
             return res;
         }
 
-        /// <summary>Szenen aus Generated/Scenes/*/scene_*.json (Blender, tools/scene_build.py): JSON, FBX der Umgebung und ein Unlit-Material
-        /// mit dem Lichtatlas. Unvollständige oder falsch formatierte Szenen werden übersprungen (Warnung), Fehlen aller ist normal.</summary>
-        static List<(TextAsset json, GameObject prefab, Material mat)> SceneAssets()
+        /// <summary>Szenen aus Generated/Scenes/*/scene_*.json (Blender, tools/scene_build.py, ballon-scene/2): JSON, FBX der Umgebung, eine
+        /// Unlit-Vorlage und alle Lichtatlanten (flach: Lichtszene · Zonenzahl + Zone, Reihenfolge wie im JSON). Unvollständige oder falsch
+        /// formatierte Szenen (auch ältere Formate: „neu bauen“) werden übersprungen (Warnung), Fehlen aller ist normal.</summary>
+        static List<(TextAsset json, GameObject prefab, Material mat, Texture2D[] atlases)> SceneAssets()
         {
-            var res = new List<(TextAsset, GameObject, Material)>();
+            var res = new List<(TextAsset, GameObject, Material, Texture2D[])>();
             var dir = Gen + "/Scenes";
             if (!Directory.Exists(dir)) return res;
             var files = Directory.GetFiles(dir, "scene_*.json", SearchOption.AllDirectories).Select(f => f.Replace('\\', '/')).ToList();
@@ -405,14 +406,19 @@ namespace Ballon.Ego.Editor
                 try { f = SceneFile.Parse(File.ReadAllText(path)); }
                 catch (System.Exception e) { Debug.LogWarning($"[Ballon] {path} übersprungen: {e.Message}"); continue; }
                 var d = Path.GetDirectoryName(path).Replace('\\', '/');
-                foreach (var a in new[] { path, $"{d}/{f.fbx}", $"{d}/{f.light_atlas.file}" })
+                var atlasPaths = new List<string>();
+                foreach (var l in f.lightings)
+                    foreach (var z in f.zones)
+                        atlasPaths.Add($"{d}/{l.AtlasFile(z.name)}");
+                foreach (var a in new[] { path, $"{d}/{f.fbx}" }.Concat(atlasPaths))
                     if (File.Exists(a)) AssetDatabase.ImportAsset(a, ImportAssetOptions.ForceSynchronousImport);
                 var json = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{d}/{f.fbx}");
-                var atlas = AssetDatabase.LoadAssetAtPath<Texture2D>($"{d}/{f.light_atlas.file}");
-                if (json == null || prefab == null || atlas == null)
+                var atlases = atlasPaths.Select(a => AssetDatabase.LoadAssetAtPath<Texture2D>(a)).ToArray();
+                if (json == null || prefab == null || atlases.Any(a => a == null))
                 {
-                    Debug.LogWarning($"[Ballon] {path} übersprungen: FBX {f.fbx} oder Lichtatlas {f.light_atlas.file} fehlt");
+                    var missing = atlasPaths.Where(a => AssetDatabase.LoadAssetAtPath<Texture2D>(a) == null).Select(a => Path.GetFileName(a));
+                    Debug.LogWarning($"[Ballon] {path} übersprungen: FBX {f.fbx} oder Lichtatlas fehlt ({string.Join(", ", missing)})");
                     continue;
                 }
                 var mp = $"{Gen}/Materials/Scene_{f.name}.mat";
@@ -422,11 +428,9 @@ namespace Ballon.Ego.Editor
                     m = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = $"Scene_{f.name}" };
                     AssetDatabase.CreateAsset(m, mp);
                 }
-                m.SetTexture("_BaseMap", atlas);        // Umgebung trägt ihr Licht im Atlas: unbeleuchtet, ein Material für alle Teile
-                float k = f.light_atlas.scale > 0 ? f.light_atlas.scale : 1f;        // Atlas = Licht / scale
-                m.SetColor("_BaseColor", new Color(k, k, k, 1).gamma);                 // Materialfarben sind Gamma-Werte
+                // Vorlage ohne Atlas: der Lader kopiert sie je Zone und setzt Atlas (_BaseMap) und Helligkeit (_BaseColor = scale) je Lichtszene
                 EditorUtility.SetDirty(m);
-                res.Add((json, prefab, m));
+                res.Add((json, prefab, m, atlases));
             }
             return res;
         }
@@ -455,6 +459,7 @@ namespace Ballon.Ego.Editor
             b.sceneJson = scenes.Select(x => x.json).ToArray();
             b.scenePrefabs = scenes.Select(x => x.prefab).ToArray();
             b.sceneMaterials = scenes.Select(x => x.mat).ToArray();
+            b.sceneAtlases = scenes.Select(x => new Bootstrap.SceneAssetSet { textures = x.atlases }).ToArray();
             Debug.Log($"[Ballon] {scenes.Count} Szene(n) in {ScenePath}: {string.Join(", ", scenes.Select(x => x.json.name))}");
             EditorSceneManager.SaveScene(sc, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };

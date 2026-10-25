@@ -13,6 +13,9 @@ namespace Ballon.Ego
         public Material normal, flash;
         float _until;
 
+        /// <summary>Richtung, in die die Ringseite der Scheibe zeigt (zum Schützen).</summary>
+        public Vector3 FaceNormal => -transform.up;
+
         public void Hit(Vector3 p)
         {
             hits++;
@@ -126,9 +129,9 @@ namespace Ballon.Ego
         /// <summary>Radius der Scheibe nach Entfernung: 0,30 m bis ≈ 17 m, 0,45 m bis ≈ 37 m, sonst 0,60 m (wie die Parcours-Stufen 10/25/50).</summary>
         public static float TargetRadius(float distance) => distance < 17.5f ? 0.3f : distance < 37.5f ? 0.45f : 0.6f;
 
-        public static RangeTarget Target(Transform root, Vector3 at, float distance, float radius, Mats m)
+        /// <param name="h">Höhe der Scheibenmitte über den Füßen des Pfostens (Standard 1,45 m; Parcours-Ziele setzen die Höhe über dem Boden darunter)</param>
+        public static RangeTarget Target(Transform root, Vector3 at, float distance, float radius, Mats m, float h = 1.45f)
         {
-            float h = 1.45f;
             var post = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             post.name = $"Pfosten {distance:0} m";
             post.transform.SetParent(root, false);
