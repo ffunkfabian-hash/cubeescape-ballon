@@ -8,6 +8,9 @@
   Bericht [docs/versions/0.11-compact.md](docs/versions/0.11-compact.md).
 - Patch: Familienmaße v2.1 aus den Specs ([docs/familienmasse.md](docs/familienmasse.md), `make_docs.py`); v2.1-Specs in `data/specs/`,
   `./check` vergleicht sie mit dem Entwurf. Stilhandbuch §6: alle Familienbausteine mit Parametern und Nutzung, Muster im Waffenmodul.
+- Patch: Entscheidungsliste Motiongen REF 0.14–0.28 ([docs/entscheidungsliste-motiongen.md](docs/entscheidungsliste-motiongen.md)):
+  20 Nutzerantworten vom 25.10.2026 in 8 Blöcken, acht Glidepath-Widersprüche mit dem Wert, den BASIC bis zur Klärung nutzt,
+  und eine Umsetzungsreihenfolge in 8 Schritten. Nichts gebaut oder gerendert.
 
 ## 0.6.0 „Riflekin“ – unveröffentlicht (lokal, in Arbeit)
 
