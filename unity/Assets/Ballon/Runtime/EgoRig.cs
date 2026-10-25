@@ -52,7 +52,11 @@ namespace Ballon.Ego
                 foreach (var nm in s.D.textures.weapon.objects) role[nm] = "Atlas_weapon";
                 foreach (var nm in s.D.textures.arms.objects) role[nm] = "Atlas_arms";
             }
-            foreach (var r in w.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
+            foreach (var r in w.GetComponentsInChildren<Renderer>(true))
+            {
+                Dress(r, role, roles, layer);
+                if (role.TryGetValue(r.name, out var ro) && ro == "Atlas_weapon") _atlasWeapon.Add(r);
+            }
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             foreach (var t in a.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
@@ -77,6 +81,17 @@ namespace Ballon.Ego
             r.lightProbeUsage = LightProbeUsage.Off;
             r.reflectionProbeUsage = ReflectionProbeUsage.BlendProbes;
         }
+
+        readonly List<Renderer> _atlasWeapon = new List<Renderer>();
+
+        /// <summary>Waffen-Skin setzen: alle Teile mit dem Waffenatlas bekommen dessen Skin-Material (Arme bleiben).</summary>
+        public void SetSkin(Material m)
+        {
+            if (m == null) return;
+            foreach (var r in _atlasWeapon) r.sharedMaterial = m;
+        }
+
+        public Material WeaponAtlasMaterial => _atlasWeapon.Count > 0 ? _atlasWeapon[0].sharedMaterial : null;
 
         public Transform Part(string id) => _parts[id];
         public Transform SegR(string s) => _segR[S.SegmentIndex(s)];

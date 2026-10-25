@@ -319,6 +319,21 @@ namespace Ballon.Ego.Tests
         }
 
         [UnityTest]
+        public IEnumerator Skin_wechseln_nur_an_der_Waffe()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            Assert.AreEqual(8, p.skins.Length);
+            var arm = p.rig.SegR("hand").GetComponentInChildren<Renderer>().sharedMaterial;
+            var before = p.rig.WeaponAtlasMaterial;
+            p.SetSkin(3);
+            yield return null;
+            Assert.AreSame(p.skins[3], p.rig.WeaponAtlasMaterial, "Waffe trägt den Skin");
+            Assert.AreSame(arm, p.rig.SegR("hand").GetComponentInChildren<Renderer>().sharedMaterial, "Arme bleiben");
+            p.SetSkin(0);
+            Assert.AreSame(before, p.rig.WeaponAtlasMaterial);
+        }
+
+        [UnityTest]
         public IEnumerator Szene_startet_und_spielt_den_Ablauf()
         {
             var b = Object.FindAnyObjectByType<Bootstrap>();

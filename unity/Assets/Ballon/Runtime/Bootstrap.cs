@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Ballon.Ego
@@ -15,6 +16,7 @@ namespace Ballon.Ego
         public GameObject weaponModel, armsModel;
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
         public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
+        public Material[] skinMaterials;         // Waffen-Skins in der Reihenfolge von ego.json › textures.skins (0 = standard)
         public const int ViewmodelLayer = 31;
         public const int OutRenderer = 1;
         public const int StudioEmitLayer = 30;   // Lichtflächen nur für die Reflexionssonde (Vergleichsmodus)         // Renderer „Out“ mit dem AgX-Durchgang (BallonSetup.OutRenderer)     // Ebene „Viewmodel“ (in den Projekteinstellungen benannt)
@@ -66,11 +68,15 @@ namespace Ballon.Ego
             Probe.RenderProbe();
             Player = EgoPlayer.Create(S, weaponModel, armsModel, roles, ViewmodelLayer, new Vector3(0, 0.01f, 1.5f), 0);
             Player.decalMat = decal;
+            Player.skins = skinMaterials;
+            Player.skinNames = D.textures?.skins?.Select(s => s.de).ToArray();
             Player.range = Range;
             var args = Environment.GetCommandLineArgs();
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
             if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
+            string skinsDir = Arg(args, "-ballonSkins");
+            if (skinsDir != null) { StartCoroutine(SkinSheet(skinsDir)); return; }
             string bench = Arg(args, "-ballonBench");
             if (bench != null) StartCoroutine(Bench(bench));
             else if (cap != null) StartCoroutine(Capture(cap));
@@ -127,6 +133,38 @@ namespace Ballon.Ego
         }
 
         int _f0;
+
+        /// <summary>Jeder Skin einmal in der Haltung hip und inspect_l im Studiolicht (Beleg Skins).</summary>
+        IEnumerator SkinSheet(string dir)
+        {
+            Directory.CreateDirectory(dir);
+            Player.hud = false;
+            Player.enabled = false;
+            RangeRoot.gameObject.SetActive(false);
+            Sun.enabled = false;
+            RenderSettings.fog = false;
+            var cam = Player.worldCam;
+            StudioLike(cam);
+            yield return null;
+            yield return null;
+            var rt = HdrTarget(1280, 720, 8);
+            cam.targetTexture = rt;
+            cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
+            var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
+            for (int i = 0; i < skinMaterials.Length; i++)
+            {
+                Player.SetSkin(i);
+                foreach (var pose in new[] { "hip", "inspect_l" })
+                {
+                    Player.rig.Apply(S.Evaluate(S.StillAction(pose), 0, new EgoState()));
+                    yield return new WaitForEndOfFrame();
+                    ReadBack(rt, tex);
+                    File.WriteAllBytes(Path.Combine(dir, $"{i:00}_{D.textures.skins[i].name}_{pose}.png"), tex.EncodeToPNG());
+                }
+            }
+            Debug.Log($"[Ballon] Skins in {dir}");
+            Application.Quit();
+        }
 
         /// <summary>HDR-Ziel (Half, linear): URP übernimmt das Zielformat für den Zwischenpuffer, ein 8-Bit-Ziel schnitte vor AgX bei 1 ab.</summary>
         public static RenderTexture HdrTarget(int w, int h, int aa) =>

@@ -199,6 +199,30 @@ namespace Ballon.Ego.Tests
         }
 
         [Test]
+        public void Skins_gebacken_mit_Materialien()
+        {
+            var sk = D.textures.skins;
+            Assert.AreEqual(8, sk.Length, "kit.SKINS: 8 Skins");
+            Assert.AreEqual("standard", sk[0].name);
+            var names = new HashSet<string>();
+            foreach (var s in sk)
+            {
+                Assert.IsTrue(names.Add(s.name), s.name);
+                foreach (var f in new[] { s.albedo, s.spec })
+                {
+                    var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                    Assert.IsNotNull(t, f);
+                    Assert.AreEqual(D.textures.weapon.size, t.width, f);
+                }
+                if (s.name == "standard") continue;
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_weapon_{s.name}.mat");
+                Assert.IsNotNull(m, s.name);
+                Assert.AreEqual(s.albedo, m.GetTexture("_BaseMap").name + ".png", s.name);
+                Assert.IsNotNull(m.GetTexture("_BumpMap"), s.name + ": Normale wie Standard");
+            }
+        }
+
+        [Test]
         public void AgX_LUT_wie_Blender()
         {
             var L = D.textures.lut;

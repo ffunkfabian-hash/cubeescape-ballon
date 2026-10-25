@@ -38,11 +38,11 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "2b9daa48fe710d8896b7a948208cffec3f4fcb6a9dc0d7556bb7d192915b7929"
+    "sha256": "637203c1bc202b0802bb5526de66124187b550848a8fa33d8faebd7669d42b0e"
    },
    {
     "path": "tools/bake_unity.py",
-    "sha256": "71e3b6c11ae4f934dd164fd90b1e4a15924e5f5625487383fdc706edfc2ff176"
+    "sha256": "66e38aec8836d87fca139f3c8d33c4376ef6c1224f0a30fa14bbc8be6cf754d7"
    }
   ]
  },
@@ -6576,6 +6576,64 @@
    "normal": "arms_normal.png",
    "ao": "arms_ao.png"
   },
+  "skins": [
+   {
+    "name": "standard",
+    "de": "Standard",
+    "kind": "Farbe",
+    "albedo": "weapon_albedo.png",
+    "spec": "weapon_spec.png"
+   },
+   {
+    "name": "nacht",
+    "de": "Nachtschicht",
+    "kind": "Farbe",
+    "albedo": "weapon_nacht_albedo.png",
+    "spec": "weapon_nacht_spec.png"
+   },
+   {
+    "name": "polar",
+    "de": "Polar",
+    "kind": "Farbe",
+    "albedo": "weapon_polar_albedo.png",
+    "spec": "weapon_polar_spec.png"
+   },
+   {
+    "name": "kobalt",
+    "de": "Kobalt",
+    "kind": "Farbe",
+    "albedo": "weapon_kobalt_albedo.png",
+    "spec": "weapon_kobalt_spec.png"
+   },
+   {
+    "name": "wueste",
+    "de": "Wüste",
+    "kind": "Farbe",
+    "albedo": "weapon_wueste_albedo.png",
+    "spec": "weapon_wueste_spec.png"
+   },
+   {
+    "name": "tarnung",
+    "de": "Tarnung",
+    "kind": "Textur",
+    "albedo": "weapon_tarnung_albedo.png",
+    "spec": "weapon_tarnung_spec.png"
+   },
+   {
+    "name": "gebraucht",
+    "de": "Gebraucht",
+    "kind": "Textur",
+    "albedo": "weapon_gebraucht_albedo.png",
+    "spec": "weapon_gebraucht_spec.png"
+   },
+   {
+    "name": "eloxal",
+    "de": "Eloxal",
+    "kind": "Textur",
+    "albedo": "weapon_eloxal_albedo.png",
+    "spec": "weapon_eloxal_spec.png"
+   }
+  ],
   "lut": {
    "file": "agx_lut.png",
    "size": 34,

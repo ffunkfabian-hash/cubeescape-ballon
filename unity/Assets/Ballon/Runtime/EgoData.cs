@@ -102,7 +102,8 @@ namespace Ballon.Ego
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
 
     /// <summary>Gebackene Atlanten (tools/bake_unity.py) und die AgX-LUT der Blender-Ansicht.</summary>
-    [Serializable] public class EgoTextures { public string de; public Atlas weapon, arms; public Lut lut; }
+    [Serializable] public class Skin { public string name, de, kind, albedo, spec; }
+    [Serializable] public class EgoTextures { public string de; public Atlas weapon, arms; public Lut lut; public Skin[] skins; }
 
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
     [Serializable] public class MeshBounds { public string de; public MeshBound[] objects; }

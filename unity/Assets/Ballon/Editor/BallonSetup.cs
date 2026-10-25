@@ -343,6 +343,19 @@ namespace Ballon.Ego.Editor
                 m.EnableKeyword("_OCCLUSIONMAP");
                 res["Atlas_" + key] = m;
             }
+            // Skins der Waffe (kit.SKINS): eigene Farb- und Glanzkarte, Normale und AO wie Standard
+            foreach (var sk in D.textures.skins)
+            {
+                if (sk.name == "standard") { res["Skin_standard"] = res["Atlas_weapon"]; continue; }
+                var m = new Material(res["Atlas_weapon"]);
+                var path = $"{Gen}/Materials/Atlas_weapon_{sk.name}.mat";
+                var old = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (old != null) { old.CopyPropertiesFromMaterial(m); m = old; } else { m.name = "Atlas_weapon_" + sk.name; AssetDatabase.CreateAsset(m, path); }
+                m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.albedo}"));
+                m.SetTexture("_SpecGlossMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.spec}"));
+                EditorUtility.SetDirty(m);
+                res["Skin_" + sk.name] = m;
+            }
             var bd = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Studio_Backdrop.mat");
             if (bd == null)
             {
@@ -374,6 +387,8 @@ namespace Ballon.Ego.Editor
             b.armsModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/arms.fbx");
             b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")).Select(kv => kv.Value).ToArray();
             b.backdrop = mats["backdrop"];
+            var D = EgoFile.Parse(File.ReadAllText($"{Gen}/ego.json"));
+            b.skinMaterials = D.textures.skins.Select(sk => mats["Skin_" + sk.name]).ToArray();
             b.floor = mats["floor"];
             b.wall = mats["wall"];
             b.cover = mats["cover"];

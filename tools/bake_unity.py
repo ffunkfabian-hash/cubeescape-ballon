@@ -210,7 +210,7 @@ def _joined(obs, join_all=False):
     return [j] + rest, j
 
 
-def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False):
+def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False, color_only=False):
     """Backt den Atlas `name` für `obs` und schreibt <name>_albedo/_spec/_normal/_ao.png nach out_dir. 64 Samples: der Kantenabrieb
     (Bevel-Knoten) ist ein Zufallsverfahren und krisselt bei 12."""
     sc = bpy.context.scene
@@ -237,17 +237,18 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False):
     _bake(obs, mats, sp, 'EMIT', samples, 'spec')
     ro = _image(f'{name}_rough', size, False)
     _bake(obs, mats, ro, 'EMIT', samples, 'rough')
-    nm = _image(f'{name}_normal', size, False)
-    _bake(obs, mats, nm, 'NORMAL', 4)
-    ao = _image(f'{name}_ao', size, False)
-    _bake(obs, mats, ao, 'AO', 32)
+    if not color_only:                                           # Skins: Normale und AO sind für alle gleich (gleiche Form, gleiche UVs)
+        nm = _image(f'{name}_normal', size, False)
+        _bake(obs, mats, nm, 'NORMAL', 4)
+        ao = _image(f'{name}_ao', size, False)
+        _bake(obs, mats, ao, 'AO', 32)
     n = size * size * 4
     r, px = np.empty(n, np.float32), np.empty(n, np.float32)
     ro.pixels.foreach_get(r)
     sp.pixels.foreach_get(px)
     px[3::4] = 1.0 - r[0::4]                                     # Alpha ist nie gammakodiert
     sp.pixels.foreach_set(px)
-    for im, key in ((al, 'albedo'), (sp, 'spec'), (nm, 'normal'), (ao, 'ao')):
+    for im, key in ((al, 'albedo'), (sp, 'spec')) + (() if color_only else ((nm, 'normal'), (ao, 'ao'))):
         path = os.path.join(out_dir, f'{name}_{key}.png')
         im.filepath_raw = path
         im.file_format = 'PNG'

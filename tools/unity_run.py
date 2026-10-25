@@ -7,6 +7,7 @@
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
   python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
+  python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
 """
 import glob
 import json
@@ -221,6 +222,19 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture())
+    if a == 'skins':
+        d = os.path.join(EV, 'skins')
+        shutil.rmtree(d, ignore_errors=True)
+        rc = player(['-ballonSkins', d], os.path.join(EV, 'skins.log'))
+        files = sorted(glob.glob(os.path.join(d, '*.png')))
+        if rc or not files:
+            sys.exit(rc or 1)
+        out = os.path.join(EV, 'firstfeel_skins.png')
+        tiles = [x for f in files for x in ('-label', os.path.basename(f)[3:-4].replace('_', ' · '), f)]
+        subprocess.run(['magick', 'montage', *tiles, '-tile', '4x', '-geometry', '480x270+3+3', '-pointsize', '13',
+                        '-background', '#9EA4AC', '-title', 'BALLON · Waffen-Skins in Unity (gebacken aus kit.SKINS)', out], check=True)
+        print('Skins →', out)
+        sys.exit(0)
     if a == 'bench':
         f = os.path.join(EV, 'bench.json')
         rc = player(['-ballonBench', f], os.path.join(EV, 'bench.log'))

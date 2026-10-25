@@ -44,6 +44,18 @@ namespace Ballon.Ego
         System.Random _rng = new System.Random(7);
         readonly Queue<GameObject> _decals = new Queue<GameObject>();
         public Material decalMat;
+        public Material[] skins;
+        public string[] skinNames;
+        public int skin;
+
+        /// <summary>Waffen-Skin i (0 = Standard) setzen.</summary>
+        public void SetSkin(int i)
+        {
+            if (skins == null || skins.Length == 0) return;
+            skin = ((i % skins.Length) + skins.Length) % skins.Length;
+            rig.SetSkin(skins[skin]);
+            _hHits = -1;                     // Anzeige neu bauen
+        }
         public RangeTargets range;
 
         public static EgoPlayer Create(EgoSolver S, GameObject weaponModel, GameObject armsModel, IDictionary<string, Material> roles,
@@ -260,7 +272,7 @@ namespace Ballon.Ego
             if (Time.time < 12f || Cursor.lockState != CursorLockMode.Locked)
                 GUI.Label(new Rect(16, Screen.height - 46, 1200, 40),
                     "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
-                    "F Betrachten · 1/2 Ziehen/Wegstecken · Esc Maus frei · H Anzeige", small);
+                    "F Betrachten · 1/2 Ziehen/Wegstecken · K Skin · Esc Maus frei · H Anzeige", small);
         }
 
         // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild)
@@ -278,7 +290,12 @@ namespace Ballon.Ego
                 _hFrame = fr; _hAction = C.ActionName; _hMarker = mk;
                 _stateText = $"BASIC-01 v2.1 · {C.ActionName} {fr}  ·  {mk}";
             }
-            if (hits != _hHits) { _hHits = hits; _hitText = $"Treffer {hits}   {(range != null ? range.Summary() : "")}"; }
+            if (hits != _hHits)
+            {
+                _hHits = hits;
+                string sk = skinNames != null && skinNames.Length > 0 ? $"   Skin {skinNames[skin]} (K)" : "";
+                _hitText = $"Treffer {hits}   {(range != null ? range.Summary() : "")}{sk}";
+            }
         }
 
         static void Rect(float x, float y, float w, float h, Color c)
@@ -293,6 +310,7 @@ namespace Ballon.Ego
         {
             var k = UnityEngine.InputSystem.Keyboard.current;
             if (k != null && k.hKey.wasPressedThisFrame) hud = !hud;
+            if (k != null && k.kKey.wasPressedThisFrame) SetSkin(skin + 1);
         }
     }
 }

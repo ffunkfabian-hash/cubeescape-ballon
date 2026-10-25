@@ -122,15 +122,40 @@ Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blen
   - Materialfarben sind in Unity Gamma-Werte: lineare Werte über `SetColor(farbe.gamma)` setzen.
 - **Messung:** `compare` schreibt SSIM, PSNR und Helligkeit je Pose nach `compare/metrics.json`.
 
+## Skins (0.7.2)
+
+Die acht Waffen-Skins aus `kit.SKINS` sind gebacken: Standard, Nachtschicht, Polar, Kobalt, Wüste, Tarnung, Gebraucht und
+Eloxal.
+
+- **Backen:** Je Skin entstehen eine Farbkarte (Diffus) und eine Glanzkarte (Spiegelfarbe plus Glätte) der Waffe, etwa 2 min
+  je Skin auf der GPU. Normale und AO teilen sich alle Skins, weil Form und UVs gleich sind.
+- **Arme:** bleiben im Standard; ein Waffen-Skin färbt die Roboterarme nicht.
+- **Im Spiel:** Taste K schaltet durch, die Anzeige nennt den Skin (`EgoPlayer.SetSkin`).
+- **Beleg:** `python3 tools/unity_run.py skins` erzeugt einen Kontaktbogen (hip und inspect_l je Skin) in
+  `…/unity/firstfeel_skins.png`.
+- **Grenze:** In der Haltung inspect_l zeigen die Seitenflächen direkt zur Kamera. Dort glänzen dunkle Flächen stärker als in
+  Blender, dunkle Skins (Nachtschicht, Kobalt) wirken heller. Das ist dieselbe Restabweichung wie unter Grenzen (keine
+  Abschattung der Spiegelung).
+
+Zeiten des Exports mit Backen: Waffe 3 min, Arme 0,5 min, 7 Skins 15 min, gesamt ≈ 20 min ohne Wartezeit an der GPU-Sperre.
+
 ## Grenzen
 
-- Creme wirkt in Unity etwas kühler und grauer, Leuchtteile schwächer.
-  - Indirektes Licht (Mehrfachstreuung) fehlt; Unity hat nur einheitliches Umgebungslicht.
-  - Glanz kommt von Punktlichtern statt von Flächen.
-  - Glas hat keine Durchlässigkeit und keinen Klarlack.
-- Glasvarianten (Staub, Kratzer, Riss) sind noch einfaches transparentes Lit.
-- Im Parcours gelten dieselben Materialien und dieselbe LUT; das Licht dort ist entworfen, nicht aus Blender.
-- Wie in Blender: An der Hüfte ist die rechte Hand nicht im Bild, die Hand am Ladehebel ist teils außerhalb, und in der Faust
+Entscheidung des Nutzers (25.10.2026): Die Restabweichungen bleiben so. „Lassen wir es so wie es ist. Das ist ok.“
+
+Ganz 1:1 geht es nicht, weil Unity in Echtzeit rastert, während Cycles Licht verfolgt. Gemessen über Waffe und Armen bleibt eine
+mittlere Abweichung von etwa 0,08, die SSIM im Ausschnitt liegt bei 0,86–0,89 (Bericht 0.7). Was bleibt:
+
+- **Dunkle Teile zu hell:** Schwarzes Gehäuseunterteil und eloxierte Platte sind etwas heller. Die Reflexionssonde kennt keine
+  Abschattung durch Waffe und Arm.
+  - Möglich: Spiegelung über das gebackene AO abdunkeln.
+- **Glas dunkel:** Glasring und Fenster wirken dunkel statt hellblau, denn Glas hat keine Durchlässigkeit und keinen Klarlack.
+  - Möglich: ein eigener Glas-Shader mit Fresnel.
+- **Creme kühler:** Indirektes Licht (Mehrfachstreuung) fehlt, Unity hat nur einheitliches Umgebungslicht.
+  - Möglich: indirektes Licht mitbacken. Das gilt dann nur für die Studiohaltung.
+- **Glasvarianten:** Staub, Kratzer und Riss sind einfaches transparentes Lit.
+- **Parcours:** Dieselben Materialien und dieselbe LUT; das Licht dort ist entworfen, nicht aus Blender.
+- **Wie in Blender:** An der Hüfte ist die rechte Hand nicht im Bild, die Hand am Ladehebel ist teils außerhalb, und in der Faust
   hängt der Daumen nach unten.
-- Kein Ton, kein Mündungsfeuer, kein Hülsenauswurf (offene Entscheidung des Nutzers).
-- Das fallende Magazin verschwindet wie in Blender nach dem Fall und wird nicht zum Weltobjekt.
+- **Spieldetails:** Kein Ton, kein Mündungsfeuer, kein Hülsenauswurf (offene Entscheidung des Nutzers). Das fallende Magazin wird
+  nicht zum Weltobjekt.

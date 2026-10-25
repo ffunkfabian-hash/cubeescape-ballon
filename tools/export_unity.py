@@ -250,6 +250,22 @@ def blender_main():
             bpy.context.view_layer.update()
         textures[key] = dict(size=size, objects=sorted(o.name for o in bake), **files)
         print(f'[export_unity] Atlas {key}: {len(bake)} Objekte, {size}²')
+    # Skins (kit.SKINS) für die Waffe: Farbe und Glanz je Skin neu backen; Arme bleiben im Standard (Waffen-Skin färbt die Arme nicht)
+    from basic import kit
+    wb = textures['weapon']['objects']
+    wbake = [o for o in wobs if o.name in set(wb)]
+    skins = [dict(name='standard', de=kit.SKINS['standard']['de'], kind=kit.SKINS['standard']['kind'],
+                  albedo=textures['weapon']['albedo'], spec=textures['weapon']['spec'])]
+    for skin, S in kit.SKINS.items():
+        if skin == 'standard':
+            continue
+        kit.SKIN['name'] = skin
+        kit.set_mode(sc.objs, 'aaa')
+        f = BK.bake_atlas(wbake, f'weapon_{skin}', 4096, tex_dir, gpu=gpu, color_only=True)
+        skins.append(dict(name=skin, de=S['de'], kind=S['kind'], **f))
+    kit.SKIN['name'] = 'standard'
+    kit.set_mode(sc.objs, 'aaa')
+    textures['skins'] = skins
     textures['lut'] = BK.agx_lut(os.path.join(tex_dir, 'agx_lut.png'))
     D['textures'] = dict(de='Gebackene Atlanten (kit.aaa_nodes, Skin standard) und AgX-LUT; nicht gebacken: Glas, Leuchtteile',
                          **textures)
