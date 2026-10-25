@@ -526,8 +526,8 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-24",
-      "method": "Drei Runden: (1) Silhouette/Zweiton an hero_p und side_left – Kammerfenster war nur Mulde, quer durchgeschnitten; (2) Schichten/Negativraum an side_left (Ausschnitt) – Anzeigenleiste lag unter der Oberfläche, 1,8 mm herausgehoben; (3) Material/Budget an hero, exploded, sightline, ego und 8 Skins; Absehen ergänzt (Nutzerhinweis)"
+      "date": "2026-10-25",
+      "method": "Drei Runden: (1) Silhouette/Zweiton an hero_p und side_left – Kammerfenster war nur Mulde, quer durchgeschnitten; (2) Schichten/Negativraum an side_left (Ausschnitt) – Anzeigenleiste lag unter der Oberfläche, 1,8 mm herausgehoben; (3) Material/Budget an hero, exploded, sightline, ego und 8 Skins; Absehen ergänzt (Nutzerhinweis); Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet"
     },
     "actions": {
       "fire_burst": {
@@ -551,8 +551,8 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-24",
-      "method": "Drei Sichtungsrunden laut docs/versions/0.2-pilot.md; Nachtrag: Absehen ergänzt, sightline und part_sight neu gesichtet"
+      "date": "2026-10-25",
+      "method": "Drei Sichtungsrunden laut docs/versions/0.2-pilot.md; Nachtrag: Absehen ergänzt, sightline und part_sight neu gesichtet; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet"
     },
     "actions": {
       "fire_auto": {
@@ -576,8 +576,8 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-24",
-      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur"
+      "date": "2026-10-25",
+      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet"
     },
     "actions": {
       "fire_semi": {
