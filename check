@@ -149,6 +149,9 @@ if r.returncode:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + r.stdout.strip())
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'scene_build.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Szenen: ' + r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')
