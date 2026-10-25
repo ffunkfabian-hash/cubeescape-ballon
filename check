@@ -138,6 +138,8 @@ if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
     r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_motion.py')], capture_output=True, text=True)
     if r.returncode or 'Bewegungen geprüft' not in r.stdout:
         fail('Drehsinn: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'test_motion' in ln))
+elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux: Blender-Stufen bleiben auf dem Mac (check.yml)
+    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test nur auf dem Mac')
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_ego.py'), '--check'], capture_output=True, text=True)
