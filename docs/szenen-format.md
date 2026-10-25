@@ -1,40 +1,63 @@
-# Szenenformat `ballon-scene/1` (Blender → Unity)
+# Szenenformat `ballon-scene/2` (Blender → Unity)
 
-Vertrag zwischen `tools/scene_build.py` (Blender, Erzeuger) und dem Szenenlader in `unity/` (Abnehmer, ab 0.8;
-Test `python3 tools/unity_run.py test`). Eine Datei je Szene:
-`unity/Assets/Ballon/Generated/Scenes/<name>/scene_<name>.json`, daneben `<name>.fbx` und der Lichtatlas `<name>_light.png`.
+Vertrag zwischen `tools/scene_build.py` (Blender, Erzeuger) und dem Szenenlader in `unity/` (Abnehmer ab 0.9, Test
+`python3 tools/unity_run.py test`). Eine Datei je Szene: `unity/Assets/Ballon/Generated/Scenes/<name>/scene_<name>.json`, daneben
+`<name>.fbx` und die Lichtatlanten. Ältere Dateien (`ballon-scene/1`, 0.8) lehnt Unity mit „neu bauen (tools/scene_build.py)“ ab.
 
 **Koordinaten.** Blender-Welt in Metern, Z oben, Spieler blickt beim Start nach −Y, wie der Blender-Kameraraum. Nach Unity
 gilt dieselbe Umrechnung wie in `ego.json › axes.to_unity`: Unity = (−x, z, −y). Winkel in Grad.
 
+## Neu in /2 (0.9)
+
+- **`zones`:** Die Umgebung ist in Zonen geteilt, jede mit eigenem UV-Satz und Atlas. Nahe Bereiche bekommen eine höhere
+  Texeldichte. Jedes Objekt gehört zu genau einer Zone. Die UVs sind für alle Lichtvarianten gleich.
+- **`lightings`:** Mehrere Lichtszenen derselben Geometrie. Jede bringt eigene Atlasdateien je Zone, Himmel, Umgebungslicht,
+  Lichter und ein Referenzbild mit. Der erste Eintrag ist der Standard.
+- **`course`:** ein Parcours mit Start- und Zieltor, Kontrollpunkten in Reihenfolge, Zielscheiben entlang der Strecke und
+  einer Richtzeit.
+- `targets` (Schießstand ohne Strecke) bleibt optional.
+
 ```json
 {
-  "format": "ballon-scene/1",
+  "format": "ballon-scene/2",
   "name": "hangar",
   "de": "Hangar",
   "fbx": "hangar.fbx",
-  "light_atlas": {"file": "hangar_light.png", "size": 4096, "scale": 3.0,
-                  "de": "Diffuses Cycles-Licht (direkt + indirekt) mal Farbe, sRGB; Umgebung in Unity unbeleuchtet"},
-  "objects": ["Boden", "Wand_N", "..."],
-  "colliders": [{"name": "Boden", "center": [0, 0, -0.05], "size": [40, 60, 0.1]}],
-  "spawn": {"pos": [0, 20, 0], "yaw_deg": 0},
-  "sky": {"color": "#9FB4C8", "strength": 1.0},
-  "ambient": {"color": "#8C96A3", "strength": 0.45},
-  "lights": [{"name": "Strahler_1", "kind": "area", "pos": [0, 0, 13], "dir": [0, 0, -1], "power_w": 800, "size_m": 1.5,
-              "color": "#FFF2E0"}],
-  "targets": [{"pos": [0, -10, 1.45], "distance": 10}],
-  "reference": {"png": "hangar_ref.png", "camera_pos": [0, 20, 1.62], "yaw_deg": 0, "pitch_deg": 0, "h_fov_deg": 75,
-                "view": "AgX", "look": "AgX - Medium High Contrast"},
+  "zones": [{"name": "nah", "objects": ["Boden_Mitte", "Kisten", "..."], "size": 4096, "texel_m": 0.015}],
+  "objects": ["Boden_Mitte", "..."],
+  "colliders": [{"name": "kiste_03", "center": [2, 10, 0.6], "size": [1.2, 1.2, 1.2]}],
+  "spawn": {"pos": [0, 25, 0], "yaw_deg": 0},
+  "lightings": [
+    {"name": "tag", "de": "Tag",
+     "atlases": {"nah": "hangar_tag_nah.png", "fern": "hangar_tag_fern.png"}, "scale": 3.0,
+     "sky": {"color": "#9FBAD6", "strength": 1.3},
+     "ambient": {"color": "#FFECCD", "strength": 0.17},
+     "lights": [{"name": "Sonne", "kind": "sun", "pos": [0, -80, 45], "dir": [0.36, 0.87, -0.34], "power_w": 7.0, "size_m": 0,
+                 "angle_deg": 0, "color": "#FFF0D8"}],
+     "reference": {"png": "hangar_tag_ref.png", "camera_pos": [0, 25, 1.62], "yaw_deg": 0, "pitch_deg": 0, "h_fov_deg": 75}}
+  ],
+  "course": {
+    "start":  {"center": [0, 22, 1.2], "size": [6, 0.4, 2.4]},
+    "finish": {"center": [0, 22, 1.2], "size": [6, 0.4, 2.4]},
+    "checkpoints": [{"name": "Gerüst oben", "center": [-12, 0, 5.2], "size": [3, 1, 2.4]}],
+    "targets": [{"name": "T01", "pos": [-6, 10, 1.6], "normal": [0, 1, 0], "radius": 0.3}],
+    "route": [[0, 22, 0], [-6, 12, 0], [-12, 0, 4.5]],
+    "par_time_s": 45
+  },
+  "targets": [],
   "sources": [{"path": "basic/scenes/hangar.py", "sha256": "…"}]
 }
 ```
 
-- `light_atlas.scale`: Der Atlas speichert Licht / scale (8 bit sRGB), der Abnehmer multipliziert mit scale. So bleiben
-  Sonnenflecken über 1 erhalten (fehlt der Wert: 1).
-- `angle_deg`: Öffnungswinkel eines `spot` (Blender `spot_size`, Unity `spotAngle`), fehlt: 90.
-- `kind` ist `area`, `sun`, `point` oder `spot`. `dir` ist die Leuchtrichtung, `power_w` die Blender-Leistung, `size_m` die
-  Kantenlänge der Fläche bzw. der Radius.
-- Unity beleuchtet die Umgebung nicht. Sie trägt ihr Licht im Atlas. Die Lichter dienen nur dem Viewmodel: Spots mit
-  P/π², Lichtflächen in der Reflexionssonde (P / (π·A)), wie `Bootstrap.StudioLike`.
-- Zielscheiben baut Unity selbst an `targets` (wie im Parcours).
-- `sources` geht in den Abgleich in `./check` ein, wie bei `ego.json`.
+- **Lichter:** `kind` ist `area`, `sun`, `point` oder `spot`.
+  - `dir` ist die Leuchtrichtung, `power_w` die Blender-Leistung (bei der Sonne die Stärke in W/m²).
+  - `size_m` ist die Kantenlänge der Fläche bzw. der Radius.
+  - `angle_deg` ist der Öffnungswinkel eines `spot`; fehlt er, gilt 90.
+- **Atlanten:** speichern Licht / `scale` (8 bit sRGB). Unity multipliziert mit `scale`, so bleiben Sonnenflecken über 1
+  erhalten.
+- **Beleuchtung:** Unity beleuchtet die Umgebung nicht, sie trägt ihr Licht im Atlas. Die Lichter dienen nur dem Viewmodel:
+  - Flächenlicht und Spot mit P/π², Punktlicht mit P/(4π²), Sonne mit S/π;
+  - dazu Lichtflächen in der Reflexionssonde mit P/(π·A), wie `Bootstrap.StudioLike`.
+- **Parcours:** Tore und Kontrollpunkte sind achsparallele Auslösequader. Die Zielscheiben baut Unity an `course.targets`:
+  Mitte `pos`, Blickrichtung `normal`, Radius `radius`. `route` ist die Strecke für Wegmarken am Boden.
+- **`sources`** geht in den Abgleich in `./check` ein, wie bei `ego.json`.
