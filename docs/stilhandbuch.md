@@ -230,7 +230,7 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - Fenster in massiven Profilen bleiben Mulden: für sichtbare Innenteile quer durchschneiden (Schneidkörper breiter als das Teil).
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
 - Magazin im Griff neben die Griffachse gesetzt steht hinten aus dem Griff und versteckt sein Sichtfenster → Magazinmitte auf
-  der Griffachse von `grip_v21` (f = u·tan 15° − 1,5 mm), Fenster in den Teil unter dem Griffboden (BASIC-06 v2.1).
+  der Griffachse von `grip_v21` (f ≈ u·tan 15°), Fenster in den Teil unter dem Griffboden (BASIC-06 v2.1).
 
 ## 10 Arme und Animation
 

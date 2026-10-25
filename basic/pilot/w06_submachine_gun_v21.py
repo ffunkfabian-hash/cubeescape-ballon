@@ -22,6 +22,8 @@ Schlichtheitsbudget: Leuchten 2 Funktionen (Munitionsanzeige, Visier-Emitter mit
 (Ladehebel, Feuerwahl, Magazinhalter) · Schrauben nur an Paneelen und Vorbau.
 Status: Maße entworfen (Länge an Toolgen-Bezug 0,616 m angelehnt; gemessen 0,547 m, spec.json), Formprinzipien abgeleitet aus den Bildreferenzen.
 """
+import math
+
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
                           grip_v21, reflex_sight_v21, stock_s1, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.reticles import DEFAULTS as RETICLE_DEFAULTS
@@ -117,8 +119,9 @@ P += [
                 for i, u in enumerate(_win_u)]),
 ]
 for p in P:
-    if p['id'] == 'trigger_guard':      # Runde 1: Bügel wirkte wie Draht – Abzugsbügel und Bügel als ein Band, 9–12 mm hoch
-        p.update(pts=[(24.7, 4), (82.7, 4), (82.7, 41), (75.7, 41), (75.7, 13), (26.7, 13)], w=14)
+    if p['id'] == 'trigger_guard':      # Runde 1: Bügel wirkte wie Draht – Abzugsbügel und Bügel als ein Band, 9–13 mm hoch
+        _g0, _g1 = 40 * math.tan(math.radians(15)) + 18, 40 * math.tan(math.radians(15)) + 72     # wie grip_rifle(top=40)
+        p.update(pts=[(_g0 - 4, 4), (_g1, 4), (_g1, 41), (_g1 - 7, 41), (_g1 - 7, 13), (_g0 - 2, 13)], w=14)
 P += [
     prof('loop', 'Bügel', 'Support loop', 'support', 'anodized', 'Verbindet Abzugsbügel und Vordergriff; umschließt die Stützhand',
          'am Abzugsbügel und am Vordergriff (fest)', [(70, 4), (213, -7), (213, 6), (70, 13)], 14, bevel=R_SMALL),

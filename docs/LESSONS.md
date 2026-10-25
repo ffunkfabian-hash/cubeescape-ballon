@@ -54,4 +54,4 @@
 - `ce session reserve --repo .` läuft im Nexogen-Verzeichnis und reserviert dann Nexogen (Branch auf dessen origin). Reservieren erst, wenn das Repo ein `origin` und `.ce-repo.json` hat, und aus dem eigenen Worktree.
 - Reine Bewegungsänderungen nicht mit dem vollen Export (20 min GPU, sperrt andere Repos): `BALLON_EXPORT_DATA_ONLY=1` unter `ce lock blender` (2 s, [export_unity.py](../tools/export_unity.py)).
 - `gh repo create --source=.` erkennt einen Git-Worktree nicht als Repo („not a git repository“): aus dem Hauptcheckout aufrufen.
-- Magazin im Griff: Magazinmitte auf die Griffachse legen (`grip_v21`: f = u·tan 15° − 1,5 mm), sonst steht es hinten aus dem Griff und das Sichtfenster liegt verdeckt ([w06 v2.1](../basic/pilot/w06_submachine_gun_v21.py)).
+- Magazin im Griff: Magazinmitte auf die Griffachse legen (`grip_v21`: f ≈ u·tan 15°), sonst steht es hinten aus dem Griff und das Sichtfenster liegt verdeckt ([w06 v2.1](../basic/pilot/w06_submachine_gun_v21.py)).

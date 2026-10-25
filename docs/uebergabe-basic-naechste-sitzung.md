@@ -44,7 +44,7 @@ Der Nutzer wollte erst Motiongen und die Analysen abwarten und meldet sich mit e
 
 **Entschieden 25.10.2026: (a).** Namen in `docs/stilhandbuch.md` (Kopf und §1) geklärt: Stil v2.1, Visier-Standard 3, Arm v3.
 
-### 2. Maschinenpistole BASIC-06 v2.1 (bei Wahl (a))
+### 2. Maschinenpistole BASIC-06 v2.1 (bei Wahl (a)) – **erledigt in 0.11 „Compact“** ([Bericht](versions/0.11-compact.md))
 
 - Der Entwurf liegt in `basic/pilot/entwurf/w06_submachine_gun_v21.py`. Er ist geparkt, damit `./check` grün bleibt: Die Prüfung
   sucht nur nach `basic/pilot/w*_v21.py`. Zum Weiterarbeiten mit `git mv` nach `basic/pilot/` zurückholen.
