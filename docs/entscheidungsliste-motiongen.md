@@ -1,0 +1,304 @@
+# Entscheidungsliste Motiongen → BASIC
+
+Stand 25.10.2026, Patch „BALLON Motiongen-Entscheidungen“ (Branch `claude/ballon-patch-motiongen-entscheidungen`). Ausgewertet sind
+alle Motiongen-Analysen für BASIC aus [cubeescape-motiongen](https://github.com/ffunkfabian-hash/cubeescape-motiongen) `main`
+`4fa6f27` (REF 0.14–0.28). Diese Datei stellt nur Fragen und hält Antworten fest. Gebaut oder gerendert wird hier nichts.
+
+**Quellen** (je Doc die Abschnitte „Empfehlungen/Vorschläge für BASIC“, „Muster“ und „Offen“):
+[visiere] REF 0.14 · [proportionen] 0.15 · [rueckstoss] 0.16 · [zielbewegung] 0.17 · [oberflaechen] 0.18 · [muendung] 0.19 ·
+[inspektion] 0.20 · [huefte] 0.22 · [destiny2] › Sprint-Wippen 0.23 und › Glidepath 0.24 · [nachladen] 0.25 · [wechsel] 0.26 ·
+[waffenwerte] 0.27 · [zielhilfe] 0.28 · Vergleich mit BALLON in [auswertung] › BALLON-Prototyp.
+
+**Legende**
+- Status der Messung (Motiongen [standard]): **[M]** am Bild gemessen · **[S]** Sekundärquelle (Datenbank, API) · **[B]** Entwickler
+  · **[C]** Zuarbeit, nicht ganz nachgeprüft · **[O]** Sichtung ohne belastbare Zahl. „1 Bsp.“ heißt: ein Waffenbeispiel, kein Klassenmittel.
+- Einstufung: **Pflicht** = sonst wird eine Bildregel oder ein Vertrag dieses Repos verletzt (Stilhandbuch, Visier-Standard 3,
+  „Unity folgt Blender“) · **Destiny** = Destiny-typisch, empfohlen · **optional**.
+- Aufwand: **S** Daten oder Parameter, Datenexport ohne Backen (`BALLON_EXPORT_DATA_ONLY=1`), Unity-Test · **M** Unity- oder
+  Blender-Änderung mit Test und Beleg, eine Patch-Sitzung · **L** neue Geometrie oder neuer Effekt mit Rendern, vollem Export und
+  Sichtung, eigene Version.
+- Destiny-Prozente gelten für das Spielbild bei unbekanntem FOV. Motiongen liefert sie ausdrücklich als Beobachtung, nicht als Startwert.
+  BASIC-Werte stammen aus dem Code dieses Stands. „nicht gemessen“ heißt, dass es kein BASIC-Bild mit Mittenkreuz dazu gibt.
+
+## Schon entschieden (nicht neu fragen)
+
+| Bereich | Entscheidung | Wo |
+|---|---|---|
+| Stil | Stil v2.1, „schlicht“ über allem, Schlichtheitsbudget, Bloom aus, grauer Hintergrund | [stilhandbuch](stilhandbuch.md) §1–2 |
+| Visier-Standard 3 | Typ je Klasse, Rahmen Holo ≤ 0,10 / Ring ≤ 0,15 × Öffnung, Öffnung im Zielen Holo 12–20 % / Zielfernrohr 20–26 % B bei 90 mm und 75°, eine Kamera, Modell ungezoomt, Weltzoom je Klasse, Trapezsockel, Absehen fein ohne Aufgehen im Zielen, HUD-Punkt + Schuss-Ring + Treffer-X (`ADS_FEEDBACK`), Glas ≤ 5 %, Gehäuse neutral mit einem Akzent, Absehen Cyan | [stilhandbuch](stilhandbuch.md) §6, [absehen](absehen.md) |
+| Sprint (0.10) | vertikal 3,16 Hz, seitlich 1,58 Hz, U-Bogen, Rollen ±3,5°, kein Kopfwippen | [0.10](versions/0.10-stride.md), `ego.py` |
+| Visier-Anflug (0.10) | kritisch gedämpfte Feder (10 Hz, ζ 1), kein Überschwingen; `aim_in` 0,33 s = Destiny-Automatik 20 Bilder bei 60/s | [0.10](versions/0.10-stride.md) |
+| Fadenkreuz (0.10) | kein ständiges Fadenkreuz, kurze Trefferanzeige | [0.10](versions/0.10-stride.md) |
+| Tempo | Ablauftempo 1,25 gegenüber der Destiny-Messung; Zielen und Feuern bleiben schnell | [stilhandbuch](stilhandbuch.md) §10 |
+| Unity | Unity folgt Blender so nah wie möglich | [AGENTS.md](../AGENTS.md) |
+
+**Erfüllt ohne Frage:** Munitionsanzeige springt vor der Rückkehr in die Hüfte (Destiny, Apex, Titanfall, Marathon in 12 von 12 Fällen
+[M] [nachladen] › 4; Unity setzt `ammo = magSize` beim Marker `MagIn`). Leer gegen taktisch: Titanfall-CAR Δ 0,42 s [M], BASIC Δ 0,40 s
+(2,50 / 2,10 s). Rollen im Sprint: Destiny-Automatik ≈ 7° Spitze–Spitze [M], BASIC ±3,5°. Gewehrgehäuse: BASIC 0,10–0,13 L, Destiny
+0,16–0,25 L, also kein zu hoher Körper ([proportionen] › 5.1). Hell/Dunkel: BASIC `shell` L* ≈ 82 gegen `graphite` ≈ 19 (Albedo),
+Destiny-Schalen ΔL* 64–78 [M].
+
+## Block 1 – Visier
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 1a | Scout-Ring außen/Öffnung | BASIC 1,76–1,91 gegen Destiny 1,28–1,30 [M] ([proportionen] › 5.2) – gemessen an `sight_options.png` vom 24.10. 19:51, **vor** Visier-Standard 3 | `common.scope_v21`: Objektivring außen 16,5 mm, Öffnung 14,0–14,8 mm, also ≈ 1,11–1,18 (aus dem Code gerechnet, nicht am Bild) | keine Entscheidung nötig; beim nächsten Ego-Still am Bild nachmessen und in `data/review.json` eintragen | Pflicht (Prüfung) | S |
+| 1b | Scout-Visier über dem Gehäuse | Destiny-Scouts 0,02–0,04 L (Tone Patrol 0,013–0,019 [M], übrige [C]); das Rohr liegt direkt auf der Gehäuseoberkante ([visiere] › 6); BASIC alter Bildstand 0,063 L | Visierbaugruppe 57 mm hoch bei L 1023 mm (0,056 L, Hülle mit Hals); Rohr auf Trapezhals; Visierhöhe 65 mm (Soll 66 ± 4) | Frage 1.1 | Destiny | M (Blender, Rendern, Export) |
+| 1c | Weltzoom je Klasse | Bildmaßstab Destiny [M] ([destiny2] › Glidepath, [visiere] › 4): Automatik 1,84, Impuls 2,10, MG 1,84, Scout 2,0 (1 Paar), Handfeuerwaffe 1,15 (Exotic), Seitenwaffe 1,29, MP-Holo 1,43 / MP-Kimme 1,71, Granatwerfer 1,44 | `reticles` (Grundzoom + Visierbonus): Automatik 1,9, Impuls 2,0, MG 1,9, Granatwerfer 1,4, Seitenwaffe 1,25 passen; abweichend **Scout 2,9** (Zielfernrohr), **Handfeuerwaffe 1,5**, **MP 1,25** | Frage 1.2 | Destiny | S |
+| 1d | Zoom gegen Modell | Holo: Zoom beginnt 0–2 Bilder nach dem Modell und endet gleichzeitig ±1 Bild (Automatik, Impuls, MG); Kimme-MP: Modell schnappt in 1–2 Bildern ein, Zoom endet 5 Bilder später; Scharfschütze: Linse erst nach dem Modell [M] | in Unity nicht gemessen | in Unity messen (Testprotokoll wie `Zielen_landet_ohne_Ueberschwingen`) und auf „Start mit oder kurz nach dem Modell, Ende gemeinsam“ legen | Destiny | S–M |
+| 1e | Durchblick, Glas, Gehäusefarbe | Destiny: eine Kamera, Glas kaum getönt, keine Gebrauchsspuren, Gehäuse neutral [M] | Visier-Standard 3 §4, §7, §8 | entschieden; Gegenbeispiele zur neutralen Gehäusefarbe stehen in Block 8 | – | – |
+
+**Frage 1.1 – Scout-Optik tiefer setzen?**
+- **A (Empfehlung):** Beim nächsten Scout-Umbau steigt die Gehäuseoberkante unter dem Rohr. Das Rohr sitzt dann wie bei Destiny direkt
+  auf dem Gehäuse, der Hals entfällt, die Visierhöhe bleibt 66 ± 4 mm.
+- **B:** So lassen. Der Hals bleibt sichtbar, die Optik steht etwas höher als bei Destiny.
+- Antwort (Nutzer, 25.10.2026): „Block 1: 1.1 A, 1.2 A, Rest wie empfohlen.“ → **A**
+
+**Frage 1.2 – Weltzoom an die Glidepath-Messung angleichen?**
+- **A (Empfehlung):** Ja, für die drei abweichenden Klassen: Scout 2,0 statt 2,9, Handfeuerwaffe 1,15–1,2 statt 1,5, MP 1,45 statt 1,25.
+  Danach `export_reticles.py`, Datenexport und `./check`.
+- **B:** Bei den Werten von Visier-Standard 3 bleiben.
+- Antwort (Nutzer, 25.10.2026): „Block 1: 1.1 A, 1.2 A, Rest wie empfohlen.“ → **A**
+
+**Rest von Block 1:** 1a und 1d wie empfohlen? Antwort (Nutzer, 25.10.2026): „Rest wie empfohlen.“ → **ja**
+
+## Block 2 – Haltung und Hüfte
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 2a | Hüftlage im Bild | Destiny, lange Waffen: Mündung **rechts unter der Mitte** bei x 54–59 / y 60–71 % (21 Beispiele [M], Showcases); hintere Visieröffnung 7–34 pp rechts der Mündung; Kontur reicht bis zum rechten und unteren Rand ([huefte] › 4) | `ego.POSES['hip']` Socket_Hand (−0,20 / −0,42 / −0,165) m, entworfen; Bildlage nicht gemessen | Frage 2.1 | Destiny | S Messung, M Anpassung |
+| 2b | Hüftlage je Klasse | Kurzwaffen kompakt bei x 53–71 × y 59–84 %; große Waffen reichen bis y ≤ 45 % (MG, Werfer); Bögen quer unten [M] | eine Hüfthaltung, Ego-Daten nur für BASIC-01 | Haltung je Klasse festlegen, sobald eine Klasse Ego-Daten bekommt | Destiny | M je Klasse |
+| 2c | Waffenlage als Spieleroption | Halo hat Versatzregler je Klasse [B]; Destiny hat nur einen Welt-FOV-Regler, keinen Modellregler [B]; Spielerwünsche sind Einzelstimmen [C] | nur `ads_eye_relief` (70/90/110 mm) | Frage 2.2 | optional | M |
+
+**Frage 2.1 – Hüftlage auf das Destiny-Band ziehen?**
+- **A (Empfehlung):** Zuerst an einem Ego-Still mit Mittenkreuz messen (Mündung, Visier, Körper in %), dann `hip` so legen, dass die
+  Mündung in x 54–59 / y 60–71 % liegt. Danach je Klasse beim Ego-Übertrag.
+- **B:** So lassen, bis weitere Waffen Ego-Daten haben.
+- Antwort (Nutzer, 25.10.2026): „Block 2: 2.1 A, 2.2 B.“ → **A**
+
+**Frage 2.2 – Waffenlage als Spieleroption?**
+- **A:** Ja, Versatz x/y/z je Klasse (Halo).
+- **B (Empfehlung):** Nein. Destiny hat keinen Modellregler, und „schlicht“ spricht dagegen.
+- Antwort (Nutzer, 25.10.2026): „Block 2: 2.1 A, 2.2 B.“ → **B**
+
+## Block 3 – Sprint und Bewegung
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 3a | Sprint-Hub | Automatikgewehr (Last Wish, 1 Bsp.): ≈ **10–11 % H** vertikal, ≈ **13 % B** seitlich [M], bei NCC < 0,85 ±1–2 pp; Handfeuerwaffe ≈ 13 % H / 4 % B [M]; das Scourge-Plateau ≤ 0,6 % H ist kein Sprinthub (Widerspruch 8) | `sprint.bob.amp` 12 mm seitlich / 10 mm vertikal, geschätzt ≈ 6 % H / 4 % B (aus Abstand und FOV, nicht am Bild) | Frage 3.1 | Destiny | S Messung, S Wert |
+| 3b | Trageform je Klasse | Automatik tief und quer im unteren Drittel, Mündung links [M]; Handfeuerwaffe hoch rechts, Lauf fast senkrecht, verlässt das Bild [M]; Scharfschütze höher und mittiger; MP tief, nach links gerollt; kurze Fusion groß und tief [O] | eine Haltung `sprint` (quer, gesenkt, Rollen −35°) | Frage 3.2 | Destiny | M je Klasse |
+| 3c | Sprint-Frequenz je Typ | nur Automatik und Handfeuerwaffe gemessen (3,16 Hz); 13 der übrigen 15 Typen offen, Schwert trifft nicht zu | 3,16 / 1,58 Hz für alle | entschieden (0.10); bis zu neuen Messungen für alle Klassen | – | – |
+| 3d | Umsehen (Sway) | Bei schnellen Drehungen zieht die Waffe ≈ 10 % B gegen die Drehung nach und kehrt in ≈ 0,3 s **ohne Überschwingen** zurück (Scharfschütze, 60/s, [destiny2] › 3, Stand 18.10.) [M] | Unity `swayDamp` 0,55 (unterkritisch, schwingt über), `swayFreq` 9, höchstens 3° | Frage 3.3 | Destiny | S |
+| 3e | Sprint → Hüfte | Handfeuerwaffe ≈ 4 Bilder bis nahe Hüfte, ≈ 8 bis ruhig (1 Bsp.) [M]; Ein- und Austritt sonst nicht isoliert | `sprint` Ende 10 Bilder bei 30/s (× 1,25) | beobachten, keine Änderung, solange nur 1 Beispiel vorliegt | optional | – |
+
+**Frage 3.1 – Sprint-Hub auf das Destiny-Maß heben?**
+- **A (Empfehlung):** Zuerst den BALLON-Hub am Unity-Bild messen (`unity_run.py feel`, Mittenkreuz), dann auf ≈ 10 % H / 13 % B
+  (Automatik) heben. Der Test `Sprintschritt_wie_ein_Laeufer` prüft zusätzlich den Hub.
+- **B:** Beim heutigen, ruhigeren Hub bleiben.
+- Antwort (Nutzer, 25.10.2026): „Block 3: 3.1 A, 3.2 A, 3.3 A.“ → **A**
+
+**Frage 3.2 – Sprint-Trageform je Klasse?**
+- **A (Empfehlung):** Ja, beim Ego-Übertrag je Klasse: Gewehre tief und quer wie heute, Handfeuerwaffe und Seitenwaffe hoch rechts mit
+  steilem Lauf, Scharfschütze höher und mittiger.
+- **B:** Eine Sprinthaltung für alle Klassen.
+- Antwort (Nutzer, 25.10.2026): „Block 3: 3.1 A, 3.2 A, 3.3 A.“ → **A**
+
+**Frage 3.3 – Sway ohne Überschwingen?**
+- **A (Empfehlung):** Ja. Die Feder wird kritisch gedämpft (ζ ≈ 1), die Rückkehr dauert ≈ 0,3 s, wie beim Visier-Anflug in 0.10.
+- **B:** So lassen.
+- Antwort (Nutzer, 25.10.2026): „Block 3: 3.1 A, 3.2 A, 3.3 A.“ → **A**
+
+## Block 4 – Zielen und Fadenkreuz
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 4a | Hüft-Fadenkreuz | an 8 Typen in der Hüfte [M], je 1 Clip: Automatik Ring aus vier Bögen 3,2 % H; MP Ring + vier Eckmarken 5,9–6,3 % H; Handfeuerwaffe Klammern + Punkt ≈ 6 % H; Bogen 4,6 % H; Scharfschütze nur „^“ ≈ 1 % H; kurze Fusion 1,7 / 5,5 % H; lineare Fusion 12–13 % H; Granatwerfer 6,3 % B × 5,6 % H; meist weiß. Sprint: Automatik nur „^“ 1,5 % H, Handfeuerwaffe weg. Zielen: weg im 1. Bild (Automatik 11 Bilder vor dem Visier, MP 0,19 s) | `reticles.DEFAULTS[typ]['hip']` (z. B. Automatik `cross`, MP `circle_cross`) und `SPREAD` sind vorhanden; Unity zeigt seit 0.10 kein Fadenkreuz | Frage 4.1 | Destiny | M |
+| 4b | Hüftform je Typ | siehe 4a | Automatik `cross`, Impuls `cross`, Handfeuerwaffe `cross`, Scharfschütze `dot`, MP `circle_cross` | Frage 4.2 | Destiny | S |
+| 4c | Rückmeldung im Zielen | Visier-Standard 3 §6 (entschieden): HUD-Punkt 1,1 % H, Schuss-Ring 2 % H für 1 Bild, Treffer-X 4,5 % H ≥ 0,17 s. Glidepath [M]: Treffer-X rot 3,0–3,6 % H, Einzeltreffer 6–7 Bilder, Salve 15–19 Bilder; Präzisionstreffer als gelbe Zahl. **Widerspruch 3:** der rote HUD-Punkt stammt vermutlich aus dem Showcase-HUD, in Spielclips liegt in der Hüfte ein Ring je Typ | Unity: kein HUD-Punkt, kein Schuss-Ring; Treffer = vier orange Quadrate für 0,12 s | Frage 4.3 | Pflicht (Unity folgt dem Standard) | S–M |
+| 4d | Anflugdauer je Klasse | erste Bewegung → Ruhe [M]: Seitenwaffe 6–7, MP 8–12, Handfeuerwaffe 10, Schrot ≈ 13, lineare Fusion 17, Automatik/Impuls/MG 20 Bilder bei 60/s | `aim_in` 0,33 s für alle (nur BASIC-01 hat Ego-Daten) | beim Ego-Übertrag je Klasse übernehmen | Destiny | S je Klasse |
+
+**Frage 4.1 – ausblendendes Hüft-Fadenkreuz?**
+- **A (Empfehlung):** Ja. Ein kleines weißes Fadenkreuz (3–6 % H), nur in der Hüfte. Im Sprint ist es aus (Automatik höchstens „^“), es
+  verschwindet im ersten Bild des Zielens, beim Nachladen und Ziehen ist es aus (Destiny dort offen). Es geht beim Schießen nach
+  `SPREAD` auf. Das ständige Kreuz von 0.9 kommt nicht zurück.
+- **B:** Gar kein Fadenkreuz (Stand 0.10).
+- Antwort (Nutzer, 25.10.2026): „Block 4: 4.1 A, 4.2 A, 4.3 A.“ → **A**
+
+**Frage 4.2 – Hüftformen an die gemessenen Destiny-Formen angleichen (nur bei A in 4.1)?**
+- **A (Empfehlung):** Ja, wo gemessen: Automatik, Impuls (übertragen) und MG (übertragen) bekommen Ring mit Punkt (`ring_dot`)
+  statt `cross`; Handfeuerwaffe Klammern; Scharfschütze „^“; MP bleibt `circle_cross`. Neue Formen kommen in den Katalog `reticles.py`.
+- **B:** Hüftformen wie im Katalog lassen.
+- Antwort (Nutzer, 25.10.2026): „Block 4: 4.1 A, 4.2 A, 4.3 A.“ → **A**
+
+**Frage 4.3 – Rückmeldung im Zielen in Unity nachziehen?**
+- **A (Empfehlung):** Schuss-Ring und Treffer-X nach Visier-Standard 3 jetzt in Unity, Treffer in Familienfarbe Orange statt Destiny-Rot.
+  Der HUD-Punkt wartet, bis Motiongen Widerspruch 3 geklärt hat (Rückfrage über Sightline).
+- **B:** Alles aus Visier-Standard 3 sofort, auch den HUD-Punkt.
+- Antwort (Nutzer, 25.10.2026): „Block 4: 4.1 A, 4.2 A, 4.3 A.“ → **A**
+
+## Block 5 – Rückstoß und Mündung
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 5a | Rückstoß im Zielen | Im Zielen wandert vor allem die **Welt**, das Visier bleibt fast stehen: Welt Automatik ≈ 4, Impuls ≈ 5, Scout und Handfeuerwaffe je ≈ 6, lineare Fusion ≈ 13, Scharfschütze ≈ 18 pp H; Holo-Visier < 1 pp H; Rückkehr zur Basis 36–75 Bilder, kein Unterschwingen [M] ([zielbewegung] › 6b) | `RECOIL`: Modell-Feder (5 Hz, ζ 0,5, 0,62 m/s zurück, 115 °/s Nicken) und Kamera 18 °/s; im Zielen „gedämpft“ (entworfen); Sichtung `fire_ads`: „Visier springt leicht“ | Frage 5.1 | Destiny | M |
+| 5b | Bahnform | Automatik (Chroma Rush, Abyss Defiant): gleichmäßig steigende Säule, ≈ 1 pp H je Schuss, seitlich ≤ 2,2–2,5 pp B, dreimal dieselbe Form; Impuls: Stufe ≈ 4 pp je Salve, Erholung in der Pause; Scout und lineare Fusion: Rest wächst von Schuss zu Schuss; Rücklauf 0,2–0,4 s [M] ([rueckstoss] › 4, 6) | `climb_deg` 0,12 je Schuss plus Zufallsstreuung (Hüfte 1,1°, Zielen 0,12°); Salven nicht getrennt | Frage 5.2 | Destiny | M |
+| 5c | Mündungsfeuer | Blitz 1–2 Bilder bei 60/s: kleiner heller Kern, breitere Seitenflammen; im Zielen deckt er 5 % (Impuls), 20 % (Automatik), 40 % (MG), 50 % (Scout) bis ≈ 100 % (Schrot, am Spitzenwert) der Öffnung ab [M, 5 Werte nachgemessen] ([muendung] › 6) | kein Mündungsfeuer in Blender und Unity; `Socket_Muzzle` vorhanden; Bloom aus | Frage 5.3 | Destiny | L |
+| 5d | Hülsen | goldene Hülsen im 1. Blitzbild oder 1 Bild danach, nach rechts bzw. rechts unten, auch neben Energieeffekten [M] | keine (Rolle `brass` vorhanden) | Frage 5.4 | optional | M |
+| 5e | Mündungsform | offene Endstücke vor geschlitzten Mänteln, Emitter statt Laufmund bei Energiewaffen [M] | Stilhandbuch §2 Regel 6 „lesbare Front“ | entschieden | – | – |
+
+**Frage 5.1 – Rückstoß im Zielen in die Welt statt ins Visier?**
+- **A (Empfehlung):** Ja. Im Zielen geht der Rückstoß fast ganz in die Kamera (Automatik ≈ 4 % H je Stoß), das Visier bleibt unter
+  1 % H. Die Rückkehr dauert 0,4–0,6 s ohne Unterschwingen. Messung mit Weltanker im Unity-Test.
+- **B:** So lassen (Modell-Kick auch im Zielen).
+- Antwort (Nutzer, 25.10.2026): „Block 5: 5.1 A, 5.2 A, 5.3 A, 5.4 B.“ → **A**
+
+**Frage 5.2 – welche Rückstoß-Bahn?**
+- **A (Empfehlung):** Destiny-Säule: feste, lernbare Grundbahn senkrecht mit kleinem, begrenztem Seitenwackeln. Bahn, Kamera, Modellkick
+  und Streuung sind getrennte Größen, Salven zweistufig (Takt in der Salve, Erholung danach).
+- **B:** Erkennbare Signaturform je Waffe (Diagonale, Bogen, S wie in CS2 oder CoD).
+- Antwort (Nutzer, 25.10.2026): „Block 5: 5.1 A, 5.2 A, 5.3 A, 5.4 B.“ → **A**
+
+**Frage 5.3 – Mündungsfeuer einführen?**
+- **A (Empfehlung):** Ja, in Blender und Unity gleich. 1 Bild bei 30/s, kleiner heller Kern und kurze Seitenflammen, reine Emission ohne
+  Bloom. Im Zielen deckt es bei Holo-Klassen höchstens ≈ 20 % der Öffnung ab. Eigene Version.
+- **B:** Kein Mündungsfeuer.
+- Antwort (Nutzer, 25.10.2026): „Block 5: 5.1 A, 5.2 A, 5.3 A, 5.4 B.“ → **A**
+
+**Frage 5.4 – Hülsenauswurf?**
+- **A:** Ja, zusammen mit 5.3 (Messing, nach rechts unten, 1 Bild nach dem Blitz).
+- **B (Empfehlung):** Erst Mündungsfeuer, Hülsen später. Das ist schlichter, und die Hülse ist ohne Ton und bei 30/s kaum lesbar.
+- Antwort (Nutzer, 25.10.2026): „Block 5: 5.1 A, 5.2 A, 5.3 A, 5.4 B.“ → **B**
+
+## Block 6 – Nachladen, Wechsel, Betrachten
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 6a | Wegstecken und Wechsel | Destiny-Wechsel (7 Fälle): Wegstecken 5–16 Bilder (0,08–0,27 s), leere Sicht 4–18 Bilder (0,07–0,30 s), Ziehen bis zur ersten Hüftpassage 4–14 Bilder; nach der ersten Passage Überschwingen 8–10 pp (3 Fälle); bei gehaltenem Zielen zieht die Waffe direkt in ADS [M] ([wechsel] › 4) | `holster` 0,60 s, `draw` 0,83 s (Ready bei 0,60 s) mit Ausfedern, `draw_aim` vorhanden; leere Sicht in Unity nicht festgelegt | Frage 6.1 | Destiny | S |
+| 6b | Betrachten (Inspect) | **Destiny 2 hat keinen Ego-Inspect** (nicht gefunden), nur das Menü ohne Hände, frei drehbar, Waffe auf 40–50 % der Fläche [M/O]. Andere Spiele: heben → Breitseite → Rolle → Hüfte, beide Flanken, kein Blick durch die Optik, 2,8–6,5 s [M] ([inspektion] › 3, 6) | Ego-Aktion `inspect` 4,0 s (Ego-Seite, dann Oberseite und rechte Seite), Herkunft „E nach Destiny-Inspektion“ | Frage 6.2 | optional | S |
+| 6c | Nachlade-Abbruch | Abbruch vor oder nach der Munitionsübernahme in Destiny nicht belegt; Spielerthreads über Schusssperre trotz voller Anzeige [C] | Munition gilt ab `MagIn`, `reload_to_switch` bricht vorher ab (Magazin bleibt eingesetzt, Munition nicht) | so lassen und im Unity-Test ausdrücklich prüfen: Abbruch vor `MagIn` = keine Munition, danach = voll | Destiny | S |
+
+**Frage 6.1 – Wechsel straffer, mit kurzer leerer Sicht?**
+- **A (Empfehlung):** Ja. `holster` ≈ 0,25 s (statt 0,60 s), danach 0,1–0,2 s ohne Waffe, dann Ziehen wie heute mit Nachfedern. Unity
+  nimmt die Marker (Wegstecken, leer, erstes neues Bild, Hüfte, ruhig) einzeln in den Test.
+- **B:** Bei den heutigen Zeiten bleiben.
+- Antwort (Nutzer, 25.10.2026): „Block 6: 6.1 A, 6.2 A.“ → **A**
+
+**Frage 6.2 – Betrachten (Inspect) ja oder nein?**
+- **A (Empfehlung):** Ego-Inspect behalten (wie Apex, CoD, Valorant), Herkunft berichtigen auf „E nach Apex/CoD-Muster; Destiny hat
+  keinen Ego-Inspect“. Eine Menüansicht ohne Hände wird nicht gebaut.
+- **B:** Wie Destiny: Ego-Inspect weg, später eine Menüansicht ohne Hände, frei drehbar.
+- Antwort (Nutzer, 25.10.2026): „Block 6: 6.1 A, 6.2 A.“ → **A**
+
+## Block 7 – Waffenwerte und Zielhilfe
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 7a | Kadenz | Chroma Rush 720/min (Menükarte [M], Clip 5 Bilder Abstand [M]); Manifest-Rahmen sind Rohwerte, keine Startwerte [S] ([waffenwerte] › 4) | Clip `fire_hip` mit 720/min (Herkunft M), Unity schießt mit `GAMEPLAY.rpm` = 600 („noch nicht vom Nutzer festgelegt“): Blender und Unity widersprechen sich | Frage 7.1 | Pflicht (Unity folgt Blender) | S |
+| 7b | Wertetabelle je Typ | Destiny: Menükarte und Manifest liegen 1–25 Stat-Punkte auseinander; Handling sind je Familie andere Sekunden [S]; Motiongen rät: Roll, Stand und Basis/ausgerüstet immer nennen | nur `GAMEPLAY` (rpm, Magazin) für BASIC-01 | Frage 7.2 | optional | S |
+| 7c | Zielhilfe | Destiny trennt Schusskorrektur (Bullet Bend, Maus und Controller) von Kamerahilfe (Bremse und Anhaftung, nur Controller); Stärken unveröffentlicht [B] ([zielhilfe] › 4) | keine Zielhilfe | Frage 7.3 | optional | M |
+
+**Frage 7.1 – Kadenz angleichen?**
+- **A (Empfehlung):** Unity auf 720/min wie der gemessene Clip; Magazin 30 bleibt Entwurf.
+- **B:** 600/min festlegen und den Feuerclip neu rendern.
+- Antwort (Nutzer, 25.10.2026): „Block 7: 7.1 A, 7.2 B, 7.3 A.“ → **A**
+
+**Frage 7.2 – Wertetabelle je BASIC-Typ?**
+- **A:** Jetzt eine Entwurfstabelle (Kadenz, Magazin, Ziehen, Nachladen) für alle 17 Typen in `data/`.
+- **B (Empfehlung):** Erst wenn eine zweite Waffe in Unity spielbar wird; bis dahin nur BASIC-01.
+- Antwort (Nutzer, 25.10.2026): „Block 7: 7.1 A, 7.2 B, 7.3 A.“ → **B**
+
+**Frage 7.3 – Zielhilfe?**
+- **A (Empfehlung):** Zurückstellen, bis Controller-Eingabe Thema ist. Dann getrennte, benannte Bausteine (Schusskorrektur, Bremse,
+  Anhaftung) mit eigener Doku.
+- **B:** Jetzt eine schwache Schusskorrektur für alle Eingaben.
+- Antwort (Nutzer, 25.10.2026): „Block 7: 7.1 A, 7.2 B, 7.3 A.“ → **A**
+
+## Block 8 – Oberflächen und Materialrollen
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
+|---|---|---|---|---|---|---|
+| 8a | Akzentanteil | bunte Pixel (C* > 25) 1,7–9,9 % bei 7 von 8 Grundlacken; Farbtonfläche der Akzente 5,6–11,7 % [M] ([oberflaechen] › 4) | Budget zählt Funktionen (3 Orange, 1 Band), keine Fläche | Frage 8.1 | Destiny | S |
+| 8b | Abnutzung | gemalt und flächig (Sprenkel im Band, abgeriebene Flächen, ganze Schale), nicht nur an Kanten [O] | Kantenabrieb (4-mm-Maske) und AO-Schmutz; Skin `gebraucht` stark | Frage 8.2 | optional | M |
+| 8c | Visiergehäuse folgt dem Lack | Gegenbeispiele (Uriel's Gift, The Mornin' Comes, Cabal-Waffen) [O], keine Quote ausgezählt | Visier-Standard 3 §8: Gehäuse neutral, ein Akzent | entschieden; die Gegenbeispiele ändern nichts | – | – |
+| 8d | Muster und Skins | Shader färben die ganze Waffe; Muster kommen aus dem Shader oder als festes Bandlayout der Waffe und queren Paneele; Emblem, Leuchtanzeige und Magazinfenster bleiben [O] | Skins färben Rollen; `tarnung` als Flächenmuster auf `shell`; Orange und Cyan behalten ihre Funktion | passt; keine Änderung | – | – |
+| 8e | Formgliederung | schlank wirken Längsstaffelung, Negativräume und Detail in Zonen, nicht „alles dünner“ ([proportionen] › 3) | Stilhandbuch §2 (Negativraum, drei Detailebenen); läuft in BALLON 0.12 „Silhouette“ | entschieden bzw. dort in Arbeit | – | – |
+
+**Frage 8.1 – Akzentfläche beim Sichten messen?**
+- **A (Empfehlung):** Ja. In Sichtrunde 3 wird an der Hauptansicht der Anteil bunter Pixel (C* > 25) gemessen, Ziel ≤ 10 %. Das ist
+  eine Zahl im Bericht, kein neues Werkzeug.
+- **B:** Bei der Zählung nach Funktionen bleiben.
+- Antwort (Nutzer, 25.10.2026): „8.1: B“ → **B**
+
+**Frage 8.2 – flächige Abnutzung?**
+- **A (Empfehlung):** Nur im Skin `gebraucht` zusätzlich flächige Sprenkel; der Standard bleibt bei Kantenabrieb.
+- **B:** Gar nicht, nur Kantenabrieb.
+- Antwort (Nutzer, 25.10.2026): „8.2: A“ → **A**
+
+## Widersprüche in Motiongen REF 0.24 (dort zu klären)
+
+Motiongen hat acht Widersprüche zwischen Bestand und Glidepath gelistet, aber nicht entschieden ([destiny2] › Glidepath). Entscheiden
+muss Motiongen. BASIC hält hier nur fest, welchen Wert es bis dahin verwendet.
+
+| # | Widerspruch (kurz) | betrifft BASIC | BASIC verwendet bis zur Klärung |
+|---|---|---|---|
+| 1 | Chroma Rush / Gridskipper: Visier „auf der Achse“, „steigt“, „Zoom 2 Bilder vor der Ruhe fertig“ gegen Höhe konstant und Zoom-Ende gleichzeitig ±1 | ja, 1d | Glidepath (vom Koordinator am Bild bestätigt) |
+| 2 | Spurgewehr „ADS nicht gesehen“ gegen Prometheus Lens mit ADS (12 Bilder) | BASIC-12 | Glidepath; das Holo nach Visier-Standard 3 passt |
+| 3 | roter HUD-Punkt im Zielen (visiere › 7) gegen Hüft-Ring je Typ in Spielclips; Punkt vermutlich aus dem Showcase-HUD | **ja, 4a/4c** | Hüft-Ring nach Glidepath; HUD-Punkt bis zur Klärung zurückgestellt (Frage 4.3) |
+| 4 | Gewehr „Sprint tief“, aber Ring 7 s durchgehend sichtbar | schwach, 4a | Sprint = Fadenkreuz aus (Automatik höchstens „^“) |
+| 5 | Raketenwerfer „ADS mit Linsenbild“ ist vermutlich ein Scharfschützengewehr | nein (BASIC: eine Kamera) | – |
+| 6 | Bogen „im Sprint“ ist ein Waffenwechsel | nein (Bogen-Sprint offen) | – |
+| 7 | Startmarker um 1–3 Bilder verschieden (MG, kurze Fusion, lineare Fusion, Sprint-Hub Handfeuerwaffe) | nein (unter der BASIC-Genauigkeit) | – |
+| 8 | Scourge-Plateau ≤ 0,6 % H gegen Sprint-Hub 10–11 % H | **ja, 3a** | 0.23 „Stride“: 10–11 % H |
+
+Rückfrage an Motiongen zu 3 und 4 über Sightline, sobald diese Liste gemergt ist.
+
+## Nicht messbar oder offen (nur gezählt)
+
+Aus den Abschnitten „Offen und nicht messbar“ der zwölf Docs: zusammen **84 Punkte**. visiere 7, proportionen 5, rueckstoss 4,
+zielbewegung 10, oberflaechen 5, muendung 7, inspektion 9, huefte 7, nachladen 8, wechsel 6, waffenwerte 9, zielhilfe 7. Dazu
+Glidepath: Sprint bei 13 der 17 Typen offen, Visier-Anflug bei Scout übertragen und bei kurzer Fusion nur gesichtet, Hüft-Fadenkreuz bei
+6 Typen offen (Scout, Seitenwaffe, Schrot, Spur, Gleve und Raketenwerfer nur 1 Clip). Gehen-Wippen, Atemperiode und Rückstoß ohne
+Spielereingabe sind für Destiny 2 grundsätzlich nicht belegt. BASIC stellt dazu keine Frage, die Messung bleibt bei Motiongen.
+
+## Ergebnis
+
+Alle 20 Fragen sind am 25.10.2026 beantwortet, keine ist offen. **Umsetzen:** 1.1, 1.2, 1a, 1d, 2.1, 3.1, 3.2, 3.3, 4.1, 4.2, 4.3,
+5.1, 5.2, 5.3, 6.1, 6.2, 7.1, 8.2, dazu der Test 6c. **Nicht umsetzen:** 2.2 (keine Option für die Waffenlage), 8.1 (Budget bleibt
+nach Funktionen). **Zurückgestellt:** 5.4 Hülsen, 7.2 Wertetabelle (bis eine zweite Waffe in Unity spielbar ist), 7.3 Zielhilfe (bis
+Controller-Eingabe Thema ist), der HUD-Punkt aus 4.3 (bis Motiongen Widerspruch 3 klärt).
+
+## Reihenfolge der Umsetzung (Vorschlag)
+
+Leitlinie: zuerst, was ohne Rendern geht und eine Regel verletzt; dann messen; dann die Bewegung; zuletzt neue Effekte. Einstufung
+Patch oder Version nach den globalen Regeln (bis ≈ 100 Zeilen Diff ohne Format- oder Vertragsänderung = Patch). Unity-Änderungen nur in
+der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
+
+| Schritt | Inhalt | Antworten | Art | Sperre | Voraussetzung |
+|---|---|---|---|---|---|
+| 1 | **Unity-Abgleich:** Kadenz 720/min, Sway kritisch gedämpft, Schuss-Ring und Treffer-X in Orange, Test Nachlade-Abbruch vor und nach `MagIn`, Herkunft von `inspect` berichtigt | 7.1, 3.3, 4.3, 6c, 6.2 | Patch | unity | – |
+| 2 | **Messen:** ein Ego-Still je Haltung mit Mittenkreuz (Hüftlage, Scout-Ring), Unity-Aufnahme `feel` für Sprint-Hub und Zoom-Timing; Werte in diese Datei und `data/review.json` | 1a, 1d, 2.1, 3.1 | Patch (nur Messung) | gpu, unity | – |
+| 3 | **Weltzoom und Hüft-Fadenkreuz:** Weltzoom Scout 2,0 / Handfeuerwaffe ≈ 1,15 / MP 1,45; neue Hüftformen im Katalog `reticles.py`; ausblendendes Hüft-Fadenkreuz in Unity (Hüfte, Sprint, Zielen, Nachladen, Ziehen) | 1.2, 4.1, 4.2 | Version | unity | 1 |
+| 4 | **Bewegung:** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` ≈ 0,25 s und leerer Sicht, Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips danach neu rendern (Nachtlauf) | 2.1, 3.1, 6.1, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
+| 5 | **Mündungsfeuer** in Blender und Unity (1 Bild bei 30/s, Emission ohne Bloom, ≤ 20 % der Holo-Öffnung) | 5.3 | Version | gpu, unity | 4 (Rückstoß im Zielen) |
+| 6 | **Beim Ego-Übertrag je Klasse:** Hüfthaltung, Sprint-Trageform und Anflugdauer je Klasse | 2.1, 3.2, 4d | je Klasse in der Version der Waffe | gpu, unity | 3, 4 |
+| 7 | **Beim nächsten Scout-Umbau:** Gehäuseoberkante unter dem Rohr anheben, Hals weg, Visierhöhe 66 ± 4 mm | 1.1 | in der Version des Umbaus | gpu | nach BALLON 0.12 „Silhouette“ (nicht parallel an `w03`) |
+| 8 | **Bei der nächsten Skin-Arbeit:** flächige Sprenkel nur im Skin `gebraucht` | 8.2 | Patch | gpu | – |
+
+Zwischen den Schritten: die Rückfrage an Motiongen zu den Widersprüchen 3 und 4 (über Sightline). Nach der Antwort entscheidet BASIC
+über den HUD-Punkt aus 4.3; das ist keine neue Nutzerfrage, solange Motiongen den Punkt im Spielbild belegt oder widerlegt.
+
+[visiere]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/visiere.md
+[proportionen]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/proportionen.md
+[rueckstoss]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/rueckstoss.md
+[zielbewegung]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/zielbewegung.md
+[oberflaechen]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/oberflaechen.md
+[muendung]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/muendung.md
+[inspektion]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/inspektion.md
+[huefte]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/huefte.md
+[destiny2]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/destiny2.md
+[nachladen]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/nachladen.md
+[wechsel]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/wechsel.md
+[waffenwerte]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/waffenwerte.md
+[zielhilfe]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/zielhilfe.md
+[auswertung]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/auswertung.md
+[standard]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/standard.md
