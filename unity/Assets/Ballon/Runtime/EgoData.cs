@@ -143,6 +143,7 @@ namespace Ballon.Ego
         public string role, color, aaa_color, de;
         public float rough, metal, alpha, emit, spec;
         public bool emit_only;
+        public bool no_coat;          // 9 (0.20): Linse im Zielfernrohr (kit: ohne Klarlack, Alpha 0,04, kaum Glanz)
     }
 
     [Serializable] public class Spring { public float freq_hz, zeta, aim_freq_hz, aim_zeta; }     // aim_*: Aktionen, die im Zielen enden (ego.ends_in_ads)

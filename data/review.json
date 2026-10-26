@@ -996,5 +996,133 @@
       "Daumen (Nutzerhinweis 26.10.2026): mit underhand stand er über dem Vorbau; drei Proben, Nutzerwahl „oben links“ = Faust, Daumen hinter dem Griff",
       "Gesenkte Haltung und Durchladen: der kurze Schaft der MP ragt groß ins Bild – Haltungen lowered/reload sind gemeinsam mit der Automatik (nur an die Hüfte gehängt), eigene MP-Werte offen"
     ]
+  },
+  "BASIC-03-v2.1-ego": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude (0.20 Spotter)",
+      "date": "2026-10-26",
+      "method": "Ego-Stills 1600 × 900 mit Mittenkreuz (spotter/stills): Hüfte Mündung 57,0/62,9 %, Okularende 24 pp rechts; Sprint 21,9/86,5 %; Zielen im Zielfernrohr"
+    },
+    "actions": {
+      "idle_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "draw": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "holster": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "aim_in": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; Okular wächst heran, ab Bild 6 Linsenbild (ads_hide), Ende im Zielfernrohr mit Absehen auf der Mitte"
+      },
+      "aim_out": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "fire_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; drei Einzelschüsse (180/min, Bild 2/12/22), Abzug je Schuss gezogen"
+      },
+      "fire_ads": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; drei Einzelschüsse im Zielfernrohr, Blitz im Glas ≤ 20 % der Öffnung (10,4 %)"
+      },
+      "reload_tactical": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; linke Hand am kurzen Kastenmagazin"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; Magazin unten am kurzen Kastenmagazin, Ladehebel links"
+      },
+      "inspect": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "sprint": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; Trageform der Automatik (tief, quer, Oberseite nach rechts)"
+      },
+      "lowered": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "walk": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "crouch": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "jump_land": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "sprint_to_aim": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "sprint_to_fire": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      },
+      "draw_aim": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz; Ziehen, dann direkt ins Zielfernrohr (Linsenbild am Ende)"
+      },
+      "reload_to_switch": {
+        "status": "geprüft",
+        "by": "Claude (0.20 Spotter)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.20 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-03-v2.1_<aktion>.png); Haltungen der Automatik, Stützhand underhand unter dem langen Handschutz"
+      }
+    },
+    "notes": [
+      "Zielbild: unter dem Objektivring liegt die Oberseite von Schiene und Rohrsattel als große Fläche (Form aus 0.19, Nutzerhinweis 26.10.2026) – Visier-Konzept offen (docs/uebergabe-visier-konzept.md)",
+      "Blender zeigt das Absehen als Modellteil (chevron); Unity zeichnet seit 0.20 die Hüftform im Visier (Nutzerwunsch)"
+    ]
   }
 }

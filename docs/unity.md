@@ -122,6 +122,16 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
   `gameplay.fire_mode` `semi_auto`):** ein Schuss je Zug (Flanke des Abzugs), höchstens 60/rpm; ein Zug vor Ablauf des Schussabstands
   oder im Übergang aus dem Sprint wartet bis zu 0,4 s (E). Im Clip ist der Abzug je Schuss ein Bild davor bis ein Bild danach gezogen
   (`ego.trigger_on`, Blender und `EgoSolver` gleich).
+- **Gezeichnetes Absehen (0.20, Nutzer 26.10.2026):** „Ich finde die Visier-Punkte/Kreise/Fadenkreuze sehen so komisch 3D-mäßig aus. Mir
+  wäre lieber etwas Gezeichnetes … Im Bestfall hat man das Fadenkreuz/Punkt/Kreis/wie auch immer vom Hüftfeuer im Visier.“ Unity blendet das
+  Modell-Absehen (Teile mit Rolle `reticle_*`) aus und zeichnet im Zielen (Zielen-Anteil ≥ 0,9, beim Zielfernrohr im Linsenbild) die
+  Hüftform der Klasse (`gameplay.hip`, gleiche Größe, ohne Aufgehen) in der Farbe der Absehen-Rolle (Cyan) an der Bildlage von
+  `Socket_Reticle` (`EgoPlayer.SightVisible`, Aufnahmen stempeln es wie das Hüft-Fadenkreuz). Blender zeigt das Absehen weiter als
+  Modellteil (Formblätter, Ego-Clips) – bewusste Abweichung, das Visier-Konzept folgt ([Übergabe](uebergabe-visier-konzept.md)).
+- **Glas und Leuchten nach dem Reimport (0.20):** URPs Materialprüfung setzte beim Reimport der Rollenmaterialien das Glas auf
+  vormultipliert (SrcBlend One, milchig) und nahm dem Absehen `_EMISSION` (Emissive-Flag fehlte). `BallonSetup` setzt jetzt
+  `_BlendModePreserveSpecular` 0 und `RealtimeEmissive`. Linsen im Zielfernrohr (`roles[].no_coat`) wie `kit.aaa_nodes`: Alpha 0,04, ohne
+  Glanz und Spiegelung – gemessen im Parcours 1,3–2,6 % heller als außen (Visier-Standard 3: ≤ 5 %).
 - **Zielfernrohr (0.20, Visier-Standard 3):** eine Kamera, das Modell bleibt ungezoomt, die Welt zoomt mit dem Klassenwert. Teile mit
   `ads_hide` (Okular, Okularkante, Okularlinse, Rohr, Türme, Spannband) schaltet `EgoRig` aus, solange `Socket_Eye` der Grundhaltung
   näher als `motion.ads_hide.eye_m` (60 mm = Okularende 30 mm + Nahebene 30 mm) an der Kamera liegt; Blender (`ego_build.evaluate`) rechnet
@@ -205,7 +215,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Texturen_je_Waffe_unter_der_Grenze` (EditMode, 0.20) | je Waffe Atlas + Skins ≤ `limit_mb` (50 MB), Endung und Kantenlänge je Kanal nach `TEXTURE_STORE`, wie Unity importiert |
 | `Gleich_wie_Blender_Referenz` (0.20 erweitert) | dazu je Stichprobe `ads_hidden` (Zielfernrohr-Teile aus/an) gleich wie Blender, für alle drei Waffen |
 | `Einzelfeuer_feuert_genau_einmal_je_Klick`, `Wechsel_1_3_2_mit_leerer_Sicht_ohne_Munitionsverlust` (PlayMode, 0.20) | Scout: gehaltener Abzug = 1 Schuss, 5 Klicks = 5, zwei Klicks im Abstand 0,1 s = 2 Schüsse im Abstand 60/180 s; Automatik und MP 12 Schuss/s; Tasten 1 → 3 → 2 → 1: leere Sicht 0,1–0,2 s, erstes neues Bild `draw` der gewählten Waffe, Munition je Waffe bleibt |
-| `Zielfernrohr_Zoom_und_Linse_mit_dem_Modell`, `Scout_im_Spieler_Taste_3_Zielfernrohr_Einzelfeuer` (PlayMode, 0.20) | 60/s: Zoom beginnt 0–2 Bilder nach dem Modell und endet ±1, Linsenbild {LINSE}; im Spieler: Taste 3, Weltzoom 2,0, `ads_hide`-Renderer im Zielen aus, gehaltener Abzug ein Schuss |
+| `Zielfernrohr_Zoom_und_Linse_mit_dem_Modell`, `Scout_im_Spieler_Taste_3_Zielfernrohr_Einzelfeuer` (PlayMode, 0.20) | 60/s: Zoom beginnt 0–2 Bilder nach dem Modell und endet ±1 (gemessen 0 / −1, mit `gameplay.zoom_start` 0,2; mit 0,05 begann er 2 Bilder vor dem Modell), Linsenbild, sobald das Okular die Nahebene erreicht (Bild 12, 7 Bilder vor dem Ende der Restbewegung, nach dem Zoombeginn); zurück: Teile 4 Bilder vor der Hüfte wieder da; im Spieler: Taste 3, Weltzoom 2,0, `ads_hide`-Renderer im Zielen aus, gehaltener Abzug ein Schuss |
 | `Weltzoom_je_Klasse`, `Hueftform_der_Automatik_aus_dem_Katalog`, `Hueft_Fadenkreuz_geht_nach_SPREAD_auf` (EditMode, 0.13) | Weltzoom Scout 2,0 / Handfeuerwaffe 1,15 / MP 1,45 / Automatik 1,9 aus den Daten; Hüftform `ring_dot` 3,2 % H, weiß, fein, Sprint `caret` 1,5 % H, sichtbares Außenmaß an den Maskenpixeln ±1 px; Aufgehen je Bild gleich `reticles.simulate` |
 | `Hueft_Fadenkreuz_je_Zustand`, `Weltzoom_im_Spiel_aus_der_Klasse` (PlayMode, 0.13) | Spieler in der Szene bei 30/s: in der Hüfte sichtbar, geht beim Hüftfeuer auf und ab, im ersten Bild des Zielens weg, im Sprint nur „^“, beim Nachladen, Wegstecken und Ziehen aus, danach wieder da; Welt-FOV im Zielen = Zoom 1,9 |
 | `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife, Hüft-Fadenkreuz (Aufgehen, Sichtbarkeit, Rastern): kein Speicher im laufenden Bild |
@@ -380,9 +390,12 @@ Kantenlänge (wie Unity importiert) und Summe je Waffe. Arme und LUT bleiben unv
 |---|---|---|---|
 | BASIC-01 v2.1 (Atlas + 7 Skins) | 145,7 MB | 39,6 MB | 0,27 |
 | BASIC-06 v2.1 (Atlas + 7 Skins) | 189,4 MB | 43,8 MB | 0,23 |
-| BASIC-03 v2.1 (neu, Atlas + 7 Skins) | {SR_VORHER} MB als 4096²-PNG | {SR_NACHHER} MB | {SR_ANTEIL} |
+| BASIC-03 v2.1 (neu, Atlas + 7 Skins) | – (direkt nach der Regel abgelegt) | 40,6 MB | – |
 
-**Sichtprüfung im Ego-Bild** (Unity-Build, 1600 × 900, gleiche Haltung vorher/nachher, `ce evidence diff`): {SICHT}
+**Sichtprüfung im Ego-Bild** (Unity-Build, 1600 × 900, gleiche Haltung vorher/nachher, `ce evidence diff --kind bake`): Hüfte BASIC-01
+SSIM 0,9991 / PSNR 40,0 dB (0,2 % Pixel geändert), BASIC-06 0,9994 / 40,2 dB, Skin Gebraucht (`inspect_l`) 0,9985 / 49,9 dB, Nachtschicht
+0,9983; Kanten, Schrift und Sprenkel im Ausschnitt nicht unterscheidbar. Im Zielen (SSIM 0,990 / 0,992) liegt der Unterschied nur im Glas:
+Glasmaterial und gezeichnetes Absehen (siehe unten), nicht die Texturen. Beleg `~/Library/Caches/CubeEscapeBallon/spotter/texturen_vorher_nachher.png`.
 
 ## Grenzen
 

@@ -355,7 +355,19 @@ BALLON 0.20 „Spotter“ ([Bericht](versions/0.20-spotter.md)): zweite übertra
 „Saddle“ unverändert). Gleiche Bezugsgrößen wie oben (75° horizontal, 16:9, % von B/H, Ursprung oben links); Lagen aus `EgoScreen`
 (Unity-Tests) und am Ego-Still mit Mittenkreuz, Zeiten am Live-Controller bei 60/s. Belege unter `~/Library/Caches/CubeEscapeBallon/spotter/`.
 
-{SCOUT_TABELLE}
+| Punkt | Automatik (unverändert) | Scout (0.20) | Destiny-Scout (Motiongen REF destiny2, huefte) |
+|---|---|---|---|
+| **2.1** Hüfte, Mündung | x 58,1 / y 63,1 % | x **57,0** / y **62,7** % (`Hueftlage_des_Scouts_im_Band`; Haltung der Automatik) | Tone Patrol ≈ 57/63, Call to Serve 58/61; Band lange Waffen x 54–59 / y 60–71 |
+| **2.1** Okularende rechts der Mündung | 19,3 pp | **24,4** pp (x 81,3 / y 72,2 %) | 7–34 pp |
+| **3.2 A** Sprint-Trageform | Oberseite −20° | wie die Automatik: Oberseite **−20,3°**, Mündung **21,9 / 86,3** % | Scout-Sprint nicht gemessen (kein Clip) |
+| **4d** Anflug erste Bewegung → Ruhe, 60/s | 20 Bilder | `aim_in` **7** Bilder bei 30/s → **17 Bilder** (0,283 s) | Tone Patrol ≈ 22 (Bestand), Patron 12–15 [M]; Scharfschütze 15, Impuls 20 |
+| **4d** Zielen → Hüfte | `aim_out` 8 Bilder bei 30/s | `aim_out` **5** Bilder (0,167 s) | Dead Man's Tale ADS aus → Hüfte 0,17 s |
+| **1d** Zoom gegen Modell (Hüfte → Zielen) | Start 0, Ende 0 (5-%-Schwelle) | Start **0**, Ende **−1** mit `zoom_start` 0,2 (mit 0,05: Start −2) | Holo: Start 0…+2, Ende ±1 |
+| **1d** Linsenbild | – | ab Bild **12** von 19 (Okular an der Nahebene, Auge 60 mm vor der Kamera), 7 Bilder vor dem Ende der Restbewegung; vorher füllt das Okular kurz das Bild | Scharfschütze: Okular füllt 4 Bilder das Bild, Linse nach dem Modell; Scout: Linse klar in ≤ 3 Bildern |
+| **Visier-Standard 3** Öffnung im Zielen | Holo | **21,5** % B (Netz, Test) · am Unity-Bild 20–24 % B | 20–26 % B; Patron 20,8 % B |
+| **1a** Ring außen ÷ Innenkante / ÷ Glas | – | Unity-Zielbild **1,32 / 1,40** (320 / 243 / 228 px bei 960 B; Glas-Kante im Unity-Bild schmaler) | Blender 1,31 / 1,56; Destiny 1,28–1,30 |
+| Glas getönt | – | Parcours **1,3–2,6 %** heller als außen | ≤ 5 % (Destiny 0,98–1,01) |
+| Kadenz, Feuerart | 720/min Dauerfeuer | **180/min Einzelfeuer** (Spec `semi_auto`), Magazin 15 | Tone Patrol 180/min, 15 Schuss |
 
 ## Reihenfolge der Umsetzung (Vorschlag)
 

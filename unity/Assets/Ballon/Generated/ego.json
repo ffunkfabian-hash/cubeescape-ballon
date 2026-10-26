@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "36c92b7e28e30a708cbb134d76b647128929ba5cb0be2acfd4555dccc613881f"
+    "sha256": "cbb60c120e31c5dd31d74c2aa7dc5bad5ea631629ec240b3200a341a60c360ca"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1057,6 +1057,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Akzent Orange (Bedienelement)"
   },
   {
@@ -1069,6 +1070,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Schwarz eloxiert"
   },
   {
@@ -1081,6 +1083,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Messing (Patronen)"
   },
   {
@@ -1093,6 +1096,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Brüniertes Metall"
   },
   {
@@ -1105,6 +1109,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Markierung hell"
   },
   {
@@ -1117,6 +1122,7 @@
    "emit": 3.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Energieanzeige (leuchtend)"
   },
   {
@@ -1129,6 +1135,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Visierglas"
   },
   {
@@ -1141,6 +1148,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": true,
    "de": "Linse im Zielfernrohr (ohne Klarlack-Spiegelung)"
   },
   {
@@ -1153,6 +1161,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.25,
+   "no_coat": false,
    "de": "Griffpolymer / Graphit"
   },
   {
@@ -1165,6 +1174,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Funktionsmetall"
   },
   {
@@ -1177,6 +1187,7 @@
    "emit": 0.6,
    "emit_only": true,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Absehen Cyan"
   },
   {
@@ -1189,6 +1200,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.2,
+   "no_coat": false,
    "de": "Gummi mit Stippling"
   },
   {
@@ -1201,6 +1213,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Lackiertes Gehäuse (Creme)"
   },
   {
@@ -1213,6 +1226,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Blanke Zierkante"
   },
   {
@@ -1225,6 +1239,7 @@
    "emit": 3.0,
    "emit_only": true,
    "spec": 0.0,
+   "no_coat": false,
    "de": "Mündungsfeuer Kern (fast weiß, reine Emission)"
   },
   {
@@ -1237,6 +1252,7 @@
    "emit": 0.8,
    "emit_only": true,
    "spec": 0.0,
+   "no_coat": false,
    "de": "Mündungsfeuer Seitenflammen (Familienfarbe Cyan, reine Emission)"
   }
  ],

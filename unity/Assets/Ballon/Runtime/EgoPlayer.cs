@@ -2,6 +2,7 @@
 // Treffer per Strahl, Hüft-Fadenkreuz (HipReticle), Rückmeldung im Zielen und Munitionszähler. Die Ego-Bewegung selbst kommt aus EgoController.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -36,13 +37,16 @@ namespace Ballon.Ego
         }));
 
         /// <summary>Marke in ein ausgelesenes Bild stempeln (Aufnahme: das OnGUI-HUD liegt nicht in der Render-Textur); c in sRGB.</summary>
-        public static void Stamp(Texture2D dst, Texture2D mask, float size, Color c)
+        public static void Stamp(Texture2D dst, Texture2D mask, float size, Color c) => Stamp(dst, mask, size, c, dst.width / 2f, dst.height / 2f);
+
+        /// <summary>Wie Stamp, Mitte der Marke bei (cx, cy) in Bildpixeln (Ursprung unten links wie die Textur).</summary>
+        public static void Stamp(Texture2D dst, Texture2D mask, float size, Color c, float cx, float cy)
         {
-            int w = dst.width, h = dst.height, x0 = Mathf.FloorToInt((w - size) / 2), y0 = Mathf.FloorToInt((h - size) / 2);
+            int w = dst.width, h = dst.height, x0 = Mathf.FloorToInt(cx - size / 2), y0 = Mathf.FloorToInt(cy - size / 2);
             for (int y = Mathf.Max(0, y0); y <= Mathf.Min(h - 1, y0 + size + 1); y++)
                 for (int x = Mathf.Max(0, x0); x <= Mathf.Min(w - 1, x0 + size + 1); x++)
                 {
-                    float a = mask.GetPixelBilinear((x + 0.5f - (w - size) / 2) / size, (y + 0.5f - (h - size) / 2) / size).a;
+                    float a = mask.GetPixelBilinear((x + 0.5f - (cx - size / 2)) / size, (y + 0.5f - (cy - size / 2)) / size).a;
                     if (a > 0) dst.SetPixel(x, y, Color.Lerp(dst.GetPixel(x, y), c, a));
                 }
         }
@@ -74,6 +78,8 @@ namespace Ballon.Ego
         {
             public EgoRig rig;
             public HipReticle hip;
+            public HipReticle sight;            // 0.20: gezeichnetes Absehen im Visier = Form des Hüft-Fadenkreuzes (ohne Aufgehen)
+            public Color sightColor;            // Farbe der Absehen-Rolle des Modells (Cyan)
             public Material[] skins;
             public string[] skinNames;
             public int skin;
@@ -196,7 +202,13 @@ namespace Ballon.Ego
                 cs[k] = new EgoController(Ss[k]);
                 cs[k].Marker += (a, m) => { p.lastMarker = $"{a} › {m}"; p.lastMarkerTime = Time.time; p.log.Add($"{Time.frameCount} {a} {m}"); };
                 cs[k].Shot += p.OnShot;
-                p.loadouts[k] = new Loadout { rig = new EgoRig(Ss[k], sp, weaponModels[k], armsModel, roles, vmLayer), hip = new HipReticle(Ss[k].D.gameplay.hip) };
+                var rig = new EgoRig(Ss[k], sp, weaponModels[k], armsModel, roles, vmLayer);
+                p.loadouts[k] = new Loadout { rig = rig, hip = new HipReticle(Ss[k].D.gameplay.hip) };
+                if (rig.ReticleRole != "" && Ss[k].D.weapon.anchors.Any(a => a.id == "Socket_Reticle"))
+                {
+                    p.loadouts[k].sight = new HipReticle(Ss[k].D.gameplay.hip);
+                    ColorUtility.TryParseHtmlString(Ss[k].D.Role(rig.ReticleRole).color, out p.loadouts[k].sightColor);
+                }
                 sp.gameObject.SetActive(k == 0);
             }
             p.arsenal = new EgoArsenal(cs);
@@ -217,7 +229,7 @@ namespace Ballon.Ego
 
         void OnDestroy()
         {
-            if (loadouts != null) foreach (var L in loadouts) L.hip?.Release();
+            if (loadouts != null) foreach (var L in loadouts) { L.hip?.Release(); L.sight?.Release(); }
         }
 
         static Camera NewCam(string name, Transform parent, int mask, float near, float far)
@@ -245,6 +257,19 @@ namespace Ballon.Ego
         /// <summary>Hüft-Fadenkreuz im nächsten gezeichneten Bild sichtbar (nur in der Hüfte; im Sprint der Automatik nur „^“).</summary>
         public bool HipVisible => hipReticle != null && hipReticle.Visible;
 
+        /// <summary>Gezeichnetes Absehen (0.20, Nutzer 26.10.2026: „lieber etwas Gezeichnetes … im Bestfall das Fadenkreuz vom Hüftfeuer im
+        /// Visier“): die Hüftform der Klasse ohne Aufgehen in der Farbe des Modell-Absehens, sobald das Visier angekommen ist (Zielen-Anteil
+        /// über SightFrom; beim Zielfernrohr erst im Linsenbild), an der Bildlage von Socket_Reticle.</summary>
+        public bool SightVisible => Current.sight != null && !C.Busy && C.adsWeight >= SightFrom && (rig.AdsHideCount == 0 || rig.AdsHidden);
+        public const float SightFrom = 0.9f;
+
+        /// <summary>Bildlage des Absehens (Pixel, Ursprung unten links) in der Viewmodel-Kamera.</summary>
+        public Vector2 SightScreen()
+        {
+            var s = viewCam.WorldToScreenPoint(rig.AnchorWorld("Socket_Reticle"));
+            return new Vector2(s.x, s.y);
+        }
+
         /// <summary>Hüft-Fadenkreuz, Schuss-Ring und Treffer-X wie in OnGUI in ein Aufnahmebild zeichnen.</summary>
         public void StampFeedback(Texture2D tex)
         {
@@ -252,6 +277,12 @@ namespace Ballon.Ego
             {
                 var m = hipReticle.Mask(tex.height);
                 AdsFeedback.Stamp(tex, m, m.width, hipReticle.Color);
+            }
+            if (SightVisible)
+            {
+                var m = Current.sight.Mask(tex.height);
+                var s = SightScreen() * (tex.height / (float)viewCam.pixelHeight);
+                AdsFeedback.Stamp(tex, m, m.width, Current.sightColor, s.x, s.y);
             }
             if (ShotRingVisible) AdsFeedback.Stamp(tex, AdsFeedback.Ring, AdsFeedback.ShotRingShareH * tex.height, Color.white);
             if (HitXVisible) AdsFeedback.Stamp(tex, AdsFeedback.X, AdsFeedback.HitXShareH * tex.height, AdsFeedback.Orange);
@@ -411,6 +442,15 @@ namespace Ballon.Ego
                     var old = GUI.color;
                     GUI.color = hipReticle.Color;
                     GUI.DrawTexture(new Rect(Mathf.Round(cx) - m.width / 2, Mathf.Round(cy) - m.height / 2, m.width, m.height), m);
+                    GUI.color = old;
+                }
+                if (SightVisible)
+                {
+                    var m = Current.sight.Mask(Screen.height);
+                    var s = SightScreen();
+                    var old = GUI.color;
+                    GUI.color = Current.sightColor;
+                    GUI.DrawTexture(new Rect(Mathf.Round(s.x) - m.width / 2, Mathf.Round(Screen.height - s.y) - m.height / 2, m.width, m.height), m);
                     GUI.color = old;
                 }
                 if (ShotRingVisible) Mark(AdsFeedback.Ring, cx, cy, AdsFeedback.ShotRingShareH * Screen.height, Color.white);

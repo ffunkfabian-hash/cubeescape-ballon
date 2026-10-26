@@ -615,6 +615,10 @@ namespace Ballon.Ego.Tests
             float zoom = Mathf.Tan(p.viewCam.fieldOfView * Mathf.Deg2Rad / 2) / Mathf.Tan(p.worldCam.fieldOfView * Mathf.Deg2Rad / 2);
             Assert.IsTrue(rig.AdsHidden, "Zielen: Teile mit ads_hide aus");
             Assert.AreEqual(2.0f, zoom, 1e-3f, "Weltzoom 2,0");
+            Assert.IsTrue(p.SightVisible, "gezeichnetes Absehen im Zielfernrohr");
+            var sc = p.SightScreen();
+            Assert.AreEqual(0.5f, sc.x / p.viewCam.pixelWidth, 0.02f, "Absehen nahe der Bildmitte");
+            Assert.AreEqual(0.5f, sc.y / p.viewCam.pixelHeight, 0.02f);
             Assert.AreEqual(1, p.C.shots - s0, "gehaltener Abzug im Zielen: ein Schuss");
             p.input = new ScriptedInput().Add(0, 1000);
             for (int k = 0; k < 20; k++) yield return null;
@@ -625,6 +629,48 @@ namespace Ballon.Ego.Tests
             yield return null;
             p.deltaOverride = null;
             Assert.AreEqual(0, p.arsenal.Active);
+        }
+
+        /// <summary>Nutzerwunsch 26.10.2026 („lieber etwas Gezeichnetes als Grafik … im Bestfall das Fadenkreuz vom Hüftfeuer im Visier“): das
+        /// Absehen aller drei Waffen ist im Spiel gezeichnet, nicht das Modellteil – im Zielen die Hüftform der Klasse in der Farbe des
+        /// Modell-Absehens an der Bildlage von Socket_Reticle (auf der Mitte), ohne Aufgehen; in der Hüfte und beim Nachladen aus; das
+        /// Modellteil (Rolle reticle_*) ist immer aus.</summary>
+        [UnityTest]
+        public IEnumerator Absehen_gezeichnet_in_Hueftform_im_Visier()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.deltaOverride = () => 1f / 30f;
+            for (int w = 0; w < p.loadouts.Length; w++)
+            {
+                p.UseWeapon(w);
+                p.C.ReadyNow();
+                var L = p.Current;
+                Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
+                Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
+                var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
+                Assert.IsFalse(L.rig.Part(role.id).GetComponent<Renderer>().enabled, "Modell-Absehen aus");
+                ColorUtility.TryParseHtmlString(p.C.S.D.Role(role.role).color, out var want);
+                Assert.AreEqual(want, L.sightColor, "Farbe der Absehen-Rolle (Cyan)");
+                p.input = new ScriptedInput().Add(0, 1000);
+                for (int k = 0; k < 10; k++) yield return null;
+                Assert.IsFalse(p.SightVisible, "Hüfte: kein Absehen im Visier");
+                p.input = new ScriptedInput().Add(0, 1000, hold: "aim");
+                for (int k = 0; k < 30; k++) yield return null;
+                Assert.IsTrue(p.SightVisible, $"{p.C.S.D.weapon.id}: im Zielen gezeichnetes Absehen");
+                var s = p.SightScreen();
+                float spread0 = L.sight.spread;
+                TestContext.WriteLine($"{p.C.S.D.weapon.id}: Absehen {L.sight.Kind} bei x {s.x / p.viewCam.pixelWidth * 100:0.0} / y {100 - s.y / p.viewCam.pixelHeight * 100:0.0} %");
+                Assert.AreEqual(0.5f, s.x / p.viewCam.pixelWidth, 0.02f);
+                Assert.AreEqual(0.5f, s.y / p.viewCam.pixelHeight, 0.02f);
+                p.input = new ScriptedInput().Add(0, 1000, hold: "aim fire");
+                for (int k = 0; k < 6; k++) yield return null;
+                Assert.AreEqual(spread0, L.sight.spread, 1e-6f, "ohne Aufgehen im Zielen");
+                p.input = new ScriptedInput().Add(0, 1000);
+                for (int k = 0; k < 30; k++) yield return null;
+            }
+            p.deltaOverride = null;
+            p.UseWeapon(0);
+            p.C.ReadyNow();
         }
 
         static EgoArsenal Arsenal(List<(int k, string a, string m, int w)> marks, System.Func<int> k)

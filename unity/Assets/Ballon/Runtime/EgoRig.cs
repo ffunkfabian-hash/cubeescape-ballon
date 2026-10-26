@@ -68,6 +68,12 @@ namespace Ballon.Ego
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var p in s.D.weapon.parts)                // Zielfernrohr (0.20): Teile mit ads_hide schaltet Apply im Zielen aus
                 if (p.ads_hide && _parts[p.id].TryGetComponent<Renderer>(out var hr)) _adsHide.Add(hr);
+            foreach (var p in s.D.weapon.parts)                // Absehen (0.20, Nutzer 26.10.2026): gezeichnet statt Modellteil (EgoPlayer, SightReticle)
+                if (p.role.StartsWith("reticle") && _parts[p.id].TryGetComponent<Renderer>(out var rr))
+                {
+                    rr.enabled = false;
+                    ReticleRole = p.role;
+                }
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             foreach (var t in a.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             var fx = new GameObject("Fx").transform;
@@ -172,6 +178,12 @@ namespace Ballon.Ego
         public Material WeaponAtlasMaterial => _atlasWeapon.Count > 0 ? _atlasWeapon[0].sharedMaterial : null;
 
         public Transform Part(string id) => _parts[id];
+
+        /// <summary>Materialrolle des Absehens im Modell (Farbe des gezeichneten Absehens), leer ohne Absehen.</summary>
+        public string ReticleRole { get; private set; } = "";
+
+        /// <summary>Weltlage eines Ankers (Blender-Waffenrahmen → Unity über axes.to_unity, nach dem letzten Apply).</summary>
+        public Vector3 AnchorWorld(string id) => weaponRoot.TransformPoint(_axes.MultiplyPoint3x4(V(S.D.Anchor(id).pos)));
         public Transform SegR(string s) => _segR[S.SegmentIndex(s)];
         public Transform SegL(string s) => _segL[S.SegmentIndex(s)];
 
