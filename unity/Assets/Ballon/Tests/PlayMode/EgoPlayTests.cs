@@ -980,6 +980,70 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual((Color)new Color32(0xE0, 0x65, 0x1E, 0xFF), AdsFeedback.Orange, "Familienfarbe Orange (kit accent)");
         }
 
+        /// <summary>Patch einschuss (Nutzerbild 26.10.2026: „Die Einschusslöcher werden so breit schwarz“): Ab dem 81. Treffer wird das älteste
+        /// Loch wiederverwendet. Es muss seine Weltgröße (DecalSize) behalten, auch wenn es vorher an einem breiten, flachen Träger hing
+        /// (Wand 20 × 4 × 0,2 m). Vorher galt localScale im Maßstab des alten Trägers: das Loch wurde 1 m breit.</summary>
+        [UnityTest]
+        public IEnumerator Einschussloecher_behalten_ihre_Groesse_beim_Wiederverwenden()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            int mag = p.C.magSize;
+            p.C.ReadyNow();
+            p.C.magSize = p.C.ammo = 1000;
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            yield return null;
+            var cam = p.worldCam.transform;
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wall.transform.SetPositionAndRotation(cam.position + cam.forward * 3f, cam.rotation);
+            wall.transform.localScale = new Vector3(20f, 4f, 0.2f);
+            GameObject block = null;
+            try                                                // aufräumen auch bei Fehlschlag: sonst stehen Wand und Würfel für die Folgetests im Weg
+            {
+                var bursts = new ScriptedInput();                  // Feuerstöße mit Pause: die Rückstoßbahn kehrt zurück, alles trifft die Wand
+                for (int k = 0; k < 40; k++) bursts.Add(k * 1.2f, k * 1.2f + 0.6f, hold: "fire").Add(k * 1.2f + 0.6f, k * 1.2f + 1.2f);
+                p.input = bursts;
+                p.deltaOverride = () => 1f / 30f;
+                int onWall = 0;
+                for (int f = 0; f < 1400 && onWall < EgoPlayer.DecalMax; f++)               // bis jedes Loch im Pool an der Wand hängt
+                {
+                    yield return null;
+                    onWall = wall.transform.childCount;
+                }
+                Assert.AreEqual(EgoPlayer.DecalMax, onWall, "alle Löcher an der Wand");
+                p.input = new ScriptedInput().Add(0, 100, hold: "fire");
+                block = GameObject.CreatePrimitive(PrimitiveType.Cube);                 // neuer Träger davor, gleichmäßig skaliert
+                block.transform.SetPositionAndRotation(cam.position + cam.forward * 2f, cam.rotation);
+                block.transform.localScale = Vector3.one * 0.8f;
+                long s1 = p.C.shots;
+                while (p.C.shots < s1 + 10) yield return null;
+                p.input = new ScriptedInput().Add(0, 1000);
+                yield return null;
+                var holes = Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None).Where(r => r.name == "Einschlag").ToList();
+                var moved = holes.Where(r => r.transform.parent == block.transform).ToList();
+                float worst = holes.Max(r => Mathf.Max(r.transform.lossyScale.x, r.transform.lossyScale.y));
+                TestContext.WriteLine($"{holes.Count} Löcher (höchstens {EgoPlayer.DecalMax}), {moved.Count} wiederverwendet auf dem neuen Träger, " +
+                                      $"größte Kante {worst * 100:0.0} cm (Soll {EgoPlayer.DecalSize * 100:0.0} cm)");
+                Assert.AreEqual(EgoPlayer.DecalMax, holes.Count, "Pool voll, alle Löcher an Wand und neuem Träger");
+                Assert.GreaterOrEqual(moved.Count, 8, "wiederverwendete Löcher auf dem neuen Träger");
+                foreach (var r in holes)
+                {
+                    var ls = r.transform.lossyScale;
+                    Assert.AreEqual(EgoPlayer.DecalSize, ls.x, 0.002f, $"Lochbreite {ls.x * 100:0.0} cm");
+                    Assert.AreEqual(EgoPlayer.DecalSize, ls.y, 0.002f, $"Lochhöhe {ls.y * 100:0.0} cm");
+                }
+            }
+            finally
+            {
+                p.input = new ScriptedInput().Add(0, 1000);
+                if (block != null) block.SetActive(false);    // nicht zerstören: die Löcher hängen daran und bleiben in der Warteschlange
+                wall.SetActive(false);
+                p.deltaOverride = null;
+                p.C.magSize = mag;
+                p.C.ReadyNow();
+                p.C.ammo = mag;
+            }
+        }
+
         /// <summary>Entscheidungsliste 5.1 A: im Zielen geht der Rückstoß in die Welt – Weltanker 20 m voraus (Weltkamera) wandert beim
         /// Viererstoß ≈ 4 % H (Destiny Chroma Rush), das Visier (Socket_Reticle durch die Viewmodel-Kamera) bleibt unter 1 % H; Rückkehr
         /// 0,4–0,6 s nach dem letzten Schuss unter 0,25 % H, ohne Unterschwingen. Zum Vergleich aus der Hüfte: dort springt die Waffe

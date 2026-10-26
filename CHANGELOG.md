@@ -23,6 +23,9 @@
   0,27 s, leere Sicht 0,13 s, Ziehen wie bisher), Weltzoom folgt dem Modell, Rückstoß in vier Größen: im Zielen wandert die Welt (Viererstoß
   4,3 % H), das Visier steht (0,12 % H); feste Säule 1 % H je Schuss mit ≤ 1,6 % B Seitenwackeln, Erholung nach der Salve, Salvenwaffen.
   Clip-Schussbilder auf 720/min (2,5 Bilder). `ego.json` jetzt `ballon-ego/6`. Bericht [docs/versions/0.15-plumb.md](docs/versions/0.15-plumb.md).
+- Patch einschuss (Nutzerbild 26.10.2026: „Die Einschusslöcher werden so breit schwarz“): Ab dem 81. Treffer bekam ein wiederverwendetes
+  Loch seine Größe noch im Maßstab des alten Trägers (Wand 20 m breit → Loch 1 m breit). Jetzt erst lösen, dann Weltgröße 5 cm setzen;
+  Test `Einschussloecher_behalten_ihre_Groesse_beim_Wiederverwenden` (mit alter Reihenfolge rot).
 
 ## 0.13.0 „Hipfire“ – Weltzoom je Klasse und Hüft-Fadenkreuz (Branch `claude/ballon-0.13-hipfire`)
 

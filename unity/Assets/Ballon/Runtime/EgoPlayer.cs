@@ -318,11 +318,14 @@ namespace Ballon.Ego
             }
         }
 
+        public const float DecalSize = 0.05f;       // Einschussloch, Kantenlänge in m
+        public const int DecalMax = 80;             // danach wird das älteste wiederverwendet
+
         void Decal(RaycastHit hit)
         {
             if (decalMat == null) return;
             GameObject d;
-            if (_decals.Count >= 80) d = _decals.Dequeue();
+            if (_decals.Count >= DecalMax) d = _decals.Dequeue();
             else
             {
                 d = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -330,8 +333,11 @@ namespace Ballon.Ego
                 d.GetComponent<Renderer>().sharedMaterial = decalMat;
                 d.name = "Einschlag";
             }
+            // Erst lösen, dann Lage und Größe in Weltmaßen setzen: ein wiederverwendetes Loch hing noch am alten Träger, localScale 0,05
+            // galt in dessen Maßstab (Wand 20 m breit → Loch 1 m breit), danach behielt SetParent diese Weltgröße (Patch einschuss)
+            d.transform.SetParent(null, false);
             d.transform.SetPositionAndRotation(hit.point + hit.normal * 0.004f, Quaternion.LookRotation(-hit.normal));
-            d.transform.localScale = Vector3.one * 0.05f;
+            d.transform.localScale = Vector3.one * DecalSize;
             d.transform.SetParent(hit.collider.transform, true);
             _decals.Enqueue(d);
         }
