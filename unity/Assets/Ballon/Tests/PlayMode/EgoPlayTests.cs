@@ -669,6 +669,197 @@ namespace Ballon.Ego.Tests
             NUnit.Framework.Assert.That(() => { for (int k = 0; k < 300; k++) demo.Read(Dt, 1); }, Is.Not.AllocatingGCMemory(), "ScriptedInput");
         }
 
+        // ---------------------------------------------------------------- Mündungsfeuer und Hülsen 0.16 (5.3 A / 5.4 A)
+        static EgoIntent FireIntent(bool fire) => new EgoIntent { grounded = true, fire = fire };
+
+        /// <summary>5.3 A: der Blitz steht 1 Bild bei 30/s, bei höherer Bildrate gleich lang (dur_s = 1/30 s: 60/s 2 Bilder, 144/s 5 Bilder),
+        /// beginnt im Bild des Schusses und erscheint im Dauerfeuer genau einmal je Schuss.</summary>
+        [Test]
+        public void Muendungsfeuer_ein_Bild_bei_30_gleiche_Dauer_bei_hoeherer_Rate()
+        {
+            float dur = D.motion.flash.dur_s;
+            Assert.AreEqual(1f / 30, dur, 1e-5f);
+            foreach (float fps in new[] { 30f, 60f, 144f })
+            {
+                float dt = 1f / fps;
+                var c = Ready();
+                long s0 = c.shots;
+                int tick = 0, shotTick = -1, on = 0, firstOn = -1;
+                c.Shot += () => { if (shotTick < 0) shotTick = tick; };
+                for (tick = 0; tick < (int)(0.5f * fps); tick++)                 // ein Schuss: Abzug ein Bild lang
+                {
+                    var o = c.Tick(dt, FireIntent(tick == 0));
+                    if (o.flashOn) { on++; if (firstOn < 0) firstOn = tick; }
+                }
+                int want = Mathf.CeilToInt(dur * fps - 1e-3f);
+                TestContext.WriteLine($"{fps:0}/s: {c.shots - s0} Schuss, Blitz {on} Bild(er) = {on * dt * 1000:0.0} ms ab Bild {firstOn} (Schuss im Bild {shotTick})");
+                Assert.AreEqual(1, c.shots - s0, $"{fps}/s: ein Schuss");
+                Assert.AreEqual(want, on, $"{fps}/s: Blitzbilder");
+                Assert.AreEqual(shotTick, firstOn, $"{fps}/s: Blitz im Bild des Schusses");
+                Assert.That(on * dt, Is.InRange(dur - 1e-4f, dur + dt), $"{fps}/s: Dauer wie 1 Bild bei 30/s");
+                // Dauerfeuer: je Schuss genau ein Blitz (Anstiege zählen)
+                c = Ready();
+                s0 = c.shots;
+                int onsets = 0;
+                bool prev = false;
+                for (int k = 0; k < (int)(1.0f * fps); k++)
+                {
+                    var o = c.Tick(dt, FireIntent(true));
+                    if (o.flashOn && !prev) onsets++;
+                    prev = o.flashOn;
+                }
+                Assert.AreEqual(c.shots - s0, onsets, $"{fps}/s: ein Blitz je Schuss im Dauerfeuer");
+            }
+        }
+
+        /// <summary>5.4 A: je Schuss genau eine Hülse, sichtbar ab dem Bild des Schusses, im Bild nach rechts und zuletzt nach rechts unten.</summary>
+        [Test]
+        public void Huelse_je_Schuss_einmal_nach_rechts_unten()
+        {
+            var c = Ready();
+            var E = new EgoScreen(c.S);
+            long s0 = c.shots, e0 = c.shellsEjected;
+            var shotTicks = new List<int>();
+            var first = new Dictionary<int, int>();
+            var track = new Dictionary<int, List<Vector3>>();
+            int tick = 0;
+            c.Shot += () => shotTicks.Add(tick);
+            for (tick = 0; tick < 72; tick++)                                    // 0,5 s Feuer, dann 0,7 s Ruhe (60/s)
+            {
+                var o = c.Tick(Dt, FireIntent(tick < 30));
+                for (int k = 0; k < o.shellCount; k++)
+                {
+                    int id = o.shellIds[k];
+                    if (!first.ContainsKey(id)) { first[id] = tick; track[id] = new List<Vector3>(); }
+                    track[id].Add(E.ToScreen(o.shells[k].GetColumn(3), o.camPitch));
+                }
+                Assert.LessOrEqual(o.shellCount, D.motion.eject.max_live, "höchstens max_live gleichzeitig");
+            }
+            int n = (int)(c.shots - s0);
+            Assert.Greater(n, 4);
+            Assert.AreEqual(n, c.shellsEjected - e0, "eine Hülse je Schuss");
+            Assert.AreEqual(n, first.Count, "jede Hülse erscheint");
+            for (int i = 0; i < n; i++)
+            {
+                int id = (int)s0 + i;
+                Assert.AreEqual(shotTicks[i], first[id], $"Hülse {i} im Bild des Schusses");
+                var t = track[id];
+                Assert.AreEqual(Mathf.CeilToInt(D.motion.eject.life_s * 60 - 1e-3f), t.Count, 1, $"Hülse {i}: life_s sichtbar");
+                Assert.Greater(t[6].x - t[0].x, 5f, $"Hülse {i}: nach 0,1 s ≥ 5 % B nach rechts");
+                Assert.Greater(t[t.Count - 1].x, t[6].x, $"Hülse {i}: weiter nach rechts");
+                Assert.Greater(t[t.Count - 1].y, t[6].y, $"Hülse {i}: zuletzt nach unten");
+                if (i == 0) TestContext.WriteLine($"Hülse 0: Start x {t[0].x:0.0} / y {t[0].y:0.0} %, nach 0,1 s x {t[6].x:0.0} / y {t[6].y:0.0} %, " +
+                                                  $"Ende x {t[t.Count - 1].x:0.0} / y {t[t.Count - 1].y:0.0} % ({t.Count} Bilder bei 60/s)");
+            }
+        }
+
+        /// <summary>Kein Blitz und keine Hülse ohne Schuss: Abzug bei leerem Magazin (startet das Nachladen) und gehaltener Abzug während des
+        /// taktischen und des leeren Nachladens.</summary>
+        [Test]
+        public void Kein_Feuer_und_keine_Huelse_bei_leerem_Magazin_und_Nachladen()
+        {
+            foreach (int ammo in new[] { 0, 10 })
+            {
+                var c = Ready();
+                c.ammo = ammo;
+                long s0 = c.shots, e0 = c.shellsEjected;
+                int flash = 0, shells = 0, reloadTicks = 0;
+                c.Tick(Dt, new EgoIntent { grounded = true, fire = ammo == 0, reload = ammo > 0 });
+                long shotsInReload = 0, ejectedInReload = 0;
+                for (int k = 0; k < 150; k++)
+                {
+                    var o = c.Tick(Dt, FireIntent(true));
+                    if (!c.ActionName.StartsWith("reload")) break;    // im Bild nach dem Ende darf wieder geschossen werden
+                    shotsInReload = c.shots - s0;
+                    ejectedInReload = c.shellsEjected - e0;
+                    reloadTicks++;
+                    if (o.flashOn) flash++;
+                    shells += o.shellCount;
+                }
+                TestContext.WriteLine($"Magazin {ammo}: {reloadTicks} Bilder Nachladen mit gehaltenem Abzug, Blitz {flash}, Hülsen {shells}");
+                Assert.Greater(reloadTicks, 30, $"Magazin {ammo}: Nachladen läuft");
+                Assert.AreEqual(0, shotsInReload, $"Magazin {ammo}: kein Schuss");
+                Assert.AreEqual(0, flash, $"Magazin {ammo}: kein Blitz");
+                Assert.AreEqual(0, shells, $"Magazin {ammo}: keine Hülse");
+                Assert.AreEqual(0, ejectedInReload, $"Magazin {ammo}: nichts ausgeworfen");
+            }
+        }
+
+        /// <summary>Waffen ohne Hülsen (Energie) über das Datenfeld weapon.eject.enabled, keine Sonderlogik nach Waffen-ID: Blitz ja,
+        /// Hülse nein – live, in den Clips und im Pool des Modells.</summary>
+        [UnityTest]
+        public IEnumerator Waffe_ohne_Auswurf_wirft_keine_Huelsen()
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            var d2 = EgoFile.Parse(b.egoJson.text);
+            d2.weapon.eject.enabled = false;
+            var S2 = new EgoSolver(d2);
+            Assert.IsFalse(S2.Ejects);
+            var c = new EgoController(S2);
+            c.ReadyNow();
+            int flash = 0, shells = 0;
+            for (int k = 0; k < 60; k++)
+            {
+                var o = c.Tick(Dt, FireIntent(true));
+                if (o.flashOn) flash++;
+                shells += o.shellCount;
+            }
+            Assert.Greater(c.shots, 5);
+            Assert.Greater(flash, 0, "Blitz bleibt");
+            Assert.AreEqual(0, shells, "keine Hülse");
+            Assert.AreEqual(0, c.shellsEjected);
+            var A = d2.Action("fire_hip");
+            var st = new EgoState();
+            for (int f = 0; f <= A.frames; f++) Assert.AreEqual(0, S2.Evaluate(A, f, st).shellCount, "Clip ohne Hülse");
+            var roles = new Dictionary<string, Material>();
+            foreach (var m in b.roleMaterials) roles[m.name.Replace("Role_", "")] = m;
+            var space = new GameObject("ohne_auswurf").transform;
+            var rig = new EgoRig(S2, space, b.weaponModel, b.armsModel, roles, Bootstrap.ViewmodelLayer);
+            Assert.AreEqual(0, rig.ShellPool, "kein Hülsenpool");
+            Assert.AreEqual(D.motion.eject.max_live, b.Player.rig.ShellPool, "BASIC-01: Pool mit max_live Hülsen");
+            Object.Destroy(space.gameObject);
+            yield return null;
+        }
+
+        /// <summary>5.4 A: Hülsen aus einem festen Pool – im Dauerfeuer keine neuen Objekte nach dem Aufwärmen, höchstens max_live sichtbar,
+        /// kein GC-Müll je Bild (Controller und Modell).</summary>
+        [UnityTest]
+        public IEnumerator Huelsenpool_ohne_neue_Objekte()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            int mag = p.C.magSize;
+            p.C.ReadyNow();
+            p.C.magSize = p.C.ammo = 100000;
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 100, hold: "fire");
+            p.deltaOverride = () => Dt;
+            for (int k = 0; k < 30; k++) yield return null;                    // aufwärmen
+            int objs = p.GetComponentsInChildren<Transform>(true).Length;
+            long e0 = p.C.shellsEjected;
+            int most = 0, flashes = 0;
+            for (int k = 0; k < 120; k++)
+            {
+                yield return null;
+                most = Mathf.Max(most, p.C.output.shellCount);
+                if (p.rig.FlashShown) flashes++;
+            }
+            TestContext.WriteLine($"2 s Dauerfeuer: {p.C.shellsEjected - e0} Hülsen ausgeworfen, höchstens {most} sichtbar (Pool {p.rig.ShellPool}), {flashes} Blitzbilder");
+            Assert.Greater(p.C.shellsEjected - e0, 20);
+            Assert.AreEqual(objs, p.GetComponentsInChildren<Transform>(true).Length, "keine neuen Objekte");
+            Assert.LessOrEqual(most, p.rig.ShellPool);
+            Assert.Greater(flashes, 0);
+            var c = p.C;
+            var rig = p.rig;
+            NUnit.Framework.Assert.That(() => { for (int k = 0; k < 60; k++) rig.Apply(c.Tick(Dt, FireIntent(true))); },
+                Is.Not.AllocatingGCMemory(), "Feuer, Blitz und Hülsen je Bild");
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            p.C.magSize = mag;
+            p.C.ReadyNow();
+            p.C.ammo = mag;
+        }
+
         [UnityTest]
         public IEnumerator Wandnaehe_im_Parcours_senkt_die_Waffe()
         {

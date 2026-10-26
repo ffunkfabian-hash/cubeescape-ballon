@@ -167,7 +167,9 @@ Destiny-Schalen ΔL* 64–78 [M].
 **Frage 5.4 – Hülsenauswurf?**
 - **A:** Ja, zusammen mit 5.3 (Messing, nach rechts unten, 1 Bild nach dem Blitz).
 - **B (Empfehlung):** Erst Mündungsfeuer, Hülsen später. Das ist schlichter, und die Hülse ist ohne Ton und bei 30/s kaum lesbar.
-- Antwort (Nutzer, 25.10.2026): „Block 5: 5.1 A, 5.2 A, 5.3 A, 5.4 B.“ → **B**
+- ~~Antwort (Nutzer, 25.10.2026): „Block 5: 5.1 A, 5.2 A, 5.3 A, 5.4 B.“ → **B**~~ (überholt am 26.10.2026)
+- Antwort (Nutzer, 26.10.2026, zu Schritt 5): „Können wir die Hülsen nicht doch dazu machen. Wenn wir da schon einmal dran sind.“ → **A**
+  (umgesetzt mit 5.3 in BALLON 0.16 „Flash“)
 
 ## Block 6 – Nachladen, Wechsel, Betrachten
 
@@ -264,7 +266,7 @@ Spielereingabe sind für Destiny 2 grundsätzlich nicht belegt. BASIC stellt daz
 
 Alle 20 Fragen sind am 25.10.2026 beantwortet, keine ist offen. **Umsetzen:** 1.1, 1.2, 1a, 1d, 2.1, 3.1, 3.2, 3.3, 4.1, 4.2, 4.3,
 5.1, 5.2, 5.3, 6.1, 6.2, 7.1, 8.2, dazu der Test 6c. **Nicht umsetzen:** 2.2 (keine Option für die Waffenlage), 8.1 (Budget bleibt
-nach Funktionen). **Zurückgestellt:** 5.4 Hülsen, 7.2 Wertetabelle (bis eine zweite Waffe in Unity spielbar ist), 7.3 Zielhilfe (bis
+nach Funktionen). **Zurückgestellt:** ~~5.4 Hülsen~~ (am 26.10.2026 auf A geändert, in 0.16 gebaut), 7.2 Wertetabelle (bis eine zweite Waffe in Unity spielbar ist), 7.3 Zielhilfe (bis
 Controller-Eingabe Thema ist), der HUD-Punkt aus 4.3 (bis Motiongen Widerspruch 3 klärt).
 
 ## Messungen (25.10.2026)
@@ -337,7 +339,7 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 | 2 | **Messen (erledigt 25.10.2026, [Messungen](#messungen-25102026)):** ein Ego-Still je Haltung mit Mittenkreuz (Hüftlage, Scout-Ring), Unity-Aufnahme `feel` für Sprint-Hub und Zoom-Timing; Werte in diese Datei und `data/review.json` | 1a, 1d, 2.1, 3.1 | Patch (nur Messung) | gpu, unity | – |
 | 3 | **Weltzoom und Hüft-Fadenkreuz (erledigt 26.10.2026, BALLON 0.13 „Hipfire“, [Bericht](versions/0.13-hipfire.md)):** Weltzoom Scout 2,0 / Handfeuerwaffe 1,15 / MP 1,45, Unity zoomt mit dem Klassenwert (Automatik 1,9 statt fest 1,35); Hüftformen `ring_dot` (Automatik, Impuls, MG), `brackets` (Handfeuerwaffe, neu), `caret` (Scharfschütze und Sprint der Automatik, neu) im Katalog `reticles.py`; ausblendendes Hüft-Fadenkreuz in Unity (Hüfte, Sprint, Zielen, Nachladen, Ziehen) | 1.2, 4.1, 4.2 | Version | unity | 1 |
 | 4 | **Bewegung (erledigt 26.10.2026, BALLON 0.15 „Plumb“, [Bericht](versions/0.15-plumb.md), [Messungen](#messungen-nach-schritt-4-26102026)):** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` 0,27 s und leerer Sicht, Zoom mit dem Modell (1d), Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips neu gerendert | 2.1, 3.1, 6.1, 1d, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
-| 5 | **Mündungsfeuer** in Blender und Unity (1 Bild bei 30/s, Emission ohne Bloom, ≤ 20 % der Holo-Öffnung) | 5.3 | Version | gpu, unity | 4 (Rückstoß im Zielen) |
+| 5 | **Mündungsfeuer und Hülsen (erledigt 26.10.2026, BALLON 0.16 „Flash“, [Bericht](versions/0.16-flash.md)):** Blitz in Blender und Unity gleich (1 Bild bei 30/s, gleiche Dauer bei höherer Bildrate, reine Emission ohne Bloom, im Zielen ≤ 20 % der Holo-Öffnung, gemessen 13,1 %); Hülsen je Schuss aus dem Auswurffenster nach rechts und rechts unten, Feld `EJECT` je Waffe, Pool in Unity | 5.3, 5.4 (A seit 26.10.) | Version | gpu, unity | 4 (Rückstoß im Zielen) |
 | 6 | **Beim Ego-Übertrag je Klasse:** Hüfthaltung, Sprint-Trageform und Anflugdauer je Klasse | 2.1, 3.2, 4d | je Klasse in der Version der Waffe | gpu, unity | 3, 4 |
 | 7 | **Beim nächsten Scout-Umbau:** Gehäuseoberkante unter dem Rohr anheben, Hals weg, Visierhöhe 66 ± 4 mm | 1.1 | in der Version des Umbaus | gpu | nach BALLON 0.12 „Silhouette“ (nicht parallel an `w03`) |
 | 8 | **Bei der nächsten Skin-Arbeit:** flächige Sprenkel nur im Skin `gebraucht` | 8.2 | Patch | gpu | – |

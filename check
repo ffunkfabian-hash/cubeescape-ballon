@@ -135,6 +135,11 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         want = {'holo': 'reflex', 'ring_scope': 'scope'}.get(SIGHT_KIND.get(W.META['type']))
         if want and want != e['sight_type']:
             fail(f'{wid}: Visiertyp {e["sight_type"]} passt nicht zur Klasse (Visier-Standard 3: {SIGHT_KIND[W.META["type"]]})')
+    E = getattr(W, 'EJECT', None)   # Hülsenauswurf (0.16, 5.4 A): Datenfeld je Waffe, Startlage und Hülsenform müssen bestehen
+    if E is not None:
+        from basic.arms import ego as EG
+        if len(E.get('at', ())) != 3 or E.get('case') not in EG.EJECT['cases'] or len(E.get('dir', ())) != 3:
+            fail(f'{wid}: EJECT unvollständig (Startlage f/u/x, Hülsenform aus ego.EJECT.cases, Richtung f/u/x)')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})
@@ -172,6 +177,11 @@ for k, (kind, sh) in {'auto_rifle': ('ring_dot', 0.032), 'pulse_rifle': ('ring_d
         fail(f"Hüft-Fadenkreuz {k}: {h['kind']} {h['share_h']} statt {kind} {sh} (Entscheidungsliste 4.2 A)")
 if (RT.HIP['color'], RT.HIP['weight']) != ('white', 'fine') or {k: v['kind'] for k, v in RT.HIP['sprint'].items()} != {'auto_rifle': 'caret'}:
     fail('Hüft-Fadenkreuz: weiß, fein, im Sprint nur die Automatik mit „^“ (Entscheidungsliste 4.1 A)')
+from basic.arms import ego as EG   # Entscheidungsliste 5.3 A: Mündungsfeuer 1 Bild bei 30/s, im Zielen ≤ 20 % der Holo-Öffnung
+import tools.export_unity as _XU
+_cov = EG.flash_cover_ads(importlib.import_module(f'basic.{_XU.WEAPON}'))
+if _cov > 0.20 or abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
+    fail(f'Mündungsfeuer: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + r.stdout.strip())

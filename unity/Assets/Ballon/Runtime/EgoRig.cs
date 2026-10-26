@@ -16,6 +16,11 @@ namespace Ballon.Ego
         readonly Transform[] _segL, _segR;
         readonly Matrix4x4 _axes;
         Transform _mag;
+        // Mündungsfeuer und Hülsenpool (0.16): einmal angelegt, je Bild nur Lage und Sichtbarkeit
+        readonly Transform _flash;
+        readonly Renderer _flashR;
+        readonly Transform[] _shells;
+        readonly Renderer[] _shellR;
 
         public EgoRig(EgoSolver s, Transform space, GameObject weaponModel, GameObject armsModel, IDictionary<string, Material> roles, int layer)
         {
@@ -60,7 +65,69 @@ namespace Ballon.Ego
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             foreach (var t in a.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
+            var fx = new GameObject("Fx").transform;
+            fx.SetParent(space, false);
+            fx.gameObject.layer = layer;
+            var F = s.D.motion.flash;
+            var fm = BuildMesh("MuzzleFlash", F.verts, F.core_tris, F.flame_tris);
+            _flash = FxObject("MuzzleFlash", fx, fm, new[] { RoleMat(roles, F.core_role), RoleMat(roles, F.flame_role) }, layer, false, out _flashR);
+            int pool = s.Ejects ? s.D.motion.eject.max_live : 0;
+            _shells = new Transform[pool];
+            _shellR = new Renderer[pool];
+            if (pool > 0)
+            {
+                var cm = BuildMesh("Shell", s.D.weapon.eject.verts, s.D.weapon.eject.tris);
+                var bm = new[] { RoleMat(roles, s.D.motion.eject.role) };
+                for (int k = 0; k < pool; k++) _shells[k] = FxObject($"Shell_{k}", fx, cm, bm, layer, true, out _shellR[k]);
+            }
         }
+
+        static Material RoleMat(IDictionary<string, Material> roles, string role)
+        {
+            if (roles.TryGetValue(role, out var m)) return m;
+            Debug.LogWarning($"[Ballon] keine Materialrolle für {role} (unity_run.py setup nach dem Export)");
+            return null;
+        }
+
+        /// <summary>Netz aus ego.json (Blender-Rahmen, m, flach) nach Unity: Punkte über axes, Dreiecke gewendet, wenn die Achsen spiegeln.</summary>
+        Mesh BuildMesh(string name, float[] verts, params int[][] subs)
+        {
+            var v = new Vector3[verts.Length / 3];
+            for (int i = 0; i < v.Length; i++) v[i] = PointToUnity(_axes, new Vector3(verts[3 * i], verts[3 * i + 1], verts[3 * i + 2]));
+            var m = new Mesh { name = name, vertices = v, subMeshCount = subs.Length };
+            bool flip = _axes.determinant < 0;
+            for (int k = 0; k < subs.Length; k++)
+            {
+                var t = (int[])subs[k].Clone();
+                if (flip) for (int i = 0; i < t.Length; i += 3) (t[i + 1], t[i + 2]) = (t[i + 2], t[i + 1]);
+                m.SetTriangles(t, k);
+            }
+            m.RecalculateNormals();
+            m.RecalculateBounds();
+            return m;
+        }
+
+        static Transform FxObject(string name, Transform parent, Mesh mesh, Material[] mats, int layer, bool shadows, out Renderer r)
+        {
+            var go = new GameObject(name) { layer = layer };
+            go.transform.SetParent(parent, false);
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var mr = go.AddComponent<MeshRenderer>();
+            mr.sharedMaterials = mats;
+            mr.shadowCastingMode = shadows ? ShadowCastingMode.On : ShadowCastingMode.Off;   // Blitz wirft wie in Blender keinen Schatten
+            mr.receiveShadows = shadows;
+            mr.lightProbeUsage = LightProbeUsage.Off;
+            mr.reflectionProbeUsage = ReflectionProbeUsage.BlendProbes;
+            mr.enabled = false;
+            r = mr;
+            return go.transform;
+        }
+
+        /// <summary>Anzahl der Hülsen im Pool (0: Waffe ohne Auswurf); für Tests.</summary>
+        public int ShellPool => _shells.Length;
+        /// <summary>Blitz gerade gezeichnet (Tests, Aufnahme).</summary>
+        public bool FlashShown => _flashR.enabled;
+        public Transform FlashTransform => _flash;
 
         static void Reset(Transform t)
         {
@@ -119,6 +186,14 @@ namespace Ballon.Ego
             {
                 Set(_segR[i], o.segR[i]);
                 Set(_segL[i], o.segL[i]);
+            }
+            if (_flashR.enabled != o.flashOn) _flashR.enabled = o.flashOn;
+            if (o.flashOn) Set(_flash, o.flash);
+            for (int k = 0; k < _shells.Length; k++)
+            {
+                bool on = k < o.shellCount;
+                if (_shellR[k].enabled != on) _shellR[k].enabled = on;
+                if (on) Set(_shells[k], o.shells[k]);
             }
         }
 

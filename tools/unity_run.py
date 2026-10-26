@@ -9,6 +9,7 @@
   python3 tools/unity_run.py sway|treffer → Belege Pendeln bzw. Schuss-Ring/Treffer-X (MP4, Kontaktbogen, feedback.csv)
   python3 tools/unity_run.py huefte    → Beleg Hüft-Fadenkreuz (0.13): Hüfte, Feuer, Zielen, Sprint, Nachladen (MP4, feedback.csv)
   python3 tools/unity_run.py sprint|wechsel|rueckstoss → Belege 0.15: Sprint-Hub und Sprint → Zielen, Waffenwechsel, Rückstoß im Zielen
+  python3 tools/unity_run.py feuer → Beleg 0.16: Mündungsfeuer und Hülsen aus der Hüfte und im Zielen
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
@@ -100,7 +101,8 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'huefte': 'BALLON 0.13 Hipfire · Unity · Hüft-Fadenkreuz: Hüfte → Feuer → Zielen → Sprint („^“) → Nachladen',
          'sprint': 'BALLON 0.15 Plumb · Unity · Sprint-Hub ≈ 10 % H / 13 % B (3,16 Hz), Sprint → Zielen: Zoom mit dem Modell',
          'wechsel': 'BALLON 0.15 Plumb · Unity · Waffenwechsel (Q): Wegstecken 0,27 s, leere Sicht, Ziehen mit Nachfedern',
-         'rueckstoss': 'BALLON 0.15 Plumb · Unity · Rückstoß: Hüfte, im Zielen Viererstöße und 12er-Stoß – Welt wandert, Visier steht'}
+         'rueckstoss': 'BALLON 0.15 Plumb · Unity · Rückstoß: Hüfte, im Zielen Viererstöße und 12er-Stoß – Welt wandert, Visier steht',
+         'feuer': 'BALLON 0.16 Flash · Unity · Mündungsfeuer (1 Bild bei 30/s) und Hülsen: Hüfte und Zielen'}
 
 
 def capture(scene=None, demo=None):
@@ -288,7 +290,7 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
-    if a in DEMOS:            # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13); Sprint, Wechsel, Rückstoß (0.15)
+    if a in DEMOS:            # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13); Sprint, Wechsel, Rückstoß (0.15); Feuer (0.16)
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
     if a == 'scenes':
         d = os.path.join(EV, 'scene_shots')
