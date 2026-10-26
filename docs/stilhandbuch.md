@@ -27,6 +27,7 @@ Arm-Rig. Ein Waffenstil v3 existiert nicht.
 | 24.10.2026 | Absehen-Katalog mit Formen, Farben, Linienstärken, Glasvarianten, Aufgehen und Spieleroptionen; „Pfeil von unten“ verworfen |
 | 25.10.2026 | Visier-Standard 3 (anfangs „Visier-Designsprache v3“) nach Motiongen REF 0.14 „Eyebox“: „Mach alles so wie du empfiehlst“ (Augenpunkt bleibt 90 mm, kleinere Öffnungen; Impuls bleibt Holo) |
 | 25.10.2026 | Kein Waffenstil v3: Familie bleibt im Stil v2.1, nur die Namen werden geklärt (Wahl (a) auf „Warum wird nicht erst v3 gemacht?“); weiter mit der Maschinenpistole |
+| 26.10.2026 | Portalkanone BASIC-T01 (0.17 „Gateway“): Werkzeug mit eigener Silhouette statt Familienkörper; nur Hüfte mit Kerbe als Leitkante, kein Visier; zwei Portalfarben (vorn Cyan = Portal A, hinten Orange = Portal B), Bedienelemente neutral; nach Skizze A „Ring“ der Wunsch „mehr an der Portal-2-Portalgun orientieren, nur im BALLON-Stil“ → Skizze P2 „Ei und Ring“ (facettierte Eischale, offener Zweifarbkern, Ring fest auf Speichen, dreht je Schuss 120°); „am Abzug sind die Teile in der Luft“ → Spalte gemessen und geschlossen |
 
 ## 2 Gestaltungsregeln v2
 
@@ -78,6 +79,7 @@ Vor dem Bau im Modulkopf festhalten (Docstring), nach dem Bau am Bild prüfen:
   (Pilot-Handschutz: Draufsicht vorn schmaler, Unterkante vorn schräg).
 - **Ergonomische Konturen** über eine Hilfsfunktion entlang der Griffachse (`_A(u, d)`), Fingerauflagen als Wechsel von 17/21 mm.
 - **Krümmungen** als Versatzfunktion (`_cv(u)`), auf Körper, Rillen, Fenster und Patronen gleich angewandt.
+- **Speichen um die Schussachse:** `tube` mit zwei Punkten, berechnet aus Winkel und Radius (`_spoke` in BASIC-T01) – `box`/`prof` lassen sich nicht um f drehen; Speichen, Nabe und Marke als `parent_part` am drehenden Ring.
 - **Verjüngte Hauben** aus `multi`: zwei Seitenwände und eine geneigte Deckplatte, vorn eine blanke Rahmenkante.
 
 ## 4 Materialrollen
@@ -165,6 +167,7 @@ Startpunkt nehmen.
   `cuts`, Material). Feste Zahlen nur, wenn sie aus den Baustein-Formeln berechnet sind.
 - *Sichtfenster mit Inhalt:* Fenster als `cuts` im Träger, Inhalt als eigenes `multi`-Teil mit `parent_part` (02, 06: Patronen;
   02: Spulen), damit es der Bewegung folgt.
+- *Werkzeug der Familie* (`basic/pilot/tNN_<typ>_v21.py`, ID `BASIC-TNN`, Ausgabe `BASIC-TNN-v2.1`): `grip_v21` und Materialrollen wie die Waffen, kein Visier und kein `Socket_Eye`, keine Orange-Bedienelemente, wenn Orange eine Funktion hat (Portal B). Eigene Leuchtrollen im Modul (`PORTAL_ROLES`), solange `kit.py` im Unity-Quellenhash liegt; Aufleuchten beim Schuss als Laufzeitangabe (`FLASH`). `./check` prüft Werkzeuge in einem eigenen Block, die Familienmaße führen sie unter „Werkzeuge“.
 - *Anker:* `ANCHORS` mit `Socket_Hand`, `Socket_SupportHand`, `Socket_Muzzle`, `Socket_MagWell`, `Socket_Charge`; die Visieranker
   kommen aus dem Visierbaustein (`ANCHORS.update(SIGHT_ANCHORS)`). `./check` vergleicht die Anker mit dem Spec.
 
@@ -257,6 +260,9 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
   zwischen Auge und Objektiv ragt als Klotz in die Linse.
 - Fenster in massiven Profilen bleiben Mulden: für sichtbare Innenteile quer durchschneiden (Schneidkörper breiter als das Teil).
 - Schneidkörper, die eine Fläche ganz durchtrennen (Fugen, Griffrillen), teilen das Bauteil → Fugen als 1 mm tiefe Nuten je Seite.
+- Helle Markierung (`decal`) auf Creme verschwindet: Schrift und Marken auf Graphit legen oder dunkel (`anodized`) ausführen (BASIC-T01, Runde 1).
+- Teile am Abzug „in der Luft“: Bauchunterkante muss gerade über den ganzen Abzugsbügel laufen (f ≈ 83 mm bei `grip_v21(top=40)`); der Bügel beginnt 2,7 mm vor dem Griff – Spalte am gebauten Modell messen (BVH-Abstand je Teilpaar), nicht schätzen (BASIC-T01).
+- Leuchtende Flächen (Kammerkerne) mit beleuchteter Grundfarbe wirken pastellig wie dünne Linien: `emit_only`, Stärke 1,2 für Orange, 0,7 für Cyan (helles Cyan bleicht unter AgX sonst zu Weiß; BASIC-T01).
 - Magazin im Griff neben die Griffachse gesetzt steht hinten aus dem Griff und versteckt sein Sichtfenster → Magazinmitte auf
   der Griffachse von `grip_v21` (f ≈ u·tan 15°), Fenster in den Teil unter dem Griffboden (BASIC-06 v2.1).
 
@@ -320,5 +326,5 @@ Dicke); Standbilder müssen die Handbelegung der Aktion übernehmen (inspect_r o
 
 Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hintergrund); v2 als Vorstufe erhalten.
 Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Familie Stil v2.1 mit Visier-Standard 3: BASIC-01, 02, 03 und
-06 (Maschinenpistole, 0.11 „Compact“). Die 13 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
+06 (Maschinenpistole, 0.11 „Compact“); als erstes Werkzeug die Portalkanone BASIC-T01 (0.17 „Gateway“). Die 13 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
 nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.

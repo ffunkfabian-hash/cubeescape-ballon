@@ -406,11 +406,11 @@ def pilot(path, variant='v2.1'):
 
 
 def family(path):
-    """Familienseite Stil v2.1: alle Module basic/pilot/w*_v21.py mit Produktansicht, linker Seite, Ego-Ansicht, Explosion und
+    """Familienseite Stil v2.1: alle Module basic/pilot/w*_v21.py und Werkzeuge t*_v21.py mit Produktansicht, linker Seite, Ego-Ansicht, Explosion und
     Skins; Kennzahlen aus den Specs, Sichtungsstand aus data/review.json, Checkliste aus dem Modul-Docstring."""
     rv = json.load(open(os.path.join(ROOT, 'data', 'review.json'), encoding='utf-8'))
     rows, heroes = '', ''
-    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
+    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', '[wt]*_v21.py'))):
         W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
         wid = f"{W.META['id']}-{W.META['variant']}"
         d = os.path.join(OUT, wid)

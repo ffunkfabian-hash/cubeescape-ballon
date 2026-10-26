@@ -143,6 +143,58 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
     miss = set(W.ACTIONS) - set(R.get('actions', {}))
     if miss:
         fail(f'{wid}: Sichtung fehlt in data/review.json für {sorted(miss)}')
+# Werkzeuge der Familie (basic/pilot/t*_v21.py, z. B. Portalkanone): Struktur, Spec und Sichtung wie oben, ohne Visier
+for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 't*_v21.py'))):
+    W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
+    wid = f"{W.META['id']}-{W.META['variant']}"
+    ids = [p['id'] for p in W.PARTS]
+    if len(ids) != len(set(ids)):
+        fail(f'{wid}: doppelte Bauteil-IDs')
+    asm = {a['id'] for a in W.ASSEMBLIES}
+    roles = set(getattr(W, 'PORTAL_ROLES', {}))
+    for p in W.PARTS:
+        for k in ('de', 'en', 'func', 'attach', 'mat'):
+            if not p.get(k):
+                fail(f'{wid}/{p["id"]}: Feld {k} leer')
+        if p['asm'] not in asm:
+            fail(f'{wid}/{p["id"]}: Baugruppe {p["asm"]} fehlt')
+        if p.get('parent_part') and p['parent_part'] not in ids:
+            fail(f'{wid}/{p["id"]}: Elternteil fehlt')
+        if p['mat'] == 'accent':
+            fail(f'{wid}/{p["id"]}: Orange-Bedienelement (bei Werkzeugen mit Portalfarben nicht erlaubt)')
+    for k in ('Socket_Hand', 'Socket_SupportHand', 'Socket_Muzzle'):
+        if k not in W.ANCHORS:
+            fail(f'{wid}: Anker {k} fehlt')
+    if 'Socket_Eye' in W.ANCHORS:
+        fail(f'{wid}: Werkzeug ohne Visier hat keinen Socket_Eye')
+    for a, A in W.ACTIONS.items():
+        for pid in A['keys']:
+            p = next((x for x in W.PARTS if x['id'] == pid), None)
+            if not p or 'move' not in p:
+                fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+        fl = getattr(W, 'FLASH', {}).get(a)
+        if fl and (fl['part'] not in ids or fl['role'] not in roles):
+            fail(f'{wid}/{a}: FLASH verweist auf unbekanntes Teil oder Rolle')
+    sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')
+    if not os.path.exists(sp):
+        fail(f'{wid}: Spec fehlt in data/specs (Vollrendering, dann tools/sync_specs.py)')
+    else:
+        S = json.load(open(sp, encoding='utf-8'))
+        if [p['id'] for p in S['parts']] != ids:
+            fail(f'{wid}: Spec passt nicht zum Entwurf (neu bauen, tools/sync_specs.py)')
+        for k, A in W.ANCHORS.items():
+            q = S['anchors'].get(k, {}).get('position_m')
+            at = list(A['at']) + [0] * (3 - len(A['at']))
+            if not q or max(abs(-q[1] * 1000 - at[0]), abs(q[2] * 1000 - at[1]), abs(q[0] * 1000 - at[2])) > 0.6:
+                fail(f'{wid}: Anker {k} im Spec weicht vom Entwurf ab (neu bauen, tools/sync_specs.py)')
+    if 'Formsprache-Checkliste' not in (W.__doc__ or ''):
+        fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
+    R = rv.get(wid, {})
+    if R.get('static', {}).get('status') != 'geprüft':
+        fail(f'{wid}: Sichtung der Ansichten fehlt in data/review.json')
+    miss = set(W.ACTIONS) - set(R.get('actions', {}))
+    if miss:
+        fail(f'{wid}: Sichtung fehlt in data/review.json für {sorted(miss)}')
 if len(types) != 17:
     fail(f'{len(types)} Grundtypen statt 17')
 BL = os.environ.get('BLENDER', '/Applications/Blender.app/Contents/MacOS/Blender')

@@ -28,3 +28,12 @@ als einzelne Teile.
 | BASIC-02-v2.1 | 262 × 123 × 45 | 309 × 38 × 44 | 194 × 116 × 38 | 47 × 38 × 30 | 72 × 116 × 30 | 45 × 106 × 24 |
 | BASIC-03-v2.1 | 322 × 112 × 40 | 283 × 46 × 34 | 182 × 106 × 34 | 121 × 57 × 42 | 72 × 116 × 30 | 42 × 74 × 22 |
 | BASIC-06-v2.1 | 262 × 81 × 43 | 222 × 121 × 40 | 130 × 115 × 40 | 47 × 38 × 29 | 72 × 116 × 30 | 70 × 166 × 22 |
+
+## Werkzeuge
+
+Werkzeuge der Familie (`basic/pilot/t*_v21.py`): gleicher Griff und gleiche Lagen um `Socket_Hand`, ohne Visier und
+Magazin; Schussachse statt Laufachse.
+
+| Werkzeug | L × H × B | Schussachse u | Mündung f | Heck f | Stützhand f / u | Schwerpunkt f / u | Teile / Dreiecke |
+|---|---|---|---|---|---|---|---|
+| BASIC-T01-v2.1 Portalkanone | 404 × 251 × 120 | 112 | 254 | -150 | 158 / 20 | 6 / 99 | 26 / 14940 |

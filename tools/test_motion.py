@@ -17,8 +17,9 @@ from basic import kit  # noqa: E402
 import tools.blender_build as B  # noqa: E402
 
 bad, n = [], 0
-for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
-    W = importlib.import_module('basic.weapons.' + os.path.basename(f)[:-3])
+for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))
+                + glob.glob(os.path.join(ROOT, 'basic', 'pilot', '[wt]*_v21.py'))):
+    W = importlib.import_module(os.path.relpath(f, ROOT)[:-3].replace(os.sep, '.'))
     for p in W.PARTS:
         mv = p.get('move')
         if not mv or 'expect' not in mv:

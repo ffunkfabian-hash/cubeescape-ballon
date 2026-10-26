@@ -1,0 +1,1300 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-T01",
+  "num": "T01",
+  "type": "portal_cannon",
+  "type_de": "Portalkanone",
+  "type_en": "Portal Cannon",
+  "variant": "v2.1",
+  "name": "Portalkanone v2.1",
+  "nick": "Familie v2.1",
+  "ammo": "none",
+  "fire": "single",
+  "reference_length_m": 0.606,
+  "reference_length_source": "Toolgen Portalkanone (outputs/Portalkanone/README.md, Erstentwurf)",
+  "summary": "Portalkanone mit Eischale, offenem Zweifarbkern und Emitterring (Werkzeug, Stil v2.1)."
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "shell",
+    "shell_rim",
+    "belly",
+    "core_glass",
+    "core_b",
+    "core_a",
+    "core_frame",
+    "core_split",
+    "text_r"
+   ]
+  },
+  {
+   "id": "barrel",
+   "de": "Lauf / Emitter",
+   "en": "Barrel / emitter",
+   "parts": [
+    "emitter",
+    "emitter_bore",
+    "crown",
+    "axle",
+    "axle_crown",
+    "emitter_ring",
+    "ring_lip",
+    "hub",
+    "spokes",
+    "ring_mark"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "grip",
+    "trigger",
+    "trigger_guard",
+    "grip_cap"
+   ]
+  },
+  {
+   "id": "support",
+   "de": "Stützbereich",
+   "en": "Support",
+   "parts": [
+    "lip",
+    "foregrip",
+    "foregrip_pad"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "shell",
+   "name_de": "Eischale",
+   "name_en": "Egg shell",
+   "assembly": "receiver",
+   "function_de": "Hülle um Energiequelle und Elektronik; Leitkante oben",
+   "attachment_de": "auf den Bauch geschraubt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 3.0,
+   "blender_object": "shell",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05989,
+     -0.034,
+     0.05211
+    ],
+    "max": [
+     0.05989,
+     0.15,
+     0.17189
+    ]
+   },
+   "size_mm": [
+    119.8,
+    184.0,
+    119.8
+   ],
+   "triangles": 308,
+   "volume_cm3": 1734.03,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "shell_rim",
+   "name_de": "Stirnring",
+   "name_en": "Front rim",
+   "assembly": "receiver",
+   "function_de": "Blanke Stirnkante, wo der Kern aus der Schale tritt",
+   "attachment_de": "vorn in die Schale gesetzt",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.6,
+   "blender_object": "shell_rim",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04561,
+     -0.036,
+     0.06639
+    ],
+    "max": [
+     0.04561,
+     -0.03,
+     0.15761
+    ]
+   },
+   "size_mm": [
+    91.2,
+    6.0,
+    91.2
+   ],
+   "triangles": 576,
+   "volume_cm3": 25.75,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belly",
+   "name_de": "Bauch",
+   "name_en": "Belly",
+   "assembly": "receiver",
+   "function_de": "Trägt Schale, Kernträger und Griff; Abzugsgruppe",
+   "attachment_de": "unter die Schale geschraubt, Fuge 1 mm",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "belly",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.035,
+     -0.104,
+     0.04
+    ],
+    "max": [
+     0.035,
+     0.112,
+     0.08
+    ]
+   },
+   "size_mm": [
+    70.0,
+    216.0,
+    40.0
+   ],
+   "triangles": 160,
+   "volume_cm3": 540.69,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "core_glass",
+   "name_de": "Kernglas",
+   "name_en": "Core glass",
+   "assembly": "receiver",
+   "function_de": "Schützt den offen liegenden Kern",
+   "attachment_de": "zwischen Schale und Emitter",
+   "material_role": "glass",
+   "material_de": "Visierglas",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "core_glass",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02388,
+     -0.132,
+     0.08812
+    ],
+    "max": [
+     0.02388,
+     -0.03,
+     0.13588
+    ]
+   },
+   "size_mm": [
+    47.8,
+    102.0,
+    47.8
+   ],
+   "triangles": 124,
+   "volume_cm3": 183.39,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "core_b",
+   "name_de": "Kern B",
+   "name_en": "Core B",
+   "assembly": "receiver",
+   "function_de": "Kern für Portal B (Orange, Rechtsklick); leuchtet beim Schuss auf",
+   "attachment_de": "hinten im Kernglas",
+   "material_role": "portal_b",
+   "material_de": "Portal B Orange (Kern, leuchtend; Cube Escape)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "core_b",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01091,
+     -0.079,
+     0.10109
+    ],
+    "max": [
+     0.01091,
+     -0.034,
+     0.12291
+    ]
+   },
+   "size_mm": [
+    21.8,
+    45.0,
+    21.8
+   ],
+   "triangles": 284,
+   "volume_cm3": 16.89,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "core_a",
+   "name_de": "Kern A",
+   "name_en": "Core A",
+   "assembly": "receiver",
+   "function_de": "Kern für Portal A (Cyan, Linksklick); leuchtet beim Schuss auf",
+   "attachment_de": "vorn im Kernglas",
+   "material_role": "portal_a",
+   "material_de": "Portal A Cyan (Kern, leuchtend; Cube Escape)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "core_a",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01091,
+     -0.13,
+     0.10109
+    ],
+    "max": [
+     0.01091,
+     -0.085,
+     0.12291
+    ]
+   },
+   "size_mm": [
+    21.8,
+    45.0,
+    21.8
+   ],
+   "triangles": 284,
+   "volume_cm3": 16.89,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "core_frame",
+   "name_de": "Kernträger",
+   "name_en": "Core frame",
+   "assembly": "receiver",
+   "function_de": "Fasst Glas und Kerne; verbindet Schale und Emitter",
+   "attachment_de": "auf den Bauch geschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "core_frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02677,
+     -0.134,
+     0.079
+    ],
+    "max": [
+     0.02677,
+     -0.026,
+     0.13877
+    ]
+   },
+   "size_mm": [
+    53.5,
+    108.0,
+    59.8
+   ],
+   "triangles": 676,
+   "volume_cm3": 40.2,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "core_split",
+   "name_de": "Trennring",
+   "name_en": "Divider ring",
+   "assembly": "receiver",
+   "function_de": "Blanke Trennung der beiden Kerne",
+   "attachment_de": "auf dem Kernträger",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.4,
+   "blender_object": "core_split",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02737,
+     -0.084,
+     0.08463
+    ],
+    "max": [
+     0.02737,
+     -0.08,
+     0.13937
+    ]
+   },
+   "size_mm": [
+    54.7,
+    4.0,
+    54.7
+   ],
+   "triangles": 768,
+   "volume_cm3": 1.92,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "text_r",
+   "name_de": "Schriftzug",
+   "name_en": "Lettering",
+   "assembly": "receiver",
+   "function_de": "Kennung „BASIC PK-T01“ (einzige Schrift)",
+   "attachment_de": "aufgedruckt",
+   "material_role": "decal",
+   "material_de": "Markierung hell",
+   "interface": null,
+   "parent_part": null,
+   "shape": "text",
+   "bevel_mm": 0,
+   "blender_object": "text_r",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03517,
+     0.00952,
+     0.05795
+    ],
+    "max": [
+     -0.03493,
+     0.03963,
+     0.06146
+    ]
+   },
+   "size_mm": [
+    0.2,
+    30.1,
+    3.5
+   ],
+   "triangles": 2056,
+   "volume_cm3": 0.01,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "emitter",
+   "name_de": "Emitter",
+   "name_en": "Emitter",
+   "assembly": "barrel",
+   "function_de": "Bündelt den Portalstrahl; drei Stufen",
+   "attachment_de": "auf den Kernträger geschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03569,
+     -0.206,
+     0.07631
+    ],
+    "max": [
+     0.03569,
+     -0.132,
+     0.14769
+    ]
+   },
+   "size_mm": [
+    71.4,
+    74.0,
+    71.4
+   ],
+   "triangles": 2304,
+   "volume_cm3": 209.51,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "emitter_bore",
+   "name_de": "Bohrung",
+   "name_en": "Bore",
+   "assembly": "barrel",
+   "function_de": "Innenrohr des Emitters; Austritt des Strahls",
+   "attachment_de": "im Emitter",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "emitter_bore",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02181,
+     -0.204,
+     0.09019
+    ],
+    "max": [
+     0.02181,
+     -0.15,
+     0.13381
+    ]
+   },
+   "size_mm": [
+    43.6,
+    54.0,
+    43.6
+   ],
+   "triangles": 192,
+   "volume_cm3": 48.3,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "crown",
+   "name_de": "Emitterkrone",
+   "name_en": "Emitter crown",
+   "assembly": "barrel",
+   "function_de": "Blanke Stirnkante des Emitters",
+   "attachment_de": "vorn am Emitter",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.6,
+   "blender_object": "crown",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03073,
+     -0.209,
+     0.08127
+    ],
+    "max": [
+     0.03073,
+     -0.205,
+     0.14273
+    ]
+   },
+   "size_mm": [
+    61.5,
+    4.0,
+    61.5
+   ],
+   "triangles": 576,
+   "volume_cm3": 5.3,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "axle",
+   "name_de": "Achse",
+   "name_en": "Axle",
+   "assembly": "barrel",
+   "function_de": "Trägt Nabe und Ring; Austritt des Strahls",
+   "attachment_de": "in der Emitterbohrung verschraubt (fest)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "axle",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01388,
+     -0.25,
+     0.09812
+    ],
+    "max": [
+     0.01388,
+     -0.19,
+     0.12588
+    ]
+   },
+   "size_mm": [
+    27.8,
+    60.0,
+    27.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 16.91,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "axle_crown",
+   "name_de": "Achskrone",
+   "name_en": "Axle crown",
+   "assembly": "barrel",
+   "function_de": "Blanke Stirnkante der Achse",
+   "attachment_de": "vorn auf der Achse",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.6,
+   "blender_object": "axle_crown",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01091,
+     -0.254,
+     0.10109
+    ],
+    "max": [
+     0.01091,
+     -0.25,
+     0.12291
+    ]
+   },
+   "size_mm": [
+    21.8,
+    4.0,
+    21.8
+   ],
+   "triangles": 576,
+   "volume_cm3": 1.03,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "emitter_ring",
+   "name_de": "Emitterring",
+   "name_en": "Emitter ring",
+   "assembly": "barrel",
+   "function_de": "Formt das Portal; dreht je Schuss um 120°",
+   "attachment_de": "auf drei Speichen an der Nabe; dreht auf der Achse",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 3.0,
+   "blender_object": "emitter_ring",
+   "origin_m": [
+    0.0,
+    -0.231,
+    0.112
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05987,
+     -0.242,
+     0.05213
+    ],
+    "max": [
+     0.05987,
+     -0.22,
+     0.17187
+    ]
+   },
+   "size_mm": [
+    119.7,
+    22.0,
+    119.7
+   ],
+   "triangles": 1152,
+   "volume_cm3": 85.74,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.231,
+     0.112
+    ],
+    "axis_blender": "Y",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     120
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "ring_lip",
+   "name_de": "Ringkante",
+   "name_en": "Ring lip",
+   "assembly": "barrel",
+   "function_de": "Blanke Innenkante des Rings",
+   "attachment_de": "vorn innen am Ring",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "emitter_ring",
+   "shape": "cyl",
+   "bevel_mm": 0.4,
+   "blender_object": "ring_lip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05039,
+     -0.244,
+     0.06161
+    ],
+    "max": [
+     0.05039,
+     -0.241,
+     0.16239
+    ]
+   },
+   "size_mm": [
+    100.8,
+    3.0,
+    100.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 2.71,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "hub",
+   "name_de": "Nabe",
+   "name_en": "Hub",
+   "assembly": "barrel",
+   "function_de": "Lagert Ring und Speichen auf der Achse",
+   "attachment_de": "auf der Achse (drehbar)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": "emitter_ring",
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "hub",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01785,
+     -0.24,
+     0.09415
+    ],
+    "max": [
+     0.01785,
+     -0.214,
+     0.12985
+    ]
+   },
+   "size_mm": [
+    35.7,
+    26.0,
+    35.7
+   ],
+   "triangles": 576,
+   "volume_cm3": 17.86,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "spokes",
+   "name_de": "Speichen",
+   "name_en": "Spokes",
+   "assembly": "barrel",
+   "function_de": "Tragen den Ring an der Nabe (nichts schwebt)",
+   "attachment_de": "zwischen Nabe und Ring",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": "emitter_ring",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "spokes",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04544,
+     -0.2355,
+     0.08329
+    ],
+    "max": [
+     0.04544,
+     -0.2265,
+     0.162
+    ]
+   },
+   "size_mm": [
+    90.9,
+    9.0,
+    78.7
+   ],
+   "triangles": 768,
+   "volume_cm3": 11.62,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "ring_mark",
+   "name_de": "Ringmarke",
+   "name_en": "Ring mark",
+   "assembly": "barrel",
+   "function_de": "Zeigt die Drehung des Rings (einziges Grafikelement)",
+   "attachment_de": "auf die Ringstirn gedruckt bei 12 Uhr",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": "emitter_ring",
+   "shape": "box",
+   "bevel_mm": 0,
+   "blender_object": "ring_mark",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.004,
+     -0.2423,
+     0.163
+    ],
+    "max": [
+     0.004,
+     -0.2418,
+     0.169
+    ]
+   },
+   "size_mm": [
+    8.0,
+    0.5,
+    6.0
+   ],
+   "triangles": 12,
+   "volume_cm3": 0.02,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "lip",
+   "name_de": "Unterlippe",
+   "name_en": "Lower lip",
+   "assembly": "support",
+   "function_de": "Helle Schale unter dem Emitter; Übergang zum Vordergriff",
+   "attachment_de": "an den Kernträger geschraubt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "lip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.032,
+     -0.21269,
+     0.052
+    ],
+    "max": [
+     0.032,
+     -0.096,
+     0.08138
+    ]
+   },
+   "size_mm": [
+    64.0,
+    116.7,
+    29.4
+   ],
+   "triangles": 172,
+   "volume_cm3": 138.08,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "foregrip",
+   "name_de": "Vordergriff",
+   "name_en": "Foregrip",
+   "assembly": "support",
+   "function_de": "Senkrechter Griff der Stützhand; Socket_SupportHand",
+   "attachment_de": "unter die Unterlippe geschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "foregrip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.178,
+     -0.016
+    ],
+    "max": [
+     0.013,
+     -0.138,
+     0.056
+    ]
+   },
+   "size_mm": [
+    26.0,
+    40.0,
+    72.0
+   ],
+   "triangles": 200,
+   "volume_cm3": 62.71,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "foregrip_pad",
+   "name_de": "Griffpolster",
+   "name_en": "Grip pad",
+   "assembly": "support",
+   "function_de": "Rutschfeste Front des Vordergriffs",
+   "attachment_de": "vorn aufgeklebt",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "foregrip_pad",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.011,
+     -0.17947,
+     0.012
+    ],
+    "max": [
+     0.011,
+     -0.17304,
+     0.048
+    ]
+   },
+   "size_mm": [
+    22.0,
+    6.4,
+    36.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 3.72,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Pistolengriff",
+   "name_en": "Pistol grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand hält die Waffe; trägt Socket_Hand",
+   "attachment_de": "mit Unterem Gehäuse verschraubt (fest)",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": "BGM-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.03024,
+     -0.076
+    ],
+    "max": [
+     0.015,
+     0.04215,
+     0.04
+    ]
+   },
+   "size_mm": [
+    30.0,
+    72.4,
+    116.0
+   ],
+   "triangles": 360,
+   "volume_cm3": 144.82,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen (Zeigefinger)",
+   "attachment_de": "Drehpunkt im Unteren Gehäuse",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.04472,
+    0.037
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     -0.05072,
+     0.01319
+    ],
+    "max": [
+     0.0035,
+     -0.04287,
+     0.041
+    ]
+   },
+   "size_mm": [
+    7.0,
+    7.9,
+    27.8
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.96,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.04472,
+     0.037
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "trigger_guard",
+   "name_de": "Abzugsbügel",
+   "name_en": "Trigger guard",
+   "assembly": "grip_controls",
+   "function_de": "Schützt den Abzug, Fingerfreiraum ≥ 22 mm",
+   "attachment_de": "Griff vorn und Unteres Gehäuse (fest)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "trigger_guard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.006,
+     -0.08272,
+     0.006
+    ],
+    "max": [
+     0.006,
+     -0.02013,
+     0.041
+    ]
+   },
+   "size_mm": [
+    12.0,
+    62.6,
+    35.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 7.28,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip_cap",
+   "name_de": "Griffboden",
+   "name_en": "Grip cap",
+   "assembly": "grip_controls",
+   "function_de": "Ausgestellter Abschluss; schützt den Griff",
+   "attachment_de": "unten auf den Griff geschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "grip_cap",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.00385,
+     -0.079
+    ],
+    "max": [
+     0.016,
+     0.04246,
+     -0.073
+    ]
+   },
+   "size_mm": [
+    32.0,
+    46.3,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 8.43,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": "Haupthand, auf der Griffachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_SupportHand": {
+   "position_m": [
+    0.0,
+    -0.158,
+    0.02
+   ],
+   "part": "foregrip",
+   "note": "Mitte Vordergriff",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.254,
+    0.112
+   ],
+   "part": "axle_crown",
+   "note": "Stirn der Achskrone auf der Schussachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    -0.0,
+    -0.00613,
+    0.09941
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.05989,
+    -0.254,
+    -0.079
+   ],
+   "max": [
+    0.05989,
+    0.15,
+    0.17189
+   ]
+  },
+  "length_m": 0.404,
+  "height_m": 0.2509,
+  "width_m": 0.1198,
+  "reference_length_m": 0.606,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 26,
+  "triangles": 14940,
+  "assemblies": 4
+ },
+ "actions": {
+  "fire_a": {
+   "de": "Portal A setzen (Linksklick): Ring dreht 120° im Uhrzeigersinn",
+   "frames": 18,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "emitter_ring"
+   ],
+   "events": [
+    [
+     2,
+     "shot_a"
+    ],
+    [
+     16,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "fire_b": {
+   "de": "Portal B setzen (Rechtsklick): Ring dreht 120° gegen den Uhrzeigersinn",
+   "frames": 18,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "emitter_ring"
+   ],
+   "events": [
+    [
+     2,
+     "shot_b"
+    ],
+    [
+     16,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BGM-1"
+ ]
+}
