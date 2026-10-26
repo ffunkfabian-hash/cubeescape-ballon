@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Patch visier-konzept – Visier-Konzept und Baukasten v3 (Branch `claude/ballon-patch-visier-konzept`)
+
+- Konzept nach 0.20: Befund (Destiny, BF6, Formgen VS01–09; Platte vor dem Auge, Ringwulst, Abriebmaske), Sitz-Konzepte A/B/C und
+  Visier-Baukasten v3 mit 25 Entwürfen auf der H0-Plattform (BASIC-01) – [docs/visier-konzept.md](docs/visier-konzept.md), Nutzerwahl „v3 bauen“.
+  Entwurfswerkzeuge `tools/sight_options.py`, `tools/sight_catalog.py`, Quellen `basic/pilot/optics/sight_*.py`; Modelle und Unity unverändert.
+
 ## 0.20.0 „Spotter“ – Scout BASIC-03 spielbar (Taste 3, Zielfernrohr, Einzelfeuer, gezeichnetes Absehen) und kleinere Texturen (Branch `claude/ballon-0.20-spotter`)
 
 - Entscheidung 97 A: Waffenatlanten und Skins je Kanal kleiner abgelegt (`export_unity.TEXTURE_STORE`: albedo JPG 4096, spec PNG 2048,

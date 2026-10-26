@@ -28,3 +28,5 @@ Stand 26.10.2026, aus der Sitzung „BALLON 0.20 „Spotter“ · Mac“. Für e
 3. Nutzerwahl, dann Umsetzung als Version (Blender, Export mit Backen, Unity-Vergleich, Visier-Standard 3 und Stilhandbuch anpassen).
 
 Offen aus 0.20: Blender zeichnet das Absehen weiter als Modellteil (Formblätter, Ego-Clips); nur Unity zeigt die gezeichnete Hüftform.
+
+Ergebnis der Konzeptsitzung (26.10.2026): [visier-konzept.md](visier-konzept.md) – Befund, Sitz-Konzepte A/B/C, Baukasten v3.
