@@ -88,6 +88,8 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/5\"}"));          // 0.14: Rückstoß ohne Bahn, kein Wechsel
             StringAssert.Contains("neu exportieren", ex.Message);
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/6\"}"));          // 0.15: ohne Mündungsfeuer und Hülsen
+            StringAssert.Contains("neu exportieren", ex.Message);
         }
 
         // ---------------------------------------------------------------- Weltzoom und Hüft-Fadenkreuz 0.13
@@ -269,6 +271,119 @@ namespace Ballon.Ego.Tests
             Assert.That(s.x - m.x, Is.InRange(7f, 34f), "hintere Visieröffnung rechts der Mündung (Destiny 7–34 pp)");
             Assert.Greater(pts.Max(p => p.x), 99f, "Kontur reicht bis zum rechten Rand");
             Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
+        }
+
+        // ---------------------------------------------------------------- Mündungsfeuer und Hülsen 0.16
+        /// <summary>Entscheidungsliste 5.3 A / 5.4 A in den Clips (wie ego_build): jeder Schuss zeigt genau ein Blitzbild bei 30/s, im
+        /// Schussbild; jede Hülse erscheint genau einmal, im Schussbild, und fliegt danach im Bild nach rechts, zuletzt nach unten.</summary>
+        [Test]
+        public void Clips_Blitz_ein_Bild_und_Huelse_je_Schuss()
+        {
+            var S = new EgoSolver(D);
+            var E = new EgoScreen(S);
+            Assert.AreEqual(1f / 30, D.motion.flash.dur_s, 1e-5f, "1 Bild bei 30/s");
+            Assert.IsTrue(S.Ejects, "BASIC-01 wirft Hülsen aus (weapon.eject)");
+            foreach (var name in new[] { "fire_hip", "fire_ads", "sprint_to_fire" })
+            {
+                var A = D.Action(name);
+                var st = new EgoState();
+                var flashes = new int[A.fire.Length];
+                var first = Enumerable.Repeat(-1, A.fire.Length).ToArray();
+                var path = A.fire.Select(_ => new List<Vector3>()).ToArray();
+                for (int f = 0; f <= A.frames; f++)
+                {
+                    var o = S.Evaluate(A, f, st);
+                    if (o.flashOn)
+                    {
+                        flashes[o.flashShot]++;
+                        Assert.AreEqual(A.fire[o.flashShot], f, $"{name}: Blitz {o.flashShot} im Bild {f}");
+                    }
+                    for (int k = 0; k < o.shellCount; k++)
+                    {
+                        int id = o.shellIds[k];
+                        if (first[id] < 0) first[id] = f;
+                        path[id].Add(Pos(o.shells[k]));                 // Kameraraum (im Zielen fliegt die Hülse hinter die Kamera)
+                    }
+                }
+                CollectionAssert.AreEqual(Enumerable.Repeat(1, A.fire.Length).ToArray(), flashes, $"{name}: ein Blitzbild je Schuss");
+                CollectionAssert.AreEqual(A.fire.Select(x => x + D.motion.eject.delay_frames).ToArray(), first, $"{name}: Hülse im Schussbild");
+                for (int k = 0; k < path.Length; k++)
+                {
+                    var pth = path[k];
+                    int want = Mathf.Min(Mathf.CeilToInt(D.motion.eject.life_s * D.fps - 1e-3f), A.frames - first[k] + 1);   // Clipende schneidet ab
+                    Assert.AreEqual(want, pth.Count, $"{name}: Hülse {k} life_s lang sichtbar");
+                    if (pth.Count < 4) continue;
+                    Vector3 s0 = E.ToScreen(pth[0], 0), s1 = E.ToScreen(pth[1], 0);
+                    if (s0.z > D.camera.near_m && s1.z > D.camera.near_m) Assert.Greater(s1.x, s0.x, $"{name}: Hülse fliegt im Bild nach rechts");
+                    Assert.Less(pth[pth.Count - 1].x, pth[0].x - 0.1f, $"{name}: Hülse fliegt nach rechts (Blender −X)");
+                    Assert.Less(pth[pth.Count - 1].z, pth.Max(p => p.z) - 0.05f, $"{name}: Hülse fällt zuletzt nach unten");
+                }
+            }
+        }
+
+        /// <summary>Entscheidungsliste 5.3 A: im Zielen bedeckt der Blitz bei der Automatik (Holo) höchstens ≈ 20 % der lichten Öffnung (Destiny
+        /// Chroma Rush ≈ 20 %, Motiongen muendung › 6). Gemessen an jedem Blitzbild von fire_ads: Netz des Blitzes ins Bild projiziert und
+        /// gerastert, Öffnung = Glasfenster an seiner Rückseite geschnitten mit demselben Fenster in der Ebene der Haubenkante (wie
+        /// ego.flash_cover_ads in ./check); Verdeckung durch die Waffe zählt nicht (obere Schranke).</summary>
+        [Test]
+        public void Muendungsfeuer_im_Zielen_hoechstens_20_Prozent_der_Oeffnung()
+        {
+            var S = new EgoSolver(D);
+            var E = new EgoScreen(S);
+            var A = D.Action("fire_ads");
+            var st = new EgoState();
+            var F = D.motion.flash;
+            var gb = D.mesh_bounds.objects.First(b => b.name == "sight_glass");
+            var tb = D.mesh_bounds.objects.First(b => b.name == "sight_frame_trim");
+            float worst = 0, sum = 0;
+            int n = 0;
+            const int N = 120;
+            var q = new Vector3[F.verts.Length / 3];
+            for (int f = 0; f <= A.frames; f++)
+            {
+                var o = S.Evaluate(A, f, st);
+                if (!o.flashOn) continue;
+                var Wg = S.World(o, "sight_glass");
+                float x0 = 0, x1 = 100, y0 = 0, y1 = 100;
+                foreach (float y in new[] { gb.max[1], tb.min[1] })       // Rückseite des Glases (+Y hinten) und Stirn der Haubenkante (vorn −Y)
+                {
+                    var a = E.ToScreen(Wg.MultiplyPoint3x4(new Vector3(gb.max[0], y, gb.max[2])), o.camPitch);
+                    var b = E.ToScreen(Wg.MultiplyPoint3x4(new Vector3(gb.min[0], y, gb.min[2])), o.camPitch);
+                    x0 = Mathf.Max(x0, Mathf.Min(a.x, b.x)); x1 = Mathf.Min(x1, Mathf.Max(a.x, b.x));
+                    y0 = Mathf.Max(y0, Mathf.Min(a.y, b.y)); y1 = Mathf.Min(y1, Mathf.Max(a.y, b.y));
+                }
+                for (int i = 0; i < q.Length; i++)
+                    q[i] = E.ToScreen(o.flash.MultiplyPoint3x4(new Vector3(F.verts[3 * i], F.verts[3 * i + 1], F.verts[3 * i + 2])), o.camPitch);
+                int hit = 0;
+                for (int i = 0; i < N; i++)
+                    for (int j = 0; j < N; j++)
+                    {
+                        float px = x0 + (i + 0.5f) / N * (x1 - x0), py = y0 + (j + 0.5f) / N * (y1 - y0);
+                        if (In(F.core_tris) || In(F.flame_tris)) hit++;
+                        bool In(int[] t)
+                        {
+                            for (int k = 0; k < t.Length; k += 3)
+                                if (InTri(px, py, q[t[k]], q[t[k + 1]], q[t[k + 2]])) return true;
+                            return false;
+                        }
+                    }
+                float c = hit / (float)(N * N);
+                worst = Mathf.Max(worst, c);
+                sum += c;
+                n++;
+                if (n == 1) TestContext.WriteLine($"Öffnung im Zielen x {x0:0.0}–{x1:0.0} / y {y0:0.0}–{y1:0.0} %");
+            }
+            TestContext.WriteLine($"Blitz im Zielen: {n} Blitzbilder, Öffnung bedeckt höchstens {worst * 100:0.0} %, im Mittel {sum / n * 100:0.0} %");
+            Assert.AreEqual(A.fire.Length, n, "jedes Schussbild zeigt den Blitz");
+            Assert.LessOrEqual(worst, 0.20f, "höchstens 20 % der Holo-Öffnung (5.3 A)");
+            Assert.Greater(worst, 0.05f, "der Blitz ist im Visier sichtbar");
+        }
+
+        static bool InTri(float x, float y, Vector3 a, Vector3 b, Vector3 c)
+        {
+            float S(Vector3 p, Vector3 q) => (x - q.x) * (p.y - q.y) - (p.x - q.x) * (y - q.y);
+            float d1 = S(a, b), d2 = S(b, c), d3 = S(c, a);
+            return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0));
         }
 
         // ---------------------------------------------------------------- Achsen
@@ -486,10 +601,24 @@ namespace Ballon.Ego.Tests
             int checks = 0;
             void Compare(RefSample s, EgoOutput o)
             {
+                int fx = 0;
                 foreach (var ob in s.objects)
                 {
                     Matrix4x4 got;
-                    if (ob.name == "weapon") got = o.weapon;
+                    if (ob.name == "flash")                    // Mündungsfeuer und Hülsen (0.16): nur sichtbare stehen in der Referenz
+                    {
+                        Assert.IsTrue(o.flashOn, $"{s.label}: Blitz fehlt");
+                        got = o.flash;
+                        fx++;
+                    }
+                    else if (ob.name.StartsWith("shell_"))
+                    {
+                        int j = Array.IndexOf(o.shellIds, int.Parse(ob.name.Substring(6)), 0, o.shellCount);
+                        Assert.GreaterOrEqual(j, 0, $"{s.label}: {ob.name} fehlt");
+                        got = o.shells[j];
+                        fx++;
+                    }
+                    else if (ob.name == "weapon") got = o.weapon;
                     else if (ob.name == "camera") got = RotX(Rad(o.camPitch));
                     else if (ob.name.StartsWith("R_")) got = o.segR[S.SegmentIndex(ob.name.Substring(2))];
                     else if (ob.name.StartsWith("L_")) got = o.segL[S.SegmentIndex(ob.name.Substring(2))];
@@ -500,6 +629,7 @@ namespace Ballon.Ego.Tests
                     if (dr > worstR) { worstR = dr; wr = $"{s.label} {ob.name}"; }
                     checks++;
                 }
+                Assert.AreEqual(fx, (o.flashOn ? 1 : 0) + o.shellCount, $"{s.label}: Blitz/Hülsen sichtbar in Unity, nicht in Blender");
             }
             foreach (var s in R.samples.Where(s => s.label.StartsWith("still:")))
                 Compare(s, S.Evaluate(S.StillAction(s.label.Substring(6)), 0, new EgoState()));

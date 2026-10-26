@@ -101,6 +101,16 @@ namespace Ballon.Ego
         bool _hasOutput, _firePrev;
         EgoIntent _intent;
         Func<string, Matrix4x4> _pf;
+        // Mündungsfeuer (5.3 A): sichtbar flash.dur_s ab dem Schuss; Hülsen (5.4 A): fester Pool (Ring) mit motion.eject.max_live Plätzen
+        float _flashLeft;
+        int _flashShot, _pendingShells;
+        readonly Matrix4x4[] _shW;
+        readonly float[] _shAge;
+        readonly int[] _shId;
+        readonly bool[] _shOn;
+        int _shNext;
+        /// <summary>Schüsse seit dem Start, die eine Hülse auswarfen (Messwert für Tests).</summary>
+        public long shellsEjected;
 
         public EgoController(EgoSolver s, EgoTuning tuning = null)
         {
@@ -116,6 +126,11 @@ namespace Ballon.Ego
             _dHip = s.PoseMatrix("hip").MultiplyPoint3x4(_eyeLocal).magnitude;
             _walk = s.D.Action("walk");
             _sprintA = s.D.Action("sprint");
+            int cap = s.D.motion.eject.max_live;
+            _shW = new Matrix4x4[cap];
+            _shAge = new float[cap];
+            _shId = new int[cap];
+            _shOn = new bool[cap];
             Hold("holster", Stance.Hip);
         }
 
@@ -410,6 +425,11 @@ namespace Ballon.Ego
 
         void UpdateLive(float dt, EgoIntent i)
         {
+            // Blitz und Hülsen altern vor den Schüssen dieses Bilds: ein neuer Schuss ist im selben Bild sichtbar
+            _flashLeft = Mathf.Max(0, _flashLeft - dt);
+            var Ej = S.D.motion.eject;
+            for (int k = 0; k < _shOn.Length; k++)
+                if (_shOn[k] && (_shAge[k] += dt) - Ej.delay_frames / (float)S.fps >= Ej.life_s) _shOn[k] = false;
             // Feuer mit fester Kadenz; eine angefangene Salve läuft zu Ende
             _triggerHeld = i.fire && CanFire;
             _sinceShot += dt;
@@ -484,6 +504,9 @@ namespace Ballon.Ego
             if (Rc.path_side_b != null && Rc.path_side_b.Length > 0)
                 _pathTgt.x = Mathf.Atan(Rc.path_side_b[_pathN % Rc.path_side_b.Length] * 2 * th) * Mathf.Rad2Deg;
             if (Rc.burst_shots > 0) _burstLeft = _burstLeft > 0 ? _burstLeft - 1 : Rc.burst_shots - 1;
+            _flashLeft = S.D.motion.flash.dur_s;          // Mündungsfeuer nur aus einem echten Schuss (Munition, Kadenz, kein Nachladen)
+            _flashShot = (int)(shots - 1);
+            if (S.Ejects) _pendingShells++;               // Hülse startet in Compose mit der Waffe dieses Bilds
             Shot?.Invoke();
         }
 
@@ -546,6 +569,33 @@ namespace Ballon.Ego
                 if (target <= 0) _leaving = false;
             }
             adsWeight = Mathf.MoveTowards(adsWeight, target, _dt * 30f / 3f);
+        }
+
+        /// <summary>Blitz und Hülsen im laufenden Spiel (gleiche Formeln wie FxScripted): neue Hülsen starten mit der Waffe dieses Bilds und
+        /// belegen den ältesten Platz des Pools; keine Speicheranforderung je Bild.</summary>
+        void LiveFx(EgoOutput o, Matrix4x4 WM)
+        {
+            o.flashOn = _flashLeft > 1e-4f;
+            if (o.flashOn) { o.flashShot = _flashShot; o.flash = S.FlashMatrix(WM, _flashShot); }
+            for (; _pendingShells > 0; _pendingShells--)
+            {
+                _shW[_shNext] = WM;
+                _shAge[_shNext] = 0;
+                _shId[_shNext] = (int)(shots - _pendingShells);
+                _shOn[_shNext] = true;
+                _shNext = (_shNext + 1) % _shOn.Length;
+                shellsEjected++;
+            }
+            var Ej = S.D.motion.eject;
+            o.shellCount = 0;
+            for (int k = 0; k < _shOn.Length; k++)
+            {
+                if (!_shOn[k]) continue;
+                float t = _shAge[k] - Ej.delay_frames / (float)S.fps;
+                if (t < 0) continue;
+                o.shells[o.shellCount] = S.ShellMatrix(_shW[k], t);
+                o.shellIds[o.shellCount++] = _shId[k];
+            }
         }
 
         /// <summary>Feder-Nachlauf (ego.SECONDARY) in Echtzeit über alle Spuren hinweg: glättet auch Spurwechsel.</summary>
@@ -612,6 +662,8 @@ namespace Ballon.Ego
             o.camPitch = L.camPitch;
             o.worldPitch = _t.scripted ? L.camPitch : _worldPitch;
             o.worldYaw = _t.scripted ? 0 : _worldYaw;
+            if (_t.scripted) S.FxScripted(A, f, WM, _t.st, o);
+            else LiveFx(o, WM);
             _hasOutput = true;
             return o;
         }

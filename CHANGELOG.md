@@ -8,6 +8,14 @@
 - `./check` prüft Werkzeuge (`t*_v21.py`), `test_motion.py` auch die v2.1-Module; Familienmaße und Familienseite mit Werkzeugen.
   Bericht [docs/versions/0.17-gateway.md](docs/versions/0.17-gateway.md).
 
+## 0.16.0 „Flash“ – Mündungsfeuer und Hülsen in Blender und Unity (Branch `claude/ballon-0.16-flash`)
+
+- Schritt 5 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (5.3 A, dazu 5.4 A seit 26.10.2026): Blitz an `Socket_Muzzle`, 1 Bild bei
+  30/s (Unity gleich lang: 60/s 2 Bilder, 144/s 5), fast weißer Kern und vier Seitenflammen in Cyan, reine Emission ohne Bloom; im Zielen
+  ≤ 13,1 % der Holo-Öffnung (Grenze 20 %, `./check` und Unity-Test). Messinghülse je Schuss aus dem Auswurffenster nach rechts, mit Drehung,
+  0,4 s; Waffen-Feld `EJECT`, Unity-Pool aus 6 Hülsen ohne GC. Form und Bahn einmal in `basic/arms/ego.py`. `ego.json` jetzt `ballon-ego/7`.
+  Bericht [docs/versions/0.16-flash.md](docs/versions/0.16-flash.md).
+
 ## 0.15.0 „Plumb“ – Haltung, Bewegung und Rückstoß nach Destiny (Branch `claude/ballon-0.15-plumb`)
 
 - Schritt 4 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (2.1 A, 3.1 A, 6.1 A, 1d, 5.1 A, 5.2 A): Hüfte tiefer (Mündung

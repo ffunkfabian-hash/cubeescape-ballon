@@ -1,4 +1,4 @@
-// Ego-Daten im Format ballon-ego/6, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
+// Ego-Daten im Format ballon-ego/7, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
 // Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -52,8 +52,13 @@ namespace Ballon.Ego
 
     [Serializable] public class EgoAnchor { public string id, part; public float[] pos; }
 
+    /// <summary>Hülsenauswurf der Waffe (7, 0.16, Entscheidungsliste 5.4 A; Modul-Feld EJECT): Startlage im Auswurffenster, Richtung (Einheit,
+    /// Blender-Waffenrahmen) und Hülsennetz (flach: Punkte in m, Dreiecke). enabled false: Waffe ohne Hülsen.</summary>
     [Serializable]
-    public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; }
+    public class WeaponEject { public bool enabled; public string @case, src; public float[] pos, dir, verts; public int[] tris; }
+
+    [Serializable]
+    public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject; }
 
     [Serializable] public class EgoPiece { public string id, segment, role; }
 
@@ -146,10 +151,21 @@ namespace Ballon.Ego
     /// <summary>Waffenwechsel (ego.SWITCH, 6.1 A): Pause ohne Waffe zwischen Wegstecken und Ziehen.</summary>
     [Serializable] public class Switch { public float empty_s; public string src; }
 
-    /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, TIME_SCALE).</summary>
+    /// <summary>Mündungsfeuer (ego.FLASH, 7 ab 0.16, Entscheidungsliste 5.3 A): sichtbar dur_s ab dem Schuss (1 Bild bei 30/s), Netz relativ
+    /// zu Socket_Muzzle (Blender-Waffenrahmen, m; flach), Kern- und Flammendreiecke, Drehung je Schuss um die Laufachse (roll_deg).</summary>
+    [Serializable]
+    public class Flash { public float dur_s; public float[] verts, roll_deg; public int[] core_tris, flame_tris; public string core_role, flame_role, src; }
+
+    /// <summary>Hülsenbahn (ego.EJECT, 7 ab 0.16, 5.4 A): Geschwindigkeit, Schwerkraft im Kameraraum, Drehung um spin_axis der Waffe, sichtbar
+    /// ab delay_frames (30/s) für life_s, höchstens max_live gleichzeitig.</summary>
+    [Serializable]
+    public class Eject { public float speed_mps, gravity_mps2, spin_dps, life_s; public float[] spin_axis; public int max_live, delay_frames;
+                         public string role, src; }
+
+    /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, FLASH, EJECT, TIME_SCALE).</summary>
     [Serializable]
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
-                          public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; }
+                          public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; public Flash flash; public Eject eject; }
 
     [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, spec, normal, ao; }
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
@@ -180,7 +196,7 @@ namespace Ballon.Ego
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
-        public const string Format = "ballon-ego/6";     // 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
+        public const string Format = "ballon-ego/7";     // 7: motion.flash, motion.eject, weapon.eject, Rollen flash_* (0.16); 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;

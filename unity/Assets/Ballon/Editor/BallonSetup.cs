@@ -334,6 +334,14 @@ namespace Ballon.Ego.Editor
                     var e = Hex(r.color).linear * (r.emit * 1.6f);
                     m.SetColor("_EmissionColor", new Color(e.r, e.g, e.b, 1).gamma);   // Materialfarben sind Gamma-Werte
                     if (r.emit_only) m.SetColor("_BaseColor", Color.black);
+                    if (r.emit_only && r.spec <= 0f)      // Mündungsfeuer (0.16): wie Blender ohne Glanz und Spiegelung (sonst blass)
+                    {
+                        m.SetFloat("_Smoothness", 0f);
+                        m.SetFloat("_SpecularHighlights", 0f);
+                        m.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+                        m.SetFloat("_EnvironmentReflections", 0f);
+                        m.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+                    }
                 }
                 res["Role_" + r.role] = m;
             }
