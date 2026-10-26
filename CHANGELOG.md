@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.17.0 „Gateway“ – Portalkanone BASIC-T01 im Stil v2.1 (Branch `claude/ballon-0.17-gateway`)
+
+- Erstes Werkzeug der Familie (`basic/pilot/t01_portal_cannon_v21.py`): facettierte Eischale, offener Zweifarbkern (Portal B Orange
+  hinten, Portal A Cyan vorn, Farben aus Cube Escape), gestufter Emitter, Ring auf drei Speichen (dreht 120° je Schuss), Unterlippe mit
+  Vordergriff, Familiengriff; kein Visier, Kerbe als Leitkante. Nach Portal-2-Prinzip im BALLON-Stil (Nutzerwahl P2). 26 Teile, 404 mm.
+- `./check` prüft Werkzeuge (`t*_v21.py`), `test_motion.py` auch die v2.1-Module; Familienmaße und Familienseite mit Werkzeugen.
+  Bericht [docs/versions/0.17-gateway.md](docs/versions/0.17-gateway.md).
+
 ## 0.15.0 „Plumb“ – Haltung, Bewegung und Rückstoß nach Destiny (Branch `claude/ballon-0.15-plumb`)
 
 - Schritt 4 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (2.1 A, 3.1 A, 6.1 A, 1d, 5.1 A, 5.2 A): Hüfte tiefer (Mündung
