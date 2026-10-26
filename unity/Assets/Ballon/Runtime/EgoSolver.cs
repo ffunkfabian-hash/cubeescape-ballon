@@ -393,9 +393,10 @@ namespace Ballon.Ego
             mech.Clear();
             if (A.mech != null)
                 foreach (var tr in A.mech) mech[tr.part] = ValueAt(tr.keys, f);
-            if (L.trigger >= 0) mech["trigger"] = L.trigger;
-            if (L.bolt >= 0) mech["bolt_carrier"] = L.bolt;
-            if (L.port >= 0) mech["port_cover"] = L.port;
+            var live = D.weapon.live;                       // Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE, 0.18)
+            if (L.trigger >= 0) mech[live.trigger] = L.trigger;
+            if (L.bolt >= 0) mech[live.bolt] = L.bolt;
+            if (L.port >= 0) mech[live.port] = L.port;
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));

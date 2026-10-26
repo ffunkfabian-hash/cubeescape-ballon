@@ -68,8 +68,22 @@ namespace Ballon.Ego
     public sealed class EgoPlayer : MonoBehaviour
     {
         public const int PlayerLayer = 2;           // eingebaute Ebene „Ignore Raycast“
-        public EgoController C;
-        public EgoRig rig;
+
+        /// <summary>Eine Waffe der Spielfigur (0.18): Modell mit Armen, Hüft-Fadenkreuz und Skins; der Controller liegt im Arsenal.</summary>
+        public sealed class Loadout
+        {
+            public EgoRig rig;
+            public HipReticle hip;
+            public Material[] skins;
+            public string[] skinNames;
+            public int skin;
+        }
+
+        public EgoArsenal arsenal;                  // Waffen (Tasten 1/2, Q), je Waffe ein Controller
+        public Loadout[] loadouts;
+        public EgoController C => arsenal.Current;  // aktive Waffe
+        public EgoRig rig => loadouts[arsenal.Active].rig;
+        public Loadout Current => loadouts[arsenal.Active];
         public IEgoInput input = new DeviceInput();
         public MoveTuning move = new MoveTuning();
         public Camera worldCam, viewCam;
@@ -80,7 +94,7 @@ namespace Ballon.Ego
         public readonly List<string> log = new List<string>();
         public bool hud = true;
         public Func<float> deltaOverride;          // Aufnahme: feste Zeitschritte
-        public HipReticle hipReticle;              // Hüft-Fadenkreuz (Entscheidungsliste 4.1 A / 4.2 A)
+        public HipReticle hipReticle => Current.hip;   // Hüft-Fadenkreuz der aktiven Waffe (Entscheidungsliste 4.1 A / 4.2 A)
 
         CharacterController _cc;
         GUIStyle _big, _small, _time;
@@ -91,16 +105,17 @@ namespace Ballon.Ego
         System.Random _rng = new System.Random(7);
         readonly Queue<GameObject> _decals = new Queue<GameObject>();
         public Material decalMat;
-        public Material[] skins;
-        public string[] skinNames;
-        public int skin;
+        public Material[] skins { get => Current.skins; set => Current.skins = value; }          // Skins der aktiven Waffe
+        public string[] skinNames { get => Current.skinNames; set => Current.skinNames = value; }
+        public int skin => Current.skin;
 
-        /// <summary>Waffen-Skin i (0 = Standard) setzen.</summary>
+        /// <summary>Waffen-Skin i (0 = Standard) der aktiven Waffe setzen.</summary>
         public void SetSkin(int i)
         {
-            if (skins == null || skins.Length == 0) return;
-            skin = ((i % skins.Length) + skins.Length) % skins.Length;
-            rig.SetSkin(skins[skin]);
+            var L = Current;
+            if (L.skins == null || L.skins.Length == 0) return;
+            L.skin = ((i % L.skins.Length) + L.skins.Length) % L.skins.Length;
+            L.rig.SetSkin(L.skins[L.skin]);
             _hHits = -1;                     // Anzeige neu bauen
         }
         public RangeTargets range;
@@ -109,7 +124,7 @@ namespace Ballon.Ego
         public string lightLabel;        // gezeigte Lichtszene (null im Parcours)
         int _lightCount;
         const string HelpA = "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
-                             "F Betrachten · 1/2 Ziehen/Wegstecken · K Skin · ";
+                             "F Betrachten · 1/2 Waffe (Q wechseln) · K Skin · ";
         const string HelpB = "Esc Maus frei · H Anzeige";
         string _help = HelpA + HelpB;
 
@@ -135,8 +150,14 @@ namespace Ballon.Ego
         }
 
         public static EgoPlayer Create(EgoSolver S, GameObject weaponModel, GameObject armsModel, IDictionary<string, Material> roles,
+                                       int vmLayer, Vector3 at, float yaw) =>
+            Create(new[] { S }, new[] { weaponModel }, armsModel, roles, vmLayer, at, yaw);
+
+        /// <summary>Spielfigur mit mehreren Waffen (0.18): je Waffe Solver, Modell (eigene Arme), Controller und Hüft-Fadenkreuz; Waffe 1 aktiv.</summary>
+        public static EgoPlayer Create(EgoSolver[] Ss, GameObject[] weaponModels, GameObject armsModel, IDictionary<string, Material> roles,
                                        int vmLayer, Vector3 at, float yaw)
         {
+            var S = Ss[0];
             var go = new GameObject("Player") { layer = PlayerLayer };   // Strahlen für Wandnähe und Treffer übergehen den eigenen Collider
             go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
             var p = go.AddComponent<EgoPlayer>();
@@ -148,7 +169,6 @@ namespace Ballon.Ego
             p._cc.stepOffset = 0.35f;
             p._cc.skinWidth = 0.03f;
             p._eye = p.move.eye;
-            p.hipReticle = new HipReticle(S.D.gameplay.hip);
             p.head = new GameObject("Head").transform;
             p.head.SetParent(go.transform, false);
             p.head.localPosition = new Vector3(0, p._eye, 0);
@@ -167,14 +187,38 @@ namespace Ballon.Ego
             wd.cameraStack.Add(p.viewCam);
             p.worldCam.clearFlags = CameraClearFlags.SolidColor;
             p.worldCam.backgroundColor = new Color(0.62f, 0.66f, 0.70f);
-            p.C = new EgoController(S);
-            p.rig = new EgoRig(S, vmSpace, weaponModel, armsModel, roles, vmLayer);
-            p.C.Marker += (a, m) => { p.lastMarker = $"{a} › {m}"; p.lastMarkerTime = Time.time; p.log.Add($"{Time.frameCount} {a} {m}"); };
-            p.C.Shot += p.OnShot;
+            var cs = new EgoController[Ss.Length];
+            p.loadouts = new Loadout[Ss.Length];
+            for (int k = 0; k < Ss.Length; k++)
+            {
+                var sp = new GameObject("Weapon_" + Ss[k].D.weapon.id).transform;      // eigener Raum je Waffe: nur die aktive ist sichtbar
+                sp.SetParent(vmSpace, false);
+                cs[k] = new EgoController(Ss[k]);
+                cs[k].Marker += (a, m) => { p.lastMarker = $"{a} › {m}"; p.lastMarkerTime = Time.time; p.log.Add($"{Time.frameCount} {a} {m}"); };
+                cs[k].Shot += p.OnShot;
+                p.loadouts[k] = new Loadout { rig = new EgoRig(Ss[k], sp, weaponModels[k], armsModel, roles, vmLayer), hip = new HipReticle(Ss[k].D.gameplay.hip) };
+                sp.gameObject.SetActive(k == 0);
+            }
+            p.arsenal = new EgoArsenal(cs);
+            p.arsenal.Switched += (from, to) =>                 // neue Waffe zieht: Modell umschalten (kein Speicher)
+            {
+                p.loadouts[from].rig.space.gameObject.SetActive(false);
+                p.loadouts[to].rig.space.gameObject.SetActive(true);
+            };
             return p;
         }
 
-        void OnDestroy() => hipReticle?.Release();
+        /// <summary>Waffe k (0-basiert) sofort aktiv, ohne Wechselablauf (Aufnahme, Vergleich): Modell umschalten, Anzeige neu.</summary>
+        public void UseWeapon(int k)
+        {
+            arsenal.Select(k);
+            _hHits = -1;
+        }
+
+        void OnDestroy()
+        {
+            if (loadouts != null) foreach (var L in loadouts) L.hip?.Release();
+        }
 
         static Camera NewCam(string name, Transform parent, int mask, float near, float far)
         {
@@ -230,7 +274,7 @@ namespace Ballon.Ego
             };
             hipReticle?.Decay(dt, it.speed01);            // vor den Schüssen dieses Bilds, wie reticles.simulate
             C.aspect = worldCam.aspect > 0 ? worldCam.aspect : 16f / 9f;   // Grundbahn in Anteilen der Bildhöhe
-            var o = C.Tick(dt, it);
+            var o = arsenal.Tick(dt, it, r.select);            // Tasten 1/2: Waffe wählen (Wechsel 6.1 A über holster/draw)
             hipReticle?.See(C);
             rig.Apply(o);
             // Welt: Grundbahn und Kamera-Ruck; Viewmodel: nur der Ruck in der Hüfte (im Zielen steht das Visier, 5.1 A)
@@ -395,7 +439,7 @@ namespace Ballon.Ego
         // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild)
         string _ammoText = "", _stateText = "", _hitText = "";
         public string HudHitText => _hitText;
-        int _hAmmo = -1, _hFrame = -1, _hHits = -1;
+        int _hAmmo = -1, _hFrame = -1, _hHits = -1, _hWeapon = -1;
         string _hAction, _hMarker;
 
         /// <summary>Anzeigetexte aktualisieren; baut nur bei geänderten Werten neu (öffentlich für den GC-Test).</summary>
@@ -404,10 +448,11 @@ namespace Ballon.Ego
             if (C.ammo != _hAmmo) { _hAmmo = C.ammo; _ammoText = $"{C.ammo} / {C.magSize}"; }
             string mk = Time.time - lastMarkerTime < 1.2f ? lastMarker : "";
             int fr = (int)C.Frame;
-            if (fr != _hFrame || !ReferenceEquals(C.ActionName, _hAction) || !ReferenceEquals(mk, _hMarker))
+            if (fr != _hFrame || !ReferenceEquals(C.ActionName, _hAction) || !ReferenceEquals(mk, _hMarker) || arsenal.Active != _hWeapon)
             {
-                _hFrame = fr; _hAction = C.ActionName; _hMarker = mk;
-                _stateText = $"BASIC-01 v2.1 · {C.ActionName} {fr}  ·  {mk}";
+                _hFrame = fr; _hAction = C.ActionName; _hMarker = mk; _hWeapon = arsenal.Active;
+                _stateText = $"{arsenal.Active + 1} {C.S.D.weapon.name} · {C.ActionName} {fr}  ·  {mk}";
+                _hHits = -1;                                     // Skin-Name der aktiven Waffe
             }
             if (hits != _hHits)
             {

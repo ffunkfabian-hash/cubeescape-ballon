@@ -47,6 +47,26 @@ namespace Ballon.Ego
             public Action<Track> onEnd;
             public bool ended;
             public readonly EgoState st = new EgoState();
+
+            /// <summary>Für die Wiederverwendung (Spurpool, 0.18: kein Speicher je neuer Spur, auch nicht beim Wechsel).</summary>
+            public void Reset()
+            {
+                A = null; frame = end = 0; dir = 1; loopA = loopB = -1; busy = scripted = ended = false; stance = null; onEnd = null;
+                st.hasRel = st.hasSec = st.hasRec = false;
+                if (st.shotSet != null) Array.Clear(st.shotSet, 0, st.shotSet.Length);
+            }
+        }
+        // drei Spuren im Wechsel: die laufende, die vorige (Rückruf am Ende) und die nächste; Rückrufe einmal angelegt
+        readonly Track[] _pool = { new Track(), new Track(), new Track() };
+        int _poolNext;
+        readonly Action<Track> _onReady, _onHolster, _onHolsterSwap, _onSwitchedOut;
+
+        Track NextTrack()
+        {
+            var t = _pool[_poolNext];
+            _poolNext = (_poolNext + 1) % _pool.Length;
+            t.Reset();
+            return t;
         }
 
         public readonly EgoSolver S;
@@ -85,6 +105,7 @@ namespace Ballon.Ego
         float _d0 = 1, _leaveT;
         bool _aimPrev, _leaving;
         bool _swapPending;                 // Wechsel: nach dem Wegstecken leere Sicht, dann Ziehen
+        bool _switchedOut;                 // Wechsel auf eine andere Waffe (EgoArsenal): weggesteckt, die andere Waffe zieht
         float _emptyT, _drawEnters = -1;
         bool _hasSec;
         Vector3 _secP, _secV, _secAv;
@@ -131,6 +152,21 @@ namespace Ballon.Ego
             _shAge = new float[cap];
             _shId = new int[cap];
             _shOn = new bool[cap];
+            _onReady = _ => Ready();
+            _onHolster = _ => holstered = true;
+            _onHolsterSwap = _ =>
+            {
+                holstered = true;
+                _swapPending = true;                                    // Wechsel (6.1 A): Wegstecken, leere Sicht, Ziehen
+                _emptyT = S.D.motion.@switch.empty_s;
+                Marker?.Invoke("switch", "Empty");
+            };
+            _onSwitchedOut = _ =>
+            {
+                holstered = true;
+                _switchedOut = true;
+                Marker?.Invoke("switch", "Empty");
+            };
             Hold("holster", Stance.Hip);
         }
 
@@ -152,6 +188,40 @@ namespace Ballon.Ego
             }
             return hidden;
         }
+
+        /// <summary>Wechsel auf eine andere Waffe (Tasten 1/2, EgoArsenal, 0.18): Wegstecken wie beim Wechsel mit Q (holster, beim Nachladen
+        /// reload_to_switch), danach bleibt diese Waffe weggesteckt; SwitchedOut meldet das Ende (Marker switch › Empty). Ist sie schon
+        /// weggesteckt, gilt sie sofort als draußen.</summary>
+        public void SwitchOut()
+        {
+            _swapPending = false;
+            if (holstered && _t.ended) { _switchedOut = true; return; }
+            bool reloading = (_t.A.name == "reload_tactical" || _t.A.name == "reload_empty") && !_t.ended;
+            if (_t.A.name == "holster" || _t.A.name == "reload_to_switch")    // läuft schon: nur das Ende umleiten
+            {
+                _t.onEnd = _onSwitchedOut;
+                return;
+            }
+            Play(reloading ? "reload_to_switch" : "holster", busy: true, fade: reloading ? 3 : -1, onEnd: _onSwitchedOut);
+            holstered = false;
+        }
+
+        /// <summary>Diese Waffe ist nach SwitchOut weggesteckt (die leere Sicht läuft beim Arsenal).</summary>
+        public bool SwitchedOut => _switchedOut;
+
+        /// <summary>Zweite Hälfte des Wechsels auf diese Waffe: im nächsten Tick ziehen wie beim Wechsel mit Q (draw ab dem ersten sichtbaren
+        /// Bild, bei gehaltenem Zielen draw_aim); die leere Sicht hat das Arsenal schon abgewartet.</summary>
+        public void SwitchIn()
+        {
+            _switchedOut = false;
+            holstered = true;
+            if (!_t.ended || _t.A.name != "holster") Hold("holster", Stance.Hip);
+            _swapPending = true;
+            _emptyT = 0;
+        }
+
+        /// <summary>DrawEnters einmal vorab rechnen (sonst beim ersten Wechsel: Speicher im laufenden Bild).</summary>
+        public void Prepare() { if (_drawEnters < 0) _drawEnters = DrawEnters(S); }
 
         public string ActionName => _t.A.name;
         public float Frame => _t.frame;
@@ -178,8 +248,10 @@ namespace Ballon.Ego
                 _fadeLen = fade < 0 ? tune.fadeFrames : fade;
                 _fade = _fadeLen > 0 ? 0 : 1;
             }
-            _t = new Track { A = A, frame = from, end = to < 0 ? A.frames : to, dir = dir, busy = busy, stance = stance, onEnd = onEnd,
-                             scripted = scripted };
+            var t = NextTrack();
+            t.A = A; t.frame = from; t.end = to < 0 ? A.frames : to; t.dir = dir; t.busy = busy; t.stance = stance; t.onEnd = onEnd;
+            t.scripted = scripted;
+            _t = t;
             if (dir > 0) Emit(from - 0.001f, from);
             return _t;
         }
@@ -187,7 +259,9 @@ namespace Ballon.Ego
         void Hold(string name, Stance st, float at = -1)
         {
             var A = S.D.Action(name);
-            _t = new Track { A = A, frame = at < 0 ? A.frames : at, end = at < 0 ? A.frames : at, ended = true, stance = st };
+            var t = NextTrack();
+            t.A = A; t.frame = t.end = at < 0 ? A.frames : at; t.ended = true; t.stance = st;
+            _t = t;
         }
 
         /// <summary>Sofort bereit an der Hüfte (Aufnahme, Tests).</summary>
@@ -268,7 +342,7 @@ namespace Ballon.Ego
                     if (from == Stance.Sprint) Play("sprint_to_aim", stance: Stance.Ads);
                     else if (_t.A.name == "aim_out" && !_t.ended)          // umkehren an gleicher Stelle
                         Play("aim_in", from: (1 - _t.frame / _t.A.frames) * K("aim_in", 1), stance: Stance.Ads, fade: 2);
-                    else Play("aim_in", stance: Stance.Ads);
+                    else Play("aim_in", stance: Stance.Ads, fade: AimFade("aim_in"));
                     break;
                 case Stance.Sprint:                                         // Beginn, Schleife zwischen Schlüssel 1 und 2, Ende
                     var s = Play("sprint", stance: Stance.Sprint);
@@ -285,7 +359,7 @@ namespace Ballon.Ego
                         if (_t.A.name == "aim_in" && !_t.ended)
                             r = Play("aim_out", from: (1 - Mathf.Clamp01(_t.frame / K("aim_in", 1))) * S.D.Action("aim_out").frames,
                                      stance: Stance.Hip, fade: 2);
-                        else r = Play("aim_out", stance: Stance.Hip);
+                        else r = Play("aim_out", stance: Stance.Hip, fade: AimFade("aim_out"));
                     }
                     else if (from == Stance.Sprint && _t.A.name == "sprint" && _t.frame >= K("sprint", 1))
                     {
@@ -300,11 +374,15 @@ namespace Ballon.Ego
                     else if (from == Stance.Lowered && _t.A.name == "lowered")
                         r = Play("lowered", Mathf.Max(K("lowered", 2), _t.frame), stance: Stance.Hip);
                     else r = Play("idle_hip", 0, 0, stance: Stance.Hip);
-                    r.onEnd = _ => Ready();
+                    r.onEnd = _onReady;
                     break;
             }
             _stance = target;
         }
+
+        /// <summary>Überblendung beim Zielen ein/aus höchstens die halbe Aktionsdauer (0.18): der kurze MP-Anflug (4 Bilder, 4d) würde sonst
+        /// fast ganz überblendet und langsamer (gemessen 14 statt ≤ 12 Bilder bei 60/s); Automatik (10/8 Bilder) bleibt bei fadeFrames.</summary>
+        float AimFade(string action) => Mathf.Min(tune.fadeFrames, 0.5f * S.D.Action(action).frames);
 
         /// <summary>Bild des Waffenschlüssels i einer Aktion (Haltung erreicht/gehalten; nach TIME_SCALE gestreckt).</summary>
         float K(string action, int i) => S.D.Action(action).weapon[i].f;
@@ -321,7 +399,7 @@ namespace Ballon.Ego
 
         void Cancel(EgoIntent i)
         {
-            Play("idle_hip", 0, 0, fade: tune.cancelFadeFrames, onEnd: _ => Ready());
+            Play("idle_hip", 0, 0, fade: tune.cancelFadeFrames, onEnd: _onReady);
         }
 
         // -------------------------------------------------------------- Bild
@@ -345,20 +423,12 @@ namespace Ballon.Ego
                         _hasSec = false;                                // Feder-Nachlauf ab der übersprungenen Stelle neu
                     }
                     _swapPending = false;
-                    Play(i.aim ? "draw_aim" : "draw", from: swap ? (_drawEnters >= 0 ? _drawEnters : _drawEnters = DrawEnters(S)) : 0, busy: true, fade: 0, onEnd: _ => Ready());
+                    Play(i.aim ? "draw_aim" : "draw", from: swap ? (_drawEnters >= 0 ? _drawEnters : _drawEnters = DrawEnters(S)) : 0, busy: true, fade: 0, onEnd: _onReady);
                 }
             }
             else if ((i.holster || i.swap) && _t.A.name != "holster" && _t.A.name != "reload_to_switch")
             {
-                bool swap = i.swap;
-                Play(reloading ? "reload_to_switch" : "holster", busy: true, fade: reloading ? 3 : -1, onEnd: _ =>
-                {
-                    holstered = true;
-                    if (!swap) return;
-                    _swapPending = true;                                // Wechsel (6.1 A): Wegstecken, leere Sicht, Ziehen
-                    _emptyT = S.D.motion.@switch.empty_s;
-                    Marker?.Invoke("switch", "Empty");
-                });
+                Play(reloading ? "reload_to_switch" : "holster", busy: true, fade: reloading ? 3 : -1, onEnd: i.swap ? _onHolsterSwap : _onHolster);
                 holstered = false;
             }
             else if (inspecting && (i.fire || i.aim || i.reload || (i.sprint && i.move.y > 0.3f)))
@@ -373,11 +443,11 @@ namespace Ballon.Ego
                 else if (i.fire && !_firePrev && ammo == 0 && !reloading)     // Abzug bei leerem Magazin: selbst nachladen
                     StartReload(i);
                 else if (i.inspect && _stance != Stance.Sprint)
-                    Play("inspect", busy: true, fade: 2, onEnd: _ => Ready());
+                    Play("inspect", busy: true, fade: 2, onEnd: _onReady);
                 else if (_stance == Stance.Sprint && i.fire)
                 {
                     _fireArmed = false;
-                    Play("sprint_to_fire", stance: Stance.Hip, onEnd: _ => Ready());
+                    Play("sprint_to_fire", stance: Stance.Hip, onEnd: _onReady);
                     _stance = Stance.Hip;
                 }
                 else if (_t.stance.HasValue || _t.ended)
@@ -397,7 +467,7 @@ namespace Ballon.Ego
         void StartReload(EgoIntent i)
         {
             _stance = Stance.Hip;
-            Play(ammo == 0 ? "reload_empty" : "reload_tactical", busy: true, fade: 3, onEnd: _ => Ready());
+            Play(ammo == 0 ? "reload_empty" : "reload_tactical", busy: true, fade: 3, onEnd: _onReady);
         }
 
         bool CanFire => !holstered && !Busy && ammo > 0 && (_t.A.name != "sprint_to_fire" || _fireArmed) && _stance != Stance.Sprint

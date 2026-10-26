@@ -15,9 +15,10 @@ namespace Ballon.Ego.Tests
     public class EgoPlayTests
     {
         const float Dt = 1f / 60f;
-        static EgoFile _d;
+        static EgoFile _d, _mp;
 
         static EgoFile D => _d;
+        static EgoFile MP => _mp;                           // zweite Waffe (0.18): Maschinenpistole BASIC-06
 
         static EgoIntent Idle => new EgoIntent { grounded = true };
 
@@ -43,7 +44,9 @@ namespace Ballon.Ego.Tests
                 SceneManager.LoadScene("Firstfeel");
                 yield return null;
                 yield return null;
-                _d = Object.FindAnyObjectByType<Bootstrap>().D;
+                var b = Object.FindAnyObjectByType<Bootstrap>();
+                _d = b.Solvers[0].D;
+                _mp = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "submachine_gun");
             }
         }
 
@@ -353,15 +356,18 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Q_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
             p.input = Bootstrap.SwitchScript();
             p.deltaOverride = () => 1f / 30f;
             var marks = new List<string>();
-            System.Action<string, string> on = (a, m) => marks.Add($"{a}/{m}");
-            p.C.Marker += on;
+            var used = new List<int>();
+            System.Action<string, string> on = (a, m) => { marks.Add($"{a}/{m}"); if (m == "Ready") used.Add(p.arsenal.Active); };
+            foreach (var c in p.arsenal.C) c.Marker += on;       // 0.18: Q wechselt zur anderen Waffe (Automatik → MP → Automatik)
             for (int k = 0; k < 150 && (marks.Count(m => m == "draw/Ready") < 2 || p.C.Busy); k++) yield return null;   // bis das Ziehen endet
-            p.C.Marker -= on;
+            foreach (var c in p.arsenal.C) c.Marker -= on;
+            CollectionAssert.AreEqual(new[] { 1, 0 }, used, "Q: erst die MP, dann zurück zur Automatik");
             bool holstered = p.C.Holstered;
             p.input = new ScriptedInput().Add(0, 1000);
             yield return null;
@@ -372,6 +378,183 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(2, marks.Count(m => m == "switch/Draw"), "zweimal gezogen");
             Assert.AreEqual(2, marks.Count(m => m == "draw/Ready"), "zweimal in der Hüfte");
             Assert.IsFalse(holstered, "nach dem Ziehen bereit");
+        }
+
+        // ---------------------------------------------------------------- Ego-Übertrag je Klasse und Waffenwechsel 1/2 (0.18)
+        /// <summary>Entscheidungsliste 4d live bei 60/s: Anflug erste Bewegung → Ruhe am Bild (Absehen, Grundhaltung nach dem Feder-Nachlauf,
+        /// Bildweg je Bild unter 0,09 % (≈ 1,7 px bei 1080p); so gemessen braucht die Automatik mit aim_in 0,33 s die Destiny-Automatik-Zeit 20 Bilder).
+        /// MP ≤ 12 Bilder (Destiny-MP 8–12), Automatik unverändert ≈ 20. Ruhe wie Motiongen am Bild: fester Bildweg je Bild (Still, % von B/H),
+        /// nicht relativ zum Weg – der kürzere MP-Weg hätte sonst eine strengere Schwelle.</summary>
+        [Test]
+        public void Anflug_je_Klasse_live_bei_60()
+        {
+            const float Still = 0.09f;
+            int Frames(EgoFile d)
+            {
+                var c = new EgoController(new EgoSolver(d));
+                c.ReadyNow();
+                Run(c, Idle, 1f);
+                var E = new EgoScreen(c.S);
+                var ret = BMath.V(d.Anchor("Socket_Reticle").pos);
+                var pos = new List<Vector3>();
+                for (int k = 0; k < 90; k++)
+                {
+                    c.Tick(Dt, new EgoIntent { grounded = true, aim = true });
+                    pos.Add(E.ToScreen(c.BaseWeapon.MultiplyPoint3x4(ret)));
+                }
+                var p0 = E.ToScreen(new EgoSolver(d).PoseMatrix("hip").MultiplyPoint3x4(ret));
+                float total = Vector3.Distance(new Vector2(p0.x, p0.y), new Vector2(pos.Last().x, pos.Last().y));
+                var step = new List<float> { Vector2.Distance(p0, pos[0]) };
+                for (int k = 1; k < pos.Count; k++) step.Add(Vector2.Distance(pos[k - 1], pos[k]));
+                int Span(float thr, out int first)
+                {
+                    int f0 = first = step.FindIndex(v => v > thr);
+                    return Enumerable.Range(f0, step.Count - f0).First(k => step.Skip(k).All(v => v < thr)) - f0;
+                }
+                int n = Span(Still, out int fa), nr = Span(0.003f * total, out _);
+                TestContext.WriteLine($"{d.weapon.id} ({d.profile.type}): aim_in {d.Action("aim_in").frames} Bilder bei 30/s; am Bild erste Bewegung " +
+                                      $"Bild {fa}, Ruhe nach {n} Bildern bei 60/s ({n / 60f:0.000} s; Schwelle {Still} % je Bild), Weg {total:0.0} %; " +
+                                      $"mit Schwelle 0,3 % des Wegs: {nr} Bilder");
+                return n;
+            }
+            int mp = Frames(MP), ar = Frames(D);
+            Assert.LessOrEqual(mp, 12, "MP-Anflug ≤ 12 Bilder bei 60/s (Destiny-MP 8–12)");
+            Assert.GreaterOrEqual(mp, 8, "MP-Anflug ≥ 8 Bilder (Destiny-MP 8–12)");
+            Assert.That(ar, Is.InRange(18, 22), "Automatik wie bisher ≈ 20 Bilder (Destiny-Automatik 20)");
+            Assert.AreEqual(10f / 30f, D.Action("aim_in").frames / 30f, 1e-6f, "Automatik aim_in 0,33 s");
+        }
+
+        static EgoArsenal Arsenal(List<(int k, string a, string m, int w)> marks, System.Func<int> k)
+        {
+            var A = new EgoArsenal(new EgoController(new EgoSolver(D)), new EgoController(new EgoSolver(MP)));
+            for (int w = 0; w < 2; w++)
+            {
+                int ww = w;
+                if (marks != null) A.C[w].Marker += (a, m) => marks.Add((k(), a, m, ww));
+            }
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            return A;
+        }
+
+        /// <summary>Tasten 1/2 (6.1 A über holster/draw): Automatik → MP → Automatik mit leerer Sicht wie beim Wechsel mit Q (Wegstecken bis
+        /// Holstered ≈ 0,27 s, leer 0,1–0,2 s, das erste neue Bild gehört zum Ziehen der anderen Waffe, sichtbar = Kante von Waffe oder Armen
+        /// im Bild); jede Waffe behält ihre Munition, auch beim Abbruch des Nachladens (vor MagIn keine Munition).</summary>
+        [Test]
+        public void Wechsel_1_2_mit_leerer_Sicht_ohne_Munitionsverlust()
+        {
+            int k = 0;
+            var marks = new List<(int k, string a, string m, int w)>();
+            var A = Arsenal(marks, () => k);
+            var scr = new[] { new EgoScreen(A.C[0].S), new EgoScreen(A.C[1].S) };
+            var pts = new List<Vector2>();
+            for (int t = 0; t < 20; t++) A.Tick(Dt, new EgoIntent { grounded = true, fire = true });   // Automatik schießt
+            int ar = A.C[0].ammo;
+            Assert.Less(ar, 30, "Automatik hat geschossen");
+            Assert.AreEqual(30, A.C[1].ammo, "MP voll");
+            foreach (int target in new[] { 2, 1 })
+            {
+                marks.Clear();
+                var vis = new List<bool>();
+                var who = new List<int>();
+                var acts = new List<string>();
+                int from = A.Active;
+                for (k = 0; k < 120; k++)
+                {
+                    A.Tick(Dt, Idle, k == 0 ? target : 0);
+                    scr[A.Active].Silhouette(A.Current.output, pts);
+                    vis.Add(pts.Count > 0);
+                    who.Add(A.Active);
+                    acts.Add(A.Current.ActionName);
+                }
+                int hol = marks.FindIndex(x => x.a == "holster" && x.m == "Holstered" && x.w == from);
+                int draw = marks.FindIndex(x => x.a == "switch" && x.m == "Draw" && x.w == target - 1);
+                int ready = marks.FindIndex(x => x.a == "draw" && x.m == "Ready" && x.w == target - 1);
+                Assert.IsTrue(hol >= 0 && draw >= 0 && ready >= 0, string.Join(" ", marks.Select(x => $"{x.k}:{x.w}:{x.a}/{x.m}")));
+                int gone = vis.IndexOf(false), back = vis.IndexOf(true, Mathf.Max(0, gone));
+                float T(int f) => (f + 1) * Dt;
+                float tHol = T(marks[hol].k), tEmpty = (back - gone) * Dt;
+                TestContext.WriteLine($"Taste {target}: Wegstecken bis {T(gone - 1):0.000} s sichtbar, Holstered {tHol:0.000} s, leer {tEmpty:0.000} s, " +
+                                      $"erstes neues Bild {T(back):0.000} s ({acts[back]} von Waffe {who[back] + 1}), Hüfte {T(marks[ready].k):0.000} s");
+                Assert.That(tHol, Is.InRange(0.2f, 0.3f), "Wegstecken ≈ 0,27 s");
+                Assert.That(tEmpty, Is.InRange(0.1f - 1e-4f, 0.2f + 1e-4f), "leere Sicht 0,1–0,2 s");
+                Assert.AreEqual(target - 1, who[back], "das erste neue Bild zeigt die andere Waffe");
+                Assert.AreEqual("draw", acts[back], "… beim Ziehen");
+                Assert.AreEqual(target - 1, A.Active);
+                Assert.IsFalse(A.Switching);
+                Assert.IsTrue(A.C[from].Holstered, "die alte Waffe bleibt weggesteckt");
+                Assert.AreEqual(ar, A.C[0].ammo, "Automatik behält ihre Munition");
+                if (target == 2)
+                {
+                    for (int t = 0; t < 12; t++) A.Tick(Dt, new EgoIntent { grounded = true, fire = true });   // MP schießt
+                    Assert.Less(A.C[1].ammo, 30);
+                }
+            }
+            int mp = A.C[1].ammo;
+            Assert.AreEqual(ar, A.C[0].ammo);
+            // Wechsel mitten im Nachladen (vor MagIn): reload_to_switch, keine Munition (6c), die andere Waffe behält ihre
+            A.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            Assert.AreEqual("reload_tactical", A.Current.ActionName);
+            for (int t = 0; t < 10; t++) A.Tick(Dt, Idle);
+            A.Tick(Dt, Idle, 2);
+            Assert.AreEqual("reload_to_switch", A.Current.ActionName, "Nachladen bricht beim Wechsel ab");
+            for (int t = 0; t < 120; t++) A.Tick(Dt, Idle);
+            Assert.AreEqual(1, A.Active);
+            Assert.AreEqual(ar, A.C[0].ammo, "Abbruch vor MagIn: keine Munition");
+            Assert.AreEqual(mp, A.C[1].ammo, "MP unverändert");
+            // Taste der aktiven Waffe: nichts; Taste während eines Wechsels: übergangen
+            A.Tick(Dt, Idle, 2);
+            Assert.IsFalse(A.Switching);
+            Assert.AreEqual("idle_hip", A.Current.ActionName);
+        }
+
+        /// <summary>Kein Speicher je Bild beim Wechsel (Tasten 1/2): Wegstecken, leere Sicht, Ziehen und zurück, nach einem ersten Wechsel
+        /// (Übersetzung, Zwischenspeicher); Spuren und Rückrufe des Controllers werden wiederverwendet (0.18).</summary>
+        [Test]
+        public void Kein_GC_Muell_beim_Wechsel()
+        {
+            var A = Arsenal(null, () => 0);
+            void Round()
+            {
+                for (int k = 0; k < 80; k++) A.Tick(Dt, Idle, k == 0 ? 2 : 0);
+                for (int k = 0; k < 80; k++) A.Tick(Dt, Idle, k == 0 ? 1 : 0);
+            }
+            Round();
+            Round();
+            Assert.AreEqual(0, A.Active);
+            NUnit.Framework.Assert.That(() => Round(), Is.Not.AllocatingGCMemory(), "Wechsel 1 → 2 → 1");
+            Assert.AreEqual(0, A.Active);
+            Assert.AreEqual("idle_hip", A.Current.ActionName);
+        }
+
+        /// <summary>Tasten 1/2 über die ganze Eingabekette (ScriptedInput „weapon2“/„weapon1“ → EgoPlayer.Step → EgoArsenal): nur das Modell der
+        /// aktiven Waffe ist sichtbar, der Weltzoom und das Hüft-Fadenkreuz folgen der Klasse (MP 1,45, Ring mit Marken).</summary>
+        [UnityTest]
+        public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            Assert.AreEqual(2, p.loadouts.Length, "zwei Waffen in der Szene");
+            p.UseWeapon(0);
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 0.2f).Add(0.2f, 0.25f, press: "weapon2").Add(0.25f, 1.6f).Add(1.6f, 1.65f, hold: "aim")
+                                         .Add(1.65f, 2.4f, hold: "aim");
+            p.deltaOverride = () => 1f / 30f;
+            for (int k = 0; k < 72; k++) yield return null;
+            Assert.AreEqual(1, p.arsenal.Active, "Taste 2: MP");
+            Assert.IsTrue(p.loadouts[1].rig.space.gameObject.activeInHierarchy, "MP sichtbar");
+            Assert.IsFalse(p.loadouts[0].rig.space.gameObject.activeInHierarchy, "Automatik versteckt");
+            Assert.AreEqual(1.45f, p.C.worldZoom, 1e-5f, "Weltzoom der MP");
+            Assert.AreEqual("circle_cross", p.hipReticle.Kind, "Hüft-Fadenkreuz der MP");
+            p.input = new ScriptedInput().Add(0, 0.05f, press: "weapon1").Add(0.05f, 1.5f);
+            for (int k = 0; k < 45; k++) yield return null;
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            Assert.AreEqual(0, p.arsenal.Active, "Taste 1: Automatik");
+            Assert.IsTrue(p.loadouts[0].rig.space.gameObject.activeInHierarchy);
+            Assert.IsFalse(p.loadouts[1].rig.space.gameObject.activeInHierarchy);
+            Assert.IsFalse(p.C.Holstered, "gezogen");
         }
 
         /// <summary>Entscheidungsliste 1d (Destiny-Holo, Motiongen glidepath): der Weltzoom beginnt mit oder kurz nach dem Modell (0–2

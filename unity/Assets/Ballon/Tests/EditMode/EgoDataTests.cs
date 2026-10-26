@@ -13,12 +13,15 @@ namespace Ballon.Ego.Tests
     public class EgoDataTests
     {
         const string Gen = "Assets/Ballon/Generated";
-        static EgoFile _d;
-        static EgoFile D => _d ?? (_d = EgoFile.Parse(File.ReadAllText($"{Gen}/ego.json")));
+        static EgoFile[] _all;
+        /// <summary>Alle spielbaren Waffen (0.18: ego.json › weapons, Taste 1, 2).</summary>
+        static EgoFile[] All => _all ?? (_all = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json")));
+        static EgoFile D => All[0];                     // Pilotwaffe BASIC-01 (Automatik)
+        static EgoFile MP => All.First(d => d.gameplay.weapon_type == "submachine_gun");
 
         [Serializable] class RefObj { public string name; public float[] m; }
         [Serializable] class RefSample { public string label, action; public int frame; public RefObj[] objects; }
-        [Serializable] class RefFile { public string format; public float tolerance_m, tolerance_deg; public RefSample[] samples; }
+        [Serializable] class RefFile { public string format; public float tolerance_m, tolerance_deg, tolerance_arm_deg; public RefSample[] samples; }
 
         static Matrix4x4 M(float[] a)
         {
@@ -43,13 +46,23 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Format_und_Umfang()
         {
+            Assert.AreEqual(2, All.Length, "zwei spielbare Waffen (Automatik, MP)");
+            CollectionAssert.AreEqual(new[] { "BASIC-01-v2.1", "BASIC-06-v2.1" }, All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2");
+            Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
+            foreach (var d in All) Umfang(d);
+        }
+
+        static void Umfang(EgoFile D)
+        {
             Assert.AreEqual(EgoFile.Format, D.format);
             Assert.AreEqual(30, D.fps);
             Assert.AreEqual(75f, D.camera.h_fov_deg);
             Assert.AreEqual(10, D.poses.Length, "Haltungen");
             Assert.AreEqual(4, D.grips.Length, "Griffe");
             Assert.AreEqual(19, D.actions.Length, "Aktionen");
-            Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
+            Assert.GreaterOrEqual(D.weapon.parts.Length, 40, "Waffenteile");
+            foreach (var n in new[] { D.weapon.live.trigger, D.weapon.live.bolt, D.weapon.live.port })
+                Assert.IsTrue(D.HasPart(n), $"{D.weapon.id}: Live-Teil {n}");
             var meshes = new HashSet<string>(D.mesh_bounds.objects.Select(o => o.name));
             Assert.IsTrue(D.weapon.parts.All(p => meshes.Contains(p.id)), "jedes Teil hat ein Netz im Export");
             Assert.AreEqual(3, D.arm.rig_version);
@@ -90,6 +103,125 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/6\"}"));          // 0.15: ohne Mündungsfeuer und Hülsen
             StringAssert.Contains("neu exportieren", ex.Message);
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/9\"}"));          // unbekannt (neuer als der Leser)
+            StringAssert.Contains("neu exportieren", ex.Message);
+        }
+
+        /// <summary>0.18 Formatwechsel ballon-ego/7 → /8: der Leser erkennt die alte Datei (Stand 0.17, eine Waffe; Kopie unter
+        /// Tests/EditMode/Data) und liefert für die Pilotwaffe dieselben Daten wie die neue Datei – Haltungen, Griffe, Aktionen, Spielwerte,
+        /// Teile, Anker, Hülsen, Bewegung, Atlanten; die Live-Teile, die bis 0.17 fest im Code standen, setzt er wie damals.</summary>
+        [Test]
+        public void Altes_Format_7_wird_gelesen()
+        {
+            var old = EgoFile.ParseAll(File.ReadAllText("Assets/Ballon/Tests/EditMode/Data/ego_v7.json"));
+            Assert.AreEqual(1, old.Length, "/7: eine Waffe");
+            var o = old[0];
+            Assert.AreEqual(EgoFile.FormatLegacy, o.format);
+            Assert.AreEqual(EgoFile.Format, D.format);
+            Assert.AreEqual("bolt_carrier", o.weapon.live.bolt);
+            Assert.AreEqual("weapon", o.atlas);
+            string J(object x) => JsonUtility.ToJson(x);
+            foreach (var (name, a, b) in new (string, object, object)[] {
+                ("gameplay", o.gameplay, D.gameplay), ("motion", o.motion, D.motion), ("camera", o.camera, D.camera), ("arm", o.arm, D.arm),
+                ("textures.weapon", o.textures.weapon, D.textures.weapon), ("textures.arms", o.textures.arms, D.textures.arms) })
+                Assert.AreEqual(J(a), J(b), name);
+            Assert.AreEqual(J(o.weapon), J(D.weapon), "weapon (Teile, Anker, Hülsen, Live-Teile)");
+            CollectionAssert.AreEqual(o.poses.Select(J), D.poses.Select(J), "Haltungen");
+            CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
+            CollectionAssert.AreEqual(o.actions.Select(J), D.actions.Select(J), "Aktionen");
+            CollectionAssert.AreEqual(o.textures.skins.Select(J), D.textures.skins.Select(J), "Skins");
+            CollectionAssert.AreEquivalent(o.mesh_bounds.objects.Select(J), D.mesh_bounds.objects.Select(J), "Netzgrenzen");
+            var S7 = new EgoSolver(o);
+            var S8 = new EgoSolver(D);
+            var A = D.Action("fire_hip");
+            var a7 = S7.Evaluate(o.Action("fire_hip"), 12, new EgoState());
+            var a8 = S8.Evaluate(A, 12, new EgoState());
+            Assert.AreEqual(a7.weapon, a8.weapon, "gleiche Auswertung");
+        }
+
+        // ---------------------------------------------------------------- Ego-Übertrag je Klasse 0.18 (Entscheidungsliste Schritt 6)
+        /// <summary>Werte je Klasse aus den Daten (ego.CLASSES), keine Sonderlogik nach Waffen-ID: die MP fliegt in 3 Bildern bei 30/s ins
+        /// Zielen (4d: Destiny-MP 8–12 Bilder bei 60/s bis Ruhe), aim_out im selben Verhältnis; die Automatik bleibt bei 0,33 s (Destiny 20
+        /// Bilder). Spielwerte und Weltzoom kommen aus der Klasse, das Hüft-Fadenkreuz der MP aus dem Katalog (Ring mit vier Marken, 6,1 % H).</summary>
+        [Test]
+        public void Werte_je_Klasse()
+        {
+            Assert.AreEqual(10, D.Action("aim_in").frames, "Automatik aim_in 10 Bilder bei 30/s");
+            Assert.AreEqual(10f / 30f, D.Action("aim_in").frames / (float)D.fps, 1e-6f, "Automatik 0,33 s wie bisher");
+            Assert.AreEqual(8, D.Action("aim_out").frames, "Automatik aim_out wie bisher");
+            Assert.AreEqual("auto_rifle", D.profile.type);
+            Assert.AreEqual("submachine_gun", MP.profile.type);
+            var ai = MP.Action("aim_in");
+            Assert.AreEqual(3, ai.frames, "MP aim_in 3 Bilder bei 30/s");
+            Assert.LessOrEqual(ai.weapon.Last(k => k.pose == "ads").f, 3f);
+            Assert.AreEqual(2.7f, ai.weapon.First(k => k.pose == "ads").f, 1e-4f, "Schlüssel mitgestreckt");
+            Assert.AreEqual(3, ai.events.Single(e => e.name == "Aimed").f);
+            Assert.AreEqual(2.4f, MP.Action("aim_out").weapon.Last().f, 1e-4f, "aim_out 8 → 2,4 Bilder");
+            foreach (var A in MP.actions)                         // sonst alles wie die Automatik
+                if (A.name != "aim_in" && A.name != "aim_out")
+                    Assert.AreEqual(JsonUtility.ToJson(D.Action(A.name)), JsonUtility.ToJson(A), A.name);
+            Assert.AreEqual(1.45f, MP.gameplay.world_zoom, 1e-6f, "Weltzoom MP (1.2 A)");
+            Assert.AreEqual(1.9f, D.gameplay.world_zoom, 1e-6f, "Weltzoom Automatik");
+            Assert.AreEqual(720, MP.gameplay.rpm);
+            Assert.AreEqual(30, MP.gameplay.magazine);
+            Assert.AreEqual("circle_cross", MP.gameplay.hip.kind, "Hüftform MP (4.2 A: bleibt circle_cross)");
+            Assert.AreEqual(0.061f, MP.gameplay.hip.share_h, 1e-6f, "5,9–6,3 % H (Glidepath)");
+            Assert.AreEqual("", MP.gameplay.hip.sprint.kind, "im Sprint aus");
+            Assert.IsTrue(MP.weapon.eject.enabled, "MP wirft Hülsen aus (Feld EJECT)");
+            Assert.AreEqual("pistol", MP.weapon.eject.@case);
+            Assert.AreEqual("bolt", MP.weapon.live.bolt);
+            foreach (var n in new[] { "hip", "sprint", "crouch", "air", "lowered", "ads", "reload" })
+                StringAssert.DoesNotContain("submachine", D.Pose(n).src, "Automatik unverändert");
+            Assert.AreNotEqual(JsonUtility.ToJson(D.Pose("hip")), JsonUtility.ToJson(MP.Pose("hip")), "MP hat eine eigene Hüfte");
+        }
+
+        /// <summary>Entscheidungsliste 2b / 2.1 A: Hüftlage der MP im Band der Kurzwaffen (x 53–71 / y 59–84 %, Destiny-MP Mündung ≈ 57/61 und
+        /// 58/62, Holo ≈ 62–68/57–58), gemessen wie das Ego-Still; die Automatik bleibt im Band der langen Waffen.</summary>
+        [Test]
+        public void Hueftlage_der_MP_im_Band()
+        {
+            var S = new EgoSolver(MP);
+            var E = new EgoScreen(S);
+            var o = S.Evaluate(S.StillAction("hip"), 0, new EgoState());
+            Vector3 At(string a) => E.ToScreen(o.weapon.MultiplyPoint3x4(V(MP.Anchor(a).pos)));
+            Vector3 m = At("Socket_Muzzle"), r = At("Socket_Reticle");
+            var pts = new List<Vector2>();
+            E.Silhouette(o, pts, arms: false);
+            TestContext.WriteLine($"MP-Hüfte: Mündung x {m.x:0.0} / y {m.y:0.0} %, Absehen x {r.x:0.0} / y {r.y:0.0} %; Waffe x {pts.Min(p => p.x):0.0}–" +
+                                  $"{pts.Max(p => p.x):0.0}, y {pts.Min(p => p.y):0.0}–{pts.Max(p => p.y):0.0} %");
+            Assert.That(m.x, Is.InRange(53f, 71f), "Mündung x (Kurzwaffen 53–71 %)");
+            Assert.That(m.y, Is.InRange(59f, 84f), "Mündung y (Kurzwaffen 59–84 %)");
+            Assert.That(m.x, Is.InRange(55f, 61f), "Mündung x nahe Destiny-MP 57–58 %");
+            Assert.That(m.y, Is.InRange(59f, 66f), "Mündung y nahe Destiny-MP 61–62 %");
+            Assert.That(r.x, Is.InRange(60f, 70f), "Absehen x nahe Destiny-Holo 62–68 %");
+            Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
+        }
+
+        /// <summary>Entscheidungsliste 3b / 3.2 A: Sprint-Trageform je Klasse – die MP tief und nach links gerollt (Oberseite zeigt im Bild nach
+        /// links, Destiny-MP Mündung ≈ 43/80, Holo ≈ 52/72), die Automatik quer mit der Oberseite nach rechts (−35°, wie bisher).</summary>
+        [Test]
+        public void Sprint_Rollrichtung_je_Klasse()
+        {
+            foreach (var d in All)
+            {
+                var S = new EgoSolver(d);
+                var E = new EgoScreen(S);
+                var o = S.Evaluate(S.StillAction("sprint"), 0, new EgoState());
+                var up = o.weapon.MultiplyVector(new Vector3(0, 0, 1));           // Oberseite der Waffe im Blender-Kameraraum (+X = links)
+                Vector3 m = E.ToScreen(o.weapon.MultiplyPoint3x4(V(d.Anchor("Socket_Muzzle").pos)));
+                Vector3 r = E.ToScreen(o.weapon.MultiplyPoint3x4(V(d.Anchor("Socket_Reticle").pos)));
+                float roll = Mathf.Atan2(up.x, up.z) * Mathf.Rad2Deg;            // > 0: Oberseite nach links geneigt
+                TestContext.WriteLine($"{d.weapon.id} Sprint: Oberseite {roll:0.0}° (links +), Mündung {m.x:0.0}/{m.y:0.0} %, Absehen {r.x:0.0}/{r.y:0.0} %");
+                if (d.profile.type == "submachine_gun")
+                {
+                    Assert.Greater(roll, 20f, "MP nach links gerollt");
+                    Assert.That(m.x, Is.InRange(38f, 48f), "Mündung x nahe Destiny-MP 43 %");
+                    Assert.That(m.y, Is.InRange(75f, 85f), "Mündung y nahe Destiny-MP 80 %");
+                    Assert.That(r.y, Is.InRange(66f, 78f), "Holo tief, nahe Destiny-MP 72 %");
+                }
+                else Assert.Less(roll, -10f, "Automatik: Oberseite nach rechts (quer, wie bisher)");
+            }
+            Assert.AreEqual(JsonUtility.ToJson(D.Action("sprint").bob), JsonUtility.ToJson(MP.Action("sprint").bob), "Frequenz und Hub wie bisher (3c)");
         }
 
         // ---------------------------------------------------------------- Weltzoom und Hüft-Fadenkreuz 0.13
@@ -108,6 +240,7 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("auto_rifle", G.weapon_type);
             Assert.AreEqual("reflex", G.sight);
             Assert.AreEqual(G.ZoomFor(G.weapon_type), G.world_zoom, 1e-6f, "Pilot zoomt mit dem Wert seiner Klasse");
+            foreach (var d in All) Assert.AreEqual(d.gameplay.ZoomFor(d.gameplay.weapon_type), d.gameplay.world_zoom, 1e-6f, d.weapon.id);
             TestContext.WriteLine($"Weltzoom Pilot {G.world_zoom}, Scout {G.ZoomFor("scout_rifle")}, " +
                                   $"Handfeuerwaffe {G.ZoomFor("hand_cannon")}, MP {G.ZoomFor("submachine_gun")}");
         }
@@ -420,6 +553,11 @@ namespace Ballon.Ego.Tests
         [Test]
         public void FBX_Import_passt_zur_Achsumrechnung()
         {
+            foreach (var d in All) FbxImport(d);
+        }
+
+        static void FbxImport(EgoFile D)
+        {
             var bounds = D.mesh_bounds.objects.ToDictionary(o => o.name);
             int n = 0;
             foreach (var f in new[] { D.weapon.fbx, D.arm.fbx })
@@ -442,6 +580,11 @@ namespace Ballon.Ego.Tests
 
         [Test]
         public void FBX_Ruhelagen_und_Anker_wie_in_den_Daten()
+        {
+            foreach (var d in All) FbxRest(d);
+        }
+
+        static void FbxRest(EgoFile D)
         {
             var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{D.weapon.fbx}");
             var all = go.GetComponentsInChildren<Transform>(true).ToDictionary(t => t.name);
@@ -472,6 +615,11 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Gebackene_Atlanten_und_UVs()
         {
+            foreach (var d in All) Atlanten(d);
+        }
+
+        static void Atlanten(EgoFile D)
+        {
             Assert.IsNotNull(D.textures?.weapon, "textures fehlt (Export mit Backen)");
             int n = 0;
             foreach (var (fbx, A) in new[] { (D.weapon.fbx, D.textures.weapon), (D.arm.fbx, D.textures.arms) })
@@ -492,18 +640,23 @@ namespace Ballon.Ego.Tests
                     Assert.IsTrue(uv.All(u => u.x >= -1e-3f && u.x <= 1.001f && u.y >= -1e-3f && u.y <= 1.001f), $"{mf.name}: UV im Atlas");
                     n++;
                 }
-                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{(fbx == D.weapon.fbx ? "weapon" : "arms")}.mat");
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{(fbx == D.weapon.fbx ? D.atlas : "arms")}.mat");
                 Assert.IsNotNull(m.GetTexture("_BaseMap"));
                 Assert.IsNotNull(m.GetTexture("_SpecGlossMap"));
                 Assert.AreEqual(0f, m.GetFloat("_WorkflowMode"), "Spezular-Modus");
                 Assert.IsNotNull(m.GetTexture("_BumpMap"));
                 Assert.IsNotNull(m.GetTexture("_OcclusionMap"));
             }
-            Assert.Greater(n, 150, "gebackene Netzobjekte");
+            Assert.Greater(n, 120, $"{D.weapon.id}: gebackene Netzobjekte");
         }
 
         [Test]
         public void Skins_gebacken_mit_Materialien()
+        {
+            foreach (var d in All) Skins(d);
+        }
+
+        static void Skins(EgoFile D)
         {
             var sk = D.textures.skins;
             Assert.AreEqual(8, sk.Length, "kit.SKINS: 8 Skins");
@@ -519,7 +672,7 @@ namespace Ballon.Ego.Tests
                     Assert.AreEqual(D.textures.weapon.size, t.width, f);
                 }
                 if (s.name == "standard") continue;
-                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_weapon_{s.name}.mat");
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{D.atlas}_{s.name}.mat");
                 Assert.IsNotNull(m, s.name);
                 Assert.AreEqual(s.albedo, m.GetTexture("_BaseMap").name + ".png", s.name);
                 Assert.IsNotNull(m.GetTexture("_BumpMap"), s.name + ": Normale wie Standard");
@@ -546,22 +699,24 @@ namespace Ballon.Ego.Tests
         }
 
         // ---------------------------------------------------------------- Arme
-        static IEnumerable<(string, EgoOutput)> AllFrames()
+        static IEnumerable<(string, EgoOutput)> AllFrames() => All.SelectMany(AllFrames);
+
+        static IEnumerable<(string, EgoOutput)> AllFrames(EgoFile D)
         {
             var S = new EgoSolver(D);
             foreach (var p in D.poses)
-                yield return ("Haltung " + p.name, S.Evaluate(S.StillAction(p.name), 0, new EgoState()));
+                yield return ($"{D.weapon.id} Haltung " + p.name, S.Evaluate(S.StillAction(p.name), 0, new EgoState()));
             foreach (var A in D.actions)
             {
                 var st = new EgoState();
-                for (int f = 0; f <= A.frames; f++) yield return ($"{A.name}:{f}", S.Evaluate(A, f, st));
+                for (int f = 0; f <= A.frames; f++) yield return ($"{D.weapon.id} {A.name}:{f}", S.Evaluate(A, f, st));
             }
         }
 
         [Test]
         public void Armlaengen_in_allen_Bildern()
         {
-            var S = new EgoSolver(D);
+            var S = new EgoSolver(D);                         // Segmentreihenfolge gleich für alle Waffen (gemeinsame Arme)
             int iu = S.SegmentIndex("upper"), ifo = S.SegmentIndex("fore"), ih = S.SegmentIndex("hand");
             int n = 0;
             foreach (var (lab, o) in AllFrames())
@@ -592,12 +747,18 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Gleich_wie_Blender_Referenz()
         {
-            var R = JsonUtility.FromJson<RefFile>(File.ReadAllText($"{Gen}/ego_reference.json"));
+            foreach (var d in All) Referenz(d);
+        }
+
+        static void Referenz(EgoFile D)
+        {
+            var R = JsonUtility.FromJson<RefFile>(File.ReadAllText($"{Gen}/{D.reference}"));
             Assert.AreEqual(EgoFile.Format + "-reference", R.format);
             var S = new EgoSolver(D);
             var byAction = R.samples.Where(s => !s.label.StartsWith("still:")).GroupBy(s => s.action).ToDictionary(g => g.Key, g => g.ToDictionary(s => s.frame));
-            float worstP = 0, worstR = 0;
-            string wp = "", wr = "";
+            float worstP = 0, worstR = 0, worstA = 0;
+            string wp = "", wr = "", wa = "";
+            Assert.That(R.tolerance_arm_deg, Is.InRange(0.1f, 0.2f), "Armgrenze aus der Lagetoleranz (atan 2 · 0,5 mm / 0,32 m)");
             int checks = 0;
             void Compare(RefSample s, EgoOutput o)
             {
@@ -626,7 +787,9 @@ namespace Ballon.Ego.Tests
                     var want = M(ob.m);
                     float dp = Vector3.Distance(Pos(got), Pos(want)), dr = RotDiffDeg(got, want);
                     if (dp > worstP) { worstP = dp; wp = $"{s.label} {ob.name}"; }
-                    if (dr > worstR) { worstR = dr; wr = $"{s.label} {ob.name}"; }
+                    bool arm = ob.name.EndsWith("_upper") || ob.name.EndsWith("_fore");    // Richtung zwischen zwei gelösten Punkten
+                    if (arm) { if (dr > worstA) { worstA = dr; wa = $"{s.label} {ob.name}"; } }
+                    else if (dr > worstR) { worstR = dr; wr = $"{s.label} {ob.name}"; }
                     checks++;
                 }
                 Assert.AreEqual(fx, (o.flashOn ? 1 : 0) + o.shellCount, $"{s.label}: Blitz/Hülsen sichtbar in Unity, nicht in Blender");
@@ -643,10 +806,11 @@ namespace Ballon.Ego.Tests
                     if (frames.TryGetValue(f, out var s)) Compare(s, o);
                 }
             }
-            TestContext.WriteLine($"{checks} Matrizen, größte Abweichung {worstP * 1000:0.000} mm ({wp}), {worstR:0.000}° ({wr})");
+            TestContext.WriteLine($"{D.weapon.id}: {checks} Matrizen, größte Abweichung {worstP * 1000:0.000} mm ({wp}), {worstR:0.000}° ({wr}), Ober-/Unterarm {worstA:0.000}° ({wa})");
             Assert.LessOrEqual(worstP, R.tolerance_m, $"Lage {worstP * 1000:0.000} mm bei {wp}");
             Assert.LessOrEqual(worstR, R.tolerance_deg, $"Drehung {worstR:0.000}° bei {wr}");
-            Assert.Greater(checks, 5000);
+            Assert.LessOrEqual(worstA, R.tolerance_arm_deg, $"Arm {worstA:0.000}° bei {wa}");
+            Assert.Greater(checks, 4000);
         }
     }
 }

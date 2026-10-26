@@ -22,6 +22,9 @@ namespace Ballon.Ego
         readonly Transform[] _shells;
         readonly Renderer[] _shellR;
 
+        /// <summary>Materialname des gebackenen Waffenatlas (ego.json › weapons[].atlas): „Atlas_weapon“ für die Pilotwaffe.</summary>
+        public string WeaponAtlas => "Atlas_" + S.D.atlas;
+
         public EgoRig(EgoSolver s, Transform space, GameObject weaponModel, GameObject armsModel, IDictionary<string, Material> roles, int layer)
         {
             S = s;
@@ -54,13 +57,13 @@ namespace Ballon.Ego
             foreach (var p in s.D.arm.pieces) { role["R_" + p.id] = p.role; role["L_" + p.id] = p.role; }
             if (s.D.textures?.weapon?.objects != null)        // gebackene Teile nehmen den Atlas statt der Rolle (0.7)
             {
-                foreach (var nm in s.D.textures.weapon.objects) role[nm] = "Atlas_weapon";
+                foreach (var nm in s.D.textures.weapon.objects) role[nm] = WeaponAtlas;     // je Waffe „Atlas_<atlas>“ (0.18)
                 foreach (var nm in s.D.textures.arms.objects) role[nm] = "Atlas_arms";
             }
             foreach (var r in w.GetComponentsInChildren<Renderer>(true))
             {
                 Dress(r, role, roles, layer);
-                if (role.TryGetValue(r.name, out var ro) && ro == "Atlas_weapon") _atlasWeapon.Add(r);
+                if (role.TryGetValue(r.name, out var ro) && ro == WeaponAtlas) _atlasWeapon.Add(r);
             }
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;

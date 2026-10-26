@@ -231,9 +231,10 @@ if (RT.HIP['color'], RT.HIP['weight']) != ('white', 'fine') or {k: v['kind'] for
     fail('Hüft-Fadenkreuz: weiß, fein, im Sprint nur die Automatik mit „^“ (Entscheidungsliste 4.1 A)')
 from basic.arms import ego as EG   # Entscheidungsliste 5.3 A: Mündungsfeuer 1 Bild bei 30/s, im Zielen ≤ 20 % der Holo-Öffnung
 import tools.export_unity as _XU
-_cov = EG.flash_cover_ads(importlib.import_module(f'basic.{_XU.WEAPON}'))
-if _cov > 0.20 or abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
-    fail(f'Mündungsfeuer: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
+for _m in _XU.WEAPONS:              # jede spielbare Waffe (0.18)
+    _cov = EG.flash_cover_ads(importlib.import_module(f'basic.{_m}'))
+    if _cov > 0.20 or abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
+        fail(f'Mündungsfeuer {_m}: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + r.stdout.strip())
