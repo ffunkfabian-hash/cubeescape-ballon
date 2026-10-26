@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 0.21.0 „Ironsight“ – Visier-Baukasten v3 als Produktionsform, Visiere an BASIC-01/02/03/06 (Branch `claude/ballon-0.21-ironsight`)
+
+- Baukasten v3 in `basic/common.py` (Nutzerwahl „v3 bauen“): H0-Plattform `sight_platform`, Flachprofil `xprof` (neue Form in `kit.py`),
+  Haube, flache Scheibe, gezeichnetes Absehen `drawn_reticle` (Hüftform der Klasse flach in der Glasebene, ≥ 1,6 px, reine Emission);
+  gebaut H0 (BASIC-01, unverändert bis aufs Absehen), H4 „Kasten“ (BASIC-02), H2 „Pille“ (BASIC-06, 19 × 23 mm wegen Mündungsfeuer ≤ 20 %),
+  Z1 „Tropfen“ (BASIC-03) mit Sitz nach Konzept A (Wiege hinter dem Auge, Klemmfuß unter dem Objektiv, Ring 1,29 ohne Wulst).
+  `sight_kit.py` nutzt dieselben Bausteine (25 Visiere im Katalogblatt v3).
+- Visier-Standard 3 erweitert: Visierlinien Schiene + 26/15/11 mm (Holo/Mini-Reflex/Kimme-Korn), Varianten Holo L (MG/Werfer ≤ 25 %) und
+  Zielfernrohr S (≥ 17 %), Öffnung als lichte Öffnung im echten Abstand; Stilhandbuch § 4/§ 6, `absehen.md`, Entscheidungsliste 1.1.
+- Abriebmaske (Nutzerwahl A): Rolle `sight_anod` für alle Visierteile, Messradius 1,2 mm, ohne feine Kratzer; Leuchtrolle `sight_line`.
+- Prüfungen: neu `tools/test_sights.py` (Öffnung je Visier und Größe, Ring 1,29, Absehen flach, Kimme-Linie), `test_sight_seat.py` auf
+  Konzept A (Sattel hinter dem Auge, unteres Bilddrittel frei); Unity-Formattests ohne die bewusst geänderte Baugruppe Visier.
+- Export mit Backen für BASIC-01/03/06 und Arme; Bericht [docs/versions/0.21-ironsight.md](docs/versions/0.21-ironsight.md).
+
 ## Patch visier-konzept – Visier-Konzept und Baukasten v3 (Branch `claude/ballon-patch-visier-konzept`)
 
 - Konzept nach 0.20: Befund (Destiny, BF6, Formgen VS01–09; Platte vor dem Auge, Ringwulst, Abriebmaske), Sitz-Konzepte A/B/C und

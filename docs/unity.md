@@ -126,8 +126,10 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
   wäre lieber etwas Gezeichnetes … Im Bestfall hat man das Fadenkreuz/Punkt/Kreis/wie auch immer vom Hüftfeuer im Visier.“ Unity blendet das
   Modell-Absehen (Teile mit Rolle `reticle_*`) aus und zeichnet im Zielen (Zielen-Anteil ≥ 0,9, beim Zielfernrohr im Linsenbild) die
   Hüftform der Klasse (`gameplay.hip`, gleiche Größe, ohne Aufgehen) in der Farbe der Absehen-Rolle (Cyan) an der Bildlage von
-  `Socket_Reticle` (`EgoPlayer.SightVisible`, Aufnahmen stempeln es wie das Hüft-Fadenkreuz). Blender zeigt das Absehen weiter als
-  Modellteil (Formblätter, Ego-Clips) – bewusste Abweichung, das Visier-Konzept folgt ([Übergabe](uebergabe-visier-konzept.md)).
+  `Socket_Reticle` (`EgoPlayer.SightVisible`, Aufnahmen stempeln es wie das Hüft-Fadenkreuz). Seit 0.21 „Ironsight“ legt Blender
+  dieselbe Hüftform flach in die Glasebene (`common.drawn_reticle`, Linien ≥ 1,6 px, reine Emission) – Formblätter und Ego-Clips
+  zeigen also, was Unity zeichnet; Unity blendet das Modellteil weiter aus. Die Leuchtkontur der MP-Pille (H2) hat die Rolle
+  `sight_line` und bleibt in Unity sichtbar.
 - **Glas und Leuchten nach dem Reimport (0.20):** URPs Materialprüfung setzte beim Reimport der Rollenmaterialien das Glas auf
   vormultipliert (SrcBlend One, milchig) und nahm dem Absehen `_EMISSION` (Emissive-Flag fehlte). `BallonSetup` setzt jetzt
   `_BlendModePreserveSpecular` 0 und `RealtimeEmissive`. Linsen im Zielfernrohr (`roles[].no_coat`) wie `kit.aaa_nodes`: Alpha 0,04, ohne

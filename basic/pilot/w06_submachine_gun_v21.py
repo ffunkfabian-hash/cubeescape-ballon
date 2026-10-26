@@ -17,16 +17,16 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Bügel geht aus dem Abzugsbügel hervor und endet im Vordergriff; Magazin tritt unten aus dem Griffboden |
 | Ergonomie | Griff BGM-1 in v2.1-Form, Vordergriff mit Fingerauflagen, Magazin auf der Griffachse mit Sichtfenster (Patronen) unter dem Griffboden |
 
-Visier: offenes Holo nach Visier-Standard 3 (`SIGHT_KIND['submachine_gun'] = 'holo'`), Absehen-Vorgabe `dot`.
-Schlichtheitsbudget: Leuchten 2 Funktionen (Munitionsanzeige, Visier-Emitter mit Absehen) · Grafik 1 Band · Schrift 1 · Orange 3
+Visier: H2 „Pille“ (Baukasten v3, 0.21; Holo nach Visier-Standard 3, `SIGHT_KIND['submachine_gun'] = 'holo'`) – Emitterblock ohne
+Haube, Pillenkontur und Absehen (Hüftform `circle_cross`) gezeichnet flach in der Glasebene.
+Schlichtheitsbudget: Leuchten 2 Funktionen (Munitionsanzeige; Visier mit Leuchtschlitz, Statuspunkten, Kontur und Absehen) · Grafik 1 Band · Schrift 1 · Orange 3
 (Ladehebel, Feuerwahl, Magazinhalter) · Schrauben nur an Paneelen und Vorbau.
 Status: Maße entworfen (Länge an Toolgen-Bezug 0,616 m angelehnt; gemessen 0,547 m, spec.json), Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 import math
 
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
-                          grip_v21, reflex_sight_v21, stock_s1, R_BODY, R_MID, R_SMALL, R_FINE)
-from basic.reticles import DEFAULTS as RETICLE_DEFAULTS
+                          grip_v21, holo_pille, stock_s1, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w06_submachine_gun as V1
 
 META = dict(V1.META, variant='v2.1', name='Kurzläufer v2.1', nick='Familie v2.1',
@@ -68,7 +68,8 @@ P += [
 ]
 P += [dict(p, mat='anodized') for p in rail(-60, 150, TOP)]
 P[-1]['cuts'] = [cut_box(-54 + 14 * i, -47 + 14 * i, TOP + 4, TOP + 9, 30) for i in range(14)]
-_sight, SIGHT_ANCHORS = reflex_sight_v21(-10, TOP + 8, reticle_kind=RETICLE_DEFAULTS['submachine_gun']['optic'])
+# Visier H2 „Pille“ (Baukasten v3, Standard MP nach visier-konzept › 6a): ohne Haube, Pillenkontur gezeichnet
+_sight, SIGHT_ANCHORS = holo_pille(-10, TOP + 8, weapon_type=V1.META['type'])
 P += _sight
 # ---------------------------------------------------------------- Vorbau (Graphit), Deckleiste, Lauf, Mündung
 _recess = dict(shape='cyl', axis='f', c=(BORE, 0), a0=FR1 - 18, a1=FR1 + 10, r=13, segs=32)

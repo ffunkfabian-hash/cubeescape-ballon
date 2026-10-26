@@ -1,0 +1,135 @@
+"""Prüft den Visier-Baukasten v3 ohne Blender (0.21 „Ironsight“, Visier-Standard 3 mit Erweiterung, docs/visier-konzept.md):
+
+  python3 tools/test_sights.py            (läuft in ./check)
+
+- Öffnung im Zielen: lichte Öffnung (Glasbreite bzw. Objektivlinse) als Anteil der Bildbreite bei 75°, gemessen im echten Abstand
+  zum Augenpunkt. Gebaute Visiere (common: H0, H2, H4, Z1) in M im Standard, in S/L im Standard oder in der zugelassenen Variante
+  (`reticles.share_band`); Familienwaffen im Standard oder in der Variante ihres Typs.
+- Ring ohne Wulst: Zielfernrohre außen/innen an der Ringstirn ≈ 1,29 (± 0,02), Innenfläche läuft auf den Augenpunkt zu.
+- Absehen gezeichnet: `sight_reticle` flach (Querprofile ≤ 0,1 mm) in der Glasebene (± 0,5 mm), reine Emission, Hüftform der
+  Klasse in Hüftgröße (± 3 %), Linien mindestens 1,6 px bei 1280 px Bildbreite.
+- Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
+"""
+import glob
+import importlib
+import math
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+from basic import common as C  # noqa: E402
+from basic import reticles as RT  # noqa: E402
+
+TAN = math.tan(math.radians(RT.SIGHT['fov_ref_deg'] / 2))
+
+
+def opening_share(parts, anchors):
+    """Lichte Öffnung im Zielen als Anteil der Bildbreite (75°): Breite der Visierscheibe bzw. Durchmesser der Objektivlinse im
+    Abstand ihrer Ebene vom Augenpunkt."""
+    P = {p['id']: p for p in parts}
+    eye = anchors['Socket_Eye']['at'][0]
+    if 'sight_glass' in P:
+        g = P['sight_glass']
+        w = (max(q[0] for q in g['pts']) - min(q[0] for q in g['pts'])) if 'pts' in g else g['ww']
+        return w / (2 * (g['f0'] - eye) * TAN)
+    g = P['scope_glass']
+    return 2 * g['r'] / (2 * (g['a0'] - eye) * TAN)
+
+
+def ring_ratio(parts):
+    """Ring außen/innen an der Ringstirn (scope_rim: Kegel, innen mit r1/r skaliert wie kit.mesh_cyl)."""
+    r = next(p for p in parts if p['id'] == 'scope_rim')
+    r1 = r.get('r1', r['r'])
+    return r1 / (r['r_in'] * r1 / r['r'])
+
+
+def check_reticle(parts, anchors, wtype):
+    """Gezeichnetes Absehen flach in der Glasebene: Fehlerliste."""
+    from tools.export_unity import kit_materials
+    bad = []
+    P = {p['id']: p for p in parts}
+    q = P.get('sight_reticle')
+    if not q:
+        return ['kein sight_reticle']
+    role = kit_materials().get(q['mat'], {})
+    if not q['mat'].startswith('reticle_') or not role.get('emit_only'):
+        bad.append(f"Rolle {q['mat']} ist keine reine Emission")
+    items = q.get('items') or []
+    if not items or any(i.get('shape') != 'xprof' or abs(i['f1'] - i['f0']) > 0.1 for i in items):
+        bad.append('Absehen nicht flach (nur Querprofile ≤ 0,1 mm dick)')
+        return bad
+    g = P.get('sight_glass') or P.get('scope_glass')
+    g0, g1 = (g['f0'], g['f1']) if 'f0' in g else (g['a0'], g['a1'])
+    f = sum(i['f0'] + i['f1'] for i in items) / (2 * len(items))
+    tol = RT.SIGHT['drawn']['plane_tol_mm']
+    if not g0 - tol <= f <= g1 + tol:
+        bad.append(f'Absehen bei f {f:.2f} nicht in der Glasebene {g0:.2f}–{g1:.2f} (± {tol} mm)')
+    h = RT.hip(wtype)
+    d = f - anchors['Socket_Eye']['at'][0]
+    us = [pt[1] for i in items for pt in i['pts']]
+    xs = [pt[0] for i in items for pt in i['pts']]
+    ext = max(max(us) - min(us), max(xs) - min(xs))
+    share = ext / (2 * d * TAN * 9 / 16)
+    if q.get('drawn', {}).get('kind') != h['kind'] or abs(share / h['share_h'] - 1) > 0.03:
+        bad.append(f"Absehen {q.get('drawn', {}).get('kind')} {share * 100:.2f} % H statt Hüftform {h['kind']} {h['share_h'] * 100:.1f} % H")
+    px = 2 * d * TAN / RT.SIGHT['drawn']['ref_w_px']
+    thin = min(math.dist(i['pts'][0], i['pts'][1]) for i in items if len(i['pts']) == 4)   # Linie: quer, Ring: radial
+    if thin < RT.SIGHT['drawn']['min_line_px'] * px - 1e-6:
+        bad.append(f"Linie {thin / px:.2f} px < {RT.SIGHT['drawn']['min_line_px']} px")
+    return bad
+
+
+BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffentyp der Hüftform, Größen)
+    'H0 Referenz': (lambda s: C.reflex_sight_v21(-6, 143), 'reflex', 'auto_rifle', ('M',)),
+    'H2 Pille': (lambda s: C.holo_pille(-6, 143, s), 'reflex', 'submachine_gun', ('S', 'M', 'L')),
+    'H4 Kasten': (lambda s: C.holo_kasten(-6, 143, s), 'reflex', 'pulse_rifle', ('S', 'M', 'L')),
+    'Z1 Tropfen': (lambda s: C.scope_tropfen(72, 143, 169, s), 'scope', 'scout_rifle', ('S', 'M', 'L')),
+}
+
+
+def main():
+    bad, n = [], 0
+    for name, (build, typ, wtype, sizes) in BUILT.items():
+        for s in sizes:
+            P, A = build(s)
+            sh = opening_share(P, A)
+            lo, hi, band = RT.share_band(typ, None, s)
+            n += 1
+            print(f'[test_sights] {name} {s}: Öffnung {sh * 100:.1f} % ({band} {lo * 100:.0f}–{hi * 100:.0f} %)')
+            if not lo - 1e-9 <= sh <= hi + 1e-9 or (s == 'M' and band != 'Standard'):
+                bad.append(f'{name} {s}: Öffnung im Zielen {sh * 100:.1f} % außerhalb {band} {lo * 100:.0f}–{hi * 100:.0f} %')
+            if typ == 'scope' and abs(ring_ratio(P) - C.RING_RATIO) > 0.02:
+                bad.append(f'{name} {s}: Ring außen/innen {ring_ratio(P):.3f} statt ≈ {C.RING_RATIO}')
+            bad += [f'{name} {s}: {b}' for b in check_reticle(P, A, wtype)]
+    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
+        W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
+        wid, e = f"{W.META['id']}-{W.META['variant']}", W.ANCHORS.get('Socket_Eye', {})
+        if e.get('sight_type') not in ('reflex', 'scope'):
+            continue
+        sh = opening_share(W.PARTS, W.ANCHORS)
+        lo, hi, band = RT.share_band(e['sight_type'], W.META['type'], getattr(W, 'SIGHT_SIZE', 'M'))
+        n += 1
+        print(f'[test_sights] {wid}: Öffnung {sh * 100:.1f} % ({band}), ' + (f'Ring {ring_ratio(W.PARTS):.3f}'
+                                                                         if e['sight_type'] == 'scope' else 'Holo'))
+        if not lo - 1e-9 <= sh <= hi + 1e-9:
+            bad.append(f'{wid}: Öffnung im Zielen {sh * 100:.1f} % außerhalb {band} {lo * 100:.0f}–{hi * 100:.0f} %')
+        if e['sight_type'] == 'scope' and abs(ring_ratio(W.PARTS) - C.RING_RATIO) > 0.02:
+            bad.append(f'{wid}: Ring außen/innen {ring_ratio(W.PARTS):.3f} statt ≈ {C.RING_RATIO} (Wulst)')
+        bad += [f'{wid}: {b}' for b in check_reticle(W.PARTS, W.ANCHORS, W.META['type'])]
+    from basic.pilot.optics import sight_kit as K
+    for kid, kind in (('iron_klammer', 'iron'), ('iron_hoerner', 'iron'), ('mini_reflex', 'mini_reflex')):
+        for s in ('S', 'M', 'L'):
+            W = K.weapon(kid, s)
+            want = K.DECK + RT.SIGHT['rail_line_mm'][kind]
+            n += 1
+            if abs(W.ANCHORS['Socket_Eye']['at'][1] - want) > 1e-6:
+                bad.append(f"{kid} {s}: Visierlinie u {W.ANCHORS['Socket_Eye']['at'][1]} statt Schiene + {RT.SIGHT['rail_line_mm'][kind]:g}")
+    print(f'[test_sights] {n} Visiere geprüft')
+    for b in bad:
+        print('[test_sights] FEHLER', b)
+    return 1 if bad else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

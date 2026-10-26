@@ -312,7 +312,8 @@ def flash_roll(n):
 def flash_cover_ads(W, n=120):
     """Größter Anteil der lichten Visieröffnung, den der Blitz im Zielen bedeckt (über alle Drehungen roll_deg), ohne Rendern: Haltung
     'ads' (Auge in Socket_Eye, Blick längs des Laufs), Öffnung = Glasfenster (sight_glass) an seiner Rückseite geschnitten mit demselben
-    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim; Innenmaß dort gleich dem Glas), Raster n × n; beim Zielfernrohr
+    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim, falls vorhanden; Innenmaß dort gleich dem Glas; Glas als Querprofil:
+Umriss), Raster n × n; beim Zielfernrohr
     (0.20) die kreisrunde Objektivlinse (scope_glass). Verdeckung durch die Waffe zählt nicht (obere Schranke). Für ./check (≤ 20 %, 5.3 A); Unity misst
     dasselbe im Test mit dem laufenden Controller."""
     th = math.tan(math.radians(CAMERA['h_fov_deg'] / 2))
@@ -326,9 +327,15 @@ def flash_cover_ads(W, n=120):
     P = {q['id']: q for q in W.PARTS}
     circle = None
     if 'sight_glass' in P:
-        g, t = P['sight_glass'], P['sight_frame_trim']
-        ga, gb = proj(g['f0'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(g['f0'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
-        ta, tb = proj(t['f1'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(t['f1'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
+        g = P['sight_glass']
+        if 'pts' in g:                       # Baukasten v3 (0.21): Fenster als Querprofil, Rahmen = Umriss des Glases
+            xs, us = [q[0] for q in g['pts']], [q[1] for q in g['pts']]
+            hw, hu, cu = (max(xs) - min(xs)) / 2, (max(us) - min(us)) / 2, g['cu'] + (max(us) + min(us)) / 2
+        else:
+            hw, hu, cu = g['ww'] / 2, g['hh'] / 2, g['cu']
+        ga, gb = proj(g['f0'], cu + hu, hw), proj(g['f0'], cu - hu, -hw)
+        t = P.get('sight_frame_trim')         # ohne Haube (H2 „Pille“) begrenzt nur das Glas
+        ta, tb = (proj(t['f1'], cu + hu, hw), proj(t['f1'], cu - hu, -hw)) if t else (ga, gb)
         x0, y0, x1, y1 = max(ga[0], ta[0]), max(ga[1], ta[1]), min(gb[0], tb[0]), min(gb[1], tb[1])
     else:                                    # Zielfernrohr (0.20): lichte Öffnung = Objektivlinse, ein Kreis
         g = P['scope_glass']

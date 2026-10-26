@@ -90,13 +90,15 @@ Vor dem Bau im Modulkopf festhalten (Docstring), nach dem Bau am Bild prüfen:
 | `graphite` | sehr dunkles Polymer | matt, Specular 0,25, feines Relief, Abrieb 0,15 (dezent) | Unterteil, Handschutz, Griffzonen |
 | `rubber` | schwarz | Stippling (Voronoi-Relief), Specular 0,2 | Griff, Polster, Schaftkappe |
 | `anodized` | Schwarz eloxiert | halbmatt metallisch, leichter Abrieb | Paneele, Klemmungen, Kappen |
+| `sight_anod` | Schwarz eloxiert | wie `anodized`, feines Relief, Kantenabrieb mit 1,2 mm Messradius (dünne Teile bleiben dunkel), keine Kratzer | alle Visierteile (0.21) |
 | `dark_metal` / `metal` | Brüniert / Stahl | metallisch, Rauheitsvariation | Lauf, Kühlrippen, Mechanik |
 | `trim` | blankes Metall | anisotrop poliert | Zierkanten, Ringe, Schrauben |
 | `accent` | Orange | Lack mit Abrieb | Bedienelemente, Chevronband |
 | `energy` | Cyan | Emission | nur die drei Leuchtfunktionen |
 | `brass`, `decal`, `glass` | Messing, Hellgrau, beschichtet | – | Patronen, Schrift/Linien, Gläser |
+| `reticle_<farbe>`, `sight_line` | Cyan (Familie) | reine Emission 0,6 | gezeichnetes Absehen; Leuchtkontur am Visier (H2), die Unity nicht wie ein Absehen ausblendet |
 
-Umsetzung: `basic/kit.py › MATERIALS`, Shader `aaa_nodes` (Bevel-Kantenmaske mit 4 mm Messradius, AO-Schmutz, gestreckte Kratzer,
+Umsetzung: `basic/kit.py › MATERIALS`, Shader `aaa_nodes` (Bevel-Kantenmaske mit 4 mm Messradius, `WEAR_RADIUS` je Rolle, AO-Schmutz, gestreckte Kratzer (`SCRATCH` je Rolle),
 Mikrorelief je Rolle).
 
 ## 5 Farb- und Texturvarianten (Skins)
@@ -129,6 +131,7 @@ Autorenmaß mm: `f` vorn, `u` oben, `x` links; Ursprung `Socket_Hand`. Formen (`
 | `cyl` | Zylinder, Rohr, Kegel, Ring | `axis` (`f`/`x`/`u`), `c`, `a0 a1`, `r`, `r1`, `r_in`, `segs` |
 | `plan` | Draufsicht-Profil (liegende Decals, Bänder auf Oberseiten) | `pts` (f,x), `u0 u1` |
 | `frame` / `xbox` | Rahmen oder Platte quer zur Laufachse | `cu`, `ow oh`, `iw ih`, Radien |
+| `xprof` | Querprofil um die Visierlinie, entlang der Laufachse extrudiert (Visier-Baukasten v3: Hauben, Sockel, Glas, Absehen) | `pts` [(x,u) …] relativ zu `cu`, `f0 f1`; Durchbrüche als `cuts` mit `xprof` |
 | `multi` | mehrere Formen als ein Bauteil (Schrauben, Rippen) | `items` |
 | `tube` | Leitung entlang Polylinie | `path` [(f,u,x) …], `r` |
 | `text` | Schriftzug als Geometrie | `text`, `size`, `f u x`, `side` (+1 links, −1 rechts, 0 oben) |
@@ -144,10 +147,14 @@ Startpunkt nehmen.
 | Baustein | Liefert | Wichtige Parameter | Genutzt in |
 |---|---|---|---|
 | `grip_v21(top)` | Griff mit Fingerauflagen und Griffboden, Abzug, Abzugsbügel (`anodized`) | `top` = Griffoberkante (Unterkante Unteres Gehäuse); Griffachse um 15° nach hinten geneigt, f = u·tan 15° + Versatz | 02, 03, 06 (01 inline) |
-| `reflex_sight_v21(f, u, ww, wh, reticle_kind, …)` | Holo nach Visier-Standard 3: Trapezsockel, Glas ww × wh, Absehen; gibt `(Teile, Anker)` zurück | `f` Lage auf der Schiene, `u` = Schienenoberkante; Absehen aus `RETICLE_DEFAULTS[typ]['optic']` | 01, 02, 06 |
-| `scope_v21(f, u, length, r_obj, …)` | kurzes Ring-Zielfernrohr auf Trapezhals, Absehen im Rohr, `ads_hide`; gibt `(Teile, Anker)` zurück. Der Scout (03) ersetzt den Hals durch einen Rohrsattel auf einem Gehäusebuckel (`w03_scout_rifle_v21.receiver`, 0.19) – der Baustein bleibt, weil `common.py` im Unity-Hash liegt | `length` 120, Objektiv Ø 33 mm | 03 |
-| `box_scope_v21(f, u, style)` | Kastenoptik (`prism`/`flat`) – nur als Variante | `style` | – |
-| `reticle(f, cu, kind, …)` | Absehen aus `basic/reticles.py` (sonst über die Visierbausteine) | `kind`, `color`, `weight` | über Visiere |
+| `reflex_sight_v21(f, u, ww, wh, …, weapon_type)` | **H0 „Referenz“** (Baukasten v3): offene Haube auf der H0-Plattform, Glas ww × wh, gezeichnetes Absehen; gibt `(Teile, Anker)` zurück | `f` Hinterkante Klemmfuß, `u` = Schienenoberkante | 01 |
+| `holo_kasten(f, u, size, weapon_type)` | **H4 „Kasten“** (Impuls): Haube mit runden Dachecken, Seiten einwärts, Ziffernfeld im Sockel | `size` S/M/L (`HOLO_SIZES`, L nur MG/Werfer) | 02 |
+| `holo_pille(f, u, size, weapon_type)` | **H2 „Pille“** (MP): ohne Haube, Emitterblock mit Statuspunkten, Pillenkontur gezeichnet (Rolle `sight_line`) | `size` S/M/L | 06 |
+| `scope_tropfen(f_obj, u, cu, size, weapon_type, seat_u, saddle_f)` | **Z1 „Tropfen“** (Scout), Sitz nach Konzept A: Wiege hinter dem Auge (`scope_saddle`), H0-Klemmfuß unter dem Objektiv (`scope_foot`), Ring ohne Wulst (`scope_ring`, außen/innen 1,29), Tropfensockel, zweistufiges Objektiv | `f_obj` Ringstirn, `cu` Visierlinie, `seat_u` Schiene unter dem Sattel, `size` S/M/L (`SCOPE_SIZES`, S Variante) | 03 |
+| `sight_platform`, `sight_hood`, `sight_glass_x`, `xprof`, `scope_body` | Bausteine der übrigen Visiere: H0-Plattform (Klemmfuß 46 × 23/18, oranger Hebel, Gehäuse, Trapezsockel), Flachprofil-Haube (Stirn 1,6 mm) mit blanker Stirnkante, flache Scheibe | Katalog und Entwürfe: `basic/pilot/optics/sight_kit.py`, Blatt `tools/sight_catalog.py` | über Visiere |
+| `drawn_reticle(f, cu, weapon_type, dist)` | gezeichnetes Absehen: Hüftform der Klasse in Hüftgröße, flach in der Glasebene, Linien ≥ 1,6 px, reine Emission | `dist` Abstand zum Augenpunkt | über Visiere |
+| `box_scope_v21(f, u, style)` | Kastenoptik (`prism`/`flat`) – nur als Entwurf | `style` | – |
+| `reticle(f, cu, kind, …)` | Absehen als Röhrenform (Katalogblatt `reticle_sheet.py`) | `kind`, `color`, `weight` | Katalog |
 | `rifle_mag(f_well, u_top, depth, length, tilt, w, curve)` | Magazin, Boden, oberste Patrone; Entnahme entlang der Magazinachse | `tilt` > 0 unten nach vorn; im Griff (06): `tilt=-15` und Mitte auf der Griffachse | 01, 02, 03, 06 |
 | `rail(f0, f1, u)` | Schiene BRI-22 | Rillen per `cuts` im Modul (Material `anodized`) | 01, 02, 03, 06 |
 | `selector(f, u, x)` | Feuerwahlhebel (Akzent); rechts als Kopie mit `id='selector_r'`, `x` negativ | `x` = Seitenfläche + 1,5 mm | 01, 02, 03, 06 |
@@ -175,8 +182,9 @@ Startpunkt nehmen.
 
 Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md) (erzeugt), Laufzeitdaten `data/reticles.json`
 (`tools/export_reticles.py`), Katalogblatt und Aufgeh-Clip `tools/reticle_sheet.py`.
-- Jedes Reflexvisier hat ein Absehen (`reflex_sight_v21(…, reticle_kind, reticle_color, reticle_weight, glass)`); die Waffe nimmt
-  die Vorgabe ihres Typs (`DEFAULTS[type]['optic']`), Abweichungen im Docstring begründen.
+- Jedes Visier hat ein **gezeichnetes Absehen** (0.21, Nutzer 26.10.2026 „lieber etwas Gezeichnetes … das Fadenkreuz … vom
+  Hüftfeuer im Visier“): `drawn_reticle` legt die Hüftform der Klasse flach in die Glasebene, wie Unity sie zeichnet; die Röhrenform
+  (`reticle`, `DEFAULTS[type]['optic']`) bleibt nur für das Katalogblatt.
 - Sieben Formen, fünf Farben, drei Linienstärken; jede Form in jeder Farbe und Stärke. Farben sind eigene Leuchtrollen
   (`reticle_<farbe>`): reine Emission (`emit_only`, Grundfarbe schwarz) mit Stärke 0,6 – mit beleuchteter Grundfarbe oder
   höherer Stärke wirken sie pastellig (Test im Blender per MCP, 24.10.2026).
@@ -186,22 +194,31 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - **Visier-Standard 3** (`reticles.SIGHT`, `SIGHT_KIND`, `ADS_FEEDBACK`; Übersicht [absehen.md](absehen.md); Nutzer
   25.10.2026 „Mach alles so wie du empfiehlst“; Grundlage Motiongen REF 0.14 „Eyebox“, `cubeescape-reference/docs/visiere.md`):
   1. **Typ je Klasse, Farbe nach Familie:** Automatik, MP, Spur, MG, Impuls → offenes Holo; Scout, Lineare Fusion → kurzes
-     Ring-Zielfernrohr direkt auf dem Gehäuse; Handfeuerwaffe, Seitenwaffe, Schrot → Kimme/Korn mit Leuchtklammern; Scharfschütze →
+     Ring-Zielfernrohr; Handfeuerwaffe, Seitenwaffe, Schrot → Kimme/Korn mit Leuchtklammern; Scharfschütze →
      Zielfernrohr außen, im Zielen Vollbild; Fusion → Ring/Doppelring; Werfer → runde Linse mit Winkel; Kastenoptiken nur als Variante.
+     **Baukasten v3** (0.21 „Ironsight“, Nutzerwahl „v3 bauen“, [visier-konzept.md](visier-konzept.md) › 4/6a): alle Visiere auf der
+     H0-Plattform, je Visier nur Rahmenkontur und höchstens ein Funktionsdetail; Standard je Typ nach § 6a (Automatik H0, Impuls H4,
+     Scout Z1, MP H2 gebaut; die übrigen als Entwurf in `sight_kit.py`).
   2. **Rahmen:** Holo ≤ 0,10 × Öffnung (Bügel 1,6 mm, Dach 1,2 mm), Ring ≤ 0,15 × Öffnung. „Klobig“ kommt von großen, hohen
      Gehäusen und Block-Sockeln.
   3. **Öffnung im Zielen** bei 90 mm Augenabstand (Standard; Spieleroption `ads_eye_relief` 70/90/110 mm, Nutzerwunsch: 70 mm
      optional) und 75° Bezugsbildwinkel: Holo 12–20 %, Zielfernrohr 20–26 % der Bildbreite
-     (Holo-Fenster 26 × 20 bzw. 27 × 21 mm, Objektiv Ø 33 mm); `./check` prüft Anteil, Höhe 66 ± 4 mm und Augenabstand.
+     (Holo-Fenster 26 × 20 mm, Objektivlinse Ø 28 mm), gemessen als lichte Öffnung im echten Abstand; zugelassene Varianten mit
+     Grenzen: Holo L bis 25 % nur an MG und Werfern, Zielfernrohr S ab 17 %; `./check` prüft Anteil, Höhe 66 ± 4 mm und Augenabstand,
+     `tools/test_sights.py` jedes gebaute Visier in S/M/L. **Visierlinie:** Schiene + 26 mm (Holo, Zielfernrohr), Mini-Reflex
+     Schiene + 15 mm, Kimme/Korn Schiene + 11 mm (≈ 51 mm über dem Lauf; dort gilt die Visierhöhe nicht).
   4. **Eine Kamera:** das Glas zeigt dasselbe Weltbild (kein eigenes Linsenbild); Waffenmodell ungezoomt, Weltzoom je Klasse als
      Bildmaßstab; Zielfernrohr-Rohr, Okular und Türme `ads_hide`.
-  5. **Sockel:** gestuftes Trapez bis zur Fensterunterkante (nichts schwebt), Anzeigen unter der Visierlinie; Zielfernrohr liegt
-     direkt auf der Gehäuseoberkante (Buckel unter dem Rohr, flacher Sattel statt Hals; Entscheidungsliste 1.1 A, 0.19 „Saddle“),
-     Visier über Gehäuse 0,02–0,04 L; `tools/test_sight_seat.py` prüft das am Netz.
+  5. **Sockel:** gestuftes Trapez bis zur Fensterunterkante (nichts schwebt), Anzeigen unter der Visierlinie. Zielfernrohr nach
+     **Konzept A** (Entscheidungsliste 1.1, Antwort 26.10.2026 „v3 bauen“): Rohr liegt hinten in einer Wiege auf einem Gehäusebuckel
+     **hinter dem Auge**, vorn trägt ein H0-Klemmfuß den Sockel unter dem Objektiv – zwischen Auge und Objektiv nichts im unteren
+     Bilddrittel; Ring ohne Wulst (Objektiv als Kegel zum Auge, außen/innen 1,29). Visier über Gehäuse 0,02–0,04 L;
+     `tools/test_sight_seat.py` prüft Auflage, Sattel hinter dem Auge und das freie Zielbild am Netz.
   6. **Absehen:** Standard fein, im Zielen kein Aufgehen; Leuchtpunkt am Zielpunkt getrennt vom Glas, Schuss = kurzer Ring,
      Treffer = X (Laufzeit, `ADS_FEEDBACK`).
   7. **Glas:** Tönung ≤ 5 %, Gebrauchsspuren nur am Rand (≤ +0,15 Deckkraft), Mitte klar.
-  8. **Farbe:** Gehäuse neutral (anodized/graphite) mit einem Akzent; Absehen in Familienfarbe Cyan.
+  8. **Farbe:** Gehäuse neutral mit einem Akzent; Visierteile in der Rolle `sight_anod` (eloxiert, Kantenabrieb mit 1,2 mm
+     Messradius, ohne feine Kratzer – Nutzerwahl A zur Abriebmaske, 0.21); Absehen in Familienfarbe Cyan.
 - Neue Form: Grundelemente mit Spreizrichtung in `RETICLES` ergänzen, `export_reticles.py` und `reticle_sheet.py` laufen lassen,
   Katalogblatt sichten.
 

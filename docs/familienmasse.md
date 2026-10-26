@@ -12,10 +12,10 @@ mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der
 
 | Waffe | L × H × B | Laufachse u | Mündung f | Heck f | Visierlinie u | Visierhöhe | Augenabstand | Stützhand f / u | Magazinschacht f / u | Schwerpunkt f / u | Teile / Dreiecke |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| BASIC-01-v2.1 Automatikgewehr | 915 × 260 × 52 | 106 | 616 | -299 | 169 | 63.0 | 90 (Reflex-/Holovisier) | 282 / 95 | 108 / 70 | 79 / 84 | 72 / 33242 |
-| BASIC-02-v2.1 Impulsgewehr | 816 × 256 × 51 | 100 | 512 | -304 | 164 | 64.5 | 90 (Reflex-/Holovisier) | 290 / 80 | 99 / 62 | 68 / 79 | 56 / 29350 |
-| BASIC-03-v2.1 Scout-Gewehr | 1023 × 261 × 47 | 96 | 721 | -302 | 161 | 65.0 | 90 (Zielfernrohr) | 300 / 90 | 110 / 62 | 54 / 80 | 53 / 26860 |
-| BASIC-06-v2.1 Maschinenpistole | 547 × 291 × 47 | 82 | 326 | -221 | 147 | 65.0 | 90 (Reflex-/Holovisier) | 230 / 24 | 9 / 40 | 22 / 53 | 48 / 17600 |
+| BASIC-01-v2.1 Automatikgewehr | 915 × 260 × 52 | 106 | 616 | -299 | 169 | 63.0 | 90 (Reflex-/Holovisier) | 282 / 95 | 108 / 70 | 79 / 84 | 72 / 33450 |
+| BASIC-02-v2.1 Impulsgewehr | 816 × 255 × 51 | 100 | 512 | -304 | 164 | 64.0 | 90 (Reflex-/Holovisier) | 290 / 80 | 99 / 62 | 68 / 79 | 57 / 28710 |
+| BASIC-03-v2.1 Scout-Gewehr | 1023 × 259 × 47 | 96 | 721 | -302 | 161 | 65.0 | 90 (Zielfernrohr) | 300 / 90 | 110 / 62 | 53 / 80 | 58 / 30850 |
+| BASIC-06-v2.1 Maschinenpistole | 547 × 291 × 47 | 82 | 326 | -221 | 147 | 65.0 | 90 (Reflex-/Holovisier) | 230 / 24 | 9 / 40 | 22 / 53 | 49 / 18172 |
 
 ## Größen der Hauptteile
 
@@ -25,9 +25,9 @@ als einzelne Teile.
 | Waffe | Gehäuse `receiver` | Vorderbau `support` | Schaft `stock` | Visier `sight` | Griff `grip` | Magazin `magazine` |
 |---|---|---|---|---|---|---|
 | BASIC-01-v2.1 | 593 × 129 × 50 | 173 × 64 × 48 | 196 × 120 × 46 | 47 × 38 × 29 | 73 × 118 × 30 | 71 × 144 × 24 |
-| BASIC-02-v2.1 | 262 × 123 × 45 | 309 × 38 × 44 | 194 × 116 × 38 | 47 × 38 × 30 | 72 × 116 × 30 | 45 × 106 × 24 |
-| BASIC-03-v2.1 | 322 × 134 × 40 | 283 × 46 × 34 | 182 × 106 × 34 | 121 × 42 × 42 | 72 × 116 × 30 | 42 × 74 × 22 |
-| BASIC-06-v2.1 | 262 × 81 × 43 | 222 × 121 × 40 | 130 × 115 × 40 | 47 × 38 × 29 | 72 × 116 × 30 | 70 × 166 × 22 |
+| BASIC-02-v2.1 | 262 × 123 × 45 | 309 × 38 × 44 | 194 × 116 × 38 | 47 × 37 × 29 | 72 × 116 × 30 | 45 × 106 × 24 |
+| BASIC-03-v2.1 | 322 × 130 × 40 | 283 × 46 × 34 | 182 × 106 × 34 | 121 × 49 × 38 | 72 × 116 × 30 | 42 × 74 × 22 |
+| BASIC-06-v2.1 | 262 × 81 × 43 | 222 × 121 × 40 | 130 × 115 × 40 | 47 × 37 × 25 | 72 × 116 × 30 | 70 × 166 × 22 |
 
 ## Werkzeuge
 

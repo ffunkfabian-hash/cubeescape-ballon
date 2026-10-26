@@ -866,7 +866,21 @@
      0.2
     ],
     "ads_view": "glass",
-    "frame_max": 0.1
+    "frame_max": 0.1,
+    "variants": {
+     "L": {
+      "de": "Holo L",
+      "share": [
+       0.2,
+       0.25
+      ],
+      "weapon_types": [
+       "machine_gun",
+       "grenade_launcher",
+       "rocket_launcher"
+      ]
+     }
+    }
    },
    "scope": {
     "de": "Zielfernrohr",
@@ -878,7 +892,21 @@
      0.26
     ],
     "ads_view": "glass",
-    "frame_max": 0.15
+    "frame_max": 0.15,
+    "variants": {
+     "S": {
+      "de": "Zielfernrohr S",
+      "share": [
+       0.17,
+       0.2
+      ],
+      "weapon_types": [
+       "scout_rifle",
+       "linear_fusion_rifle",
+       "pulse_rifle"
+      ]
+     }
+    }
    },
    "fullscreen": {
     "de": "Vollbild (Scharfschütze)",
@@ -886,6 +914,28 @@
     "zoom_bonus": 0.0,
     "note": "eigene Kontur je Waffe, außen schwarz"
    }
+  },
+  "rail_line_mm": {
+   "holo": 26.0,
+   "mini_reflex": 15.0,
+   "iron": 11.0
+  },
+  "line_exempt": {
+   "iron": [
+    "hand_cannon",
+    "sidearm",
+    "shotgun"
+   ],
+   "mini_reflex": [
+    "hand_cannon",
+    "sidearm"
+   ]
+  },
+  "drawn": {
+   "ref_w_px": 1280,
+   "min_line_px": 1.6,
+   "plane_tol_mm": 0.5,
+   "de": "Hüftform der Klasse, flach in der Glasebene, reine Emission"
   }
  },
  "class_zoom": {
@@ -1174,7 +1224,7 @@
  },
  "sight_kind_de": {
   "holo": "offenes Holo (abgerundetes Rechteck)",
-  "ring_scope": "kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse",
+  "ring_scope": "kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv",
   "irons_brackets": "Kimme und Korn mit leuchtenden Klammern",
   "fullscreen": "Zielfernrohr außen, im Zielen Vollbild",
   "ring": "Ring oder Doppelring",

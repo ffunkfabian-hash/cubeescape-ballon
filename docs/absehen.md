@@ -2,7 +2,7 @@
 
 > Erzeugt aus `basic/reticles.py` mit `python3 tools/export_reticles.py` – nicht von Hand ändern.
 
-Eine Quelle für Blender (`basic/common.reticle`, Familienvisier `reflex_sight_v21`) und die Laufzeit (`data/reticles.json`). Katalogblatt: `python3 tools/reticle_sheet.py --sheet` (Belege `reticles.png`, Clip `clips/reticle_spread.mp4`).
+Eine Quelle für Blender (`basic/common.drawn_reticle`, Visier-Baukasten v3 in `basic/common.py`; `reticle()` für Katalogblätter) und die Laufzeit (`data/reticles.json`). Katalogblatt: `python3 tools/reticle_sheet.py --sheet` (Belege `reticles.png`, Clip `clips/reticle_spread.mp4`).
 
 ## Formen
 
@@ -121,13 +121,22 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 | `scope` | Zielfernrohr | 90 mm | `Socket_Objective` | +0.8 | 20–26 % | 0.15 × Öffnung | glass |
 | `fullscreen` | Vollbild (Scharfschütze) | – | – | – | – | – | overlay: eigene Kontur je Waffe, außen schwarz |
 
+**Erweiterung 0.21 „Ironsight“** (Nutzerwahl 26.10.2026, `docs/visier-konzept.md` › 7): Visierlinie über der Schienenoberkante (BRI-22) – Holo und Zielfernrohr auf der H0-Plattform + 26 mm (Visierhöhe gilt), Mini-Reflex + 15 mm (hand_cannon, sidearm), Kimme/Korn + 11 mm (hand_cannon, sidearm, shotgun); für die beiden letzten gilt die Visierhöhe 66 ± 4 mm nicht. Zielfernrohre sitzen nach Konzept A: Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, Ring ohne Wulst (außen/innen 1,29). Öffnung im Zielen = lichte Öffnung (Scheibe bzw. Objektivlinse) im echten Abstand zum Augenpunkt.
+
+| Visiertyp | zugelassene Variante | Öffnung im Zielen | nur an |
+|---|---|---|---|
+| `reflex` | Holo L (Größe L) | 20–25 % | `machine_gun`, `grenade_launcher`, `rocket_launcher` |
+| `scope` | Zielfernrohr S (Größe S) | 17–20 % | `scout_rifle`, `linear_fusion_rifle`, `pulse_rifle` |
+
+Absehen gezeichnet: Hüftform der Klasse, flach in der Glasebene, reine Emission; Linien mindestens 1.6 px bei 1280 px Bildbreite (75°), Ebene höchstens 0.5 mm neben der Scheibe (`common.drawn_reticle`; Unity zeichnet es selbst). Geprüft in `tools/test_sights.py` und `tools/test_sight_seat.py`.
+
 Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach Glidepath.
 
 | Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |
 |---|---|---|---|---|---|
 | `auto_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.6 | beobachtet | **×1.9** | ×2.4 |
 | `pulse_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.7 | beobachtet | **×2.0** | ×2.5 |
-| `scout_rifle` | kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse | ×1.2 | gemessen (Glidepath) | ×1.5 | **×2.0** |
+| `scout_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×1.2 | gemessen (Glidepath) | ×1.5 | **×2.0** |
 | `hand_cannon` | Kimme und Korn mit leuchtenden Klammern | ×1.15 | gemessen (Glidepath) | **×1.15** | ×1.15 |
 | `sidearm` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `submachine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.45 | gemessen (Glidepath) | **×1.45** | ×1.45 |
@@ -135,7 +144,7 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `grenade_launcher` | runde Linse mit Winkel | ×1.4 | beobachtet | **×1.4** | ×1.4 |
 | `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×5.5 | beobachtet | **×5.5** | ×5.5 |
 | `fusion_rifle` | Ring oder Doppelring | ×1.5 | entworfen | **×1.8** | ×2.3 |
-| `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse | ×3.0 | entworfen | ×3.3 | **×3.8** |
+| `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×3.0 | entworfen | ×3.3 | **×3.8** |
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |
