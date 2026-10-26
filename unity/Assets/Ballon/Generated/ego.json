@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/5",
+ "format": "ballon-ego/6",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen",
@@ -26,11 +26,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "79306ac3a366ecec1d1b9e41d087fec058e5e8ab97463c27bee244d59bd27327"
+    "sha256": "809fdb78afdc34802e8c92d1e6496b7a0121013f9280dc9c150590bf089f6c8d"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "79243e71caa95ce4fe3315edbaa7d72f4b4385578d99ddbc385783970fdafcf0"
+    "sha256": "b32d874bf844f6ef9dc0d1846476fa880511b737b884d3ee9828b5c592e1cdd2"
    },
    {
     "path": "tools/blender_build.py",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "e61867d83bddc65eecd87611bc304dabbfa44f50c8f1280cc985a3d26dc5338f"
+    "sha256": "88de000b3881d5bfc357913688b64e4649371b2c22730e68c994b008c2273073"
    },
    {
     "path": "tools/bake_unity.py",
@@ -75,6 +75,7 @@
    "aim_out",
    "fire_ads",
    "fire_hip",
+   "holster",
    "sprint_to_aim",
    "sprint_to_fire"
   ],
@@ -95,11 +96,46 @@
    "back_mps": 0.62,
    "pitch_dps": 115.0,
    "climb_deg": 0.12,
+   "ads_back": 0.45,
+   "ads_pitch": 0.02,
    "cam_freq_hz": 4.0,
-   "cam_zeta": 0.6,
-   "cam_dps": 18.0
+   "cam_zeta": 1.0,
+   "cam_dps": 18.0,
+   "ads_cam": 0.45,
+   "path_up_h": 0.01,
+   "path_hz": 10.0,
+   "path_side_b": [
+    0.0,
+    0.003,
+    0.006,
+    0.007,
+    0.004,
+    0.0,
+    -0.004,
+    -0.007,
+    -0.008,
+    -0.005,
+    -0.001,
+    0.003,
+    0.006,
+    0.008,
+    0.006,
+    0.002,
+    -0.003,
+    -0.006
+   ],
+   "recover_delay_s": 0.12,
+   "recover_hz": 2.0,
+   "burst_shots": 0,
+   "burst_rpm": 0,
+   "spread_hip_deg": 1.1,
+   "spread_ads_deg": 0.12
   },
-  "de": "Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoßfeder, Tempo)"
+  "switch": {
+   "empty_s": 0.03,
+   "src": "M Destiny-Wechsel: leere Sicht 0,07–0,30 s (Motiongen wechsel › 4); Ziel 0,1–0,2 s (6.1 A), gemessen 0,13 s bei 60/s"
+  },
+  "de": "Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoß, Wechsel, Tempo)"
  },
  "camera": {
   "h_fov_deg": 75.0,
@@ -2639,16 +2675,16 @@
    "name": "hip",
    "ads": false,
    "roll": 6.0,
-   "src": "E (Destiny-Hüfte: Griff unten rechts, Lauf zur Bildmitte); Toolgen-Hüfte (−0,21/−0,537/−0,176) als Start",
+   "src": "M Destiny-Hüfte: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A), Lage E; 0.15: Mündung x 58,8 / y 49,6 → x 58,2 / y 63,2 % (6,5 cm tiefer, Lauf zur Bildmitte); Toolgen-Hüfte als Start",
    "pos": [
-    -0.2,
+    -0.19,
     -0.42,
-    -0.165
+    -0.23
    ],
    "aim": [
     0.02,
     -3.0,
-    0.1
+    -0.2
    ],
    "eye": [
     0.0,
@@ -2743,16 +2779,16 @@
    "name": "crouch",
    "ads": false,
    "roll": 9.0,
-   "src": "E",
+   "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
    "pos": [
-    -0.19,
+    -0.18,
     -0.41,
-    -0.18
+    -0.245
    ],
    "aim": [
     0.02,
     -3.0,
-    0.05
+    -0.25
    ],
    "eye": [
     0.0,
@@ -2769,16 +2805,16 @@
    "name": "air",
    "ads": false,
    "roll": 4.0,
-   "src": "E",
+   "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
    "pos": [
-    -0.2,
+    -0.19,
     -0.42,
-    -0.15
+    -0.215
    ],
    "aim": [
     0.02,
     -3.0,
-    0.17
+    -0.13
    ],
    "eye": [
     0.0,
@@ -3402,9 +3438,9 @@
   {
    "name": "holster",
    "de": "Wegstecken",
-   "frames": 18,
-   "time_scale": 1.25,
-   "src": "E (CE: Holster ab aktueller Stellung)",
+   "frames": 8,
+   "time_scale": 1.0,
+   "src": "M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung)",
    "weapon": [
     {
      "f": 0.0,
@@ -3417,7 +3453,7 @@
      "back": 0.0
     },
     {
-     "f": 15.0,
+     "f": 7.5,
      "pose": "holstered",
      "roll": 0.0,
      "yaw": 0.0,
@@ -3427,7 +3463,7 @@
      "back": 0.0
     },
     {
-     "f": 17.5,
+     "f": 8.0,
      "pose": "holstered",
      "roll": 0.0,
      "yaw": 0.0,
@@ -3454,7 +3490,7 @@
      ]
     },
     {
-     "f": 2.5,
+     "f": 1.0,
      "kind": "grip",
      "grip": "support",
      "point": [
@@ -3469,7 +3505,7 @@
      ]
     },
     {
-     "f": 10.0,
+     "f": 5.0,
      "kind": "cam",
      "grip": "support",
      "point": [
@@ -3507,11 +3543,11 @@
      "pose": "underhand"
     },
     {
-     "f": 3.75,
+     "f": 2.0,
      "pose": "open"
     },
     {
-     "f": 12.5,
+     "f": 6.0,
      "pose": "relaxed"
     }
    ],
@@ -3543,11 +3579,11 @@
    },
    "events": [
     {
-     "f": 2,
+     "f": 1,
      "name": "HandOff"
     },
     {
-     "f": 15,
+     "f": 8,
      "name": "Holstered"
     }
    ]
@@ -3884,7 +3920,7 @@
    "de": "Dauerfeuer im Zielen",
    "frames": 32,
    "time_scale": 1.0,
-   "src": "M Kadenz wie fire_hip; Rückstoß im Zielen gedämpft E",
+   "src": "M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E",
    "weapon": [
     {
      "f": 0.0,
@@ -3974,7 +4010,7 @@
     24,
     25
    ],
-   "kick": 0.45,
+   "kick": 1.0,
    "breathe": false,
    "bob": {
     "enabled": false,
@@ -5126,7 +5162,7 @@
    "de": "Sprint: Beginn, Schleife, Ende",
    "frames": 60,
    "time_scale": 1.25,
-   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“)",
+   "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante)",
    "weapon": [
     {
      "f": 0.0,
@@ -5230,8 +5266,8 @@
     "end": 47.5,
     "period": 19.0,
     "amp": [
-     0.012,
-     0.01
+     0.022,
+     0.018
     ],
     "roll": 3.5,
     "u": true

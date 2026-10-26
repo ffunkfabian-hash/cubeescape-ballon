@@ -122,6 +122,14 @@ namespace Ballon.Ego
             }
         }
 
+        /// <summary>Weltkamera (5.1 A / 5.2 A): Grundbahn und Kamera-Ruck in Grad (Nicken hoch, Gieren rechts positiv) als Unity-Drehung
+        /// im Kopfrahmen; das Viewmodel hängt am Kopf und bleibt davon unberührt.</summary>
+        public Quaternion WorldKick(float pitchDeg, float yawDeg)
+        {
+            ToUnity(_axes, Rot(Rad(yawDeg), new Vector3(0, 0, -1)) * Rot(Rad(pitchDeg), new Vector3(-1, 0, 0)), out _, out var q);
+            return q;
+        }
+
         /// <summary>Kamera-Feedback (Grad, Mündung hoch = Kamera hoch) als Unity-Drehung im Kopfrahmen.</summary>
         public Quaternion CameraKick(float pitchDeg)
         {

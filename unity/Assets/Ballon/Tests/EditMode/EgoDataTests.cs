@@ -86,6 +86,8 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/4\"}"));          // 0.12: ohne Weltzoom und Hüft-Fadenkreuz
             StringAssert.Contains("neu exportieren", ex.Message);
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/5\"}"));          // 0.14: Rückstoß ohne Bahn, kein Wechsel
+            StringAssert.Contains("neu exportieren", ex.Message);
         }
 
         // ---------------------------------------------------------------- Weltzoom und Hüft-Fadenkreuz 0.13
@@ -104,8 +106,7 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("auto_rifle", G.weapon_type);
             Assert.AreEqual("reflex", G.sight);
             Assert.AreEqual(G.ZoomFor(G.weapon_type), G.world_zoom, 1e-6f, "Pilot zoomt mit dem Wert seiner Klasse");
-            var mt = new MoveTuning();
-            TestContext.WriteLine($"Weltzoom Pilot {G.world_zoom} (MoveTuning-Vorgabe {mt.adsZoom}), Scout {G.ZoomFor("scout_rifle")}, " +
+            TestContext.WriteLine($"Weltzoom Pilot {G.world_zoom}, Scout {G.ZoomFor("scout_rifle")}, " +
                                   $"Handfeuerwaffe {G.ZoomFor("hand_cannon")}, MP {G.ZoomFor("submachine_gun")}");
         }
 
@@ -212,7 +213,10 @@ namespace Ballon.Ego.Tests
             Assert.GreaterOrEqual(n, 3, "aim_in, sprint_to_aim, draw_aim");
         }
 
-        /// <summary>Sprint-Wippen: vertikal ein Hub je Schritt (2 je Periode), wie Destiny 2 ≈ 3,16 Schritte/s – vorher 6/s („tapsig“).</summary>
+        /// <summary>Sprint-Wippen: vertikal ein Hub je Schritt (2 je Periode), wie Destiny 2 ≈ 3,16 Schritte/s – vorher 6/s („tapsig“).
+        /// Hub (3.1 A, 0.15) gemessen wie in Schritt 2 am Bild, hier an der Silhouette von Waffe und Armen (Kanten der Netzgrenzen) über
+        /// die Sprintschleife: Oberkante vertikal ≈ 10 % H, linke Kante seitlich ≈ 13 % B wie die Destiny-Automatik (10–11 % H / 13 % B);
+        /// bis 0.14 am Unity-Bild 5,1–5,7 % H / 7,0–8,7 % B.</summary>
         [Test]
         public void Sprintschritt_wie_ein_Laeufer()
         {
@@ -222,6 +226,49 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(B.u, "Sprint-Bahn als U-Bogen (oben an den Seitenumkehren) wie Destiny 2");
             var W = D.Action("walk").bob;
             Assert.Less(2f * D.fps / W.period, steps, "Gehen langsamer als Sprint");
+
+            var S = new EgoSolver(D);
+            var E = new EgoScreen(S);
+            var A = D.Action("sprint");
+            var st = new EgoState();
+            var pts = new List<Vector2>();
+            float t0 = float.MaxValue, t1 = float.MinValue, l0 = float.MaxValue, l1 = float.MinValue;
+            for (int f = 0; f <= A.frames; f++)
+            {
+                var o = S.Evaluate(A, f, st);
+                if (f < B.start + 4 || f > B.end - 4) continue;              // volle Wipp-Weite (4 Bilder Ein-/Ausblenden)
+                E.Silhouette(o, pts);
+                float top = pts.Min(p => p.y), left = pts.Min(p => p.x);
+                t0 = Mathf.Min(t0, top); t1 = Mathf.Max(t1, top); l0 = Mathf.Min(l0, left); l1 = Mathf.Max(l1, left);
+            }
+            Assert.GreaterOrEqual(B.end - B.start - 8, B.period, "mindestens eine ganze Seitenperiode ausgewertet");
+            TestContext.WriteLine($"Sprint-Hub an der Silhouette: Oberkante {t1 - t0:0.0} % H (y {t0:0.0}–{t1:0.0}), linke Kante " +
+                                  $"{l1 - l0:0.0} % B (x {l0:0.0}–{l1:0.0}); Hub {B.amp[0] * 1000:0} / {B.amp[1] * 1000:0} mm, Rollen ±{B.roll}°");
+            Assert.That(t1 - t0, Is.InRange(8.5f, 12.5f), "vertikal ≈ 10 % H (Destiny-Automatik 10–11 % H)");
+            Assert.That(l1 - l0, Is.InRange(11f, 15.5f), "seitlich ≈ 13 % B (Destiny-Automatik 13 % B)");
+        }
+
+        // ---------------------------------------------------------------- Haltung 0.15
+        /// <summary>Entscheidungsliste 2.1 A: in der Hüfte liegt die Mündung rechts unter der Mitte wie bei Destiny (lange Waffen, 21
+        /// Beispiele, Motiongen huefte › 4): x 54–59 / y 60–71 %, die hintere Visieröffnung 7–34 pp rechts der Mündung, die Kontur reicht
+        /// bis zum rechten und unteren Rand. Gemessen wie das Ego-Still (Bild 0). Bis 0.14 Mündung x 58,8 / y 49,6 % (10 pp zu hoch).</summary>
+        [Test]
+        public void Hueftlage_im_Destiny_Band()
+        {
+            var S = new EgoSolver(D);
+            var E = new EgoScreen(S);
+            var o = S.Evaluate(S.StillAction("hip"), 0, new EgoState());
+            Vector3 At(string a) => E.ToScreen(o.weapon.MultiplyPoint3x4(V(D.Anchor(a).pos)));
+            Vector3 m = At("Socket_Muzzle"), s = At("Socket_Sight"), r = At("Socket_Reticle");
+            var pts = new List<Vector2>();
+            E.Silhouette(o, pts, arms: false);
+            TestContext.WriteLine($"Hüfte: Mündung x {m.x:0.0} / y {m.y:0.0} %, Visier hinten x {s.x:0.0} / y {s.y:0.0} % ({s.x - m.x:0.0} pp rechts), " +
+                                  $"Absehen x {r.x:0.0} / y {r.y:0.0} %; Waffe x {pts.Min(p => p.x):0.0}–{pts.Max(p => p.x):0.0}, y {pts.Min(p => p.y):0.0}–{pts.Max(p => p.y):0.0} %");
+            Assert.That(m.x, Is.InRange(54f, 59f), "Mündung x (Destiny 54–59 %)");
+            Assert.That(m.y, Is.InRange(60f, 71f), "Mündung y (Destiny 60–71 %)");
+            Assert.That(s.x - m.x, Is.InRange(7f, 34f), "hintere Visieröffnung rechts der Mündung (Destiny 7–34 pp)");
+            Assert.Greater(pts.Max(p => p.x), 99f, "Kontur reicht bis zum rechten Rand");
+            Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
         }
 
         // ---------------------------------------------------------------- Achsen

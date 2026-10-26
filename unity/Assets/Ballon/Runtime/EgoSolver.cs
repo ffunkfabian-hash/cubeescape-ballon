@@ -31,7 +31,8 @@ namespace Ballon.Ego
         public Matrix4x4 handL, handR;
         public float[] fingersL = new float[15], fingersR = new float[15];
         public Matrix4x4[] segL, segR;
-        public float camPitch, wristBendMaxDeg;
+        public float camPitch, wristBendMaxDeg;                    // camPitch: Viewmodel-Kamera (Hüfte: Kamera-Ruck)
+        public float worldPitch, worldYaw;                         // Weltkamera gegen den Kopf (Grad): Grundbahn + Kamera-Ruck (live)
         public int overreach;
     }
 
@@ -278,14 +279,17 @@ namespace Ballon.Ego
             {
                 var Rc = D.motion.recoil;
                 float k = A.kick, dt = 1f / fps;
+                // Zielen (5.1 A, wie ego_build): kleiner Modellkick, kein Hochziehen, der Kamera-Ruck geht nur in die Welt
+                bool ads = A.EndsInAds;
+                float kb = ads ? Rc.ads_back : 1, kp = ads ? Rc.ads_pitch : 1, kc = ads ? 0 : 1, kl = ads ? 0 : 1;
                 if (!st.hasRec) { st.hasRec = true; st.recX = st.recV = st.recCx = st.recCv = Vector3.zero; st.recF = f - 1; }
                 for (int fr = (int)st.recF + 1; fr <= (int)f; fr++)
                 {
                     foreach (var s in A.fire)
                         if (fr - 1 < s && s <= fr)
                         {
-                            st.recV += new Vector3(Rc.back_mps * k, Rc.pitch_dps * k, 0);
-                            st.recCv += new Vector3(Rc.cam_dps * k, 0, 0);
+                            st.recV += new Vector3(Rc.back_mps * k * kb, Rc.pitch_dps * k * kp, 0);
+                            st.recCv += new Vector3(Rc.cam_dps * k * kc, 0, 0);
                         }
                     SpringStep(ref st.recX, ref st.recV, Vector3.zero, 2 * Mathf.PI * Rc.freq_hz, Rc.zeta, dt);
                     SpringStep(ref st.recCx, ref st.recCv, Vector3.zero, 2 * Mathf.PI * Rc.cam_freq_hz, Rc.cam_zeta, dt);
@@ -293,7 +297,7 @@ namespace Ballon.Ego
                 st.recF = f;
                 int n = 0, last = -1;
                 foreach (var s in A.fire) if (s <= f) { n++; last = s; }
-                float climb = Rc.climb_deg * k * n * Mathf.Exp(-Mathf.Max(0, f - A.fire[A.fire.Length - 1]) / 8f);
+                float climb = Rc.climb_deg * k * kl * n * Mathf.Exp(-Mathf.Max(0, f - A.fire[A.fire.Length - 1]) / 8f);
                 L.camPitch = st.recCx.x;
                 L.pos += R.MultiplyVector(new Vector3(0, st.recX.x, 0));
                 L.rot = L.rot * RotX(Rad(-(st.recX.y + climb)));          // Mündung steigt

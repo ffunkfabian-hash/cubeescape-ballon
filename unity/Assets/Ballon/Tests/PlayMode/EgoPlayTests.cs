@@ -275,6 +275,224 @@ namespace Ballon.Ego.Tests
             Assert.Greater(atSide, atMid, "U-Bogen: oben an den Seitenumkehren, unten in der Mitte");
         }
 
+        static EgoScreen _scr;
+        static EgoScreen Scr => _scr ?? (_scr = new EgoScreen(new EgoSolver(D)));
+
+        /// <summary>Anteil der Bildhöhe/-breite (%) eines Winkels im Weltbild mit Zoom z (16:9, 75° horizontal).</summary>
+        static float ShareH(float deg, float z) => Mathf.Tan(deg * Mathf.Deg2Rad) / (2 * Mathf.Tan(37.5f * Mathf.Deg2Rad) * 9f / 16f / z) * 100;
+        static float ShareB(float deg, float z) => Mathf.Tan(deg * Mathf.Deg2Rad) / (2 * Mathf.Tan(37.5f * Mathf.Deg2Rad) / z) * 100;
+
+        /// <summary>Entscheidungsliste 6.1 A: Waffenwechsel (Q) wie Destiny – Wegstecken ≈ 0,25 s (Destiny 0,08–0,27 s, bis 0.14 0,60 s),
+        /// danach 0,1–0,2 s leere Sicht (weder Waffe noch Arme im Bild), dann Ziehen wie bisher mit Nachfedern. Die Marker Wegstecken,
+        /// leer, erstes neues Bild, Hüfte und ruhig einzeln; sichtbar heißt: eine Kante der Netzgrenzen von Waffe oder Armen liegt im Bild.</summary>
+        [Test]
+        public void Wechsel_mit_leerer_Sicht()
+        {
+            foreach (bool fromReload in new[] { false, true })
+            {
+                var c = Ready();
+                if (fromReload) { c.ammo = 5; c.Tick(Dt, new EgoIntent { grounded = true, reload = true }); }
+                Run(c, Idle, 0.3f);
+                var marks = new List<(int k, string a, string m)>();
+                int k = 0;
+                c.Marker += (a, m) => marks.Add((k, a, m));
+                var pts = new List<Vector2>();
+                var vis = new List<bool>();
+                var acts = new List<string>();
+                var eye = BMath.V(D.Anchor("Socket_Eye").pos);
+                var move = new List<float>();
+                Vector3 prev = Vector3.zero;
+                for (; k < 150; k++)                                   // 2,5 s bei 60/s
+                {
+                    c.Tick(Dt, k == 0 ? new EgoIntent { grounded = true, swap = true } : Idle);
+                    Scr.Silhouette(c.output, pts);
+                    vis.Add(pts.Count > 0);
+                    acts.Add(c.ActionName);
+                    var e = c.BaseWeapon.MultiplyPoint3x4(eye);
+                    move.Add(k == 0 ? 0 : (e - prev).magnitude);
+                    prev = e;
+                }
+                string act = fromReload ? "reload_to_switch" : "holster";
+                int hol = marks.FindIndex(x => x.a == act && x.m == "Holstered");
+                int empty = marks.FindIndex(x => x.a == "switch" && x.m == "Empty"), draw = marks.FindIndex(x => x.a == "switch" && x.m == "Draw");
+                int ready = marks.FindIndex(x => x.a == "draw" && x.m == "Ready");
+                Assert.IsTrue(hol >= 0 && empty >= 0 && draw >= 0 && ready >= 0, string.Join(" ", marks.Select(x => $"{x.k}:{x.a}/{x.m}")));
+                float T(int frame) => (frame + 1) * Dt;                 // Ende des Bilds
+                int gone = vis.IndexOf(false), back = vis.IndexOf(true, Mathf.Max(0, gone));
+                Assert.Greater(gone, 0, "Waffe verschwindet");
+                Assert.Greater(back, gone, "neue Waffe erscheint");
+                int rk = marks[ready].k, calm = -1;
+                for (int q = rk; q < move.Count - 6 && calm < 0; q++)          // ruhig: 6 Bilder unter 0,2 mm je Bild
+                    if (move.Skip(q).Take(6).All(v => v < 0.0002f)) calm = q;
+                float tHol = T(marks[hol].k), tEmpty = (back - gone) * Dt;
+                TestContext.WriteLine($"Wechsel{(fromReload ? " aus dem Nachladen" : "")} bei 60/s: Wegstecken bis {T(gone - 1):0.000} s sichtbar, Marker " +
+                                      $"{act} › Holstered {tHol:0.000} s; leer {T(gone - 1):0.000}–{T(back - 1):0.000} s = {tEmpty:0.000} s " +
+                                      $"(switch › Empty {T(marks[empty].k):0.000}, Draw {T(marks[draw].k):0.000}); erstes neues Bild {T(back):0.000} s; " +
+                                      $"Hüfte (draw › Ready) {T(rk):0.000} s; ruhig {(calm < 0 ? "–" : T(calm).ToString("0.000"))} s");
+                if (!fromReload)                                         // reload_to_switch (Abbruch) bleibt wie bisher
+                {
+                    Assert.That(tHol, Is.InRange(0.2f, 0.3f), "Wegstecken ≈ 0,25 s (Destiny 0,08–0,27 s)");
+                    Assert.LessOrEqual(T(gone - 1), tHol + 1e-4f, "beim Marker Holstered ist die Waffe aus dem Bild");
+                    Assert.That(tEmpty, Is.InRange(0.1f - 1e-4f, 0.2f + 1e-4f), "leere Sicht 0,1–0,2 s");
+                }
+                Assert.LessOrEqual(marks[hol].k, marks[empty].k, "leer nach dem Wegstecken");
+                Assert.AreEqual("draw", acts[back], "das erste neue Bild gehört zum Ziehen");
+                Assert.Greater(rk, back, "Hüfte nach dem ersten neuen Bild");
+                float skip = EgoController.DrawEnters(new EgoSolver(D));
+                Assert.AreEqual((D.Action("draw").events.First(e => e.name == "Ready").f - skip) / 30f, (rk - marks[draw].k) * Dt, 2 * Dt,
+                                "Ziehen wie bisher: nur der unsichtbare Anfang entfällt");
+                Assert.Greater(calm, rk, "ruhig nach dem Nachfedern");
+                Assert.Less((calm - rk) * Dt, 0.6f, "ruhig binnen 0,6 s nach der Hüfte");
+                Assert.IsFalse(c.Holstered);
+            }
+        }
+
+        /// <summary>Entscheidungsliste 1d (Destiny-Holo, Motiongen glidepath): der Weltzoom beginnt mit oder kurz nach dem Modell (0–2
+        /// Bilder bei 60/s) und endet mit ihm (±1 Bild); Modell = Bildbewegung der Waffe in der Grundhaltung (Summe der Wege von Mündung,
+        /// Visier, Magazinschacht und Griff im Bild) je Bild über 5 % ihres Höchstwerts (die empfindlichste Schwelle der Bildmessung;
+        /// am Unity-Bild gemessen 0.15: Start +2/+1/0, Ende −1/0/+1 Bilder bei 5/10/20 %). Bis 0.14 begann der Zoom 2–3 Bilder vor dem Modell (eigene Zeitkurve) und nach dem Sprint 11 Bilder danach.
+        /// Zielen → Hüfte: der Zoom ist zurück, wenn das Modell die Hüfte erreicht; das Nachfedern danach zählt nicht.</summary>
+        [Test]
+        public void Zoom_beginnt_und_endet_mit_dem_Modell()
+        {
+            var aim = new EgoIntent { grounded = true, aim = true };
+            var sprint = new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f };
+            var cases = new (string name, EgoIntent before, float pre, EgoIntent after)[]
+            {
+                ("Hüfte → Zielen", Idle, 0.6f, aim), ("Zielen → Hüfte", aim, 0.8f, Idle), ("Sprint → Zielen", sprint, 1.5f, aim),
+            };
+            var anchors = new[] { "Socket_Muzzle", "Socket_Sight", "Socket_MagWell", "Socket_Hand" }.Select(a => BMath.V(D.Anchor(a).pos)).ToArray();
+            var prev = new Vector2[anchors.Length];
+            float Motion(EgoController c, bool first)
+            {
+                float sum = 0;
+                for (int a = 0; a < anchors.Length; a++)
+                {
+                    Vector2 q = Scr.ToScreen(c.BaseWeapon.MultiplyPoint3x4(anchors[a]));
+                    if (!first) sum += (q - prev[a]).magnitude;
+                    prev[a] = q;
+                }
+                return sum;
+            }
+            foreach (var (name, before, pre, after) in cases)
+            {
+                var c = Ready();
+                Run(c, before, pre);
+                var w = new List<float> { c.adsWeight };
+                Motion(c, true);                                       // Ausgangslage merken
+                var mv = new List<float> { 0 };
+                for (int k = 0; k < 60; k++)
+                {
+                    c.Tick(Dt, after);
+                    mv.Add(Motion(c, false));
+                    w.Add(c.adsWeight);
+                }
+                float w0 = w[0], w1 = w[w.Count - 1], peak = mv.Max();
+                int zs = w.FindIndex(x => x != w0), ze = w.FindIndex(x => x == w1);
+                var line = new System.Text.StringBuilder($"{name}: Zoom Bild {zs}–{ze} ({w0:0}→{w1:0})");
+                int ms5 = 0, me5 = 0;
+                foreach (float thr in new[] { 0.05f, 0.10f, 0.20f })
+                {
+                    int ms = mv.FindIndex(x => x > thr * peak), me = mv.FindLastIndex(x => x > thr * peak);
+                    line.Append($"; Schwelle {thr * 100:0} %: Modell {ms}–{me}, Zoom − Modell Start {zs - ms:+0;-0;0}, Ende {ze - me:+0;-0;0}");
+                    if (thr == 0.05f) { ms5 = ms; me5 = me; }
+                }
+                TestContext.WriteLine(line.ToString());
+                Assert.AreEqual(1f, Mathf.Abs(w1 - w0), 1e-4f, $"{name}: Zoom ganz durchlaufen");
+                Assert.That(zs - ms5, Is.InRange(0, 2), $"{name}: Zoom beginnt mit oder kurz nach dem Modell");
+                if (after.aim) Assert.That(ze - me5, Is.InRange(-1, 1), $"{name}: Zoom endet mit dem Modell (±1 Bild)");
+                else Assert.LessOrEqual(ze - me5, 1, $"{name}: Zoom ist zurück, wenn das Modell die Hüfte erreicht (danach federt es nach)");
+            }
+        }
+
+        /// <summary>Entscheidungsliste 5.2 A: Destiny-Säule – feste, lernbare Grundbahn: je Schuss 1 % H nach oben (Anteil des Weltbilds,
+        /// im Zielen also kleinerer Winkel), seitlich eine feste Folge mit ≤ 2,5 % B, dreimal dieselbe Form; zweistufig: in der Salve keine
+        /// Erholung, danach kritisch gedämpft zurück ohne Unterschwingen. Salvenwaffe (Daten hier umgestellt): drei Schuss je Salve,
+        /// Erholung in der Pause, eine angefangene Salve läuft zu Ende. Bis 0.14: bleibendes Hochziehen 0,18°/Schuss, keine Seitenbahn.</summary>
+        [Test]
+        public void Rueckstoss_Saeule_fest_und_zweistufig()
+        {
+            var c = Ready();
+            c.ammo = c.magSize = 1000;
+            int shots = 0;
+            c.Shot += () => shots++;
+            var bursts = new List<List<Vector2>>();
+            float minY = 0;
+            for (int b = 0; b < 3; b++)
+            {
+                var path = new List<Vector2>();
+                int s0 = shots;
+                while (shots - s0 < 12) { c.Tick(Dt, new EgoIntent { grounded = true, fire = true }); path.Add(c.PathDeg); }
+                for (int k = 0; k < 72; k++) { c.Tick(Dt, Idle); path.Add(c.PathDeg); minY = Mathf.Min(minY, c.PathDeg.y); }
+                bursts.Add(path);
+            }
+            float diff = 0;
+            for (int k = 0; k < bursts[0].Count; k++)
+                for (int b = 1; b < 3; b++) diff = Mathf.Max(diff, (bursts[b][k] - bursts[0][k]).magnitude);
+            var first = bursts[0];
+            int last = first.Count - 72;
+            float up = ShareH(first.Max(v => v.y), 1);
+            float side = ShareB(first.Max(v => v.x), 1) - ShareB(first.Min(v => v.x), 1);
+            float rest = ShareH(first[first.Count - 1].y, 1);
+            int backK = first.FindIndex(last, v => ShareH(v.y, 1) < 0.25f);
+            TestContext.WriteLine($"Hüfte, 12 Schuss: Säule {up:0.00} % H, seitlich {side:0.00} % B, dreimal gleich (größte Abweichung {diff:0.0000}°), " +
+                                  $"zurück unter 0,25 % H nach {(backK - last + 1) * Dt:0.000} s, Rest {rest:0.000} % H, tiefster Wert {ShareH(minY, 1):0.000} % H");
+            Assert.That(up, Is.InRange(11f, 13.5f), "≈ 1 % H je Schuss (Destiny Chroma Rush: 12 Schuss ≈ 12 % H)");
+            Assert.That(side, Is.InRange(0.5f, 2.5f), "kleines, begrenztes Seitenwackeln ≤ 2,5 % B");
+            Assert.Less(diff, 0.001f, "feste Bahn: dreimal dieselbe Form");
+            Assert.That((backK - last + 1) * Dt, Is.InRange(0.4f, 0.75f), "Erholung nach dem Stoß");
+            Assert.Greater(ShareH(minY, 1), -0.05f, "kein Unterschwingen");
+
+            // Zielen: gleicher Bildanteil im gezoomten Weltbild
+            var ca = Ready();
+            ca.ammo = ca.magSize = 1000;
+            Run(ca, new EgoIntent { grounded = true, aim = true }, 0.8f);
+            int sa = 0;
+            ca.Shot += () => sa++;
+            float pk = 0;
+            while (sa < 4) { ca.Tick(Dt, new EgoIntent { grounded = true, aim = true, fire = true }); }
+            for (int k = 0; k < 10; k++) { ca.Tick(Dt, new EgoIntent { grounded = true, aim = true }); pk = Mathf.Max(pk, ca.PathDeg.y); }
+            float upAds = ShareH(pk, ca.worldZoom);
+            TestContext.WriteLine($"Zielen, 4 Schuss: Bahn {upAds:0.00} % H des gezoomten Bilds ({pk:0.000}°, Zoom {ca.worldZoom})");
+            Assert.That(upAds, Is.InRange(3.5f, 4.5f), "Viererstoß im Zielen ≈ 4 % H (Destiny Chroma Rush)");
+
+            // Salvenwaffe: Takt in der Salve, Erholung danach (Daten nur für diesen Test umgestellt)
+            var Rc = D.motion.recoil;
+            int oldShots = Rc.burst_shots, oldBurstRpm = Rc.burst_rpm;
+            try
+            {
+                Rc.burst_shots = 3;
+                Rc.burst_rpm = 900;
+                var cb = Ready();
+                cb.ammo = cb.magSize = 1000;
+                cb.rpm = 120;                                          // eine Salve je 0,5 s
+                var at = new List<(int k, float y)>();
+                int kk = 0;
+                cb.Shot += () => at.Add((kk, cb.PathDeg.y));
+                var ys = new List<float>();
+                for (; kk < 90; kk++) { cb.Tick(Dt, new EgoIntent { grounded = true, fire = kk < 75 }); ys.Add(cb.PathDeg.y); }
+                var gaps = at.Zip(at.Skip(1), (a, b) => b.k - a.k).ToList();
+                TestContext.WriteLine($"Salvenwaffe (3 × 900/min, alle 0,5 s): Schüsse in Bild {string.Join(",", at.Select(a => a.k))}; Bahn je Schuss " +
+                                      string.Join(" ", at.Select(a => ShareH(a.y, 1).ToString("0.0"))) + " % H");
+                Assert.AreEqual(new[] { 4, 4, 22, 4, 4, 22, 4, 4 }, gaps.Take(8).ToArray(), "Takt in der Salve 4 Bilder, Salve alle 30 Bilder");
+                float peak1 = ys.Skip(at[2].k).Take(12).Max(), atNext = at[3].y;
+                Assert.Less(atNext, 0.35f * peak1, "Erholung in der Pause");
+                Assert.Greater(at[2].y, at[1].y, "keine Erholung in der Salve");
+                var cs = Ready();                                       // ein kurzer Druck: die Salve läuft zu Ende
+                cs.ammo = cs.magSize = 1000;
+                int n3 = 0;
+                cs.Shot += () => n3++;
+                cs.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+                Run(cs, Idle, 0.3f);
+                Assert.AreEqual(3, n3, "angefangene Salve läuft zu Ende");
+            }
+            finally
+            {
+                Rc.burst_shots = oldShots;
+                Rc.burst_rpm = oldBurstRpm;
+            }
+        }
+
         [Test]
         public void Betrachten_bricht_beim_Feuern_ab()
         {
@@ -533,6 +751,94 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0.02f, AdsFeedback.ShotRingShareH, 1e-6f, "Ring 2 % H");
             Assert.AreEqual(0.045f, AdsFeedback.HitXShareH, 1e-6f, "Treffer-X 4,5 % H");
             Assert.AreEqual((Color)new Color32(0xE0, 0x65, 0x1E, 0xFF), AdsFeedback.Orange, "Familienfarbe Orange (kit accent)");
+        }
+
+        /// <summary>Entscheidungsliste 5.1 A: im Zielen geht der Rückstoß in die Welt – Weltanker 20 m voraus (Weltkamera) wandert beim
+        /// Viererstoß ≈ 4 % H (Destiny Chroma Rush), das Visier (Socket_Reticle durch die Viewmodel-Kamera) bleibt unter 1 % H; Rückkehr
+        /// 0,4–0,6 s nach dem letzten Schuss unter 0,25 % H, ohne Unterschwingen. Zum Vergleich aus der Hüfte: dort springt die Waffe
+        /// sichtbar. Bis 0.14 nickte im Zielen auch das Viewmodel („Visier springt leicht“).</summary>
+        [UnityTest]
+        public IEnumerator Rueckstoss_im_Zielen_geht_in_die_Welt()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            var rt = new RenderTexture(1280, 720, 16);                 // 16:9 wie die Ego-Stills und die Destiny-Messung
+            p.worldCam.targetTexture = rt;
+            var ret = BMath.V(D.Anchor("Socket_Reticle").pos);
+            var res = new Dictionary<bool, (float world, float sight, float back, float under)>();
+            foreach (bool ads in new[] { true, false })
+            {
+                p.C.ReadyNow();
+                p.C.ammo = p.C.magSize;
+                p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+                p.input = new ScriptedInput().Add(0, 100);
+                p.deltaOverride = () => Dt;
+                for (int k = 0; k < 40; k++) yield return null;          // Pendeln, Rückstoß und Bahn klingen ab
+                var input = new ScriptedInput().Add(0, 3.2f, hold: ads ? "aim" : "").Add(1.0f, 1.3f, hold: ads ? "aim fire" : "fire");
+                p.input = input;
+                yield return null;
+                var anchor = p.worldCam.transform.position + p.worldCam.transform.forward * 20f;
+                long s0 = p.C.shots;
+                var rows = new List<(float t, long shots, float world, float sight)>();
+                for (int k = 0; k < 180; k++)                             // 3 s
+                {
+                    yield return null;
+                    float wy = (1 - p.worldCam.WorldToViewportPoint(anchor).y) * 100;   // % H von oben
+                    var o = p.C.output;
+                    float sy = Scr.ToScreen(o.weapon.MultiplyPoint3x4(ret), o.camPitch).y;
+                    rows.Add((input.time, p.C.shots - s0, wy, sy));
+                }
+                int f1 = rows.FindIndex(r => r.shots >= 1), fl = rows.FindIndex(r => r.shots >= 4);
+                Assert.Greater(f1, 0, "erster Schuss");
+                Assert.AreEqual(4, rows[rows.Count - 1].shots, "Viererstoß");
+                float w0 = rows[f1 - 1].world, s0y = rows[f1 - 1].sight;
+                var after = rows.Skip(f1).ToList();
+                float world = after.Max(r => r.world - w0);              // Welt wandert nach unten (Blick hoch)
+                float sight = after.Max(r => r.sight) - after.Min(r => r.sight);
+                int back = rows.FindIndex(fl, r => Mathf.Abs(r.world - w0) < 0.25f && r.t > rows[fl].t + 0.1f);
+                float under = rows.Skip(fl).Min(r => r.world - w0);
+                res[ads] = (world, sight, back < 0 ? -1 : (back - fl) * Dt, under);
+                TestContext.WriteLine($"{(ads ? "Zielen" : "Hüfte")}: Welt {world:0.00} % H, Visier mit Atmen {sight:0.00} % H Spitze–Spitze, zurück unter 0,25 % H " +
+                                      $"{res[ads].back:0.000} s nach dem letzten Schuss, tiefster Wert {under:0.000} % H");
+            }
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            p.worldCam.targetTexture = null;
+            rt.Release();
+            p.C.ReadyNow();
+            p.C.ammo = p.C.magSize;
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            // Visier: gegen einen Zwilling, der nicht schießt (gleiche Zeitschritte, das Atmen hebt sich auf)
+            var vis = new Dictionary<bool, float>();
+            foreach (bool ads in new[] { true, false })
+            {
+                var c = Ready();
+                var c0 = Ready();
+                var hold = new EgoIntent { grounded = true, aim = ads };
+                Run(c, hold, 0.8f);
+                Run(c0, hold, 0.8f);
+                int n = 0;
+                c.Shot += () => n++;
+                var dy = new List<float>();
+                for (int k = 0; k < 72; k++)                                // 1,2 s ab dem ersten Schuss
+                {
+                    var fire = hold;
+                    fire.fire = n < 4;
+                    c.Tick(Dt, fire);
+                    c0.Tick(Dt, hold);
+                    float y = Scr.ToScreen(c.output.weapon.MultiplyPoint3x4(ret), c.output.camPitch).y;
+                    float y0 = Scr.ToScreen(c0.output.weapon.MultiplyPoint3x4(ret), c0.output.camPitch).y;
+                    dy.Add(y - y0);
+                }
+                vis[ads] = dy.Max() - dy.Min();
+                TestContext.WriteLine($"{(ads ? "Zielen" : "Hüfte")}: Visier durch den Rückstoß {vis[ads]:0.00} % H Spitze–Spitze (gegen den Zwilling ohne Schuss)");
+            }
+            var a = res[true];
+            Assert.That(a.world, Is.InRange(3.5f, 5.0f), "Welt ≈ 4 % H je Viererstoß");
+            Assert.Less(vis[true], 1.0f, "Visier < 1 % H");
+            Assert.That(a.back, Is.InRange(0.4f, 0.6f), "Rückkehr 0,4–0,6 s");
+            Assert.Greater(a.under, -0.15f, "kein Unterschwingen");
+            Assert.Greater(vis[false], 3 * vis[true], "aus der Hüfte springt die Waffe sichtbar, im Zielen steht das Visier");
         }
 
         /// <summary>Entscheidungsliste 4.1 A: das Hüft-Fadenkreuz ist nur in der Hüfte sichtbar und geht beim Hüftfeuer auf; es ist im

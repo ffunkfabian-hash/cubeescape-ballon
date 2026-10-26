@@ -355,15 +355,44 @@ namespace Ballon.Ego
             .Add(5.1f, 5.2f, press: "reload")                                  // taktisches Nachladen
             .Add(5.2f, 8.0f);
 
+        /// <summary>Sprint (0.15, 3.1 A): Sprint, Ende, zweiter Sprint und Sprint → Zielen (Zoom gegen Modell, 1d); 7,8 s.</summary>
+        public static ScriptedInput SprintScript() => new ScriptedInput()
+            .Add(0.0f, 0.5f)
+            .Add(0.5f, 3.3f, hold: "sprint", move: new Vector2(0, 1))
+            .Add(3.3f, 4.1f)
+            .Add(4.1f, 5.9f, hold: "sprint", move: new Vector2(0, 1))
+            .Add(5.9f, 7.1f, hold: "aim")
+            .Add(7.1f, 7.8f);
+
+        /// <summary>Waffenwechsel (0.15, 6.1 A): Q aus der Ruhe, nach dem Ziehen ein zweites Mal; Wegstecken, leere Sicht, Ziehen; 3,8 s.</summary>
+        public static ScriptedInput SwitchScript() => new ScriptedInput()
+            .Add(0.0f, 0.5f)
+            .Add(0.5f, 0.55f, press: "swap")
+            .Add(0.55f, 2.2f)
+            .Add(2.2f, 2.25f, press: "swap")
+            .Add(2.25f, 3.8f);
+
+        /// <summary>Rückstoß (0.15, 5.1 A / 5.2 A): Viererstoß aus der Hüfte, dann im Zielen zwei Viererstöße und ein langer Stoß
+        /// (12 Schuss); die Welt wandert, das Visier steht; 6,6 s.</summary>
+        public static ScriptedInput RecoilScript() => new ScriptedInput()
+            .Add(0.0f, 0.5f)
+            .Add(0.5f, 0.8f, hold: "fire")
+            .Add(1.5f, 6.0f, hold: "aim")
+            .Add(2.3f, 2.6f, hold: "aim fire")
+            .Add(3.3f, 3.6f, hold: "aim fire")
+            .Add(4.3f, 5.25f, hold: "aim fire")
+            .Add(6.0f, 6.6f);
+
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
             Player.hud = false;
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
-            var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript() : DemoScript();
+            var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript()
+                     : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
-            Player.C.ammo = 9;
+            Player.C.ammo = dn == "rueckstoss" ? Player.C.magSize : 9;
             float fps = float.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonFps") ?? "", out var fp) ? fp : 30f;   // Messläufe: 60
             float dt = 1f / fps;
             Player.deltaOverride = () => dt;
@@ -377,11 +406,12 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer" || dn == "huefte") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
-            if (Arg(Environment.GetCommandLineArgs(), "-ballonKey") != null)         // Messlauf: nur Waffe und Arme auf Magenta
+            bool key = Arg(Environment.GetCommandLineArgs(), "-ballonKey") != null;
+            if (key)                                                                 // Messlauf: nur Waffe und Arme auf Magenta
             {
                 Player.worldCam.cullingMask = 0;
                 Player.worldCam.clearFlags = CameraClearFlags.SolidColor;
@@ -399,7 +429,7 @@ namespace Ballon.Ego
                 Player.Step(dt);
                 yield return new WaitForEndOfFrame();
                 ReadBack(rt, tex);
-                Player.StampFeedback(tex);
+                if (!key) Player.StampFeedback(tex);          // Messlauf ohne Fadenkreuz-Stempel: die Maske zeigt nur Waffe und Arme
                 File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), tex.EncodeToPNG());
                 File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{Player.C.ammo}\n");
                 File.AppendAllText(Path.Combine(dir, "feedback.csv"), FormattableString.Invariant(

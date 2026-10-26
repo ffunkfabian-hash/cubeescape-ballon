@@ -458,16 +458,18 @@ def evaluate(sc, A, f, report, state):
     shots = [s for s in A.get('fire', []) if s <= f]
     if A.get('fire'):                        # EG.RECOIL: Impuls je Schuss in gedämpfte Federn (Waffe zurück/hoch, Kamera getrennt)
         k, Rc, dt = A.get('kick', 1.0), EG.RECOIL, 1.0 / EG.FPS
+        # Zielen (5.1 A): kleiner Modellkick, kein Hochziehen, der Kamera-Ruck geht nur in die Welt (hier ohne Welt: Kamera steht)
+        kb, kp, kc, kl = (Rc['ads_back'], Rc['ads_pitch'], 0.0, 0.0) if EG.ends_in_ads(A) else (1.0, 1.0, 1.0, 1.0)
         rc = state.setdefault('rec', dict(x=Vector(), v=Vector(), cx=Vector(), cv=Vector(), f=f - 1))
         for fr in range(int(rc['f']) + 1, int(f) + 1):
             for s in A['fire']:
                 if fr - 1 < s <= fr:
-                    rc['v'] += Vector((Rc['back_mps'] * k, Rc['pitch_dps'] * k, 0))
-                    rc['cv'] += Vector((Rc['cam_dps'] * k, 0, 0))
+                    rc['v'] += Vector((Rc['back_mps'] * k * kb, Rc['pitch_dps'] * k * kp, 0))
+                    rc['cv'] += Vector((Rc['cam_dps'] * k * kc, 0, 0))
             rc['x'], rc['v'] = spring_step(rc['x'], rc['v'], Vector(), 2 * math.pi * Rc['freq_hz'], Rc['zeta'], dt)
             rc['cx'], rc['cv'] = spring_step(rc['cx'], rc['cv'], Vector(), 2 * math.pi * Rc['cam_freq_hz'], Rc['cam_zeta'], dt)
         rc['f'] = f
-        climb = Rc['climb_deg'] * k * len(shots) * math.exp(-max(0, f - A['fire'][-1]) / 8)
+        climb = Rc['climb_deg'] * k * kl * len(shots) * math.exp(-max(0, f - A['fire'][-1]) / 8)
         cam_pitch = rc['cx'].x
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
