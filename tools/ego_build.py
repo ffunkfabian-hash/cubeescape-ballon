@@ -1,6 +1,6 @@
 """Ego-Szene: Pilotwaffe + BASIC-Roboterarme, Haltungen und Aktionen aus basic/arms/ego.py, gerendert aus der Ego-Kamera.
 
-  blender -b --factory-startup -P tools/ego_build.py -- [--stills] [--actions a,b|all] [--gpu] [--samples N] [--weapon pilot.w01_auto_rifle_v21]
+  blender -b --factory-startup -P tools/ego_build.py -- [--stills] [--actions a,b|all] [--gpu] [--samples N] [--frames a-b] [--weapon pilot.w01_auto_rifle_v21]
 
 Ausgabe: <OUT>/<Waffe>/ego/stills/<haltung>_{ego,out}.png, ego/<aktion>/####.png, ego/ego.json (aufgelöste Haltungen, Marker,
 Gelenkprüfung). Arme sind starre Segmente; Ellbogen per analytischer Zwei-Knochen-IK mit Pol, Hand aus dem Griff (Handfläche auf der
@@ -36,6 +36,7 @@ def args():
         o['samples'] = int(a[a.index('--samples') + 1])
     if '--weapon' in a:
         o['weapon'] = a[a.index('--weapon') + 1]
+    o['frames'] = tuple(int(x) for x in a[a.index('--frames') + 1].split('-')) if '--frames' in a else None   # Vorschau: nur Bilder a–b schreiben
     return o
 
 
@@ -362,6 +363,98 @@ def solve_arm(side, segs, H, fp, report):
         T = T @ Matrix.Translation((0, 0, Lk * MM))
 
 
+# ------------------------------------------------------------------ Mündungsfeuer und Hülsen (0.16, Entscheidungsliste 5.3 A / 5.4 A)
+def fx_mesh(name, V, faces, mats):
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([vdir(v) * MM for v in V], [], [f for f, _ in faces])
+    for m in mats:
+        me.materials.append(m)
+    for poly, (_, k) in zip(me.polygons, faces):
+        poly.material_index = k
+    me.update()
+    ob = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(ob)
+    ob.hide_render = True
+    return ob
+
+
+def emit_material(role):
+    """Reine Emission wie kit.aaa_nodes bei emit_only (Stärke emit · 1,6, Grundfarbe schwarz); Unity: BallonSetup aus ego.json › roles."""
+    d = EG.FLASH['roles'][role]
+    m = bpy.data.materials.new(f'MT_{role}')
+    m.use_nodes = True
+    b = m.node_tree.nodes['Principled BSDF']
+    b.inputs['Base Color'].default_value = (0, 0, 0, 1)
+    b.inputs['Specular IOR Level'].default_value = 0.0
+    b.inputs['Emission Color'].default_value = kit.hex_rgba(d['color'])
+    b.inputs['Emission Strength'].default_value = d['emit'] * 1.6
+    return m
+
+
+def build_fx(W):
+    V, core, flame = EG.flash_mesh()
+    fl = fx_mesh('FX_flash', V, [(t, 0) for t in core] + [(t, 1) for t in flame],
+                 [emit_material(EG.FLASH['core']['role']), emit_material(EG.FLASH['tongues']['role'])])
+    fl.visible_shadow = False                     # Leuchtkörper ohne Schatten (Unity: ShadowCastingMode.Off)
+    shells = []
+    E = getattr(W, 'EJECT', None)
+    if E:
+        CV, CF = EG.case_mesh(E['case'])
+        brass = kit.material(EG.EJECT['role'], 'aaa')
+        for k in range(EG.EJECT['max_live']):
+            shells.append(fx_mesh(f'FX_shell_{k}', CV, [(t, 0) for t in CF], [brass]))
+    return dict(flash=fl, shells=shells)
+
+
+def eject_data(W):
+    """(Lage im Waffenrahmen, Geschwindigkeit im Waffenrahmen, Drehachse) aus W.EJECT und EG.EJECT oder None (Waffe ohne Auswurf)."""
+    E = getattr(W, 'EJECT', None)
+    if not E:
+        return None
+    return vdir(E['at']) * MM, vdir(E['dir']).normalized() * EG.EJECT['speed_mps'], vdir(EG.EJECT['spin_axis']).normalized()
+
+
+def shell_matrix(W0, ej, t):
+    """Hülse t Sekunden nach dem Schuss: Start im Auswurffenster der Waffe im Schussbild (W0), gerade Bahn plus Schwerkraft nach unten im
+    Kameraraum, Drehung um spin_axis der Waffe. Gleiche Formel in Unity (EgoSolver.ShellMatrix)."""
+    p0, v, ax = ej
+    R0 = W0.to_3x3()
+    p = W0 @ p0 + (R0 @ v) * t + Vector((0, 0, -0.5 * EG.EJECT['gravity_mps2'] * t * t))
+    return mat(R0 @ Matrix.Rotation(math.radians(EG.EJECT['spin_dps'] * t), 3, ax), p)
+
+
+def fx_eval(sc, A, f, state):
+    """Blitz (sichtbar für FLASH.dur_s ab dem Schussbild, gedreht nach flash_roll) und Hülsen (ab dem Schussbild + delay_frames für
+    life_s, höchstens max_live gleichzeitig) im Bild f; Ergebnis in sc.fx_now, Objekte (falls gebaut) werden gesetzt."""
+    fire = A.get('fire', [])
+    now = dict(flash=None, shells={})
+    i = EG.flash_visible(fire, f)
+    if i is not None:
+        mz = vdir(sc.W.ANCHORS['Socket_Muzzle']['at']) * MM
+        now['flash'] = sc.WM @ Matrix.Translation(mz) @ Matrix.Rotation(math.radians(EG.flash_roll(i)), 4, 'Y')
+    ej = eject_data(sc.W)
+    if ej and fire:
+        W0s = state.setdefault('shot_wm', {})
+        for k, s in enumerate(fire):
+            if s <= f and k not in W0s:
+                W0s[k] = sc.WM.copy()                # Waffe im Schussbild (nach dem Rückstoß dieses Bilds)
+        live = [k for k, s in enumerate(fire) if 0 <= (f - s) / EG.FPS - EG.EJECT['delay_frames'] / EG.FPS < EG.EJECT['life_s']]
+        for k in live[-EG.EJECT['max_live']:]:
+            now['shells'][k] = shell_matrix(W0s[k], ej, (f - fire[k] - EG.EJECT['delay_frames']) / EG.FPS)
+    sc.fx_now = now
+    if sc.fx:
+        ob = sc.fx['flash']
+        ob.hide_render = now['flash'] is None
+        if now['flash'] is not None:
+            ob.matrix_world = now['flash']
+        n = len(sc.fx['shells'])
+        for slot, sh in enumerate(sc.fx['shells']):
+            k = next((k for k in now['shells'] if k % n == slot), None)
+            sh.hide_render = k is None
+            if k is not None:
+                sh.matrix_world = now['shells'][k]
+
+
 # ------------------------------------------------------------------ Szene
 class Scene:
     def __init__(self, W, o):
@@ -373,6 +466,8 @@ class Scene:
             ob['rest'] = [list(r) for r in ob.matrix_world]
         self.byid = {p['id']: p for p in W.PARTS}
         self.arms = {s: build_arm(s) for s in ('R', 'L')}
+        self.fx = build_fx(W) if o.get('fx', True) else None      # Mündungsfeuer und Hülsen (0.16); der Export braucht nur die Matrizen
+        self.fx_now = dict(flash=None, shells={})
         BB.setup_render(854, o['samples'], gpu=o['gpu'], aaa=True, bloom=False, bg='mid')
         kit.set_mode(self.objs, 'aaa')
         for s in ('R', 'L'):
@@ -504,6 +599,7 @@ def evaluate(sc, A, f, report, state):
     fps = {'L': blend_fingers(A.get('fL', [(0, 'underhand')]), f), 'R': blend_fingers(A.get('fR', [(0, 'trigger')]), f)}
     sc.hands({'L': HL, 'R': HR}, fps, report)
     sc.cam.matrix_world = sc.cam_base @ Matrix.Rotation(math.radians(cam_pitch), 4, 'X')
+    fx_eval(sc, A, f, state)
     # Visier-Standard v2: das Waffenmodell wird beim Zielen nicht vergrößert (reticles.SIGHT['viewmodel_zoom'] = 1,0); nur die Welt zoomt
     # (in Unity), hier gibt es keine Welt – die Ego-Kamera bleibt beim Grundbildwinkel.
 
@@ -545,7 +641,9 @@ def main():
         os.makedirs(d, exist_ok=True)
         rep, state = {}, {}
         for f in range(0, A['frames'] + 1, A.get('step', 1)):
-            evaluate(sc, A, f, rep, state)
+            evaluate(sc, A, f, rep, state)                     # lückenlos auswerten (Federn, Hülsen), gerendert wird ggf. nur ein Ausschnitt
+            if o.get('frames') and not o['frames'][0] <= f <= o['frames'][1]:
+                continue
             scn.render.filepath = os.path.join(d, f'{f:04d}.png')
             bpy.ops.render.render(write_still=True)
         meta['actions'][name] = dict(de=A['de'], frames=A['frames'], step=A.get('step', 1), events=A.get('events', []),

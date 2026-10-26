@@ -34,6 +34,13 @@ namespace Ballon.Ego
         public float camPitch, wristBendMaxDeg;                    // camPitch: Viewmodel-Kamera (Hüfte: Kamera-Ruck)
         public float worldPitch, worldYaw;                         // Weltkamera gegen den Kopf (Grad): Grundbahn + Kamera-Ruck (live)
         public int overreach;
+        // Mündungsfeuer und Hülsen (0.16, 5.3 A / 5.4 A), Blender-Kameraraum wie die Waffe; EgoRig zeichnet sie
+        public bool flashOn;
+        public int flashShot;                                      // Nummer des Schusses (Drehfolge roll_deg)
+        public Matrix4x4 flash;                                    // Socket_Muzzle-Rahmen, um die Laufachse gedreht
+        public Matrix4x4[] shells;                                 // sichtbare Hülsen [0, shellCount), Kapazität motion.eject.max_live
+        public int[] shellIds;                                     // Schuss je Hülse (Aktion: Index in fire; live: laufende Nummer)
+        public int shellCount;
     }
 
     /// <summary>Zustand einer Aktionsauswertung (ego_build: state) – Magazin, Feder-Nachlauf, Rückstoßfeder.</summary>
@@ -48,6 +55,8 @@ namespace Ballon.Ego
         public bool hasRec;
         public Vector3 recX, recV, recCx, recCv;
         public float recF;
+        public Matrix4x4[] shotWM;                                 // Waffe im Schussbild je Schuss der Aktion (Hülsenstart)
+        public bool[] shotSet;
     }
 
     public sealed class EgoSolver
@@ -60,6 +69,7 @@ namespace Ballon.Ego
         readonly int[,] _fingerSeg;
         readonly int[] _thumbSeg;
         readonly Matrix4x4 _magRelLocal;
+        readonly Vector3 _muzzle, _ejPos, _ejVel, _spin;
 
         public EgoSolver(EgoFile d)
         {
@@ -80,13 +90,77 @@ namespace Ballon.Ego
                 for (int j = 0; j < d.arm.finger_links.Length; j++) _fingerSeg[i, j] = _seg[$"f{i}_{j}"];
             _thumbSeg = new int[d.arm.thumb_links.Length];
             for (int j = 0; j < _thumbSeg.Length; j++) _thumbSeg[j] = _seg[$"t_{j}"];
+            _muzzle = V(d.Anchor("Socket_Muzzle").pos);
+            if (Ejects)
+            {
+                _ejPos = V(d.weapon.eject.pos);
+                _ejVel = V(d.weapon.eject.dir).normalized * d.motion.eject.speed_mps;
+                _spin = V(d.motion.eject.spin_axis).normalized;
+            }
             if (d.HasPart("magazine"))   // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
                 _magRelLocal = GripHand("mag", _ => Matrix4x4.identity, Vector3.zero).inverse * Rest("magazine");
         }
 
         public List<EgoPart> Movers => _movers;
         public int SegmentIndex(string s) => _seg[s];
-        public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length] };
+        public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length],
+                                                        shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live] };
+
+        // -------------------------------------------------------------- Mündungsfeuer und Hülsen (ego_build.fx_eval)
+        /// <summary>Waffe wirft Hülsen aus (ego.json › weapon.eject.enabled, Modul-Feld EJECT) – keine Sonderlogik nach Waffen-ID.</summary>
+        public bool Ejects => D.weapon.eject != null && D.weapon.eject.enabled;
+
+        /// <summary>Blitz des Schusses n: Socket_Muzzle im Waffenrahmen WM, um die Laufachse (Blender Y) nach roll_deg gedreht.</summary>
+        public Matrix4x4 FlashMatrix(Matrix4x4 WM, int n)
+        {
+            var r = D.motion.flash.roll_deg;
+            return WM * T(_muzzle) * RotY(Rad(r[((n % r.Length) + r.Length) % r.Length]));
+        }
+
+        /// <summary>Hülse t Sekunden nach dem Sichtbarwerden: Start im Auswurffenster der Waffe im Schussbild (W0), gerade Bahn plus
+        /// Schwerkraft nach unten im Kameraraum, Drehung um spin_axis der Waffe (ego_build.shell_matrix).</summary>
+        public Matrix4x4 ShellMatrix(Matrix4x4 W0, float t)
+        {
+            var E = D.motion.eject;
+            var R0 = Rot3(W0);
+            var p = W0.MultiplyPoint3x4(_ejPos) + R0.MultiplyVector(_ejVel) * t + new Vector3(0, 0, -0.5f * E.gravity_mps2 * t * t);
+            return WithPos(R0 * Rot(Rad(E.spin_dps * t), _spin), p);
+        }
+
+        /// <summary>Index des Schusses, dessen Blitz im Bild f sichtbar ist (dur_s ab dem Schussbild), sonst −1 (ego.flash_visible).</summary>
+        public int FlashVisible(int[] fire, float f)
+        {
+            for (int i = 0; i < fire.Length; i++)
+                if (f - fire[i] >= 0 && f - fire[i] < D.motion.flash.dur_s * fps - 1e-4f) return i;
+            return -1;
+        }
+
+        /// <summary>Blitz und Hülsen einer geskripteten Aktion im Bild f (Waffe WM): wie ego_build.fx_eval.</summary>
+        public void FxScripted(EgoAction A, float f, Matrix4x4 WM, EgoState st, EgoOutput o)
+        {
+            o.flashOn = false;
+            o.shellCount = 0;
+            var fire = A.fire;
+            if (fire == null || fire.Length == 0) return;
+            int i = FlashVisible(fire, f);
+            if (i >= 0) { o.flashOn = true; o.flashShot = i; o.flash = FlashMatrix(WM, i); }
+            if (!Ejects) return;
+            if (st.shotWM == null || st.shotWM.Length != fire.Length) { st.shotWM = new Matrix4x4[fire.Length]; st.shotSet = new bool[fire.Length]; }
+            for (int k = 0; k < fire.Length; k++)
+                if (fire[k] <= f && !st.shotSet[k]) { st.shotWM[k] = WM; st.shotSet[k] = true; }
+            var E = D.motion.eject;
+            int live = 0;
+            for (int k = 0; k < fire.Length; k++) if (Live(k)) live++;
+            int skip = Mathf.Max(0, live - E.max_live);                 // nur die neuesten max_live
+            for (int k = 0; k < fire.Length; k++)
+            {
+                if (!Live(k)) continue;
+                if (skip-- > 0) continue;
+                o.shells[o.shellCount] = ShellMatrix(st.shotWM[k], (f - fire[k] - E.delay_frames) / fps);
+                o.shellIds[o.shellCount++] = k;
+            }
+            bool Live(int k) { float t = (f - fire[k] - E.delay_frames) / fps; return t >= 0 && t < E.life_s; }
+        }
 
         // -------------------------------------------------------------- Waffe
         public Matrix4x4 PoseMatrix(string name, WeaponKey off = null)
@@ -525,6 +599,7 @@ namespace Ballon.Ego
             SolveArm(true, o.handR, o.fingersR, o.segR, o);
             SolveArm(false, o.handL, o.fingersL, o.segL, o);
             o.camPitch = L.camPitch;
+            FxScripted(A, f, WM, st, o);
             return o;
         }
 

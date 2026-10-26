@@ -432,15 +432,15 @@
       },
       "fire_hip": {
         "status": "geprüft",
-        "by": "Claude (0.15 Plumb)",
+        "by": "Claude (0.16 Flash)",
         "date": "2026-10-26",
-        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Rückstoß sichtbar, 10 Schuss in Bild 2–24 (720/min)"
+        "method": "Mündungsfeuer und Hülsen 0.16 gerendert und gesichtet (5.3 A / 5.4 A): Blitz genau 1 Bild je Schuss im Schussbild (Kern fast weiß, Seitenflammen Cyan, ohne Bloom), Hülse ab dem Schussbild nach rechts; Schussbild-Bogen schussbilder_blender.png; 10 Blitze in Bild 2–24, Hülsen steigen über das Gehäuse und fliegen rechts aus dem Bild"
       },
       "fire_ads": {
         "status": "geprüft",
-        "by": "Claude (0.15 Plumb)",
+        "by": "Claude (0.16 Flash)",
         "date": "2026-10-26",
-        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visier steht (vorher: springt leicht); der Rückstoß geht im Spiel in die Welt"
+        "method": "Mündungsfeuer und Hülsen 0.16 gerendert und gesichtet (5.3 A / 5.4 A): Blitz genau 1 Bild je Schuss im Schussbild (Kern fast weiß, Seitenflammen Cyan, ohne Bloom), Hülse ab dem Schussbild nach rechts; Schussbild-Bogen schussbilder_blender.png; 10 Blitze, im Zielen bedecken die Seitenflammen ≤ 13,1 % der Holo-Öffnung, das Absehen bleibt frei; Hülse ein Bild unten rechts, groß (Auswurffenster 11 cm vor dem Auge)"
       },
       "reload_tactical": {
         "status": "geprüft",
@@ -498,9 +498,9 @@
       },
       "sprint_to_fire": {
         "status": "geprüft",
-        "by": "Claude (0.15 Plumb)",
+        "by": "Claude (0.16 Flash)",
         "date": "2026-10-26",
-        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; 6 Schuss ab Bild 7 (alle 2,5 Bilder)"
+        "method": "Mündungsfeuer und Hülsen 0.16 gerendert und gesichtet (5.3 A / 5.4 A): Blitz genau 1 Bild je Schuss im Schussbild (Kern fast weiß, Seitenflammen Cyan, ohne Bloom), Hülse ab dem Schussbild nach rechts; Schussbild-Bogen schussbilder_blender.png; 6 Blitze ab Bild 7, erste Hülse schon während der Waffe zur Hüfte kommt"
       },
       "draw_aim": {
         "status": "geprüft",

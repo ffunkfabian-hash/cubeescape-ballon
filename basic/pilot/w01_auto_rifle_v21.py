@@ -265,6 +265,11 @@ PARTS = P
 ANCHORS = dict(V1.ANCHORS)
 ANCHORS.update(SIGHT_ANCHORS)
 ANCHORS['Socket_Muzzle'] = dict(at=(616, BORE, 0), part='muzzle_crown')
+# Hülsenauswurf (0.16, Entscheidungsliste 5.4 A): Start in der Mitte des Auswurffensters unter der Klappe port_cover (rechts, x negativ),
+# Richtung im Autorenmaß (f, u, x): nach rechts, etwas hoch und vorn (im Zielen fliegt sie so nicht dicht am Auge vorbei). Kein eigener
+# Anker (der stünde als Knoten im FBX). Waffen ohne Hülsen (Energie) haben kein Feld EJECT.
+EJECT = dict(at=(53, 108, -20), dir=(0.3, 0.4, -1.0), case='rifle',
+             src='E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn')
 ACTIONS = {
     'fire_auto': dict(de='Dauerfeuer (Verschluss sichtbar)', frames=30, step=1, keys={
         'trigger': [(0, 0), (3, 1), (27, 1), (30, 0)], 'port_cover': [(0, 0), (4, 1), (30, 1)],
