@@ -134,7 +134,7 @@ def capture(scene=None, demo=None):
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
-    stem = ('gefuehl' if demo == 'feel' else demo) + ('_mess' if extra else '')
+    stem = ('gefuehl' if demo == 'feel' else demo or '') + ('_mess' if extra else '')
     out = os.path.join(EV, f'{stem}_{scene or "parcours"}.mp4' if demo else 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
                     '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', out], check=True)

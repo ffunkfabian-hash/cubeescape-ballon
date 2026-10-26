@@ -224,7 +224,7 @@ namespace Ballon.Ego
             var it = new EgoIntent
             {
                 fire = r.fire, aim = r.aim, sprint = r.sprint, crouch = r.crouch, grounded = _airT < 0.12f,   // kurze Luftphasen (Stufen) zählen nicht
-                reload = r.reload, inspect = r.inspect, draw = r.draw, holster = r.holster,
+                reload = r.reload, inspect = r.inspect, draw = r.draw, holster = r.holster, swap = r.swap,
                 speed01 = new Vector2(_vel.x, _vel.z).magnitude / move.walk, look = r.lookDeg, move = r.move,
                 nearWall = NearWall(),
             };

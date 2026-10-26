@@ -347,6 +347,33 @@ namespace Ballon.Ego.Tests
             }
         }
 
+        /// <summary>6.1 A über die ganze Eingabekette wie im Spiel und in der Aufnahme: Taste Q (ScriptedInput „swap“) → EgoPlayer.Step →
+        /// Controller. Richter 0.15: der Wechseltest oben setzt den Intent direkt; EgoPlayer reichte `swap` nicht weiter.</summary>
+        [UnityTest]
+        public IEnumerator Wechsel_mit_Q_im_Spieler()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = Bootstrap.SwitchScript();
+            p.deltaOverride = () => 1f / 30f;
+            var marks = new List<string>();
+            System.Action<string, string> on = (a, m) => marks.Add($"{a}/{m}");
+            p.C.Marker += on;
+            for (int k = 0; k < 150 && (marks.Count(m => m == "draw/Ready") < 2 || p.C.Busy); k++) yield return null;   // bis das Ziehen endet
+            p.C.Marker -= on;
+            bool holstered = p.C.Holstered;
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            TestContext.WriteLine("Marker: " + string.Join(" ", marks));
+            Assert.AreEqual(2, marks.Count(m => m == "holster/Holstered"), "zweimal weggesteckt");
+            Assert.AreEqual(2, marks.Count(m => m == "switch/Empty") , "zweimal leere Sicht");
+            Assert.AreEqual(2, marks.Count(m => m == "switch/Draw"), "zweimal gezogen");
+            Assert.AreEqual(2, marks.Count(m => m == "draw/Ready"), "zweimal in der Hüfte");
+            Assert.IsFalse(holstered, "nach dem Ziehen bereit");
+        }
+
         /// <summary>Entscheidungsliste 1d (Destiny-Holo, Motiongen glidepath): der Weltzoom beginnt mit oder kurz nach dem Modell (0–2
         /// Bilder bei 60/s) und endet mit ihm (±1 Bild); Modell = Bildbewegung der Waffe in der Grundhaltung (Summe der Wege von Mündung,
         /// Visier, Magazinschacht und Griff im Bild) je Bild über 5 % ihres Höchstwerts (die empfindlichste Schwelle der Bildmessung;
