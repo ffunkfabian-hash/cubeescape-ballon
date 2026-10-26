@@ -14,7 +14,7 @@
 - Patch: Messungen zu Schritt 2 der Entscheidungsliste (Hüftlage, Scout-Ring, Sprint-Hub, Zoom gegen Modell) in
   [docs/entscheidungsliste-motiongen.md](docs/entscheidungsliste-motiongen.md) › Messungen und `data/review.json`; nur gemessen, kein Wert geändert.
   Werkzeuge `tools/messen.py`, `tools/messen_bild.py`; Unity-Aufnahme mit `-ballonFps` und `-ballonKey` (nur Messhilfe).
-- Patch: Unity-Abgleich (Entscheidungsliste Schritt 1): Kadenz 720/min wie `fire_hip`, Pendeln kritisch gedämpft (Rückkehr 0,30 s,
+- Patch: Unity-Abgleich (Entscheidungsliste Schritt 1): Kadenz 720/min wie `fire_hip` bei jeder Bildrate (Übertrag statt Abrunden), Pendeln kritisch gedämpft (Rückkehr 0,30 s,
   kein Überschwingen), Schuss-Ring und Treffer-X in Orange nach Visier-Standard 3 §6 (ohne HUD-Punkt), Test Nachlade-Abbruch vor/nach
   `MagIn`, Herkunft `inspect` „Apex/CoD-Muster“. Vier neue PlayMode-Tests; Belege `unity_run.py sway|treffer`.
 

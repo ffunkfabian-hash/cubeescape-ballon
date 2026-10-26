@@ -339,7 +339,7 @@ namespace Ballon.Ego
             .Add(0.0f, 0.4f)
             .Add(0.4f, 0.43f, hold: "fire")
             .Add(0.9f, 3.4f, hold: "aim")
-            .Add(1.6f, 1.63f, hold: "aim fire")
+            .Add(1.6f, 1.65f, hold: "aim fire")              // ein Bild bei 30/s
             .Add(2.2f, 2.75f, hold: "aim fire")               // 7 Schüsse: 1 + 1 + 7 = 9 Patronen der Aufnahme
             .Add(3.4f, 4.0f);
 

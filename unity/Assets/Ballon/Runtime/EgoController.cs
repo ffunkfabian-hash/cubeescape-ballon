@@ -343,7 +343,8 @@ namespace Ballon.Ego
             if (_triggerHeld)
             {
                 _shotClock += dt;
-                if (_sinceShot >= interval && _shotClock > 0) _shotClock = interval;   // erster Schuss sofort
+                // erster Schuss sofort; Max statt Setzen behält im Dauerfeuer den Übertrag (sonst bei 30/s 3 Bilder = 600 statt 720/min)
+                if (_sinceShot >= interval && _shotClock > 0) _shotClock = Mathf.Max(_shotClock, interval);
                 while (_shotClock >= interval && ammo > 0)
                 {
                     _shotClock -= interval;

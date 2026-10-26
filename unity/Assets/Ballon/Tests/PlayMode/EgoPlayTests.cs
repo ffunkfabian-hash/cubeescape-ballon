@@ -87,24 +87,27 @@ namespace Ballon.Ego.Tests
         }
 
         /// <summary>Frage 7.1 A: Unity schießt wie der Clip fire_hip mit 720/min – bei 60 Bildern/s ein Schuss alle 5 Bilder
-        /// (Motiongen: Chroma Rush, 5 Bilder Abstand). Vorher 600/min (6 Bilder).</summary>
+        /// (Motiongen: Chroma Rush, 5 Bilder Abstand), bei 30/s abwechselnd 2 und 3 Bilder. Vorher 600/min (6 bzw. 3 Bilder).</summary>
         [Test]
         public void Kadenz_720_wie_fire_hip()
         {
-            var c = Ready();
-            c.ammo = c.magSize = 1000;
-            var at = new List<int>();
-            int k = 0;
-            c.Shot += () => at.Add(k);
-            for (; k < 60; k++) c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
-            var gaps = at.Zip(at.Skip(1), (a, b) => b - a).ToList();
-            float rpm = 60f / ((float)gaps.Average() * Dt);
-            TestContext.WriteLine($"Kadenz live: {at.Count} Schüsse in 1 s, Bildabstand {string.Join(",", gaps.Distinct())} bei 60/s → {rpm:0} /min");
             Assert.AreEqual(720, D.gameplay.rpm, "ego.json › gameplay.rpm");
             StringAssert.StartsWith("M ", D.gameplay.src, "Herkunft gemessen");
-            Assert.AreEqual(12, at.Count, "Schüsse in 1 s");
-            Assert.That(gaps, Has.All.InRange(4, 6), "Bildabstand bei 60/s (Rest wird übertragen)");
-            Assert.AreEqual(720f, rpm, 15f, "Kadenz aus den Bildabständen");
+            foreach (int fps in new[] { 60, 30 })
+            {
+                var c = Ready();
+                c.ammo = c.magSize = 1000;
+                var at = new List<int>();
+                int k = 0;
+                c.Shot += () => at.Add(k);
+                for (; k < 2 * fps; k++) c.Tick(1f / fps, new EgoIntent { grounded = true, fire = true });
+                var gaps = at.Zip(at.Skip(1), (a, b) => b - a).ToList();
+                float rpm = 60f * fps / (float)gaps.Average(), ideal = fps * 60f / 720f;
+                TestContext.WriteLine($"Kadenz live bei {fps}/s: {at.Count} Schüsse in 2 s, Bildabstand {string.Join(",", gaps.Distinct())} → {rpm:0} /min");
+                Assert.AreEqual(24, at.Count, $"Schüsse in 2 s bei {fps}/s");
+                Assert.That(gaps, Has.All.InRange(Mathf.FloorToInt(ideal) - 1, Mathf.CeilToInt(ideal) + 1), $"Bildabstand bei {fps}/s");
+                Assert.AreEqual(720f, rpm, 15f, $"Kadenz aus den Bildabständen bei {fps}/s (Übertrag bleibt)");
+            }
         }
 
         /// <summary>Frage 3.3 A: nach einer schnellen Drehung (360°/s, 0,3 s) zieht die Waffe gegen die Drehung nach, höchstens 3°,

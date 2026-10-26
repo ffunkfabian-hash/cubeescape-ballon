@@ -93,7 +93,8 @@ und versetzt (beim ersten Import gemessen: 90° am Magazin, bis 218 mm).
 **Live statt geskriptet.** Abläufe, Haltungen und Marker kommen aus den Aktionen in `ego.py`, gestreckt mit `TIME_SCALE`. Im Spiel
 ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
 
-- Schüsse kommen aus der Kadenz und lösen Impulse in die Rückstoßfeder `RECOIL` aus, die Kamera federt getrennt.
+- Schüsse kommen aus der Kadenz (Übertrag zwischen den Bildern, damit 720/min bei jeder Bildrate gelten) und lösen Impulse in die
+  Rückstoßfeder `RECOIL` aus, die Kamera federt getrennt.
 - Das Hochziehen klingt erst nach dem Feuern ab.
 - Das Gehwippen folgt der Laufgeschwindigkeit, mit den Werten aus `walk`/`sprint`.
 - Das Atmen nutzt `BREATHE_ALL`, dazu in Ruhe die `idle_hip`-Formel.
@@ -121,7 +122,7 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | `Zielen_live_ohne_Ueberschwingen` (0.10) | Live-Controller: Zielen aus der Hüfte, Überschwingen am `Socket_Reticle` < 0,3°, Rest nach 0,45 s < 1°; Messwerte im Testprotokoll |
 | `Sprint_live_im_Destiny_Rhythmus` (0.10) | Live-Sprint: 2,9–3,4 Hochpunkte/s, U-Bogen (oben an den Seitenumkehren); Messwerte im Testprotokoll |
 | `Zielen_landet_ohne_Ueberschwingen`, `Sprintschritt_wie_ein_Laeufer` (EditMode, 0.10) | Skriptpfad wie Blender: `aim_in`, `sprint_to_aim`, `draw_aim` ohne Überschwingen (< 0,3°), Rest am Ende < 1,5°; Sprintdaten 2,9–3,4 Schritte/s mit U-Bogen |
-| `Kadenz_720_wie_fire_hip` (Patch unity-abgleich) | `gameplay.rpm` 720 mit Herkunft M; live bei 60/s 12 Schüsse in 1 s, Bildabstand 4–6 (Mittel 5), Kadenz 720 ± 15 /min |
+| `Kadenz_720_wie_fire_hip` (Patch unity-abgleich) | `gameplay.rpm` 720 mit Herkunft M; live bei 60/s und 30/s je 24 Schüsse in 2 s, Bildabstand 5 bzw. 2/3, Kadenz 720 ± 15 /min (der Rest eines Intervalls wird übertragen; vorher bei 30/s 3 Bilder = 600/min) |
 | `Pendeln_kehrt_ohne_Ueberschwingen_zurueck` (Patch unity-abgleich) | 360°/s für 0,3 s, Gieren des Laufs gegen einen Zwilling ohne Maus: Auslenkung 0,5–3°, Überschwingen < 0,02°, Rückkehr unter 5 % in 0,22–0,4 s |
 | `Nachlade_Abbruch_vor_und_nach_MagIn` (Patch unity-abgleich) | taktisch und leer: Wegstecken 0,1 s vor `MagIn` lässt die Munition (5 bzw. 0), 0,1 s danach ist das Magazin voll und bleibt es nach dem Ziehen |
 | `Schuss_Ring_und_Treffer_X` (Patch unity-abgleich) | Spieler in der Szene, Scheibe 3 m vor dem Auge: Hüftschuss ohne Ring, Schuss im Zielen mit Ring für genau 1 Bild, Treffer-X 0,17–0,25 s, Größen 2 % / 4,5 % H, Orange `#E0651E` |
@@ -132,7 +133,7 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | Parcours, EditMode (10) | `CourseTests`: gültiger Lauf mit Zeit, Kontrollpunkten und Treffern; falsche Reihenfolge und fehlende Kontrollpunkte ergeben keine Zeit; Neustart über den Start; Start nach dem Ziel; Spawn im Quader und Reset (T); Treffer vor dem Start; Bestzeit nur wenn besser und in `PlayerPrefs`; Anzeigetexte ohne Speicher je Bild; Wegmarken (Anzahl, flach, nach oben) |
 | Szenen, PlayMode (6) | `ScenePlayTests` mit der Fixture-Szene „Testkurs“ (Umgebung als Quader im Test, kein FBX; Atlanten als kleine Testtexturen): Lader (Zonenmaterialien, Atlas der Lichtszene, `_BaseColor`, Collider, Lichtgruppen, Ziele mit Normale und Radius, Wegmarken, Spieler steht am Start auf dem Boden, Anzeige ohne GC); Schießstand-Ziele ohne Parcours; Lichtszene N tauscht Atlas, Himmel, Umgebungslicht, Lichter, Sonde ohne Neuaufbau der Geometrie und ohne GC; Tasten N und T; L hin und zurück mit Tastenereignis; Parcours danach unverändert |
 | Parcours, PlayMode (3) | gültiger Lauf per Teleport durch Start, Kontrollpunkte und Ziel (mit echtem Schuss auf ein Ziel, Bestzeit in `PlayerPrefs`, Marker im Log, Neustart über den Start); falsche Reihenfolge ergibt keine Zeit; kein GC je Bild im laufenden Lauf (`Step`, Zeit, Anzeigetexte) |
-| Exportierte Szenen, PlayMode (2) | `Exportierte_Szenen_…`: lädt alle exportierten Szenen (0.9: Hangar), wechselt jede Lichtszene (Atlas in jeder Zone, Himmel, eine Lichtgruppe an), läuft jeden Parcours per Teleport der Reihe nach durch. `Vorfuehrlauf_schafft_jeden_Parcours`: der `RouteRunner` läuft jeden Parcours mit festen Schritten (1/30 s) und echten Bewegungen (Springen, Ducken, Kollision) und muss gültig unter der Richtzeit ankommen (Hangar: 32,1 s, 9/14 Treffer) – fällt ein Hindernis aus Sprunghöhe oder Kapselhöhe, schlägt er fehl. Beide überspringen sich ohne exportierte Szene |
+| Exportierte Szenen, PlayMode (2) | `Exportierte_Szenen_…`: lädt alle exportierten Szenen (0.9: Hangar), wechselt jede Lichtszene (Atlas in jeder Zone, Himmel, eine Lichtgruppe an), läuft jeden Parcours per Teleport der Reihe nach durch. `Vorfuehrlauf_schafft_jeden_Parcours`: der `RouteRunner` läuft jeden Parcours mit festen Schritten (1/30 s) und echten Bewegungen (Springen, Ducken, Kollision) und muss gültig unter der Richtzeit ankommen (Hangar: 33,0 s, 9/14 Treffer; vor 720/min 32,1 s) – fällt ein Hindernis aus Sprunghöhe oder Kapselhöhe, schlägt er fehl. Beide überspringen sich ohne exportierte Szene |
 
 ## Szenen und Parcours (0.8 Hangar, 0.9 Parcours)
 
