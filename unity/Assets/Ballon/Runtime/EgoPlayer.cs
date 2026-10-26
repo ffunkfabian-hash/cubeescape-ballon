@@ -19,6 +19,54 @@ namespace Ballon.Ego
         public float wallCheck = 0.75f;
     }
 
+    /// <summary>Rückmeldung nach Visier-Standard 3 §6 (`reticles.ADS_FEEDBACK`, Entscheidungsliste Frage 4.3 A): Schuss-Ring im Zielen
+    /// für ein Bild, Treffer-X mindestens 0,17 s, in Familienfarbe Orange (`kit.MATERIALS['accent']`) statt Destiny-Rot. Größen als
+    /// Anteil der Bildhöhe (Durchmesser bzw. Breite). Der HUD-Punkt wartet auf Motiongen (Widerspruch 3).</summary>
+    public static class AdsFeedback
+    {
+        public const float ShotRingShareH = 0.02f, HitXShareH = 0.045f, HitXMinS = 0.17f;
+        public const int ShotRingFrames = 1;
+        public static readonly Color Orange = new Color32(0xE0, 0x65, 0x1E, 0xFF);
+
+        static Texture2D _ring, _x;
+        public static Texture2D Ring => _ring ? _ring : (_ring = Make((u, v) => Mathf.Abs(Mathf.Sqrt(u * u + v * v) - 0.9f) - 0.09f));
+        // vier Striche auf den Diagonalen mit freier Mitte (wie Destiny)
+        public static Texture2D X => _x ? _x : (_x = Make((u, v) =>
+        {
+            float au = Mathf.Abs(u), av = Mathf.Abs(v), along = (au + av) * 0.5f;
+            return Mathf.Max(Mathf.Abs(au - av) * 0.7071f - 0.06f, Mathf.Max(0.35f - along, along - 0.97f));
+        }));
+
+        /// <summary>Marke in ein ausgelesenes Bild stempeln (Aufnahme: das OnGUI-HUD liegt nicht in der Render-Textur); c in sRGB.</summary>
+        public static void Stamp(Texture2D dst, Texture2D mask, float size, Color c)
+        {
+            int w = dst.width, h = dst.height, x0 = Mathf.FloorToInt((w - size) / 2), y0 = Mathf.FloorToInt((h - size) / 2);
+            for (int y = Mathf.Max(0, y0); y <= Mathf.Min(h - 1, y0 + size + 1); y++)
+                for (int x = Mathf.Max(0, x0); x <= Mathf.Min(w - 1, x0 + size + 1); x++)
+                {
+                    float a = mask.GetPixelBilinear((x + 0.5f - (w - size) / 2) / size, (y + 0.5f - (h - size) / 2) / size).a;
+                    if (a > 0) dst.SetPixel(x, y, Color.Lerp(dst.GetPixel(x, y), c, a));
+                }
+        }
+
+        /// <summary>Weiße Maske 128 px aus einem Abstandsfeld (≤ 0 innen), Kanten über ein Texel geglättet; einmal je Lauf gebaut.</summary>
+        static Texture2D Make(Func<float, float, float> sdf)
+        {
+            const int n = 128;
+            var t = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float d = sdf((x + 0.5f) / n * 2 - 1, (y + 0.5f) / n * 2 - 1);
+                    px[y * n + x] = new Color32(255, 255, 255, (byte)(255 * Mathf.Clamp01(0.5f - d * n / 2)));
+                }
+            t.SetPixels32(px);
+            t.Apply(false);                        // lesbar lassen: die Aufnahme stempelt per GetPixelBilinear
+            return t;
+        }
+    }
+
     public sealed class EgoPlayer : MonoBehaviour
     {
         public const int PlayerLayer = 2;           // eingebaute Ebene „Ignore Raycast“
@@ -37,7 +85,8 @@ namespace Ballon.Ego
 
         CharacterController _cc;
         GUIStyle _big, _small, _time;
-        float _yaw, _pitch, _vy, _eye, _landDip, _landV, _hitFlash, _airT;
+        float _yaw, _pitch, _vy, _eye, _landDip, _landV, _hitX, _airT;
+        int _ringFrames;
         Vector3 _vel;
         bool _grounded = true, _wasGrounded = true;
         float _viewClimb;
@@ -144,8 +193,23 @@ namespace Ballon.Ego
             Step(dt);
         }
 
+        /// <summary>Schuss-Ring im nächsten gezeichneten Bild sichtbar (nur im Zielen, ein Bild je Schuss).</summary>
+        public bool ShotRingVisible => _ringFrames > 0;
+        /// <summary>Treffer-X sichtbar (mindestens AdsFeedback.HitXMinS nach dem letzten Treffer).</summary>
+        public bool HitXVisible => _hitX > 0;
+
+        /// <summary>Schuss-Ring und Treffer-X wie in OnGUI in ein Aufnahmebild zeichnen.</summary>
+        public void StampFeedback(Texture2D tex)
+        {
+            if (ShotRingVisible) AdsFeedback.Stamp(tex, AdsFeedback.Ring, AdsFeedback.ShotRingShareH * tex.height, Color.white);
+            if (HitXVisible) AdsFeedback.Stamp(tex, AdsFeedback.X, AdsFeedback.HitXShareH * tex.height, AdsFeedback.Orange);
+            tex.Apply(false);
+        }
+
         public void Step(float dt)
         {
+            if (_ringFrames > 0) _ringFrames--;           // vor dem Feuern: ein neuer Schuss setzt den Ring für dieses Bild
+            _hitX = Mathf.Max(0, _hitX - dt);
             var r = input.Read(dt, Zoom);
             Look(r);
             Move(r, dt);
@@ -166,7 +230,6 @@ namespace Ballon.Ego
             float v = Camera.HorizontalToVerticalFieldOfView(h, aspect);
             viewCam.fieldOfView = v;
             worldCam.fieldOfView = 2 * Mathf.Atan(Mathf.Tan(v * Mathf.Deg2Rad / 2) / Zoom) * Mathf.Rad2Deg;
-            _hitFlash = Mathf.Max(0, _hitFlash - dt);
             _viewClimb *= Mathf.Exp(-dt * 3f);
             course?.Tick(transform.position + Vector3.up * CourseRun.BodyCenter, dt);
         }
@@ -232,6 +295,7 @@ namespace Ballon.Ego
             float climb = move.climbView * Mathf.Lerp(1f, 0.5f, C.adsWeight);
             _pitch -= climb;           // bleibendes Hochziehen (Spieler gleicht aus)
             _viewClimb += climb;
+            if (C.adsWeight > 0.5f) _ringFrames = AdsFeedback.ShotRingFrames;
             if (Physics.Raycast(worldCam.transform.position, dir, out var hit, 300f, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
             {
                 var t = hit.collider.GetComponentInParent<RangeTarget>();
@@ -239,7 +303,7 @@ namespace Ballon.Ego
                 {
                     t.Hit(hit.point);
                     hits++;
-                    _hitFlash = 0.12f;
+                    _hitX = AdsFeedback.HitXMinS;
                 }
                 Decal(hit);
             }
@@ -278,14 +342,11 @@ namespace Ballon.Ego
         {
             if (!hud) return;
             float cx = Screen.width / 2f, cy = Screen.height / 2f;
-            // kein ständiges Fadenkreuz (Nutzer 25.10.2026): gezielt wird über das Visier, nur Treffer zeigen kurz eine Marke
-            var col = new Color(1f, 0.45f, 0.2f);
-            if (_hitFlash > 0)
+            // kein ständiges Fadenkreuz (Nutzer 25.10.2026): gezielt wird über das Visier; Schuss-Ring und Treffer-X (AdsFeedback)
+            if (Event.current.type == EventType.Repaint)
             {
-                Rect(cx - 7, cy - 7, 4, 4, col);
-                Rect(cx + 3, cy - 7, 4, 4, col);
-                Rect(cx - 7, cy + 3, 4, 4, col);
-                Rect(cx + 3, cy + 3, 4, 4, col);
+                if (ShotRingVisible) Mark(AdsFeedback.Ring, cx, cy, AdsFeedback.ShotRingShareH * Screen.height, Color.white);
+                if (HitXVisible) Mark(AdsFeedback.X, cx, cy, AdsFeedback.HitXShareH * Screen.height, AdsFeedback.Orange);
             }
             var big = _big ?? (_big = new GUIStyle(GUI.skin.label) { fontSize = 34, alignment = TextAnchor.LowerRight, fontStyle = FontStyle.Bold });
             var small = _small ?? (_small = new GUIStyle(GUI.skin.label) { fontSize = 14 });
@@ -335,11 +396,11 @@ namespace Ballon.Ego
             }
         }
 
-        static void Rect(float x, float y, float w, float h, Color c)
+        static void Mark(Texture2D tex, float cx, float cy, float size, Color c)
         {
             var old = GUI.color;
             GUI.color = c;
-            GUI.DrawTexture(new Rect(x, y, w, h), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(cx - size / 2, cy - size / 2, size, size), tex);
             GUI.color = old;
         }
 

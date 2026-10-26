@@ -55,3 +55,4 @@
 - Reine Bewegungsänderungen nicht mit dem vollen Export (20 min GPU, sperrt andere Repos): `BALLON_EXPORT_DATA_ONLY=1` unter `ce lock blender` (2 s, [export_unity.py](../tools/export_unity.py)).
 - `gh repo create --source=.` erkennt einen Git-Worktree nicht als Repo („not a git repository“): aus dem Hauptcheckout aufrufen.
 - Magazin im Griff: Magazinmitte auf die Griffachse legen (`grip_v21`: f ≈ u·tan 15°), sonst steht es hinten aus dem Griff und das Sichtfenster liegt verdeckt ([w06 v2.1](../basic/pilot/w06_submachine_gun_v21.py)).
+- Unity-Aufnahmen lesen die Render-Textur der Kamera: `OnGUI`-Marken fehlen darin. Rückmeldungen (Ring, Treffer-X) deshalb mit denselben Masken ins Bild stempeln (`EgoPlayer.StampFeedback`, [unity.md](unity.md)).
