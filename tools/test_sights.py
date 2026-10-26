@@ -9,6 +9,7 @@
 - Absehen gezeichnet: `sight_reticle` flach (Querprofile ≤ 0,1 mm) in der Glasebene (± 0,5 mm), reine Emission, Hüftform der
   Klasse in Hüftgröße (± 3 %), Linien mindestens 1,6 px bei 1280 px Bildbreite.
 - Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
+- Mündungsfeuer im Zielen an der MP-Pille: in der Kontur gezählt (kleiner als im umschließenden Rechteck) und ≤ 20 % (5.3 A).
 """
 import glob
 import importlib
@@ -117,6 +118,20 @@ def main():
         if e['sight_type'] == 'scope' and abs(ring_ratio(W.PARTS) - C.RING_RATIO) > 0.02:
             bad.append(f'{wid}: Ring außen/innen {ring_ratio(W.PARTS):.3f} statt ≈ {C.RING_RATIO} (Wulst)')
         bad += [f'{wid}: {b}' for b in check_reticle(W.PARTS, W.ANCHORS, W.META['type'])]
+    # Mündungsfeuer im Zielen (5.3 A) bei Querprofil-Glas: nur innerhalb der Kontur gezählt (0.21, Richter) – die Pille misst weniger
+    # als ihr umschließendes Rechteck und bleibt unter 20 %
+    import types
+    from basic.arms import ego as EG
+    W = importlib.import_module('basic.pilot.w06_submachine_gun_v21')
+    cov = EG.flash_cover_ads(W)
+    g = next(p for p in W.PARTS if p['id'] == 'sight_glass')
+    xs, us = [q[0] for q in g['pts']], [q[1] for q in g['pts']]
+    box = dict(g, pts=[(min(xs), min(us)), (max(xs), min(us)), (max(xs), max(us)), (min(xs), max(us))])
+    cov_box = EG.flash_cover_ads(types.SimpleNamespace(PARTS=[box if p is g else p for p in W.PARTS], ANCHORS=W.ANCHORS))
+    n += 1
+    print(f'[test_sights] BASIC-06-v2.1: Mündungsfeuer im Zielen {cov * 100:.1f} % der Pillenkontur (Rechteck {cov_box * 100:.1f} %)')
+    if cov > 0.20 or not cov < cov_box:
+        bad.append(f'BASIC-06-v2.1: Mündungsfeuer {cov * 100:.1f} % (Kontur) / {cov_box * 100:.1f} % (Rechteck) – Kontur nicht gezählt oder > 20 %')
     from basic.pilot.optics import sight_kit as K
     for kid, kind in (('iron_klammer', 'iron'), ('iron_hoerner', 'iron'), ('mini_reflex', 'mini_reflex')):
         for s in ('S', 'M', 'L'):

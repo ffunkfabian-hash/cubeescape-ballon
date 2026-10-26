@@ -4,7 +4,7 @@
 
 - Baukasten v3 in `basic/common.py` (Nutzerwahl „v3 bauen“): H0-Plattform `sight_platform`, Flachprofil `xprof` (neue Form in `kit.py`),
   Haube, flache Scheibe, gezeichnetes Absehen `drawn_reticle` (Hüftform der Klasse flach in der Glasebene, ≥ 1,6 px, reine Emission);
-  gebaut H0 (BASIC-01, unverändert bis aufs Absehen), H4 „Kasten“ (BASIC-02), H2 „Pille“ (BASIC-06, 19 × 23 mm wegen Mündungsfeuer ≤ 20 %),
+  gebaut H0 (BASIC-01, unverändert bis aufs Absehen), H4 „Kasten“ (BASIC-02), H2 „Pille“ (BASIC-06, 19 × 23 mm wegen Mündungsfeuer ≤ 20 %, gemessen in der Pillenkontur),
   Z1 „Tropfen“ (BASIC-03) mit Sitz nach Konzept A (Wiege hinter dem Auge, Klemmfuß unter dem Objektiv, Ring 1,29 ohne Wulst).
   `sight_kit.py` nutzt dieselben Bausteine (25 Visiere im Katalogblatt v3).
 - Visier-Standard 3 erweitert: Visierlinien Schiene + 26/15/11 mm (Holo/Mini-Reflex/Kimme-Korn), Varianten Holo L (MG/Werfer ≤ 25 %) und
