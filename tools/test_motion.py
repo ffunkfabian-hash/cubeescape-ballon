@@ -17,8 +17,9 @@ from basic import kit  # noqa: E402
 import tools.blender_build as B  # noqa: E402
 
 bad, n = [], 0
-for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
-    W = importlib.import_module('basic.weapons.' + os.path.basename(f)[:-3])
+for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))
+                + glob.glob(os.path.join(ROOT, 'basic', 'pilot', '[wt]*_v21.py'))):
+    W = importlib.import_module(os.path.relpath(f, ROOT)[:-3].replace(os.sep, '.'))
     for p in W.PARTS:
         mv = p.get('move')
         if not mv or 'expect' not in mv:
@@ -33,6 +34,13 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
         if delta.length < 1e-4 or delta.normalized().dot(dv) < 0.3:
             fux = (round(-delta.y * 1000), round(delta.z * 1000), round(delta.x * 1000))
             bad.append(f"{W.META['id']}/{p['id']}: bewegt sich (f,u,x) {fux} mm statt Richtung {d}")
+        # Gegenrichtung: eine Aktion mit Schlüssel < 0 (z. B. BASIC-T01 fire_b) muss den Punkt auf die andere Seite drehen
+        if mv['kind'] == 'rotate' and any(v < 0 for A in getattr(W, 'ACTIONS', {}).values() for _, v in A['keys'].get(p['id'], [])):
+            n += 1
+            neg = B.move_matrix(ob, mv, -1.0) @ Matrix.Translation(kit.to_xyz(*mv['pivot'])).inverted() @ p0 - p0
+            k = max(range(3), key=lambda i: abs(neg[i] - delta[i]))     # Querlage, nicht das gemeinsame Absinken
+            if neg.length < 1e-4 or neg[k] * delta[k] >= 0:
+                bad.append(f"{W.META['id']}/{p['id']}: Schlüssel −1 dreht nicht gegen die Richtung von +1")
 print(f'[test_motion] {n} Bewegungen geprüft')
 for b in bad:
     print('[test_motion] FEHLER', b)

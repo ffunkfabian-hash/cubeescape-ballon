@@ -297,6 +297,28 @@ def family_dims():
          'als einzelne Teile.', '',
          '| Waffe | Gehäuse `receiver` | Vorderbau `support` | Schaft `stock` | Visier `sight` | Griff `grip` | Magazin `magazine` |',
          '|---|---|---|---|---|---|---|'] + sizes
+    tools = []
+    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 't*_v21.py'))):    # Werkzeuge: ohne Visier und Magazin
+        W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
+        wid = f"{W.META['id']}-{W.META['variant']}"
+        sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')
+        if not os.path.exists(sp):
+            continue
+        S = json.load(open(sp, encoding='utf-8'))
+        A = {k: fu(v['position_m']) for k, v in S['anchors'].items()}
+        D = S['dimensions']
+        mf, mu = A['Socket_Muzzle']
+        tools.append(f"| {wid} {W.META['type_de']} | {D['length_m'] * 1000:.0f} × {D['height_m'] * 1000:.0f} × "
+                     f"{D['width_m'] * 1000:.0f} | {mu:.0f} | {mf:.0f} | {-D['bounds_m']['max'][1] * 1000:.0f} | "
+                     f"{A['Socket_SupportHand'][0]:.0f} / {A['Socket_SupportHand'][1]:.0f} | "
+                     f"{A['Socket_CenterOfMass'][0]:.0f} / {A['Socket_CenterOfMass'][1]:.0f} | "
+                     f"{S['counts']['parts']} / {S['counts']['triangles']} |")
+    if tools:
+        L += ['', '## Werkzeuge', '',
+              'Werkzeuge der Familie (`basic/pilot/t*_v21.py`): gleicher Griff und gleiche Lagen um `Socket_Hand`, ohne Visier und',
+              'Magazin; Schussachse statt Laufachse.', '',
+              '| Werkzeug | L × H × B | Schussachse u | Mündung f | Heck f | Stützhand f / u | Schwerpunkt f / u | Teile / Dreiecke |',
+              '|---|---|---|---|---|---|---|---|'] + tools
     return '\n'.join(L) + '\n'
 
 

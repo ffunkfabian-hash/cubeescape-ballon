@@ -798,5 +798,30 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-06-v2.1/ (views/, motion/, .blend, .glb, Spec)"
     ]
+  },
+  "BASIC-T01-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-26",
+      "method": "Entwurf Ei und Ring (Skizze P2, nach Entwurf A „Ring“ verworfen auf Nutzerwunsch Portal-2-Prinzip). Abzugsbereich nach Nutzerhinweis „Teile in der Luft“ am gebauten Modell gemessen (BVH je Teilpaar): Bügel–Bauch 6–11 → 0 mm, Bügel–Griff 2,7 → 0 mm, Abzug–Bauch 1,0 → 0 mm, Achse–Emitter 4,0 → 0 mm. Drei Runden: (1) Silhouette/Zweiton an hero_p, side_left (views_e1) – glatt schattierte Eischale wirkte wie ein weiches Ei → facettiert mit Fasen wie die Skizze; (2) Schichten/Negativraum an exploded, ego, front (views_e2) ohne Befund: Schale, Bauch, Kernträger, Emitter, Ring, Unterlippe getrennt lesbar, Kern offen, Ring auf Speichen an Nabe und Achse; weißes Dreieck auf Kern B ist Glanz im Kernglas (Strahltest: kein Bauteil); (3) Material/Budget an 8 Skins (hero, side_left): Portalfarben gleich in allen Skins (portal_a 0,7, portal_b 1,2, emit_only, aus Entwurf A übernommen); Budget 2 Leuchten, 1 Grafik (Ringmarke), 1 Schrift, 0 Orange"
+    },
+    "actions": {
+      "fire_a": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-26",
+        "method": "Bildfolge motion/fire_a, Bilder 0/7/12/18: Abzug, Ring mit Speichen dreht 120° (Speichenlage Bild 0 gegen 7); Drehsinn per test_motion (expect)"
+      },
+      "fire_b": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-26",
+        "method": "Bildfolge motion/fire_b, Bilder 0/7/12/18: Abzug, Ring dreht 120° gegen A (Schlüssel −1); Kern-Aufleuchten ist Laufzeit (FLASH), nicht im Clip"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-T01-v2.1/ (views/, views_e1, views_e2, motion/, .blend, .glb, Spec) und ~/Library/Caches/CubeEscapeBallon/gateway/ (Kontaktbögen, Turntable, Skizzen); views_r1–r3 gehören zum verworfenen Entwurf A"
+    ]
   }
 }

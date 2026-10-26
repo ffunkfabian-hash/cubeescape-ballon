@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.17.0 „Gateway“ – Portalkanone BASIC-T01 im Stil v2.1 (Branch `claude/ballon-0.17-gateway`)
+
+- Erstes Werkzeug der Familie (`basic/pilot/t01_portal_cannon_v21.py`): facettierte Eischale, offener Zweifarbkern (Portal B Orange
+  hinten, Portal A Cyan vorn, Farben aus Cube Escape), gestufter Emitter, Ring auf drei Speichen (dreht 120° je Schuss), Unterlippe mit
+  Vordergriff, Familiengriff; kein Visier, Kerbe als Leitkante. Nach Portal-2-Prinzip im BALLON-Stil (Nutzerwahl P2). 26 Teile, 404 mm.
+- `./check` prüft Werkzeuge (`t*_v21.py`), `test_motion.py` auch die v2.1-Module; Familienmaße und Familienseite mit Werkzeugen.
+  Bericht [docs/versions/0.17-gateway.md](docs/versions/0.17-gateway.md).
+
 ## 0.16.0 „Flash“ – Mündungsfeuer und Hülsen in Blender und Unity (Branch `claude/ballon-0.16-flash`)
 
 - Schritt 5 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (5.3 A, dazu 5.4 A seit 26.10.2026): Blitz an `Socket_Muzzle`, 1 Bild bei

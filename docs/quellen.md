@@ -19,6 +19,11 @@ Stand 24.10.2026. Status-Begriffe: **gemessen** (Zahl aus Messung mit Methode), 
 | Q-CE-10 | Toolgen liest `cubeescape-design/geometry-spec` v1 (Netze, Anker, Griff, Stützhand, Visier); `string`/`melee` werden nicht gelesen | Toolgen `scripts/tool_assets/concept_spec.py:82-400` | Code gelesen |
 | Q-CE-11 | Dreiecksbudget LOD0 Welt 6 000 (Pistole) – 10 000 (Scharfschütze, Fusion, Rakete); neue Typen ohne Budget | Toolgen `data/game_budget.json:4-31` | Datenstand |
 | Q-CE-12 | In CE angebunden: pistol, assault_rifle, pulse_rifle, shotgun, sniper_rifle, smg, fusion_rifle, trace_rifle, rocket_launcher, scout_rifle; kein Bogen | CE `Assets/Resources/Equipment/definitions/` | Datenstand |
+| Q-CE-13 | Portale: A = Cyan (1; 0,85; 0,1 → `#1AD9FF`), B = Orange (1; 0,45; 0,08 → `#FF7314`) | CE `Assets/Scripts/Portals/Portal.cs:59`, `Assets/Scripts/Levels/BlockColors.cs:35-37` | Code gelesen (26.10.2026) |
+| Q-CE-14 | Portalgerät: Linksklick A, Rechtsklick B, mittlere Taste schließt beide, R dreht das nächste Portal um 90°; Zielen nur mit X als „Präzision“ ohne Visier | CE `Docs/PORTALS.md:10-20`, `Docs/FIRST_PERSON.md:22` | Doku gelesen (26.10.2026) |
+| Q-CE-15 | Abklingzeit 0,25 s, Reichweite 24 m (Level 4–60 m), Sichtlinie Pflicht | CE `Portals/PortalEmitter.cs:41`, `Portals/PortalRules.cs:29,77` | Code gelesen (26.10.2026) |
+| Q-CE-16 | Toolgen „Portalkanone“: weißes Gehäuse, Portalring, etwa 606 × 226 × 351 mm (Erstentwurf), Anker Hand/Muzzle/SupportHand | Toolgen `outputs/Portalkanone/README.md:34`, `scripts/tool_assets/Portalkanone/create_portal_gun.py:235-237` | Datenstand; Form nicht übernommen (BASIC-T01) |
+| Q-CE-17 | Vorbild Portal-2-Portalgun (Bild des Nutzers, 26.10.2026): weiße Eischale hinten, offener Leuchtkern im Glas, gestufter schwarzer Emitter mit heller Unterlippe, drei Klauen – übernommen nur Eischale, offener Kern, Stufen, Unterlippe; Klauen nicht (Nutzerwahl Ring). Ego-Messungen der Portalkanone (Hüftlage, Bob, Schuss) für später | Nutzerbild (nicht im Repo); `cubeescape-reference/docs/portal2.md:27-38` | Prinzipien beobachtet; Messungen gelesen, nicht verwendet |
 
 ## Q-FG · Formgen (Bezugslängen und Typen)
 
