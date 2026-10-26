@@ -82,6 +82,7 @@
    "parts": [
     "scope_mount_r",
     "sight_clamp",
+    "scope_strap",
     "scope_tube",
     "scope_eyepiece",
     "scope_eye_trim",
@@ -149,7 +150,7 @@
    "name_en": "Receiver",
    "assembly": "receiver",
    "function_de": "Schlankes Einteilgehäuse: Lauf, Schiene, Griffmodul, Schacht",
-   "attachment_de": "Grundkörper; Magazintrichter angeformt",
+   "attachment_de": "Grundkörper; Magazintrichter und Buckel unter dem Zielfernrohr angeformt",
    "material_role": "shell",
    "material_de": "Lackiertes Gehäuse (Creme)",
    "interface": null,
@@ -171,16 +172,16 @@
     "max": [
      0.019,
      0.122,
-     0.122
+     0.1432
     ]
    },
    "size_mm": [
     38.0,
     322.0,
-    102.0
+    123.2
    ],
-   "triangles": 778,
-   "volume_cm3": 937.01,
+   "triangles": 876,
+   "volume_cm3": 1032.87,
    "moving": null,
    "removable": false
   },
@@ -712,7 +713,7 @@
    "name_en": "Top rail",
    "assembly": "receiver",
    "function_de": "Aufnahme für Visiere (BRI-22)",
-   "attachment_de": "auf Oberem Gehäuse (fest)",
+   "attachment_de": "auf dem Gehäusebuckel unter dem Zielfernrohr (fest)",
    "material_role": "anodized",
    "material_de": "Schwarz eloxiert",
    "interface": "BRI-22",
@@ -728,31 +729,31 @@
    "bounds_m": {
     "min": [
      -0.011,
-     -0.186,
-     0.1215
+     -0.034,
+     0.1427
     ],
     "max": [
      0.011,
-     0.104,
-     0.13
+     0.024,
+     0.1512
     ]
    },
    "size_mm": [
     22.0,
-    290.0,
+    58.0,
     8.5
    ],
-   "triangles": 2348,
-   "volume_cm3": 40.84,
+   "triangles": 108,
+   "volume_cm3": 10.62,
    "moving": null,
    "removable": false
   },
   {
    "id": "scope_mount_r",
-   "name_de": "Zielfernrohr-Hals",
-   "name_en": "Scope neck",
+   "name_de": "Rohrsattel",
+   "name_en": "Scope saddle",
    "assembly": "sight",
-   "function_de": "Trägt das Zielfernrohr auf der Schiene BRI-22; gestuftes Trapez",
+   "function_de": "Trägt das Zielfernrohr auf der Schiene BRI-22; Klemmblock um die Schiene",
    "attachment_de": "Klemmung auf Schiene (lösbar)",
    "material_role": "anodized",
    "material_de": "Schwarz eloxiert",
@@ -763,36 +764,36 @@
    "blender_object": "scope_mount_r",
    "origin_m": [
     0.0,
-    -0.004,
-    0.124
+    -0.02,
+    0.1512
    ],
    "bounds_m": {
     "min": [
-     -0.011,
-     -0.022,
-     0.1245
+     -0.0146,
+     -0.028,
+     0.1437
     ],
     "max": [
-     0.0116,
      0.014,
-     0.1525
+     -0.012,
+     0.1512
     ]
    },
    "size_mm": [
-    22.6,
-    36.0,
-    28.0
+    28.6,
+    16.0,
+    7.5
    ],
-   "triangles": 732,
-   "volume_cm3": 18.6,
+   "triangles": 516,
+   "volume_cm3": 3.36,
    "moving": {
     "kind": "translate",
     "event": "swap_sight",
     "note": "Klemmhebel lösen, Zielfernrohr senkrecht abnehmen",
     "pivot_m": [
      0.0,
-     -0.004,
-     0.124
+     -0.02,
+     0.1512
     ],
     "vector_m": [
      0.0,
@@ -808,8 +809,8 @@
    "name_de": "Klemmhebel",
    "name_en": "Clamp lever",
    "assembly": "sight",
-   "function_de": "Spannt den Hals werkzeuglos",
-   "attachment_de": "links am Hals",
+   "function_de": "Spannt den Rohrsattel werkzeuglos",
+   "attachment_de": "links am Rohrsattel",
    "material_role": "accent",
    "material_de": "Akzent Orange (Bedienelement)",
    "interface": null,
@@ -824,23 +825,64 @@
    ],
    "bounds_m": {
     "min": [
-     0.0107,
-     -0.01169,
-     0.1248
+     0.014,
+     -0.02769,
+     0.1447
     ],
     "max": [
-     0.0125,
-     0.008,
-     0.12758
+     0.0158,
+     -0.012,
+     0.14758
     ]
    },
    "size_mm": [
     1.8,
-    19.7,
-    2.8
+    15.7,
+    2.9
    ],
    "triangles": 108,
-   "volume_cm3": 0.07,
+   "volume_cm3": 0.06,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "scope_strap",
+   "name_de": "Spannband",
+   "name_en": "Scope strap",
+   "assembly": "sight",
+   "function_de": "Hält das Rohr im Rohrsattel",
+   "attachment_de": "um das Mittelrohr, im Klemmblock verschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": "scope_mount_r",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "scope_strap",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01107,
+     -0.025,
+     0.14993
+    ],
+    "max": [
+     0.01107,
+     -0.015,
+     0.17207
+    ]
+   },
+   "size_mm": [
+    22.1,
+    10.0,
+    22.1
+   ],
+   "triangles": 960,
+   "volume_cm3": 0.98,
    "moving": null,
    "removable": false
   },
@@ -2504,9 +2546,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    0.0002,
-    -0.0576,
-    0.07851
+    0.00032,
+    -0.05394,
+    0.08029
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
@@ -2533,8 +2575,8 @@
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
-  "parts": 52,
-  "triangles": 28258,
+  "parts": 53,
+  "triangles": 26860,
   "assemblies": 8
  },
  "actions": {

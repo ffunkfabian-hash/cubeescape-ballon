@@ -145,7 +145,7 @@ Startpunkt nehmen.
 |---|---|---|---|
 | `grip_v21(top)` | Griff mit Fingerauflagen und Griffboden, Abzug, Abzugsbügel (`anodized`) | `top` = Griffoberkante (Unterkante Unteres Gehäuse); Griffachse um 15° nach hinten geneigt, f = u·tan 15° + Versatz | 02, 03, 06 (01 inline) |
 | `reflex_sight_v21(f, u, ww, wh, reticle_kind, …)` | Holo nach Visier-Standard 3: Trapezsockel, Glas ww × wh, Absehen; gibt `(Teile, Anker)` zurück | `f` Lage auf der Schiene, `u` = Schienenoberkante; Absehen aus `RETICLE_DEFAULTS[typ]['optic']` | 01, 02, 06 |
-| `scope_v21(f, u, length, r_obj, …)` | kurzes Ring-Zielfernrohr auf Trapezhals, Absehen im Rohr, `ads_hide`; gibt `(Teile, Anker)` zurück | `length` 120, Objektiv Ø 33 mm | 03 |
+| `scope_v21(f, u, length, r_obj, …)` | kurzes Ring-Zielfernrohr auf Trapezhals, Absehen im Rohr, `ads_hide`; gibt `(Teile, Anker)` zurück. Der Scout (03) ersetzt den Hals durch einen Rohrsattel auf einem Gehäusebuckel (`w03_scout_rifle_v21.receiver`, 0.19) – der Baustein bleibt, weil `common.py` im Unity-Hash liegt | `length` 120, Objektiv Ø 33 mm | 03 |
 | `box_scope_v21(f, u, style)` | Kastenoptik (`prism`/`flat`) – nur als Variante | `style` | – |
 | `reticle(f, cu, kind, …)` | Absehen aus `basic/reticles.py` (sonst über die Visierbausteine) | `kind`, `color`, `weight` | über Visiere |
 | `rifle_mag(f_well, u_top, depth, length, tilt, w, curve)` | Magazin, Boden, oberste Patrone; Entnahme entlang der Magazinachse | `tilt` > 0 unten nach vorn; im Griff (06): `tilt=-15` und Mitte auf der Griffachse | 01, 02, 03, 06 |
@@ -186,7 +186,7 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - **Visier-Standard 3** (`reticles.SIGHT`, `SIGHT_KIND`, `ADS_FEEDBACK`; Übersicht [absehen.md](absehen.md); Nutzer
   25.10.2026 „Mach alles so wie du empfiehlst“; Grundlage Motiongen REF 0.14 „Eyebox“, `cubeescape-reference/docs/visiere.md`):
   1. **Typ je Klasse, Farbe nach Familie:** Automatik, MP, Spur, MG, Impuls → offenes Holo; Scout, Lineare Fusion → kurzes
-     Ring-Zielfernrohr auf Trapezhals; Handfeuerwaffe, Seitenwaffe, Schrot → Kimme/Korn mit Leuchtklammern; Scharfschütze →
+     Ring-Zielfernrohr direkt auf dem Gehäuse; Handfeuerwaffe, Seitenwaffe, Schrot → Kimme/Korn mit Leuchtklammern; Scharfschütze →
      Zielfernrohr außen, im Zielen Vollbild; Fusion → Ring/Doppelring; Werfer → runde Linse mit Winkel; Kastenoptiken nur als Variante.
   2. **Rahmen:** Holo ≤ 0,10 × Öffnung (Bügel 1,6 mm, Dach 1,2 mm), Ring ≤ 0,15 × Öffnung. „Klobig“ kommt von großen, hohen
      Gehäusen und Block-Sockeln.
@@ -195,8 +195,9 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
      (Holo-Fenster 26 × 20 bzw. 27 × 21 mm, Objektiv Ø 33 mm); `./check` prüft Anteil, Höhe 66 ± 4 mm und Augenabstand.
   4. **Eine Kamera:** das Glas zeigt dasselbe Weltbild (kein eigenes Linsenbild); Waffenmodell ungezoomt, Weltzoom je Klasse als
      Bildmaßstab; Zielfernrohr-Rohr, Okular und Türme `ads_hide`.
-  5. **Sockel:** gestuftes Trapez bis zur Fensterunterkante (nichts schwebt), Anzeigen unter der Visierlinie; Zielfernrohr auf
-     einem Hals nahe am Auge, der im Zielen unter der Linse bleibt.
+  5. **Sockel:** gestuftes Trapez bis zur Fensterunterkante (nichts schwebt), Anzeigen unter der Visierlinie; Zielfernrohr liegt
+     direkt auf der Gehäuseoberkante (Buckel unter dem Rohr, flacher Sattel statt Hals; Entscheidungsliste 1.1 A, 0.19 „Saddle“),
+     Visier über Gehäuse 0,02–0,04 L; `tools/test_sight_seat.py` prüft das am Netz.
   6. **Absehen:** Standard fein, im Zielen kein Aufgehen; Leuchtpunkt am Zielpunkt getrennt vom Glas, Schuss = kurzer Ring,
      Treffer = X (Laufzeit, `ADS_FEEDBACK`).
   7. **Glas:** Tönung ≤ 5 %, Gebrauchsspuren nur am Rand (≤ +0,15 Deckkraft), Mitte klar.

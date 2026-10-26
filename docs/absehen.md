@@ -127,7 +127,7 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 |---|---|---|---|---|---|
 | `auto_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.6 | beobachtet | **×1.9** | ×2.4 |
 | `pulse_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.7 | beobachtet | **×2.0** | ×2.5 |
-| `scout_rifle` | kurzes Ring-Zielfernrohr auf Trapezhals | ×1.2 | gemessen (Glidepath) | ×1.5 | **×2.0** |
+| `scout_rifle` | kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse | ×1.2 | gemessen (Glidepath) | ×1.5 | **×2.0** |
 | `hand_cannon` | Kimme und Korn mit leuchtenden Klammern | ×1.15 | gemessen (Glidepath) | **×1.15** | ×1.15 |
 | `sidearm` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `submachine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.45 | gemessen (Glidepath) | **×1.45** | ×1.45 |
@@ -135,7 +135,7 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `grenade_launcher` | runde Linse mit Winkel | ×1.4 | beobachtet | **×1.4** | ×1.4 |
 | `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×5.5 | beobachtet | **×5.5** | ×5.5 |
 | `fusion_rifle` | Ring oder Doppelring | ×1.5 | entworfen | **×1.8** | ×2.3 |
-| `linear_fusion_rifle` | kurzes Ring-Zielfernrohr auf Trapezhals | ×3.0 | entworfen | ×3.3 | **×3.8** |
+| `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse | ×3.0 | entworfen | ×3.3 | **×3.8** |
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |

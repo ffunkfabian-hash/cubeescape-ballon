@@ -3,7 +3,7 @@
 - Freestyle-Linien in Cycles brauchen einen ausdrücklich angelegten Linienstil (`bpy.data.linestyles.new`), sonst bricht der Hintergrundlauf ab ([blender_build.py](../tools/blender_build.py)).
 - Flächenlichter mit Werkseinstellung überstrahlen Creme völlig; Key 115 W, Fill 35 W, Rim 70 W bei Standard-Ansicht ([blender_build.py](../tools/blender_build.py)).
 - Drehpunkte beweglicher Teile weit genug vom Schwerpunkt legen: ein Kran direkt unter der Trommelachse dreht die Trommel auf der Stelle ([w04](../basic/weapons/w04_hand_cannon.py)).
-- Visierlinie per Kamera in `Socket_Eye` prüfen: ein Emitterblock über der Fensterunterkante verdeckt die halbe Durchsicht ([common.reflex_sight](../basic/common.py)).
+- Visierlinie per Kamera in `Socket_Eye` prüfen: ein Emitterblock über der Fensterunterkante verdeckt die halbe Durchsicht ([common.reflex_sight](../basic/common.py)); ein Ring um ein `ads_hide`-Rohr (Spannband) braucht selbst `ads_hide`, sonst steht er nah am Auge groß im Zielbild ([test_sight_seat](../tools/test_sight_seat.py)).
 - Ein gemeinsamer Schaft für alle Gewehre macht die Reihe zu einer Waffe mit verschiedenen Läufen; zweiter Schafttyp S2 für Energie-/Impulswaffen ([designvertrag](designvertrag.md)).
 - Wiki-Seiten zu Destiny-Waffen belegen Typ und Hersteller, nicht Form oder Nachladeablauf: Formprinzipien bleiben „abgeleitet“ ([quellen](quellen.md)).
 - Drehsinn um die Querachse einmal festlegen und testen: ein vertauschtes Vorzeichen ließ alle Abzüge nach vorn und den MG-Deckel ins Gehäuse drehen; `move.expect` + [test_motion.py](../tools/test_motion.py) fangen das ([kit.py](../basic/kit.py)).

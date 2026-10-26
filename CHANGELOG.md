@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.19.0 „Saddle“ – Scout BASIC-03 v2.1: Zielfernrohr direkt auf dem Gehäuse (Branch `claude/ballon-0.19-saddle`)
+
+- Schritt 7 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (1.1 A, Prüfung 1a): Gehäusebuckel unter dem Rohr mit kurzer Schiene,
+  Rohrsattel statt Trapezhals, Spannband `scope_strap` mit `ads_hide`. Spalt Rohr–Gehäuse 21,5–25,5 → 0,3 mm, Visier über Gehäuse 0,051 → 0,030 L,
+  Visierhöhe 65 mm; 1a unverändert 1,31 / 1,56. Neuer Test `tools/test_sight_seat.py` in `./check` (am Netz, rot mit altem Modell).
+  Bericht [docs/versions/0.19-saddle.md](docs/versions/0.19-saddle.md).
+
 ## 0.18.0 „Quickdraw“ – Ego-Übertrag je Klasse, Maschinenpistole BASIC-06 spielbar (Branch `claude/ballon-0.18-quickdraw`)
 
 - Schritt 6 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (2.1 A, 3.2 A, 4d) für die erste Klasse, die MP „Kurzläufer v2.1“:
