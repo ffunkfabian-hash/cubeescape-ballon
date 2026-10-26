@@ -6,6 +6,7 @@
   python3 tools/unity_run.py build      → macOS-Entwicklungsbuild unity/Build/BallonFirstfeel.app
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
   python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR)
+  python3 tools/unity_run.py sway|treffer → Belege Pendeln bzw. Schuss-Ring/Treffer-X (MP4, Kontaktbogen, feedback.csv)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
 """
@@ -89,6 +90,11 @@ def player(args, log):
     return locked([exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0', '-logFile', log] + args, log)
 
 
+DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen, Sprint → Zielen',
+         'sway': 'BALLON Patch unity-abgleich · Unity · Pendeln: schnelle Drehung, Rückkehr ohne Überschwingen (2,5 Hz, ζ 1)',
+         'treffer': 'BALLON Patch unity-abgleich · Unity · 720/min · Schuss-Ring im Zielen (1 Bild) · Treffer-X orange ≥ 0,17 s'}
+
+
 def capture(scene=None, demo=None):
     d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '')
     shutil.rmtree(d, ignore_errors=True)
@@ -106,8 +112,7 @@ def capture(scene=None, demo=None):
     rows = {int(r.split(',')[0]): r.strip().split(',') for r in open(os.path.join(d, 'frames.csv'), encoding='utf-8')}
     lab = os.path.join(d, '_lab')
     os.makedirs(lab, exist_ok=True)
-    head = ('BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen, Sprint → Zielen' if demo == 'feel'
-            else 'BALLON 0.4 Firstfeel · Unity · BASIC-01 v2.1')
+    head = DEMOS[demo] if demo else 'BALLON 0.4 Firstfeel · Unity · BASIC-01 v2.1'
     cur, until = '', -1
     for i, p in enumerate(frames):
         if i in marks:
@@ -120,11 +125,12 @@ def capture(scene=None, demo=None):
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
-    out = os.path.join(EV, f'gefuehl_{scene or "parcours"}.mp4' if demo else 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
+    stem = 'gefuehl' if demo == 'feel' else demo
+    out = os.path.join(EV, f'{stem}_{scene or "parcours"}.mp4' if demo else 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
                     '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', out], check=True)
     shutil.rmtree(lab)
-    sheet = os.path.join(EV, f'gefuehl_{scene or "parcours"}.png' if demo else 'firstfeel_ablauf.png' if not scene else f'firstfeel_{scene}.png')
+    sheet = os.path.join(EV, f'{stem}_{scene or "parcours"}.png' if demo else 'firstfeel_ablauf.png' if not scene else f'firstfeel_{scene}.png')
     pick = sorted({0, len(frames) - 1, *[f for f in marks if any(k in ' '.join(marks[f]) for k in
                                                                   ('Aimed', 'MagOut', 'MagIn', 'Chamber', 'inspect › Start'))]})
     if demo:                                                     # Bewegungsgefühl: gleichmäßig über den Ablauf
@@ -273,8 +279,8 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
-    if a == 'feel':                                              # Sprint und Visier-Anflug (0.10), optional in einer Szene
-        sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo='feel'))
+    if a in ('feel', 'sway', 'treffer'):                         # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich)
+        sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
     if a == 'scenes':
         d = os.path.join(EV, 'scene_shots')
         shutil.rmtree(d, ignore_errors=True)

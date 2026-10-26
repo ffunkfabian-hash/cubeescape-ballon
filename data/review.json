@@ -520,7 +520,114 @@
       "Durchladen: linke Hand am Ladehebel teilweise außerhalb des Bildes",
       "Arm v3 (24.10.2026): alle 19 Aktionen neu gerendert, Handgelenk max. 42,7° (Ziehen/Wegstecken); Drehgelenk zeigt die Panzerseite zur Kamera.",
       "Bewegung v2 (24.10.2026): Kurven durch die Schlüssel, Feder-Nachlauf, Atmen überall, Rückstoßfeder, Tempo 1,25 (Zielen/Feuern ausgenommen), alle Clips 30 fps; Nachladen neu choreografiert, Haltung reload höher und mittiger – Einsetzen des Magazins jetzt sichtbar. Messung: inspect ohne Zwischenstopp, reload_empty nur gewollte Halte (Ausholen, vor dem Stoß)."
-    ]
+    ],
+    "messungen": {
+      "date": "2026-10-25",
+      "by": "Claude (Patch messen)",
+      "ref": "docs/entscheidungsliste-motiongen.md › Messungen (25.10.2026)",
+      "hinweis": "nur gemessen, keine Werte geändert; Bezugsbildwinkel 75° horizontal, 16:9, Ursprung oben links, % von B/H",
+      "2.1_huefte": {
+        "methode": "tools/messen.py: Socket_Muzzle, Socket_Sight, Waffenkontur ins Ego-Bild projiziert (hip_ego 1600x900); Unity-Messlauf -ballonKey Bild 30 gegengeprüft",
+        "muendung_pct": [
+          58.8,
+          49.6
+        ],
+        "muendung_spitze_x_pct": 57.8,
+        "unity_spitze_pct": [
+          58.8,
+          49.3
+        ],
+        "sicht_hinten_pct": [
+          80.3,
+          49.5
+        ],
+        "absehen_pct": [
+          77.1,
+          48.5
+        ],
+        "kontur": "links x 57,8 / oben y 44,8; rechts und unten über den Bildrand hinaus",
+        "unsicherheit_pp": "±0,1 Projektion, ±1 Anker gegen Spitze",
+        "destiny": "x 54–59 / y 60–71",
+        "abweichung": "x im Band, y 10,4–21,4 pp höher",
+        "beleg": "~/Library/Caches/CubeEscapeBallon/messen/belege/2.1_huefte_blender_raster.png, 2.1_huefte_unity_raster_schluessel.png"
+      },
+      "3.1_sprint_hub": {
+        "methode": "unity_run.py feel mit -ballonFps 60 -ballonKey 1; Waffenmaske je Bild, Extrema Spitze-Spitze (Median); Sprint 1 Bild 36–144, Sprint 2 Bild 354–408",
+        "frequenz_hz": 3.16,
+        "periode_s": 0.317,
+        "zyklen_sprint1": 5.7,
+        "vertikal_pct_H": {
+          "schwerpunkt": [
+            2.1,
+            2.3
+          ],
+          "oberkante": [
+            5.1,
+            5.7
+          ]
+        },
+        "seitlich_pct_B": {
+          "muendungsende": [
+            7.0,
+            8.7
+          ],
+          "schwerpunkt": [
+            0.3,
+            1.4
+          ]
+        },
+        "unsicherheit": "±0,3 pp H / ±0,2 pp B je Extremwert; Messpunkt der Destiny-Zahl unbekannt",
+        "destiny": "≈ 10–11 % H / 13 % B",
+        "abweichung": "vertikal 4,3–8,9 pp kleiner, seitlich 4,3–6,0 pp kleiner, Frequenz gleich",
+        "beleg": "~/Library/Caches/CubeEscapeBallon/messen/belege/3.1_sprint_raster.mp4, 3.1_kontaktbogen.png, key60_maske.csv"
+      },
+      "1d_zoom_gegen_modell": {
+        "methode": "60/s, FOV je Bild (zoom.csv) gegen Bildbewegung der Waffe, Schwellen 5/10/20 % der Spitze; nur Holo",
+        "hueft_zu_zielen": {
+          "eingabe_bild": 192,
+          "zoom_bilder": [
+            193,
+            210
+          ],
+          "modell_bilder": [
+            "195–215",
+            "196–214",
+            "196–213"
+          ],
+          "zoom_minus_modell": "Start −2 bis −3, Ende −3 bis −5"
+        },
+        "zielen_zu_hueft": {
+          "eingabe_bild": 276,
+          "zoom_bilder": [
+            276,
+            293
+          ],
+          "modell_bilder": [
+            "277–305",
+            "278–301",
+            "279–294"
+          ],
+          "zoom_minus_modell": "Start −1 bis −3, Ende −1 bis −12"
+        },
+        "sprint_zu_zielen": {
+          "eingabe_bild": 408,
+          "zoom_bilder": [
+            419,
+            436
+          ],
+          "modell_bilder": [
+            "408–436",
+            "408–435",
+            "408–434"
+          ],
+          "zoom_minus_modell": "Start +11, Ende 0 bis +2"
+        },
+        "unsicherheit": "±1 Bild plus 1–2 Bilder je Schwelle",
+        "zielfernrohr": "nicht messbar: Unity trägt nur BASIC-01 mit Holo, adsZoom 1,35 für alle",
+        "destiny": "Zoom beginnt 0–2 Bilder nach dem Modell, Ende gemeinsam ±1",
+        "beleg": "~/Library/Caches/CubeEscapeBallon/messen/belege/key60_zoom.csv"
+      }
+    }
   },
   "BASIC-02-v2.1": {
     "static": {
@@ -595,7 +702,28 @@
     },
     "notes": [
       "Formskizze: ~/Library/Caches/CubeEscapeBallon/sketch/BASIC-03-v2.1_skizze.blend"
-    ]
+    ],
+    "messungen": {
+      "date": "2026-10-25",
+      "by": "Claude (Patch messen)",
+      "ref": "docs/entscheidungsliste-motiongen.md › Messungen (25.10.2026)",
+      "hinweis": "nur gemessen, keine Werte geändert; Bezugsbildwinkel 75° horizontal, 16:9, Ursprung oben links, % von B/H",
+      "1a_scout_ring": {
+        "methode": "sight_options.py rohr_ziel.png (960x540, Kamera im Augenpunkt 90 mm, 75°), Helligkeitsprofil Zeile 270 durch die Ringmitte (tools/messen_bild.py ring)",
+        "aussen_px": 322,
+        "ringinnenkante_px": 246,
+        "lichtes_glas_px": 207,
+        "aussen_pct_B": 33.5,
+        "ringinnenkante_pct_B": 25.6,
+        "aussen_durch_ringinnenkante": 1.31,
+        "aussen_durch_glas": 1.56,
+        "unsicherheit": "±0,02 (±2 px je Kante)",
+        "code": "1,11–1,18 (aus dem Code gerechnet, trifft das Bild nicht)",
+        "destiny": "1,28–1,30",
+        "abweichung": "Innenkante +0,01 bis +0,03; Glas +0,26 bis +0,28",
+        "beleg": "~/Library/Caches/CubeEscapeBallon/messen/belege/1a_scout_ring_raster.png"
+      }
+    }
   },
   "BASIC-06-v2.1": {
     "static": {

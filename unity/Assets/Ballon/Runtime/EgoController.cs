@@ -24,7 +24,9 @@ namespace Ballon.Ego
         public float fadeFrames = 4f;          // Überblendung zwischen Spuren
         public float cancelFadeFrames = 6f;    // Abbruch (Betrachten)
         public float kickHip = 1.0f, kickAds = 0.45f;   // fire_hip.kick / fire_ads.kick
-        public float swayPerDeg = 0.35f, swayMaxDeg = 3.0f, swayFreq = 9f, swayDamp = 0.55f, swayPos = 0.0035f;
+        // Pendeln kritisch gedämpft wie der Visier-Anflug (Frage 3.3 A, Destiny: Rückkehr ≈ 0,3 s ohne Überschwingen):
+        // 2,5 Hz bei ζ 1 → Rest ≈ 5 % nach 0,30 s
+        public float swayPerDeg = 0.35f, swayMaxDeg = 3.0f, swayFreq = 2.5f, swayDamp = 1.0f, swayPos = 0.0035f;
         public float swayAds = 0.25f, bobAds = 0.2f, breatheAds = 0.35f;
         public float moveTiltDeg = 1.6f;
         public float boltOpenS = 0.05f;        // 1,5 Bilder wie in ego_build
@@ -70,7 +72,7 @@ namespace Ballon.Ego
         bool _hasSec;
         Vector3 _secP, _secV, _secAv;
         Quaternion _secQ;
-        Vector2 _sway, _swayV;
+        Vector3 _sway, _swayV;             // x Gieren, y Nicken (Grad), z ungenutzt
         float _bobPh, _bobW, _sprintW, _breatheW = 1, _breathePh, _tilt;
         float _fade = 1, _fadeLen;
         Matrix4x4 _fromBase, _fromRelL, _fromRelR;
@@ -99,6 +101,8 @@ namespace Ballon.Ego
         public float Frame => _t.frame;
         public bool Busy => _t.busy && !_t.ended;
         public Stance CurrentStance => _stance;
+        /// <summary>Pendeln in Grad (x Gieren, y Nicken) – Messwert für Aufnahme und Bericht.</summary>
+        public Vector2 SwayDeg => _sway;
         public bool Holstered => holstered;
 
         // -------------------------------------------------------------- Spuren
@@ -339,7 +343,8 @@ namespace Ballon.Ego
             if (_triggerHeld)
             {
                 _shotClock += dt;
-                if (_sinceShot >= interval && _shotClock > 0) _shotClock = interval;   // erster Schuss sofort
+                // erster Schuss sofort; Max statt Setzen behält im Dauerfeuer den Übertrag (sonst bei 30/s 3 Bilder = 600 statt 720/min)
+                if (_sinceShot >= interval && _shotClock > 0) _shotClock = Mathf.Max(_shotClock, interval);
                 while (_shotClock >= interval && ammo > 0)
                 {
                     _shotClock -= interval;
@@ -355,16 +360,10 @@ namespace Ballon.Ego
             if (_sinceShot > interval * 1.5f) _rClimb *= Mathf.Exp(-dt * S.fps / 8f);
             _boltT = Mathf.Max(0, _boltT - dt);
 
-            // Pendeln aus der Mausbewegung (gedämpfte Feder)
-            var target = Vector2.ClampMagnitude(-i.look * tune.swayPerDeg, tune.swayMaxDeg) * Mathf.Lerp(1, tune.swayAds, adsWeight);
-            float w = 2 * Mathf.PI * tune.swayFreq, z = tune.swayDamp;
+            // Pendeln aus der Mausbewegung: dieselbe Feder wie Feder-Nachlauf und Visier-Anflug (EgoSolver.SpringStep)
+            Vector3 target = Vector2.ClampMagnitude(-i.look * tune.swayPerDeg, tune.swayMaxDeg) * Mathf.Lerp(1, tune.swayAds, adsWeight);
             int sub = Mathf.Max(1, Mathf.CeilToInt(dt / 0.004f));             // stabil auch bei 30 fps und Rucklern bis 50 ms
-            for (int k = 0; k < sub; k++)
-            {
-                var acc = (target - _sway) * (w * w) - _swayV * (2 * z * w);
-                _swayV += acc * (dt / sub);
-                _sway += _swayV * (dt / sub);
-            }
+            EgoSolver.SpringStep(ref _sway, ref _swayV, target, 2 * Mathf.PI * tune.swayFreq, tune.swayDamp, dt, sub);
             _tilt = Mathf.Lerp(_tilt, -i.move.x * tune.moveTiltDeg * (1 - adsWeight), 1 - Mathf.Exp(-dt * 8));
 
             // Wippen aus der Laufgeschwindigkeit (walk / sprint), Atmen in Ruhe

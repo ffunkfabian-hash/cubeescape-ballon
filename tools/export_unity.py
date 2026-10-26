@@ -14,6 +14,7 @@ import hashlib
 import importlib
 import json
 import os
+import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,8 +27,9 @@ DST = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
 MM = 0.001
 AXES = dict(to_unity=[[-1, 0, 0], [0, 0, 1], [0, -1, 0]],
             de='Unity = M · Blender; Blender-Kameraraum rechts −X, vorn −Y, oben +Z → Unity rechts +X, oben +Y, vorn +Z')
-# Spielwerte der Pilotwaffe (Vorschlag der Übergabe, vom Nutzer noch nicht festgelegt)
-GAMEPLAY = dict(rpm=600, magazine=30, src='E (Vorschlag Übergabe 0.4: 600/min, 30 Patronen; noch nicht vom Nutzer festgelegt)')
+# Spielwerte der Pilotwaffe: Kadenz wie der Clip fire_hip (Nutzer 25.10.2026, Entscheidungsliste Frage 7.1 A), Magazin Entwurf
+GAMEPLAY = dict(rpm=720, magazine=30, src='M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip folgt beim '
+                                          'nächsten Rendern; Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)')
 AXIS = {'x': (0, -1.0), 'f': (1, -1.0), 'u': (2, 1.0)}   # wie tools/blender_build.AXIS (Index, Drehsinn)
 
 
@@ -184,7 +186,26 @@ def write_reference(ref):
                  + ', "samples": [\n' + ',\n'.join(json.dumps(s, separators=(',', ':')) for s in ref['samples']) + '\n]}\n')
 
 
+def feedback_mismatch():
+    """Rückmeldung im Zielen steht als C#-Konstanten in EgoPlayer.AdsFeedback (kein Feld in ego.json, sonst neues Format):
+    Werte müssen reticles.ADS_FEEDBACK und der Akzentfarbe aus kit.MATERIALS folgen. Gibt die abweichenden Namen zurück."""
+    from basic import reticles
+    cs = open(os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Runtime', 'EgoPlayer.cs'), encoding='utf-8').read()
+    F = reticles.ADS_FEEDBACK
+    want = dict(ShotRingShareH=F['shot_ring']['share_h'], ShotRingFrames=F['shot_ring']['frames'], HitXShareH=F['hit_x']['share_h'],
+                HitXMinS=F['hit_x']['min_s'])
+    bad = [k for k, v in want.items() if not re.search(rf'\b{k} = {v:g}f?[,;]', cs)]
+    rgb = kit_materials()['accent']['color'].lstrip('#')
+    if f'new Color32(0x{rgb[0:2]}, 0x{rgb[2:4]}, 0x{rgb[4:6]}'.lower() not in cs.lower():
+        bad.append('Orange')
+    return bad
+
+
 def check():
+    bad = feedback_mismatch()
+    if bad:
+        print('EgoPlayer.AdsFeedback weicht von reticles.ADS_FEEDBACK / kit accent ab: ' + ', '.join(bad))
+        return 1
     p = os.path.join(DST, 'ego.json')
     if not os.path.exists(p):
         print('unity/Assets/Ballon/Generated/ego.json fehlt (Blender-Export ausführen)')

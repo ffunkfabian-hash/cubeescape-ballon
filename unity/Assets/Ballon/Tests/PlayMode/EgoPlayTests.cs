@@ -86,6 +86,92 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0, c.ammo);
         }
 
+        /// <summary>Frage 7.1 A: Unity schießt wie der Clip fire_hip mit 720/min – bei 60 Bildern/s ein Schuss alle 5 Bilder
+        /// (Motiongen: Chroma Rush, 5 Bilder Abstand), bei 30/s abwechselnd 2 und 3 Bilder. Vorher 600/min (6 bzw. 3 Bilder).</summary>
+        [Test]
+        public void Kadenz_720_wie_fire_hip()
+        {
+            Assert.AreEqual(720, D.gameplay.rpm, "ego.json › gameplay.rpm");
+            StringAssert.StartsWith("M ", D.gameplay.src, "Herkunft gemessen");
+            foreach (int fps in new[] { 60, 30 })
+            {
+                var c = Ready();
+                c.ammo = c.magSize = 1000;
+                var at = new List<int>();
+                int k = 0;
+                c.Shot += () => at.Add(k);
+                for (; k < 2 * fps; k++) c.Tick(1f / fps, new EgoIntent { grounded = true, fire = true });
+                var gaps = at.Zip(at.Skip(1), (a, b) => b - a).ToList();
+                float rpm = 60f * fps / (float)gaps.Average(), ideal = fps * 60f / 720f;
+                TestContext.WriteLine($"Kadenz live bei {fps}/s: {at.Count} Schüsse in 2 s, Bildabstand {string.Join(",", gaps.Distinct())} → {rpm:0} /min");
+                Assert.AreEqual(24, at.Count, $"Schüsse in 2 s bei {fps}/s");
+                Assert.That(gaps, Has.All.InRange(Mathf.FloorToInt(ideal) - 1, Mathf.CeilToInt(ideal) + 1), $"Bildabstand bei {fps}/s");
+                Assert.AreEqual(720f, rpm, 15f, $"Kadenz aus den Bildabständen bei {fps}/s (Übertrag bleibt)");
+            }
+        }
+
+        /// <summary>Frage 3.3 A: nach einer schnellen Drehung (360°/s, 0,3 s) zieht die Waffe gegen die Drehung nach, höchstens 3°,
+        /// und kehrt kritisch gedämpft in ≈ 0,3 s ohne Überschwingen zurück. Gemessen als Gieren des Laufs gegen einen Zwilling ohne
+        /// Mausbewegung (gleiche Zeitschritte, Atmen hebt sich auf). Vorher ζ 0,55: Überschwingen 0,22°, Rückkehr ≈ 0,1 s (Gegenlauf mit altem Code).</summary>
+        [Test]
+        public void Pendeln_kehrt_ohne_Ueberschwingen_zurueck()
+        {
+            var c = Ready();
+            var c0 = Ready();
+            float Yaw(EgoController x)
+            {
+                var d = x.output.weapon.MultiplyVector(new Vector3(0, -1, 0));   // Lauf zeigt nach −Y (Blender-Kameraraum)
+                return Mathf.Atan2(-d.x, -d.y) * Mathf.Rad2Deg;
+            }
+            var dev = new List<float>();
+            const int turn = 18;                                   // 0,3 s bei 60/s
+            for (int k = 0; k < 90; k++)
+            {
+                var i = new EgoIntent { grounded = true, look = new Vector2(k < turn ? 360f * Dt : 0, 0) };
+                c.Tick(Dt, i);
+                c0.Tick(Dt, Idle);
+                dev.Add(Mathf.DeltaAngle(Yaw(c0), Yaw(c)));
+            }
+            float peak = dev.Take(turn).OrderByDescending(v => Mathf.Abs(v)).First();
+            var after = dev.Skip(turn).ToList();
+            float over = after.Max(v => -Mathf.Sign(peak) * v);
+            int back = after.Count;
+            while (back > 0 && Mathf.Abs(after[back - 1]) < 0.05f * Mathf.Abs(peak)) back--;
+            float ret = back * Dt;
+            TestContext.WriteLine($"Pendeln: Auslenkung {peak:0.00}°, Überschwingen {Mathf.Max(0, over):0.000}°, Rückkehr (< 5 %) {ret:0.000} s");
+            Assert.Less(Mathf.Abs(peak), 3.05f, "Auslenkung begrenzt");
+            Assert.Greater(Mathf.Abs(peak), 0.5f, "Waffe zieht nach");
+            Assert.Less(over, 0.02f, "kein Überschwingen");
+            Assert.That(ret, Is.InRange(0.22f, 0.4f), "Rückkehr ≈ 0,3 s");
+        }
+
+        /// <summary>6c: Nachlade-Abbruch (Wegstecken) vor MagIn gibt keine Munition, danach ist das Magazin voll und bleibt es.</summary>
+        [Test]
+        public void Nachlade_Abbruch_vor_und_nach_MagIn()
+        {
+            foreach (var act in new[] { "reload_tactical", "reload_empty" })
+            {
+                float magIn = D.Action(act).events.First(e => e.name == "MagIn").f / 30f;
+                foreach (bool afterMagIn in new[] { false, true })
+                {
+                    var m = new List<(string, string)>();
+                    var c = Ready(m);
+                    int before = c.ammo = act == "reload_empty" ? 0 : 5;
+                    c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+                    Assert.AreEqual(act, c.ActionName);
+                    Run(c, Idle, magIn + (afterMagIn ? 0.1f : -0.1f));
+                    Assert.AreEqual(afterMagIn, m.Contains((act, "MagIn")), $"{act}: MagIn vor dem Abbruch");
+                    c.Tick(Dt, new EgoIntent { grounded = true, holster = true });
+                    Assert.AreEqual("reload_to_switch", c.ActionName, act);
+                    Run(c, Idle, D.Action("reload_to_switch").frames / 30f + 0.3f);
+                    Assert.IsTrue(c.Holstered);
+                    c.Tick(Dt, new EgoIntent { grounded = true, draw = true });
+                    Run(c, Idle, D.Action("draw").frames / 30f + 0.3f);
+                    Assert.AreEqual(afterMagIn ? c.magSize : before, c.ammo, $"{act}, Abbruch {(afterMagIn ? "nach" : "vor")} MagIn");
+                }
+            }
+        }
+
         [Test]
         public void Leeres_Nachladen_und_taktisches_Nachladen()
         {
@@ -389,6 +475,55 @@ namespace Ballon.Ego.Tests
             Assert.AreSame(arm, p.rig.SegR("hand").GetComponentInChildren<Renderer>().sharedMaterial, "Arme bleiben");
             p.SetSkin(0);
             Assert.AreSame(before, p.rig.WeaponAtlasMaterial);
+        }
+
+        /// <summary>Frage 4.3 A (Visier-Standard 3 §6): Schuss-Ring 2 % H nur im Zielen für genau ein Bild, Treffer-X 4,5 % H mindestens
+        /// 0,17 s, in Familienfarbe Orange; aus der Hüfte nur das Treffer-X. Vorher: vier Quadrate für 0,12 s, kein Ring.</summary>
+        [UnityTest]
+        public IEnumerator Schuss_Ring_und_Treffer_X()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            yield return null;
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);   // Scheibe 3 m vor dem Auge, größer als jede Streuung
+            wall.transform.position = p.worldCam.transform.position + p.worldCam.transform.forward * 3f;
+            wall.transform.rotation = p.worldCam.transform.rotation;
+            wall.transform.localScale = new Vector3(1.5f, 1.5f, 0.1f);
+            wall.AddComponent<RangeTarget>();
+            p.input = new ScriptedInput().Add(0, 10).Add(0.2f, 0.25f, hold: "fire").Add(0.6f, 2.6f, hold: "aim").Add(1.5f, 1.55f, hold: "aim fire");
+            p.deltaOverride = () => 1f / 30f;
+            long s0 = p.C.shots;
+            int h0 = p.hits;
+            var rows = new List<(long shots, int hits, bool ring, bool x, float ads)>();
+            for (int k = 0; k < 75; k++)                       // 2,5 s
+            {
+                yield return null;
+                rows.Add((p.C.shots - s0, p.hits - h0, p.ShotRingVisible, p.HitXVisible, p.C.adsWeight));
+            }
+            wall.SetActive(false);                             // nicht zerstören: die Einschläge hängen an ihr und bleiben in der Warteschlange
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            p.C.ReadyNow();
+            p.C.ammo = p.C.magSize;
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            int hipShot = rows.FindIndex(r => r.shots == 1), adsShot = rows.FindIndex(r => r.shots == 2);
+            Assert.AreEqual(2, rows[rows.Count - 1].shots, "zwei Schüsse");
+            Assert.AreEqual(2, rows[rows.Count - 1].hits, "beide treffen");
+            Assert.Less(rows[hipShot].ads, 0.5f);
+            Assert.Greater(rows[adsShot].ads, 0.99f);
+            int ringHip = rows.Take(adsShot).Count(r => r.ring), ringAds = rows.Skip(adsShot).Count(r => r.ring);
+            int xHip = rows.Skip(hipShot).Take(adsShot - hipShot).Count(r => r.x), xAds = rows.Skip(adsShot).Count(r => r.x);
+            TestContext.WriteLine($"Rückmeldung bei 30/s: Ring Hüfte {ringHip} Bilder, Ring Zielen {ringAds} Bild(er) ab Bild {adsShot}; " +
+                                  $"Treffer-X Hüfte {xHip} Bilder ({xHip / 30f:0.000} s), Zielen {xAds} Bilder ({xAds / 30f:0.000} s)");
+            Assert.AreEqual(0, ringHip, "aus der Hüfte kein Schuss-Ring");
+            Assert.AreEqual(1, ringAds, "Schuss-Ring genau ein Bild");
+            Assert.IsTrue(rows[adsShot].ring, "Ring im Bild des Schusses");
+            foreach (int x in new[] { xHip, xAds }) Assert.That(x / 30f, Is.InRange(0.17f, 0.25f), "Treffer-X ≥ 0,17 s");
+            Assert.AreEqual(0.02f, AdsFeedback.ShotRingShareH, 1e-6f, "Ring 2 % H");
+            Assert.AreEqual(0.045f, AdsFeedback.HitXShareH, 1e-6f, "Treffer-X 4,5 % H");
+            Assert.AreEqual((Color)new Color32(0xE0, 0x65, 0x1E, 0xFF), AdsFeedback.Orange, "Familienfarbe Orange (kit accent)");
         }
 
         [UnityTest]
