@@ -42,10 +42,10 @@ Destiny-Schalen ΔL* 64–78 [M].
 
 | # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
 |---|---|---|---|---|---|---|
-| 1a | Scout-Ring außen/Öffnung | BASIC 1,76–1,91 gegen Destiny 1,28–1,30 [M] ([proportionen] › 5.2) – gemessen an `sight_options.png` vom 24.10. 19:51, **vor** Visier-Standard 3 | `common.scope_v21`: Objektivring außen 16,5 mm, Öffnung 14,0–14,8 mm, also ≈ 1,11–1,18 (aus dem Code gerechnet, nicht am Bild) | keine Entscheidung nötig; beim nächsten Ego-Still am Bild nachmessen und in `data/review.json` eintragen | Pflicht (Prüfung) | S |
+| 1a | Scout-Ring außen/Öffnung | BASIC 1,76–1,91 gegen Destiny 1,28–1,30 [M] ([proportionen] › 5.2) – gemessen an `sight_options.png` vom 24.10. 19:51, **vor** Visier-Standard 3 | `common.scope_v21`: Objektivring außen 16,5 mm, Öffnung 14,0–14,8 mm, also ≈ 1,11–1,18 (aus dem Code gerechnet, nicht am Bild) · **BASIC gemessen (25.10.2026, [Messungen](#messungen-25102026)):** Ring außen ÷ Ringinnenkante **1,31**, ÷ lichtes Glas **1,56** (±0,02), Scout-Zielbild nach Visier-Standard 3; der Codewert 1,11–1,18 trifft das Bild nicht | keine Entscheidung nötig; beim nächsten Ego-Still am Bild nachmessen und in `data/review.json` eintragen | Pflicht (Prüfung) | S |
 | 1b | Scout-Visier über dem Gehäuse | Destiny-Scouts 0,02–0,04 L (Tone Patrol 0,013–0,019 [M], übrige [C]); das Rohr liegt direkt auf der Gehäuseoberkante ([visiere] › 6); BASIC alter Bildstand 0,063 L | Visierbaugruppe 57 mm hoch bei L 1023 mm (0,056 L, Hülle mit Hals); Rohr auf Trapezhals; Visierhöhe 65 mm (Soll 66 ± 4) | Frage 1.1 | Destiny | M (Blender, Rendern, Export) |
 | 1c | Weltzoom je Klasse | Bildmaßstab Destiny [M] ([destiny2] › Glidepath, [visiere] › 4): Automatik 1,84, Impuls 2,10, MG 1,84, Scout 2,0 (1 Paar), Handfeuerwaffe 1,15 (Exotic), Seitenwaffe 1,29, MP-Holo 1,43 / MP-Kimme 1,71, Granatwerfer 1,44 | `reticles` (Grundzoom + Visierbonus): Automatik 1,9, Impuls 2,0, MG 1,9, Granatwerfer 1,4, Seitenwaffe 1,25 passen; abweichend **Scout 2,9** (Zielfernrohr), **Handfeuerwaffe 1,5**, **MP 1,25** | Frage 1.2 | Destiny | S |
-| 1d | Zoom gegen Modell | Holo: Zoom beginnt 0–2 Bilder nach dem Modell und endet gleichzeitig ±1 Bild (Automatik, Impuls, MG); Kimme-MP: Modell schnappt in 1–2 Bildern ein, Zoom endet 5 Bilder später; Scharfschütze: Linse erst nach dem Modell [M] | in Unity nicht gemessen | in Unity messen (Testprotokoll wie `Zielen_landet_ohne_Ueberschwingen`) und auf „Start mit oder kurz nach dem Modell, Ende gemeinsam“ legen | Destiny | S–M |
+| 1d | Zoom gegen Modell | Holo: Zoom beginnt 0–2 Bilder nach dem Modell und endet gleichzeitig ±1 Bild (Automatik, Impuls, MG); Kimme-MP: Modell schnappt in 1–2 Bildern ein, Zoom endet 5 Bilder später; Scharfschütze: Linse erst nach dem Modell [M] | in Unity nicht gemessen · **BASIC gemessen (25.10.2026, Holo, 60/s):** Hüfte → Zielen: Weltzoom beginnt **2–3 Bilder vor** dem Modell und endet 3–5 Bilder vor ihm; Sprint → Zielen: Zoom beginnt 11 Bilder nach dem Modell, Ende 0 bis +2; Zielfernrohr in Unity nicht messbar | in Unity messen (Testprotokoll wie `Zielen_landet_ohne_Ueberschwingen`) und auf „Start mit oder kurz nach dem Modell, Ende gemeinsam“ legen | Destiny | S–M |
 | 1e | Durchblick, Glas, Gehäusefarbe | Destiny: eine Kamera, Glas kaum getönt, keine Gebrauchsspuren, Gehäuse neutral [M] | Visier-Standard 3 §4, §7, §8 | entschieden; Gegenbeispiele zur neutralen Gehäusefarbe stehen in Block 8 | – | – |
 
 **Frage 1.1 – Scout-Optik tiefer setzen?**
@@ -66,7 +66,7 @@ Destiny-Schalen ΔL* 64–78 [M].
 
 | # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
 |---|---|---|---|---|---|---|
-| 2a | Hüftlage im Bild | Destiny, lange Waffen: Mündung **rechts unter der Mitte** bei x 54–59 / y 60–71 % (21 Beispiele [M], Showcases); hintere Visieröffnung 7–34 pp rechts der Mündung; Kontur reicht bis zum rechten und unteren Rand ([huefte] › 4) | `ego.POSES['hip']` Socket_Hand (−0,20 / −0,42 / −0,165) m, entworfen; Bildlage nicht gemessen | Frage 2.1 | Destiny | S Messung, M Anpassung |
+| 2a | Hüftlage im Bild | Destiny, lange Waffen: Mündung **rechts unter der Mitte** bei x 54–59 / y 60–71 % (21 Beispiele [M], Showcases); hintere Visieröffnung 7–34 pp rechts der Mündung; Kontur reicht bis zum rechten und unteren Rand ([huefte] › 4) | `ego.POSES['hip']` Socket_Hand (−0,20 / −0,42 / −0,165) m, entworfen; Bildlage nicht gemessen · **BASIC gemessen (25.10.2026):** Mündung x **58,8** / y **49,6** %, hintere Visierkante x 80,3 % (21,5 pp rechts der Mündung), Kontur reicht über den rechten und unteren Rand | Frage 2.1 | Destiny | S Messung, M Anpassung |
 | 2b | Hüftlage je Klasse | Kurzwaffen kompakt bei x 53–71 × y 59–84 %; große Waffen reichen bis y ≤ 45 % (MG, Werfer); Bögen quer unten [M] | eine Hüfthaltung, Ego-Daten nur für BASIC-01 | Haltung je Klasse festlegen, sobald eine Klasse Ego-Daten bekommt | Destiny | M je Klasse |
 | 2c | Waffenlage als Spieleroption | Halo hat Versatzregler je Klasse [B]; Destiny hat nur einen Welt-FOV-Regler, keinen Modellregler [B]; Spielerwünsche sind Einzelstimmen [C] | nur `ads_eye_relief` (70/90/110 mm) | Frage 2.2 | optional | M |
 
@@ -85,7 +85,7 @@ Destiny-Schalen ΔL* 64–78 [M].
 
 | # | Thema | Gemessen (Quelle, Status) | BASIC heute | Empfehlung | Einstufung | Aufwand |
 |---|---|---|---|---|---|---|
-| 3a | Sprint-Hub | Automatikgewehr (Last Wish, 1 Bsp.): ≈ **10–11 % H** vertikal, ≈ **13 % B** seitlich [M], bei NCC < 0,85 ±1–2 pp; Handfeuerwaffe ≈ 13 % H / 4 % B [M]; das Scourge-Plateau ≤ 0,6 % H ist kein Sprinthub (Widerspruch 8) | `sprint.bob.amp` 12 mm seitlich / 10 mm vertikal, geschätzt ≈ 6 % H / 4 % B (aus Abstand und FOV, nicht am Bild) | Frage 3.1 | Destiny | S Messung, S Wert |
+| 3a | Sprint-Hub | Automatikgewehr (Last Wish, 1 Bsp.): ≈ **10–11 % H** vertikal, ≈ **13 % B** seitlich [M], bei NCC < 0,85 ±1–2 pp; Handfeuerwaffe ≈ 13 % H / 4 % B [M]; das Scourge-Plateau ≤ 0,6 % H ist kein Sprinthub (Widerspruch 8) | `sprint.bob.amp` 12 mm seitlich / 10 mm vertikal, geschätzt ≈ 6 % H / 4 % B (aus Abstand und FOV, nicht am Bild) · **BASIC gemessen (25.10.2026, Unity 60/s, 3,16 Hz):** Hub vertikal **2,1–2,3 % H** (Schwerpunkt) bis **5,1–5,7 % H** (Oberkante), seitlich **7,0–8,7 % B** (Mündungsende) bzw. 0,3–1,4 % B (Schwerpunkt) | Frage 3.1 | Destiny | S Messung, S Wert |
 | 3b | Trageform je Klasse | Automatik tief und quer im unteren Drittel, Mündung links [M]; Handfeuerwaffe hoch rechts, Lauf fast senkrecht, verlässt das Bild [M]; Scharfschütze höher und mittiger; MP tief, nach links gerollt; kurze Fusion groß und tief [O] | eine Haltung `sprint` (quer, gesenkt, Rollen −35°) | Frage 3.2 | Destiny | M je Klasse |
 | 3c | Sprint-Frequenz je Typ | nur Automatik und Handfeuerwaffe gemessen (3,16 Hz); 13 der übrigen 15 Typen offen, Schwert trifft nicht zu | 3,16 / 1,58 Hz für alle | entschieden (0.10); bis zu neuen Messungen für alle Klassen | – | – |
 | 3d | Umsehen (Sway) | Bei schnellen Drehungen zieht die Waffe ≈ 10 % B gegen die Drehung nach und kehrt in ≈ 0,3 s **ohne Überschwingen** zurück (Scharfschütze, 60/s, [destiny2] › 3, Stand 18.10.) [M] | Unity `swayDamp` 0,55 (unterkritisch, schwingt über), `swayFreq` 9, höchstens 3° | Frage 3.3 | Destiny | S |
@@ -267,6 +267,35 @@ Alle 20 Fragen sind am 25.10.2026 beantwortet, keine ist offen. **Umsetzen:** 1.
 nach Funktionen). **Zurückgestellt:** 5.4 Hülsen, 7.2 Wertetabelle (bis eine zweite Waffe in Unity spielbar ist), 7.3 Zielhilfe (bis
 Controller-Eingabe Thema ist), der HUD-Punkt aus 4.3 (bis Motiongen Widerspruch 3 klärt).
 
+## Messungen (25.10.2026)
+
+Schritt 2 der Reihenfolge, Patch „BALLON Patch messen“. **Nur gemessen, kein Wert geändert.** Alle Lagen in % von Bildbreite B / Bildhöhe H,
+Ursprung oben links, Bezugsbildwinkel 75° horizontal (16:9, Visier-Standard 3). Messwerkzeuge: [`tools/messen.py`](../tools/messen.py)
+(Blender: Anker und Waffenkontur ins Bild projiziert) und [`tools/messen_bild.py`](../tools/messen_bild.py) (Raster, Ringprofil,
+Waffenmaske, Zoom-Zeitlinie). Unity-Aufnahmen: `-ballonFps 60 -ballonKey 1` (Messhilfe in `Bootstrap.cs`, nur Aufnahme; Waffe und Arme auf
+Schlüsselfarbe, Welt aus). Belege unter `~/Library/Caches/CubeEscapeBallon/messen/belege/`. Frisch gerendert aus diesem Stand (`ego_build.py --stills`,
+`sight_options.py`), Unity aus dem eigenen Worktree gebaut.
+
+| Punkt | Messung | Unsicherheit | Destiny (Liste) | Abweichung BASIC − Destiny |
+|---|---|---|---|---|
+| **2.1** Hüftlage, Mündung | Blender-Still `hip_ego` (1600 × 900, Bild 0): Socket_Muzzle **x 58,8 / y 49,6**; sichtbare Spitze x 57,8; Unity-Messlauf Bild 30 (0,5 s, Ruhe): Spitze x 58,2–59,4 / y 49,3 | ±0,1 pp (Projektion), ±1 pp (Anker gegen sichtbare Spitze) | x 54–59 / y 60–71 | x: im Band; y: **10,4–21,4 pp höher** als das Band |
+| **2.1** hintere Visieröffnung | Socket_Sight (hintere Kante des Visiergehäuses) x **80,3** / y 49,5; Absehen x 77,1 / y 48,5 | ±0,1 pp, Anker ±1 pp | 7–34 pp rechts der Mündung | 21,5 pp rechts: im Band |
+| **2.1** Waffenkontur | Waffenteile: links x 57,8, oben y 44,8; rechts und unten über den Bildrand hinaus (Eckpunkte bis x 185 %, y 217 %); im Bild berührt die Waffe den rechten und unteren Rand | – | „reicht bis zum rechten und unteren Rand“ | wie Destiny |
+| **1a** Scout-Ring | `rohr_ziel.png` (Scout BASIC-03 v2.1, 960 × 540, Zeile 270 durch die Ringmitte): außen 320–641 = 322 px (33,5 % B); Kante der dunklen Innenwand 354–599 = 246 px (25,6 % B); lichtes Glas 382–588 = 207 px. **außen ÷ Ringinnenkante 1,31, außen ÷ lichtes Glas 1,56** | ±2 px je Kante → ±0,02 | 1,28–1,30 | Innenkante: +0,01 bis +0,03; Glas: +0,26 bis +0,28 |
+| **3.1** Sprint-Hub | Unity `feel`, 60/s, Sprint 1 Bild 36–144 (1,8 s ≈ 5,7 Zyklen), Sprint 2 Bild 354–408; Auswertung Bild 54–144 (4,7 Zyklen) und Bild 354–408. Spitze–Spitze (Median): **vertikal** Schwerpunkt Waffe + Arme 2,1–2,3 % H (1,7–2,5), Oberkante 5,1–5,7 % H (3,8–6,2); **seitlich** Mündungsende (linke Kante) 7,0–8,7 % B (6,3–10,7), Schwerpunkt 0,3–1,4 % B. **Frequenz 0,317 s = 3,16 Hz** (Extrema Bild 79▼ 89▲ 98▼ 107▲ 117▼ 127▲ 136▼) | ±0,3 pp H / ±0,2 pp B je Extremwert (1 px bei 640 × 360); der Messpunkt der Destiny-Zahl ist nicht bekannt | ≈ 10–11 % H / 13 % B | vertikal 4,3–8,9 pp kleiner (Oberkante 4,3–5,9, Schwerpunkt 7,7–8,9); seitlich 4,3–6,0 pp kleiner (Mündungsende); Frequenz wie Messwert 3,16 Hz |
+| **1d** Zoom gegen Modell, Holo | Unity 60/s, Weltzoom aus dem FOV je Bild (46,692° → 35,460°, Tangente × 1,350), Modell aus der Bildbewegung der Waffe (Schwellen 5 / 10 / 20 % der Spitzenbewegung). **Hüfte → Zielen** (Eingabe Bild 192): Zoom Bild 193–210 (18 Bilder); Modell 195–215 / 196–214 / 196–213 → Zoom beginnt **2–3 Bilder vor** dem Modell, endet 3–5 Bilder vor ihm. **Zielen → Hüfte** (Eingabe Bild 276): Zoom 276–293; Modell 277–305 / 278–301 / 279–294 → Start −1 bis −3, Ende −1 bis −12 (das Modell federt nach). **Sprint → Zielen** (Eingabe Bild 408): Modell ab Bild 408, Zoom erst 419–436 → Zoom beginnt **11 Bilder nach** dem Modell, Ende 0 bis +2. Zweiter Durchlauf (Bild 492, Zielen → Hüfte) wie der erste. | ±1 Bild (60/s) plus 1–2 Bilder je nach Schwelle | Zoom beginnt 0–2 Bilder **nach** dem Modell, Ende gemeinsam ±1 | Hüfte → Zielen: Start 2–5 Bilder früher, Ende 2–6 Bilder früher; Sprint → Zielen: Start 9–11 Bilder später, Ende im Band |
+
+**Zielfernrohr (1d):** nicht messbar. Unity trägt nur BASIC-01 mit Holo; der Weltzoom ist dort ein Wert für alle Klassen (`adsZoom` 1,35, die
+Klassenwerte aus 1.2 folgen in Schritt 3). Ein Ego-Still oder eine Aufnahme mit Zielfernrohr gibt es nicht; das Scout-Zielbild aus 1a ist kein Ego-Still.
+
+**Methode kurz.** *Lage:* Anker und alle Eckpunkte der ausgewerteten Waffennetze werden mit der Ego-Kamera (75° horizontal) projiziert
+(`world_to_camera_view`), Bildkontrolle mit Raster und Marken über dem Still. *Ring:* Helligkeitsprofil einer Bildzeile durch die Ringmitte, Kanten
+bei Sprung gegen Hintergrund (> 6 Stufen), dunkler Innenwand (< 80) und Glas (≥ 100). *Sprint:* Aufnahme mit Waffe und Armen auf Schlüsselfarbe,
+je Bild (auf 640 × 360 verkleinert) Schwerpunkt, linke und obere Kante der Waffenmaske, lokale Extrema, Abstände Spitze–Spitze und Periode.
+*Zoom:* FOV je Bild aus `zoom.csv`; Modellbewegung = Summe der Pixelunterschiede aufeinanderfolgender Waffenbilder, normiert auf ihr Maximum. Die Schwelle
+bestimmt Start und Ende; deshalb stehen drei. Der Sprint-Hub hängt vom Messpunkt ab (Schwerpunkt, Oberkante und Mündungsende bewegen sich verschieden,
+weil die Waffe auch rollt); welcher Punkt Destiny entspricht, ist offen, hier nicht entschieden.
+
 ## Reihenfolge der Umsetzung (Vorschlag)
 
 Leitlinie: zuerst, was ohne Rendern geht und eine Regel verletzt; dann messen; dann die Bewegung; zuletzt neue Effekte. Einstufung
@@ -275,8 +304,8 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 
 | Schritt | Inhalt | Antworten | Art | Sperre | Voraussetzung |
 |---|---|---|---|---|---|
-| 1 | **Unity-Abgleich:** Kadenz 720/min, Sway kritisch gedämpft, Schuss-Ring und Treffer-X in Orange, Test Nachlade-Abbruch vor und nach `MagIn`, Herkunft von `inspect` berichtigt | 7.1, 3.3, 4.3, 6c, 6.2 | Patch | unity | – · **erledigt** (Patch unity-abgleich, Messwerte in [unity.md](unity.md) › Tests) |
-| 2 | **Messen:** ein Ego-Still je Haltung mit Mittenkreuz (Hüftlage, Scout-Ring), Unity-Aufnahme `feel` für Sprint-Hub und Zoom-Timing; Werte in diese Datei und `data/review.json` | 1a, 1d, 2.1, 3.1 | Patch (nur Messung) | gpu, unity | – |
+| 1 | **Unity-Abgleich (erledigt 26.10.2026, Patch unity-abgleich, Messwerte in [unity.md](unity.md) › Tests):** Kadenz 720/min, Sway kritisch gedämpft, Schuss-Ring und Treffer-X in Orange, Test Nachlade-Abbruch vor und nach `MagIn`, Herkunft von `inspect` berichtigt | 7.1, 3.3, 4.3, 6c, 6.2 | Patch | unity | – |
+| 2 | **Messen (erledigt 25.10.2026, [Messungen](#messungen-25102026)):** ein Ego-Still je Haltung mit Mittenkreuz (Hüftlage, Scout-Ring), Unity-Aufnahme `feel` für Sprint-Hub und Zoom-Timing; Werte in diese Datei und `data/review.json` | 1a, 1d, 2.1, 3.1 | Patch (nur Messung) | gpu, unity | – |
 | 3 | **Weltzoom und Hüft-Fadenkreuz:** Weltzoom Scout 2,0 / Handfeuerwaffe ≈ 1,15 / MP 1,45; neue Hüftformen im Katalog `reticles.py`; ausblendendes Hüft-Fadenkreuz in Unity (Hüfte, Sprint, Zielen, Nachladen, Ziehen) | 1.2, 4.1, 4.2 | Version | unity | 1 |
 | 4 | **Bewegung:** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` ≈ 0,25 s und leerer Sicht, Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips danach neu rendern (Nachtlauf) | 2.1, 3.1, 6.1, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
 | 5 | **Mündungsfeuer** in Blender und Unity (1 Bild bei 30/s, Emission ohne Bloom, ≤ 20 % der Holo-Öffnung) | 5.3 | Version | gpu, unity | 4 (Rückstoß im Zielen) |
