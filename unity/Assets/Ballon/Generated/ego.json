@@ -26,7 +26,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "809fdb78afdc34802e8c92d1e6496b7a0121013f9280dc9c150590bf089f6c8d"
+    "sha256": "457e2cdb33057f9eb5c0960664d9dfc963fd7bc2ee31f200b2a24904db0f595a"
    },
    {
     "path": "tools/ego_build.py",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "88de000b3881d5bfc357913688b64e4649371b2c22730e68c994b008c2273073"
+    "sha256": "65144ae49d4680862cd9b4fce79cbc6aeba2f530a9e438052b3984b7df0452b7"
    },
    {
     "path": "tools/bake_unity.py",
@@ -148,7 +148,7 @@
  "gameplay": {
   "rpm": 720,
   "magazine": 30,
-  "src": "M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip folgt beim nächsten Rendern; Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)",
+  "src": "M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip seit 0.15 ebenso (alle 2,5 Bilder); Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)",
   "weapon_type": "auto_rifle",
   "sight": "reflex",
   "world_zoom": 1.9,
@@ -3805,7 +3805,7 @@
    "de": "Dauerfeuer aus der Hüfte",
    "frames": 32,
    "time_scale": 1.0,
-   "src": "M 720/min ≈ 1 Schuss je 2,5 Bilder (Q-REF); Rückstoß T 17,5 mm/3°",
+   "src": "M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°",
    "weapon": [
     {
      "f": 0.0,
@@ -3883,17 +3883,14 @@
    "fire": [
     2,
     4,
-    6,
-    8,
-    10,
+    7,
+    9,
     12,
     14,
-    16,
-    18,
-    20,
+    17,
+    19,
     22,
-    24,
-    25
+    24
    ],
    "kick": 1.0,
    "breathe": false,
@@ -3998,17 +3995,14 @@
    "fire": [
     2,
     4,
-    6,
-    8,
-    10,
+    7,
+    9,
     12,
     14,
-    16,
-    18,
-    20,
+    17,
+    19,
     22,
-    24,
-    25
+    24
    ],
    "kick": 1.0,
    "breathe": false,
@@ -5959,12 +5953,10 @@
    "fire": [
     7,
     9,
-    11,
-    13,
-    15,
+    12,
+    14,
     17,
-    19,
-    21
+    19
    ],
    "kick": 1.0,
    "breathe": false,

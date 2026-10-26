@@ -82,10 +82,10 @@ namespace Ballon.Ego
         public float aspect;
         readonly Vector3 _eyeLocal;
         readonly float _dHip;              // Abstand Augenpunkt → Kamera in der Hüfte
-        float _d0 = 1;
+        float _d0 = 1, _leaveT;
         bool _aimPrev, _leaving;
         bool _swapPending;                 // Wechsel: nach dem Wegstecken leere Sicht, dann Ziehen
-        float _emptyT;
+        float _emptyT, _drawEnters = -1;
         bool _hasSec;
         Vector3 _secP, _secV, _secAv;
         Quaternion _secQ;
@@ -119,14 +119,11 @@ namespace Ballon.Ego
             Hold("holster", Stance.Hip);
         }
 
-        static readonly Dictionary<EgoFile, float> _drawEnters = new Dictionary<EgoFile, float>();
-
         /// <summary>Wechsel (6.1 A): letztes Bild von draw, in dem weder Waffe noch Arme im Bild sind (Silhouette aus den Netzgrenzen). Beim
         /// Wechsel beginnt das Ziehen dort – der unsichtbare Anfang (≈ 0,35 s) fiele sonst in die leere Sicht; der sichtbare Teil bleibt wie
-        /// beim Ziehen mit Taste 1. Einmal je Datensatz gerechnet.</summary>
+        /// beim Ziehen mit Taste 1. Der Controller rechnet es beim ersten Wechsel einmal (_drawEnters).</summary>
         public static float DrawEnters(EgoSolver s)
         {
-            if (_drawEnters.TryGetValue(s.D, out float f0)) return f0;
             var E = new EgoScreen(s);
             var A = s.D.Action("draw");
             var st = new EgoState();
@@ -138,7 +135,7 @@ namespace Ballon.Ego
                 if (pts.Count > 0) break;
                 hidden = f;
             }
-            return _drawEnters[s.D] = hidden;
+            return hidden;
         }
 
         public string ActionName => _t.A.name;
@@ -333,7 +330,7 @@ namespace Ballon.Ego
                         _hasSec = false;                                // Feder-Nachlauf ab der übersprungenen Stelle neu
                     }
                     _swapPending = false;
-                    Play(i.aim ? "draw_aim" : "draw", from: swap ? DrawEnters(S) : 0, busy: true, fade: 0, onEnd: _ => Ready());
+                    Play(i.aim ? "draw_aim" : "draw", from: swap ? (_drawEnters >= 0 ? _drawEnters : _drawEnters = DrawEnters(S)) : 0, busy: true, fade: 0, onEnd: _ => Ready());
                 }
             }
             else if ((i.holster || i.swap) && _t.A.name != "holster" && _t.A.name != "reload_to_switch")
@@ -523,25 +520,29 @@ namespace Ballon.Ego
         // Weltzoom gegen Modell (1d): der Zoom beginnt, wenn der Augenpunkt AdsStart seines Wegs zur Kamera zurückgelegt hat, und ist
         // bei AdsEnd ganz da; dazwischen folgt er dem Modell. Destiny-Holo: Zoom beginnt 0–2 Bilder nach dem Modell, Ende ±1 Bild.
         // AdsEnd nah an 1: am Bild bewegen sich nahe Teile noch, wenn der Augenpunkt fast da ist (gemessen: Ende 0,99 → 3 Bilder zu früh)
-        const float AdsStart = 0.05f, AdsEnd = 0.9985f;
+        const float AdsStart = 0.05f, AdsEnd = 0.9985f, LeaveGraceS = 0.1f, LeaveMaxS = 0.5f;
 
         static float Remap(float p) => Mathf.Clamp01((p - AdsStart) / (AdsEnd - AdsStart));
 
         /// <summary>Zielen-Anteil aus dem Weg des Augenpunkts (Socket_Eye nach dem Feder-Nachlauf, ohne Live-Ebenen) statt einer eigenen
         /// Zeitkurve: Hüfte/Sprint → Zielen über den Abstand beim Beginn, Zielen → Hüfte über den Hüftabstand; Sprünge (Abbruch mitten
-        /// im Anflug) laufen über mindestens drei Bilder bei 30/s.</summary>
+        /// im Anflug) laufen über mindestens drei Bilder bei 30/s. Das Verlassen dauert höchstens LeaveMaxS (die Grenze greift erst nach
+        /// LeaveGraceS, beim normalen aim_out nie): aus dem Zielen direkt ins
+        /// Nachladen oder Betrachten liegt das Auge näher an der Kamera als in der Hüfte (Nachladen 0,37 statt 0,41 m), sonst bliebe Zoom.</summary>
         void FollowModel(Matrix4x4 baseW)
         {
             float d = baseW.MultiplyPoint3x4(_eyeLocal).magnitude;
             bool aiming = _stance == Stance.Ads || (_t.A.name == "draw_aim" && !_t.ended && _t.frame >= K("draw_aim", 1));
             if (aiming && !_aimPrev) _d0 = Mathf.Max(_dHip, d);
-            if (!aiming && _aimPrev) _leaving = true;
+            if (!aiming && _aimPrev) { _leaving = true; _leaveT = 0; }
             _aimPrev = aiming;
             float target = 0;
             if (aiming) target = Mathf.Max(adsWeight, Remap(1 - d / _d0));
             else if (_leaving)
             {
-                target = Mathf.Min(adsWeight, Remap(1 - d / _dHip));
+                _leaveT += _dt;
+                float cap = 1 - Mathf.Max(0, _leaveT - LeaveGraceS) / (LeaveMaxS - LeaveGraceS);   // greift erst nach LeaveGraceS
+                target = Mathf.Min(Mathf.Min(adsWeight, Remap(1 - d / _dHip)), cap);
                 if (target <= 0) _leaving = false;
             }
             adsWeight = Mathf.MoveTowards(adsWeight, target, _dt * 30f / 3f);

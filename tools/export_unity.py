@@ -28,8 +28,8 @@ MM = 0.001
 AXES = dict(to_unity=[[-1, 0, 0], [0, 0, 1], [0, -1, 0]],
             de='Unity = M · Blender; Blender-Kameraraum rechts −X, vorn −Y, oben +Z → Unity rechts +X, oben +Y, vorn +Z')
 # Spielwerte der Pilotwaffe: Kadenz wie der Clip fire_hip (Nutzer 25.10.2026, Entscheidungsliste Frage 7.1 A), Magazin Entwurf
-GAMEPLAY = dict(rpm=720, magazine=30, src='M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip folgt beim '
-                                          'nächsten Rendern; Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)')
+GAMEPLAY = dict(rpm=720, magazine=30, src='M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip seit 0.15 '
+                                          'ebenso (alle 2,5 Bilder); Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)')
 AXIS = {'x': (0, -1.0), 'f': (1, -1.0), 'u': (2, 1.0)}   # wie tools/blender_build.AXIS (Index, Drehsinn)
 
 

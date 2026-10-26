@@ -23,6 +23,8 @@ python3 tools/unity_run.py feel             # MP4 Bewegungsgefühl: Sprint, Ziel
 python3 tools/unity_run.py sway             # MP4 Pendeln: schnelle Drehung hin und zurück, Werte je Bild in feedback.csv
 python3 tools/unity_run.py treffer          # MP4 Rückmeldung: Hüftschuss, im Zielen Einzelschuss und Feuerstoß (Ring, Treffer-X)
 python3 tools/unity_run.py huefte           # MP4 Hüft-Fadenkreuz (0.13): Hüfte, Hüftfeuer, Zielen, Sprint, Nachladen; Zustand je Bild in feedback.csv
+python3 tools/unity_run.py sprint|wechsel|rueckstoss   # MP4 (0.15): Sprint-Hub und Sprint → Zielen; Waffenwechsel; Rückstoß Hüfte/Zielen
+BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1" python3 tools/unity_run.py feel   # Messlauf: 60/s, Waffe und Arme auf Magenta, ohne Fadenkreuz (…_mess)
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
@@ -44,10 +46,11 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 | W A S D, Shift | gehen, sprinten (nur vorwärts, nicht im Zielen oder beim Feuern) |
 | Strg oder C, Leertaste | ducken, springen |
 | linke Maustaste | Dauerfeuer, 720/min wie der Clip `fire_hip` (Frage 7.1 A); Abzug bei leerem Magazin lädt selbst nach |
-| rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35; Viewmodel bleibt bei 75° horizontal) |
+| rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35; Viewmodel bleibt bei 75° horizontal; der Zoom folgt dem Modell, 1d) |
 | R | nachladen: taktisch bei Restmunition, sonst leer (mit Durchladen) |
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
 | 1 / 2 | ziehen / wegstecken (beim Nachladen: `reload_to_switch`) |
+| Q | Waffe wechseln (0.15, 6.1 A): wegstecken (0,27 s), leere Sicht ≈ 0,13 s, ziehen; mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
 | K | Waffen-Skin weiterschalten |
 | L | Szene wechseln: Parcours → Szene 1 → … → Parcours (nur wenn Szenen exportiert sind, siehe „Szenen und Parcours“) |
 | N | nächste Lichtszene der gezeigten Szene (Tag → Nacht → …); im grauen Parcours ohne Wirkung |
@@ -70,16 +73,16 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/5`), `ego_reference.json` |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/6`), `ego_reference.json` |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
-| Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs` | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
+| Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs`, `Runtime/EgoScreen.cs` (Bildlage, Silhouette; Tests und Messung) | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
 | Szene | `Runtime/EgoPlayer.cs`, `EgoRig.cs`, `Range.cs`, `Bootstrap.cs` | Bewegung, Kameras (Welt + Overlay), Treffer, Anzeige, Parcours, Aufnahme- und Vergleichsmodus |
 | Szenen (0.8, 0.9) | `Runtime/SceneData.cs`, `MiniJson.cs`, `SceneLoader.cs`, `Course.cs` | Format `ballon-scene/2` (Leser mit Prüfung, JsonUtility kann keine Wörterbücher), Umrechnung Blender → Unity, Lader (Zonenmaterialien, Collider, Lichtszenen, Ziele, Wegmarken), Parcours-Lauf (`CourseRun`) |
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/5`. Der Abnehmer ist `unity/` ab 0.13. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/6`. Der Abnehmer ist `unity/` ab 0.15. Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
@@ -88,8 +91,11 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
   3,2 Hz bei ζ 0,55.
 - 5 (0.13): `gameplay.weapon_type`, `sight`, `world_zoom` (Weltzoom der Klasse, Entscheidungsliste 1.2 A), `zoom_table` (alle Waffentypen)
   und `hip` (Hüft-Fadenkreuz: Form als Grundelemente, Größe, Farbe, Linienstärke, Aufgehprofil, Sprintform), aufgelöst aus `basic/reticles.py`.
+- 6 (0.15): `motion.recoil` in vier Größen (Entscheidungsliste 5.2 A) – Modellkick mit `ads_back`/`ads_pitch`, Kamera-Ruck kritisch
+  gedämpft mit `ads_cam`, Grundbahn `path_up_h`/`path_side_b`/`path_hz`, Erholung `recover_delay_s`/`recover_hz`, Salven
+  `burst_shots`/`burst_rpm`, Streuung `spread_hip_deg`/`spread_ads_deg` (vorher `MoveTuning`) – und `motion.switch.empty_s` (Wechsel, 6.1 A).
 
-Ältere Exporte (`/1` bis `/4`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
+Ältere Exporte (`/1` bis `/5`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
 
 **Achsen.** Die Umrechnung steht einmal in `ego.json › axes.to_unity`: Unity = (−x, z, −y) aus Blender. Matrizen werden als
 M·B·Mᵀ umgerechnet. Gerechnet wird überall im Blender-Raum, umgerechnet erst beim Setzen der Transforms. Die Netze kommen aus dem
@@ -99,9 +105,28 @@ und versetzt (beim ersten Import gemessen: 90° am Magazin, bis 218 mm).
 **Live statt geskriptet.** Abläufe, Haltungen und Marker kommen aus den Aktionen in `ego.py`, gestreckt mit `TIME_SCALE`. Im Spiel
 ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
 
-- Schüsse kommen aus der Kadenz (Übertrag zwischen den Bildern, damit 720/min bei jeder Bildrate gelten) und lösen Impulse in die
-  Rückstoßfeder `RECOIL` aus, die Kamera federt getrennt.
-- Das Hochziehen klingt erst nach dem Feuern ab.
+- Schüsse kommen aus der Kadenz (Übertrag zwischen den Bildern, damit 720/min bei jeder Bildrate gelten). Eine Salvenwaffe
+  (`burst_shots` > 0) schießt in der Salve mit `burst_rpm` und läuft eine angefangene Salve zu Ende.
+- **Rückstoß in vier Größen (0.15, Entscheidungsliste 5.1 A / 5.2 A):**
+  - *Grundbahn* (Destiny-Säule): je Schuss `path_up_h` = 1 % der Bildhöhe nach oben, seitlich die feste Folge `path_side_b`
+    (≤ 1,6 % B Spitze–Spitze, je Salve dieselbe Form). Gerechnet im Bildmaßstab der Welt, im Zielen also kleinere Winkel. Sie dreht nur
+    die Weltkamera (`EgoOutput.worldPitch/worldYaw`, `EgoRig.WorldKick`), Schüsse gehen dorthin. In der Salve folgt sie mit 10 Hz ohne
+    Erholung; ist `recover_delay_s` (mindestens 1,5 Schussabstände) kein Schuss gefallen, kehrt sie kritisch gedämpft mit 2 Hz zurück.
+    Gemessen: Viererstoß im Zielen 4,3 % H, 12 Schuss aus der Hüfte 12,0 % H; zurück unter 0,25 % H nach 0,48 bzw. 0,60 s, ohne Unterschwingen.
+    Bis 0.14 blieb das Hochziehen (0,18°/Schuss) stehen, bis der Spieler gegenlenkte.
+  - *Kamera-Ruck*: Federimpuls je Schuss, kritisch gedämpft (bis 0.14 ζ 0,6 mit Unterschwingen). In der Hüfte drehen Welt- und
+    Viewmodel-Kamera, im Zielen nur die Welt (`ads_cam`): das Visier bleibt stehen.
+  - *Modellkick*: Feder der Waffe (zurück, Mündung hoch, Hochziehen des Modells). Im Zielen `ads_back` 0,45 und `ads_pitch` 0,02, ohne
+    Hochziehen: das Visier bewegt sich durch den Rückstoß 0,12 % H (vorher 1,0 % H).
+  - *Streuung*: Zufall um den Zielpunkt (`spread_hip_deg` 1,1°, `spread_ads_deg` 0,12°), getrennt von der Bahn.
+- **Zoom folgt dem Modell (0.15, 1d):** Der Zielen-Anteil (Weltzoom, Empfindlichkeit, Streuung) ist der Weg, den der Augenpunkt
+  `Socket_Eye` der Grundhaltung (nach dem Feder-Nachlauf, ohne Wippen und Rückstoß) zur Kamera zurückgelegt hat, zwischen 5 % und
+  99,85 % des Wegs (`AdsStart`/`AdsEnd`). Vorher lief eine eigene Zeitkurve über 9 Bilder ab der Eingabe: Der Zoom begann 2–3 Bilder vor
+  dem Modell, nach dem Sprint 11 Bilder danach.
+- **Wechsel (0.15, 6.1 A):** `holster` 0,27 s, dann `switch.empty_s`, dann `draw` ab dem letzten Bild ohne Waffe und Arme im Bild
+  (`EgoController.DrawEnters`, aus der Silhouette gerechnet); der sichtbare Teil des Ziehens ist derselbe wie mit Taste 1. Marker
+  `switch › Empty` und `switch › Draw`.
+- Das Hochziehen des Modells klingt erst nach dem Feuern ab.
 - Das Gehwippen folgt der Laufgeschwindigkeit, mit den Werten aus `walk`/`sprint`.
 - Das Atmen nutzt `BREATHE_ALL`, dazu in Ruhe die `idle_hip`-Formel.
 - Der Feder-Nachlauf `SECONDARY` läuft in Echtzeit über alle Spurwechsel.
@@ -109,14 +134,14 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
   unity-abgleich kritisch gedämpft (2,5 Hz, ζ 1; vorher 9 Hz, ζ 0,55 mit 0,22° Überschwingen bei 60/s, 0,30° bei 30/s): Die Waffe zieht höchstens 3°
   gegen die Drehung nach und kehrt in ≈ 0,3 s ohne Überschwingen zurück wie in Destiny (Frage 3.3 A).
 
-Spielwerte, die nicht aus Blender kommen, stehen in `EgoTuning` und `MoveTuning`: Laufgeschwindigkeiten, Zoom, Streuung,
-Pendeln und Blickhochziehen. Alle sind entworfen.
+Spielwerte, die nicht aus Blender kommen, stehen in `EgoTuning` und `MoveTuning`: Laufgeschwindigkeiten, Pendeln, Wippen und
+Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blicks kommen seit 0.15 aus `ego.json`.
 
 ## Tests
 
 | Test | prüft |
 |---|---|
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/5` (`/1` bis `/4` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/6` (`/1` bis `/5` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |
@@ -127,7 +152,12 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | Spielablauf (6 Tests) | Kadenz und Magazin, leeres/taktisches/automatisches Nachladen, Zielen hin und zurück (Auge auf der Kameraachse), Betrachten abbrechen, Wegstecken beim Nachladen und Ziehen, Sprintschleife und Übergänge, Ducken/Springen/Wandnähe |
 | `Zielen_live_ohne_Ueberschwingen` (0.10) | Live-Controller: Zielen aus der Hüfte, Überschwingen am `Socket_Reticle` < 0,3°, Rest nach 0,45 s < 1°; Messwerte im Testprotokoll |
 | `Sprint_live_im_Destiny_Rhythmus` (0.10) | Live-Sprint: 2,9–3,4 Hochpunkte/s, U-Bogen (oben an den Seitenumkehren); Messwerte im Testprotokoll |
-| `Zielen_landet_ohne_Ueberschwingen`, `Sprintschritt_wie_ein_Laeufer` (EditMode, 0.10) | Skriptpfad wie Blender: `aim_in`, `sprint_to_aim`, `draw_aim` ohne Überschwingen (< 0,3°), Rest am Ende < 1,5°; Sprintdaten 2,9–3,4 Schritte/s mit U-Bogen |
+| `Zielen_landet_ohne_Ueberschwingen`, `Sprintschritt_wie_ein_Laeufer` (EditMode, 0.10) | Skriptpfad wie Blender: `aim_in`, `sprint_to_aim`, `draw_aim` ohne Überschwingen (< 0,3°), Rest am Ende < 1,5°; Sprintdaten 2,9–3,4 Schritte/s mit U-Bogen; seit 0.15 auch der Hub an der Silhouette (`EgoScreen`, Kanten der Netzgrenzen von Waffe und Armen): Oberkante 8,5–12,5 % H, linke Kante 11–15,5 % B (gemessen 10,5 / 13,8; am Unity-Bild 8,9–9,5 % H / 12,7–13,7 % B) |
+| `Hueftlage_im_Destiny_Band` (EditMode, 0.15) | Ego-Still `hip`: Mündung x 54–59 / y 60–71 % (gemessen 58,1 / 63,1), hintere Visieröffnung 7–34 pp rechts (19,3), Kontur bis zum rechten und unteren Rand |
+| `Wechsel_mit_leerer_Sicht` (PlayMode, 0.15) | Q bei 60/s, sichtbar = Kante der Netzgrenzen von Waffe oder Armen im Bild: Wegstecken bis zum Marker `Holstered` 0,2–0,3 s (0,267), leere Sicht 0,1–0,2 s (0,133), erstes neues Bild gehört zu `draw`, Hüfte (`draw › Ready`) und ruhig danach in Reihenfolge; das Ziehen wie mit Taste 1. Aus dem Nachladen (`reload_to_switch`) nur protokolliert |
+| `Zoom_beginnt_und_endet_mit_dem_Modell` (PlayMode, 0.15) | Hüfte → Zielen und Sprint → Zielen bei 60/s: Zoom beginnt 0–2 Bilder nach dem Modell und endet ±1 Bild (Bildbewegung von Mündung, Visier, Magazinschacht, Griff, Schwelle 5 %); Zielen → Hüfte: Zoom zurück, wenn das Modell die Hüfte erreicht |
+| `Rueckstoss_Saeule_fest_und_zweistufig` (PlayMode, 0.15) | 3 × 12 Schuss aus der Hüfte: Säule 11–13,5 % H, seitlich 0,5–2,5 % B, dreimal dieselbe Bahn, Erholung 0,4–0,75 s ohne Unterschwingen; Viererstoß im Zielen 3,5–4,5 % H des gezoomten Bilds; Salvenwaffe (Daten im Test umgestellt): Takt 4 Bilder, Pause, Erholung zwischen den Salven, angefangene Salve läuft zu Ende |
+| `Rueckstoss_im_Zielen_geht_in_die_Welt` (PlayMode, 0.15) | Spieler in der Szene, 16:9, 60/s: Weltanker 20 m voraus wandert beim Viererstoß im Zielen 3,5–5 % H (4,32), zurück unter 0,25 % H nach 0,4–0,6 s (0,483), kein Unterschwingen; Visier gegen einen Zwilling ohne Schuss < 1 % H (0,12), aus der Hüfte mehr als dreimal so viel |
 | `Kadenz_720_wie_fire_hip` (Patch unity-abgleich) | `gameplay.rpm` 720 mit Herkunft M; live bei 60/s und 30/s je 24 Schüsse in 2 s, Bildabstand 5 bzw. 2/3, Kadenz 720 ± 15 /min (der Rest eines Intervalls wird übertragen; vorher bei 30/s 3 Bilder = 600/min) |
 | `Pendeln_kehrt_ohne_Ueberschwingen_zurueck` (Patch unity-abgleich) | 360°/s für 0,3 s, Gieren des Laufs gegen einen Zwilling ohne Maus: Auslenkung 0,5–3°, Überschwingen < 0,02°, Rückkehr unter 5 % in 0,22–0,4 s |
 | `Nachlade_Abbruch_vor_und_nach_MagIn` (Patch unity-abgleich) | taktisch und leer: Wegstecken 0,1 s vor `MagIn` lässt die Munition (5 bzw. 0), 0,1 s danach ist das Magazin voll und bleibt es nach dem Ziehen |

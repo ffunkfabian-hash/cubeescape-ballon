@@ -47,6 +47,12 @@ GRIPS = {
 # fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
 # der Schüsse), events (Marker). Zwischen Schlüsseln wird geglättet (Ease In/Out).
 OFF_L = ('cam', (0.30, -0.25, -0.62))      # linke Hand unter dem Bild (Magazin holen)
+
+
+def shots_720(first, n):
+    """Schussbilder bei 720/min und 30 fps: alle 2,5 Bilder, also abwechselnd 2 und 3 Bilder Abstand (Unity: gameplay.rpm)."""
+    return [first + int(2.5 * k) for k in range(n)]
+
 ACTIONS = {
     'idle_hip': dict(de='Ruhe an der Hüfte (Atmen)', frames=60, weapon=[(0, 'hip'), (60, 'hip')], breathe=True,
                      events=[], src='E'),
@@ -61,9 +67,10 @@ ACTIONS = {
     'aim_in': dict(de='Hüfte → Zielen', frames=10, weapon=[(0, 'hip'), (9, 'ads'), (10, 'ads')], events=[(9, 'Aimed')],
                    src='E 0,30 s (CE-Handling Auto 0,39→0,20 s)'),
     'aim_out': dict(de='Zielen → Hüfte', frames=8, weapon=[(0, 'ads'), (8, 'hip')], events=[(8, 'Ready')], src='E'),
-    'fire_hip': dict(de='Dauerfeuer aus der Hüfte', frames=32, weapon=[(0, 'hip'), (32, 'hip')], fire=list(range(2, 26, 2)) + [25],
-                     kick=1.0, events=[(2, 'Fire')], src='M 720/min ≈ 1 Schuss je 2,5 Bilder (Q-REF); Rückstoß T 17,5 mm/3°'),
-    'fire_ads': dict(de='Dauerfeuer im Zielen', frames=32, weapon=[(0, 'ads'), (32, 'ads')], fire=list(range(2, 26, 2)) + [25],
+    'fire_hip': dict(de='Dauerfeuer aus der Hüfte', frames=32, weapon=[(0, 'hip'), (32, 'hip')], fire=shots_720(2, 10),
+                     kick=1.0, events=[(2, 'Fire')],
+                     src='M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°'),
+    'fire_ads': dict(de='Dauerfeuer im Zielen', frames=32, weapon=[(0, 'ads'), (32, 'ads')], fire=shots_720(2, 10),
                      kick=1.0, events=[(2, 'AimFire')],
                      src='M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E'),
     'reload_tactical': dict(
@@ -118,7 +125,7 @@ ACTIONS = {
     'sprint_to_aim': dict(de='Sprint → Zielen', frames=18, weapon=[(0, 'sprint'), (12, 'ads'), (18, 'ads')],
                           events=[(0, 'SprintOut'), (12, 'Aimed')], src='E (CE: ADS > Sprint)'),
     'sprint_to_fire': dict(de='Sprint → Feuer', frames=26, weapon=[(0, 'sprint'), (6, 'hip'), (26, 'hip')],
-                           fire=list(range(7, 22, 2)), kick=1.0, events=[(0, 'SprintOut'), (7, 'Fire')], src='E (CE: Fire > Sprint)'),
+                           fire=shots_720(7, 6), kick=1.0, events=[(0, 'SprintOut'), (7, 'Fire')], src='E (CE: Fire > Sprint)'),
     'draw_aim': dict(de='Ziehen bei gehaltenem Zielen', frames=28,
                      weapon=[(0, 'holstered'), (14, 'hip'), (24, 'ads'), (28, 'ads')],
                      L=[(0, OFF_L), (6, OFF_L), (13, 'support'), (28, 'support')], fL=[(0, 'relaxed'), (11, 'open'), (14, 'underhand')],

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.15.0 „Plumb“ – Haltung, Bewegung und Rückstoß nach Destiny (Branch `claude/ballon-0.15-plumb`)
+
+- Schritt 4 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (2.1 A, 3.1 A, 6.1 A, 1d, 5.1 A, 5.2 A): Hüfte tiefer (Mündung
+  x 58,1 / y 63,1 % statt 49,6 %), Sprint-Hub 22/18 mm (Oberkante ≈ 9 % H, linke Kante ≈ 13 % B), Waffenwechsel mit Q (Wegstecken
+  0,27 s, leere Sicht 0,13 s, Ziehen wie bisher), Weltzoom folgt dem Modell, Rückstoß in vier Größen: im Zielen wandert die Welt (Viererstoß
+  4,3 % H), das Visier steht (0,12 % H); feste Säule 1 % H je Schuss mit ≤ 1,6 % B Seitenwackeln, Erholung nach der Salve, Salvenwaffen.
+  Clip-Schussbilder auf 720/min (2,5 Bilder). `ego.json` jetzt `ballon-ego/6`. Bericht [docs/versions/0.15-plumb.md](docs/versions/0.15-plumb.md).
+
 ## 0.13.0 „Hipfire“ – Weltzoom je Klasse und Hüft-Fadenkreuz (Branch `claude/ballon-0.13-hipfire`)
 
 - Schritt 3 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (1.2 A, 4.1 A, 4.2 A): Weltzoom nach Glidepath (Scout 2,0,

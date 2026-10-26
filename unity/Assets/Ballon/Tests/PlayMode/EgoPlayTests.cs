@@ -403,6 +403,15 @@ namespace Ballon.Ego.Tests
                 if (after.aim) Assert.That(ze - me5, Is.InRange(-1, 1), $"{name}: Zoom endet mit dem Modell (±1 Bild)");
                 else Assert.LessOrEqual(ze - me5, 1, $"{name}: Zoom ist zurück, wenn das Modell die Hüfte erreicht (danach federt es nach)");
             }
+            // aus dem Zielen direkt nachladen: das Auge liegt beim Nachladen näher an der Kamera als in der Hüfte – kein Rest-Zoom
+            var cr = Ready();
+            cr.ammo = 5;
+            Run(cr, aim, 0.8f);
+            cr.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            Assert.AreEqual("reload_tactical", cr.ActionName);
+            Run(cr, Idle, 0.5f);
+            TestContext.WriteLine($"Zielen → Nachladen: Zoom-Anteil nach 0,5 s {cr.adsWeight:0.000}");
+            Assert.AreEqual(0f, cr.adsWeight, 1e-4f, "Zielen → Nachladen: Zoom spätestens nach 0,5 s zurück");
         }
 
         /// <summary>Entscheidungsliste 5.2 A: Destiny-Säule – feste, lernbare Grundbahn: je Schuss 1 % H nach oben (Anteil des Weltbilds,

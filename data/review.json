@@ -395,131 +395,132 @@
   "BASIC-01-v2.1-ego": {
     "static": {
       "status": "geprüft",
-      "by": "Claude",
-      "date": "2026-10-24",
-      "method": "Standbilder ego/stills (Ego- und Außenansicht) aller Haltungen mit Arm v3; Handgelenk ≤ 45°; inspect_r ohne linke Hand wie in der Aktion"
+      "by": "Claude (0.15 Plumb)",
+      "date": "2026-10-26",
+      "method": "Standbilder ego/stills (Ego- und Außenansicht) aller Haltungen mit Arm v3, neu gerendert mit der tieferen Hüfte (2.1 A); hip_ego mit Mittenkreuz: Mündung x 58,2 / y 63,1 % (Destiny-Band x 54–59 / y 60–71); Handgelenk ≤ 45°; inspect_r ohne linke Hand wie in der Aktion"
     },
     "actions": {
       "idle_hip": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Atembewegung bewusst klein"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Atembewegung bewusst klein"
       },
       "draw": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Waffe kommt von unten, Stützhand greift bei Bild 13"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Waffe kommt von unten in die tiefere Hüfte, Stützhand greift"
       },
       "holster": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; 0,27 s: ab Bild 4 nur noch die Mündung am unteren Rand, ab Bild 8 leer"
       },
       "aim_in": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visierlinie mittig"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visierlinie mittig"
       },
       "aim_out": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
       },
       "fire_hip": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bild 16): Rückstoß sichtbar, Stützhand am Handschutz"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Rückstoß sichtbar, 10 Schuss in Bild 2–24 (720/min)"
       },
       "fire_ads": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visier springt leicht"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Visier steht (vorher: springt leicht); der Rückstoß geht im Spiel in die Welt"
       },
       "reload_tactical": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bild 12): Hand zieht Magazin nach unten"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Weg aus der tieferen Hüfte in die Nachladehaltung ohne Sprung"
       },
       "reload_empty": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bilder 8, 20, 27, 38): Magazin fällt, neues von unten, eingesetzt; Hinweis: Hand am Ladehebel liegt am rechten Bildrand"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Magazin fällt, neues von unten, Durchladen; Hand am Ladehebel teils am rechten Bildrand"
       },
       "inspect": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bilder 16, 62): Ego-Seite, dann Oberseite; rechte Hand umgreift den Griff"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Ego-Seite, dann Oberseite; Rückkehr in die tiefere Hüfte"
       },
       "sprint": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Schlüsselbilder in halber Originalgröße (Bild 20) und Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Hub sichtbar größer als 0.14, U-Bogen"
       },
       "lowered": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
       },
       "walk": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; liegende Acht bewusst klein"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; liegende Acht bewusst klein"
       },
       "crouch": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
       },
       "jump_land": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Anheben und Landefeder bewusst klein"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Anheben und Landefeder bewusst klein"
       },
       "sprint_to_aim": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
       },
       "sprint_to_fire": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; 6 Schuss ab Bild 7 (alle 2,5 Bilder)"
       },
       "draw_aim": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png"
       },
       "reload_to_switch": {
         "status": "geprüft",
-        "by": "Claude",
-        "date": "2026-10-24",
-        "method": "Bewegung v2 (Hermite, Feder-Nachlauf, 30 fps) gerendert und gesichtet; Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Abbruch bei Bild 14, Magazin bleibt eingesetzt"
+        "by": "Claude (0.15 Plumb)",
+        "date": "2026-10-26",
+        "method": "Bewegung 0.15 gerendert und gesichtet (Hüfte tiefer, Sprint-Hub 22/18 mm, holster 0,27 s, im Zielen kein Kamera-Nicken, Schüsse alle 2,5 Bilder); Ego-Kontaktbogen evidence/ego_BASIC-01-v2.1_<aktion>.png; Abbruch bei Bild 18, Magazin bleibt eingesetzt; Tempo wie bisher"
       }
     },
     "notes": [
       "An der Hüfte ist die rechte Hand nicht im Bild (Haltung hoch genug für den Griff, Hand darunter)",
       "Durchladen: linke Hand am Ladehebel teilweise außerhalb des Bildes",
       "Arm v3 (24.10.2026): alle 19 Aktionen neu gerendert, Handgelenk max. 42,7° (Ziehen/Wegstecken); Drehgelenk zeigt die Panzerseite zur Kamera.",
-      "Bewegung v2 (24.10.2026): Kurven durch die Schlüssel, Feder-Nachlauf, Atmen überall, Rückstoßfeder, Tempo 1,25 (Zielen/Feuern ausgenommen), alle Clips 30 fps; Nachladen neu choreografiert, Haltung reload höher und mittiger – Einsetzen des Magazins jetzt sichtbar. Messung: inspect ohne Zwischenstopp, reload_empty nur gewollte Halte (Ausholen, vor dem Stoß)."
+      "Bewegung v2 (24.10.2026): Kurven durch die Schlüssel, Feder-Nachlauf, Atmen überall, Rückstoßfeder, Tempo 1,25 (Zielen/Feuern ausgenommen), alle Clips 30 fps; Nachladen neu choreografiert, Haltung reload höher und mittiger – Einsetzen des Magazins jetzt sichtbar. Messung: inspect ohne Zwischenstopp, reload_empty nur gewollte Halte (Ausholen, vor dem Stoß).",
+      "0.15 Plumb (26.10.2026): alle 19 Aktionen und 8 Haltungen neu gerendert (Entscheidungsliste Schritt 4): Hüfte 6,5 cm tiefer, crouch/air mitgesenkt, Sprint-Hub 22/18 mm, holster 0,27 s, fire_ads ohne Kamera-Nicken und mit kleinem Modellkick, Schussbilder auf 720/min; Handgelenk max. 43° (draw, draw_aim, reload_to_switch)."
     ],
     "messungen": {
       "date": "2026-10-25",
@@ -626,6 +627,54 @@
         "zielfernrohr": "nicht messbar: Unity trägt nur BASIC-01 mit Holo, adsZoom 1,35 für alle",
         "destiny": "Zoom beginnt 0–2 Bilder nach dem Modell, Ende gemeinsam ±1",
         "beleg": "~/Library/Caches/CubeEscapeBallon/messen/belege/key60_zoom.csv"
+      }
+    },
+    "messungen_0_15": {
+      "date": "2026-10-26",
+      "by": "Claude (0.15 Plumb)",
+      "ref": "docs/entscheidungsliste-motiongen.md › Messungen nach Schritt 4 (26.10.2026)",
+      "2.1_huefte": {
+        "methode": "tools/messen.py (Blender) und EgoScreen (Unity-Test Hueftlage_im_Destiny_Band), gleiche Projektion",
+        "muendung_pct": [
+          58.15,
+          63.06
+        ],
+        "sicht_hinten_pct": [
+          77.4,
+          67.46
+        ],
+        "absehen_pct": [
+          74.55,
+          65.81
+        ],
+        "destiny": "x 54–59 / y 60–71",
+        "beleg": "~/Library/Caches/CubeEscapeBallon/plumb/belege/2.1_huefte_blender_raster.png"
+      },
+      "3.1_sprint_hub": {
+        "methode": "wie Schritt 2: unity_run.py feel mit -ballonFps 60 -ballonKey 1 (ohne Fadenkreuz-Stempel), Sprint 1 Bild 54–144, Sprint 2 Bild 354–408",
+        "frequenz_hz": 3.16,
+        "vertikal_pct_H": {
+          "schwerpunkt": [
+            4.04,
+            3.77
+          ],
+          "oberkante": [
+            9.54,
+            8.89
+          ]
+        },
+        "seitlich_pct_B": {
+          "linke_kante": [
+            12.73,
+            13.65
+          ],
+          "schwerpunkt": [
+            3.07,
+            2.97
+          ]
+        },
+        "hinweis": "linke Kante pulsiert mit 3,16 Hz (Hub am unteren Bildrand), Seitenbewegung mit 1,58 Hz nur im Schwerpunkt",
+        "destiny": "≈ 10–11 % H / 13 % B"
       }
     }
   },
