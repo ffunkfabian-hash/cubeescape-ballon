@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.18.0 „Quickdraw“ – Ego-Übertrag je Klasse, Maschinenpistole BASIC-06 spielbar (Branch `claude/ballon-0.18-quickdraw`)
+
+- Schritt 6 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (2.1 A, 3.2 A, 4d) für die erste Klasse, die MP „Kurzläufer v2.1“:
+  Klassenwerte als Daten (`ego.CLASSES`): Hüfte Mündung 58,0/62,9 %, Absehen 65,5/60,0 % (Destiny-MP 57–58/61–62); Sprint tief, Oberseite
+  +40° nach links, Mündung 42,9/79,9 % (Destiny 43/80); Anflug 3 Bilder bei 30/s = 12 Bilder bei 60/s bis Ruhe (Destiny-MP 8–12, Automatik
+  unverändert 20). Weltzoom 1,45, Hüft-Fadenkreuz `circle_cross` 6,1 % H, 720/min, Magazin 30, Hülsen `pistol`. Automatik unverändert.
+- Ego-Pipeline je Waffe: `ego.profile(W)`, Modul-Felder `EGO_GRIPS`/`EGO_LIVE`/`EJECT`, Export backt nur Geändertes; `ego.json` jetzt
+  `ballon-ego/8` mit `weapons[]`, der Unity-Leser liest `/7` weiter. Unity: zwei Waffen, Tasten 1/2 (Q zur anderen) über holster/draw mit
+  leerer Sicht 0,133 s, Munition je Waffe, Wechsel ohne Speicher je Bild. MP-Stützhand als Faust am Vordergriff (Nutzerhinweis Daumen).
+  Bericht [docs/versions/0.18-quickdraw.md](docs/versions/0.18-quickdraw.md).
+
 ## 0.17.0 „Gateway“ – Portalkanone BASIC-T01 im Stil v2.1 (Branch `claude/ballon-0.17-gateway`)
 
 - Erstes Werkzeug der Familie (`basic/pilot/t01_portal_cannon_v21.py`): facettierte Eischale, offener Zweifarbkern (Portal B Orange
