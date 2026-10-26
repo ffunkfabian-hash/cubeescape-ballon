@@ -189,7 +189,7 @@
   "hip": {
    "kind": "ring_dot",
    "share_h": 0.032,
-   "extent_mm": 6.4,
+   "extent_mm": 5.91,
    "status": "gemessen (Glidepath)",
    "color": "#EEF2F5",
    "weight": 0.65,
@@ -219,7 +219,7 @@
    "sprint": {
     "kind": "caret",
     "share_h": 0.015,
-    "extent_mm": 4.0,
+    "extent_mm": 4.39,
     "prims": [
      {
       "t": "line",

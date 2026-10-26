@@ -123,14 +123,26 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0.015f, H.sprint.share_h, 1e-6f);
             Assert.AreEqual("auto", H.spread.id);
             var R = new HipReticle(H);
-            foreach (float h in new[] { 720f, 1080f }) Assert.AreEqual(H.share_h * h, R.ExtentPx(h), 0.5f, $"Außenmaß bei {h} px Höhe");
+            foreach (float h in new[] { 720f, 1080f })
+            {
+                Assert.AreEqual(H.share_h * h, R.ExtentPx(h), 0.5f, $"Außenmaß gerechnet bei {h} px Höhe");
+                var mh = R.Mask(h);                              // unabhängig: Rahmen der Maskenpixel mit Deckung ≥ 50 %
+                int x0 = int.MaxValue, x1 = -1, y0 = int.MaxValue, y1 = -1;
+                for (int y = 0; y < mh.height; y++)
+                    for (int x = 0; x < mh.width; x++)
+                        if (mh.GetPixel(x, y).a >= 0.5f * H.opacity) { x0 = Mathf.Min(x0, x); x1 = Mathf.Max(x1, x); y0 = Mathf.Min(y0, y); y1 = Mathf.Max(y1, y); }
+                float seen = Mathf.Max(x1 - x0 + 1, y1 - y0 + 1);
+                TestContext.WriteLine($"Außenmaß bei {h} px Höhe: Soll {H.share_h * h:0.0} px, Maske {seen} px");
+                Assert.AreEqual(H.share_h * h, seen, 1.0f, $"Außenmaß in der Maske bei {h} px Höhe");
+            }
+            R.Release();
             var m = R.Mask(1080);
             Assert.Greater(m.GetPixel(m.width / 2, m.height / 2).a, 0.8f, "Punkt in der Mitte");
             var ring = H.prims.First(p => p.t == "ring");        // Ringmitte bei Linienstärke fein (innen fest, Dicke · weight)
             float ringR = (ring.ri + (ring.r - ring.ri) * H.weight / 2) * R.PxPerMm(1080);
             Assert.Greater(m.GetPixel(m.width / 2 + Mathf.FloorToInt(ringR), m.height / 2).a / 0.9f, 0.6f, "Ring");
             Assert.Less(m.GetPixel(m.width / 2 + Mathf.FloorToInt(ringR * 0.55f), m.height / 2).a, 0.05f, "frei zwischen Ring und Punkt");
-            UnityEngine.Object.DestroyImmediate(m);
+            R.Release();
         }
 
         /// <summary>Entscheidungsliste 4.1 A: das Hüft-Fadenkreuz geht beim Schießen nach `reticles.SPREAD` auf – Impuls per_shot je

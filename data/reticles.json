@@ -1009,24 +1009,24 @@
    "inspect",
    "lowered"
   ],
-  "size": "Außenmaß bei Spreizung 0 als Anteil der Bildhöhe (share_h)",
+  "size": "sichtbares Außenmaß bei Spreizung 0 mit Linienstärke als Anteil der Bildhöhe (share_h)",
   "by_type": {
    "auto_rifle": {
     "kind": "ring_dot",
     "share_h": 0.032,
-    "extent_mm": 6.4,
+    "extent_mm": 5.91,
     "spread": "auto",
     "status": "gemessen (Glidepath)",
     "sprint": {
      "kind": "caret",
      "share_h": 0.015,
-     "extent_mm": 4.0
+     "extent_mm": 4.39
     }
    },
    "pulse_rifle": {
     "kind": "ring_dot",
     "share_h": 0.032,
-    "extent_mm": 6.4,
+    "extent_mm": 5.91,
     "spread": "burst",
     "status": "übertragen (Automatik)",
     "sprint": null
@@ -1034,7 +1034,7 @@
    "scout_rifle": {
     "kind": "cross",
     "share_h": 0.045,
-    "extent_mm": 14.0,
+    "extent_mm": 14.39,
     "spread": "precision",
     "status": "entworfen",
     "sprint": null
@@ -1042,7 +1042,7 @@
    "hand_cannon": {
     "kind": "brackets",
     "share_h": 0.06,
-    "extent_mm": 10.0,
+    "extent_mm": 10.39,
     "spread": "precision",
     "status": "gemessen (Glidepath, ≈ 6 % H)",
     "sprint": null
@@ -1050,7 +1050,7 @@
    "sidearm": {
     "kind": "cross",
     "share_h": 0.045,
-    "extent_mm": 14.0,
+    "extent_mm": 14.39,
     "spread": "auto",
     "status": "entworfen",
     "sprint": null
@@ -1058,7 +1058,7 @@
    "submachine_gun": {
     "kind": "circle_cross",
     "share_h": 0.061,
-    "extent_mm": 14.8,
+    "extent_mm": 15.19,
     "spread": "auto",
     "status": "gemessen (Glidepath, 5,9–6,3 % H)",
     "sprint": null
@@ -1066,7 +1066,7 @@
    "shotgun": {
     "kind": "corners",
     "share_h": 0.045,
-    "extent_mm": 10.0,
+    "extent_mm": 10.39,
     "spread": "shotgun",
     "status": "entworfen",
     "sprint": null
@@ -1074,7 +1074,7 @@
    "sniper_rifle": {
     "kind": "caret",
     "share_h": 0.01,
-    "extent_mm": 4.0,
+    "extent_mm": 4.39,
     "spread": "precision",
     "status": "gemessen (Glidepath, ≈ 1 % H)",
     "sprint": null
@@ -1082,7 +1082,7 @@
    "fusion_rifle": {
     "kind": "corners",
     "share_h": 0.045,
-    "extent_mm": 10.0,
+    "extent_mm": 10.39,
     "spread": "charge",
     "status": "entworfen",
     "sprint": null
@@ -1090,7 +1090,7 @@
    "linear_fusion_rifle": {
     "kind": "cross",
     "share_h": 0.045,
-    "extent_mm": 14.0,
+    "extent_mm": 14.39,
     "spread": "charge",
     "status": "entworfen",
     "sprint": null
@@ -1098,7 +1098,7 @@
    "trace_rifle": {
     "kind": "circle_cross",
     "share_h": 0.045,
-    "extent_mm": 14.8,
+    "extent_mm": 15.19,
     "spread": "auto",
     "status": "entworfen",
     "sprint": null
@@ -1106,7 +1106,7 @@
    "grenade_launcher": {
     "kind": "circle_cross",
     "share_h": 0.045,
-    "extent_mm": 14.8,
+    "extent_mm": 15.19,
     "spread": "explosive",
     "status": "entworfen",
     "sprint": null
@@ -1114,7 +1114,7 @@
    "rocket_launcher": {
     "kind": "circle_cross",
     "share_h": 0.045,
-    "extent_mm": 14.8,
+    "extent_mm": 15.19,
     "spread": "explosive",
     "status": "entworfen",
     "sprint": null
@@ -1122,7 +1122,7 @@
    "machine_gun": {
     "kind": "ring_dot",
     "share_h": 0.032,
-    "extent_mm": 6.4,
+    "extent_mm": 5.91,
     "spread": "auto",
     "status": "übertragen (Automatik)",
     "sprint": null
@@ -1130,7 +1130,7 @@
    "combat_bow": {
     "kind": "chevron",
     "share_h": 0.045,
-    "extent_mm": 6.4,
+    "extent_mm": 6.79,
     "spread": "charge",
     "status": "entworfen",
     "sprint": null
@@ -1138,7 +1138,7 @@
    "sword": {
     "kind": "dot",
     "share_h": 0.045,
-    "extent_mm": 2.0,
+    "extent_mm": 1.65,
     "spread": "none",
     "status": "entworfen",
     "sprint": null
@@ -1146,7 +1146,7 @@
    "glaive": {
     "kind": "cross",
     "share_h": 0.045,
-    "extent_mm": 14.0,
+    "extent_mm": 14.39,
     "spread": "auto",
     "status": "entworfen",
     "sprint": null

@@ -401,11 +401,15 @@ namespace Ballon.Ego.Tests
                 NUnit.Framework.Assert.That(() => { for (int k = 0; k < 30; k++) c.Tick(Dt, s); },
                     Is.Not.AllocatingGCMemory(), $"{c.ActionName}");
             }
-            var hip = new HipReticle(D.gameplay.hip);            // Hüft-Fadenkreuz: Aufgehen, Sichtbarkeit, Rastern bei jeder Spreizung
-            hip.See(c);
-            hip.Mask(1080);
-            NUnit.Framework.Assert.That(() => { for (int k = 0; k < 30; k++) { hip.Decay(Dt, 0.5f); hip.Kick(); hip.See(c); hip.Mask(1080); } },
-                Is.Not.AllocatingGCMemory(), "HipReticle");
+            var hip = new HipReticle(D.gameplay.hip);            // Hüft-Fadenkreuz: Aufgehen, Sichtbarkeit, Rastern bei jeder Spreizung,
+            var atHip = Ready();                                 // Wechsel Sprint („^“) ↔ Hüfte in jedem Bild
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance);
+            hip.See(c); hip.Mask(1080); hip.See(atHip); hip.Mask(1080);
+            NUnit.Framework.Assert.That(() =>
+            {
+                for (int k = 0; k < 30; k++) { hip.Decay(Dt, 0.5f); hip.Kick(); hip.See(k % 2 == 0 ? c : atHip); hip.Mask(1080); }
+            }, Is.Not.AllocatingGCMemory(), "HipReticle");
+            hip.Release();
             var demo = Bootstrap.DemoScript();                   // Eingabeablauf der Aufnahme
             demo.Read(Dt, 1);
             NUnit.Framework.Assert.That(() => { for (int k = 0; k < 300; k++) demo.Read(Dt, 1); }, Is.Not.AllocatingGCMemory(), "ScriptedInput");

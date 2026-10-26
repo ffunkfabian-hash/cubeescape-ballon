@@ -19,10 +19,8 @@ namespace Ballon.Ego
         readonly EgoHipForm _hipForm;
         readonly string _sprintReason;
         readonly Color32 _color;
-        Texture2D _tex;
-        Color32[] _px;
-        float _rSpread = -1, _rH = -1;
-        bool _rSprint;
+        sealed class Raster { public Texture2D tex; public Color32[] px; public float s = -1, h = -1; }
+        readonly Raster _rHip = new Raster(), _rSpr = new Raster();      // je Form eine Textur: Sprintwechsel legt nichts neu an
 
         public HipReticle(EgoHip h)
         {
@@ -62,48 +60,59 @@ namespace Ballon.Ego
             Reason ??= "hip";
         }
 
-        /// <summary>Pixel je mm auf der Scheibe bei Bildhöhe h: Außenmaß der Form = share_h · h.</summary>
+        /// <summary>Pixel je mm auf der Scheibe bei Bildhöhe h: sichtbares Außenmaß der Form (mit Linienstärke) = share_h · h.</summary>
         public float PxPerMm(float h) => Form.share_h * h / Mathf.Max(1e-4f, Form.extent_mm);
 
-        /// <summary>Außenmaß der gezeichneten Form in Pixeln (größere Seite des Rahmens um Linienmitten, Ringe, Punkte) – Messwert.</summary>
+        /// <summary>Sichtbares Außenmaß der gezeichneten Form in Pixeln bei Bildhöhe h (größere Seite des Rahmens, mit Linienstärke
+        /// wie in Mask) – Messwert; bei Spreizung 0 gleich share_h · h, solange min_line_px nicht greift.</summary>
         public float ExtentPx(float h)
         {
-            float sp = Drawn, k = PxPerMm(h), x0 = 1e9f, x1 = -1e9f, u0 = 1e9f, u1 = -1e9f;
+            float sp = Drawn, k = PxPerMm(h), w = H.weight, lw = Mathf.Max(H.line_r_mm * w * k, H.min_line_px);
+            float x0 = 1e9f, x1 = -1e9f, y0 = 1e9f, y1 = -1e9f;
             foreach (var p in Form.prims)
             {
                 if (p.t == "line")
                 {
-                    float ax = p.a[0] + sp * p.d[0], au = p.a[1] + sp * p.d[1], bx = p.b[0] + sp * p.d[0], bu = p.b[1] + sp * p.d[1];
-                    x0 = Mathf.Min(x0, Mathf.Min(ax, bx)); x1 = Mathf.Max(x1, Mathf.Max(ax, bx));
-                    u0 = Mathf.Min(u0, Mathf.Min(au, bu)); u1 = Mathf.Max(u1, Mathf.Max(au, bu));
+                    float ax = (p.a[0] + sp * p.d[0]) * k, ay = (p.a[1] + sp * p.d[1]) * k, bx = (p.b[0] + sp * p.d[0]) * k, by = (p.b[1] + sp * p.d[1]) * k;
+                    x0 = Mathf.Min(x0, Mathf.Min(ax, bx) - lw); x1 = Mathf.Max(x1, Mathf.Max(ax, bx) + lw);
+                    y0 = Mathf.Min(y0, Mathf.Min(ay, by) - lw); y1 = Mathf.Max(y1, Mathf.Max(ay, by) + lw);
                 }
                 else
                 {
-                    float r = p.r + (p.t == "ring" ? sp * p.grow : 0);
-                    x0 = Mathf.Min(x0, -r); x1 = Mathf.Max(x1, r); u0 = Mathf.Min(u0, -r); u1 = Mathf.Max(u1, r);
+                    float r = Radius(p, sp, k);
+                    x0 = Mathf.Min(x0, -r); x1 = Mathf.Max(x1, r); y0 = Mathf.Min(y0, -r); y1 = Mathf.Max(y1, r);
                 }
             }
-            return Mathf.Max(x1 - x0, u1 - u0) * k;
+            return Mathf.Max(x1 - x0, y1 - y0);
+        }
+
+        /// <summary>Außenradius eines Rings (innen fest, Dicke · weight, mindestens 2·min_line_px) oder Punkts (· (0,5 + 0,5·weight)) in px.</summary>
+        float Radius(EgoPrim p, float sp, float k)
+        {
+            float w = H.weight;
+            if (p.t == "ring") return (p.ri + sp * p.grow) * k + Mathf.Max((p.r - p.ri) * w * k, 2 * H.min_line_px);
+            return Mathf.Max(p.r * (0.5f + 0.5f * w) * k, H.min_line_px);
         }
 
         /// <summary>Weiße Maske der aktuellen Form bei Bildhöhe h (Kantenlänge = Texturbreite in Pixeln, 1:1 zeichnen); nur neu
-        /// gerastert, wenn sich Spreizung, Form oder Bildhöhe ändern. Linienstärke wie basic/common.reticle: Linie LINE_R·weight,
-        /// Ringdicke ·weight (innen fest), Punkt ·(0,5 + 0,5·weight); Linien mindestens 2·min_line_px breit.</summary>
+        /// gerastert, wenn sich Spreizung oder Bildhöhe ändern (je Form eine Textur). Linienstärke wie basic/common.reticle: Linie
+        /// LINE_R·weight, Ringdicke ·weight (innen fest), Punkt ·(0,5 + 0,5·weight); Linien mindestens 2·min_line_px breit.</summary>
         public Texture2D Mask(float h)
         {
             float sp = Drawn;
-            if (_tex != null && Mathf.Abs(_rSpread - sp) < 1e-3f && _rH == h && _rSprint == SprintForm) return _tex;
+            var R = SprintForm ? _rSpr : _rHip;
+            if (R.tex != null && Mathf.Abs(R.s - sp) < 1e-3f && R.h == h) return R.tex;
             float k = PxPerMm(h), w = H.weight, minPx = H.min_line_px;
             float reach = 0;
             foreach (var p in Form.prims)
                 reach = Mathf.Max(reach, p.t == "line" ? Mathf.Max(Mathf.Max(Mathf.Abs(p.a[0]), Mathf.Abs(p.a[1])), Mathf.Max(Mathf.Abs(p.b[0]), Mathf.Abs(p.b[1]))) : p.r);
-            int half = Mathf.CeilToInt((reach + H.spread.max + 2 * H.line_r_mm) * k) + 2;
+            int half = Mathf.CeilToInt((reach + H.spread.max + 2 * H.line_r_mm) * k + 2 * minPx) + 2;
             int n = 2 * half;
-            if (_tex == null || _tex.width != n)
+            if (R.tex == null || R.tex.width != n)
             {
-                if (_tex != null) { if (Application.isPlaying) Object.Destroy(_tex); else Object.DestroyImmediate(_tex); }
-                _tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
-                _px = new Color32[n * n];
+                Free(R.tex);
+                R.tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
+                R.px = new Color32[n * n];
             }
             float lw = Mathf.Max(H.line_r_mm * w * k, minPx);
             byte op = (byte)Mathf.RoundToInt(255 * H.opacity);
@@ -122,18 +131,32 @@ namespace Ballon.Ego
                         }
                         else if (p.t == "ring")
                         {
-                            float g = sp * p.grow, inner = (p.ri + g) * k, outer = inner + Mathf.Max((p.r - p.ri) * w * k, 2 * minPx);
+                            float inner = (p.ri + sp * p.grow) * k, outer = Radius(p, sp, k);
                             d = Mathf.Min(d, Mathf.Abs(Mathf.Sqrt(px * px + py * py) - (inner + outer) / 2) - (outer - inner) / 2);
                         }
-                        else d = Mathf.Min(d, Mathf.Sqrt(px * px + py * py) - Mathf.Max(p.r * (0.5f + 0.5f * w) * k, minPx));
+                        else d = Mathf.Min(d, Mathf.Sqrt(px * px + py * py) - Radius(p, sp, k));
                     }
                     float a = Mathf.Clamp01(0.5f - d);
-                    _px[y * n + x] = new Color32(255, 255, 255, (byte)(op * a));
+                    R.px[y * n + x] = new Color32(255, 255, 255, (byte)(op * a));
                 }
-            _tex.SetPixels32(_px);
-            _tex.Apply(false);                     // lesbar lassen: die Aufnahme stempelt per GetPixelBilinear
-            _rSpread = sp; _rH = h; _rSprint = SprintForm;
-            return _tex;
+            R.tex.SetPixels32(R.px);
+            R.tex.Apply(false);                    // lesbar lassen: die Aufnahme stempelt per GetPixelBilinear
+            R.s = sp; R.h = h;
+            return R.tex;
+        }
+
+        /// <summary>Texturen freigeben (EgoPlayer.OnDestroy, Tests).</summary>
+        public void Release()
+        {
+            Free(_rHip.tex); Free(_rSpr.tex);
+            _rHip.tex = _rSpr.tex = null;
+            _rHip.s = _rSpr.s = -1;
+        }
+
+        static void Free(Texture2D t)
+        {
+            if (t == null) return;
+            if (Application.isPlaying) Object.Destroy(t); else Object.DestroyImmediate(t);
         }
 
         public Color Color => _color;

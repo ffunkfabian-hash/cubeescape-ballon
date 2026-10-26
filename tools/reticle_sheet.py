@@ -152,7 +152,7 @@ def hip_sheet():
         states = (('Sprint, geht nicht auf', 0.0),) if sprint else (('Ruhe', S['base']), ('3 Schuss', three), ('Maximum', S['max']))
         for lab, sp in states:
             svg = os.path.join(d, f"{t}{'_sprint' if sprint else ''}_{lab.split(',')[0].replace(' ', '')}.svg")
-            open(svg, 'w', encoding='utf-8').write(hip_svg(kind, share, RT.extent_mm(kind), sp))
+            open(svg, 'w', encoding='utf-8').write(hip_svg(kind, share, RT.extent_mm(kind, RT.WEIGHTS[RT.HIP['weight']][1]), sp))
             png = svg[:-4] + '.png'
             subprocess.run(['magick', '-density', '96', svg, png], check=True)
             big = svg[:-4] + '_x3.png'

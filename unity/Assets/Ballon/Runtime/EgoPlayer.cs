@@ -178,6 +178,8 @@ namespace Ballon.Ego
             return p;
         }
 
+        void OnDestroy() => hipReticle?.Release();
+
         static Camera NewCam(string name, Transform parent, int mask, float near, float far)
         {
             var c = new GameObject(name).AddComponent<Camera>();

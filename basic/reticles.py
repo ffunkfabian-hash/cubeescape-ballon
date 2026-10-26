@@ -153,8 +153,8 @@ DEFAULTS = {
     'glaive':              dict(optic=None, hip='cross', spread='auto'),
 }
 # Hüft-Fadenkreuz (HUD), Entscheidungsliste 4.1 A / 4.2 A (Nutzer 25.10.2026), Maße nach Glidepath (Motiongen destiny2 › Glidepath,
-# [M], je 1 Clip in der Hüfte): Größe = Außenmaß der Form bei Spreizung 0 (größere Seite des Rahmens um die Mittellinien, siehe
-# extent_mm) als Anteil der Bildhöhe. Weiß, Linienstärke fein. Sichtbar nur in der Hüfte (auch geduckt und in der Luft); aus beim Zielen
+# [M], je 1 Clip in der Hüfte): Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens,
+# siehe extent_mm) als Anteil der Bildhöhe. Weiß, Linienstärke fein. Sichtbar nur in der Hüfte (auch geduckt und in der Luft); aus beim Zielen
 # (schon im ersten Bild), im Sprint (Automatik: nur „^“), beim Nachladen, Ziehen, Wegstecken, Betrachten und bei gesenkter Waffe.
 # Beim Schießen geht es nach SPREAD auf (Profil aus DEFAULTS); das „^“ im Sprint ist ein Haltungszeichen und geht nicht auf. Glidepath-Werte anderer Typen (Bogen 4,6 % H, kurze Fusion 5,5 %,
 # lineare Fusion 12–13 %, Granatwerfer 5,6 % H) folgen mit Form beim Ego-Übertrag je Klasse (Entscheidungsliste Schritt 6).
@@ -168,16 +168,20 @@ HIP_STATUS = {'auto_rifle': 'gemessen (Glidepath)', 'submachine_gun': 'gemessen 
               'pulse_rifle': 'übertragen (Automatik)', 'machine_gun': 'übertragen (Automatik)'}
 
 
-def extent_mm(kind):
-    """Außenmaß einer Form bei Spreizung 0 (mm): größere Seite des Rahmens um Linienmitten, Ringe (außen) und Punkte."""
+def extent_mm(kind, weight=None):
+    """Außenmaß einer Form bei Spreizung 0 (mm): größere Seite des Rahmens um alle Grundelemente. Mit `weight` (Faktor aus WEIGHTS)
+    das sichtbare Maß wie gezeichnet (common.reticle, Unity HipReticle): Linien ± LINE_R·weight (runde Enden), Ringe außen
+    ri + (r − ri)·weight, Punkte r·(0,5 + 0,5·weight); ohne `weight` die Mittellinien und r."""
     xs, us = [], []
+    lw = LINE_R * weight if weight is not None else 0.0
     for p in RETICLES[kind]['prims']:
         if p['t'] == 'line':
-            xs += [p['a'][0], p['b'][0]]
-            us += [p['a'][1], p['b'][1]]
+            xs += [min(p['a'][0], p['b'][0]) - lw, max(p['a'][0], p['b'][0]) + lw]
+            us += [min(p['a'][1], p['b'][1]) - lw, max(p['a'][1], p['b'][1]) + lw]
         else:
-            xs += [-p['r'], p['r']]
-            us += [-p['r'], p['r']]
+            r = p['r'] if weight is None else p['ri'] + (p['r'] - p['ri']) * weight if p['t'] == 'ring' else p['r'] * (0.5 + 0.5 * weight)
+            xs += [-r, r]
+            us += [-r, r]
     return round(float(max(max(xs) - min(xs), max(us) - min(us))), 4)
 
 
@@ -185,9 +189,10 @@ def hip(weapon_type):
     """Hüft-Fadenkreuz eines Waffentyps: Form, Größe (Anteil der Bildhöhe), Außenmaß in mm, Aufgehprofil, Sprintform (oder None)."""
     D = DEFAULTS[weapon_type]
     sp = HIP['sprint'].get(weapon_type)
-    return dict(kind=D['hip'], share_h=HIP['share_h'].get(weapon_type, HIP['share_h_default']), extent_mm=extent_mm(D['hip']),
+    w = WEIGHTS[HIP['weight']][1]
+    return dict(kind=D['hip'], share_h=HIP['share_h'].get(weapon_type, HIP['share_h_default']), extent_mm=extent_mm(D['hip'], w),
                 spread=D['spread'], status=HIP_STATUS.get(weapon_type, 'entworfen'),
-                sprint=dict(sp, extent_mm=extent_mm(sp['kind'])) if sp else None)
+                sprint=dict(sp, extent_mm=extent_mm(sp['kind'], w)) if sp else None)
 
 
 # Einstellbare Optionen (Spieler): Wertebereich und Vorgabe

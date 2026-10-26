@@ -89,27 +89,27 @@ Profil `charge`: während des Aufladens schrumpft die Spreizung von `charge_from
 
 ## Hüft-Fadenkreuz
 
-Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px breit). Aus bei: ads, sprint, reload, draw, holster, inspect, lowered – beim Zielen schon im ersten Bild. Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = Außenmaß der Form bei Spreizung 0 (größere Seite des Rahmens um Linienmitten, Ringe und Punkte) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. Entscheidungsliste 4.1 A und 4.2 A.
+Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px breit). Aus bei: ads, sprint, reload, draw, holster, inspect, lowered – beim Zielen schon im ersten Bild. Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. Entscheidungsliste 4.1 A und 4.2 A.
 
 | Typ | Hüfte | Größe (% H) | Außenmaß | Status | Sprint |
 |---|---|---|---|---|---|
-| `auto_rifle` | `ring_dot` | 3.2 | 6.4 mm | gemessen (Glidepath) | `caret` 1.5 % H |
-| `pulse_rifle` | `ring_dot` | 3.2 | 6.4 mm | übertragen (Automatik) | aus |
-| `scout_rifle` | `cross` | 4.5 | 14 mm | entworfen | aus |
-| `hand_cannon` | `brackets` | 6.0 | 10 mm | gemessen (Glidepath, ≈ 6 % H) | aus |
-| `sidearm` | `cross` | 4.5 | 14 mm | entworfen | aus |
-| `submachine_gun` | `circle_cross` | 6.1 | 14.8 mm | gemessen (Glidepath, 5,9–6,3 % H) | aus |
-| `shotgun` | `corners` | 4.5 | 10 mm | entworfen | aus |
-| `sniper_rifle` | `caret` | 1.0 | 4 mm | gemessen (Glidepath, ≈ 1 % H) | aus |
-| `fusion_rifle` | `corners` | 4.5 | 10 mm | entworfen | aus |
-| `linear_fusion_rifle` | `cross` | 4.5 | 14 mm | entworfen | aus |
-| `trace_rifle` | `circle_cross` | 4.5 | 14.8 mm | entworfen | aus |
-| `grenade_launcher` | `circle_cross` | 4.5 | 14.8 mm | entworfen | aus |
-| `rocket_launcher` | `circle_cross` | 4.5 | 14.8 mm | entworfen | aus |
-| `machine_gun` | `ring_dot` | 3.2 | 6.4 mm | übertragen (Automatik) | aus |
-| `combat_bow` | `chevron` | 4.5 | 6.4 mm | entworfen | aus |
-| `sword` | `dot` | 4.5 | 2 mm | entworfen | aus |
-| `glaive` | `cross` | 4.5 | 14 mm | entworfen | aus |
+| `auto_rifle` | `ring_dot` | 3.2 | 5.91 mm | gemessen (Glidepath) | `caret` 1.5 % H |
+| `pulse_rifle` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus |
+| `scout_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
+| `hand_cannon` | `brackets` | 6.0 | 10.39 mm | gemessen (Glidepath, ≈ 6 % H) | aus |
+| `sidearm` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
+| `submachine_gun` | `circle_cross` | 6.1 | 15.19 mm | gemessen (Glidepath, 5,9–6,3 % H) | aus |
+| `shotgun` | `corners` | 4.5 | 10.39 mm | entworfen | aus |
+| `sniper_rifle` | `caret` | 1.0 | 4.39 mm | gemessen (Glidepath, ≈ 1 % H) | aus |
+| `fusion_rifle` | `corners` | 4.5 | 10.39 mm | entworfen | aus |
+| `linear_fusion_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
+| `trace_rifle` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
+| `grenade_launcher` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
+| `rocket_launcher` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
+| `machine_gun` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus |
+| `combat_bow` | `chevron` | 4.5 | 6.79 mm | entworfen | aus |
+| `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus |
+| `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
 
 ## Visier-Standard
 

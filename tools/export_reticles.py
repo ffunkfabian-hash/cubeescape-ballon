@@ -30,7 +30,7 @@ def data():
                 world_zoom={k: {s: RT.world_zoom(k, s) for s in ('reflex', 'scope')} for k in RT.CLASS_ZOOM},
                 class_world_zoom={k: RT.class_world_zoom(k) for k in RT.CLASS_ZOOM},
                 hip=dict(color=RT.HIP['color'], weight=RT.HIP['weight'], min_line_px=RT.HIP['min_line_px'],
-                         hidden_in=list(RT.HIP['hidden_in']), size='Außenmaß bei Spreizung 0 als Anteil der Bildhöhe (share_h)',
+                         hidden_in=list(RT.HIP['hidden_in']), size='sichtbares Außenmaß bei Spreizung 0 mit Linienstärke als Anteil der Bildhöhe (share_h)',
                          by_type={k: RT.hip(k) for k in RT.DEFAULTS}),
                 sight_kind=RT.SIGHT_KIND, sight_kind_de={str(k): v for k, v in RT.SIGHT_KIND_DE.items()}, ads_feedback=RT.ADS_FEEDBACK,
                 spread_model='s ← base(+move) + (s − base)·exp(−dt/recover_s); je Schuss s ← min(max, s + per_shot); '
@@ -64,8 +64,8 @@ def doc():
     L += ['', '## Hüft-Fadenkreuz', '',
           f"Nur in der Hüfte sichtbar, {RT.COLORS[H['color']][0].lower()}, Linienstärke {RT.WEIGHTS[H['weight']][0]} "
           f"(Linien mindestens {2 * H['min_line_px']:g} px breit). Aus bei: {', '.join(H['hidden_in'])} – beim Zielen schon im ersten Bild. "
-          'Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = Außenmaß der Form bei Spreizung 0 (größere Seite des Rahmens um '
-          'Linienmitten, Ringe und Punkte) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. '
+          'Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit '
+          'Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. '
           'Entscheidungsliste 4.1 A und 4.2 A.', '',
           '| Typ | Hüfte | Größe (% H) | Außenmaß | Status | Sprint |', '|---|---|---|---|---|---|']
     for k in RT.DEFAULTS:
