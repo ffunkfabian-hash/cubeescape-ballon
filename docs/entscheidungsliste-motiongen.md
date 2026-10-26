@@ -275,7 +275,7 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 
 | Schritt | Inhalt | Antworten | Art | Sperre | Voraussetzung |
 |---|---|---|---|---|---|
-| 1 | **Unity-Abgleich:** Kadenz 720/min, Sway kritisch gedämpft, Schuss-Ring und Treffer-X in Orange, Test Nachlade-Abbruch vor und nach `MagIn`, Herkunft von `inspect` berichtigt | 7.1, 3.3, 4.3, 6c, 6.2 | Patch | unity | – |
+| 1 | **Unity-Abgleich:** Kadenz 720/min, Sway kritisch gedämpft, Schuss-Ring und Treffer-X in Orange, Test Nachlade-Abbruch vor und nach `MagIn`, Herkunft von `inspect` berichtigt | 7.1, 3.3, 4.3, 6c, 6.2 | Patch | unity | – · **erledigt** (Patch unity-abgleich, Messwerte in [unity.md](unity.md) › Tests) |
 | 2 | **Messen:** ein Ego-Still je Haltung mit Mittenkreuz (Hüftlage, Scout-Ring), Unity-Aufnahme `feel` für Sprint-Hub und Zoom-Timing; Werte in diese Datei und `data/review.json` | 1a, 1d, 2.1, 3.1 | Patch (nur Messung) | gpu, unity | – |
 | 3 | **Weltzoom und Hüft-Fadenkreuz:** Weltzoom Scout 2,0 / Handfeuerwaffe ≈ 1,15 / MP 1,45; neue Hüftformen im Katalog `reticles.py`; ausblendendes Hüft-Fadenkreuz in Unity (Hüfte, Sprint, Zielen, Nachladen, Ziehen) | 1.2, 4.1, 4.2 | Version | unity | 1 |
 | 4 | **Bewegung:** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` ≈ 0,25 s und leerer Sicht, Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips danach neu rendern (Nachtlauf) | 2.1, 3.1, 6.1, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
@@ -286,6 +286,10 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 
 Zwischen den Schritten: die Rückfrage an Motiongen zu den Widersprüchen 3 und 4 (über Sightline). Nach der Antwort entscheidet BASIC
 über den HUD-Punkt aus 4.3; das ist keine neue Nutzerfrage, solange Motiongen den Punkt im Spielbild belegt oder widerlegt.
+
+Befund aus Schritt 1 (für Schritt 4): Der Clip `fire_hip` hat die Herkunft „M 720/min ≈ 1 Schuss je 2,5 Bilder“, seine Schussbilder
+`fire` liegen aber 2 Bilder auseinander (13 Schüsse in Bild 2–25, ≈ 940/min; `fire_ads` gleich). Unity schießt live mit 720/min aus
+`gameplay.rpm`; die Schussbilder des Clips beim nächsten Rendern der Ego-Clips auf 2,5 Bilder (abwechselnd 2 und 3) setzen.
 
 [visiere]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/visiere.md
 [proportionen]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/proportionen.md

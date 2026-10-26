@@ -95,7 +95,7 @@ ACTIONS = {
                             (80, ('inspect_r', dict(roll=8))), (94, 'hip'), (96, 'hip')],
                     L=[(0, 'support'), (40, 'support'), (48, OFF_L), (84, OFF_L), (94, 'support'), (96, 'support')],
                     fL=[(0, 'underhand'), (42, 'open'), (50, 'relaxed'), (86, 'open'), (94, 'underhand')],
-                    events=[(16, 'Start'), (94, 'End')], src='E nach Destiny-Inspektion (Ego-Seite, dann Oberseite)'),
+                    events=[(16, 'Start'), (94, 'End')], src='E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect'),
     'sprint': dict(de='Sprint: Beginn, Schleife, Ende', frames=48, weapon=[(0, 'hip'), (8, 'sprint'), (38, 'sprint'), (48, 'hip')],
                    bob=dict(start=8, end=38, period=19, amp=(0.012, 0.010), roll=3.5, shape='u'), events=[(8, 'SprintLoop'), (48, 'Ready')],
                    src='E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: '

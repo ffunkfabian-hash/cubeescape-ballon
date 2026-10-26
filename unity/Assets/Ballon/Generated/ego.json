@@ -26,7 +26,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "64c1ea3d13acc12d741b64cc38b28dab474a498620cb4105d3b8ae25872f256a"
+    "sha256": "79306ac3a366ecec1d1b9e41d087fec058e5e8ab97463c27bee244d59bd27327"
    },
    {
     "path": "tools/ego_build.py",
@@ -38,7 +38,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "10addb16eb7bfc78f86142705076acf45d3c9fd02e7c87fe8d4df187ad22ed26"
+    "sha256": "d7f85b4fc6a860d0e14f59eaa40e73984c5a2354e0ca6696a17bac43ae33b1f9"
    },
    {
     "path": "tools/bake_unity.py",
@@ -110,9 +110,9 @@
   "near_m": 0.03
  },
  "gameplay": {
-  "rpm": 600,
+  "rpm": 720,
   "magazine": 30,
-  "src": "E (Vorschlag Übergabe 0.4: 600/min, 30 Patronen; noch nicht vom Nutzer festgelegt)"
+  "src": "M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip folgt beim nächsten Rendern; Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)"
  },
  "weapon": {
   "id": "BASIC-01-v2.1",
@@ -4738,7 +4738,7 @@
    "de": "Betrachten",
    "frames": 120,
    "time_scale": 1.25,
-   "src": "E nach Destiny-Inspektion (Ego-Seite, dann Oberseite)",
+   "src": "E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect",
    "weapon": [
     {
      "f": 0.0,

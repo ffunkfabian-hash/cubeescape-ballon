@@ -325,11 +325,30 @@ namespace Ballon.Ego
             .Add(5.4f, 6.8f, hold: "sprint", move: new Vector2(0, 1))          // Sprint
             .Add(6.8f, 8.2f, hold: "aim")                                      // Sprint → Zielen
             .Add(8.2f, 9.0f);
+
+        /// <summary>Pendeln (Frage 3.3): schnelle Drehung rechts, Ruhe, schnelle Drehung zurück, Ruhe – Rückkehr ohne Überschwingen.</summary>
+        public static ScriptedInput SwayScript() => new ScriptedInput()
+            .Add(0.0f, 0.5f)
+            .Add(0.5f, 0.8f, lookPerS: new Vector2(360, 0))
+            .Add(0.8f, 1.8f)
+            .Add(1.8f, 2.1f, lookPerS: new Vector2(-360, 0))
+            .Add(2.1f, 3.2f);
+
+        /// <summary>Rückmeldung (Fragen 4.3, 7.1): Hüftschuss (nur Treffer-X), im Zielen Einzelschuss und Feuerstoß mit 720/min.</summary>
+        public static ScriptedInput FeedbackScript() => new ScriptedInput()
+            .Add(0.0f, 0.4f)
+            .Add(0.4f, 0.43f, hold: "fire")
+            .Add(0.9f, 3.4f, hold: "aim")
+            .Add(1.6f, 1.63f, hold: "aim fire")
+            .Add(2.2f, 2.75f, hold: "aim fire")               // 7 Schüsse: 1 + 1 + 7 = 9 Patronen der Aufnahme
+            .Add(3.4f, 4.0f);
+
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
             Player.hud = false;
-            var demo = Arg(Environment.GetCommandLineArgs(), "-ballonDemo") == "feel" ? FeelScript() : DemoScript();
+            string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
+            var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = 9;
@@ -345,6 +364,7 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
+            else if (dn == "sway" || dn == "treffer") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
@@ -360,8 +380,11 @@ namespace Ballon.Ego
                 Player.Step(dt);
                 yield return new WaitForEndOfFrame();
                 ReadBack(rt, tex);
+                Player.StampFeedback(tex);
                 File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), tex.EncodeToPNG());
                 File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{Player.C.ammo}\n");
+                File.AppendAllText(Path.Combine(dir, "feedback.csv"), FormattableString.Invariant(
+                    $"{i},{Player.C.SwayDeg.x:0.000},{Player.C.SwayDeg.y:0.000},{(Player.ShotRingVisible ? 1 : 0)},{(Player.HitXVisible ? 1 : 0)},{Player.hits}\n"));
             }
             File.WriteAllLines(Path.Combine(dir, "markers.csv"), markers);
             Debug.Log($"[Ballon] Aufnahme: {n} Bilder in {dir}");

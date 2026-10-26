@@ -20,6 +20,8 @@ python3 tools/unity_run.py test             # EditMode + PlayMode
 python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (Entwicklungsbuild)
 python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + Kontaktbogen
 python3 tools/unity_run.py feel             # MP4 Bewegungsgefühl: Sprint, Zielen aus dem Stand, Sprint → Zielen (0.10)
+python3 tools/unity_run.py sway             # MP4 Pendeln: schnelle Drehung hin und zurück, Werte je Bild in feedback.csv
+python3 tools/unity_run.py treffer          # MP4 Rückmeldung: Hüftschuss, im Zielen Einzelschuss und Feuerstoß (Ring, Treffer-X)
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
@@ -40,7 +42,7 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 | Maus | umsehen (0,08°/Punkt, im Zielen durch den Zoom geteilt; nicht invertiert) |
 | W A S D, Shift | gehen, sprinten (nur vorwärts, nicht im Zielen oder beim Feuern) |
 | Strg oder C, Leertaste | ducken, springen |
-| linke Maustaste | Dauerfeuer, 600/min; Abzug bei leerem Magazin lädt selbst nach |
+| linke Maustaste | Dauerfeuer, 720/min wie der Clip `fire_hip` (Frage 7.1 A); Abzug bei leerem Magazin lädt selbst nach |
 | rechte Maustaste | zielen (Welt-FOV × 1/1,35, Viewmodel bleibt bei 75° horizontal) |
 | R | nachladen: taktisch bei Restmunition, sonst leer (mit Durchladen) |
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
@@ -54,7 +56,11 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 Der Parcours ist grau: Boden mit Meterraster, Wände, Brüstung, Deckungen, Rampe mit Podest, Treppe, ein niedriger Durchgang
 zum Ducken und Säulen zum Testen der Wandnähe (`lowered`). Zielscheiben stehen in 10, 25 und 50 m, je drei. Treffer zählt die
 Anzeige oben links, Einschläge bleiben als Punkte sichtbar. Ein ständiges Fadenkreuz gibt es seit 0.10 nicht mehr (Nutzerwunsch
-25.10.2026). Gezielt wird über das Visier, nur ein Treffer zeigt kurz (0,12 s) eine orange Marke in der Mitte.
+25.10.2026). Gezielt wird über das Visier. Rückmeldung nach Visier-Standard 3 §6 (Frage 4.3 A, `AdsFeedback` in `EgoPlayer.cs`):
+im Zielen zeigt jeder Schuss für ein Bild einen weißen Ring (2 % der Bildhöhe), jeder Treffer ein X mit freier Mitte (4,5 % H,
+mindestens 0,17 s) in Familienfarbe Orange `#E0651E` statt Destiny-Rot; aus der Hüfte nur das X. Der HUD-Punkt (1,1 % H) wartet,
+bis Motiongen Widerspruch 3 klärt. Die Werte stehen in `reticles.ADS_FEEDBACK` und als Konstanten in C# (kein Feld in `ego.json`,
+sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich mit `ADS_FEEDBACK` und der Akzentfarbe. Aufnahmen stempeln Ring und X ins Bild, weil `OnGUI` nicht in der Render-Textur liegt.
 
 ## Aufbau
 
@@ -92,7 +98,9 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
 - Das Gehwippen folgt der Laufgeschwindigkeit, mit den Werten aus `walk`/`sprint`.
 - Das Atmen nutzt `BREATHE_ALL`, dazu in Ruhe die `idle_hip`-Formel.
 - Der Feder-Nachlauf `SECONDARY` läuft in Echtzeit über alle Spurwechsel.
-- Das Pendeln aus der Maus ist eine eigene gedämpfte Feder (entworfen).
+- Das Pendeln aus der Maus ist dieselbe Feder wie Feder-Nachlauf und Visier-Anflug (`EgoSolver.SpringStep`), seit dem Patch
+  unity-abgleich kritisch gedämpft (2,5 Hz, ζ 1; vorher 9 Hz, ζ 0,55 mit 0,22° Überschwingen bei 60/s, 0,30° bei 30/s): Die Waffe zieht höchstens 3°
+  gegen die Drehung nach und kehrt in ≈ 0,3 s ohne Überschwingen zurück wie in Destiny (Frage 3.3 A).
 
 Spielwerte, die nicht aus Blender kommen, stehen in `EgoTuning` und `MoveTuning`: Laufgeschwindigkeiten, Zoom, Streuung,
 Pendeln und Blickhochziehen. Alle sind entworfen.
@@ -113,6 +121,10 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | `Zielen_live_ohne_Ueberschwingen` (0.10) | Live-Controller: Zielen aus der Hüfte, Überschwingen am `Socket_Reticle` < 0,3°, Rest nach 0,45 s < 1°; Messwerte im Testprotokoll |
 | `Sprint_live_im_Destiny_Rhythmus` (0.10) | Live-Sprint: 2,9–3,4 Hochpunkte/s, U-Bogen (oben an den Seitenumkehren); Messwerte im Testprotokoll |
 | `Zielen_landet_ohne_Ueberschwingen`, `Sprintschritt_wie_ein_Laeufer` (EditMode, 0.10) | Skriptpfad wie Blender: `aim_in`, `sprint_to_aim`, `draw_aim` ohne Überschwingen (< 0,3°), Rest am Ende < 1,5°; Sprintdaten 2,9–3,4 Schritte/s mit U-Bogen |
+| `Kadenz_720_wie_fire_hip` (Patch unity-abgleich) | `gameplay.rpm` 720 mit Herkunft M; live bei 60/s 12 Schüsse in 1 s, Bildabstand 4–6 (Mittel 5), Kadenz 720 ± 15 /min |
+| `Pendeln_kehrt_ohne_Ueberschwingen_zurueck` (Patch unity-abgleich) | 360°/s für 0,3 s, Gieren des Laufs gegen einen Zwilling ohne Maus: Auslenkung 0,5–3°, Überschwingen < 0,02°, Rückkehr unter 5 % in 0,22–0,4 s |
+| `Nachlade_Abbruch_vor_und_nach_MagIn` (Patch unity-abgleich) | taktisch und leer: Wegstecken 0,1 s vor `MagIn` lässt die Munition (5 bzw. 0), 0,1 s danach ist das Magazin voll und bleibt es nach dem Ziehen |
+| `Schuss_Ring_und_Treffer_X` (Patch unity-abgleich) | Spieler in der Szene, Scheibe 3 m vor dem Auge: Hüftschuss ohne Ring, Schuss im Zielen mit Ring für genau 1 Bild, Treffer-X 0,17–0,25 s, Größen 2 % / 4,5 % H, Orange `#E0651E` |
 | `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife: kein Speicher im laufenden Bild |
 | `Wandnaehe_im_Parcours_senkt_die_Waffe` | vor Säule 1 senkt sich die Waffe (`lowered`), im Freien zurück zur Hüfte |
 | `Szene_startet_und_spielt_den_Ablauf` | Szene lädt, Viewmodel-Ebene, Vorführablauf feuert, lädt leer nach, betrachtet |

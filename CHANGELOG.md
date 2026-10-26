@@ -11,6 +11,9 @@
 - Patch: Entscheidungsliste Motiongen REF 0.14–0.28 ([docs/entscheidungsliste-motiongen.md](docs/entscheidungsliste-motiongen.md)):
   20 Nutzerantworten vom 25.10.2026 in 8 Blöcken, acht Glidepath-Widersprüche mit dem Wert, den BASIC bis zur Klärung nutzt,
   und eine Umsetzungsreihenfolge in 8 Schritten. Nichts gebaut oder gerendert.
+- Patch: Unity-Abgleich (Entscheidungsliste Schritt 1): Kadenz 720/min wie `fire_hip`, Pendeln kritisch gedämpft (Rückkehr 0,30 s,
+  kein Überschwingen), Schuss-Ring und Treffer-X in Orange nach Visier-Standard 3 §6 (ohne HUD-Punkt), Test Nachlade-Abbruch vor/nach
+  `MagIn`, Herkunft `inspect` „Apex/CoD-Muster“. Vier neue PlayMode-Tests; Belege `unity_run.py sway|treffer`.
 
 ## 0.6.0 „Riflekin“ – unveröffentlicht (lokal, in Arbeit)
 
