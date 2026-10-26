@@ -7,7 +7,7 @@ name: check
 
 on:
   push:
-    branches: [claude/basic-first-light]
+    branches: [main]
     paths-ignore: ["**.md", "docs/**", ".claude/**", ".agents/**"]
   pull_request:
     paths-ignore: ["**.md", "docs/**", ".claude/**", ".agents/**"]
