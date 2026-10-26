@@ -163,7 +163,7 @@ def build_arm(side):
 
 # ------------------------------------------------------------------ Waffe positionieren
 def pose_matrix(W, name, off=None):
-    P = EG.POSES[name]
+    P = EG.profile(W)['poses'][name]                      # Haltungen der Klasse (0.18, ego.CLASSES)
     if 'eye' in P:
         d = Vector(P['aim_dir']).normalized()
     else:
@@ -282,8 +282,11 @@ def secondary(R, pos, f, state, aim=False):
 PALM_CENTER = Vector((0, -RA.PALM_T / 2, RA.PALM_START + RA.PALM_LEN / 2)) * MM
 
 
+GRIPS = EG.GRIPS          # Griffe der Waffe in der Szene (Scene setzt sie aus ego.profile, 0.18); ohne Szene die der Pilotwaffe
+
+
 def grip_hand(gname, part_world, offset=None):
-    G = EG.GRIPS[gname]
+    G = GRIPS[gname]
     M = part_world(G.get('part'))
     c = M @ kit.to_xyz(*G['contact'])
     if offset:
@@ -310,7 +313,7 @@ def blend_hand(keys, f, part_world):
 
 def blend_fingers(keys, f):
     def flat(n):
-        P = RA.FINGER_POSES[n]
+        P = EG.FINGER_POSES[n]
         return [x for fi in P['f'] for x in fi] + list(P['t'])
     v = curve([k[0] for k in keys], [flat(k[1]) for k in keys], f)
     nf, nl = len(RA.FINGER_X), len(RA.FINGER_LINKS)
@@ -458,8 +461,11 @@ def fx_eval(sc, A, f, state):
 # ------------------------------------------------------------------ Szene
 class Scene:
     def __init__(self, W, o):
+        global GRIPS
         kit.reset_scene()
         self.W = W
+        self.P = EG.profile(W)                                  # Ego-Profil der Waffe: Haltungen, Aktionen, Griffe, Live-Teile (0.18)
+        GRIPS = self.P['grips']
         self.root, self.objs, self.anchors = kit.build(W)
         bpy.context.view_layer.update()
         for ob in self.objs.values():
@@ -568,9 +574,10 @@ def evaluate(sc, A, f, report, state):
         cam_pitch = rc['cx'].x
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
-        mech['trigger'] = 1.0 if A['fire'][0] - 1 <= f <= A['fire'][-1] + 1 else 0.0
-        mech['bolt_carrier'] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
-        mech['port_cover'] = 1.0 if shots else 0.0
+        live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
+        mech[live['trigger']] = 1.0 if A['fire'][0] - 1 <= f <= A['fire'][-1] + 1 else 0.0
+        mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
+        mech[live['port']] = 1.0 if shots else 0.0
     R2 = R @ off_rot
     pos2 = pos + off_pos
     # Magazin: fallen (leer) oder in der linken Hand
@@ -596,7 +603,8 @@ def evaluate(sc, A, f, report, state):
             carry = HL @ state['rel']
     if carry is not None or drop is not None:
         sc.set_weapon(R2, pos2, mech, report, carry=carry, drop=drop)
-    fps = {'L': blend_fingers(A.get('fL', [(0, 'underhand')]), f), 'R': blend_fingers(A.get('fR', [(0, 'trigger')]), f)}
+    # Standbilder ohne fL: Fingerstellung des Stützgriffs (Pilotwaffe underhand, MP foregrip)
+    fps = {'L': blend_fingers(A.get('fL', [(0, GRIPS['support']['fingers_pose'])]), f), 'R': blend_fingers(A.get('fR', [(0, 'trigger')]), f)}
     sc.hands({'L': HL, 'R': HR}, fps, report)
     sc.cam.matrix_world = sc.cam_base @ Matrix.Rotation(math.radians(cam_pitch), 4, 'X')
     fx_eval(sc, A, f, state)
@@ -631,12 +639,12 @@ def main():
                 bpy.ops.render.render(write_still=True)
             scn.camera = sc.cam
             R, pos = pose_matrix(W, name)
-            meta['poses'][name] = dict(socket_hand_m=[round(v, 4) for v in pos], src=EG.POSES[name]['src'],
+            meta['poses'][name] = dict(socket_hand_m=[round(v, 4) for v in pos], src=sc.P['poses'][name]['src'],
                                        wrist_bend_max_deg=round(rep.get('wrist_max_deg', 0), 1), overreach=rep.get('overreach', 0))
     scn.render.resolution_x, scn.render.resolution_y = 854, 480
     scn.cycles.samples = o['samples']
     for name in o['actions']:
-        A = EG.ACTIONS[name]
+        A = sc.P['actions'][name]
         d = os.path.join(out, name)
         os.makedirs(d, exist_ok=True)
         rep, state = {}, {}

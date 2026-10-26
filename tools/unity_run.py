@@ -5,11 +5,13 @@
   python3 tools/unity_run.py test       → EditMode- und PlayMode-Tests (JUnit-XML + Kurzfassung)
   python3 tools/unity_run.py build      → macOS-Entwicklungsbuild unity/Build/BallonFirstfeel.app
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
-  python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR)
+  python3 tools/unity_run.py compare [n] → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR); n = Waffe
+      (Taste, 0.18; Blender-Stills aus BALLON_BLENDER_STILLS, sonst <EV>/blender_out/<Waffe>/ego/stills)
   python3 tools/unity_run.py sway|treffer → Belege Pendeln bzw. Schuss-Ring/Treffer-X (MP4, Kontaktbogen, feedback.csv)
   python3 tools/unity_run.py huefte    → Beleg Hüft-Fadenkreuz (0.13): Hüfte, Feuer, Zielen, Sprint, Nachladen (MP4, feedback.csv)
   python3 tools/unity_run.py sprint|wechsel|rueckstoss → Belege 0.15: Sprint-Hub und Sprint → Zielen, Waffenwechsel, Rückstoß im Zielen
   python3 tools/unity_run.py feuer → Beleg 0.16: Mündungsfeuer und Hülsen aus der Hüfte und im Zielen
+  python3 tools/unity_run.py quickdraw → Beleg 0.18: Automatik Hüfte/Zielen, Taste 2 → MP, MP Hüfte/Zielen/Sprint
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
@@ -30,7 +32,6 @@ EV = os.environ.get('BALLON_UNITY_EVIDENCE', os.path.expanduser('~/Library/Cache
 APP = os.path.join(PROJ, 'Build', 'BallonFirstfeel.app')
 # frische Blender-Stills für den Vergleich (eigener Ausgabeort, damit fremde Renderings unberührt bleiben):
 #   BASIC_OUT=<EV>/blender_out ce lock gpu -- blender -b --factory-startup -P <abs>/tools/ego_build.py -- --stills --gpu
-BLENDER_STILLS = os.path.join(EV, 'blender_out', 'BASIC-01-v2.1', 'ego', 'stills')
 CE = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
 FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 
@@ -102,7 +103,9 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'sprint': 'BALLON 0.15 Plumb · Unity · Sprint-Hub ≈ 10 % H / 13 % B (3,16 Hz), Sprint → Zielen: Zoom mit dem Modell',
          'wechsel': 'BALLON 0.15 Plumb · Unity · Waffenwechsel (Q): Wegstecken 0,27 s, leere Sicht, Ziehen mit Nachfedern',
          'rueckstoss': 'BALLON 0.15 Plumb · Unity · Rückstoß: Hüfte, im Zielen Viererstöße und 12er-Stoß – Welt wandert, Visier steht',
-         'feuer': 'BALLON 0.16 Flash · Unity · Mündungsfeuer (1 Bild bei 30/s) und Hülsen: Hüfte und Zielen'}
+         'feuer': 'BALLON 0.16 Flash · Unity · Mündungsfeuer (1 Bild bei 30/s) und Hülsen: Hüfte und Zielen',
+         'quickdraw': 'BALLON 0.18 Quickdraw · Unity · Automatik → Taste 2 → MP: Hüfte, Zielen (Anflug 4d), Sprint (tief, nach links gerollt)'}
+WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1'}          # Taste → Waffe (tools/export_unity.WEAPONS)
 
 
 def capture(scene=None, demo=None):
@@ -246,16 +249,17 @@ def metrics(u, b, mask=None):
     return res
 
 
-def compare(extra=()):
-    d = os.path.join(EV, 'compare')
+def compare(extra=(), weapon=1):
+    d = os.path.join(EV, 'compare' + ('' if weapon == 1 else f'_{weapon}'))
     shutil.rmtree(d, ignore_errors=True)
-    rc = player(['-ballonCompare', d] + list(extra), os.path.join(EV, 'compare.log'))
+    rc = player(['-ballonCompare', d, '-ballonWeapon', str(weapon)] + list(extra), os.path.join(EV, 'compare.log'))
+    stills = os.environ.get('BALLON_BLENDER_STILLS') or os.path.join(EV, 'blender_out', WEAPONS[weapon], 'ego', 'stills')
     if rc:
         return rc
     tiles, mets = [], {}
     for pose in ('hip', 'ads', 'reload', 'inspect_r'):
         u = os.path.join(d, f'{pose}_unity.png')
-        b = os.path.join(BLENDER_STILLS, f'{pose}_ego.png')
+        b = os.path.join(stills, f'{pose}_ego.png')
         if not (os.path.exists(u) and os.path.exists(b)):
             print('fehlt:', u if not os.path.exists(u) else b)
             continue
@@ -270,9 +274,9 @@ def compare(extra=()):
               f"SSIM (Ausschnitt) {m.get('vm_ssim_box')}, Helligkeit {m.get('vm_lum_unity')} / {m.get('vm_lum_blender')}")
         tiles += ['-label', f'{pose} · Blender (Cycles)', b, '-label', f"{pose} · Unity (URP) · SSIM {m['ssim']}", u,
                   '-label', f'{pose} · Blender-Kanten über Unity', edge]
-    sheet = os.path.join(EV, 'firstfeel_vergleich.png')
+    sheet = os.path.join(EV, 'firstfeel_vergleich.png' if weapon == 1 else f'firstfeel_vergleich_{WEAPONS[weapon]}.png')
     subprocess.run(['magick', 'montage', *tiles, '-tile', '3x', '-geometry', '600x338+3+3', '-pointsize', '14', '-background', '#9EA4AC',
-                    '-title', 'BALLON 0.4 · Standbildvergleich Blender gegen Unity (gleiche Haltung, Kamera 75° horizontal)', sheet],
+                    '-title', f'BALLON · {WEAPONS[weapon]} · Standbildvergleich Blender gegen Unity (gleiche Haltung, Kamera 75° horizontal)', sheet],
                    check=True)
     json.dump(mets, open(os.path.join(d, 'metrics.json'), 'w'), indent=1)
     print('Vergleich →', sheet)
@@ -331,6 +335,8 @@ if __name__ == '__main__':
         rc = player(['-ballonBench', f] + (['-ballonScene', sc] if sc else []), os.path.join(EV, 'bench.log'))
         print(open(f).read() if os.path.exists(f) else 'keine Messung')
         sys.exit(rc)
-    if a == 'compare':
-        sys.exit(compare(sys.argv[2:]))
+    if a == 'compare':                     # compare [n] [Zusatzargumente der Build]
+        rest = sys.argv[2:]
+        n = int(rest.pop(0)) if rest and rest[0].isdigit() else 1
+        sys.exit(compare(rest, n))
     print(__doc__)

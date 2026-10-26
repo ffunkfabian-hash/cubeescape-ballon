@@ -823,5 +823,133 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-T01-v2.1/ (views/, views_e1, views_e2, motion/, .blend, .glb, Spec) und ~/Library/Caches/CubeEscapeBallon/gateway/ (Kontaktbögen, Turntable, Skizzen); views_r1–r3 gehören zum verworfenen Entwurf A"
     ]
+  },
+  "BASIC-06-v2.1-ego": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude (0.18 Quickdraw)",
+      "date": "2026-10-26",
+      "method": "Standbilder ego/stills (Ego- und Außenansicht) aller Haltungen, neu gerendert mit dem Faustgriff; Mittenkreuz: Hüfte Mündung 58,0/62,9 %, Absehen 65,5/60,0 %; Sprint Mündung 42,9/79,9 %, Absehen 52,0/72,0 %; Handgelenk ≤ 45°"
+    },
+    "actions": {
+      "idle_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Hüfte der Klasse: Mündung 58,0/62,9 %, Lauf fast in Blickrichtung, linker Unterarm von unten-mittig wie Destiny"
+      },
+      "draw": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; kommt von unten rechts in die MP-Hüfte, Ready Bild 18"
+      },
+      "holster": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; ab Bild 4 nur Kante am unteren Rand, Bild 8 leer"
+      },
+      "aim_in": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; 3 Bilder, Holo mittig in Bild 3, kein Überschwingen"
+      },
+      "aim_out": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; 2,4 Bilder, Ready Bild 2"
+      },
+      "fire_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Blitz und Kurzpatronen-Hülsen nach rechts"
+      },
+      "fire_ads": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Blitz ≈ 14 % der Holo-Öffnung, Visier steht"
+      },
+      "reload_tactical": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; linke Hand zieht das Magazin unter dem Griffboden, setzt es ein, Faust zurück am Vordergriff"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; wie taktisch, dann Ladehebel; beim Durchladen ragt der Schaft groß ins Bild (Bild 50)"
+      },
+      "inspect": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Ego-Seite und Oberseite, Daumen bleibt eingerollt"
+      },
+      "sprint": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; tief, Oberseite nach links (+40°), Wippen wie die Automatik"
+      },
+      "lowered": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; gesenkt; der kurze Schaft ragt groß ins rechte Bild (Bild 10–22)"
+      },
+      "walk": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; liegende Acht, ruhig"
+      },
+      "crouch": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; leicht tiefer, gerollt"
+      },
+      "jump_land": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Anheben, Landefeder"
+      },
+      "sprint_to_aim": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; aus der tiefen Trageform direkt ins Visier, Aimed Bild 12"
+      },
+      "sprint_to_fire": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; in die Hüfte, Schuss ab Bild 7"
+      },
+      "draw_aim": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Ziehen, dann ins Visier (Aimed Bild 30)"
+      },
+      "reload_to_switch": {
+        "status": "geprüft",
+        "by": "Claude (0.18 Quickdraw)",
+        "date": "2026-10-26",
+        "method": "Ego-Clip 0.18 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-06-v2.1_<aktion>.png); Stützhand Faust foregrip am Vordergriff; Abbruch nach dem Magazingriff, Wegstecken bis Bild 35"
+      }
+    },
+    "notes": [
+      "Daumen (Nutzerhinweis 26.10.2026): mit underhand stand er über dem Vorbau; drei Proben, Nutzerwahl „oben links“ = Faust, Daumen hinter dem Griff",
+      "Gesenkte Haltung und Durchladen: der kurze Schaft der MP ragt groß ins Bild – Haltungen lowered/reload sind gemeinsam mit der Automatik (nur an die Hüfte gehängt), eigene MP-Werte offen"
+    ]
   }
 }

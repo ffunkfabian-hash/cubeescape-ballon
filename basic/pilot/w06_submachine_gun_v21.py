@@ -141,6 +141,25 @@ ANCHORS = {
     'Socket_Charge': dict(at=(-60, 97, 25), part='charging_handle', note='Griffpunkt Ladehebel für die Stützhand'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
+# Hülsenauswurf (0.18, wie BASIC-01 seit 0.16): Mitte des Auswurffensters unter der Klappe port_cover (rechts), Kurzpatrone, nach rechts,
+# etwas hoch und vorn
+EJECT = dict(at=(55, 87, -20), dir=(0.3, 0.4, -1.0), case='pistol',
+             src='E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)')
+# Ego-Griffe (0.18, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. contact = Mitte der Handfläche auf der
+# Oberfläche, palm = Richtung in das Bauteil, fingers = Fingerrichtung; part = Bauteil, an dem der Griff hängt.
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(226, 16, 14.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.12, 0.0), fingers_pose='foregrip',
+                    finger_map=dict(open='foregrip_open'),       # beim Lösen und Greifen bleibt der Daumen eingerollt
+                    src='E links am Vordergriff, Faust um den Griff, Daumen hinter dem Griff unter dem Vorbau (ego.FINGER_POSES foregrip; 0.18 nach '
+                        'Nutzerhinweis: mit underhand stand der Daumen über dem Vorbau)'),
+    'mag':     dict(part='magazine', contact=(-24, -96, 12.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0), fingers_pose='mag_hold',
+                    src='E links am Magazin unter dem Griffboden, Hand greift von unten hinten (wie die Pilotwaffe)'),
+    'charge':  dict(part='charging_handle', contact=(-60, 88, 28), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Ladehebel links (Socket_Charge), wie die Pilotwaffe'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer
 ACTIONS = {
     'fire_auto': dict(de='Dauerfeuer (Verschluss, Auswurfklappe)', frames=24, step=1, keys={
         'trigger': [(0, 0), (2, 1), (20, 1), (23, 0)], 'port_cover': [(0, 0), (3, 1), (24, 1)],

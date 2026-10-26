@@ -2,10 +2,12 @@
 
   python3 tools/make_ego.py clips   [Waffe]   → <EVIDENCE>/clips/ego_<waffe>_<aktion>.mp4 (854 × 480, Marker eingeblendet)
   python3 tools/make_ego.py sheets  [Waffe]   → <EVIDENCE>/ego_<waffe>_<aktion>.png (Start, Marker, Ende) – Grundlage der Sichtung
-  python3 tools/make_ego.py docs    [Waffe]   → docs/ego.md (Haltungen, Aktionen, Marker, Gelenkprüfung, Sichtung)
-  python3 tools/make_ego.py --check           → Ego-Daten konsistent (Haltungen, Griffe, Fingerstellungen, Matrixzeilen)
-Standardwaffe: BASIC-01-v2.1 (Pilot).
+  python3 tools/make_ego.py docs              → docs/ego.md (je spielbarer Waffe: Klassenwerte mit Herkunft, Haltungen, Aktionen, Marker,
+                                               Gelenkprüfung, Sichtung)
+  python3 tools/make_ego.py --check           → Ego-Daten konsistent (Haltungen, Griffe, Fingerstellungen, Matrixzeilen) je Waffe
+Standardwaffe: BASIC-01-v2.1 (Pilot). Waffen mit Ego-Daten: tools/export_unity.WEAPONS; Aktionen und Haltungen je Klasse (ego.profile).
 """
+import importlib
 import glob
 import json
 import os
@@ -17,6 +19,16 @@ sys.path.insert(0, ROOT)
 from tools.paths import OUT, EVIDENCE  # noqa: E402
 from basic.arms import ego as EG, robot_arm as RA  # noqa: E402
 from basic import matrix  # noqa: E402
+from tools.export_unity import WEAPONS  # noqa: E402
+
+
+def module(wid):
+    """Waffenmodul zu einer Waffen-ID (BASIC-06-v2.1) unter den spielbaren Waffen."""
+    for m in WEAPONS:
+        W = importlib.import_module(f'basic.{m}')
+        if EG.weapon_id(W) == wid:
+            return W
+    raise KeyError(f'{wid}: keine spielbare Waffe (tools/export_unity.WEAPONS)')
 
 FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 BG = '#9EA4AC'
@@ -30,7 +42,7 @@ def clips(wid):
     dst = os.path.join(EVIDENCE, 'clips')
     os.makedirs(dst, exist_ok=True)
     made = {}
-    for act, A in EG.ACTIONS.items():
+    for act, A in EG.profile(module(wid))['actions'].items():
         fr = frames_of(wid, act)
         if not fr:
             continue
@@ -67,7 +79,7 @@ def clips(wid):
 def sheets(wid):
     tmp = os.path.join(EVIDENCE, '_ego_tiles')
     os.makedirs(tmp, exist_ok=True)
-    for act, A in EG.ACTIONS.items():
+    for act, A in EG.profile(module(wid))['actions'].items():
         fr = frames_of(wid, act)
         if not fr:
             continue
@@ -86,37 +98,81 @@ def sheets(wid):
     print('Kontaktbögen in', EVIDENCE)
 
 
-def docs(wid):
-    mp = os.path.join(OUT, wid, 'ego', 'ego.json')
-    M = json.load(open(mp, encoding='utf-8')) if os.path.exists(mp) else dict(poses={}, actions={})
-    rv = json.load(open(os.path.join(ROOT, 'data', 'review.json'), encoding='utf-8')).get(f'{wid}-ego', {}).get('actions', {})
+def _src_table(W):
+    """Klassen- und Spielwerte einer Waffe mit Herkunft (M gemessen, E entworfen, T Toolgen, S Sekundärquelle)."""
+    P = EG.profile(W)
+    from tools import export_unity as XU
+    G = XU.gameplay(P['type'])
+    C = EG.CLASSES[P['type']]
+    H = G['hip']
+    rows = [('Klasse', P['type'], P['src']),
+            ('Kadenz', f"{G['rpm']}/min", G['src']), ('Magazin', str(G['magazine']), G['src']),
+            ('Weltzoom im Zielen', f"{G['world_zoom']:g}", 'M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM)'),
+            ('Hüft-Fadenkreuz', f"{H['kind']} {H['share_h'] * 100:.1f} % H", f"{H['status']} (4.1 A / 4.2 A, basic/reticles.py › HIP)"),
+            ('Sprint-Fadenkreuz', H['sprint']['kind'] or 'aus', 'basic/reticles.py › HIP.sprint (4.1 A)')]
+    for k in C['poses']:
+        q = P['poses'][k]
+        rows.append((f'Haltung `{k}`', f"Socket_Hand {list(q['pos'])}, Ziel {list(q['aim'])}, Rollen {q['roll']}°", q['src']))
+    for k in EG.FOLLOW_HIP:
+        if 'hip' in C['poses'] and k not in C['poses']:
+            q = P['poses'][k]
+            rows.append((f'Haltung `{k}`', f"Socket_Hand {list(q['pos'])}, Rollen {q['roll']}°", q['src']))
+    for k, n in C['frames'].items():
+        rows.append((f'Dauer `{k}`', f"{n:g} Bilder bei 30/s ({n / 30:.3f} s)", C['frames_src']))
+    E = getattr(W, 'EJECT', None)
+    rows += [('Mündungsfeuer', f"{EG.FLASH['dur_s'] * 1000:.0f} ms", EG.FLASH['src']),
+             ('Hülsen', f"{E['case']} ({EG.EJECT['cases'][E['case']]['len_mm']} × {EG.EJECT['cases'][E['case']]['r_mm'] * 2:g} mm)" if E else 'keine',
+              (E['src'] + '; Bahn: ' + EG.EJECT['src']) if E else 'Waffe ohne Feld EJECT'),
+             ('Rückstoß', 'ego.RECOIL (gemeinsam)', ('M Destiny-Automatik: ' if P['type'] == 'auto_rifle' else 'übertragen von der Automatik: ')
+              + 'Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A)'
+              + ('' if P['type'] == 'auto_rifle' else '; Destiny-MP: Kick im Zielen ≤ 1 % H, Kamera-Anstieg < 2 % [M, ein PvP-Clip], '
+                                                       'keine Klassenmessung der Bahn')),
+             ('Sprint-Frequenz', '3,16 / 1,58 Hz (gemeinsam)', 'M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c)'),
+             ('Griffe', ', '.join(P['grips']), 'Modul-Feld EGO_GRIPS' if getattr(W, 'EGO_GRIPS', None) else 'ego.GRIPS (Pilotwaffe)'),
+             ('Live-Teile', ', '.join(f'{k} = {v}' for k, v in P['live'].items()), 'Modul-Feld EGO_LIVE' if getattr(W, 'EGO_LIVE', None) else 'ego.LIVE (Pilotwaffe)')]
+    return ['| Wert | Stand | Herkunft |', '|---|---|---|'] + [f'| {a} | {b} | {c} |' for a, b, c in rows]
+
+
+def docs(_wid=None):
+    rv_all = json.load(open(os.path.join(ROOT, 'data', 'review.json'), encoding='utf-8'))
     clips_j = os.path.join(EVIDENCE, 'clips', 'clips.json')
     clipset = json.load(open(clips_j)) if os.path.exists(clips_j) else {}
+    Ws = [importlib.import_module(f'basic.{m}') for m in WEAPONS]
     L = ['<!-- erzeugt von tools/make_ego.py docs – nicht von Hand ändern -->', '',
-         f'# Ego-Haltungen und Aktionen – {wid}', '',
+         '# Ego-Haltungen und Aktionen', '',
          'Eigenes Roboterarm-Rig (`basic/arms/robot_arm.py`) und Ego-Daten (`basic/arms/ego.py`), getrennt von Toolgen und Cube Escape. '
          'Kamera 75° horizontal (16:9), 30 fps, Kameraraum: rechts −X, vorn −Y, oben +Z. Herkunft: **T** Toolgen-Startwert, '
-         '**M** gemessen an Destiny 2, **E** entworfen. Handgelenk-Ziel 45°, Grenze 55° (Toolgen).', '',
-         '## Haltungen', '', '| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |', '|---|---|---|---|']
-    for k, P in EG.POSES.items():
-        m = M['poses'].get(k, {})
-        wb = f"{m['wrist_bend_max_deg']}°" if 'wrist_bend_max_deg' in m else 'nur in Aktionen geprüft'
-        L.append(f"| `{k}` | {m.get('socket_hand_m', list(P.get('pos', P.get('eye'))))} | {wb} | {P['src']} |")
-    L += ['', '## Aktionen', '', '| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |',
-          '|---|---|---|---|---|---|---|---|']
-    for k, A in EG.ACTIONS.items():
-        m = M['actions'].get(k, {})
-        ev = ', '.join(f'{n} ({f})' for f, n in A.get('events', [])) or '–'
-        clip = f'ego_{wid}_{k}.mp4' if f'ego_{wid}_{k}.mp4' in clipset else 'offen'
-        s = rv.get(k, {})
-        L.append(f"| `{k}` | {A['de']} | {A['frames']} ({A['frames'] / 30:.2f} s) | {ev} | {m.get('wrist_bend_max_deg', 'offen')}° | "
-                 f"{clip} | {s.get('status', 'offen')}{(': ' + s['method']) if s.get('method') else ''} | {A['src']} |")
-    L += ['', '## Abdeckung der Matrixzeilen (Pilot)', '', '| Zeile | durch Aktion | Status |', '|---|---|---|']
-    rows = {r: a for a, rs in EG.ROWS.items() for r in rs}
-    for r, a in rows.items():
-        st = 'dargestellt (mit Händen)' if rv.get(a, {}).get('status') == 'geprüft' else 'offen (nicht gesichtet)'
-        L.append(f'| `{r}` | `{a}` | {st} |')
-    L += ['', 'Clips: `~/Library/Caches/CubeEscapeBallon/evidence/clips/ego_<waffe>_<aktion>.mp4`; Kontaktbögen '
+         '**M** gemessen an Destiny 2, **E** entworfen, **S** Sekundärquelle (Menü, Datenbank). Handgelenk-Ziel 45°, Grenze 55° (Toolgen).', '',
+         'Spielbare Waffen (Taste ' + ', '.join(f'{i + 1} = {EG.weapon_id(W)}' for i, W in enumerate(Ws)) + '). Haltungen, Dauer und '
+         'Spielwerte je Klasse aus `ego.CLASSES` (Entscheidungsliste Schritt 6); was eine Klasse nicht nennt, gilt wie bei der Automatik.', '']
+    for W in Ws:
+        wid = EG.weapon_id(W)
+        P = EG.profile(W)
+        mp = os.path.join(OUT, wid, 'ego', 'ego.json')
+        M = json.load(open(mp, encoding='utf-8')) if os.path.exists(mp) else dict(poses={}, actions={})
+        rv = rv_all.get(f'{wid}-ego', {}).get('actions', {})
+        L += [f'## {wid} – {W.META["name"]} ({P["type"]})', '', '### Klassen- und Spielwerte', ''] + _src_table(W)
+        L += ['', '### Haltungen', '', '| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |', '|---|---|---|---|']
+        for k, Q in P['poses'].items():
+            m = M['poses'].get(k, {})
+            wb = f"{m['wrist_bend_max_deg']}°" if 'wrist_bend_max_deg' in m else 'nur in Aktionen geprüft'
+            L.append(f"| `{k}` | {m.get('socket_hand_m', list(Q.get('pos', Q.get('eye'))))} | {wb} | {Q['src']} |")
+        L += ['', '### Aktionen', '', '| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |',
+              '|---|---|---|---|---|---|---|---|']
+        for k, A in P['actions'].items():
+            m = M['actions'].get(k, {})
+            ev = ', '.join(f'{n} ({f})' for f, n in A.get('events', [])) or '–'
+            clip = f'ego_{wid}_{k}.mp4' if f'ego_{wid}_{k}.mp4' in clipset else 'offen'
+            sv = rv.get(k, {})
+            L.append(f"| `{k}` | {A['de']} | {A['frames']} ({A['frames'] / 30:.2f} s) | {ev} | {m.get('wrist_bend_max_deg', 'offen')}° | "
+                     f"{clip} | {sv.get('status', 'offen')}{(': ' + sv['method']) if sv.get('method') else ''} | {A['src']} |")
+        L += ['', '### Abdeckung der Matrixzeilen', '', '| Zeile | durch Aktion | Status |', '|---|---|---|']
+        rows = {r: a for a, rs in EG.ROWS.items() for r in rs}
+        for r, a in rows.items():
+            st = 'dargestellt (mit Händen)' if rv.get(a, {}).get('status') == 'geprüft' else 'offen (nicht gesichtet)'
+            L.append(f'| `{r}` | `{a}` | {st} |')
+        L.append('')
+    L += ['Clips: `~/Library/Caches/CubeEscapeBallon/evidence/clips/ego_<waffe>_<aktion>.mp4`; Kontaktbögen '
           '`…/evidence/ego_<waffe>_<aktion>.png`; Szene `…/out/<waffe>/ego/<waffe>_ego.blend`.', '']
     open(os.path.join(ROOT, 'docs', 'ego.md'), 'w', encoding='utf-8').write('\n'.join(L))
     print('docs/ego.md geschrieben')
@@ -135,7 +191,7 @@ def page(wid, path):
                     ('hip', 'ads', 'sprint', 'lowered', 'crouch', 'reload', 'inspect_l', 'inspect_r'))
     outs = ''.join(st(f'{k}_out.png', 640, f'<b>{esc(k)}</b> · Außenansicht (Arme)') for k in ('hip', 'ads', 'reload', 'inspect_r'))
     vids = ''
-    for k, A in EG.ACTIONS.items():
+    for k, A in EG.profile(module(wid))['actions'].items():
         mp = os.path.join(EVIDENCE, 'clips', f'ego_{wid}_{k}.mp4')
         if not os.path.exists(mp):
             continue
@@ -168,33 +224,55 @@ def page(wid, path):
 def check():
     err = []
     rows = {r[0] for r in matrix.ROWS} | {r for v in matrix.TYPE_ROWS.values() for r, _ in v} | {t[0] for t in matrix.TRANSITIONS}
-    for k, A in EG.ACTIONS.items():
-        for f, key in A['weapon']:
-            name = key if isinstance(key, str) else key[0]
-            if name not in EG.POSES:
-                err.append(f'{k}: Haltung {name} fehlt')
-        for ch in ('L', 'R'):
-            for f, key in A.get(ch, []):
-                g = key if isinstance(key, str) else key[0]
-                if g != 'cam' and g not in EG.GRIPS:
-                    err.append(f'{k}: Griff {g} fehlt')
-        for ch in ('fL', 'fR'):
-            for f, p in A.get(ch, []):
-                if p not in RA.FINGER_POSES:
-                    err.append(f'{k}: Fingerstellung {p} fehlt')
-        fr = [f for f, _ in A['weapon']]
-        if fr != sorted(fr) or fr[-1] > A['frames']:
-            err.append(f'{k}: Schlüsselbilder unsortiert oder hinter dem Ende')
-        for r in EG.ROWS.get(k, []):
-            if r not in rows:
-                err.append(f'{k}: Matrixzeile {r} unbekannt')
-    for n, fp in RA.FINGER_POSES.items():
+    n = []
+    for m in WEAPONS:
+        W = importlib.import_module(f'basic.{m}')
+        wid = EG.weapon_id(W)
+        try:
+            P = EG.profile(W)
+        except KeyError as e:
+            err.append(str(e))
+            continue
+        ids = {p['id'] for p in W.PARTS}
+        for k, A in P['actions'].items():
+            for f, key in A['weapon']:
+                name = key if isinstance(key, str) else key[0]
+                if name not in P['poses']:
+                    err.append(f'{wid} {k}: Haltung {name} fehlt')
+            for ch in ('L', 'R'):
+                for f, key in A.get(ch, []):
+                    g = key if isinstance(key, str) else key[0]
+                    if g != 'cam' and g not in P['grips']:
+                        err.append(f'{wid} {k}: Griff {g} fehlt')
+            for ch in ('fL', 'fR'):
+                for f, p in A.get(ch, []):
+                    if p not in EG.FINGER_POSES:
+                        err.append(f'{wid} {k}: Fingerstellung {p} fehlt')
+            fr = [f for f, _ in A['weapon']]
+            if fr != sorted(fr) or fr[-1] > A['frames']:
+                err.append(f'{wid} {k}: Schlüsselbilder unsortiert oder hinter dem Ende')
+            for pid in A.get('mech', {}):
+                if pid not in ids:
+                    err.append(f'{wid} {k}: Bauteil {pid} (mech) fehlt')
+            for r in EG.ROWS.get(k, []):
+                if r not in rows:
+                    err.append(f'{k}: Matrixzeile {r} unbekannt')
+        for g, G in P['grips'].items():
+            for fp in [G['fingers_pose'], *G.get('finger_map', {}).values()]:
+                if fp not in EG.FINGER_POSES:
+                    err.append(f"{wid} Griff {g}: Fingerstellung {fp} fehlt")
+            if G.get('part') and G['part'] not in ids:
+                err.append(f"{wid} Griff {g}: Bauteil {G['part']} fehlt")
+        if set(P['grips']) != set(EG.GRIPS):
+            err.append(f'{wid}: Griffe {sorted(P["grips"])} statt {sorted(EG.GRIPS)}')
+        for k, v in P['live'].items():
+            if v not in ids:
+                err.append(f'{wid}: Live-Teil {k} = {v} fehlt')
+        n.append(f'{wid} {len(P["actions"])} Aktionen/{len(P["poses"])} Haltungen/{len(P["grips"])} Griffe')
+    for nm, fp in EG.FINGER_POSES.items():
         if len(fp['f']) != len(RA.FINGER_X) or any(len(x) != len(RA.FINGER_LINKS) for x in fp['f']):
-            err.append(f'Fingerstellung {n}: {len(fp["f"])} Finger statt {len(RA.FINGER_X)}')
-    for g in EG.GRIPS.values():
-        if g['fingers_pose'] not in RA.FINGER_POSES:
-            err.append(f"Griff: Fingerstellung {g['fingers_pose']} fehlt")
-    print('\n'.join(err) if err else f'ego: {len(EG.ACTIONS)} Aktionen, {len(EG.POSES)} Haltungen, {len(EG.GRIPS)} Griffe konsistent')
+            err.append(f'Fingerstellung {nm}: {len(fp["f"])} Finger statt {len(RA.FINGER_X)}')
+    print('\n'.join(err) if err else 'ego: ' + ', '.join(n) + ' konsistent')
     return 1 if err else 0
 
 

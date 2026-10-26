@@ -1,5 +1,6 @@
-// Ego-Daten im Format ballon-ego/7, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
-// Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
+// Ego-Daten im Format ballon-ego/8 (je Waffe, 0.18), erzeugt von tools/export_unity.py (nicht von Hand pflegen); ballon-ego/7 (bis 0.17,
+// eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
+// nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,8 +58,16 @@ namespace Ballon.Ego
     [Serializable]
     public class WeaponEject { public bool enabled; public string @case, src; public float[] pos, dir, verts; public int[] tris; }
 
+    /// <summary>Live-Teile im laufenden Feuer (8, 0.18; ego.LIVE bzw. Modul-Feld EGO_LIVE): Abzug, Verschluss, Auswurfklappe.</summary>
+    [Serializable] public class WeaponLive { public string trigger, bolt, port; }
+
     [Serializable]
-    public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject; }
+    public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject;
+                             public WeaponLive live; }
+
+    /// <summary>Ego-Profil der Klasse (8, 0.18, ego.CLASSES): Waffentyp, Haltungen und gestreckte Aktionen der Klasse, Herkunft.</summary>
+    [Serializable] public class ProfileFrames { public string action; public float frames; }
+    [Serializable] public class EgoProfile { public string type, src, frames_src; public string[] poses; public ProfileFrames[] frames; }
 
     [Serializable] public class EgoPiece { public string id, segment, role; }
 
@@ -173,6 +182,7 @@ namespace Ballon.Ego
     /// <summary>Gebackene Atlanten (tools/bake_unity.py) und die AgX-LUT der Blender-Ansicht.</summary>
     [Serializable] public class Skin { public string name, de, kind, albedo, spec; }
     [Serializable] public class EgoTextures { public string de; public Atlas weapon, arms; public Lut lut; public Skin[] skins; }
+    [Serializable] public class WeaponTextures { public Atlas weapon; public Skin[] skins; }
 
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
     [Serializable] public class MeshBounds { public string de; public MeshBound[] objects; }
@@ -195,8 +205,13 @@ namespace Ballon.Ego
         public MeshBounds mesh_bounds;
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
+        // je Waffe (8): Klassenprofil, Schlüssel des Waffenatlas (Material „Atlas_<atlas>“) und Name der Blender-Referenz; /7 setzt die Werte der Pilotwaffe
+        [NonSerialized] public EgoProfile profile;
+        [NonSerialized] public string atlas = "weapon", reference = "ego_reference.json";
+        [NonSerialized] public int slot;            // Platz in weapons[] (Taste slot + 1)
 
-        public const string Format = "ballon-ego/7";     // 7: motion.flash, motion.eject, weapon.eject, Rollen flash_* (0.16); 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
+        public const string Format = "ballon-ego/8";     // 8: weapons[] je Waffe (gameplay, weapon mit live, poses, grips, actions, profile, Atlanten, Netzgrenzen, Referenz), gemeinsam Bewegung, Kamera, Arme, Rollen (0.18)
+        public const string FormatLegacy = "ballon-ego/7";   // 7: motion.flash, motion.eject, weapon.eject, Rollen flash_* (0.16); 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;
@@ -205,14 +220,82 @@ namespace Ballon.Ego
         Dictionary<string, EgoPart> _parts;
         Dictionary<string, EgoAnchor> _anchors;
 
-        public static EgoFile Parse(string json)
+        [Serializable] class FormatOnly { public string format; }
+
+        /// <summary>Erste Waffe (Taste 1); bei /7 die einzige.</summary>
+        public static EgoFile Parse(string json) => ParseAll(json)[0];
+
+        /// <summary>Alle Waffen der Datei, je Waffe ein EgoFile mit dem gemeinsamen Teil (Bewegung, Kamera, Arme, Rollen, Armatlas, LUT) und
+        /// den Waffenfeldern. Liest ballon-ego/8 und das alte ballon-ego/7 (eine Waffe, Live-Teile und Atlas der Pilotwaffe); andere Formate
+        /// werden abgelehnt.</summary>
+        public static EgoFile[] ParseAll(string json)
         {
-            var f = JsonUtility.FromJson<EgoFile>(json);
-            if (f == null || f.format != Format)
-                throw new FormatException($"ego.json: Format {(f == null ? "leer" : f.format)} statt {Format} – neu exportieren (tools/export_unity.py)");
-            f.toUnity = ParseAxes(json);
-            f.Index();
-            return f;
+            var fmt = JsonUtility.FromJson<FormatOnly>(json)?.format;
+            if (fmt == FormatLegacy)
+            {
+                var f = JsonUtility.FromJson<EgoFile>(json);
+                if (f.weapon.live == null || string.IsNullOrEmpty(f.weapon.live.trigger))
+                    f.weapon.live = new WeaponLive { trigger = "trigger", bolt = "bolt_carrier", port = "port_cover" };   // bis 0.17 fest im Code
+                f.profile = new EgoProfile { type = f.gameplay.weapon_type, src = FormatLegacy, poses = new string[0], frames = new ProfileFrames[0] };
+                f.toUnity = ParseAxes(json);
+                f.Index();
+                return new[] { f };
+            }
+            if (fmt != Format)
+                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
+            var s = JsonUtility.FromJson<EgoFile8>(json);
+            if (s.weapons == null || s.weapons.Length == 0) throw new FormatException("ego.json: weapons leer");
+            var axes = ParseAxes(json);
+            var res = new EgoFile[s.weapons.Length];
+            for (int k = 0; k < res.Length; k++)
+            {
+                var e = s.weapons[k];
+                var bounds = new List<MeshBound>(s.mesh_bounds?.objects ?? new MeshBound[0]);
+                if (e.mesh_bounds?.objects != null) bounds.AddRange(e.mesh_bounds.objects);
+                var f = new EgoFile
+                {
+                    format = s.format, generated_by = s.generated_by, fps = s.fps, motion = s.motion, camera = s.camera, gameplay = e.gameplay,
+                    weapon = e.weapon, arm = s.arm, poses = e.poses, grips = e.grips, finger_poses = s.finger_poses, actions = e.actions,
+                    roles = s.roles, mesh_bounds = new MeshBounds { de = e.mesh_bounds?.de ?? s.mesh_bounds?.de, objects = bounds.ToArray() },
+                    textures = s.textures == null ? null : new EgoTextures { de = s.textures.de, arms = s.textures.arms, lut = s.textures.lut,
+                                                                            weapon = e.textures?.weapon, skins = e.textures?.skins },
+                    toUnity = axes, profile = e.profile, atlas = e.atlas, reference = e.reference, slot = k,
+                };
+                if (f.weapon == null || f.weapon.live == null || string.IsNullOrEmpty(f.weapon.live.trigger))
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");
+                f.Index();
+                res[k] = f;
+            }
+            return res;
+        }
+
+        [Serializable]
+        class EgoWeaponEntry
+        {
+            public string id, atlas, reference;
+            public EgoProfile profile;
+            public EgoGameplay gameplay;
+            public EgoWeapon weapon;
+            public EgoPose[] poses;
+            public EgoGrip[] grips;
+            public EgoAction[] actions;
+            public WeaponTextures textures;
+            public MeshBounds mesh_bounds;
+        }
+
+        [Serializable]
+        class EgoFile8
+        {
+            public string format, generated_by;
+            public int fps;
+            public Motion motion;
+            public EgoCamera camera;
+            public EgoArm arm;
+            public EgoFingerPose[] finger_poses;
+            public EgoRole[] roles;
+            public EgoTextures textures;              // gemeinsam: arms, lut
+            public MeshBounds mesh_bounds;            // gemeinsam: Armteile
+            public EgoWeaponEntry[] weapons;
         }
 
         // axes.to_unity ist eine 3×3-Liste; JsonUtility liest keine verschachtelten Listen, darum hier von Hand.

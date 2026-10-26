@@ -71,7 +71,8 @@ namespace Ballon.Ego.Editor
             if (!assetPath.StartsWith("Assets/Ballon/Generated/")) return;
             var json = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(assetPath), "ego.json");
             if (!System.IO.File.Exists(json)) return;
-            var D = EgoFile.Parse(System.IO.File.ReadAllText(json));
+            var all = EgoFile.ParseAll(System.IO.File.ReadAllText(json));
+            var D = System.Array.Find(all, d => d.weapon.fbx == System.IO.Path.GetFileName(assetPath)) ?? all[0];   // Waffe dieses FBX (Arme: beliebig)
             var at = new Dictionary<string, Vector3>();       // Lage im Waffenrahmen (Blender, m)
             foreach (var p in D.weapon.parts) at[p.id] = BMath.V(p.rest);
             foreach (var a in D.weapon.anchors) at[a.id] = BMath.V(a.pos);
@@ -133,7 +134,8 @@ namespace Ballon.Ego.Editor
             Pipeline();
             Layer();
             Player();
-            foreach (var f in new[] { "BASIC-01-v2.1.fbx", "arms.fbx" })
+            var fbx = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json")).Select(d => d.weapon.fbx).Append("arms.fbx");   // je Waffe (0.18)
+            foreach (var f in fbx)
             {
                 var mi = (ModelImporter)AssetImporter.GetAtPath($"{Gen}/{f}");
                 if (mi == null) throw new FileNotFoundException($"{Gen}/{f} fehlt – zuerst tools/export_unity.py");
@@ -322,7 +324,8 @@ namespace Ballon.Ego.Editor
         /// <summary>URP Lit je Materialrolle aus ego.json (Farbe im AAA-Modus, Rauheit → Glätte, Metall), dazu Parcours-Materialien.</summary>
         static Dictionary<string, Material> Materials()
         {
-            var D = EgoFile.Parse(File.ReadAllText($"{Gen}/ego.json"));
+            var all = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json"));
+            var D = all[0];
             var res = new Dictionary<string, Material>();
             foreach (var r in D.roles)
             {
@@ -345,7 +348,8 @@ namespace Ballon.Ego.Editor
                 }
                 res["Role_" + r.role] = m;
             }
-            foreach (var (key, A) in new[] { ("weapon", D.textures.weapon), ("arms", D.textures.arms) })   // 0.7: gebackene Atlanten
+            var atl = all.Select(d => (d.atlas, d.textures.weapon)).Append(("arms", D.textures.arms));          // 0.7: gebackene Atlanten, 0.18 je Waffe
+            foreach (var (key, A) in atl)
             {
                 var m = Lit("Atlas_" + key, Color.white, 1f, 0f);
                 Texture2D T(string f) => AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
@@ -364,19 +368,21 @@ namespace Ballon.Ego.Editor
                 m.EnableKeyword("_OCCLUSIONMAP");
                 res["Atlas_" + key] = m;
             }
-            // Skins der Waffe (kit.SKINS): eigene Farb- und Glanzkarte, Normale und AO wie Standard
-            foreach (var sk in D.textures.skins)
-            {
-                if (sk.name == "standard") { res["Skin_standard"] = res["Atlas_weapon"]; continue; }
-                var m = new Material(res["Atlas_weapon"]);
-                var path = $"{Gen}/Materials/Atlas_weapon_{sk.name}.mat";
-                var old = AssetDatabase.LoadAssetAtPath<Material>(path);
-                if (old != null) { old.CopyPropertiesFromMaterial(m); m = old; } else { m.name = "Atlas_weapon_" + sk.name; AssetDatabase.CreateAsset(m, path); }
-                m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.albedo}"));
-                m.SetTexture("_SpecGlossMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.spec}"));
-                EditorUtility.SetDirty(m);
-                res["Skin_" + sk.name] = m;
-            }
+            // Skins je Waffe (kit.SKINS): eigene Farb- und Glanzkarte, Normale und AO wie Standard; Schlüssel „Skin_<atlas>_<skin>“
+            foreach (var d in all)
+                foreach (var sk in d.textures.skins)
+                {
+                    string at = "Atlas_" + d.atlas;
+                    if (sk.name == "standard") { res[$"Skin_{d.atlas}_standard"] = res[at]; continue; }
+                    var m = new Material(res[at]);
+                    var path = $"{Gen}/Materials/{at}_{sk.name}.mat";
+                    var old = AssetDatabase.LoadAssetAtPath<Material>(path);
+                    if (old != null) { old.CopyPropertiesFromMaterial(m); m = old; } else { m.name = $"{at}_{sk.name}"; AssetDatabase.CreateAsset(m, path); }
+                    m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.albedo}"));
+                    m.SetTexture("_SpecGlossMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.spec}"));
+                    EditorUtility.SetDirty(m);
+                    res[$"Skin_{d.atlas}_{sk.name}"] = m;
+                }
             var bd = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Studio_Backdrop.mat");
             if (bd == null)
             {
@@ -449,12 +455,16 @@ namespace Ballon.Ego.Editor
             var go = new GameObject("Firstfeel");
             var b = go.AddComponent<Bootstrap>();
             b.egoJson = AssetDatabase.LoadAssetAtPath<TextAsset>($"{Gen}/ego.json");
-            b.weaponModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/BASIC-01-v2.1.fbx");
+            var all = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json"));
+            b.weapons = all.Select(d => new Bootstrap.WeaponAssets
+            {
+                id = d.weapon.id,
+                model = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.weapon.fbx}"),
+                skins = d.textures.skins.Select(sk => mats[$"Skin_{d.atlas}_{sk.name}"]).ToArray(),
+            }).ToArray();
             b.armsModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/arms.fbx");
             b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")).Select(kv => kv.Value).ToArray();
             b.backdrop = mats["backdrop"];
-            var D = EgoFile.Parse(File.ReadAllText($"{Gen}/ego.json"));
-            b.skinMaterials = D.textures.skins.Select(sk => mats["Skin_" + sk.name]).ToArray();
             b.floor = mats["floor"];
             b.wall = mats["wall"];
             b.cover = mats["cover"];

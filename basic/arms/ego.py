@@ -5,7 +5,10 @@ rechts −X (wie Toolgen `ego_arms.bind`). Meter, 30 fps. Herkunft je Wert im Ko
   T = Startwert aus Toolgen (`data/viewmodels.json`, `data/ego_arms.json`), M = gemessen an Destiny 2 (docs/quellen.md › Q-REF),
   E = entworfen (hier eingestellt, am Bild geprüft).
 """
+import copy
 import math
+
+from basic.arms import robot_arm as RA
 
 FPS = 30
 CAMERA = dict(h_fov_deg=75.0, aspect=(16, 9), near_m=0.03)          # T: viewmodels.camera
@@ -42,6 +45,14 @@ GRIPS = {
     'charge':  dict(part='charging_handle', contact=(-84, 112, 30), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Ladehebel links (Toolgen: pinch)'),
 }
+
+# Fingerstellungen der Ego-Griffe: die des Rigs (robot_arm.FINGER_POSES) und weitere je Griff. Sie stehen hier, weil sie Bewegung sind,
+# keine Form (robot_arm.py liegt im Formquellen-Hash des Exports). foregrip (0.18): Faust um einen senkrechten Vordergriff direkt unter
+# dem Vorbau, Daumen eingerollt hinter den Griff (Nutzer 26.10.2026: „Der Daumen bei der MP sitzt irgendwie ungünstig“ – mit underhand
+# stand er 12–15 mm über dem Vorbau; von drei Proben wählte der Nutzer diese: „Oben links ist am besten“).
+# foregrip_open: Finger offen, Daumen bleibt eingerollt – ein gestreckter Daumen (open) zeigt bei dieser Handstellung in den Vorbau.
+FINGER_POSES = dict(RA.FINGER_POSES, foregrip=dict(f=[[62, 74, 48]] * 4, t=[80, 5, 60]),
+                    foregrip_open=dict(f=[[4, 4, 3]] * 4, t=[80, 5, 60]))
 
 # Aktionen. Kanäle: weapon (Haltung oder (Haltung, Versatz)), L/R (Griff, ('cam', Punkt) oder (Griff, Versatz mm in Waffenachsen)),
 # fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
@@ -202,7 +213,9 @@ FLASH = dict(
 # Destiny (Motiongen muendung › 3/6): goldene Hülse im 1. Blitzbild oder 1 Bild danach, nach rechts bzw. rechts unten.
 EJECT = dict(
     speed_mps=2.4, gravity_mps2=9.81, spin_dps=1500.0, spin_axis=(1.0, 0.25, 0.0), life_s=0.4, max_live=6, delay_frames=0,
-    cases=dict(rifle=dict(len_mm=42, r_mm=4.8, segs=12)), role='brass',
+    cases=dict(rifle=dict(len_mm=42, r_mm=4.8, segs=12),
+               pistol=dict(len_mm=20, r_mm=4.6, segs=12)),     # 0.18: Kurzpatrone der MP (Patronen im Magazinfenster 24 × 4,4 mm) E
+    role='brass',
     src='M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); '
         'Geschwindigkeit, Drehung, Lebensdauer E')
 
@@ -346,3 +359,91 @@ ROWS = {
     'crouch': ['crouch'], 'jump_land': ['jump_start', 'air', 'land'], 'sprint_to_aim': ['tr_sprint_aim'],
     'sprint_to_fire': ['tr_sprint_fire'], 'draw_aim': ['tr_draw_aimheld'], 'reload_to_switch': ['tr_reload_switch', 'switch'],
 }
+
+
+# ------------------------------------------------------------------ Ego-Übertrag je Klasse (0.18 „Quickdraw“, Entscheidungsliste Schritt 6)
+# Haltungen, Anflugdauer und Spielwerte je Waffentyp (META['type']) als Daten (2.1 A/2b, 3.2 A/3b, 4d): ein Eintrag ersetzt einzelne
+# Haltungen und streckt einzelne Aktionen auf eine neue Dauer; was er nicht nennt, gilt wie oben (POSES, ACTIONS). Bezug ist die
+# Automatik (BASIC-01), deren Werte unverändert bleiben. Keine Sonderlogik nach Waffen-ID: Klassenwerte hier, Formwerte (Griffe,
+# Live-Teile, Hülsenauswurf) als Felder im Waffenmodul (EGO_GRIPS, EGO_LIVE, EJECT). Bildlagen in % von B/H, Ursprung oben links,
+# 75° horizontal (16:9) wie die Ego-Stills; Prüfung: Unity EditMode/PlayMode-Tests und docs/entscheidungsliste-motiongen.md › Schritt 6.
+FOLLOW_HIP = ('crouch', 'air', 'lowered')   # Haltungen, die an der Hüfte hängen: wandern mit einer Klassen-Hüfte um denselben Versatz
+
+
+def _follow(hip, ref_hip, ref):
+    """Haltung `ref` (zur Bezugshüfte `ref_hip`) an eine neue Hüfte `hip` gehängt: gleicher Versatz in Lage, Zielpunkt und Rollen."""
+    return dict(pos=tuple(round(h + r - b, 4) for h, r, b in zip(hip['pos'], ref['pos'], ref_hip['pos'])),
+                aim=tuple(round(h + r - b, 4) for h, r, b in zip(hip['aim'], ref['aim'], ref_hip['aim'])),
+                roll=hip['roll'] + ref['roll'] - ref_hip['roll'], src=f"wie {ref['src']}, an der Klassen-Hüfte (FOLLOW_HIP)")
+
+
+CLASSES = {
+    'auto_rifle': dict(
+        poses={}, frames={},
+        gameplay=dict(rpm=720, magazine=30, src='M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip seit 0.15 '
+                                                 'ebenso (alle 2,5 Bilder); Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)'),
+        src='Bezugsklasse: Haltungen POSES, Zeiten ACTIONS (BASIC-01, Destiny-Automatik)'),
+    'submachine_gun': dict(
+        poses=dict(
+            hip=dict(pos=(-0.121, -0.42, -0.186), aim=(0.057, -3.0, -0.015), roll=6,
+                     src='M Destiny-MP-Hüfte: Mündung ≈ 57/61 und 58/62 %, Holo ≈ 62–68/57–58 %, Lauf fast in Blickrichtung (Motiongen '
+                         'REF destiny2 › MP PvE-Hüfte, Huckleberry), Band Kurzwaffen x 53–71 / y 59–84 % (2b); Lage E, gerechnet auf '
+                         'Mündung 58/63 und Absehen 65,5/60 % (7 cm weiter zur Mitte und 4 cm höher als die Automatik)'),
+            sprint=dict(pos=(-0.116, -0.34, -0.172), aim=(0.673, -2.115, -0.48), roll=40,
+                        src='M/O Destiny-MP-Sprint: tiefe Trageform, Mündung ≈ 43/80, Holo-Ring ≈ 52/72 %, nach links gerollt (Motiongen REF '
+                            'destiny2 › MP PvP, Entscheidungsliste 3b/3.2 A); Lage E, gerechnet auf Mündung 43/80 und Absehen 52/72 %, Rollen '
+                            '+40° (Oberseite nach links; Automatik −35°, Oberseite nach rechts)'),
+        ),
+        frames=dict(aim_in=3, aim_out=2.4),
+        frames_src='M Destiny-Anflug MP 8–12 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen Glidepath, Entscheidungsliste 4d) → 3 Bilder '
+                   'bei 30/s, mit dem Zielen-Nachlauf (10 Hz) am Unity-Bild 11 Bilder bei 60/s (4 Bilder ergaben 13; gleiches Maß bei der '
+                   'Automatik: 10 → 20 wie Destiny); aim_out im selben Verhältnis 0,3 (Destiny-MP ADS aus → ruhig 10–11 Bilder bei 60/s, '
+                   'Huckleberry/Ikelos)',
+        gameplay=dict(rpm=720, magazine=30,
+                      src='M 720/min (Destiny-MP PvP, Dauerfeuer im Zielen ≈ 5 Bilder Abstand bei 60/s, Motiongen REF destiny2; Menüs '
+                          '750–900/min [S]), Clip fire_hip wie die Automatik alle 2,5 Bilder; Magazin 30 E (Destiny-MP 26–30 [S])'),
+        src='Entscheidungsliste Schritt 6, erste übertragene Klasse (Nutzer 26.10.2026): Hüfte 2b/2.1 A, Sprint 3b/3.2 A, Anflug 4d'),
+}
+# Live-Teile der Pilotwaffe (Abzug, Verschluss, Auswurfklappe im laufenden Feuer); andere Waffen nennen ihre im Modul-Feld EGO_LIVE
+LIVE = dict(trigger='trigger', bolt='bolt_carrier', port='port_cover')
+_PROFILES = {}
+
+
+def weapon_id(W):
+    return W.META['id'] + (f"-{W.META['variant']}" if W.META.get('variant') else '')
+
+
+def profile(W):
+    """Ego-Daten einer Waffe aus ihrer Klasse (CLASSES[META['type']]) und ihren Modul-Feldern: dict(type, poses, actions, grips, live,
+    gameplay, src). Die Pilotwaffe ohne EGO_GRIPS/EGO_LIVE nutzt GRIPS und LIVE; ein Typ ohne Eintrag in CLASSES hat kein Ego-Profil."""
+    wid = weapon_id(W)
+    if wid in _PROFILES:
+        return _PROFILES[wid]
+    t = W.META['type']
+    if t not in CLASSES:
+        raise KeyError(f'{wid}: Waffentyp {t} hat kein Ego-Profil (ego.CLASSES)')
+    C = CLASSES[t]
+    poses = {k: dict(v) for k, v in POSES.items()}
+    for k, v in C['poses'].items():
+        poses[k] = dict(v)
+    if 'hip' in C['poses']:
+        for k in FOLLOW_HIP:
+            if k not in C['poses']:
+                poses[k] = _follow(poses['hip'], POSES['hip'], POSES[k])
+    actions = copy.deepcopy(ACTIONS)
+    grips = getattr(W, 'EGO_GRIPS', None) or GRIPS
+    # Stützhand: Fingerstellung des Griffs statt underhand (Pilotwaffe: underhand), dazu die Ersetzungen des Griffs (finger_map)
+    fmap = dict(grips['support'].get('finger_map', {}), underhand=grips['support']['fingers_pose'])
+    for A in actions.values():
+        A['fL'] = [(f, fmap.get(p, p)) for f, p in A.get('fL', [(0, 'underhand')])]
+    for k, n in C['frames'].items():
+        A = actions[k]
+        old = A['frames']
+        _retime(A, n / old)
+        A['frames'] = int(math.ceil(n - 1e-9))
+        A['src'] = f"{A['src']}; Klasse {t}: {old} → {n:g} Bilder ({C['frames_src']})"
+    live = getattr(W, 'EGO_LIVE', None) or LIVE
+    P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=C['gameplay'], src=C['src'],
+             frames_src=C.get('frames_src', ''))
+    _PROFILES[wid] = P
+    return P

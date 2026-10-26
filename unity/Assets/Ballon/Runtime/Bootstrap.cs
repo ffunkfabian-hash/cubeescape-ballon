@@ -14,10 +14,10 @@ namespace Ballon.Ego
     public sealed class Bootstrap : MonoBehaviour
     {
         public TextAsset egoJson;
-        public GameObject weaponModel, armsModel;
+        public WeaponAssets[] weapons;           // je Waffe aus ego.json › weapons[] (0.18): FBX-Modell und Skins (Reihenfolge textures.skins, 0 = standard)
+        public GameObject armsModel;
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
         public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
-        public Material[] skinMaterials;         // Waffen-Skins in der Reihenfolge von ego.json › textures.skins (0 = standard)
         public TextAsset[] sceneJson;            // Szenen (ballon-scene/2), von BallonSetup aus Generated/Scenes/*/scene_*.json gesetzt;
         public GameObject[] scenePrefabs;        // gleiche Reihenfolge: FBX der Umgebung
         public Material[] sceneMaterials;        // Unlit-Vorlage (je Zone entsteht eine Kopie)
@@ -25,12 +25,18 @@ namespace Ballon.Ego
 
         /// <summary>Alle Lichtatlanten einer Szene, flach: Index = Lichtszene · Zonenzahl + Zone.</summary>
         [Serializable] public class SceneAssetSet { public Texture2D[] textures; }
+        /// <summary>Modell und Skin-Materialien einer Waffe (BallonSetup setzt sie in der Reihenfolge von ego.json › weapons).</summary>
+        [Serializable] public class WeaponAssets { public string id; public GameObject model; public Material[] skins; }
+        public GameObject weaponModel => weapons[0].model;      // Pilotwaffe (Tests)
         public const int ViewmodelLayer = 31;
         public const int OutRenderer = 1;
         public const int StudioEmitLayer = 30;   // Lichtflächen nur für die Reflexionssonde (Vergleichsmodus)         // Renderer „Out“ mit dem AgX-Durchgang (BallonSetup.OutRenderer)     // Ebene „Viewmodel“ (in den Projekteinstellungen benannt)
 
-        public EgoFile D { get; private set; }
-        public EgoSolver S { get; private set; }
+        /// <summary>Daten und Solver der aktiven Waffe (vor dem Spieler: Waffe 1).</summary>
+        public EgoFile D => S.D;
+        public EgoSolver S => Player != null ? Player.C.S : Solvers[0];
+        /// <summary>Alle Waffen aus ego.json (Taste 1, 2 …).</summary>
+        public EgoSolver[] Solvers { get; private set; }
         public EgoPlayer Player { get; private set; }
         public RangeTargets Range { get; private set; }
         public Transform RangeRoot { get; private set; }
@@ -41,8 +47,10 @@ namespace Ballon.Ego
         {
             Application.targetFrameRate = 120;
             QualitySettings.vSyncCount = 1;
-            D = EgoFile.Parse(egoJson.text);
-            S = new EgoSolver(D);
+            var all = EgoFile.ParseAll(egoJson.text);
+            int nw = Mathf.Min(all.Length, weapons?.Length ?? 0);
+            if (nw < all.Length) Debug.LogWarning($"[Ballon] {all.Length} Waffen in ego.json, {nw} Modelle in der Szene – python3 tools/unity_run.py setup");
+            Solvers = all.Take(Mathf.Max(1, nw)).Select(d => new EgoSolver(d)).ToArray();
             var roles = new Dictionary<string, Material>();
             foreach (var m in roleMaterials) roles[m.name.Replace("Role_", "")] = m;
             ParcoursLook();
@@ -63,12 +71,18 @@ namespace Ballon.Ego
             Probe.clearFlags = UnityEngine.Rendering.ReflectionProbeClearFlags.SolidColor;
             ParcoursProbe();
             Probe.RenderProbe();
-            Player = EgoPlayer.Create(S, weaponModel, armsModel, roles, ViewmodelLayer, ParcoursStart, 0);
+            Player = EgoPlayer.Create(Solvers, weapons.Take(Solvers.Length).Select(w => w.model).ToArray(), armsModel, roles, ViewmodelLayer,
+                                      ParcoursStart, 0);
             _parcoursBg = Player.worldCam.backgroundColor;
             _worldMask = Player.worldCam.cullingMask;
             Player.decalMat = decal;
-            Player.skins = skinMaterials;
-            Player.skinNames = D.textures?.skins?.Select(s => s.de).ToArray();
+            for (int k = 0; k < Solvers.Length; k++)
+            {
+                Player.loadouts[k].skins = weapons[k].skins;
+                Player.loadouts[k].skinNames = Solvers[k].D.textures?.skins?.Select(s => s.de).ToArray();
+            }
+            if (int.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonWeapon") ?? "", out var wk) && wk >= 1 && wk <= Solvers.Length)
+                Player.UseWeapon(wk - 1);                    // Aufnahme/Vergleich mit Waffe wk (Taste wk)
             Player.range = Range;
             LoadScenes();
             var args = Environment.GetCommandLineArgs();
@@ -372,6 +386,19 @@ namespace Ballon.Ego
             .Add(2.2f, 2.25f, press: "swap")
             .Add(2.25f, 3.8f);
 
+        /// <summary>Beleg 0.18 (Schritt 6): Automatik in der Hüfte und im Zielen, Wechsel mit Taste 2 auf die MP (Wegstecken, leere Sicht,
+        /// Ziehen), MP in der Hüfte, im Zielen und im Sprint, zurück in die Hüfte; 7,6 s.</summary>
+        public static ScriptedInput QuickdrawScript() => new ScriptedInput()
+            .Add(0.0f, 0.8f)
+            .Add(0.8f, 1.6f, hold: "aim")
+            .Add(1.6f, 2.2f)
+            .Add(2.2f, 2.25f, press: "weapon2")
+            .Add(2.25f, 3.4f)
+            .Add(3.4f, 4.2f, hold: "aim")
+            .Add(4.2f, 4.8f)
+            .Add(4.8f, 6.6f, hold: "sprint", move: new Vector2(0, 1))
+            .Add(6.6f, 7.6f);
+
         /// <summary>Rückstoß (0.15, 5.1 A / 5.2 A): Viererstoß aus der Hüfte, dann im Zielen zwei Viererstöße und ein langer Stoß
         /// (12 Schuss); die Welt wandert, das Visier steht; 6,6 s.</summary>
         public static ScriptedInput RecoilScript() => new ScriptedInput()
@@ -401,7 +428,8 @@ namespace Ballon.Ego
             Player.hud = false;
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
             var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript()
-                     : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript() : DemoScript();
+                     : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript()
+                    : dn == "quickdraw" ? QuickdrawScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = dn == "rueckstoss" || dn == "feuer" ? Player.C.magSize : 9;
@@ -418,7 +446,7 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
@@ -569,7 +597,7 @@ namespace Ballon.Ego
             cam.targetTexture = rt;
             cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
             var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
-            for (int i = 0; i < skinMaterials.Length; i++)
+            for (int i = 0; i < Player.skins.Length; i++)
             {
                 Player.SetSkin(i);
                 foreach (var pose in new[] { "hip", "inspect_l" })

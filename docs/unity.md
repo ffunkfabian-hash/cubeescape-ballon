@@ -50,8 +50,8 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 | rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35; Viewmodel bleibt bei 75° horizontal; der Zoom folgt dem Modell, 1d) |
 | R | nachladen: taktisch bei Restmunition, sonst leer (mit Durchladen) |
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
-| 1 / 2 | ziehen / wegstecken (beim Nachladen: `reload_to_switch`) |
-| Q | Waffe wechseln (0.15, 6.1 A): wegstecken (0,27 s), leere Sicht ≈ 0,13 s, ziehen; mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
+| 1 / 2 | Waffe wählen (0.18): 1 Automatik BASIC-01, 2 Maschinenpistole BASIC-06 – wegstecken (0,27 s, beim Nachladen `reload_to_switch`), leere Sicht ≈ 0,13 s, die andere Waffe ziehen (6.1 A); die Taste der aktiven Waffe zieht sie, wenn sie weggesteckt ist. Jede Waffe behält ihre Munition. Bis 0.17: 1 ziehen, 2 wegstecken |
+| Q | zur anderen Waffe wechseln (wie Taste 1/2; mit nur einer Waffe in `ego.json` wegstecken und dieselbe ziehen, 0.15); mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
 | K | Waffen-Skin weiterschalten |
 | L | Szene wechseln: Parcours → Szene 1 → … → Parcours (nur wenn Szenen exportiert sind, siehe „Szenen und Parcours“) |
 | N | nächste Lichtszene der gezeigten Szene (Tag → Nacht → …); im grauen Parcours ohne Wirkung |
@@ -74,7 +74,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/7`), `ego_reference.json` |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX je Waffe (Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/8`), `ego_reference_<Waffe>.json`; gebacken wird nur, was sich geändert hat (Waffe mit gleicher Form behält Atlanten, Netzgrenzen und FBX) |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs`, `Runtime/EgoScreen.cs` (Bildlage, Silhouette; Tests und Messung) | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
@@ -83,7 +83,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/7`. Der Abnehmer ist `unity/` ab 0.16. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/8`. Der Abnehmer ist `unity/` ab 0.18; `EgoFile.ParseAll` liest `/7` weiter (eine Waffe). Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
@@ -98,6 +98,10 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 - 7 (0.16): `motion.flash` (Mündungsfeuer, 5.3 A: Dauer `dur_s` = 1/30 s, Netz relativ zu `Socket_Muzzle`, Kern- und Flammendreiecke,
   Drehfolge `roll_deg`), `motion.eject` (Hülsenbahn, 5.4 A: Geschwindigkeit, Schwerkraft, Drehung, `life_s`, `max_live`, `delay_frames`),
   `weapon.eject` (je Waffe aus dem Modul-Feld `EJECT`: `enabled`, Startlage, Richtung, Hülsennetz) und die Rollen `flash_core`/`flash_flame`.
+- 8 (0.18): `weapons[]` je spielbarer Waffe (`tools/export_unity.WEAPONS`, Reihenfolge = Taste 1, 2): `profile` (Klasse und Herkunft aus
+  `ego.CLASSES`), `gameplay`, `weapon` mit `live` (Abzug, Verschluss, Auswurfklappe; bis 0.17 fest im Code), `poses`, `grips`, `actions`,
+  `atlas` (Material `Atlas_<atlas>`, Pilotwaffe `weapon`), `textures` (Waffenatlas, Skins), `mesh_bounds`, `sources`, `reference`. Gemeinsam
+  bleiben `motion`, `camera`, `arm`, `finger_poses`, `roles`, `textures` (Arme, LUT) und `mesh_bounds` (Armteile).
 
 Ältere Exporte (`/1` bis `/6`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
 
@@ -152,7 +156,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 
 | Test | prüft |
 |---|---|
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/7` (`/1` bis `/6` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/8` mit zwei Waffen (`/1` bis `/6` und `/9` abgelehnt, `/7` gelesen), je Waffe 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |
@@ -168,7 +172,13 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Sprint_live_im_Destiny_Rhythmus` (0.10) | Live-Sprint: 2,9–3,4 Hochpunkte/s, U-Bogen (oben an den Seitenumkehren); Messwerte im Testprotokoll |
 | `Zielen_landet_ohne_Ueberschwingen`, `Sprintschritt_wie_ein_Laeufer` (EditMode, 0.10) | Skriptpfad wie Blender: `aim_in`, `sprint_to_aim`, `draw_aim` ohne Überschwingen (< 0,3°), Rest am Ende < 1,5°; Sprintdaten 2,9–3,4 Schritte/s mit U-Bogen; seit 0.15 auch der Hub an der Silhouette (`EgoScreen`, Kanten der Netzgrenzen von Waffe und Armen): Oberkante 8,5–12,5 % H, linke Kante 11–15,5 % B (gemessen 10,5 / 13,8; am Unity-Bild 8,9–9,5 % H / 12,7–13,7 % B) |
 | `Hueftlage_im_Destiny_Band` (EditMode, 0.15) | Ego-Still `hip`: Mündung x 54–59 / y 60–71 % (gemessen 58,1 / 63,1), hintere Visieröffnung 7–34 pp rechts (19,3), Kontur bis zum rechten und unteren Rand |
-| `Wechsel_mit_Q_im_Spieler` (PlayMode, 0.15) | ScriptedInput „swap“ → `EgoPlayer.Step` → Controller: zweimal Wegstecken, leer, Ziehen, Hüfte |
+| `Wechsel_mit_Q_im_Spieler` (PlayMode, 0.15, 0.18) | ScriptedInput „swap“ → `EgoPlayer.Step` → `EgoArsenal`: zweimal Wegstecken, leer, Ziehen, Hüfte – seit 0.18 Automatik → MP → Automatik |
+| `Altes_Format_7_wird_gelesen` (EditMode, 0.18) | `ballon-ego/8` mit `weapons[]`; der Leser erkennt die alte Datei `/7` (Stand 0.17, Kopie `Tests/EditMode/Data/ego_v7.json`) und liefert für die Pilotwaffe dieselben Haltungen, Griffe, Aktionen, Spielwerte, Teile, Atlanten, Netzgrenzen und dieselbe Auswertung wie die neue Datei; Live-Teile wie bis 0.17 im Code |
+| `Werte_je_Klasse`, `Hueftlage_der_MP_im_Band`, `Sprint_Rollrichtung_je_Klasse` (EditMode, 0.18) | Klassenwerte aus `ego.CLASSES`: MP `aim_in` 3 Bilder bei 30/s, `aim_out` 2,4, sonst alle Aktionen wie die Automatik; Automatik `aim_in` 0,33 s unverändert; Weltzoom MP 1,45, Kadenz 720/min, Magazin 30, Hüft-Fadenkreuz `circle_cross` 6,1 % H, Hülse `pistol`; MP-Hüfte Mündung im Band der Kurzwaffen (x 53–71 / y 59–84 %, nahe Destiny-MP 57–58/61–62), Absehen 60–70 % x; Sprint: MP mit der Oberseite nach links (> 20°), Mündung nahe 43/80 %, Automatik nach rechts |
+| `Daumen_der_Stuetzhand_nicht_im_Vorbau` (EditMode, 0.18) | MP, alle Haltungen und Aktionsbilder mit der Stützhand am Vordergriff (585): Daumenspitze nicht im Vorbau und unter seiner Oberkante (höchstens 39 mm, Vorbau 58–106 mm); Fingerstellung `foregrip` (Faust, Daumen hinter dem Griff, Nutzerwahl) und `foregrip_open` statt `underhand`/`open` |
+| `Anzeige_baut_Treffertext_nur_bei_Aenderung` (PlayMode, 0.18) | Treffertext der Anzeige bleibt dasselbe Objekt, solange nur Aktionsbilder weiterlaufen; beim Waffenwechsel neu (Skin-Name der anderen Waffe) |
+| `Anflug_je_Klasse_live_bei_60` (PlayMode, 0.18) | Live-Controller bei 60/s, Absehen der Grundhaltung am Bild, Ruhe = Bildweg je Bild unter 0,09 % (fest, wie Motiongen am Bild): MP 8–12 Bilder (Destiny-MP 8–12), Automatik 18–22 (Destiny 20) |
+| `Wechsel_1_2_mit_leerer_Sicht_ohne_Munitionsverlust`, `Kein_GC_Muell_beim_Wechsel`, `Wechsel_mit_Tasten_1_2_im_Spieler` (PlayMode, 0.18) | Tasten 1/2 bei 60/s wie Q: Wegstecken 0,2–0,3 s, leere Sicht 0,1–0,2 s, erstes neues Bild = `draw` der anderen Waffe; Munition je Waffe bleibt (auch beim Abbruch des Nachladens vor `MagIn`); Wechsel 1 → 2 → 1 ohne Speicher je Bild (Spurpool im Controller); im Spieler nur das aktive Modell sichtbar, Weltzoom und Hüft-Fadenkreuz der Klasse |
 | `Wechsel_mit_leerer_Sicht` (PlayMode, 0.15) | Q bei 60/s, sichtbar = Kante der Netzgrenzen von Waffe oder Armen im Bild: Wegstecken bis zum Marker `Holstered` 0,2–0,3 s (0,267), leere Sicht 0,1–0,2 s (0,133), erstes neues Bild gehört zu `draw`, Hüfte (`draw › Ready`) und ruhig danach in Reihenfolge; das Ziehen wie mit Taste 1. Aus dem Nachladen (`reload_to_switch`) nur protokolliert |
 | `Zoom_beginnt_und_endet_mit_dem_Modell` (PlayMode, 0.15) | Hüfte → Zielen und Sprint → Zielen bei 60/s: Zoom beginnt 0–2 Bilder nach dem Modell und endet ±1 Bild (Bildbewegung von Mündung, Visier, Magazinschacht, Griff, Schwelle 5 %); Zielen → Hüfte: Zoom zurück, wenn das Modell die Hüfte erreicht |
 | `Rueckstoss_Saeule_fest_und_zweistufig` (PlayMode, 0.15) | 3 × 12 Schuss aus der Hüfte: Säule 11–13,5 % H, seitlich 0,5–2,5 % B, dreimal dieselbe Bahn, Erholung 0,4–0,75 s ohne Unterschwingen; Viererstoß im Zielen 3,5–4,5 % H des gezoomten Bilds; Salvenwaffe (Daten im Test umgestellt): Takt 4 Bilder, Pause, Erholung zwischen den Salven, angefangene Salve läuft zu Ende |
