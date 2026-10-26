@@ -309,6 +309,8 @@ namespace Ballon.Ego.Editor
             m.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
             m.SetFloat("_SrcBlendAlpha", (float)BlendMode.One);
             m.SetFloat("_DstBlendAlpha", (float)BlendMode.OneMinusSrcAlpha);
+            m.SetFloat("_BlendModePreserveSpecular", 0);   // 0.20: sonst setzt URPs Materialprüfung beim Import SrcBlend One (vormultipliert,
+                                                           // Glanz bleibt voll) und das Glas wird milchig
             m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             m.renderQueue = (int)RenderQueue.Transparent;
             m.SetOverrideTag("RenderType", "Transparent");
@@ -317,7 +319,9 @@ namespace Ballon.Ego.Editor
         static void Emission(Material m, Color c)
         {
             m.EnableKeyword("_EMISSION");
-            m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+            // 0.20: URPs Materialprüfung (BaseShaderGUI.SetMaterialKeywords, beim Reimport) lässt _EMISSION nur mit einem Emissive-Flag stehen;
+            // mit None verlor das Absehen beim Import 0.20 sein Leuchten (schwarz). Szenen haben keine GI, Realtime ist folgenlos
+            m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             m.SetColor("_EmissionColor", c);
         }
 
@@ -330,7 +334,14 @@ namespace Ballon.Ego.Editor
             foreach (var r in D.roles)
             {
                 var m = Lit("Role_" + r.role, Hex(r.aaa_color), 1f - r.rough, r.metal);
-                if (r.alpha < 1f) { m.SetFloat("_Smoothness", 0.96f); Transparent(m, 0.12f); }
+                if (r.alpha < 1f) { m.SetFloat("_Smoothness", 0.96f); Transparent(m, r.no_coat ? 0.04f : 0.12f); }
+                if (r.alpha < 1f && r.no_coat)  // 0.20 Zielfernrohr: wie kit.aaa_nodes (no_coat: Alpha 0,04, Specular 0,05, kein Klarlack) – Glas ≤ 5 % getönt
+                {
+                    m.SetFloat("_SpecularHighlights", 0f);
+                    m.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+                    m.SetFloat("_EnvironmentReflections", 0f);
+                    m.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+                }
                 if (r.emit > 0f)          // wie kit.aaa_nodes: Stärke emit · 1,6, reine Leuchtteile ohne beleuchtete Grundfarbe
                 {
                     Emission(m, Color.black);

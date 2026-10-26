@@ -349,6 +349,26 @@ wie oben (75° horizontal, 16:9, % von B/H, Ursprung oben links). Lagen aus `Ego
 Motiongens Bilddifferenz, nicht relativ zum Weg; so gemessen braucht die Automatik genau die Destiny-Zeit 20 Bilder. Relativ zum Weg (0,3 %)
 wären es bei der MP 13 Bilder, weil ihr Weg kürzer ist (18,5 statt 29,3 % B). Der MP-Wert liegt am oberen Rand des Destiny-Bands.
 
+## Messungen Schritt 6, Scout (26.10.2026)
+
+BALLON 0.20 „Spotter“ ([Bericht](versions/0.20-spotter.md)): zweite übertragene Klasse Scout BASIC-03 „Fernblick v2.1“ (Modell aus 0.19
+„Saddle“ unverändert). Gleiche Bezugsgrößen wie oben (75° horizontal, 16:9, % von B/H, Ursprung oben links); Lagen aus `EgoScreen`
+(Unity-Tests) und am Ego-Still mit Mittenkreuz, Zeiten am Live-Controller bei 60/s. Belege unter `~/Library/Caches/CubeEscapeBallon/spotter/`.
+
+| Punkt | Automatik (unverändert) | Scout (0.20) | Destiny-Scout (Motiongen REF destiny2, huefte) |
+|---|---|---|---|
+| **2.1** Hüfte, Mündung | x 58,1 / y 63,1 % | x **57,0** / y **62,7** % (`Hueftlage_des_Scouts_im_Band`; Haltung der Automatik) | Tone Patrol ≈ 57/63, Call to Serve 58/61; Band lange Waffen x 54–59 / y 60–71 |
+| **2.1** Okularende rechts der Mündung | 19,3 pp | **24,4** pp (x 81,3 / y 72,2 %) | 7–34 pp |
+| **3.2 A** Sprint-Trageform | Oberseite −20° | wie die Automatik: Oberseite **−20,3°**, Mündung **21,9 / 86,3** % | Scout-Sprint nicht gemessen (kein Clip) |
+| **4d** Anflug erste Bewegung → Ruhe, 60/s | 20 Bilder | `aim_in` **7** Bilder bei 30/s → **17 Bilder** (0,283 s) | Tone Patrol ≈ 22 (Bestand), Patron 12–15 [M]; Scharfschütze 15, Impuls 20 |
+| **4d** Zielen → Hüfte | `aim_out` 8 Bilder bei 30/s | `aim_out` **5** Bilder (0,167 s) | Dead Man's Tale ADS aus → Hüfte 0,17 s |
+| **1d** Zoom gegen Modell (Hüfte → Zielen) | Start 0, Ende 0 (5-%-Schwelle) | Start **0**, Ende **−1** mit `zoom_start` 0,2 (mit 0,05: Start −2) | Holo: Start 0…+2, Ende ±1 |
+| **1d** Linsenbild | – | ab Bild **12** von 19 (Okular an der Nahebene, Auge 60 mm vor der Kamera), 7 Bilder vor dem Ende der Restbewegung; vorher füllt das Okular kurz das Bild | Scharfschütze: Okular füllt 4 Bilder das Bild, Linse nach dem Modell; Scout: Linse klar in ≤ 3 Bildern |
+| **Visier-Standard 3** Öffnung im Zielen | Holo | **21,5** % B (Netz, Test) · am Unity-Bild 20–24 % B | 20–26 % B; Patron 20,8 % B |
+| **1a** Ring außen ÷ Innenkante / ÷ Glas | – | Unity-Zielbild **1,32 / 1,40** (320 / 243 / 228 px bei 960 B; Glas-Kante im Unity-Bild schmaler) | Blender 1,31 / 1,56; Destiny 1,28–1,30 |
+| Glas getönt | – | Parcours **1,3–2,6 %** heller als außen | ≤ 5 % (Destiny 0,98–1,01) |
+| Kadenz, Feuerart | 720/min Dauerfeuer | **180/min Einzelfeuer** (Spec `semi_auto`), Magazin 15 | Tone Patrol 180/min, 15 Schuss |
+
 ## Reihenfolge der Umsetzung (Vorschlag)
 
 Leitlinie: zuerst, was ohne Rendern geht und eine Regel verletzt; dann messen; dann die Bewegung; zuletzt neue Effekte. Einstufung
@@ -362,7 +382,7 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 | 3 | **Weltzoom und Hüft-Fadenkreuz (erledigt 26.10.2026, BALLON 0.13 „Hipfire“, [Bericht](versions/0.13-hipfire.md)):** Weltzoom Scout 2,0 / Handfeuerwaffe 1,15 / MP 1,45, Unity zoomt mit dem Klassenwert (Automatik 1,9 statt fest 1,35); Hüftformen `ring_dot` (Automatik, Impuls, MG), `brackets` (Handfeuerwaffe, neu), `caret` (Scharfschütze und Sprint der Automatik, neu) im Katalog `reticles.py`; ausblendendes Hüft-Fadenkreuz in Unity (Hüfte, Sprint, Zielen, Nachladen, Ziehen) | 1.2, 4.1, 4.2 | Version | unity | 1 |
 | 4 | **Bewegung (erledigt 26.10.2026, BALLON 0.15 „Plumb“, [Bericht](versions/0.15-plumb.md), [Messungen](#messungen-nach-schritt-4-26102026)):** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` 0,27 s und leerer Sicht, Zoom mit dem Modell (1d), Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips neu gerendert | 2.1, 3.1, 6.1, 1d, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
 | 5 | **Mündungsfeuer und Hülsen (erledigt 26.10.2026, BALLON 0.16 „Flash“, [Bericht](versions/0.16-flash.md)):** Blitz in Blender und Unity gleich (1 Bild bei 30/s, gleiche Dauer bei höherer Bildrate, reine Emission ohne Bloom, im Zielen ≤ 20 % der Holo-Öffnung, gemessen 13,1 %); Hülsen je Schuss aus dem Auswurffenster nach rechts und rechts unten, Feld `EJECT` je Waffe, Pool in Unity | 5.3, 5.4 (A seit 26.10.) | Version | gpu, unity | 4 (Rückstoß im Zielen) |
-| 6 | **Beim Ego-Übertrag je Klasse:** Hüfthaltung, Sprint-Trageform und Anflugdauer je Klasse · **MP übertragen (26.10.2026, BALLON 0.18 „Quickdraw“, [Bericht](versions/0.18-quickdraw.md), [Messungen](#messungen-schritt-6-mp-26102026)):** Maschinenpistole BASIC-06 als zweite spielbare Waffe (Taste 2), Klassenwerte als Daten in `ego.CLASSES`; weitere Klassen offen | 2.1, 3.2, 4d | je Klasse in der Version der Waffe | gpu, unity | 3, 4 |
+| 6 | **Beim Ego-Übertrag je Klasse:** Hüfthaltung, Sprint-Trageform und Anflugdauer je Klasse · **MP übertragen (26.10.2026, BALLON 0.18 „Quickdraw“, [Bericht](versions/0.18-quickdraw.md), [Messungen](#messungen-schritt-6-mp-26102026)):** Maschinenpistole BASIC-06 als zweite spielbare Waffe (Taste 2), Klassenwerte als Daten in `ego.CLASSES` · **Scout übertragen (26.10.2026, BALLON 0.20 „Spotter“, [Bericht](versions/0.20-spotter.md), [Messungen](#messungen-schritt-6-scout-26102026)):** Scout BASIC-03 v2.1 als dritte Waffe (Taste 3), Hüfte und Sprint wie die Automatik (lange Waffe), Anflug 7 Bilder bei 30/s, Einzelfeuer aus der Spec, Zielfernrohr nach Visier-Standard 3 in Unity; weitere Klassen offen | 2.1, 3.2, 4d | je Klasse in der Version der Waffe | gpu, unity | 3, 4 |
 | 7 | **Scout-Umbau (erledigt 26.10.2026, BALLON 0.19 „Saddle“, [Bericht](versions/0.19-saddle.md)):** Gehäuseoberkante unter dem Rohr als Buckel angehoben, Hals weg (flacher Rohrsattel auf kurzer Schiene), Visierhöhe 65 mm; Visier über Gehäuse 0,030 L; Prüfung `tools/test_sight_seat.py` in `./check`; 1a am neuen Zielbild nachgemessen | 1.1 | in der Version des Umbaus | gpu | nach BALLON 0.12 „Silhouette“ (nicht parallel an `w03`) |
 | 8 | **Bei der nächsten Skin-Arbeit:** flächige Sprenkel nur im Skin `gebraucht` | 8.2 | Patch | gpu | – |
 

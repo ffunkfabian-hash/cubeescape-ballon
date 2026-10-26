@@ -41,6 +41,7 @@ namespace Ballon.Ego
         public Matrix4x4[] shells;                                 // sichtbare Hülsen [0, shellCount), Kapazität motion.eject.max_live
         public int[] shellIds;                                     // Schuss je Hülse (Aktion: Index in fire; live: laufende Nummer)
         public int shellCount;
+        public bool adsHidden;                                     // Zielfernrohr (0.20, motion.ads_hide): Teile mit ads_hide aus
     }
 
     /// <summary>Zustand einer Aktionsauswertung (ego_build: state) – Magazin, Feder-Nachlauf, Rückstoßfeder.</summary>
@@ -102,6 +103,10 @@ namespace Ballon.Ego
         }
 
         public List<EgoPart> Movers => _movers;
+
+        /// <summary>Zielfernrohr (ego.ADS_HIDE, 0.20): Teile mit ads_hide aus, solange Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf,
+        /// ohne Live-Ebenen) näher als motion.ads_hide.eye_m an der Kamera liegt – wie ego_build.evaluate.</summary>
+        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && baseW.MultiplyPoint3x4(_eyeLocal).magnitude < D.motion.ads_hide.eye_m;
         public int SegmentIndex(string s) => _seg[s];
         public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length],
                                                         shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live] };
@@ -375,11 +380,21 @@ namespace Ballon.Ego
                 L.camPitch = st.recCx.x;
                 L.pos += R.MultiplyVector(new Vector3(0, st.recX.x, 0));
                 L.rot = L.rot * RotX(Rad(-(st.recX.y + climb)));          // Mündung steigt
-                L.trigger = (A.fire[0] - 1 <= f && f <= A.fire[A.fire.Length - 1] + 1) ? 1 : 0;
+                L.trigger = TriggerOn(A.fire, f, D.gameplay.Semi) ? 1 : 0;
                 L.bolt = (n > 0 && f - last < 1.5f) ? 1 : 0;
                 L.port = n > 0 ? 1 : 0;
             }
             return L;
+        }
+
+        /// <summary>ego.trigger_on: Dauerfeuer vom Bild vor dem ersten bis nach dem letzten Schuss gezogen; Einzelfeuer (0.20) je Schuss ein
+        /// Bild davor bis ein Bild danach.</summary>
+        public static bool TriggerOn(int[] fire, float f, bool semi)
+        {
+            if (fire == null || fire.Length == 0) return false;
+            if (!semi) return fire[0] - 1 <= f && f <= fire[fire.Length - 1] + 1;
+            foreach (var s in fire) if (s - 1 <= f && f <= s + 1) return true;
+            return false;
         }
 
         public static Matrix4x4 Apply(Matrix4x4 baseW, Layers L)
@@ -587,6 +602,7 @@ namespace Ballon.Ego
         {
             o = o ?? NewOutput();
             var baseW = Secondary(WeaponAt(A.weapon, f), f, st, A.EndsInAds);
+            o.adsHidden = AdsHidden(baseW);
             var L = Scripted(A, f, Rot3(baseW), st);
             var WM = Apply(baseW, L);
             MechAt(A, f, L, o.mech);

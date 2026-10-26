@@ -536,6 +536,13 @@ def evaluate(sc, A, f, report, state):
     W = sc.W
     R, pos = weapon_at(W, A['weapon'], f)
     R, pos = secondary(R, pos, f, state, EG.ends_in_ads(A))
+    # Zielfernrohr (0.20, EG.ADS_HIDE): Teile mit ads_hide aus, solange der Augenpunkt der Grundhaltung nah an der Kamera liegt
+    eye = pos + R @ kit.to_xyz(*W.ANCHORS['Socket_Eye']['at']) if 'Socket_Eye' in W.ANCHORS else None
+    hidden = eye is not None and eye.length < EG.ADS_HIDE['eye_m']
+    for p in W.PARTS:
+        if p.get('ads_hide') and p['id'] in sc.objs:
+            sc.objs[p['id']].hide_render = hidden
+    report['ads_hidden'] = sc.ads_hidden = hidden
     off_pos, off_rot = Vector(), Matrix.Identity(3)
     cam_pitch = 0.0
     Bz = EG.BREATHE_ALL                      # dezentes Atmen in jeder Aktion (Echtzeit, unabhängig vom Ablauftempo)
@@ -575,7 +582,7 @@ def evaluate(sc, A, f, report, state):
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
-        mech[live['trigger']] = 1.0 if A['fire'][0] - 1 <= f <= A['fire'][-1] + 1 else 0.0
+        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] == 'semi_auto') else 0.0   # Einzelfeuer: je Schuss
         mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         mech[live['port']] = 1.0 if shots else 0.0
     R2 = R @ off_rot

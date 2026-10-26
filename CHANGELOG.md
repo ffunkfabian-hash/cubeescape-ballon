@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.20.0 „Spotter“ – Scout BASIC-03 spielbar (Taste 3, Zielfernrohr, Einzelfeuer, gezeichnetes Absehen) und kleinere Texturen (Branch `claude/ballon-0.20-spotter`)
+
+- Entscheidung 97 A: Waffenatlanten und Skins je Kanal kleiner abgelegt (`export_unity.TEXTURE_STORE`: albedo JPG 4096, spec PNG 2048,
+  normal PNG 8 bit 4096, ao PNG 8 bit 2048), aus der Exporteinstellung: BASIC-01 145,7 → 39,6 MB, BASIC-06 189,4 → 43,8 MB, BASIC-03 40,6 MB;
+  Grenze 50 MB je Waffe in `./check` und Unity-Test. Ego-Bild Hüfte vorher/nachher SSIM 0,999, Kanten, Schrift, Sprenkel unverändert.
+- Schritt 6 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) für die Klasse Scout: Hüfte und Sprint wie die Automatik (Mündung
+  57,0/62,7 %), Anflug 7 Bilder bei 30/s = 17 Bilder bei 60/s, Weltzoom 2,0 (Beginn bei 20 % des Augenwegs), Hüft-Fadenkreuz `cross`,
+  180/min Einzelfeuer aus der Spec, Magazin 15, Hülsen `rifle`. Zielfernrohr in Unity nach Visier-Standard 3 (eine Kamera, Okular/Rohr/Türme
+  im Linsenbild aus, Öffnung 21,5 % B, Glas ≤ 3 % heller). Nutzerwunsch: Absehen aller Waffen in Unity gezeichnet in Hüftform (Cyan).
+  Glas und Leuchten nach URP-Reimport repariert. `ego.json` jetzt `ballon-ego/9`, der Leser liest `/8` und `/7` weiter. Tasten 1/2/3, Q reihum.
+  Bericht [docs/versions/0.20-spotter.md](docs/versions/0.20-spotter.md).
+
 ## 0.19.0 „Saddle“ – Scout BASIC-03 v2.1: Zielfernrohr direkt auf dem Gehäuse (Branch `claude/ballon-0.19-saddle`)
 
 - Schritt 7 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (1.1 A, Prüfung 1a): Gehäusebuckel unter dem Rohr mit kurzer Schiene,

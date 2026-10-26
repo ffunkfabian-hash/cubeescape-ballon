@@ -34,7 +34,7 @@ python3 tools/unity_run.py course tag       # Vorführlauf durch den Hangar-Parc
 open unity/Build/BallonFirstfeel.app        # spielen
 ```
 
-Alle Unity-Läufe gehen über `ce lock unity`. Protokolle, Testergebnisse und Belege liegen unter
+Vor einem Unity-Lauf lässt sich C# in einer Sekunde prüfen: `dotnet build` eines Wegwerf-csproj (außerhalb des Repos) gegen `Unity.app/Contents/Resources/Scripting/Managed/UnityEngine/*.dll`, `unity/Library/ScriptAssemblies/*.dll` und NUnit aus `Library/PackageCache` (0.20). Alle Unity-Läufe gehen über `ce lock unity`. Protokolle, Testergebnisse und Belege liegen unter
 `~/Library/Caches/CubeEscapeBallon/unity/`. Nach jeder Änderung an `basic/arms/*.py` oder der Pilotwaffe den Export wiederholen,
 danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuerst `cp -cR <Hauptprojekt>/unity/Library unity/Library`
 (bei beendetem Unity; APFS-Klon, Sekunden), sonst importiert der erste Lauf das ganze Projekt neu.
@@ -46,12 +46,12 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 | Maus | umsehen (0,08°/Punkt, im Zielen durch den Zoom geteilt; nicht invertiert) |
 | W A S D, Shift | gehen, sprinten (nur vorwärts, nicht im Zielen oder beim Feuern) |
 | Strg oder C, Leertaste | ducken, springen |
-| linke Maustaste | Dauerfeuer, 720/min wie der Clip `fire_hip` (Frage 7.1 A); Abzug bei leerem Magazin lädt selbst nach |
-| rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35; Viewmodel bleibt bei 75° horizontal; der Zoom folgt dem Modell, 1d) |
+| linke Maustaste | Feuer nach der Feuerart der Waffe (`gameplay.fire_mode` aus der Spec): Automatik und MP Dauerfeuer, 720/min wie der Clip `fire_hip` (Frage 7.1 A); Scout (0.20) Einzelfeuer, ein Schuss je Klick, höchstens 180/min – ein Klick vor Ablauf des Schussabstands wartet bis zu 0,4 s; Abzug bei leerem Magazin lädt selbst nach |
+| rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35, Scout 2,0; Viewmodel bleibt bei 75° horizontal; der Zoom folgt dem Modell, 1d). Scout: Zielfernrohr nach Visier-Standard 3 – eine Kamera, das Okular wächst heran, dann sind Okular, Rohr und Türme aus (`motion.ads_hide`) und das Objektiv zeigt das gezoomte Weltbild mit dem Absehen `chevron` |
 | R | nachladen: taktisch bei Restmunition, sonst leer (mit Durchladen) |
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
-| 1 / 2 | Waffe wählen (0.18): 1 Automatik BASIC-01, 2 Maschinenpistole BASIC-06 – wegstecken (0,27 s, beim Nachladen `reload_to_switch`), leere Sicht ≈ 0,13 s, die andere Waffe ziehen (6.1 A); die Taste der aktiven Waffe zieht sie, wenn sie weggesteckt ist. Jede Waffe behält ihre Munition. Bis 0.17: 1 ziehen, 2 wegstecken |
-| Q | zur anderen Waffe wechseln (wie Taste 1/2; mit nur einer Waffe in `ego.json` wegstecken und dieselbe ziehen, 0.15); mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
+| 1 / 2 / 3 | Waffe wählen (0.18, Taste 3 seit 0.20): 1 Automatik BASIC-01, 2 Maschinenpistole BASIC-06, 3 Scout BASIC-03 – wegstecken (0,27 s, beim Nachladen `reload_to_switch`), leere Sicht ≈ 0,13 s, die andere Waffe ziehen (6.1 A); die Taste der aktiven Waffe zieht sie, wenn sie weggesteckt ist. Jede Waffe behält ihre Munition. Bis 0.17: 1 ziehen, 2 wegstecken |
+| Q | zur nächsten Waffe wechseln (wie Taste 1/2/3, reihum: 1 → 2 → 3 → 1; mit nur einer Waffe in `ego.json` wegstecken und dieselbe ziehen, 0.15); mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
 | K | Waffen-Skin weiterschalten |
 | L | Szene wechseln: Parcours → Szene 1 → … → Parcours (nur wenn Szenen exportiert sind, siehe „Szenen und Parcours“) |
 | N | nächste Lichtszene der gezeigten Szene (Tag → Nacht → …); im grauen Parcours ohne Wirkung |
@@ -83,7 +83,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/8`. Der Abnehmer ist `unity/` ab 0.18; `EgoFile.ParseAll` liest `/7` weiter (eine Waffe). Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/9`. Der Abnehmer ist `unity/` ab 0.20; `EgoFile.ParseAll` liest `/8` und `/7` weiter. Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
@@ -98,12 +98,16 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 - 7 (0.16): `motion.flash` (Mündungsfeuer, 5.3 A: Dauer `dur_s` = 1/30 s, Netz relativ zu `Socket_Muzzle`, Kern- und Flammendreiecke,
   Drehfolge `roll_deg`), `motion.eject` (Hülsenbahn, 5.4 A: Geschwindigkeit, Schwerkraft, Drehung, `life_s`, `max_live`, `delay_frames`),
   `weapon.eject` (je Waffe aus dem Modul-Feld `EJECT`: `enabled`, Startlage, Richtung, Hülsennetz) und die Rollen `flash_core`/`flash_flame`.
+- 9 (0.20): `gameplay.fire_mode` (Feuerart aus der Spec: `full_auto`, `semi_auto`), `weapon.parts[].ads_hide` und `motion.ads_hide`
+  (`eye_m`: Teile mit `ads_hide` sind aus, solange `Socket_Eye` der Grundhaltung näher an der Kamera liegt), `weapons[].textures.store`
+  und `limit_mb` (Ablage der Atlanten je Kanal, siehe „Texturen“); die Referenz trägt je Stichprobe `ads_hidden`. `EgoFile.ParseAll`
+  liest `/8` und `/7` weiter und setzt dabei Dauerfeuer und `eye_m` 0 (bis 0.19 hatte keine spielbare Waffe solche Teile).
 - 8 (0.18): `weapons[]` je spielbarer Waffe (`tools/export_unity.WEAPONS`, Reihenfolge = Taste 1, 2): `profile` (Klasse und Herkunft aus
   `ego.CLASSES`), `gameplay`, `weapon` mit `live` (Abzug, Verschluss, Auswurfklappe; bis 0.17 fest im Code), `poses`, `grips`, `actions`,
   `atlas` (Material `Atlas_<atlas>`, Pilotwaffe `weapon`), `textures` (Waffenatlas, Skins), `mesh_bounds`, `sources`, `reference`. Gemeinsam
   bleiben `motion`, `camera`, `arm`, `finger_poses`, `roles`, `textures` (Arme, LUT) und `mesh_bounds` (Armteile).
 
-Ältere Exporte (`/1` bis `/6`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
+Ältere Exporte (`/1` bis `/6`) und unbekannte neuere lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
 
 **Achsen.** Die Umrechnung steht einmal in `ego.json › axes.to_unity`: Unity = (−x, z, −y) aus Blender. Matrizen werden als
 M·B·Mᵀ umgerechnet. Gerechnet wird überall im Blender-Raum, umgerechnet erst beim Setzen der Transforms. Die Netze kommen aus dem
@@ -114,7 +118,25 @@ und versetzt (beim ersten Import gemessen: 90° am Magazin, bis 218 mm).
 ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
 
 - Schüsse kommen aus der Kadenz (Übertrag zwischen den Bildern, damit 720/min bei jeder Bildrate gelten). Eine Salvenwaffe
-  (`burst_shots` > 0) schießt in der Salve mit `burst_rpm` und läuft eine angefangene Salve zu Ende.
+  (`burst_shots` > 0) schießt in der Salve mit `burst_rpm` und läuft eine angefangene Salve zu Ende. **Einzelfeuer (0.20,
+  `gameplay.fire_mode` `semi_auto`):** ein Schuss je Zug (Flanke des Abzugs), höchstens 60/rpm; ein Zug vor Ablauf des Schussabstands
+  oder im Übergang aus dem Sprint wartet bis zu 0,4 s (E). Im Clip ist der Abzug je Schuss ein Bild davor bis ein Bild danach gezogen
+  (`ego.trigger_on`, Blender und `EgoSolver` gleich).
+- **Gezeichnetes Absehen (0.20, Nutzer 26.10.2026):** „Ich finde die Visier-Punkte/Kreise/Fadenkreuze sehen so komisch 3D-mäßig aus. Mir
+  wäre lieber etwas Gezeichnetes … Im Bestfall hat man das Fadenkreuz/Punkt/Kreis/wie auch immer vom Hüftfeuer im Visier.“ Unity blendet das
+  Modell-Absehen (Teile mit Rolle `reticle_*`) aus und zeichnet im Zielen (Zielen-Anteil ≥ 0,9, beim Zielfernrohr im Linsenbild) die
+  Hüftform der Klasse (`gameplay.hip`, gleiche Größe, ohne Aufgehen) in der Farbe der Absehen-Rolle (Cyan) an der Bildlage von
+  `Socket_Reticle` (`EgoPlayer.SightVisible`, Aufnahmen stempeln es wie das Hüft-Fadenkreuz). Blender zeigt das Absehen weiter als
+  Modellteil (Formblätter, Ego-Clips) – bewusste Abweichung, das Visier-Konzept folgt ([Übergabe](uebergabe-visier-konzept.md)).
+- **Glas und Leuchten nach dem Reimport (0.20):** URPs Materialprüfung setzte beim Reimport der Rollenmaterialien das Glas auf
+  vormultipliert (SrcBlend One, milchig) und nahm dem Absehen `_EMISSION` (Emissive-Flag fehlte). `BallonSetup` setzt jetzt
+  `_BlendModePreserveSpecular` 0 und `RealtimeEmissive`. Linsen im Zielfernrohr (`roles[].no_coat`) wie `kit.aaa_nodes`: Alpha 0,04, ohne
+  Glanz und Spiegelung – gemessen im Parcours 1,3–2,6 % heller als außen (Visier-Standard 3: ≤ 5 %).
+- **Zielfernrohr (0.20, Visier-Standard 3):** eine Kamera, das Modell bleibt ungezoomt, die Welt zoomt mit dem Klassenwert. Teile mit
+  `ads_hide` (Okular, Okularkante, Okularlinse, Rohr, Türme, Spannband) schaltet `EgoRig` aus, solange `Socket_Eye` der Grundhaltung
+  näher als `motion.ads_hide.eye_m` (60 mm = Okularende 30 mm + Nahebene 30 mm) an der Kamera liegt; Blender (`ego_build.evaluate`) rechnet
+  dieselbe Regel, die Referenz prüft sie je Stichprobe. Vorher wächst das Okular heran wie bei Destiny; der Zeitpunkt ist in
+  „Tests“ gemessen (`Zielfernrohr_Zoom_und_Linse_mit_dem_Modell`).
 - **Rückstoß in vier Größen (0.15, Entscheidungsliste 5.1 A / 5.2 A):**
   - *Grundbahn* (Destiny-Säule): je Schuss `path_up_h` = 1 % der Bildhöhe nach oben, seitlich die feste Folge `path_side_b`
     (≤ 1,6 % B Spitze–Spitze, je Salve dieselbe Form). Gerechnet im Bildmaßstab der Welt, im Zielen also kleinere Winkel. Sie dreht nur
@@ -177,7 +199,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Werte_je_Klasse`, `Hueftlage_der_MP_im_Band`, `Sprint_Rollrichtung_je_Klasse` (EditMode, 0.18) | Klassenwerte aus `ego.CLASSES`: MP `aim_in` 3 Bilder bei 30/s, `aim_out` 2,4, sonst alle Aktionen wie die Automatik; Automatik `aim_in` 0,33 s unverändert; Weltzoom MP 1,45, Kadenz 720/min, Magazin 30, Hüft-Fadenkreuz `circle_cross` 6,1 % H, Hülse `pistol`; MP-Hüfte Mündung im Band der Kurzwaffen (x 53–71 / y 59–84 %, nahe Destiny-MP 57–58/61–62), Absehen 60–70 % x; Sprint: MP mit der Oberseite nach links (> 20°), Mündung nahe 43/80 %, Automatik nach rechts |
 | `Daumen_der_Stuetzhand_nicht_im_Vorbau` (EditMode, 0.18) | MP, alle Haltungen und Aktionsbilder mit der Stützhand am Vordergriff (585): Daumenspitze nicht im Vorbau und unter seiner Oberkante (höchstens 39 mm, Vorbau 58–106 mm); Fingerstellung `foregrip` (Faust, Daumen hinter dem Griff, Nutzerwahl) und `foregrip_open` statt `underhand`/`open` |
 | `Anzeige_baut_Treffertext_nur_bei_Aenderung` (PlayMode, 0.18) | Treffertext der Anzeige bleibt dasselbe Objekt, solange nur Aktionsbilder weiterlaufen; beim Waffenwechsel neu (Skin-Name der anderen Waffe) |
-| `Anflug_je_Klasse_live_bei_60` (PlayMode, 0.18) | Live-Controller bei 60/s, Absehen der Grundhaltung am Bild, Ruhe = Bildweg je Bild unter 0,09 % (fest, wie Motiongen am Bild): MP 8–12 Bilder (Destiny-MP 8–12), Automatik 18–22 (Destiny 20) |
+| `Anflug_je_Klasse_live_bei_60` (PlayMode, 0.18, 0.20) | Live-Controller bei 60/s, Absehen der Grundhaltung am Bild, Ruhe = Bildweg je Bild unter 0,09 % (fest, wie Motiongen am Bild): MP 8–12 Bilder (Destiny-MP 8–12), Automatik 18–22 (Destiny 20), Scout 15–20 (zwischen Scharfschütze 15 und Impuls 20) |
 | `Wechsel_1_2_mit_leerer_Sicht_ohne_Munitionsverlust`, `Kein_GC_Muell_beim_Wechsel`, `Wechsel_mit_Tasten_1_2_im_Spieler` (PlayMode, 0.18) | Tasten 1/2 bei 60/s wie Q: Wegstecken 0,2–0,3 s, leere Sicht 0,1–0,2 s, erstes neues Bild = `draw` der anderen Waffe; Munition je Waffe bleibt (auch beim Abbruch des Nachladens vor `MagIn`); Wechsel 1 → 2 → 1 ohne Speicher je Bild (Spurpool im Controller); im Spieler nur das aktive Modell sichtbar, Weltzoom und Hüft-Fadenkreuz der Klasse |
 | `Wechsel_mit_leerer_Sicht` (PlayMode, 0.15) | Q bei 60/s, sichtbar = Kante der Netzgrenzen von Waffe oder Armen im Bild: Wegstecken bis zum Marker `Holstered` 0,2–0,3 s (0,267), leere Sicht 0,1–0,2 s (0,133), erstes neues Bild gehört zu `draw`, Hüfte (`draw › Ready`) und ruhig danach in Reihenfolge; das Ziehen wie mit Taste 1. Aus dem Nachladen (`reload_to_switch`) nur protokolliert |
 | `Zoom_beginnt_und_endet_mit_dem_Modell` (PlayMode, 0.15) | Hüfte → Zielen und Sprint → Zielen bei 60/s: Zoom beginnt 0–2 Bilder nach dem Modell und endet ±1 Bild (Bildbewegung von Mündung, Visier, Magazinschacht, Griff, Schwelle 5 %); Zielen → Hüfte: Zoom zurück, wenn das Modell die Hüfte erreicht |
@@ -187,6 +209,13 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Pendeln_kehrt_ohne_Ueberschwingen_zurueck` (Patch unity-abgleich) | 360°/s für 0,3 s, Gieren des Laufs gegen einen Zwilling ohne Maus: Auslenkung 0,5–3°, Überschwingen < 0,02°, Rückkehr unter 5 % in 0,22–0,4 s |
 | `Nachlade_Abbruch_vor_und_nach_MagIn` (Patch unity-abgleich) | taktisch und leer: Wegstecken 0,1 s vor `MagIn` lässt die Munition (5 bzw. 0), 0,1 s danach ist das Magazin voll und bleibt es nach dem Ziehen |
 | `Schuss_Ring_und_Treffer_X` (Patch unity-abgleich) | Spieler in der Szene, Scheibe 3 m vor dem Auge: Hüftschuss ohne Ring, Schuss im Zielen mit Ring für genau 1 Bild, Treffer-X 0,17–0,25 s, Größen 2 % / 4,5 % H, Orange `#E0651E` |
+| `Altes_Format_8_wird_gelesen_Automatik_und_MP_unveraendert` (EditMode, 0.20) | `ballon-ego/9`; die Datei von main (0.19, Kopie `Tests/EditMode/Data/ego_v8.json`) wird gelesen (Dauerfeuer, `eye_m` 0), Automatik und MP sind in `/9` Feld für Feld gleich (Haltungen, Griffe, Aktionen, Spielwerte, Teile, Profil, Bewegung ohne `ads_hide`) |
+| `Werte_des_Scouts`, `Hueftlage_des_Scouts_im_Band` (EditMode, 0.20) | Klassenwerte Scout aus `ego.CLASSES`: Einzelfeuer aus der Spec, 180/min, Magazin 15, Weltzoom 2,0, Hüftform `cross`, `aim_in` 7 / `aim_out` 5 Bilder, Schussbilder 2/12/22, Hüfte und Sprint wie die Automatik, übrige Aktionen gleich, sieben Teile mit `ads_hide`; Hüfte: Mündung x 54–59 / y 60–71 %, Okularende 7–34 pp rechts, Kontur bis zum Rand |
+| `Zielfernrohr_Oeffnung_und_Teile_im_Zielen`, `Einzelfeuer_im_Clip_ein_Zug_je_Schuss` (EditMode, 0.20) | Zielen: lichte Öffnung (Objektivlinse) 20–26 % B bei 90 mm und 75°, Absehen auf der Mitte, `ads_hide`-Teile aus, in der Hüfte da, `aim_in` schaltet einmal um; Clip: Scout je Schuss ein Zug am Abzug, Automatik/MP einer je Salve |
+| `Texturen_je_Waffe_unter_der_Grenze` (EditMode, 0.20) | je Waffe Atlas + Skins ≤ `limit_mb` (50 MB), Endung und Kantenlänge je Kanal nach `TEXTURE_STORE`, wie Unity importiert |
+| `Gleich_wie_Blender_Referenz` (0.20 erweitert) | dazu je Stichprobe `ads_hidden` (Zielfernrohr-Teile aus/an) gleich wie Blender, für alle drei Waffen |
+| `Einzelfeuer_feuert_genau_einmal_je_Klick`, `Wechsel_1_3_2_mit_leerer_Sicht_ohne_Munitionsverlust` (PlayMode, 0.20) | Scout: gehaltener Abzug = 1 Schuss, 5 Klicks = 5, zwei Klicks im Abstand 0,1 s = 2 Schüsse im Abstand 60/180 s; Automatik und MP 12 Schuss/s; Tasten 1 → 3 → 2 → 1: leere Sicht 0,1–0,2 s, erstes neues Bild `draw` der gewählten Waffe, Munition je Waffe bleibt |
+| `Zielfernrohr_Zoom_und_Linse_mit_dem_Modell`, `Scout_im_Spieler_Taste_3_Zielfernrohr_Einzelfeuer` (PlayMode, 0.20) | 60/s: Zoom beginnt 0–2 Bilder nach dem Modell und endet ±1 (gemessen 0 / −1, mit `gameplay.zoom_start` 0,2; mit 0,05 begann er 2 Bilder vor dem Modell), Linsenbild, sobald das Okular die Nahebene erreicht (Bild 12, 7 Bilder vor dem Ende der Restbewegung, nach dem Zoombeginn); zurück: Teile 4 Bilder vor der Hüfte wieder da; im Spieler: Taste 3, Weltzoom 2,0, `ads_hide`-Renderer im Zielen aus, gehaltener Abzug ein Schuss |
 | `Weltzoom_je_Klasse`, `Hueftform_der_Automatik_aus_dem_Katalog`, `Hueft_Fadenkreuz_geht_nach_SPREAD_auf` (EditMode, 0.13) | Weltzoom Scout 2,0 / Handfeuerwaffe 1,15 / MP 1,45 / Automatik 1,9 aus den Daten; Hüftform `ring_dot` 3,2 % H, weiß, fein, Sprint `caret` 1,5 % H, sichtbares Außenmaß an den Maskenpixeln ±1 px; Aufgehen je Bild gleich `reticles.simulate` |
 | `Hueft_Fadenkreuz_je_Zustand`, `Weltzoom_im_Spiel_aus_der_Klasse` (PlayMode, 0.13) | Spieler in der Szene bei 30/s: in der Hüfte sichtbar, geht beim Hüftfeuer auf und ab, im ersten Bild des Zielens weg, im Sprint nur „^“, beim Nachladen, Wegstecken und Ziehen aus, danach wieder da; Welt-FOV im Zielen = Zoom 1,9 |
 | `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife, Hüft-Fadenkreuz (Aufgehen, Sichtbarkeit, Rastern): kein Speicher im laufenden Bild |
@@ -336,6 +365,37 @@ Eloxal.
   Abschattung der Spiegelung).
 
 Zeiten des Exports mit Backen: Waffe 3 min, Arme 0,5 min, 7 Skins 15 min, gesamt ≈ 20 min ohne Wartezeit an der GPU-Sperre.
+
+## Texturen (0.20)
+
+**Entscheidung 97 A** (Nutzer, 26.10.2026: „A“): Ego-Waffentexturen und Skins kleiner speichern – halbe Kantenlänge und/oder JPG bzw.
+stärker komprimiertes PNG je Kanal, Normal-Map verlustarm, Ziel ≈ ¼ der Größe je Waffe, ohne sichtbaren Verlust im Ego-Bild.
+
+**Regel** (`tools/export_unity.TEXTURE_STORE`, aus der Exporteinstellung, nicht von Hand): gebacken wird weiter mit 4096²
+(`tools/bake_unity.py`), gespeichert wird je Kanal
+
+| Kanal | Ablage | Grund |
+|---|---|---|
+| Diffusfarbe `albedo` | 4096², JPG Qualität 92, 4:4:4 | volle Kantenlänge für Kanten, Schrift und Sprenkel; JPG ohne Farbunterabtastung (PSNR 47 dB gegen das PNG) |
+| Spiegelfarbe + Glätte `spec` | 2048², PNG 8 bit RGBA, linear verkleinert | JPG trägt kein Alpha; Glanz und F0 sind flächig |
+| Normale `normal` | 4096², PNG 8 bit (statt 16) | verlustarm: Unity speichert Normalen ohnehin mit 8 bit je Kanal (BC5) |
+| AO `ao` | 2048², PNG 8 bit, ein Kanal (statt 16 bit RGB) | niederfrequent |
+
+Der Export legt neu gebackene Atlanten und Skins so ab und stellt übernommene beim nächsten Lauf um; ohne Blender:
+`python3 tools/export_unity.py --store-textures`. `ego.json` nennt die Regel je Waffe (`textures.store`, `limit_mb` 50 MB ≈ ¼ von
+BASIC-06 vorher); `export_unity.py --check` (in `./check`) und der EditMode-Test `Texturen_je_Waffe_unter_der_Grenze` prüfen Endung,
+Kantenlänge (wie Unity importiert) und Summe je Waffe. Arme und LUT bleiben unverändert (nicht Teil von 97 A).
+
+| Waffe | vorher (0.19) | nachher | Anteil |
+|---|---|---|---|
+| BASIC-01 v2.1 (Atlas + 7 Skins) | 145,7 MB | 39,6 MB | 0,27 |
+| BASIC-06 v2.1 (Atlas + 7 Skins) | 189,4 MB | 43,8 MB | 0,23 |
+| BASIC-03 v2.1 (neu, Atlas + 7 Skins) | – (direkt nach der Regel abgelegt) | 40,6 MB | – |
+
+**Sichtprüfung im Ego-Bild** (Unity-Build, 1600 × 900, gleiche Haltung vorher/nachher, `ce evidence diff --kind bake`): Hüfte BASIC-01
+SSIM 0,9991 / PSNR 40,0 dB (0,2 % Pixel geändert), BASIC-06 0,9994 / 40,2 dB, Skin Gebraucht (`inspect_l`) 0,9985 / 49,9 dB, Nachtschicht
+0,9983; Kanten, Schrift und Sprenkel im Ausschnitt nicht unterscheidbar. Im Zielen (SSIM 0,990 / 0,992) liegt der Unterschied nur im Glas:
+Glasmaterial und gezeichnetes Absehen (siehe unten), nicht die Texturen. Beleg `~/Library/Caches/CubeEscapeBallon/spotter/texturen_vorher_nachher.png`.
 
 ## Grenzen
 

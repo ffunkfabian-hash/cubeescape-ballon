@@ -6,7 +6,8 @@ Ego-Daten als JSON (`ballon-ego/8`).
         ego.json (Daten: Gemeinsames + weapons[]), ego_reference_<Waffe>.json (Blender-Auswertung von tools/ego_build.evaluate als
         Testreferenz). Gebacken wird nur, was sich geändert hat: eine Waffe, deren Form gleich blieb, behält Atlanten, Netzgrenzen und FBX
         (wie BALLON_EXPORT_DATA_ONLY=1 je Waffe); geänderte gemeinsame Formquellen backen alles neu.
-  python3 tools/export_unity.py --check   → ego.json passt zu den Python-Daten (ohne Blender, Teil von ./check)
+  python3 tools/export_unity.py --check   → ego.json passt zu den Python-Daten (ohne Blender, Teil von ./check), Waffentexturen nach TEXTURE_STORE
+  python3 tools/export_unity.py --store-textures → Waffenatlanten und Skins im vorhandenen ego.json nach TEXTURE_STORE ablegen (0.20, ohne Backen)
 
 Alle Werte stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z), wie tools/ego_build.py rechnet; die Laufzeit in C#
 rechnet dort und wandelt erst am Ende nach Unity. Die Umrechnung steht **einmal** hier (`AXES`) und wird von Unity gelesen und
@@ -25,14 +26,29 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/8'   # 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
-# Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2 (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl 26.10.2026)
-WEAPONS = ['pilot.w01_auto_rifle_v21', 'pilot.w06_submachine_gun_v21']
+FORMAT = 'ballon-ego/9'   # 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+# Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
+# 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“)
+WEAPONS = ['pilot.w01_auto_rifle_v21', 'pilot.w06_submachine_gun_v21', 'pilot.w03_scout_rifle_v21']
 WEAPON = WEAPONS[0]                 # Pilotwaffe (./check: Mündungsfeuer im Zielen, Bezug der Automatik)
 SHARED_SRC = ['basic/common.py', 'basic/kit.py', 'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py',
               'tools/blender_build.py', 'tools/export_unity.py', 'tools/bake_unity.py']
 ATLAS_KEY = {'BASIC-01-v2.1': 'weapon'}   # Dateinamen der Pilotwaffe seit 0.7 (weapon_albedo.png …); andere: weapon_<Waffe>
 DST = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
+# Ablage der Waffenatlanten und Skins (0.20 „Spotter“, Entscheidung 97 A, Nutzer 26.10.2026: „A“): gebacken wird weiter mit 4096²
+# (tools/bake_unity.py), gespeichert je Kanal kleiner. Bis 0.19 lagen alle Kanäle als 4096²-PNG im Repo (Normale und AO mit 16 bit),
+# BASIC-06 mit 7 Skins 191 MB. Unity liest die Dateien mit Kompression (BC7/BC5, 8 bit je Kanal): 16 bit trägt dort nichts bei.
+# Gemessen am Ego-Bild (Hüfte, Zielen) vorher/nachher, siehe docs/unity.md › Texturen. Gilt nur für die Waffen, nicht für die Arme.
+TEXTURE_STORE = dict(
+    albedo=dict(size=4096, ext='jpg', quality=92,
+                de='Diffusfarbe: volle Kantenlänge (Schrift, Kanten, Sprenkel), JPG Qualität 92 ohne Farbunterabtastung (4:4:4)'),
+    spec=dict(size=2048, ext='png',
+              de='Spiegelfarbe mit Glätte im Alpha: halbe Kantenlänge (linear verkleinert), PNG 8 bit RGBA – JPG trägt kein Alpha'),
+    normal=dict(size=4096, ext='png',
+                de='Normale: volle Kantenlänge, PNG 8 bit statt 16 (verlustarm: Unity speichert Normalen mit 8 bit je Kanal)'),
+    ao=dict(size=2048, ext='png', de='AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)'),
+    limit_mb=50.0,
+    de='Grenze je Waffe ≈ ¼ von BASIC-06 vorher (191 MB); Unity-Test Texturen_je_Waffe_unter_der_Grenze und export_unity.py --check')
 MM = 0.001
 AXES = dict(to_unity=[[-1, 0, 0], [0, 0, 1], [0, -1, 0]],
             de='Unity = M · Blender; Blender-Kameraraum rechts −X, vorn −Y, oben +Z → Unity rechts +X, oben +Y, vorn +Z')
@@ -142,7 +158,8 @@ def weapon_data(W, live):
             m.update(kind='rotate', axis=ax, a0=r6(mv['range_deg'][0]), a1=r6(mv['range_deg'][1]))
         elif mv:
             m['kind'] = mv['kind']          # glow/segment: in der Pilotwaffe nicht vorhanden, Laufzeit meldet unbekannte Arten
-        parts.append(dict(id=p['id'], asm=p['asm'], role=p['mat'], parent=p.get('parent_part') or '', rest=rest, move=m))
+        parts.append(dict(id=p['id'], asm=p['asm'], role=p['mat'], parent=p.get('parent_part') or '', rest=rest, move=m,
+                          ads_hide=bool(p.get('ads_hide'))))
     anchors = [dict(id=k, part=v.get('part', ''), pos=xyz(*v['at'])) for k, v in W.ANCHORS.items()]
     wid = EG.weapon_id(W)
     ids = {p['id'] for p in parts}
@@ -208,7 +225,7 @@ def weapon_entry(W):
     C = EG.CLASSES[P['type']]
     profile = dict(type=P['type'], src=P['src'], poses=sorted(C['poses']), frames=[dict(action=k, frames=r6(v)) for k, v in C['frames'].items()],
                    frames_src=P['frames_src'])
-    return dict(id=wid, profile=profile, gameplay=gameplay(P['type']), weapon=weapon, poses=poses, grips=grips,
+    return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type']), fire_mode=P['fire_mode']), weapon=weapon, poses=poses, grips=grips,
                 actions=[action(k, A) for k, A in P['actions'].items()], atlas=ATLAS_KEY.get(wid, f'weapon_{wid}'),
                 reference=f'ego_reference_{wid}.json',
                 sources=dict(files=sha_files(weapon_files(W)), parts_sha256=parts_sha(W)))
@@ -241,6 +258,7 @@ def data():
                   breathe_all={k: r6(v) for k, v in EG.BREATHE_ALL.items()},
                   recoil={k: v if isinstance(v, int) else r6(v) for k, v in EG.RECOIL.items()},
                   switch=dict(empty_s=r6(EG.SWITCH['empty_s']), src=EG.SWITCH['src']),
+                  ads_hide=dict(eye_m=r6(EG.ADS_HIDE['eye_m']), src=EG.ADS_HIDE['src']),
                   flash=flash_data(),
                   eject=dict(speed_mps=r6(EG.EJECT['speed_mps']), gravity_mps2=r6(EG.EJECT['gravity_mps2']), spin_dps=r6(EG.EJECT['spin_dps']),
                              spin_axis=r6(vdir(EG.EJECT['spin_axis'])), life_s=r6(EG.EJECT['life_s']), max_live=EG.EJECT['max_live'],
@@ -252,6 +270,7 @@ def data():
                 roles=[dict(role=r, color=roles[r]['color'], aaa_color=roles[r].get('aaa_color', roles[r]['color']),
                             rough=roles[r]['rough'], metal=roles[r]['metal'], alpha=roles[r].get('alpha', 1.0),
                             emit=roles[r].get('emit', 0.0), emit_only=bool(roles[r].get('emit_only')), spec=roles[r].get('spec', 0.5),
+                            no_coat=bool(roles[r].get('no_coat')),
                             de=roles[r]['de']) for r in used + sorted(EG.FLASH['roles'])],
                 weapons=entries)
 
@@ -375,6 +394,128 @@ def write_reference(path, ref):
                  + ', "samples": [\n' + ',\n'.join(json.dumps(s, separators=(',', ':')) for s in ref['samples']) + '\n]}\n')
 
 
+HAS_MAGICK = __import__('shutil').which('magick') is not None
+
+
+def _identify(path):
+    """(Breite, Bit je Kanal, Kanäle) einer Bilddatei (ImageMagick)."""
+    import subprocess
+    out = subprocess.run(['magick', 'identify', '-format', '%w %z %[channels]\n', path], capture_output=True, text=True,
+                         check=True).stdout.split('\n')[0].split()
+    return int(out[0]), int(out[1]), out[2]
+
+
+def store_texture(tex_dir, name, kind):
+    """Eine gebackene Datei `name` (Kanal `kind`) nach TEXTURE_STORE ablegen: verkleinern, Bittiefe, Format. Gibt den neuen Dateinamen
+    zurück. Wiederholbar: eine schon abgelegte Datei bleibt unverändert; eine PNG, die als JPG abgelegt wird, entfällt samt .meta."""
+    import subprocess
+    R = TEXTURE_STORE[kind]
+    base, ext = os.path.splitext(name)
+    dst = f"{base}.{R['ext']}"
+    src = os.path.join(tex_dir, name)
+    if ext[1:] == R['ext']:
+        w, z, ch = _identify(src)
+        if w == R['size'] and z == 8 and (kind != 'ao' or ch.startswith('gray')):
+            return dst
+    elif not os.path.exists(src):
+        if os.path.exists(os.path.join(tex_dir, dst)):     # schon abgelegt (Datenexport nach der Umstellung)
+            return dst
+        raise FileNotFoundError(src)
+    w = _identify(src)[0]
+    cmd = ['magick', src]
+    if kind == 'ao':
+        cmd += ['-channel', 'R', '-separate', '+channel']       # Graukeil: R = G = B, ohne Farbraumumrechnung (lineare Daten)
+    if R['size'] != w:
+        lin = kind in ('albedo', 'spec')                         # Farben in linearem Licht verkleinern (Alpha bleibt linear)
+        cmd += (['-colorspace', 'RGB'] if lin else []) + ['-filter', 'Lanczos', '-resize', f"{R['size']}x{R['size']}"] + \
+            (['-colorspace', 'sRGB'] if lin else [])
+    cmd += ['-depth', '8', '-strip']
+    cmd += ['-quality', str(R['quality']), '-sampling-factor', '4:4:4'] if R['ext'] == 'jpg' else ['-define', 'png:compression-level=9']
+    tmp = os.path.join(tex_dir, f"_tmp_{base}.{R['ext']}")
+    subprocess.run(cmd + [tmp], check=True)
+    os.replace(tmp, os.path.join(tex_dir, dst))
+    if dst != name:
+        for f in (src, src + '.meta'):
+            if os.path.exists(f):
+                os.remove(f)
+    return dst
+
+
+def store_textures(tex, tex_dir):
+    """Atlas und Skins einer Waffe (weapons[].textures) nach TEXTURE_STORE ablegen; ergänzt store (Regel) und limit_mb."""
+    T = json.loads(json.dumps(tex))
+    done = {}
+
+    def put(name, kind):
+        if name not in done:
+            done[name] = store_texture(tex_dir, name, kind)
+        return done[name]
+    for k in ('albedo', 'spec', 'normal', 'ao'):
+        T['weapon'][k] = put(T['weapon'][k], k)
+    for s in T.get('skins', []):
+        s['albedo'], s['spec'] = put(s['albedo'], 'albedo'), put(s['spec'], 'spec')
+    T['store'] = [dict(kind=k, size=TEXTURE_STORE[k]['size'], ext=TEXTURE_STORE[k]['ext'], de=TEXTURE_STORE[k]['de'])
+                  for k in ('albedo', 'spec', 'normal', 'ao')]
+    T['limit_mb'] = TEXTURE_STORE['limit_mb']
+    return T
+
+
+def texture_files(tex):
+    """Alle Dateien einer Waffe (Atlas und Skins, ohne Doppelte)."""
+    fs = [tex['weapon'][k] for k in ('albedo', 'spec', 'normal', 'ao')]
+    for s in tex.get('skins', []):
+        fs += [s['albedo'], s['spec']]
+    return sorted(set(fs))
+
+
+def store_main():
+    """--store-textures: die Atlanten aller Waffen im vorhandenen ego.json nach TEXTURE_STORE ablegen (ohne Blender, ohne Backen)."""
+    p = os.path.join(DST, 'ego.json')
+    D = json.load(open(p, encoding='utf-8'))
+    tex_dir = os.path.join(DST, 'Textures')
+    for e in D['weapons']:
+        before = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in texture_files(e['textures']))
+        e['textures'] = store_textures(e['textures'], tex_dir)
+        after = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in texture_files(e['textures']))
+        print(f"{e['id']}: Texturen {before / 1e6:.1f} → {after / 1e6:.1f} MB ({after / before:.2f})")
+    write_json(p, D)
+    return 0
+
+
+def texture_problems(D, tex_dir=None, store=None):
+    """Abweichungen der abgelegten Waffentexturen von TEXTURE_STORE: je Datei (Atlas und Skins) Endung, Kantenlänge, 8 bit (AO ein Kanal),
+    Summe je Waffe ≤ limit_mb. tex_dir/store: für tools/test_texture_store.py."""
+    bad = []
+    tex_dir = tex_dir or os.path.join(DST, 'Textures')
+    R = store or TEXTURE_STORE
+    for e in D.get('weapons', []):
+        T = e.get('textures')
+        if not T:
+            continue
+        files = [(k, T['weapon'][k]) for k in ('albedo', 'spec', 'normal', 'ao')]
+        files += [(k, s[k]) for s in T.get('skins', []) for k in ('albedo', 'spec')]
+        seen = set()
+        for k, f in files:
+            if f in seen:
+                continue
+            seen.add(f)
+            p = os.path.join(tex_dir, f)
+            if not f.endswith('.' + R[k]['ext']):
+                bad.append(f"{e['id']} {k} {f} statt .{R[k]['ext']}")
+            elif not os.path.exists(p):
+                bad.append(f"{e['id']}: fehlt {f}")
+            elif HAS_MAGICK:                        # Kantenlänge und Bittiefe brauchen ImageMagick (PR-Check auf Linux ohne: nur Mac)
+                w, z, ch = _identify(p)
+                if w != R[k]['size'] or z != 8 or (k == 'ao' and not ch.startswith('gray')):
+                    bad.append(f"{e['id']} {k} {f}: {w}² {z} bit {ch} statt {R[k]['size']}² 8 bit")
+        if any(b.startswith(f"{e['id']}: fehlt") for b in bad):
+            continue
+        mb = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in seen if os.path.exists(os.path.join(tex_dir, f))) / 1e6
+        if mb > R['limit_mb']:
+            bad.append(f"{e['id']}: Texturen {mb:.1f} MB > {R['limit_mb']:g} MB")
+    return bad
+
+
 def feedback_mismatch():
     """Rückmeldung im Zielen steht als C#-Konstanten in EgoPlayer.AdsFeedback (kein Feld in ego.json, sonst neues Format):
     Werte müssen reticles.ADS_FEEDBACK und der Akzentfarbe aus kit.MATERIALS folgen. Gibt die abweichenden Namen zurück."""
@@ -412,6 +553,12 @@ def check():
             diff.append(e['reference'])
     if any(k not in cur for k in BAKED):
         diff.append('textures/mesh_bounds (Arme)')
+    if not HAS_MAGICK:
+        print('Hinweis: ImageMagick fehlt – Kantenlänge und Bittiefe der Waffentexturen nur auf dem Mac geprüft (Endung, Vollständigkeit, Grenze hier)')
+    tex_bad = texture_problems(cur)
+    if tex_bad:
+        print('Waffentexturen nicht nach TEXTURE_STORE (' + '; '.join(tex_bad[:6]) + '): python3 tools/export_unity.py --store-textures')
+        return 1
     if diff:
         print('ego.json veraltet (' + ', '.join(diff[:8]) + '): Export neu ausführen')
         return 1
@@ -445,7 +592,8 @@ def reference(sc, e):
             objs['flash'] = flat(sc.fx_now['flash'])
         for k, M in sorted(sc.fx_now['shells'].items()):
             objs[f'shell_{k}'] = flat(M)
-        return dict(label=label, action=action, frame=frame, objects=[dict(name=k, m=v) for k, v in objs.items()])
+        return dict(label=label, action=action, frame=frame, ads_hidden=bool(getattr(sc, 'ads_hidden', False)),   # 0.20: Zielfernrohr
+                    objects=[dict(name=k, m=v) for k, v in objs.items()])
 
     samples = []
     for name in ('hip', 'ads', 'reload', 'inspect_r'):          # Standbilder wie ego_build.main (Handbelegung je Haltung)
@@ -593,6 +741,7 @@ def blender_main():
                                     objects=[b for k, b in mesh_bounds().items() if k in ids])
             tri = sum(b['tris'] for b in e['mesh_bounds']['objects'])
             print(f"[export_unity] {e['id']}: {len(e['mesh_bounds']['objects'])} Netze ({tri} Dreiecke) → {e['weapon']['fbx']}", flush=True)
+        e['textures'] = store_textures(e['textures'], tex_dir)      # 0.20: Ablage je Kanal (97 A), auch für übernommene Atlanten
         if i == 0 and arms_new:                # Arme sind für alle Waffen gleich: einmal in der Szene der ersten Waffe
             shared_tex = dict(de='Gebackene Atlanten (kit.aaa_nodes, Skin standard) und AgX-LUT; nicht gebacken: Glas, Leuchtteile',
                               arms=bake_arms(sc, tex_dir, gpu), lut=BK.agx_lut(os.path.join(tex_dir, 'agx_lut.png')))
@@ -616,4 +765,4 @@ if __name__ == '__main__':
     if IN_BLENDER:
         blender_main()
     else:
-        sys.exit(check() if '--check' in sys.argv else (print(__doc__) or 0))
+        sys.exit(check() if '--check' in sys.argv else store_main() if '--store-textures' in sys.argv else (print(__doc__) or 0))

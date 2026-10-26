@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/8",
+ "format": "ballon-ego/9",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der gemeinsamen Generatorquellen beim Export (je Waffe: weapons[].sources); --check meldet auch reine Formänderungen",
@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "26e458e87ff03168b6134e5d0dba06ed7824a8a121321f40e6e9c5c30a7ac229"
+    "sha256": "c705046d5c93856b7b199464833c24a6742ac4cde331f42b572a3993a8baf78a"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "d984e10e748fb196f7f650c1ee6cbd40c7fec960bb92738c5979c0494ef600c1"
+    "sha256": "86766f53b829c60d8e1c97c7e7429d9121da36ee75dd5dcfd75ea66c24f6f4bc"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "d26e6f67b4307afa57da9de13ac03de977a4a24c797b8745fda2fc789464b684"
+    "sha256": "e36cb6a602172da966a89d16c1a33ccbd9405b373e43ad19f0ae1422a4dee073"
    },
    {
     "path": "tools/bake_unity.py",
@@ -126,6 +126,10 @@
   "switch": {
    "empty_s": 0.03,
    "src": "M Destiny-Wechsel: leere Sicht 0,07–0,30 s (Motiongen wechsel › 4); Ziel 0,1–0,2 s (6.1 A), gemessen 0,13 s bei 60/s"
+  },
+  "ads_hide": {
+   "eye_m": 0.06,
+   "src": "E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, Entscheidungsliste 1d)"
   },
   "flash": {
    "dur_s": 0.033333,
@@ -1053,6 +1057,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Akzent Orange (Bedienelement)"
   },
   {
@@ -1065,6 +1070,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Schwarz eloxiert"
   },
   {
@@ -1077,6 +1083,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Messing (Patronen)"
   },
   {
@@ -1089,6 +1096,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Brüniertes Metall"
   },
   {
@@ -1101,6 +1109,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Markierung hell"
   },
   {
@@ -1113,6 +1122,7 @@
    "emit": 3.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Energieanzeige (leuchtend)"
   },
   {
@@ -1125,7 +1135,21 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Visierglas"
+  },
+  {
+   "role": "glass_scope",
+   "color": "#BFE3EA",
+   "aaa_color": "#BFE3EA",
+   "rough": 0.0,
+   "metal": 0.0,
+   "alpha": 0.12,
+   "emit": 0.0,
+   "emit_only": false,
+   "spec": 0.5,
+   "no_coat": true,
+   "de": "Linse im Zielfernrohr (ohne Klarlack-Spiegelung)"
   },
   {
    "role": "graphite",
@@ -1137,6 +1161,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.25,
+   "no_coat": false,
    "de": "Griffpolymer / Graphit"
   },
   {
@@ -1149,6 +1174,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Funktionsmetall"
   },
   {
@@ -1161,6 +1187,7 @@
    "emit": 0.6,
    "emit_only": true,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Absehen Cyan"
   },
   {
@@ -1173,6 +1200,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.2,
+   "no_coat": false,
    "de": "Gummi mit Stippling"
   },
   {
@@ -1185,6 +1213,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Lackiertes Gehäuse (Creme)"
   },
   {
@@ -1197,6 +1226,7 @@
    "emit": 0.0,
    "emit_only": false,
    "spec": 0.5,
+   "no_coat": false,
    "de": "Blanke Zierkante"
   },
   {
@@ -1209,6 +1239,7 @@
    "emit": 3.0,
    "emit_only": true,
    "spec": 0.0,
+   "no_coat": false,
    "de": "Mündungsfeuer Kern (fast weiß, reine Emission)"
   },
   {
@@ -1221,6 +1252,7 @@
    "emit": 0.8,
    "emit_only": true,
    "spec": 0.0,
+   "no_coat": false,
    "de": "Mündungsfeuer Seitenflammen (Familienfarbe Cyan, reine Emission)"
   }
  ],
@@ -1379,7 +1411,8 @@
       ]
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
-    }
+    },
+    "fire_mode": "full_auto"
    },
    "weapon": {
     "id": "BASIC-01-v2.1",
@@ -1411,7 +1444,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "lower",
@@ -1437,7 +1471,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "side_panel_l",
@@ -1463,7 +1498,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "side_panel_r",
@@ -1489,7 +1525,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "panel_screws",
@@ -1515,7 +1552,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "takedown_pins",
@@ -1541,7 +1579,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "armor_l",
@@ -1567,7 +1606,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "armor_r",
@@ -1593,7 +1633,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "armor_screws",
@@ -1619,7 +1660,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "top_shroud",
@@ -1645,7 +1687,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "shroud_bracket",
@@ -1671,7 +1714,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "shroud_web",
@@ -1697,7 +1741,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "chevron_top",
@@ -1723,7 +1768,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "chevron_side",
@@ -1749,7 +1795,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "text_l",
@@ -1775,7 +1822,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "top_cover",
@@ -1801,7 +1849,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "top_cover_trim",
@@ -1827,7 +1876,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "core_glow",
@@ -1853,7 +1903,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "core_lens",
@@ -1879,7 +1930,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "core_ring",
@@ -1905,7 +1957,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "counter_bezel",
@@ -1931,7 +1984,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "ammo_counter",
@@ -1957,7 +2011,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_release",
@@ -1983,7 +2038,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_well",
@@ -2009,7 +2065,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "bolt_carrier",
@@ -2035,7 +2092,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "port_cover",
@@ -2061,7 +2119,8 @@
        ],
        "a0": 0.0,
        "a1": 75.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "rail",
@@ -2087,7 +2146,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_mount",
@@ -2113,7 +2173,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_clamp",
@@ -2139,7 +2200,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_body",
@@ -2165,7 +2227,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_base",
@@ -2191,7 +2254,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_frame",
@@ -2217,7 +2281,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_frame_trim",
@@ -2243,7 +2308,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_glass",
@@ -2269,7 +2335,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_emitter",
@@ -2295,7 +2362,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_reticle",
@@ -2321,7 +2389,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_knob_w",
@@ -2347,7 +2416,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_battery",
@@ -2373,7 +2443,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "grip",
@@ -2399,7 +2470,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "trigger",
@@ -2425,7 +2497,8 @@
        ],
        "a0": 0.0,
        "a1": -12.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "trigger_guard",
@@ -2451,7 +2524,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "grip_cap",
@@ -2477,7 +2551,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "selector",
@@ -2503,7 +2578,8 @@
        ],
        "a0": 0.0,
        "a1": 90.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "selector_r",
@@ -2529,7 +2605,8 @@
        ],
        "a0": 0.0,
        "a1": 90.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "charging_handle",
@@ -2555,7 +2632,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "magazine",
@@ -2581,7 +2659,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "magazine_base",
@@ -2607,7 +2686,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "magazine_round",
@@ -2633,7 +2713,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_band",
@@ -2659,7 +2740,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_lips",
@@ -2685,7 +2767,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_rounds",
@@ -2711,7 +2794,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "handguard",
@@ -2737,7 +2821,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "handguard_grip",
@@ -2763,7 +2848,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "handguard_cap",
@@ -2789,7 +2875,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "handguard_screws",
@@ -2815,7 +2902,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "heatsink",
@@ -2841,7 +2929,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "gas_piston",
@@ -2867,7 +2956,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "barrel",
@@ -2893,7 +2983,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "gas_block",
@@ -2919,7 +3010,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "muzzle",
@@ -2945,7 +3037,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "muzzle_crown",
@@ -2971,7 +3064,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "barrel_nut",
@@ -2997,7 +3091,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock_joint",
@@ -3023,7 +3118,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock_ring",
@@ -3049,7 +3145,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock_spine",
@@ -3075,7 +3172,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock",
@@ -3101,7 +3199,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "buffer_body",
@@ -3127,7 +3226,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "buffer_rod",
@@ -3153,7 +3253,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "cheek_rest",
@@ -3179,7 +3280,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "cheek_posts",
@@ -3205,7 +3307,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "butt_pad",
@@ -3231,7 +3334,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock_cable",
@@ -3257,7 +3361,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      }
     ],
     "anchors": [
@@ -7213,7 +7318,7 @@
       "trigger_guard",
       "upper"
      ],
-     "albedo": "weapon_albedo.png",
+     "albedo": "weapon_albedo.jpg",
      "spec": "weapon_spec.png",
      "normal": "weapon_normal.png",
      "ao": "weapon_ao.png"
@@ -7223,59 +7328,86 @@
       "name": "standard",
       "de": "Standard",
       "kind": "Farbe",
-      "albedo": "weapon_albedo.png",
+      "albedo": "weapon_albedo.jpg",
       "spec": "weapon_spec.png"
      },
      {
       "name": "nacht",
       "de": "Nachtschicht",
       "kind": "Farbe",
-      "albedo": "weapon_nacht_albedo.png",
+      "albedo": "weapon_nacht_albedo.jpg",
       "spec": "weapon_nacht_spec.png"
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
-      "albedo": "weapon_polar_albedo.png",
+      "albedo": "weapon_polar_albedo.jpg",
       "spec": "weapon_polar_spec.png"
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
-      "albedo": "weapon_kobalt_albedo.png",
+      "albedo": "weapon_kobalt_albedo.jpg",
       "spec": "weapon_kobalt_spec.png"
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
-      "albedo": "weapon_wueste_albedo.png",
+      "albedo": "weapon_wueste_albedo.jpg",
       "spec": "weapon_wueste_spec.png"
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
-      "albedo": "weapon_tarnung_albedo.png",
+      "albedo": "weapon_tarnung_albedo.jpg",
       "spec": "weapon_tarnung_spec.png"
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
-      "albedo": "weapon_gebraucht_albedo.png",
+      "albedo": "weapon_gebraucht_albedo.jpg",
       "spec": "weapon_gebraucht_spec.png"
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
-      "albedo": "weapon_eloxal_albedo.png",
+      "albedo": "weapon_eloxal_albedo.jpg",
       "spec": "weapon_eloxal_spec.png"
      }
-    ]
+    ],
+    "store": [
+     {
+      "kind": "albedo",
+      "size": 4096,
+      "ext": "jpg",
+      "de": "Diffusfarbe: volle Kantenlänge (Schrift, Kanten, Sprenkel), JPG Qualität 92 ohne Farbunterabtastung (4:4:4)"
+     },
+     {
+      "kind": "spec",
+      "size": 2048,
+      "ext": "png",
+      "de": "Spiegelfarbe mit Glätte im Alpha: halbe Kantenlänge (linear verkleinert), PNG 8 bit RGBA – JPG trägt kein Alpha"
+     },
+     {
+      "kind": "normal",
+      "size": 4096,
+      "ext": "png",
+      "de": "Normale: volle Kantenlänge, PNG 8 bit statt 16 (verlustarm: Unity speichert Normalen mit 8 bit je Kanal)"
+     },
+     {
+      "kind": "ao",
+      "size": 2048,
+      "ext": "png",
+      "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
+     }
+    ],
+    "limit_mb": 50.0
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -8486,7 +8618,8 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
-    }
+    },
+    "fire_mode": "full_auto"
    },
    "weapon": {
     "id": "BASIC-06-v2.1",
@@ -8518,7 +8651,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "lower",
@@ -8544,7 +8678,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "side_panel_l",
@@ -8570,7 +8705,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "side_panel_r",
@@ -8596,7 +8732,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "panel_screws",
@@ -8622,7 +8759,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "counter_bezel",
@@ -8648,7 +8786,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "ammo_counter",
@@ -8674,7 +8813,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "bolt",
@@ -8700,7 +8840,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "port_cover",
@@ -8726,7 +8867,8 @@
        ],
        "a0": 0.0,
        "a1": 75.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_release",
@@ -8752,7 +8894,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "rail",
@@ -8778,7 +8921,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_mount",
@@ -8804,7 +8948,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_clamp",
@@ -8830,7 +8975,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_body",
@@ -8856,7 +9002,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_base",
@@ -8882,7 +9029,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_frame",
@@ -8908,7 +9056,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_frame_trim",
@@ -8934,7 +9083,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_glass",
@@ -8960,7 +9110,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_emitter",
@@ -8986,7 +9137,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_reticle",
@@ -9012,7 +9164,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_knob_w",
@@ -9038,7 +9191,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_battery",
@@ -9064,7 +9218,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "shroud",
@@ -9090,7 +9245,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "shroud_cap",
@@ -9116,7 +9272,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "shroud_screws",
@@ -9142,7 +9299,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "band_side",
@@ -9168,7 +9326,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "text_l",
@@ -9194,7 +9353,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "barrel",
@@ -9220,7 +9380,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "muzzle",
@@ -9246,7 +9407,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "muzzle_crown",
@@ -9272,7 +9434,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "grip",
@@ -9298,7 +9461,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "trigger",
@@ -9324,7 +9488,8 @@
        ],
        "a0": 0.0,
        "a1": -12.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "trigger_guard",
@@ -9350,7 +9515,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "grip_cap",
@@ -9376,7 +9542,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "selector",
@@ -9402,7 +9569,8 @@
        ],
        "a0": 0.0,
        "a1": 90.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "selector_r",
@@ -9428,7 +9596,8 @@
        ],
        "a0": 0.0,
        "a1": 90.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "charging_handle",
@@ -9454,7 +9623,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "magazine",
@@ -9480,7 +9650,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "magazine_base",
@@ -9506,7 +9677,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "magazine_round",
@@ -9532,7 +9704,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "mag_rounds",
@@ -9558,7 +9731,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "loop",
@@ -9584,7 +9758,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "foregrip",
@@ -9610,7 +9785,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "foregrip_pad",
@@ -9636,7 +9812,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock_joint",
@@ -9662,7 +9839,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock_spine",
@@ -9688,7 +9866,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "stock",
@@ -9714,7 +9893,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      },
      {
       "id": "butt_pad",
@@ -9740,7 +9920,8 @@
        ],
        "a0": 0.0,
        "a1": 0.0
-      }
+      },
+      "ads_hide": false
      }
     ],
     "anchors": [
@@ -13674,7 +13855,7 @@
       "trigger_guard",
       "upper"
      ],
-     "albedo": "weapon_BASIC-06-v2.1_albedo.png",
+     "albedo": "weapon_BASIC-06-v2.1_albedo.jpg",
      "spec": "weapon_BASIC-06-v2.1_spec.png",
      "normal": "weapon_BASIC-06-v2.1_normal.png",
      "ao": "weapon_BASIC-06-v2.1_ao.png"
@@ -13684,59 +13865,86 @@
       "name": "standard",
       "de": "Standard",
       "kind": "Farbe",
-      "albedo": "weapon_BASIC-06-v2.1_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_spec.png"
      },
      {
       "name": "nacht",
       "de": "Nachtschicht",
       "kind": "Farbe",
-      "albedo": "weapon_BASIC-06-v2.1_nacht_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_nacht_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_nacht_spec.png"
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
-      "albedo": "weapon_BASIC-06-v2.1_polar_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_polar_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_polar_spec.png"
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
-      "albedo": "weapon_BASIC-06-v2.1_kobalt_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_kobalt_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_kobalt_spec.png"
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
-      "albedo": "weapon_BASIC-06-v2.1_wueste_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_wueste_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_wueste_spec.png"
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
-      "albedo": "weapon_BASIC-06-v2.1_tarnung_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_tarnung_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_tarnung_spec.png"
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
-      "albedo": "weapon_BASIC-06-v2.1_gebraucht_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_gebraucht_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_gebraucht_spec.png"
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
-      "albedo": "weapon_BASIC-06-v2.1_eloxal_albedo.png",
+      "albedo": "weapon_BASIC-06-v2.1_eloxal_albedo.jpg",
       "spec": "weapon_BASIC-06-v2.1_eloxal_spec.png"
      }
-    ]
+    ],
+    "store": [
+     {
+      "kind": "albedo",
+      "size": 4096,
+      "ext": "jpg",
+      "de": "Diffusfarbe: volle Kantenlänge (Schrift, Kanten, Sprenkel), JPG Qualität 92 ohne Farbunterabtastung (4:4:4)"
+     },
+     {
+      "kind": "spec",
+      "size": 2048,
+      "ext": "png",
+      "de": "Spiegelfarbe mit Glätte im Alpha: halbe Kantenlänge (linear verkleinert), PNG 8 bit RGBA – JPG trägt kein Alpha"
+     },
+     {
+      "kind": "normal",
+      "size": 4096,
+      "ext": "png",
+      "de": "Normale: volle Kantenlänge, PNG 8 bit statt 16 (verlustarm: Unity speichert Normalen mit 8 bit je Kanal)"
+     },
+     {
+      "kind": "ao",
+      "size": 2048,
+      "ext": "png",
+      "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
+     }
+    ],
+    "limit_mb": 50.0
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -14412,6 +14620,6400 @@
        0.109373
       ],
       "tris": 132
+     }
+    ]
+   }
+  },
+  {
+   "id": "BASIC-03-v2.1",
+   "profile": {
+    "type": "scout_rifle",
+    "src": "Entscheidungsliste Schritt 6, zweite übertragene Klasse (0.20 „Spotter“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, Zielfernrohr nach Visier-Standard 3",
+    "poses": [],
+    "frames": [
+     {
+      "action": "aim_in",
+      "frames": 7.0
+     },
+     {
+      "action": "aim_out",
+      "frames": 5.0
+     }
+    ],
+    "frames_src": "Scout bei Destiny nur grob gemessen: Tone Patrol ≈ 22 Bilder (0,37 s, Bestand, „vom Nachbartyp übertragen“), Patron of Lost Causes 0,20–0,25 s = 12–15 Bilder [M] (Motiongen destiny2 › Glidepath, visiere › v-d2-scout); dazwischen und zwischen Scharfschütze (15 Bilder bis ruhig) und Impuls (20) → E 17 Bilder bei 60/s erste Bewegung → Ruhe, am Unity-Bild gemessen; aim_out M Destiny-Scout ADS aus → Hüfte 0,17 s (Dead Man's Tale, Motiongen auswertung › V04) = 5 Bilder bei 30/s"
+   },
+   "gameplay": {
+    "rpm": 180,
+    "magazine": 15,
+    "zoom_start": 0.2,
+    "src": "M 180/min (Tone Patrol, Precision Frame: Schussabstand 20–21 Bilder bei 60/s und Menükarte, Motiongen destiny2 › 3; Manifest Precision Frame 180 [S], waffenwerte › 4); Magazin 15 M (Menükarte Tone Patrol; Destiny-Scouts 13–18 [S]); Feuerart aus der Spec (META fire), halbautomatisch: ein Schuss je Zug; zoom_start E (1d): der Weltzoom beginnt bei diesem Anteil des Augenwegs (Klassen ohne Wert 5 %) – am Unity-Bild gemessen, damit er wie beim Holo mit oder kurz nach dem Modell beginnt",
+    "weapon_type": "scout_rifle",
+    "sight": "scope",
+    "world_zoom": 2.0,
+    "zoom_table": [
+     {
+      "type": "auto_rifle",
+      "zoom": 1.9
+     },
+     {
+      "type": "pulse_rifle",
+      "zoom": 2.0
+     },
+     {
+      "type": "scout_rifle",
+      "zoom": 2.0
+     },
+     {
+      "type": "hand_cannon",
+      "zoom": 1.15
+     },
+     {
+      "type": "sidearm",
+      "zoom": 1.25
+     },
+     {
+      "type": "submachine_gun",
+      "zoom": 1.45
+     },
+     {
+      "type": "shotgun",
+      "zoom": 1.25
+     },
+     {
+      "type": "grenade_launcher",
+      "zoom": 1.4
+     },
+     {
+      "type": "sniper_rifle",
+      "zoom": 5.5
+     },
+     {
+      "type": "fusion_rifle",
+      "zoom": 1.8
+     },
+     {
+      "type": "linear_fusion_rifle",
+      "zoom": 3.8
+     },
+     {
+      "type": "trace_rifle",
+      "zoom": 1.8
+     },
+     {
+      "type": "rocket_launcher",
+      "zoom": 2.8
+     },
+     {
+      "type": "machine_gun",
+      "zoom": 1.9
+     },
+     {
+      "type": "combat_bow",
+      "zoom": 1.8
+     },
+     {
+      "type": "sword",
+      "zoom": 1.3
+     },
+     {
+      "type": "glaive",
+      "zoom": 1.55
+     }
+    ],
+    "hip": {
+     "kind": "cross",
+     "share_h": 0.045,
+     "extent_mm": 14.39,
+     "status": "entworfen",
+     "color": "#EEF2F5",
+     "weight": 0.65,
+     "line_r_mm": 0.3,
+     "opacity": 0.9,
+     "min_line_px": 0.6,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        -7.0,
+        0.0
+       ],
+       "b": [
+        -1.6,
+        0.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        1.6,
+        0.0
+       ],
+       "b": [
+        7.0,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        -7.0
+       ],
+       "b": [
+        0.0,
+        -1.6
+       ],
+       "d": [
+        0.0,
+        -1.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        1.6
+       ],
+       "b": [
+        0.0,
+        7.0
+       ],
+       "d": [
+        0.0,
+        1.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.45
+      }
+     ],
+     "spread": {
+      "id": "precision",
+      "base": 0.0,
+      "per_shot": 2.2,
+      "max": 3.5,
+      "recover_s": 0.18,
+      "move": 1.0
+     },
+     "sprint": {
+      "kind": "",
+      "share_h": 0.0,
+      "extent_mm": 0.0,
+      "prims": []
+     },
+     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "fire_mode": "semi_auto"
+   },
+   "weapon": {
+    "id": "BASIC-03-v2.1",
+    "root": "BASIC-03",
+    "name": "Fernblick v2.1",
+    "fbx": "BASIC-03-v2.1.fbx",
+    "parts": [
+     {
+      "id": "receiver",
+      "asm": "receiver",
+      "role": "shell",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "mag_well",
+      "asm": "receiver",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "side_panel_l",
+      "asm": "receiver",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "side_panel_r",
+      "asm": "receiver",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "panel_screws",
+      "asm": "receiver",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "top_cover",
+      "asm": "receiver",
+      "role": "shell",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "top_cover_trim",
+      "asm": "receiver",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "chamber_pip",
+      "asm": "receiver",
+      "role": "energy",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "pip_bezel",
+      "asm": "receiver",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "band_side",
+      "asm": "receiver",
+      "role": "accent",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "text_l",
+      "asm": "receiver",
+      "role": "decal",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "bolt",
+      "asm": "mechanism",
+      "role": "metal",
+      "parent": "",
+      "rest": [
+       0.0,
+       -0.02,
+       0.096
+      ],
+      "move": {
+       "kind": "translate",
+       "vec": [
+        0.0,
+        0.034,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "port_cover",
+      "asm": "mechanism",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       -0.02,
+       -0.045,
+       0.086
+      ],
+      "move": {
+       "kind": "rotate",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 75.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "rail",
+      "asm": "receiver",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_mount_r",
+      "asm": "sight",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       -0.02,
+       0.1512
+      ],
+      "move": {
+       "kind": "translate",
+       "vec": [
+        0.0,
+        0.0,
+        0.08
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_clamp",
+      "asm": "sight",
+      "role": "accent",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_strap",
+      "asm": "sight",
+      "role": "anodized",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "scope_tube",
+      "asm": "sight",
+      "role": "graphite",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "scope_eyepiece",
+      "asm": "sight",
+      "role": "graphite",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "scope_eye_trim",
+      "asm": "sight",
+      "role": "trim",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "scope_objective",
+      "asm": "sight",
+      "role": "graphite",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_rim",
+      "asm": "sight",
+      "role": "anodized",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_crown",
+      "asm": "sight",
+      "role": "trim",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_turret",
+      "asm": "sight",
+      "role": "accent",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "scope_turret_w",
+      "asm": "sight",
+      "role": "anodized",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "scope_glass",
+      "asm": "sight",
+      "role": "glass_scope",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_ocular_glass",
+      "asm": "sight",
+      "role": "glass_scope",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "sight_reticle",
+      "asm": "sight",
+      "role": "reticle_cyan",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "handguard",
+      "asm": "support",
+      "role": "graphite",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "handguard_grip",
+      "asm": "support",
+      "role": "rubber",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "handguard_cap",
+      "asm": "support",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "handguard_screws",
+      "asm": "support",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "barrel",
+      "asm": "barrel",
+      "role": "metal",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "gas_tube",
+      "asm": "barrel",
+      "role": "metal",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "gas_block",
+      "asm": "barrel",
+      "role": "dark_metal",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "muzzle",
+      "asm": "barrel",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "muzzle_crown",
+      "asm": "barrel",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grip",
+      "asm": "grip_controls",
+      "role": "rubber",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "trigger",
+      "asm": "grip_controls",
+      "role": "metal",
+      "parent": "",
+      "rest": [
+       0.0,
+       -0.044718,
+       0.037
+      ],
+      "move": {
+       "kind": "rotate",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": -12.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "trigger_guard",
+      "asm": "grip_controls",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grip_cap",
+      "asm": "grip_controls",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "selector",
+      "asm": "grip_controls",
+      "role": "accent",
+      "parent": "",
+      "rest": [
+       0.0,
+       -0.004,
+       0.062
+      ],
+      "move": {
+       "kind": "rotate",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 90.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "selector_r",
+      "asm": "grip_controls",
+      "role": "accent",
+      "parent": "",
+      "rest": [
+       0.0,
+       -0.004,
+       0.062
+      ],
+      "move": {
+       "kind": "rotate",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 90.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "charging_handle",
+      "asm": "mechanism",
+      "role": "accent",
+      "parent": "",
+      "rest": [
+       0.0205,
+       0.09,
+       0.109
+      ],
+      "move": {
+       "kind": "translate",
+       "vec": [
+        0.0,
+        0.055,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "mag_release",
+      "asm": "grip_controls",
+      "role": "anodized",
+      "parent": "",
+      "rest": [
+       0.019,
+       -0.086,
+       0.056
+      ],
+      "move": {
+       "kind": "translate",
+       "vec": [
+        -0.0025,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "magazine",
+      "asm": "ammo",
+      "role": "shell",
+      "parent": "",
+      "rest": [
+       0.0,
+       -0.11,
+       0.062
+      ],
+      "move": {
+       "kind": "translate",
+       "vec": [
+        0.0,
+        -0.0112,
+        -0.1596
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "magazine_base",
+      "asm": "ammo",
+      "role": "anodized",
+      "parent": "magazine",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "magazine_round",
+      "asm": "ammo",
+      "role": "brass",
+      "parent": "magazine",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "mag_rounds",
+      "asm": "ammo",
+      "role": "brass",
+      "parent": "magazine",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "stock",
+      "asm": "stock",
+      "role": "graphite",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "stock_bolts",
+      "asm": "stock",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "cheek_pad",
+      "asm": "stock",
+      "role": "rubber",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "butt_pad",
+      "asm": "stock",
+      "role": "rubber",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     }
+    ],
+    "anchors": [
+     {
+      "id": "Socket_Hand",
+      "part": "grip",
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "id": "Socket_SupportHand",
+      "part": "handguard",
+      "pos": [
+       0.0,
+       -0.3,
+       0.09
+      ]
+     },
+     {
+      "id": "Socket_Muzzle",
+      "part": "muzzle_crown",
+      "pos": [
+       0.0,
+       -0.721,
+       0.096
+      ]
+     },
+     {
+      "id": "Socket_MagWell",
+      "part": "mag_well",
+      "pos": [
+       0.0,
+       -0.11,
+       0.062
+      ]
+     },
+     {
+      "id": "Socket_Charge",
+      "part": "charging_handle",
+      "pos": [
+       0.025,
+       0.077,
+       0.109
+      ]
+     },
+     {
+      "id": "Socket_Sight",
+      "part": "scope_eyepiece",
+      "pos": [
+       0.0,
+       0.048,
+       0.161
+      ]
+     },
+     {
+      "id": "Socket_Objective",
+      "part": "scope_rim",
+      "pos": [
+       0.0,
+       -0.072,
+       0.161
+      ]
+     },
+     {
+      "id": "Socket_Reticle",
+      "part": "sight_reticle",
+      "pos": [
+       0.0,
+       -0.066,
+       0.161
+      ]
+     },
+     {
+      "id": "Socket_Eye",
+      "part": "scope_objective",
+      "pos": [
+       0.0,
+       0.018,
+       0.161
+      ]
+     }
+    ],
+    "eject": {
+     "enabled": true,
+     "pos": [
+      -0.02,
+      -0.045,
+      0.096
+     ],
+     "dir": [
+      -0.894427,
+      -0.268328,
+      0.357771
+     ],
+     "case": "rifle",
+     "verts": [
+      -0.021,
+      0.0,
+      0.0,
+      0.021,
+      0.0,
+      0.0,
+      -0.021,
+      -0.0048,
+      0.0,
+      -0.021,
+      -0.004157,
+      0.0024,
+      -0.021,
+      -0.0024,
+      0.004157,
+      -0.021,
+      0.0,
+      0.0048,
+      -0.021,
+      0.0024,
+      0.004157,
+      -0.021,
+      0.004157,
+      0.0024,
+      -0.021,
+      0.0048,
+      0.0,
+      -0.021,
+      0.004157,
+      -0.0024,
+      -0.021,
+      0.0024,
+      -0.004157,
+      -0.021,
+      0.0,
+      -0.0048,
+      -0.021,
+      -0.0024,
+      -0.004157,
+      -0.021,
+      -0.004157,
+      -0.0024,
+      0.021,
+      -0.0048,
+      0.0,
+      0.021,
+      -0.004157,
+      0.0024,
+      0.021,
+      -0.0024,
+      0.004157,
+      0.021,
+      0.0,
+      0.0048,
+      0.021,
+      0.0024,
+      0.004157,
+      0.021,
+      0.004157,
+      0.0024,
+      0.021,
+      0.0048,
+      0.0,
+      0.021,
+      0.004157,
+      -0.0024,
+      0.021,
+      0.0024,
+      -0.004157,
+      0.021,
+      0.0,
+      -0.0048,
+      0.021,
+      -0.0024,
+      -0.004157,
+      0.021,
+      -0.004157,
+      -0.0024
+     ],
+     "tris": [
+      0,
+      3,
+      2,
+      1,
+      14,
+      15,
+      2,
+      3,
+      15,
+      2,
+      15,
+      14,
+      0,
+      4,
+      3,
+      1,
+      15,
+      16,
+      3,
+      4,
+      16,
+      3,
+      16,
+      15,
+      0,
+      5,
+      4,
+      1,
+      16,
+      17,
+      4,
+      5,
+      17,
+      4,
+      17,
+      16,
+      0,
+      6,
+      5,
+      1,
+      17,
+      18,
+      5,
+      6,
+      18,
+      5,
+      18,
+      17,
+      0,
+      7,
+      6,
+      1,
+      18,
+      19,
+      6,
+      7,
+      19,
+      6,
+      19,
+      18,
+      0,
+      8,
+      7,
+      1,
+      19,
+      20,
+      7,
+      8,
+      20,
+      7,
+      20,
+      19,
+      0,
+      9,
+      8,
+      1,
+      20,
+      21,
+      8,
+      9,
+      21,
+      8,
+      21,
+      20,
+      0,
+      10,
+      9,
+      1,
+      21,
+      22,
+      9,
+      10,
+      22,
+      9,
+      22,
+      21,
+      0,
+      11,
+      10,
+      1,
+      22,
+      23,
+      10,
+      11,
+      23,
+      10,
+      23,
+      22,
+      0,
+      12,
+      11,
+      1,
+      23,
+      24,
+      11,
+      12,
+      24,
+      11,
+      24,
+      23,
+      0,
+      13,
+      12,
+      1,
+      24,
+      25,
+      12,
+      13,
+      25,
+      12,
+      25,
+      24,
+      0,
+      2,
+      13,
+      1,
+      25,
+      14,
+      13,
+      2,
+      14,
+      13,
+      14,
+      25
+     ],
+     "src": "E: Auswurffenster rechts im Einteilgehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)"
+    },
+    "live": {
+     "trigger": "trigger",
+     "bolt": "bolt",
+     "port": "port_cover"
+    }
+   },
+   "poses": [
+    {
+     "name": "hip",
+     "ads": false,
+     "roll": 6.0,
+     "src": "M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); Destiny-Scout Tone Patrol Mündung ≈ 57/63, Call to Serve 58/61 (Motiongen destiny2 › 3, huefte); Lage E wie die Automatik: am Scout gerechnet Mündung 57,0/62,9 %, Okular 24 pp rechts der Mündung (Band 7–34) (Haltung POSES['hip'] unverändert)",
+     "pos": [
+      -0.19,
+      -0.42,
+      -0.23
+     ],
+     "aim": [
+      0.02,
+      -3.0,
+      -0.2
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "ads",
+     "ads": true,
+     "roll": 0.0,
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      -1.0,
+      0.0
+     ]
+    },
+    {
+     "name": "sprint",
+     "ads": false,
+     "roll": -35.0,
+     "src": "E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Scout-Sprint nicht gemessen (Motiongen destiny2 › Glidepath: kein Sprint-Clip) (Haltung POSES['sprint'] unverändert)",
+     "pos": [
+      -0.1,
+      -0.34,
+      -0.23
+     ],
+     "aim": [
+      1.2,
+      -1.6,
+      -0.55
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "lowered",
+     "ads": false,
+     "roll": 10.0,
+     "src": "E",
+     "pos": [
+      -0.17,
+      -0.38,
+      -0.25
+     ],
+     "aim": [
+      0.4,
+      -2.0,
+      -1.2
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "crouch",
+     "ads": false,
+     "roll": 9.0,
+     "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
+     "pos": [
+      -0.18,
+      -0.41,
+      -0.245
+     ],
+     "aim": [
+      0.02,
+      -3.0,
+      -0.25
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "air",
+     "ads": false,
+     "roll": 4.0,
+     "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
+     "pos": [
+      -0.19,
+      -0.42,
+      -0.215
+     ],
+     "aim": [
+      0.02,
+      -3.0,
+      -0.13
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "holstered",
+     "ads": false,
+     "roll": 30.0,
+     "src": "E (unter dem Bild)",
+     "pos": [
+      -0.24,
+      -0.25,
+      -0.62
+     ],
+     "aim": [
+      0.5,
+      -1.2,
+      -1.8
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "reload",
+     "ads": false,
+     "roll": -40.0,
+     "src": "T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E)",
+     "pos": [
+      -0.07,
+      -0.34,
+      -0.135
+     ],
+     "aim": [
+      0.75,
+      -2.1,
+      0.45
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "inspect_l",
+     "ads": false,
+     "roll": -8.0,
+     "src": "E (Ego-Seite zeigt zur Kamera)",
+     "pos": [
+      -0.06,
+      -0.36,
+      -0.16
+     ],
+     "aim": [
+      1.6,
+      -1.0,
+      0.15
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "inspect_r",
+     "ads": false,
+     "roll": -110.0,
+     "src": "E (Oberseite und rechte Seite)",
+     "pos": [
+      -0.1,
+      -0.36,
+      -0.12
+     ],
+     "aim": [
+      0.1,
+      -1.0,
+      0.9
+     ],
+     "eye": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "aim_dir": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   ],
+   "grips": [
+    {
+     "name": "grip",
+     "part": "",
+     "contact": [
+      -0.0165,
+      0.003,
+      -0.006
+     ],
+     "palm": [
+      1.0,
+      -0.15,
+      0.0
+     ],
+     "fingers": [
+      0.0,
+      -1.0,
+      -0.06
+     ],
+     "fingers_pose": "trigger",
+     "src": "E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)"
+    },
+    {
+     "name": "support",
+     "part": "",
+     "contact": [
+      -0.002,
+      -0.278,
+      0.0705
+     ],
+     "palm": [
+      -0.25,
+      0.0,
+      1.0
+     ],
+     "fingers": [
+      -1.0,
+      -0.08,
+      0.15
+     ],
+     "fingers_pose": "underhand",
+     "src": "E unter dem langen Handschutz auf der Gummiauflage (handguard_grip f 230–330), Lage wie die Pilotwaffe (Toolgen: underhand)"
+    },
+    {
+     "name": "mag",
+     "part": "magazine",
+     "contact": [
+      0.0115,
+      -0.114,
+      0.01
+     ],
+     "palm": [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     "fingers": [
+      0.0,
+      -1.0,
+      0.45
+     ],
+     "fingers_pose": "mag_hold",
+     "src": "E links am kurzen Kastenmagazin, Hand greift von unten hinten (wie die Pilotwaffe)"
+    },
+    {
+     "name": "charge",
+     "part": "charging_handle",
+     "contact": [
+      0.0255,
+      0.077,
+      0.109
+     ],
+     "palm": [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     "fingers": [
+      0.0,
+      -0.45,
+      0.9
+     ],
+     "fingers_pose": "pinch",
+     "src": "E am Ladehebel links (Socket_Charge), wie die Pilotwaffe"
+    }
+   ],
+   "actions": [
+    {
+     "name": "idle_hip",
+     "de": "Ruhe an der Hüfte (Atmen)",
+     "frames": 75,
+     "time_scale": 1.25,
+     "src": "E",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 75.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": true,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": []
+    },
+    {
+     "name": "draw",
+     "de": "Ziehen",
+     "frames": 25,
+     "time_scale": 1.25,
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "holstered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 17.5,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 25.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 7.5,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 16.25,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 25.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "relaxed"
+      },
+      {
+       "f": 13.75,
+       "pose": "open"
+      },
+      {
+       "f": 17.5,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 18,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
+     "name": "holster",
+     "de": "Wegstecken",
+     "frames": 8,
+     "time_scale": 1.0,
+     "src": "M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 7.5,
+       "pose": "holstered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 8.0,
+       "pose": "holstered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 1.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      },
+      {
+       "f": 2.0,
+       "pose": "open"
+      },
+      {
+       "f": 6.0,
+       "pose": "relaxed"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 1,
+       "name": "HandOff"
+      },
+      {
+       "f": 8,
+       "name": "Holstered"
+      }
+     ]
+    },
+    {
+     "name": "aim_in",
+     "de": "Hüfte → Zielen",
+     "frames": 7,
+     "time_scale": 0.7,
+     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse scout_rifle: 10 → 7 Bilder (Scout bei Destiny nur grob gemessen: Tone Patrol ≈ 22 Bilder (0,37 s, Bestand, „vom Nachbartyp übertragen“), Patron of Lost Causes 0,20–0,25 s = 12–15 Bilder [M] (Motiongen destiny2 › Glidepath, visiere › v-d2-scout); dazwischen und zwischen Scharfschütze (15 Bilder bis ruhig) und Impuls (20) → E 17 Bilder bei 60/s erste Bewegung → Ruhe, am Unity-Bild gemessen; aim_out M Destiny-Scout ADS aus → Hüfte 0,17 s (Dead Man's Tale, Motiongen auswertung › V04) = 5 Bilder bei 30/s)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 6.3,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 7.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 6,
+       "name": "Aimed"
+      }
+     ]
+    },
+    {
+     "name": "aim_out",
+     "de": "Zielen → Hüfte",
+     "frames": 5,
+     "time_scale": 0.625,
+     "src": "E; Klasse scout_rifle: 8 → 5 Bilder (Scout bei Destiny nur grob gemessen: Tone Patrol ≈ 22 Bilder (0,37 s, Bestand, „vom Nachbartyp übertragen“), Patron of Lost Causes 0,20–0,25 s = 12–15 Bilder [M] (Motiongen destiny2 › Glidepath, visiere › v-d2-scout); dazwischen und zwischen Scharfschütze (15 Bilder bis ruhig) und Impuls (20) → E 17 Bilder bei 60/s erste Bewegung → Ruhe, am Unity-Bild gemessen; aim_out M Destiny-Scout ADS aus → Hüfte 0,17 s (Dead Man's Tale, Motiongen auswertung › V04) = 5 Bilder bei 30/s)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 5.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 5,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
+     "name": "fire_hip",
+     "de": "Dauerfeuer aus der Hüfte",
+     "frames": 32,
+     "time_scale": 1.0,
+     "src": "M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse scout_rifle: 180/min, Einzelfeuer (ein Schuss je Zug) (Schussbilder [2, 12, 22])",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [
+      2,
+      12,
+      22
+     ],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 2,
+       "name": "Fire"
+      }
+     ]
+    },
+    {
+     "name": "fire_ads",
+     "de": "Dauerfeuer im Zielen",
+     "frames": 32,
+     "time_scale": 1.0,
+     "src": "M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse scout_rifle: 180/min, Einzelfeuer (ein Schuss je Zug) (Schussbilder [2, 12, 22])",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [
+      2,
+      12,
+      22
+     ],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 2,
+       "name": "AimFire"
+      }
+     ]
+    },
+    {
+     "name": "reload_tactical",
+     "de": "Nachladen mit Restmunition",
+     "frames": 63,
+     "time_scale": 1.25,
+     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 3.75,
+       "pose": "hip",
+       "roll": -3.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.004,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 12.5,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 20.0,
+       "pose": "reload",
+       "roll": -3.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.5,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 1.5,
+       "up": -0.004,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 37.5,
+       "pose": "reload",
+       "roll": 4.0,
+       "yaw": 0.0,
+       "pitch": -2.5,
+       "up": 0.009,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 41.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 46.25,
+       "pose": "reload",
+       "roll": 8.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.006,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 56.25,
+       "pose": "hip",
+       "roll": -2.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.003,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 62.5,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 10.0,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 16.25,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.025,
+        -0.008,
+        -0.07
+       ]
+      },
+      {
+       "f": 23.75,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 26.25,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 32.5,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.02,
+        -0.006,
+        -0.055
+       ]
+      },
+      {
+       "f": 36.25,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 38.75,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 47.5,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 62.5,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      },
+      {
+       "f": 6.25,
+       "pose": "open"
+      },
+      {
+       "f": 10.0,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 37.5,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 41.25,
+       "pose": "open"
+      },
+      {
+       "f": 47.5,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [
+      {
+       "part": "mag_release",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 0.0
+        },
+        {
+         "f": 7.5,
+         "v": 1.0
+        },
+        {
+         "f": 12.5,
+         "v": 0.0
+        }
+       ]
+      }
+     ],
+     "carry": [
+      {
+       "a": 10.0,
+       "b": 36.25
+      }
+     ],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 5,
+       "name": "HandOff"
+      },
+      {
+       "f": 12,
+       "name": "MagOut"
+      },
+      {
+       "f": 36,
+       "name": "MagIn"
+      },
+      {
+       "f": 48,
+       "name": "HandOn"
+      },
+      {
+       "f": 58,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
+     "name": "reload_empty",
+     "de": "Nachladen aus leerem Zustand",
+     "frames": 75,
+     "time_scale": 1.25,
+     "src": "M leer 1,85 s, MagOut 0,25 s, MagIn 0,93 s (Q-REF Auto Rifle); Ladehebel E; v2: Ausholen, Stoß bei MagIn, Ruck beim Durchladen, Nachfedern E",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 3.75,
+       "pose": "hip",
+       "roll": -3.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.004,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 11.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 18.75,
+       "pose": "reload",
+       "roll": -3.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 31.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 1.5,
+       "up": -0.004,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 36.25,
+       "pose": "reload",
+       "roll": 4.0,
+       "yaw": 0.0,
+       "pitch": -3.0,
+       "up": 0.01,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 40.0,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 43.75,
+       "pose": "reload",
+       "roll": 12.0,
+       "yaw": -7.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 48.75,
+       "pose": "reload",
+       "roll": 15.0,
+       "yaw": -8.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.01
+      },
+      {
+       "f": 51.25,
+       "pose": "reload",
+       "roll": 10.0,
+       "yaw": -5.0,
+       "pitch": -2.0,
+       "up": 0.01,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 56.25,
+       "pose": "reload",
+       "roll": 9.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 67.5,
+       "pose": "hip",
+       "roll": -2.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.003,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 75.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 12.5,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 20.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 30.0,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.02,
+        -0.006,
+        -0.055
+       ]
+      },
+      {
+       "f": 35.0,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 37.5,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 43.75,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 47.5,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.058,
+        0.0
+       ]
+      },
+      {
+       "f": 50.0,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.058,
+        0.0
+       ]
+      },
+      {
+       "f": 52.5,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 60.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 75.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      },
+      {
+       "f": 6.25,
+       "pose": "open"
+      },
+      {
+       "f": 17.5,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 37.5,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 40.0,
+       "pose": "open"
+      },
+      {
+       "f": 43.75,
+       "pose": "pinch"
+      },
+      {
+       "f": 52.5,
+       "pose": "pinch"
+      },
+      {
+       "f": 55.0,
+       "pose": "open"
+      },
+      {
+       "f": 60.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [
+      {
+       "part": "mag_release",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 0.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        },
+        {
+         "f": 11.25,
+         "v": 0.0
+        }
+       ]
+      },
+      {
+       "part": "charging_handle",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 0.0
+        },
+        {
+         "f": 43.75,
+         "v": 0.0
+        },
+        {
+         "f": 47.5,
+         "v": 1.0
+        },
+        {
+         "f": 50.0,
+         "v": 1.0
+        },
+        {
+         "f": 52.5,
+         "v": 0.0
+        }
+       ]
+      }
+     ],
+     "carry": [
+      {
+       "a": 20.0,
+       "b": 35.0
+      }
+     ],
+     "drop": {
+      "a": 7.5,
+      "b": 18.75
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 6,
+       "name": "HandOff"
+      },
+      {
+       "f": 10,
+       "name": "MagOut"
+      },
+      {
+       "f": 35,
+       "name": "MagIn"
+      },
+      {
+       "f": 50,
+       "name": "Chamber"
+      },
+      {
+       "f": 60,
+       "name": "HandOn"
+      },
+      {
+       "f": 70,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
+     "name": "inspect",
+     "de": "Betrachten",
+     "frames": 120,
+     "time_scale": 1.25,
+     "src": "E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 20.0,
+       "pose": "inspect_l",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 55.0,
+       "pose": "inspect_l",
+       "roll": -6.0,
+       "yaw": 4.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 75.0,
+       "pose": "inspect_r",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 100.0,
+       "pose": "inspect_r",
+       "roll": 8.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 117.5,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 120.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 50.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 60.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 105.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 117.5,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 120.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      },
+      {
+       "f": 52.5,
+       "pose": "open"
+      },
+      {
+       "f": 62.5,
+       "pose": "relaxed"
+      },
+      {
+       "f": 107.5,
+       "pose": "open"
+      },
+      {
+       "f": 117.5,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 20,
+       "name": "Start"
+      },
+      {
+       "f": 118,
+       "name": "End"
+      }
+     ]
+    },
+    {
+     "name": "sprint",
+     "de": "Sprint: Beginn, Schleife, Ende",
+     "frames": 60,
+     "time_scale": 1.25,
+     "src": "E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 10.0,
+       "pose": "sprint",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 47.5,
+       "pose": "sprint",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 60.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": true,
+      "start": 10.0,
+      "end": 47.5,
+      "period": 19.0,
+      "amp": [
+       0.022,
+       0.018
+      ],
+      "roll": 3.5,
+      "u": true
+     },
+     "events": [
+      {
+       "f": 10,
+       "name": "SprintLoop"
+      },
+      {
+       "f": 60,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
+     "name": "lowered",
+     "de": "Gesenkte Haltung / Wandnähe",
+     "frames": 45,
+     "time_scale": 1.25,
+     "src": "E",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 10.0,
+       "pose": "lowered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.5,
+       "pose": "lowered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 45.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 10,
+       "name": "Lowered"
+      },
+      {
+       "f": 45,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
+     "name": "walk",
+     "de": "Gehen (liegende Acht)",
+     "frames": 60,
+     "time_scale": 1.25,
+     "src": "E (CE: liegende Acht)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 60.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": true,
+      "start": 0.0,
+      "end": 60.0,
+      "period": 24.0,
+      "amp": [
+       0.007,
+       0.004
+      ],
+      "roll": 1.2,
+      "u": false
+     },
+     "events": []
+    },
+    {
+     "name": "crouch",
+     "de": "Ducken",
+     "frames": 30,
+     "time_scale": 1.25,
+     "src": "E",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 10.0,
+       "pose": "crouch",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 30.0,
+       "pose": "crouch",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 10,
+       "name": "Crouched"
+      }
+     ]
+    },
+    {
+     "name": "jump_land",
+     "de": "Sprung, Luftphase, Landung",
+     "frames": 50,
+     "time_scale": 1.25,
+     "src": "E (CE: Anheben, Landefeder)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 10.0,
+       "pose": "air",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.5,
+       "pose": "air",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 37.5,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": -3.0,
+       "up": -0.022,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 50.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 10,
+       "name": "Air"
+      },
+      {
+       "f": 35,
+       "name": "Land"
+      }
+     ]
+    },
+    {
+     "name": "sprint_to_aim",
+     "de": "Sprint → Zielen",
+     "frames": 18,
+     "time_scale": 1.0,
+     "src": "E (CE: ADS > Sprint)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "sprint",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 12.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 18.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 0,
+       "name": "SprintOut"
+      },
+      {
+       "f": 12,
+       "name": "Aimed"
+      }
+     ]
+    },
+    {
+     "name": "sprint_to_fire",
+     "de": "Sprint → Feuer",
+     "frames": 26,
+     "time_scale": 1.0,
+     "src": "E (CE: Fire > Sprint); Klasse scout_rifle: 180/min, Einzelfeuer (ein Schuss je Zug) (Schussbilder [7, 17])",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "sprint",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 6.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 26.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [
+      7,
+      17
+     ],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 0,
+       "name": "SprintOut"
+      },
+      {
+       "f": 7,
+       "name": "Fire"
+      }
+     ]
+    },
+    {
+     "name": "draw_aim",
+     "de": "Ziehen bei gehaltenem Zielen",
+     "frames": 35,
+     "time_scale": 1.25,
+     "src": "E (CE: Draw nicht unterbrechbar, ADS danach)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "holstered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 17.5,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 30.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 35.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 7.5,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 16.25,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 35.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "relaxed"
+      },
+      {
+       "f": 13.75,
+       "pose": "open"
+      },
+      {
+       "f": 17.5,
+       "pose": "underhand"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 18,
+       "name": "Ready"
+      },
+      {
+       "f": 30,
+       "name": "Aimed"
+      }
+     ]
+    },
+    {
+     "name": "reload_to_switch",
+     "de": "Nachladen → Waffenwechsel (Abbruch)",
+     "frames": 38,
+     "time_scale": 1.25,
+     "src": "E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung)",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "hip",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 11.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 17.5,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 35.0,
+       "pose": "holstered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 37.5,
+       "pose": "holstered",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 10.0,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 17.5,
+       "kind": "grip",
+       "grip": "mag",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 27.5,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "underhand"
+      },
+      {
+       "f": 6.25,
+       "pose": "open"
+      },
+      {
+       "f": 10.0,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 20.0,
+       "pose": "open"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "trigger"
+      }
+     ],
+     "mech": [],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 5,
+       "name": "HandOff"
+      },
+      {
+       "f": 18,
+       "name": "Cancel"
+      },
+      {
+       "f": 35,
+       "name": "Holstered"
+      }
+     ]
+    }
+   ],
+   "atlas": "weapon_BASIC-03-v2.1",
+   "reference": "ego_reference_BASIC-03-v2.1.json",
+   "sources": {
+    "files": [
+     {
+      "path": "basic/pilot/w03_scout_rifle_v21.py",
+      "sha256": "b7230caacfeb7cd6e651d62912ab9143d580cc61ece183e723e35f8bfc9dce9c"
+     },
+     {
+      "path": "basic/weapons/w03_scout_rifle.py",
+      "sha256": "9bdacceafd30058a1b55c04139a8b30fec4f05fec5bdb873b05716108b3d8b85"
+     }
+    ],
+    "parts_sha256": "50a123ceea31dd0fab8b69032f7d2661b019ba9fe6a9fd816caa9643ef8a206e"
+   },
+   "textures": {
+    "weapon": {
+     "size": 4096,
+     "objects": [
+      "band_side",
+      "barrel",
+      "bolt",
+      "butt_pad",
+      "charging_handle",
+      "cheek_pad",
+      "gas_block",
+      "gas_tube",
+      "grip",
+      "grip_cap",
+      "handguard",
+      "handguard_cap",
+      "handguard_grip",
+      "handguard_screws",
+      "mag_release",
+      "mag_rounds",
+      "mag_well",
+      "magazine",
+      "magazine_base",
+      "magazine_round",
+      "muzzle",
+      "muzzle_crown",
+      "panel_screws",
+      "pip_bezel",
+      "port_cover",
+      "rail",
+      "receiver",
+      "scope_crown",
+      "scope_eye_trim",
+      "scope_eyepiece",
+      "scope_mount_r",
+      "scope_objective",
+      "scope_rim",
+      "scope_strap",
+      "scope_tube",
+      "scope_turret",
+      "scope_turret_w",
+      "selector",
+      "selector_r",
+      "side_panel_l",
+      "side_panel_r",
+      "sight_clamp",
+      "stock",
+      "stock_bolts",
+      "text_l",
+      "top_cover",
+      "top_cover_trim",
+      "trigger",
+      "trigger_guard"
+     ],
+     "albedo": "weapon_BASIC-03-v2.1_albedo.jpg",
+     "spec": "weapon_BASIC-03-v2.1_spec.png",
+     "normal": "weapon_BASIC-03-v2.1_normal.png",
+     "ao": "weapon_BASIC-03-v2.1_ao.png"
+    },
+    "skins": [
+     {
+      "name": "standard",
+      "de": "Standard",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-03-v2.1_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-03-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-03-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-03-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-03-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-03-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-03-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-03-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-03-v2.1_eloxal_spec.png"
+     }
+    ],
+    "store": [
+     {
+      "kind": "albedo",
+      "size": 4096,
+      "ext": "jpg",
+      "de": "Diffusfarbe: volle Kantenlänge (Schrift, Kanten, Sprenkel), JPG Qualität 92 ohne Farbunterabtastung (4:4:4)"
+     },
+     {
+      "kind": "spec",
+      "size": 2048,
+      "ext": "png",
+      "de": "Spiegelfarbe mit Glätte im Alpha: halbe Kantenlänge (linear verkleinert), PNG 8 bit RGBA – JPG trägt kein Alpha"
+     },
+     {
+      "kind": "normal",
+      "size": 4096,
+      "ext": "png",
+      "de": "Normale: volle Kantenlänge, PNG 8 bit statt 16 (verlustarm: Unity speichert Normalen mit 8 bit je Kanal)"
+     },
+     {
+      "kind": "ao",
+      "size": 2048,
+      "ext": "png",
+      "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
+     }
+    ],
+    "limit_mb": 50.0
+   },
+   "mesh_bounds": {
+    "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
+    "objects": [
+     {
+      "name": "receiver",
+      "min": [
+       -0.019,
+       -0.2,
+       0.02
+      ],
+      "max": [
+       0.019,
+       0.122,
+       0.1432
+      ],
+      "tris": 876
+     },
+     {
+      "name": "mag_well",
+      "min": [
+       -0.0195,
+       -0.129835,
+       0.0175
+      ],
+      "max": [
+       0.0195,
+       -0.090165,
+       0.021
+      ],
+      "tris": 108
+     },
+     {
+      "name": "side_panel_l",
+      "min": [
+       0.0176,
+       0.022,
+       0.084
+      ],
+      "max": [
+       0.0188,
+       0.094,
+       0.096
+      ],
+      "tris": 108
+     },
+     {
+      "name": "side_panel_r",
+      "min": [
+       -0.0188,
+       0.022,
+       0.084
+      ],
+      "max": [
+       -0.0176,
+       0.094,
+       0.096
+      ],
+      "tris": 108
+     },
+     {
+      "name": "panel_screws",
+      "min": [
+       -0.0196,
+       0.024551,
+       0.085551
+      ],
+      "max": [
+       0.0196,
+       0.091449,
+       0.094449
+      ],
+      "tris": 1504
+     },
+     {
+      "name": "top_cover",
+      "min": [
+       -0.016,
+       0.066,
+       0.121
+      ],
+      "max": [
+       0.016,
+       0.112,
+       0.125
+      ],
+      "tris": 108
+     },
+     {
+      "name": "top_cover_trim",
+      "min": [
+       -0.0165,
+       0.065,
+       0.121
+      ],
+      "max": [
+       0.0165,
+       0.07,
+       0.1256
+      ],
+      "tris": 108
+     },
+     {
+      "name": "chamber_pip",
+      "min": [
+       0.0189,
+       -0.086,
+       0.106
+      ],
+      "max": [
+       0.0199,
+       -0.072,
+       0.11
+      ],
+      "tris": 108
+     },
+     {
+      "name": "pip_bezel",
+      "min": [
+       0.0178,
+       -0.09,
+       0.104
+      ],
+      "max": [
+       0.0198,
+       -0.068,
+       0.112
+      ],
+      "tris": 108
+     },
+     {
+      "name": "band_side",
+      "min": [
+       -0.0193,
+       -0.188,
+       0.096
+      ],
+      "max": [
+       0.0193,
+       -0.17,
+       0.1215
+      ],
+      "tris": 24
+     },
+     {
+      "name": "text_l",
+      "min": [
+       0.01893,
+       -0.099655,
+       0.112959
+      ],
+      "max": [
+       0.01917,
+       -0.074649,
+       0.116179
+      ],
+      "tris": 3196
+     },
+     {
+      "name": "bolt",
+      "min": [
+       -0.011,
+       -0.046,
+       -0.008
+      ],
+      "max": [
+       0.011,
+       0.05,
+       0.008
+      ],
+      "tris": 108
+     },
+     {
+      "name": "port_cover",
+      "min": [
+       -0.0004,
+       -0.025,
+       0.0
+      ],
+      "max": [
+       0.0012,
+       0.025,
+       0.02
+      ],
+      "tris": 108
+     },
+     {
+      "name": "rail",
+      "min": [
+       -0.011,
+       -0.034,
+       0.1427
+      ],
+      "max": [
+       0.011,
+       0.024,
+       0.1512
+      ],
+      "tris": 108
+     },
+     {
+      "name": "scope_mount_r",
+      "min": [
+       -0.0146,
+       -0.008,
+       -0.0075
+      ],
+      "max": [
+       0.014,
+       0.008,
+       0.0
+      ],
+      "tris": 516
+     },
+     {
+      "name": "sight_clamp",
+      "min": [
+       0.014,
+       -0.027688,
+       0.1447
+      ],
+      "max": [
+       0.0158,
+       -0.012,
+       0.14758
+      ],
+      "tris": 108
+     },
+     {
+      "name": "scope_strap",
+      "min": [
+       -0.011066,
+       -0.025,
+       0.149934
+      ],
+      "max": [
+       0.011066,
+       -0.015,
+       0.172066
+      ],
+      "tris": 960
+     },
+     {
+      "name": "scope_tube",
+      "min": [
+       -0.009471,
+       -0.038,
+       0.151529
+      ],
+      "max": [
+       0.009471,
+       0.028,
+       0.170471
+      ],
+      "tris": 960
+     },
+     {
+      "name": "scope_eyepiece",
+      "min": [
+       -0.010925,
+       0.026,
+       0.150075
+      ],
+      "max": [
+       0.010925,
+       0.048,
+       0.171925
+      ],
+      "tris": 960
+     },
+     {
+      "name": "scope_eye_trim",
+      "min": [
+       -0.011365,
+       0.0465,
+       0.149635
+      ],
+      "max": [
+       0.011365,
+       0.049,
+       0.172365
+      ],
+      "tris": 960
+     },
+     {
+      "name": "scope_objective",
+      "min": [
+       -0.020953,
+       -0.068,
+       0.140047
+      ],
+      "max": [
+       0.020953,
+       -0.036,
+       0.181953
+      ],
+      "tris": 1152
+     },
+     {
+      "name": "scope_rim",
+      "min": [
+       -0.016465,
+       -0.072,
+       0.144535
+      ],
+      "max": [
+       0.016465,
+       -0.068,
+       0.177465
+      ],
+      "tris": 1152
+     },
+     {
+      "name": "scope_crown",
+      "min": [
+       -0.014768,
+       -0.0716,
+       0.146232
+      ],
+      "max": [
+       0.014768,
+       -0.066,
+       0.175768
+      ],
+      "tris": 1152
+     },
+     {
+      "name": "scope_turret",
+      "min": [
+       -0.005474,
+       -0.009474,
+       0.1685
+      ],
+      "max": [
+       0.005474,
+       0.001474,
+       0.1765
+      ],
+      "tris": 380
+     },
+     {
+      "name": "scope_turret_w",
+      "min": [
+       -0.0145,
+       -0.008478,
+       0.156522
+      ],
+      "max": [
+       -0.0075,
+       0.000478,
+       0.165478
+      ],
+      "tris": 380
+     },
+     {
+      "name": "scope_glass",
+      "min": [
+       -0.01397,
+       -0.068,
+       0.14703
+      ],
+      "max": [
+       0.01397,
+       -0.067,
+       0.17497
+      ],
+      "tris": 188
+     },
+     {
+      "name": "scope_ocular_glass",
+      "min": [
+       -0.008972,
+       0.044,
+       0.152028
+      ],
+      "max": [
+       0.008972,
+       0.045,
+       0.169972
+      ],
+      "tris": 156
+     },
+     {
+      "name": "sight_reticle",
+      "min": [
+       -0.004082,
+       -0.06644,
+       0.157623
+      ],
+      "max": [
+       0.004082,
+       -0.06596,
+       0.161177
+      ],
+      "tris": 512
+     },
+     {
+      "name": "handguard",
+      "min": [
+       -0.016,
+       -0.476,
+       0.074
+      ],
+      "max": [
+       0.016,
+       -0.201,
+       0.116
+      ],
+      "tris": 850
+     },
+     {
+      "name": "handguard_grip",
+      "min": [
+       -0.013,
+       -0.33,
+       0.0705
+      ],
+      "max": [
+       0.013,
+       -0.23,
+       0.075
+      ],
+      "tris": 108
+     },
+     {
+      "name": "handguard_cap",
+      "min": [
+       -0.014,
+       -0.484,
+       0.08
+      ],
+      "max": [
+       0.014,
+       -0.476,
+       0.112
+      ],
+      "tris": 480
+     },
+     {
+      "name": "handguard_screws",
+      "min": [
+       -0.0172,
+       -0.211545,
+       0.078455
+      ],
+      "max": [
+       0.0172,
+       -0.208455,
+       0.111545
+      ],
+      "tris": 944
+     },
+     {
+      "name": "barrel",
+      "min": [
+       -0.007436,
+       -0.676,
+       0.088564
+      ],
+      "max": [
+       0.007436,
+       -0.196,
+       0.103436
+      ],
+      "tris": 556
+     },
+     {
+      "name": "gas_tube",
+      "min": [
+       -0.003923,
+       -0.606,
+       0.076077
+      ],
+      "max": [
+       0.003923,
+       -0.3,
+       0.083923
+      ],
+      "tris": 188
+     },
+     {
+      "name": "gas_block",
+      "min": [
+       -0.009,
+       -0.61,
+       0.074
+      ],
+      "max": [
+       0.009,
+       -0.596,
+       0.105
+      ],
+      "tris": 108
+     },
+     {
+      "name": "muzzle",
+      "min": [
+       -0.011548,
+       -0.718,
+       0.084452
+      ],
+      "max": [
+       0.011548,
+       -0.67,
+       0.107548
+      ],
+      "tris": 1936
+     },
+     {
+      "name": "muzzle_crown",
+      "min": [
+       -0.010625,
+       -0.721,
+       0.085375
+      ],
+      "max": [
+       0.010625,
+       -0.716,
+       0.106625
+      ],
+      "tris": 448
+     },
+     {
+      "name": "grip",
+      "min": [
+       -0.015,
+       -0.030239,
+       -0.076
+      ],
+      "max": [
+       0.015,
+       0.042149,
+       0.04
+      ],
+      "tris": 360
+     },
+     {
+      "name": "trigger",
+      "min": [
+       -0.0035,
+       -0.006,
+       -0.023806
+      ],
+      "max": [
+       0.0035,
+       0.001832,
+       0.002
+      ],
+      "tris": 132
+     },
+     {
+      "name": "trigger_guard",
+      "min": [
+       -0.006,
+       -0.082718,
+       0.006
+      ],
+      "max": [
+       0.006,
+       -0.02513,
+       0.041
+      ],
+      "tris": 164
+     },
+     {
+      "name": "grip_cap",
+      "min": [
+       -0.016,
+       -0.003853,
+       -0.079
+      ],
+      "max": [
+       0.016,
+       0.042462,
+       -0.073
+      ],
+      "tris": 108
+     },
+     {
+      "name": "selector",
+      "min": [
+       0.019,
+       -0.016,
+       -0.004
+      ],
+      "max": [
+       0.022,
+       0.004,
+       0.004
+      ],
+      "tris": 132
+     },
+     {
+      "name": "selector_r",
+      "min": [
+       -0.022,
+       -0.016,
+       -0.004
+      ],
+      "max": [
+       -0.019,
+       0.004,
+       0.004
+      ],
+      "tris": 132
+     },
+     {
+      "name": "charging_handle",
+      "min": [
+       -0.0045,
+       -0.03,
+       -0.006
+      ],
+      "max": [
+       0.0045,
+       0.0,
+       0.006
+      ],
+      "tris": 164
+     },
+     {
+      "name": "mag_release",
+      "min": [
+       -0.002,
+       -0.004445,
+       -0.004445
+      ],
+      "max": [
+       0.0025,
+       0.004445,
+       0.004445
+      ],
+      "tris": 236
+     },
+     {
+      "name": "magazine",
+      "min": [
+       -0.011,
+       -0.024706,
+       -0.072749
+      ],
+      "max": [
+       0.011,
+       0.017688,
+       0.001064
+      ],
+      "tris": 220
+     },
+     {
+      "name": "magazine_base",
+      "min": [
+       -0.0125,
+       -0.137492,
+       -0.019954
+      ],
+      "max": [
+       0.0125,
+       -0.097136,
+       -0.007896
+      ],
+      "tris": 108
+     },
+     {
+      "name": "magazine_round",
+      "min": [
+       -0.004414,
+       -0.122,
+       0.060586
+      ],
+      "max": [
+       0.004414,
+       -0.096,
+       0.069414
+      ],
+      "tris": 188
+     },
+     {
+      "name": "mag_rounds",
+      "min": [
+       -0.006057,
+       -0.122935,
+       0.015906
+      ],
+      "max": [
+       0.007057,
+       -0.09726,
+       0.047961
+      ],
+      "tris": 844
+     },
+     {
+      "name": "stock",
+      "min": [
+       -0.015,
+       0.12,
+       0.029091
+      ],
+      "max": [
+       0.015,
+       0.2879,
+       0.124
+      ],
+      "tris": 350
+     },
+     {
+      "name": "stock_bolts",
+      "min": [
+       -0.0164,
+       0.131682,
+       0.069682
+      ],
+      "max": [
+       0.0164,
+       0.136318,
+       0.114318
+      ],
+      "tris": 976
+     },
+     {
+      "name": "cheek_pad",
+      "min": [
+       -0.012,
+       0.1745,
+       0.119554
+      ],
+      "max": [
+       0.012,
+       0.2711,
+       0.131953
+      ],
+      "tris": 108
+     },
+     {
+      "name": "butt_pad",
+      "min": [
+       -0.017,
+       0.28685,
+       0.026256
+      ],
+      "max": [
+       0.017,
+       0.30155,
+       0.121509
+      ],
+      "tris": 804
      }
     ]
    }

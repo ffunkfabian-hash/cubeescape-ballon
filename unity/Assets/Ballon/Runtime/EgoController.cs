@@ -92,6 +92,9 @@ namespace Ballon.Ego
         bool _fireArmed;                   // Feuer nach sprint_to_fire erst ab Marker „Fire“
         float _shotClock, _boltT, _sinceShot = 99f;
         bool _portOpen, _triggerHeld;
+        bool _semiPrev;                    // Einzelfeuer: Abzug im letzten Bild gedrückt (Zug = Flanke)
+        float _semiQueue;                  // Einzelfeuer: Restzeit eines wartenden Zugs (s)
+        const float SemiQueueS = 0.4f;     // E: ein Zug wartet höchstens so lange (Schussabstand 180/min = 0,33 s, Sprint → Feuer 0,23 s)
         Vector3 _recX, _recV, _recCx, _recCv;
         float _rClimb, _dt = 1f / 30f;
         Vector3 _path, _pathV, _pathTgt;   // Grundbahn der Welt (x Gieren, y Nicken, Grad), Ziel der Salve
@@ -450,7 +453,7 @@ namespace Ballon.Ego
                     Play("sprint_to_fire", stance: Stance.Hip, onEnd: _onReady);
                     _stance = Stance.Hip;
                 }
-                else if (_t.stance.HasValue || _t.ended)
+                else if ((_t.stance.HasValue || _t.ended) && !SemiShotWaits)
                 {
                     var w = Wanted(i);
                     if (w != _stance) EnterStance(w, i);
@@ -463,6 +466,10 @@ namespace Ballon.Ego
             UpdateLive(dt, i);
             return Compose();
         }
+
+        /// <summary>Einzelfeuer aus dem Sprint (Richter 0.20): ein kurzer Klick bei gehaltenem Sprint wartet in sprint_to_fire auf den Marker
+        /// „Fire“; ohne diese Sperre wählte Wanted() nach dem Loslassen wieder den Sprint und der Zug verfiel ohne Schuss.</summary>
+        bool SemiShotWaits => _semiQueue > 0 && _t.A.name == "sprint_to_fire" && !_t.ended && ammo > 0;
 
         void StartReload(EgoIntent i)
         {
@@ -504,7 +511,21 @@ namespace Ballon.Ego
             _triggerHeld = i.fire && CanFire;
             _sinceShot += dt;
             float interval = ShotInterval();
-            if (_triggerHeld || (_burstLeft > 0 && CanFire))
+            if (S.D.gameplay.Semi)
+            {
+                // Einzelfeuer (0.20, Feuerart semi_auto): ein Schuss je Zug. Ein Zug vor Ablauf des Schussabstands (oder im Übergang aus dem
+                // Sprint) wartet höchstens SemiQueueS und fällt dann, sobald geschossen werden darf; gehaltener Abzug schießt nicht nach.
+                if (i.fire && !_semiPrev) _semiQueue = SemiQueueS;
+                _semiPrev = i.fire;
+                if (_semiQueue > 0 && CanFire && _sinceShot >= interval && ammo > 0)
+                {
+                    _semiQueue = 0;
+                    FireOne();
+                }
+                _semiQueue = Mathf.Max(0, _semiQueue - dt);
+                _shotClock = 0;
+            }
+            else if (_triggerHeld || (_burstLeft > 0 && CanFire))
             {
                 _shotClock += dt;
                 // erster Schuss sofort; Max statt Setzen behält im Dauerfeuer den Übertrag (sonst bei 30/s 3 Bilder = 600 statt 720/min)
@@ -613,9 +634,12 @@ namespace Ballon.Ego
         // Weltzoom gegen Modell (1d): der Zoom beginnt, wenn der Augenpunkt AdsStart seines Wegs zur Kamera zurückgelegt hat, und ist
         // bei AdsEnd ganz da; dazwischen folgt er dem Modell. Destiny-Holo: Zoom beginnt 0–2 Bilder nach dem Modell, Ende ±1 Bild.
         // AdsEnd nah an 1: am Bild bewegen sich nahe Teile noch, wenn der Augenpunkt fast da ist (gemessen: Ende 0,99 → 3 Bilder zu früh)
-        const float AdsStart = 0.05f, AdsEnd = 0.9985f, LeaveGraceS = 0.1f, LeaveMaxS = 0.5f;
+        // AdsStart je Klasse (0.20, gameplay.zoom_start): der Scout bewegt den Augenpunkt anfangs mehr als die Waffe im Bild, mit 5 % begann
+        // sein Zoom 2 Bilder vor dem Modell
+        const float AdsStartDefault = 0.05f, AdsEnd = 0.9985f, LeaveGraceS = 0.1f, LeaveMaxS = 0.5f;
+        float AdsStart => S.D.gameplay.zoom_start > 0 ? S.D.gameplay.zoom_start : AdsStartDefault;
 
-        static float Remap(float p) => Mathf.Clamp01((p - AdsStart) / (AdsEnd - AdsStart));
+        float Remap(float p) => Mathf.Clamp01((p - AdsStart) / (AdsEnd - AdsStart));
 
         /// <summary>Zielen-Anteil aus dem Weg des Augenpunkts (Socket_Eye nach dem Feder-Nachlauf, ohne Live-Ebenen) statt einer eigenen
         /// Zeitkurve: Hüfte/Sprint → Zielen über den Abstand beim Beginn, Zielen → Hüfte über den Hüftabstand; Sprünge (Abbruch mitten
@@ -697,6 +721,7 @@ namespace Ballon.Ego
             _lastBase = baseW;
             baseW = _t.scripted ? S.Secondary(baseW, f, _t.st, A.EndsInAds) : SecondaryLive(baseW, A.EndsInAds);
             BaseWeapon = baseW;
+            o.adsHidden = S.AdsHidden(baseW);           // Zielfernrohr (0.20): Okular, Rohr, Türme im Zielen aus
             FollowModel(baseW);
             var L = _t.scripted ? S.Scripted(A, f, Rot3(baseW), _t.st) : LiveLayers(Rot3(baseW));
             var WM = EgoSolver.Apply(baseW, L);

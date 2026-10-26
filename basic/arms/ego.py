@@ -64,6 +64,25 @@ def shots_720(first, n):
     """Schussbilder bei 720/min und 30 fps: alle 2,5 Bilder, also abwechselnd 2 und 3 Bilder Abstand (Unity: gameplay.rpm)."""
     return [first + int(2.5 * k) for k in range(n)]
 
+
+def shots_at(first, last, rpm):
+    """Schussbilder bei rpm und 30 fps von `first` bis höchstens `last` (0.20: Klassen mit eigener Kadenz, ego.profile); 720/min ergibt
+    dieselben Bilder wie shots_720."""
+    step, out = 60.0 * FPS / rpm, []
+    while first + int(step * len(out) + 1e-9) <= last:
+        out.append(first + int(step * len(out) + 1e-9))
+    return out
+
+
+def trigger_on(fire, f, semi=False):
+    """Abzug gezogen im Bild f einer Feueraktion: Dauerfeuer vom Bild vor dem ersten bis nach dem letzten Schuss; Einzelfeuer (0.20,
+    Feuerart semi_auto) je Schuss ein Bild davor bis ein Bild danach, dazwischen losgelassen (ein Schuss je Zug)."""
+    if not fire:
+        return False
+    if semi:
+        return any(s - 1 <= f <= s + 1 for s in fire)
+    return fire[0] - 1 <= f <= fire[-1] + 1
+
 ACTIONS = {
     'idle_hip': dict(de='Ruhe an der Hüfte (Atmen)', frames=60, weapon=[(0, 'hip'), (60, 'hip')], breathe=True,
                      events=[], src='E'),
@@ -188,6 +207,15 @@ RECOIL = dict(
     recover_delay_s=0.12, recover_hz=2.0, burst_shots=0, burst_rpm=0,
     # Streuung um den Zielpunkt (Zufall, getrennt von der Bahn); bis 0.14 als MoveTuning in Unity
     spread_hip_deg=1.1, spread_ads_deg=0.12)
+# Zielfernrohr im Zielen (0.20, Visier-Standard 3: eine Kamera, Modell ungezoomt; Entscheidungsliste 1d): Teile mit `ads_hide` (Rohr,
+# Okular, Türme, Spannband) sind aus, solange der Augenpunkt Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf, ohne Wippen und
+# Rückstoß) näher als eye_m an der Kamera liegt. Vorher wächst das Okular sichtbar heran wie bei Destiny (Scharfschütze: Okular füllt
+# das Bild, dann das Linsenbild, Linse erst nach dem Modell); eye_m = Augenabstand des Okularendes (Socket_Eye − Socket_Sight, 30 mm
+# beim Scout) plus Nahgrenze der Kamera (30 mm): darunter schnitte die Nahebene das Okular an. Blender (ego_build) und Unity
+# (EgoController, EgoSolver) rechnen dieselbe Regel.
+ADS_HIDE = dict(eye_m=0.06, src='E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; '
+                                'Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, '
+                                'Entscheidungsliste 1d)')
 # Waffenwechsel (6.1 A): Wegstecken (holster 0,27 s), danach leere Sicht, dann Ziehen wie bisher (draw mit Nachfedern).
 # empty_s ist die Pause zwischen Ende von holster und Beginn von draw; die sichtbare leere Sicht ist länger, weil die Waffe schon vor
 # dem Ende des Wegsteckens unter dem Bildrand ist und beim Ziehen erst nach einigen Bildern auftaucht.
@@ -284,7 +312,8 @@ def flash_roll(n):
 def flash_cover_ads(W, n=120):
     """Größter Anteil der lichten Visieröffnung, den der Blitz im Zielen bedeckt (über alle Drehungen roll_deg), ohne Rendern: Haltung
     'ads' (Auge in Socket_Eye, Blick längs des Laufs), Öffnung = Glasfenster (sight_glass) an seiner Rückseite geschnitten mit demselben
-    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim; Innenmaß dort gleich dem Glas), Raster n × n. Verdeckung durch die Waffe zählt nicht (obere Schranke). Für ./check (≤ 20 %, 5.3 A); Unity misst
+    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim; Innenmaß dort gleich dem Glas), Raster n × n; beim Zielfernrohr
+    (0.20) die kreisrunde Objektivlinse (scope_glass). Verdeckung durch die Waffe zählt nicht (obere Schranke). Für ./check (≤ 20 %, 5.3 A); Unity misst
     dasselbe im Test mit dem laufenden Controller."""
     th = math.tan(math.radians(CAMERA['h_fov_deg'] / 2))
     tv = th * CAMERA['aspect'][1] / CAMERA['aspect'][0]
@@ -295,10 +324,18 @@ def flash_cover_ads(W, n=120):
         return 50 - 50 * (x / d) / th, 50 - 50 * ((u - eye[1]) / d) / tv
 
     P = {q['id']: q for q in W.PARTS}
-    g, t = P['sight_glass'], P['sight_frame_trim']
-    ga, gb = proj(g['f0'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(g['f0'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
-    ta, tb = proj(t['f1'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(t['f1'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
-    x0, y0, x1, y1 = max(ga[0], ta[0]), max(ga[1], ta[1]), min(gb[0], tb[0]), min(gb[1], tb[1])
+    circle = None
+    if 'sight_glass' in P:
+        g, t = P['sight_glass'], P['sight_frame_trim']
+        ga, gb = proj(g['f0'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(g['f0'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
+        ta, tb = proj(t['f1'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(t['f1'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
+        x0, y0, x1, y1 = max(ga[0], ta[0]), max(ga[1], ta[1]), min(gb[0], tb[0]), min(gb[1], tb[1])
+    else:                                    # Zielfernrohr (0.20): lichte Öffnung = Objektivlinse, ein Kreis
+        g = P['scope_glass']
+        cx, cy = proj(g['a0'], g['c'][0], 0.0)
+        rr = abs(proj(g['a0'], g['c'][0], g['r'])[0] - cx)
+        circle = (cx, cy, rr)
+        x0, y0, x1, y1 = cx - rr, cy - rr * 16 / 9, cx + rr, cy + rr * 16 / 9
     V, core, flame = flash_mesh()
 
     def inside(px, py, a, b, c):
@@ -312,9 +349,11 @@ def flash_cover_ads(W, n=120):
         r = math.radians(roll)
         Q = [proj(mz[0] + f, mz[1] + u * math.cos(r) - x * math.sin(r), mz[2] + u * math.sin(r) + x * math.cos(r)) for f, u, x in V]
         T = [(Q[a], Q[b], Q[c]) for a, b, c in core + flame]
-        hit = sum(any(inside(x0 + (i + .5) / n * (x1 - x0), y0 + (j + .5) / n * (y1 - y0), *t_) for t_ in T)
-                  for i in range(n) for j in range(n))
-        best = max(best, hit / (n * n))
+        pts = [(x0 + (i + .5) / n * (x1 - x0), y0 + (j + .5) / n * (y1 - y0)) for i in range(n) for j in range(n)]
+        if circle:                           # % B und % H: Kreis im Bild als Ellipse (16:9)
+            pts = [(x, y) for x, y in pts if ((x - circle[0]) / circle[2]) ** 2 + ((y - circle[1]) * 9 / 16 / circle[2]) ** 2 <= 1]
+        hit = sum(any(inside(x, y, *t_) for t_ in T) for x, y in pts)
+        best = max(best, hit / len(pts))
     return best
 
 
@@ -403,7 +442,31 @@ CLASSES = {
                       src='M 720/min (Destiny-MP PvP, Dauerfeuer im Zielen ≈ 5 Bilder Abstand bei 60/s, Motiongen REF destiny2; Menüs '
                           '750–900/min [S]), Clip fire_hip wie die Automatik alle 2,5 Bilder; Magazin 30 E (Destiny-MP 26–30 [S])'),
         src='Entscheidungsliste Schritt 6, erste übertragene Klasse (Nutzer 26.10.2026): Hüfte 2b/2.1 A, Sprint 3b/3.2 A, Anflug 4d'),
+    'scout_rifle': dict(
+        # Hüfte und Sprint wie die Automatik (lange Waffe, Gewehr): die Haltungen POSES treffen am Scout schon das Destiny-Band
+        poses={},
+        keep=dict(
+            hip='M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); Destiny-Scout '
+                'Tone Patrol Mündung ≈ 57/63, Call to Serve 58/61 (Motiongen destiny2 › 3, huefte); Lage E wie die Automatik: am Scout '
+                'gerechnet Mündung 57,0/62,9 %, Okular 24 pp rechts der Mündung (Band 7–34)',
+            sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Scout-Sprint nicht gemessen (Motiongen '
+                   'destiny2 › Glidepath: kein Sprint-Clip)'),
+        frames=dict(aim_in=7, aim_out=5),
+        frames_src='Scout bei Destiny nur grob gemessen: Tone Patrol ≈ 22 Bilder (0,37 s, Bestand, „vom Nachbartyp übertragen“), Patron of '
+                   'Lost Causes 0,20–0,25 s = 12–15 Bilder [M] (Motiongen destiny2 › Glidepath, visiere › v-d2-scout); dazwischen und '
+                   'zwischen Scharfschütze (15 Bilder bis ruhig) und Impuls (20) → E 17 Bilder bei 60/s erste Bewegung → Ruhe, am '
+                   'Unity-Bild gemessen; aim_out M Destiny-Scout ADS aus → Hüfte 0,17 s (Dead Man\'s Tale, Motiongen auswertung › V04) '
+                   '= 5 Bilder bei 30/s',
+        gameplay=dict(rpm=180, magazine=15, zoom_start=0.2,
+                      src='M 180/min (Tone Patrol, Precision Frame: Schussabstand 20–21 Bilder bei 60/s und Menükarte, Motiongen destiny2 '
+                          '› 3; Manifest Precision Frame 180 [S], waffenwerte › 4); Magazin 15 M (Menükarte Tone Patrol; Destiny-Scouts '
+                          '13–18 [S]); Feuerart aus der Spec (META fire), halbautomatisch: ein Schuss je Zug; zoom_start E (1d): der Weltzoom '
+                          'beginnt bei diesem Anteil des Augenwegs (Klassen ohne Wert 5 %) – am Unity-Bild gemessen, damit er wie beim Holo mit '
+                          'oder kurz nach dem Modell beginnt'),
+        src='Entscheidungsliste Schritt 6, zweite übertragene Klasse (0.20 „Spotter“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, '
+            'Zielfernrohr nach Visier-Standard 3'),
 }
+FIRE_MODES = {'full_auto': 'Dauerfeuer', 'semi_auto': 'Einzelfeuer (ein Schuss je Zug)'}   # META fire der spielbaren Waffen
 # Live-Teile der Pilotwaffe (Abzug, Verschluss, Auswurfklappe im laufenden Feuer); andere Waffen nennen ihre im Modul-Feld EGO_LIVE
 LIVE = dict(trigger='trigger', bolt='bolt_carrier', port='port_cover')
 _PROFILES = {}
@@ -423,7 +486,12 @@ def profile(W):
     if t not in CLASSES:
         raise KeyError(f'{wid}: Waffentyp {t} hat kein Ego-Profil (ego.CLASSES)')
     C = CLASSES[t]
+    fire_mode = W.META.get('fire', 'full_auto')
+    if fire_mode not in FIRE_MODES:
+        raise KeyError(f'{wid}: Feuerart {fire_mode} nicht spielbar (ego.FIRE_MODES)')
     poses = {k: dict(v) for k, v in POSES.items()}
+    for k, note in C.get('keep', {}).items():      # Haltung der Automatik übernommen, Herkunft für diese Klasse
+        poses[k]['src'] = f"{note} (Haltung POSES['{k}'] unverändert)"
     for k, v in C['poses'].items():
         poses[k] = dict(v)
     if 'hip' in C['poses']:
@@ -442,8 +510,13 @@ def profile(W):
         _retime(A, n / old)
         A['frames'] = int(math.ceil(n - 1e-9))
         A['src'] = f"{A['src']}; Klasse {t}: {old} → {n:g} Bilder ({C['frames_src']})"
+    rpm = C['gameplay']['rpm']
+    for A in actions.values():                  # Schussbilder der Feueraktionen in der Kadenz der Klasse (Clips wie Unity: gameplay.rpm)
+        if A.get('fire') and rpm != 720:
+            A['fire'] = shots_at(A['fire'][0], A['fire'][-1], rpm)
+            A['src'] = f"{A['src']}; Klasse {t}: {rpm}/min, {FIRE_MODES[fire_mode]} (Schussbilder {A['fire']})"
     live = getattr(W, 'EGO_LIVE', None) or LIVE
     P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=C['gameplay'], src=C['src'],
-             frames_src=C.get('frames_src', ''))
+             frames_src=C.get('frames_src', ''), fire_mode=fire_mode)
     _PROFILES[wid] = P
     return P

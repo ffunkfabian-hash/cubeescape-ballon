@@ -1,5 +1,5 @@
-// Ego-Daten im Format ballon-ego/8 (je Waffe, 0.18), erzeugt von tools/export_unity.py (nicht von Hand pflegen); ballon-ego/7 (bis 0.17,
-// eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
+// Ego-Daten im Format ballon-ego/9 (je Waffe, Feuerart, Zielfernrohr, 0.20), erzeugt von tools/export_unity.py (nicht von Hand pflegen);
+// ballon-ego/8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
 // nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,11 @@ namespace Ballon.Ego
         public float world_zoom;                        // Weltzoom der Klasse beim Zielen (Bildmaßstab, Entscheidungsliste 1.2 A)
         public EgoZoom[] zoom_table;                    // Weltzoom je Waffentyp (Katalog basic/reticles.py)
         public EgoHip hip;                              // Hüft-Fadenkreuz (4.1 A / 4.2 A)
+        public float zoom_start;                        // 9 (0.20): Anteil des Augenwegs, ab dem der Weltzoom beginnt (1d); 0 = 0,05
+        public string fire_mode;                        // 9 (0.20): Feuerart aus der Spec (META fire): full_auto, semi_auto; leer (/7, /8) = full_auto
+
+        /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto).</summary>
+        public bool Semi => fire_mode == "semi_auto";
 
         /// <summary>Weltzoom eines Waffentyps aus der Tabelle (NaN, wenn unbekannt).</summary>
         public float ZoomFor(string type)
@@ -49,7 +54,8 @@ namespace Ballon.Ego
     public class EgoMove { public string kind; public float[] vec; public float[] axis; public float a0, a1; }
 
     [Serializable]
-    public class EgoPart { public string id, asm, role, parent; public float[] rest; public EgoMove move; }
+    public class EgoPart { public string id, asm, role, parent; public float[] rest; public EgoMove move;
+                           public bool ads_hide; }       // 9 (0.20): im Zielen aus (Zielfernrohr, motion.ads_hide)
 
     [Serializable] public class EgoAnchor { public string id, part; public float[] pos; }
 
@@ -137,6 +143,7 @@ namespace Ballon.Ego
         public string role, color, aaa_color, de;
         public float rough, metal, alpha, emit, spec;
         public bool emit_only;
+        public bool no_coat;          // 9 (0.20): Linse im Zielfernrohr (kit: ohne Klarlack, Alpha 0,04, kaum Glanz)
     }
 
     [Serializable] public class Spring { public float freq_hz, zeta, aim_freq_hz, aim_zeta; }     // aim_*: Aktionen, die im Zielen enden (ego.ends_in_ads)
@@ -171,10 +178,15 @@ namespace Ballon.Ego
     public class Eject { public float speed_mps, gravity_mps2, spin_dps, life_s; public float[] spin_axis; public int max_live, delay_frames;
                          public string role, src; }
 
-    /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, FLASH, EJECT, TIME_SCALE).</summary>
+    /// <summary>Zielfernrohr (ego.ADS_HIDE, 9 ab 0.20): Teile mit ads_hide sind aus, solange Socket_Eye der Grundhaltung näher als eye_m an
+    /// der Kamera liegt. /8 und /7: 0 (nie aus; keine Waffe hatte solche Teile).</summary>
+    [Serializable] public class AdsHide { public float eye_m; public string src; }
+
+    /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, FLASH, EJECT, ADS_HIDE, TIME_SCALE).</summary>
     [Serializable]
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
-                          public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; public Flash flash; public Eject eject; }
+                          public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; public Flash flash; public Eject eject;
+                          public AdsHide ads_hide; }
 
     [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, spec, normal, ao; }
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
@@ -182,7 +194,9 @@ namespace Ballon.Ego
     /// <summary>Gebackene Atlanten (tools/bake_unity.py) und die AgX-LUT der Blender-Ansicht.</summary>
     [Serializable] public class Skin { public string name, de, kind, albedo, spec; }
     [Serializable] public class EgoTextures { public string de; public Atlas weapon, arms; public Lut lut; public Skin[] skins; }
-    [Serializable] public class WeaponTextures { public Atlas weapon; public Skin[] skins; }
+    /// <summary>Ablage eines Kanals (9, 0.20, export_unity.TEXTURE_STORE): Kantenlänge und Dateiformat.</summary>
+    [Serializable] public class TexStore { public string kind, ext, de; public int size; }
+    [Serializable] public class WeaponTextures { public Atlas weapon; public Skin[] skins; public TexStore[] store; public float limit_mb; }
 
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
     [Serializable] public class MeshBounds { public string de; public MeshBound[] objects; }
@@ -209,8 +223,10 @@ namespace Ballon.Ego
         [NonSerialized] public EgoProfile profile;
         [NonSerialized] public string atlas = "weapon", reference = "ego_reference.json";
         [NonSerialized] public int slot;            // Platz in weapons[] (Taste slot + 1)
+        [NonSerialized] public WeaponTextures weaponTextures;   // je Waffe mit Ablage (store, limit_mb; 9); /7: null
 
-        public const string Format = "ballon-ego/8";     // 8: weapons[] je Waffe (gameplay, weapon mit live, poses, grips, actions, profile, Atlanten, Netzgrenzen, Referenz), gemeinsam Bewegung, Kamera, Arme, Rollen (0.18)
+        public const string Format = "ballon-ego/9";     // 9: gameplay.fire_mode, parts[].ads_hide, motion.ads_hide, textures.store/limit_mb (0.20)
+        public const string Format8 = "ballon-ego/8";    // 8: weapons[] je Waffe (gameplay, weapon mit live, poses, grips, actions, profile, Atlanten, Netzgrenzen, Referenz), gemeinsam Bewegung, Kamera, Arme, Rollen (0.18)
         public const string FormatLegacy = "ballon-ego/7";   // 7: motion.flash, motion.eject, weapon.eject, Rollen flash_* (0.16); 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
@@ -237,12 +253,13 @@ namespace Ballon.Ego
                 if (f.weapon.live == null || string.IsNullOrEmpty(f.weapon.live.trigger))
                     f.weapon.live = new WeaponLive { trigger = "trigger", bolt = "bolt_carrier", port = "port_cover" };   // bis 0.17 fest im Code
                 f.profile = new EgoProfile { type = f.gameplay.weapon_type, src = FormatLegacy, poses = new string[0], frames = new ProfileFrames[0] };
+                Migrate9(f);
                 f.toUnity = ParseAxes(json);
                 f.Index();
                 return new[] { f };
             }
-            if (fmt != Format)
-                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
+            if (fmt != Format && fmt != Format8)
+                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
             var s = JsonUtility.FromJson<EgoFile8>(json);
             if (s.weapons == null || s.weapons.Length == 0) throw new FormatException("ego.json: weapons leer");
             var axes = ParseAxes(json);
@@ -259,14 +276,26 @@ namespace Ballon.Ego
                     roles = s.roles, mesh_bounds = new MeshBounds { de = e.mesh_bounds?.de ?? s.mesh_bounds?.de, objects = bounds.ToArray() },
                     textures = s.textures == null ? null : new EgoTextures { de = s.textures.de, arms = s.textures.arms, lut = s.textures.lut,
                                                                             weapon = e.textures?.weapon, skins = e.textures?.skins },
+                    weaponTextures = e.textures,
                     toUnity = axes, profile = e.profile, atlas = e.atlas, reference = e.reference, slot = k,
                 };
                 if (f.weapon == null || f.weapon.live == null || string.IsNullOrEmpty(f.weapon.live.trigger))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");
+                if (fmt == Format && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({Format})");
+                if (fmt == Format8) Migrate9(f);
                 f.Index();
                 res[k] = f;
             }
             return res;
+        }
+
+        /// <summary>/7 und /8 nach /9 (0.20): bis dahin schossen alle Waffen Dauerfeuer, keine hatte Teile mit ads_hide.</summary>
+        static void Migrate9(EgoFile f)
+        {
+            if (string.IsNullOrEmpty(f.gameplay.fire_mode)) f.gameplay.fire_mode = "full_auto";
+            if (f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0)
+                f.motion.ads_hide = new AdsHide { eye_m = 0, src = "vor ballon-ego/9: keine Teile im Zielen aus" };
         }
 
         [Serializable]

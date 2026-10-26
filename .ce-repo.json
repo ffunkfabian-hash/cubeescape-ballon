@@ -1,7 +1,7 @@
 {
   "name": "cubeescape-ballon",
-  "version": "0.19.0",
-  "version_name": "Saddle",
+  "version": "0.20.0",
+  "version_name": "Spotter",
   "check": {
     "quick": [
       [

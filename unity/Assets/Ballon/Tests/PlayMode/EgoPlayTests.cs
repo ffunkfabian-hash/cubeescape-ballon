@@ -15,10 +15,11 @@ namespace Ballon.Ego.Tests
     public class EgoPlayTests
     {
         const float Dt = 1f / 60f;
-        static EgoFile _d, _mp;
+        static EgoFile _d, _mp, _sr;
 
         static EgoFile D => _d;
         static EgoFile MP => _mp;                           // zweite Waffe (0.18): Maschinenpistole BASIC-06
+        static EgoFile SR => _sr;                           // dritte Waffe (0.20): Scout BASIC-03
 
         static EgoIntent Idle => new EgoIntent { grounded = true };
 
@@ -49,6 +50,7 @@ namespace Ballon.Ego.Tests
                 var b = Object.FindAnyObjectByType<Bootstrap>();
                 _d = b.Solvers[0].D;
                 _mp = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "submachine_gun");
+                _sr = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "scout_rifle");
             }
         }
 
@@ -366,10 +368,10 @@ namespace Ballon.Ego.Tests
             var marks = new List<string>();
             var used = new List<int>();
             System.Action<string, string> on = (a, m) => { marks.Add($"{a}/{m}"); if (m == "Ready") used.Add(p.arsenal.Active); };
-            foreach (var c in p.arsenal.C) c.Marker += on;       // 0.18: Q wechselt zur anderen Waffe (Automatik → MP → Automatik)
+            foreach (var c in p.arsenal.C) c.Marker += on;       // 0.18: Q wechselt zur nächsten Waffe (0.20 mit drei Waffen: Automatik → MP → Scout)
             for (int k = 0; k < 150 && (marks.Count(m => m == "draw/Ready") < 2 || p.C.Busy); k++) yield return null;   // bis das Ziehen endet
             foreach (var c in p.arsenal.C) c.Marker -= on;
-            CollectionAssert.AreEqual(new[] { 1, 0 }, used, "Q: erst die MP, dann zurück zur Automatik");
+            CollectionAssert.AreEqual(new[] { 1, 2 }, used, "Q: erst die MP, dann der Scout (zur nächsten Waffe)");
             bool holstered = p.C.Holstered;
             p.input = new ScriptedInput().Add(0, 1000);
             yield return null;
@@ -419,11 +421,269 @@ namespace Ballon.Ego.Tests
                                       $"mit Schwelle 0,3 % des Wegs: {nr} Bilder");
                 return n;
             }
-            int mp = Frames(MP), ar = Frames(D);
+            int mp = Frames(MP), ar = Frames(D), sr = Frames(SR);
+            Assert.That(sr, Is.InRange(15, 20), "Scout-Anflug 15–20 Bilder bei 60/s (zwischen Scharfschütze 15 und Impuls 20; Destiny-Scout 12–22)");
             Assert.LessOrEqual(mp, 12, "MP-Anflug ≤ 12 Bilder bei 60/s (Destiny-MP 8–12)");
             Assert.GreaterOrEqual(mp, 8, "MP-Anflug ≥ 8 Bilder (Destiny-MP 8–12)");
             Assert.That(ar, Is.InRange(18, 22), "Automatik wie bisher ≈ 20 Bilder (Destiny-Automatik 20)");
             Assert.AreEqual(10f / 30f, D.Action("aim_in").frames / 30f, 1e-6f, "Automatik aim_in 0,33 s");
+        }
+
+        // ---------------------------------------------------------------- Scout BASIC-03 (0.20 „Spotter“)
+        /// <summary>Feuerart semi_auto (Spec): ein Schuss je Zug. Gehaltener Abzug schießt einmal; fünf Klicks im Abstand 0,5 s geben fünf
+        /// Schüsse; zwei Klicks schneller als der Schussabstand (60/180 s) geben zwei Schüsse, der zweite nach dem Schussabstand. Automatik
+        /// und MP bleiben im Dauerfeuer (720/min). Bis 0.19 kannte der Controller nur Dauerfeuer.</summary>
+        [Test]
+        public void Einzelfeuer_feuert_genau_einmal_je_Klick()
+        {
+            var c = new EgoController(new EgoSolver(SR));
+            var at = new List<int>();
+            int k = 0;
+            c.Shot += () => at.Add(k);
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            for (int j = 0; j < 90; j++, k++) c.Tick(Dt, fire);                      // 1,5 s gehalten
+            Assert.AreEqual(1, at.Count, "gehaltener Abzug: genau ein Schuss");
+            for (int j = 0; j < 30; j++, k++) c.Tick(Dt, Idle);
+            for (int n = 0; n < 5; n++)                                               // fünf Klicks, je 2 Bilder gedrückt, Abstand 0,5 s
+            {
+                for (int j = 0; j < 2; j++, k++) c.Tick(Dt, fire);
+                for (int j = 0; j < 28; j++, k++) c.Tick(Dt, Idle);
+            }
+            Assert.AreEqual(6, at.Count, "fünf Klicks: fünf Schüsse");
+            at.Clear();
+            for (int j = 0; j < 2; j++, k++) c.Tick(Dt, fire);                        // zwei schnelle Klicks im Abstand 0,1 s
+            for (int j = 0; j < 4; j++, k++) c.Tick(Dt, Idle);
+            for (int j = 0; j < 2; j++, k++) c.Tick(Dt, fire);
+            for (int j = 0; j < 40; j++, k++) c.Tick(Dt, Idle);
+            float gap = at.Count == 2 ? (at[1] - at[0]) * Dt : 0, want = 60f / SR.gameplay.rpm;
+            TestContext.WriteLine($"Scout: zwei Klicks im Abstand 0,100 s → {at.Count} Schüsse, Abstand {gap:0.000} s (60/rpm = {want:0.000} s); Munition {c.ammo}/{c.magSize}");
+            Assert.AreEqual(2, at.Count, "zwei Klicks: zwei Schüsse");
+            Assert.GreaterOrEqual(gap, want - 1e-4f, "der zweite nach dem Schussabstand");
+            Assert.Less(gap, want + 2 * Dt, "… und nicht später");
+            Assert.AreEqual(SR.gameplay.magazine - 8, c.ammo, "acht Schüsse");
+            // Richter 0.20: kurzer Klick bei gehaltenem Sprint – der Schuss fällt nach sprint_to_fire, danach wieder Sprint
+            var sprint = new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f };
+            for (int j = 0; j < 60; j++, k++) c.Tick(Dt, sprint);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance, "im Sprint");
+            at.Clear();
+            var tap = sprint;
+            tap.fire = true;
+            c.Tick(Dt, tap); k++;
+            for (int j = 0; j < 45; j++, k++) c.Tick(Dt, sprint);
+            TestContext.WriteLine($"Scout: Klick im Sprint → {at.Count} Schuss nach {(at.Count > 0 ? at[0] - (k - 46) : -1)} Bildern, danach {c.CurrentStance}");
+            Assert.AreEqual(1, at.Count, "kurzer Klick im Sprint: ein Schuss");
+            for (int j = 0; j < 40; j++, k++) c.Tick(Dt, sprint);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance, "danach wieder Sprint");
+            foreach (var d in new[] { D, MP })                                          // Dauerfeuer unverändert
+            {
+                var a = new EgoController(new EgoSolver(d));
+                a.ReadyNow();
+                Run(a, Idle, 0.3f);
+                long s0 = a.shots;
+                for (int j = 0; j < 60; j++) a.Tick(Dt, fire);
+                TestContext.WriteLine($"{d.weapon.id}: 1 s gehalten → {a.shots - s0} Schüsse");
+                Assert.AreEqual(12, a.shots - s0, 1, $"{d.weapon.id}: Dauerfeuer 720/min");
+            }
+        }
+
+        /// <summary>Tasten 1 → 3 → 2 (6.1 A, wie 0.18): jede Waffe wird weggesteckt, die leere Sicht dauert 0,1–0,2 s, das erste neue Bild
+        /// gehört zum Ziehen der gewählten Waffe; jede Waffe behält ihre Munition (Automatik, Scout, MP).</summary>
+        [Test]
+        public void Wechsel_1_3_2_mit_leerer_Sicht_ohne_Munitionsverlust()
+        {
+            int k = 0;
+            var marks = new List<(int k, string a, string m, int w)>();
+            var A = new EgoArsenal(new EgoController(new EgoSolver(D)), new EgoController(new EgoSolver(MP)), new EgoController(new EgoSolver(SR)));
+            for (int w = 0; w < 3; w++) { int ww = w; A.C[w].Marker += (a, m) => marks.Add((k, a, m, ww)); }
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            var scr = A.C.Select(c => new EgoScreen(c.S)).ToArray();
+            var pts = new List<Vector2>();
+            for (int t = 0; t < 20; t++) A.Tick(Dt, new EgoIntent { grounded = true, fire = true });   // Automatik schießt
+            int ar = A.C[0].ammo;
+            Assert.Less(ar, 30);
+            int sr = -1;
+            foreach (int target in new[] { 3, 2, 1 })
+            {
+                marks.Clear();
+                var vis = new List<bool>();
+                var who = new List<int>();
+                var acts = new List<string>();
+                int from = A.Active;
+                for (k = 0; k < 120; k++)
+                {
+                    A.Tick(Dt, Idle, k == 0 ? target : 0);
+                    scr[A.Active].Silhouette(A.Current.output, pts);
+                    vis.Add(pts.Count > 0);
+                    who.Add(A.Active);
+                    acts.Add(A.Current.ActionName);
+                }
+                int gone = vis.IndexOf(false), back = vis.IndexOf(true, Mathf.Max(0, gone));
+                float tEmpty = (back - gone) * Dt;
+                int hol = marks.FindIndex(x => x.a == "holster" && x.m == "Holstered" && x.w == from);
+                TestContext.WriteLine($"Taste {target} (von {from + 1}): Holstered {(hol >= 0 ? (marks[hol].k + 1) * Dt : -1):0.000} s, leer {tEmpty:0.000} s, " +
+                                      $"erstes neues Bild {(back + 1) * Dt:0.000} s ({acts[back]} von Waffe {who[back] + 1})");
+                Assert.GreaterOrEqual(hol, 0, $"Taste {target}: weggesteckt");
+                Assert.That(tEmpty, Is.InRange(0.1f - 1e-4f, 0.2f + 1e-4f), $"Taste {target}: leere Sicht 0,1–0,2 s");
+                Assert.AreEqual(target - 1, who[back], "das erste neue Bild zeigt die gewählte Waffe");
+                Assert.AreEqual("draw", acts[back], "… beim Ziehen");
+                Assert.AreEqual(target - 1, A.Active);
+                Assert.AreEqual(ar, A.C[0].ammo, "Automatik behält ihre Munition");
+                if (target == 3)
+                {
+                    Assert.AreEqual(SR.gameplay.magazine, A.C[2].ammo, "Scout voll");
+                    for (int n = 0; n < 2; n++)                                       // zwei Klicks
+                    {
+                        A.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+                        for (int t = 0; t < 30; t++) A.Tick(Dt, Idle);
+                    }
+                    sr = A.C[2].ammo;
+                    Assert.AreEqual(SR.gameplay.magazine - 2, sr, "Scout: zwei Klicks, zwei Schüsse");
+                }
+                if (sr >= 0) Assert.AreEqual(sr, A.C[2].ammo, "Scout behält seine Munition");
+                Assert.AreEqual(30, A.C[1].ammo, "MP unberührt");
+            }
+        }
+
+        /// <summary>Entscheidungsliste 1d am Zielfernrohr (60/s, Hüfte → Zielen und zurück): der Weltzoom beginnt mit oder kurz nach dem
+        /// Modell (0–2 Bilder) und endet mit ihm (±1 Bild) wie beim Holo; das Linsenbild (Okular, Rohr, Türme aus) kommt in der letzten Phase
+        /// des Anflugs, sobald das Okular die Nahebene erreicht (Destiny-Scharfschütze: Linse nach dem Modell; mit einer Kamera und echtem
+        /// Okular geht das nicht ohne angeschnittenes Okular). Zielen → Hüfte: die Teile kommen zurück, bevor das Modell die Hüfte erreicht.</summary>
+        [Test]
+        public void Zielfernrohr_Zoom_und_Linse_mit_dem_Modell()
+        {
+            var aim = new EgoIntent { grounded = true, aim = true };
+            var E = new EgoScreen(new EgoSolver(SR));
+            // Socket_Sight (Okularende) liegt im Zielen 30 mm hinter dem Auge, also hinter der Kamera, das Objektiv 90 mm davor: ihre Bildbewegung
+            // wächst am Ende ohne Grenze und hebt die 5-%-Schwelle an. Gemessen wird an den fernen Punkten (Mündung, Schacht, Griff, Stützhand)
+            var anchors = new[] { "Socket_Muzzle", "Socket_SupportHand", "Socket_MagWell", "Socket_Hand" }.Select(a => BMath.V(SR.Anchor(a).pos)).ToArray();
+            var prev = new Vector2[anchors.Length];
+            foreach (bool inAim in new[] { true, false })
+            {
+                var c = new EgoController(new EgoSolver(SR));
+                c.ReadyNow();
+                Run(c, inAim ? Idle : aim, 0.8f);
+                for (int a = 0; a < anchors.Length; a++) prev[a] = E.ToScreen(c.BaseWeapon.MultiplyPoint3x4(anchors[a]));
+                var w = new List<float> { c.adsWeight };
+                var mv = new List<float> { 0 };
+                var hid = new List<bool> { c.output.adsHidden };
+                for (int k = 0; k < 60; k++)
+                {
+                    c.Tick(Dt, inAim ? aim : Idle);
+                    float sum = 0;
+                    for (int a = 0; a < anchors.Length; a++)
+                    {
+                        Vector2 q = E.ToScreen(c.BaseWeapon.MultiplyPoint3x4(anchors[a]));
+                        sum += (q - prev[a]).magnitude;
+                        prev[a] = q;
+                    }
+                    mv.Add(sum);
+                    w.Add(c.adsWeight);
+                    hid.Add(c.output.adsHidden);
+                }
+                float w0 = w[0], w1 = w[w.Count - 1], peak = mv.Max();
+                int zs = w.FindIndex(x => x != w0), ze = w.FindIndex(x => x == w1);
+                int ms = mv.FindIndex(x => x > 0.05f * peak), me = mv.FindLastIndex(x => x > 0.05f * peak);
+                int lens = hid.IndexOf(inAim);
+                TestContext.WriteLine($"Scout {(inAim ? "Hüfte → Zielen" : "Zielen → Hüfte")} bei 60/s: Modell Bild {ms}–{me}, Zoom {zs}–{ze} " +
+                                      $"(Start {zs - ms:+0;-0;0}, Ende {ze - me:+0;-0;0}), Linsenbild {(inAim ? "an" : "aus")} ab Bild {lens} ({lens - me:+0;-0;0} zum Modellende)");
+                Assert.AreEqual(1f, Mathf.Abs(w1 - w0), 1e-4f, "Zoom ganz durchlaufen");
+                Assert.That(zs - ms, Is.InRange(0, 2), "Zoom beginnt mit oder kurz nach dem Modell");
+                Assert.Greater(lens, 0, "Linsenbild schaltet um");
+                Assert.IsTrue(hid.Skip(lens).All(x => x == inAim), "einmal umschalten, kein Flackern");
+                if (inAim)
+                {
+                    Assert.That(ze - me, Is.InRange(-1, 1), "Zoom endet mit dem Modell (±1 Bild)");
+                    // Festlegung 0.20 (1d am Zielfernrohr): Linsenbild, sobald das Okular die Nahebene erreicht (Auge 60 mm vor der Kamera, 86 % des
+                    // Wegs); danach bewegt sich das Modell fast nur noch längs der Blickachse. Später ginge nicht ohne angeschnittenes Okular.
+                    Assert.That(lens - me, Is.InRange(-8, 0), "Linsenbild in der letzten Phase des Anflugs, spätestens mit dem Modellende");
+                    Assert.Greater(lens, zs, "Linsenbild nach dem Beginn des Zooms");
+                }
+                else Assert.Less(lens, me, "Zielen → Hüfte: Teile zurück, bevor das Modell die Hüfte erreicht");
+            }
+        }
+
+        /// <summary>Scout im Spieler (Taste 3 über die Eingabekette): Weltzoom 2,0, Teile mit ads_hide im Zielen aus und in der Hüfte da,
+        /// Einzelfeuer mit gehaltenem Abzug genau ein Schuss, Hüft-Fadenkreuz der Klasse.</summary>
+        [UnityTest]
+        public IEnumerator Scout_im_Spieler_Taste_3_Zielfernrohr_Einzelfeuer()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.UseWeapon(0);
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 0.05f, press: "weapon3").Add(0.05f, 1.4f);
+            p.deltaOverride = () => 1f / 30f;
+            for (int k = 0; k < 42; k++) yield return null;
+            Assert.AreEqual(2, p.arsenal.Active, "Taste 3: Scout");
+            var rig = p.rig;
+            Assert.AreEqual(7, rig.AdsHideCount, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband");
+            Assert.IsFalse(rig.AdsHidden, "Hüfte: Zielfernrohr ganz");
+            Assert.AreEqual("cross", p.hipReticle.Kind, "Hüft-Fadenkreuz des Scouts");
+            long s0 = p.C.shots;
+            p.input = new ScriptedInput().Add(0, 1.2f, hold: "aim").Add(0.6f, 1.2f, hold: "aim fire");
+            for (int k = 0; k < 36; k++) yield return null;
+            float zoom = Mathf.Tan(p.viewCam.fieldOfView * Mathf.Deg2Rad / 2) / Mathf.Tan(p.worldCam.fieldOfView * Mathf.Deg2Rad / 2);
+            Assert.IsTrue(rig.AdsHidden, "Zielen: Teile mit ads_hide aus");
+            Assert.AreEqual(2.0f, zoom, 1e-3f, "Weltzoom 2,0");
+            Assert.IsTrue(p.SightVisible, "gezeichnetes Absehen im Zielfernrohr");
+            var sc = p.SightScreen();
+            Assert.AreEqual(0.5f, sc.x / p.viewCam.pixelWidth, 0.02f, "Absehen nahe der Bildmitte");
+            Assert.AreEqual(0.5f, sc.y / p.viewCam.pixelHeight, 0.02f);
+            Assert.AreEqual(1, p.C.shots - s0, "gehaltener Abzug im Zielen: ein Schuss");
+            p.input = new ScriptedInput().Add(0, 1000);
+            for (int k = 0; k < 20; k++) yield return null;
+            Assert.IsFalse(rig.AdsHidden, "zurück in der Hüfte: Zielfernrohr ganz");
+            p.input = new ScriptedInput().Add(0, 0.05f, press: "weapon1").Add(0.05f, 1.5f);     // sauber zurück zur Automatik (wie Taste 1)
+            for (int k = 0; k < 45; k++) yield return null;
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            Assert.AreEqual(0, p.arsenal.Active);
+        }
+
+        /// <summary>Nutzerwunsch 26.10.2026 („lieber etwas Gezeichnetes als Grafik … im Bestfall das Fadenkreuz vom Hüftfeuer im Visier“): das
+        /// Absehen aller drei Waffen ist im Spiel gezeichnet, nicht das Modellteil – im Zielen die Hüftform der Klasse in der Farbe des
+        /// Modell-Absehens an der Bildlage von Socket_Reticle (auf der Mitte), ohne Aufgehen; in der Hüfte und beim Nachladen aus; das
+        /// Modellteil (Rolle reticle_*) ist immer aus.</summary>
+        [UnityTest]
+        public IEnumerator Absehen_gezeichnet_in_Hueftform_im_Visier()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.deltaOverride = () => 1f / 30f;
+            for (int w = 0; w < p.loadouts.Length; w++)
+            {
+                p.UseWeapon(w);
+                p.C.ReadyNow();
+                var L = p.Current;
+                Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
+                Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
+                var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
+                Assert.IsFalse(L.rig.Part(role.id).GetComponent<Renderer>().enabled, "Modell-Absehen aus");
+                ColorUtility.TryParseHtmlString(p.C.S.D.Role(role.role).color, out var want);
+                Assert.AreEqual(want, L.sightColor, "Farbe der Absehen-Rolle (Cyan)");
+                p.input = new ScriptedInput().Add(0, 1000);
+                for (int k = 0; k < 10; k++) yield return null;
+                Assert.IsFalse(p.SightVisible, "Hüfte: kein Absehen im Visier");
+                p.input = new ScriptedInput().Add(0, 1000, hold: "aim");
+                for (int k = 0; k < 30; k++) yield return null;
+                Assert.IsTrue(p.SightVisible, $"{p.C.S.D.weapon.id}: im Zielen gezeichnetes Absehen");
+                var s = p.SightScreen();
+                float spread0 = L.sight.spread;
+                TestContext.WriteLine($"{p.C.S.D.weapon.id}: Absehen {L.sight.Kind} bei x {s.x / p.viewCam.pixelWidth * 100:0.0} / y {100 - s.y / p.viewCam.pixelHeight * 100:0.0} %");
+                Assert.AreEqual(0.5f, s.x / p.viewCam.pixelWidth, 0.02f);
+                Assert.AreEqual(0.5f, s.y / p.viewCam.pixelHeight, 0.02f);
+                p.input = new ScriptedInput().Add(0, 1000, hold: "aim fire");
+                for (int k = 0; k < 6; k++) yield return null;
+                Assert.AreEqual(spread0, L.sight.spread, 1e-6f, "ohne Aufgehen im Zielen");
+                p.input = new ScriptedInput().Add(0, 1000);
+                for (int k = 0; k < 30; k++) yield return null;
+            }
+            p.deltaOverride = null;
+            p.UseWeapon(0);
+            p.C.ReadyNow();
         }
 
         static EgoArsenal Arsenal(List<(int k, string a, string m, int w)> marks, System.Func<int> k)
@@ -539,7 +799,7 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
-            Assert.AreEqual(2, p.loadouts.Length, "zwei Waffen in der Szene");
+            Assert.AreEqual(3, p.loadouts.Length, "drei Waffen in der Szene (0.20: Scout)");
             p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);

@@ -241,7 +241,12 @@ for _m in _XU.WEAPONS:              # jede spielbare Waffe (0.18)
         fail(f'Mündungsfeuer {_m}: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
-    fail('Unity-Daten: ' + r.stdout.strip())
+    fail('Unity-Daten: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_texture_store.py')], capture_output=True, text=True)   # 0.20: 97 A
+if r.returncode:
+    fail('Texturablage: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
+elif 'Hinweis' in r.stdout:
+    print(r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'scene_build.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Szenen: ' + r.stdout.strip())
