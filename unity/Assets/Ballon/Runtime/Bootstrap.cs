@@ -343,12 +343,24 @@ namespace Ballon.Ego
             .Add(2.2f, 2.75f, hold: "aim fire")               // 7 Schüsse: 1 + 1 + 7 = 9 Patronen der Aufnahme
             .Add(3.4f, 4.0f);
 
+        /// <summary>Hüft-Fadenkreuz (4.1 A): Hüfte → Hüftfeuer (geht auf) → Zielen (weg im 1. Bild) → Sprint („^“) → Nachladen (aus) → Hüfte.</summary>
+        public static ScriptedInput HipScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)                                                   // Ruhe an der Hüfte
+            .Add(0.6f, 1.1f, hold: "fire")                                     // Hüftfeuer, 6 Schuss: Fadenkreuz geht auf
+            .Add(1.1f, 1.8f)                                                   // klingt ab
+            .Add(1.8f, 3.0f, hold: "aim")                                      // Zielen
+            .Add(3.0f, 3.5f)                                                   // zurück zur Hüfte
+            .Add(3.5f, 4.7f, hold: "sprint", move: new Vector2(0, 1))          // Sprint
+            .Add(4.7f, 5.1f)                                                   // Hüfte
+            .Add(5.1f, 5.2f, press: "reload")                                  // taktisches Nachladen
+            .Add(5.2f, 8.0f);
+
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
             Player.hud = false;
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
-            var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : DemoScript();
+            var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = 9;
@@ -365,7 +377,7 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
@@ -391,7 +403,7 @@ namespace Ballon.Ego
                 File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), tex.EncodeToPNG());
                 File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{Player.C.ammo}\n");
                 File.AppendAllText(Path.Combine(dir, "feedback.csv"), FormattableString.Invariant(
-                    $"{i},{Player.C.SwayDeg.x:0.000},{Player.C.SwayDeg.y:0.000},{(Player.ShotRingVisible ? 1 : 0)},{(Player.HitXVisible ? 1 : 0)},{Player.hits}\n"));
+                    $"{i},{Player.C.SwayDeg.x:0.000},{Player.C.SwayDeg.y:0.000},{(Player.ShotRingVisible ? 1 : 0)},{(Player.HitXVisible ? 1 : 0)},{Player.hits},{(Player.HipVisible ? 1 : 0)},{Player.hipReticle.Reason},{Player.hipReticle.spread:0.000},{Player.hipReticle.ExtentPx(720):0.0}\n"));
                 File.AppendAllText(Path.Combine(dir, "zoom.csv"), $"{i},{Player.C.adsWeight:0.0000},{Player.worldCam.fieldOfView:0.000}\n");
             }
             File.WriteAllLines(Path.Combine(dir, "markers.csv"), markers);

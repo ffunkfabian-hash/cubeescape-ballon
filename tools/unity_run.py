@@ -7,6 +7,7 @@
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
   python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR)
   python3 tools/unity_run.py sway|treffer → Belege Pendeln bzw. Schuss-Ring/Treffer-X (MP4, Kontaktbogen, feedback.csv)
+  python3 tools/unity_run.py huefte    → Beleg Hüft-Fadenkreuz (0.13): Hüfte, Feuer, Zielen, Sprint, Nachladen (MP4, feedback.csv)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
 """
@@ -92,7 +93,8 @@ def player(args, log):
 
 DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen, Sprint → Zielen',
          'sway': 'BALLON Patch unity-abgleich · Unity · Pendeln: schnelle Drehung, Rückkehr ohne Überschwingen (2,5 Hz, ζ 1)',
-         'treffer': 'BALLON Patch unity-abgleich · Unity · 720/min · Schuss-Ring im Zielen (1 Bild) · Treffer-X orange ≥ 0,17 s'}
+         'treffer': 'BALLON Patch unity-abgleich · Unity · 720/min · Schuss-Ring im Zielen (1 Bild) · Treffer-X orange ≥ 0,17 s',
+         'huefte': 'BALLON 0.13 Hipfire · Unity · Hüft-Fadenkreuz: Hüfte → Feuer → Zielen → Sprint („^“) → Nachladen'}
 
 
 def capture(scene=None, demo=None):
@@ -279,7 +281,7 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
-    if a in ('feel', 'sway', 'treffer'):                         # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich)
+    if a in ('feel', 'sway', 'treffer', 'huefte'):               # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13)
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
     if a == 'scenes':
         d = os.path.join(EV, 'scene_shots')

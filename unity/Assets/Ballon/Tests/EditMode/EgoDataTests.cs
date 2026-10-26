@@ -84,6 +84,89 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/3\"}"));          // 0.9: ohne secondary.aim_zeta
             StringAssert.Contains("neu exportieren", ex.Message);
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/4\"}"));          // 0.12: ohne Weltzoom und Hüft-Fadenkreuz
+            StringAssert.Contains("neu exportieren", ex.Message);
+        }
+
+        // ---------------------------------------------------------------- Weltzoom und Hüft-Fadenkreuz 0.13
+        /// <summary>Entscheidungsliste 1.2 A: Weltzoom (Bildmaßstab, Visier-Standard 3) nach Glidepath – Scout 2,0 statt 2,9, Handfeuerwaffe
+        /// 1,15 statt 1,5, MP 1,45 statt 1,25, übrige Klassen unverändert; die Pilot-Automatik zoomt mit ihrem Klassenwert 1,9 (vorher
+        /// fest 1,35 für alle) und das Spiel nutzt ihn.</summary>
+        [Test]
+        public void Weltzoom_je_Klasse()
+        {
+            var G = D.gameplay;
+            var want = new Dictionary<string, float> { ["scout_rifle"] = 2.0f, ["hand_cannon"] = 1.15f, ["submachine_gun"] = 1.45f,
+                ["auto_rifle"] = 1.9f, ["pulse_rifle"] = 2.0f, ["machine_gun"] = 1.9f, ["sidearm"] = 1.25f, ["grenade_launcher"] = 1.4f,
+                ["linear_fusion_rifle"] = 3.8f, ["sniper_rifle"] = 5.5f };
+            foreach (var kv in want) Assert.AreEqual(kv.Value, G.ZoomFor(kv.Key), 1e-4f, kv.Key);
+            Assert.AreEqual(17, G.zoom_table.Length, "alle Waffentypen");
+            Assert.AreEqual("auto_rifle", G.weapon_type);
+            Assert.AreEqual("reflex", G.sight);
+            Assert.AreEqual(G.ZoomFor(G.weapon_type), G.world_zoom, 1e-6f, "Pilot zoomt mit dem Wert seiner Klasse");
+            var mt = new MoveTuning();
+            TestContext.WriteLine($"Weltzoom Pilot {G.world_zoom} (MoveTuning-Vorgabe {mt.adsZoom}), Scout {G.ZoomFor("scout_rifle")}, " +
+                                  $"Handfeuerwaffe {G.ZoomFor("hand_cannon")}, MP {G.ZoomFor("submachine_gun")}");
+        }
+
+        /// <summary>Entscheidungsliste 4.2 A: Hüftform der Automatik `ring_dot` (vorher `cross`) mit 3,2 % H nach Glidepath, weiß, fein;
+        /// im Sprint nur „^“ (`caret`) mit 1,5 % H; Aufgehprofil `auto`. Das gezeichnete Außenmaß trifft die Größe auf 0,5 px.</summary>
+        [Test]
+        public void Hueftform_der_Automatik_aus_dem_Katalog()
+        {
+            var H = D.gameplay.hip;
+            Assert.AreEqual("ring_dot", H.kind);
+            Assert.AreEqual(0.032f, H.share_h, 1e-6f);
+            Assert.AreEqual("#EEF2F5", H.color, "weiß");
+            Assert.AreEqual(0.65f, H.weight, 1e-6f, "Linienstärke fein");
+            Assert.AreEqual("caret", H.sprint.kind);
+            Assert.AreEqual(0.015f, H.sprint.share_h, 1e-6f);
+            Assert.AreEqual("auto", H.spread.id);
+            var R = new HipReticle(H);
+            foreach (float h in new[] { 720f, 1080f }) Assert.AreEqual(H.share_h * h, R.ExtentPx(h), 0.5f, $"Außenmaß bei {h} px Höhe");
+            var m = R.Mask(1080);
+            Assert.Greater(m.GetPixel(m.width / 2, m.height / 2).a, 0.8f, "Punkt in der Mitte");
+            var ring = H.prims.First(p => p.t == "ring");        // Ringmitte bei Linienstärke fein (innen fest, Dicke · weight)
+            float ringR = (ring.ri + (ring.r - ring.ri) * H.weight / 2) * R.PxPerMm(1080);
+            Assert.Greater(m.GetPixel(m.width / 2 + Mathf.FloorToInt(ringR), m.height / 2).a / 0.9f, 0.6f, "Ring");
+            Assert.Less(m.GetPixel(m.width / 2 + Mathf.FloorToInt(ringR * 0.55f), m.height / 2).a, 0.05f, "frei zwischen Ring und Punkt");
+            UnityEngine.Object.DestroyImmediate(m);
+        }
+
+        /// <summary>Entscheidungsliste 4.1 A: das Hüft-Fadenkreuz geht beim Schießen nach `reticles.SPREAD` auf – Impuls per_shot je
+        /// Schuss bis max, Abklingen mit recover_s, Laufen addiert move (reticles.simulate); vorher gab es kein Aufgehen.</summary>
+        [Test]
+        public void Hueft_Fadenkreuz_geht_nach_SPREAD_auf()
+        {
+            var H = D.gameplay.hip;
+            var S = H.spread;
+            var R = new HipReticle(H);
+            float e0 = R.ExtentPx(1080);
+            Assert.AreEqual(S.@base, R.spread, 1e-6f);
+            R.Kick();
+            Assert.AreEqual(S.@base + S.per_shot, R.spread, 1e-5f, "ein Schuss");
+            Assert.AreEqual(e0 + 2 * S.per_shot * R.PxPerMm(1080), R.ExtentPx(1080), 0.01f, "Ring wächst um per_shot (grow 1)");
+            const float dt = 1f / 60f;
+            R.Decay(dt, 0);
+            Assert.AreEqual(S.@base + S.per_shot * Mathf.Exp(-dt / S.recover_s), R.spread, 1e-5f, "Abklingen");
+            for (int k = 0; k < 20; k++) R.Kick();
+            Assert.AreEqual(S.max, R.spread, 1e-6f, "begrenzt");
+            for (int k = 0; k < 600; k++) R.Decay(dt, 0);
+            Assert.AreEqual(S.@base, R.spread, 1e-3f, "zurück zur Basis");
+            for (int k = 0; k < 600; k++) R.Decay(dt, 1);
+            Assert.AreEqual(S.@base + S.move, R.spread, 1e-3f, "Laufen");
+            // wie reticles.simulate('auto', Schüsse bei 720/min, 30/s): je Bild erst abklingen, dann die Schüsse des Bilds
+            var R2 = new HipReticle(H);
+            float s = S.@base, t = 0;
+            int shot = 0;
+            for (int i = 0; i <= 30; i++, t = i / 30f)
+            {
+                R2.Decay(1f / 30f, 0);
+                s = S.@base + (s - S.@base) * Mathf.Exp(-(1f / 30f) / S.recover_s);
+                while (shot < 6 && shot * 60f / 720f <= t) { R2.Kick(); s = Mathf.Min(S.max, s + S.per_shot); shot++; }
+                Assert.AreEqual(s, R2.spread, 1e-5f, $"Bild {i}");
+            }
+            TestContext.WriteLine($"auto: Außenmaß {e0:0.0} px → nach 6 Schuss {R2.ExtentPx(1080) - 0:0.0} px bei 1080 px Höhe; max {S.max} mm");
         }
 
         // ---------------------------------------------------------------- Bewegungsgefühl 0.10

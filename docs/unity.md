@@ -22,6 +22,7 @@ python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + K
 python3 tools/unity_run.py feel             # MP4 Bewegungsgefühl: Sprint, Zielen aus dem Stand, Sprint → Zielen (0.10)
 python3 tools/unity_run.py sway             # MP4 Pendeln: schnelle Drehung hin und zurück, Werte je Bild in feedback.csv
 python3 tools/unity_run.py treffer          # MP4 Rückmeldung: Hüftschuss, im Zielen Einzelschuss und Feuerstoß (Ring, Treffer-X)
+python3 tools/unity_run.py huefte           # MP4 Hüft-Fadenkreuz (0.13): Hüfte, Hüftfeuer, Zielen, Sprint, Nachladen; Zustand je Bild in feedback.csv
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
@@ -43,7 +44,7 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 | W A S D, Shift | gehen, sprinten (nur vorwärts, nicht im Zielen oder beim Feuern) |
 | Strg oder C, Leertaste | ducken, springen |
 | linke Maustaste | Dauerfeuer, 720/min wie der Clip `fire_hip` (Frage 7.1 A); Abzug bei leerem Magazin lädt selbst nach |
-| rechte Maustaste | zielen (Welt-FOV × 1/1,35, Viewmodel bleibt bei 75° horizontal) |
+| rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35; Viewmodel bleibt bei 75° horizontal) |
 | R | nachladen: taktisch bei Restmunition, sonst leer (mit Durchladen) |
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
 | 1 / 2 | ziehen / wegstecken (beim Nachladen: `reload_to_switch`) |
@@ -56,7 +57,10 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 Der Parcours ist grau: Boden mit Meterraster, Wände, Brüstung, Deckungen, Rampe mit Podest, Treppe, ein niedriger Durchgang
 zum Ducken und Säulen zum Testen der Wandnähe (`lowered`). Zielscheiben stehen in 10, 25 und 50 m, je drei. Treffer zählt die
 Anzeige oben links, Einschläge bleiben als Punkte sichtbar. Ein ständiges Fadenkreuz gibt es seit 0.10 nicht mehr (Nutzerwunsch
-25.10.2026). Gezielt wird über das Visier. Rückmeldung nach Visier-Standard 3 §6 (Frage 4.3 A, `AdsFeedback` in `EgoPlayer.cs`):
+25.10.2026). Seit 0.13 zeigt die Hüfte ein ausblendendes Hüft-Fadenkreuz (Entscheidungsliste 4.1 A / 4.2 A, `HipReticle.cs`, Daten aus
+`ego.json › gameplay.hip` = Katalog `basic/reticles.py`): Automatik Ring mit Punkt, 3,2 % der Bildhöhe, weiß, fein; es geht beim Hüftfeuer
+nach `SPREAD` auf, ist im ersten Bild des Zielens weg, im Sprint nur ein geschlossenes „^“ (1,5 % H), beim Nachladen, Ziehen, Wegstecken,
+Betrachten und bei gesenkter Waffe aus. Gezielt wird über das Visier. Rückmeldung nach Visier-Standard 3 §6 (Frage 4.3 A, `AdsFeedback` in `EgoPlayer.cs`):
 im Zielen zeigt jeder Schuss für ein Bild einen weißen Ring (2 % der Bildhöhe), jeder Treffer ein X mit freier Mitte (4,5 % H,
 mindestens 0,17 s) in Familienfarbe Orange `#E0651E` statt Destiny-Rot; aus der Hüfte nur das X. Der HUD-Punkt (1,1 % H) wartet,
 bis Motiongen Widerspruch 3 klärt. Die Werte stehen in `reticles.ADS_FEEDBACK` und als Konstanten in C# (kein Feld in `ego.json`,
@@ -66,7 +70,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/4`), `ego_reference.json` |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/5`), `ego_reference.json` |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs` | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
@@ -75,15 +79,17 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/4`. Der Abnehmer ist `unity/` ab 0.10. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/5`. Der Abnehmer ist `unity/` ab 0.13. Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
   `sprint_to_aim`, `draw_aim`, `fire_ads`), folgen ihrer Kurve mit einer schnellen, kritisch gedämpften Feder (10 Hz, ζ 1). So schwingt das
   Visier nicht mehr über die Mitte (0.9: 3,3°) und hängt nicht nach (am Ende von `aim_in` 0,8°). Alle übrigen Aktionen behalten
   3,2 Hz bei ζ 0,55.
+- 5 (0.13): `gameplay.weapon_type`, `sight`, `world_zoom` (Weltzoom der Klasse, Entscheidungsliste 1.2 A), `zoom_table` (alle Waffentypen)
+  und `hip` (Hüft-Fadenkreuz: Form als Grundelemente, Größe, Farbe, Linienstärke, Aufgehprofil, Sprintform), aufgelöst aus `basic/reticles.py`.
 
-Ältere Exporte (`/1` bis `/3`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
+Ältere Exporte (`/1` bis `/4`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
 
 **Achsen.** Die Umrechnung steht einmal in `ego.json › axes.to_unity`: Unity = (−x, z, −y) aus Blender. Matrizen werden als
 M·B·Mᵀ umgerechnet. Gerechnet wird überall im Blender-Raum, umgerechnet erst beim Setzen der Transforms. Die Netze kommen aus dem
@@ -110,7 +116,7 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 
 | Test | prüft |
 |---|---|
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/4` (`/1` bis `/3` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/5` (`/1` bis `/4` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |
@@ -126,7 +132,9 @@ Pendeln und Blickhochziehen. Alle sind entworfen.
 | `Pendeln_kehrt_ohne_Ueberschwingen_zurueck` (Patch unity-abgleich) | 360°/s für 0,3 s, Gieren des Laufs gegen einen Zwilling ohne Maus: Auslenkung 0,5–3°, Überschwingen < 0,02°, Rückkehr unter 5 % in 0,22–0,4 s |
 | `Nachlade_Abbruch_vor_und_nach_MagIn` (Patch unity-abgleich) | taktisch und leer: Wegstecken 0,1 s vor `MagIn` lässt die Munition (5 bzw. 0), 0,1 s danach ist das Magazin voll und bleibt es nach dem Ziehen |
 | `Schuss_Ring_und_Treffer_X` (Patch unity-abgleich) | Spieler in der Szene, Scheibe 3 m vor dem Auge: Hüftschuss ohne Ring, Schuss im Zielen mit Ring für genau 1 Bild, Treffer-X 0,17–0,25 s, Größen 2 % / 4,5 % H, Orange `#E0651E` |
-| `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife: kein Speicher im laufenden Bild |
+| `Weltzoom_je_Klasse`, `Hueftform_der_Automatik_aus_dem_Katalog`, `Hueft_Fadenkreuz_geht_nach_SPREAD_auf` (EditMode, 0.13) | Weltzoom Scout 2,0 / Handfeuerwaffe 1,15 / MP 1,45 / Automatik 1,9 aus den Daten; Hüftform `ring_dot` 3,2 % H, weiß, fein, Sprint `caret` 1,5 % H, Außenmaß im Bild ±0,5 px; Aufgehen je Bild gleich `reticles.simulate` |
+| `Hueft_Fadenkreuz_je_Zustand`, `Weltzoom_im_Spiel_aus_der_Klasse` (PlayMode, 0.13) | Spieler in der Szene bei 30/s: in der Hüfte sichtbar, geht beim Hüftfeuer auf und ab, im ersten Bild des Zielens weg, im Sprint nur „^“, beim Nachladen, Wegstecken und Ziehen aus, danach wieder da; Welt-FOV im Zielen = Zoom 1,9 |
+| `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife, Hüft-Fadenkreuz (Aufgehen, Sichtbarkeit, Rastern): kein Speicher im laufenden Bild |
 | `Wandnaehe_im_Parcours_senkt_die_Waffe` | vor Säule 1 senkt sich die Waffe (`lowered`), im Freien zurück zur Hüfte |
 | `Szene_startet_und_spielt_den_Ablauf` | Szene lädt, Viewmodel-Ebene, Vorführablauf feuert, lädt leer nach, betrachtet |
 | Szenen, EditMode (11) | `SceneDataTests` mit Fixture `Tests/EditMode/scene_fixture_v2.json` (2 Zonen, 2 Lichtszenen, Kurs mit 2 Kontrollpunkten und 3 Zielen): Format und Umfang, Atlas je Zone und Lichtszene, `ballon-scene/1` und `/0` mit Hinweis „neu bauen (tools/scene_build.py)“ abgelehnt (Fixture `scene_fixture_v1.json`), 19 Lücken und Widersprüche abgelehnt, Szene ohne Parcours gültig, Umrechnung gleich `ego.json › axes.to_unity`, Collider, Startpunkt und Gier, Auslösequader, Zielscheiben und Strecke, Lichtmaßstab und Atlas-Helligkeit, `MiniJson` |

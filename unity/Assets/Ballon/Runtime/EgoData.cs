@@ -1,4 +1,4 @@
-// Ego-Daten im Format ballon-ego/4, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
+// Ego-Daten im Format ballon-ego/5, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
 // Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,42 @@ using UnityEngine;
 namespace Ballon.Ego
 {
     [Serializable] public class EgoCamera { public float h_fov_deg; public int[] aspect; public float near_m; }
-    [Serializable] public class EgoGameplay { public int rpm; public int magazine; public string src; }
+    [Serializable]
+    public class EgoGameplay
+    {
+        public int rpm; public int magazine; public string src;
+        public string weapon_type, sight;               // 5 (0.13): Waffentyp und Visiertyp nach Visier-Standard 3
+        public float world_zoom;                        // Weltzoom der Klasse beim Zielen (Bildmaßstab, Entscheidungsliste 1.2 A)
+        public EgoZoom[] zoom_table;                    // Weltzoom je Waffentyp (Katalog basic/reticles.py)
+        public EgoHip hip;                              // Hüft-Fadenkreuz (4.1 A / 4.2 A)
+
+        /// <summary>Weltzoom eines Waffentyps aus der Tabelle (NaN, wenn unbekannt).</summary>
+        public float ZoomFor(string type)
+        {
+            if (zoom_table != null) foreach (var z in zoom_table) if (z.type == type) return z.zoom;
+            return float.NaN;
+        }
+    }
+
+    [Serializable] public class EgoZoom { public string type; public float zoom; }
+
+    /// <summary>Grundelement aus basic/reticles.py in mm auf der Scheibe (x links, u oben): line a→b mit Spreizrichtung d,
+    /// ring r/ri mit grow, dot r.</summary>
+    [Serializable] public class EgoPrim { public string t; public float[] a, b, d; public float r, ri, grow; }
+
+    [Serializable] public class EgoSpread { public string id; public float @base, per_shot, max, recover_s, move; }
+
+    [Serializable] public class EgoHipForm { public string kind; public float share_h, extent_mm; public EgoPrim[] prims; }
+
+    [Serializable]
+    public class EgoHip
+    {
+        public string kind, status, color, src;
+        public float share_h, extent_mm, weight, line_r_mm, opacity, min_line_px;
+        public EgoPrim[] prims;
+        public EgoSpread spread;
+        public EgoHipForm sprint;                       // kind leer: im Sprint aus
+    }
 
     [Serializable]
     public class EgoMove { public string kind; public float[] vec; public float[] axis; public float a0, a1; }
@@ -130,7 +165,7 @@ namespace Ballon.Ego
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
-        public const string Format = "ballon-ego/4";     // 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
+        public const string Format = "ballon-ego/5";     // 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;

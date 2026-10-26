@@ -160,6 +160,18 @@ if r.returncode:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_reticles.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Absehen-Export veraltet: python3 tools/export_reticles.py (' + r.stdout.strip() + ')')
+from basic import reticles as RT   # Entscheidungsliste 1.2 A, 4.1 A, 4.2 A (Nutzer 25.10.2026): Weltzoom und Hüft-Fadenkreuz nach Glidepath
+for k, z in {'scout_rifle': 2.0, 'hand_cannon': 1.15, 'submachine_gun': 1.45, 'auto_rifle': 1.9, 'pulse_rifle': 2.0, 'machine_gun': 1.9,
+             'sidearm': 1.25, 'grenade_launcher': 1.4, 'linear_fusion_rifle': 3.8}.items():
+    if abs(RT.class_world_zoom(k) - z) > 1e-6:
+        fail(f'Weltzoom {k} {RT.class_world_zoom(k)} statt {z} (Entscheidungsliste 1.2 A)')
+for k, (kind, sh) in {'auto_rifle': ('ring_dot', 0.032), 'pulse_rifle': ('ring_dot', 0.032), 'machine_gun': ('ring_dot', 0.032),
+                      'hand_cannon': ('brackets', 0.06), 'sniper_rifle': ('caret', 0.01), 'submachine_gun': ('circle_cross', 0.061)}.items():
+    h = RT.hip(k)
+    if (h['kind'], h['share_h']) != (kind, sh):
+        fail(f"Hüft-Fadenkreuz {k}: {h['kind']} {h['share_h']} statt {kind} {sh} (Entscheidungsliste 4.2 A)")
+if (RT.HIP['color'], RT.HIP['weight']) != ('white', 'fine') or {k: v['kind'] for k, v in RT.HIP['sprint'].items()} != {'auto_rifle': 'caret'}:
+    fail('Hüft-Fadenkreuz: weiß, fein, im Sprint nur die Automatik mit „^“ (Entscheidungsliste 4.1 A)')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + r.stdout.strip())
