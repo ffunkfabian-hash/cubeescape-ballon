@@ -132,6 +132,14 @@ def main():
     print(f'[test_sights] BASIC-06-v2.1: Mündungsfeuer im Zielen {cov * 100:.1f} % der Pillenkontur (Rechteck {cov_box * 100:.1f} %)')
     if cov > 0.20 or not cov < cov_box:
         bad.append(f'BASIC-06-v2.1: Mündungsfeuer {cov * 100:.1f} % (Kontur) / {cov_box * 100:.1f} % (Rechteck) – Kontur nicht gezählt oder > 20 %')
+    # H4 (BASIC-02): die vordere Haubenöffnung zählt als zweite Kontur – weniger oder gleich viele Punkte als nur mit dem Glas
+    W2 = importlib.import_module('basic.pilot.w02_pulse_rifle_v21')
+    cov2 = EG.flash_cover_ads(W2)
+    cov2_glass = EG.flash_cover_ads(types.SimpleNamespace(PARTS=[p for p in W2.PARTS if p['id'] != 'sight_frame_trim'], ANCHORS=W2.ANCHORS))
+    n += 1
+    print(f'[test_sights] BASIC-02-v2.1: Mündungsfeuer im Zielen {cov2 * 100:.1f} % (Glas und Haubenöffnung; nur Glas {cov2_glass * 100:.1f} %)')
+    if cov2 > 0.20 or abs(cov2 - cov2_glass) < 1e-9 and cov2 > 0:
+        bad.append(f'BASIC-02-v2.1: Mündungsfeuer {cov2 * 100:.1f} % – Haubenöffnung nicht als Kontur gezählt oder > 20 %')
     from basic.pilot.optics import sight_kit as K
     for kid, kind in (('iron_klammer', 'iron'), ('iron_hoerner', 'iron'), ('mini_reflex', 'mini_reflex')):
         for s in ('S', 'M', 'L'):

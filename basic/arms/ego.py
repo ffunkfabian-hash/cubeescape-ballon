@@ -329,7 +329,10 @@ nur Rasterpunkte in der projizierten Kontur, 0.21), Raster n × n; beim Zielfern
     if 'sight_glass' in P:
         g = P['sight_glass']
         if 'pts' in g:                       # Baukasten v3 (0.21): Fenster als Querprofil – gezählt wird nur innerhalb der Kontur
-            poly = [proj(g['f0'], g['cu'] + u, x) for x, u in g['pts']]
+            poly = [[proj(g['f0'], g['cu'] + u, x) for x, u in g['pts']]]
+            tr = P.get('sight_frame_trim')   # vordere Haubenöffnung (Durchbruch der Stirnkante) als zweite Kontur
+            if tr and tr.get('cuts') and 'pts' in tr['cuts'][0]:
+                poly.append([proj(tr['f1'], tr['cu'] + u, x) for x, u in tr['cuts'][0]['pts']])
             xs, us = [q[0] for q in g['pts']], [q[1] for q in g['pts']]
             hw, hu, cu = (max(xs) - min(xs)) / 2, (max(us) - min(us)) / 2, g['cu'] + (max(us) + min(us)) / 2
         else:
@@ -360,14 +363,14 @@ nur Rasterpunkte in der projizierten Kontur, 0.21), Raster n × n; beim Zielfern
         pts = [(x0 + (i + .5) / n * (x1 - x0), y0 + (j + .5) / n * (y1 - y0)) for i in range(n) for j in range(n)]
         if circle:                           # % B und % H: Kreis im Bild als Ellipse (16:9)
             pts = [(x, y) for x, y in pts if ((x - circle[0]) / circle[2]) ** 2 + ((y - circle[1]) * 9 / 16 / circle[2]) ** 2 <= 1]
-        if poly:                             # Querprofil-Glas: Punkte in der projizierten Kontur (Strahlwurf)
-            def in_poly(px, py):
+        if poly:                             # Querprofil-Glas: Punkte in allen projizierten Konturen (Glas, Haubenöffnung; Strahlwurf)
+            def in_poly(px, py, pg):
                 c = False
-                for (ax, ay), (bx, by) in zip(poly, poly[1:] + poly[:1]):
+                for (ax, ay), (bx, by) in zip(pg, pg[1:] + pg[:1]):
                     if (ay > py) != (by > py) and px < ax + (py - ay) * (bx - ax) / (by - ay):
                         c = not c
                 return c
-            pts = [(x, y) for x, y in pts if in_poly(x, y)]
+            pts = [(x, y) for x, y in pts if all(in_poly(x, y, pg) for pg in poly)]
         hit = sum(any(inside(x, y, *t_) for t_ in T) for x, y in pts)
         best = max(best, hit / len(pts))
     return best
