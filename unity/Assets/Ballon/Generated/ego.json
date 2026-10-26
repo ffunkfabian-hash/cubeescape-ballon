@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "a727ccf56b2be9da85978af2104c6c797861ec62e749048e19b1258adf307e03"
+    "sha256": "26e458e87ff03168b6134e5d0dba06ed7824a8a121321f40e6e9c5c30a7ac229"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "6fd7a98f11aaa1281876a5d5119267f93922fbb07f5c2d1ec94b707ec5012498"
+    "sha256": "d984e10e748fb196f7f650c1ee6cbd40c7fec960bb92738c5979c0494ef600c1"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "7945ffac070466a544ed34768b24a13a93233c017812aa895cea44e1263e1a49"
+    "sha256": "d26e6f67b4307afa57da9de13ac03de977a4a24c797b8745fda2fc789464b684"
    },
    {
     "path": "tools/bake_unity.py",
@@ -995,6 +995,50 @@
     46.0,
     18.0,
     34.0
+   ]
+  },
+  {
+   "name": "foregrip",
+   "f": [
+    62.0,
+    74.0,
+    48.0,
+    62.0,
+    74.0,
+    48.0,
+    62.0,
+    74.0,
+    48.0,
+    62.0,
+    74.0,
+    48.0
+   ],
+   "t": [
+    80.0,
+    5.0,
+    60.0
+   ]
+  },
+  {
+   "name": "foregrip_open",
+   "f": [
+    4.0,
+    4.0,
+    3.0,
+    4.0,
+    4.0,
+    3.0,
+    4.0,
+    4.0,
+    3.0,
+    4.0,
+    4.0,
+    3.0
+   ],
+   "t": [
+    80.0,
+    5.0,
+    60.0
    ]
   }
  ],
@@ -10310,7 +10354,7 @@
      "contact": [
       0.0145,
       -0.226,
-      0.026
+      0.016
      ],
      "palm": [
       -1.0,
@@ -10322,8 +10366,8 @@
       -1.0,
       -0.12
      ],
-     "fingers_pose": "grip",
-     "src": "E links am Vordergriff, Finger umfassen ihn von hinten nach vorn (Socket_SupportHand)"
+     "fingers_pose": "foregrip",
+     "src": "E links am Vordergriff, Faust um den Griff, Daumen hinter dem Griff unter dem Vorbau (ego.FINGER_POSES foregrip; 0.18 nach Nutzerhinweis: mit underhand stand der Daumen über dem Vorbau)"
     },
     {
      "name": "mag",
@@ -10434,7 +10478,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -10589,11 +10633,11 @@
       },
       {
        "f": 13.75,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 17.5,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -10734,11 +10778,11 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       },
       {
        "f": 2.0,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 6.0,
@@ -10857,7 +10901,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -10958,7 +11002,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -11059,7 +11103,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -11171,7 +11215,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -11513,11 +11557,11 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       },
       {
        "f": 6.25,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 10.0,
@@ -11529,11 +11573,11 @@
       },
       {
        "f": 41.25,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 47.5,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -11963,11 +12007,11 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       },
       {
        "f": 6.25,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 17.5,
@@ -11979,7 +12023,7 @@
       },
       {
        "f": 40.0,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 43.75,
@@ -11991,11 +12035,11 @@
       },
       {
        "f": 55.0,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 60.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -12289,11 +12333,11 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       },
       {
        "f": 52.5,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 62.5,
@@ -12301,11 +12345,11 @@
       },
       {
        "f": 107.5,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 117.5,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -12430,7 +12474,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -12556,7 +12600,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -12661,7 +12705,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -12768,7 +12812,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -12899,7 +12943,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -13014,7 +13058,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -13129,7 +13173,7 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -13310,11 +13354,11 @@
       },
       {
        "f": 13.75,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 17.5,
-       "pose": "underhand"
+       "pose": "foregrip"
       }
      ],
      "fR": [
@@ -13509,11 +13553,11 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "underhand"
+       "pose": "foregrip"
       },
       {
        "f": 6.25,
-       "pose": "open"
+       "pose": "foregrip_open"
       },
       {
        "f": 10.0,
@@ -13521,7 +13565,7 @@
       },
       {
        "f": 20.0,
-       "pose": "open"
+       "pose": "foregrip_open"
       }
      ],
      "fR": [
@@ -13572,7 +13616,7 @@
     "files": [
      {
       "path": "basic/pilot/w06_submachine_gun_v21.py",
-      "sha256": "acfa2aacbe58f61907084b5e314b003f6214c3138d6c41afabe47d37dc9f5e8b"
+      "sha256": "d01801a410c142e2efc45d2da189cc297d72b51fd02b439a3b3eb0af4fcd2291"
      },
      {
       "path": "basic/weapons/w06_submachine_gun.py",

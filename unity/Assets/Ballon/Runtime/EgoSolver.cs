@@ -613,7 +613,7 @@ namespace Ballon.Ego
                 name = "still:" + pose, frames = 0, time_scale = 1,
                 weapon = new[] { new WeaponKey { f = 0, pose = pose } },
                 L = new[] { Grip("support") }, R = new[] { Grip("grip") },
-                fL = new[] { new FingerKey { f = 0, pose = "underhand" } }, fR = new[] { new FingerKey { f = 0, pose = "trigger" } },
+                fL = new[] { new FingerKey { f = 0, pose = D.Grip("support").fingers_pose } }, fR = new[] { new FingerKey { f = 0, pose = "trigger" } },
                 mech = new MechTrack[0], carry = new FrameRange[0], drop = new FrameRange { a = -1, b = -1 }, fire = new int[0],
                 kick = 1, bob = new Bob { enabled = false, amp = new float[2] }, events = new Marker[0],
             };

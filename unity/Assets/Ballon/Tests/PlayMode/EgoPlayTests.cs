@@ -39,6 +39,7 @@ namespace Ballon.Ego.Tests
         [UnitySetUp]
         public IEnumerator LoadScene()
         {
+            Object.FindAnyObjectByType<Bootstrap>()?.Player?.UseWeapon(0);   // jeder Test beginnt mit Waffe 1 (0.18), auch nach einem Abbruch
             if (_d == null)
             {
                 SceneManager.LoadScene("Firstfeel");
@@ -478,6 +479,10 @@ namespace Ballon.Ego.Tests
                                       $"erstes neues Bild {T(back):0.000} s ({acts[back]} von Waffe {who[back] + 1}), Hüfte {T(marks[ready].k):0.000} s");
                 Assert.That(tHol, Is.InRange(0.2f, 0.3f), "Wegstecken ≈ 0,27 s");
                 Assert.That(tEmpty, Is.InRange(0.1f - 1e-4f, 0.2f + 1e-4f), "leere Sicht 0,1–0,2 s");
+                int empty = marks.FindIndex(x => x.a == "switch" && x.m == "Empty" && x.w == from);
+                float pause = (marks[draw].k - marks[empty].k) * Dt, want = D.motion.@switch.empty_s;
+                TestContext.WriteLine($"  Pause Empty → Draw {pause:0.000} s (switch.empty_s {want:0.000} s)");
+                Assert.That(pause, Is.InRange(want - 1e-4f, want + Dt + 1e-4f), $"Pause Empty → Draw = switch.empty_s ({want:0.000} s, wie Q)");
                 Assert.AreEqual(target - 1, who[back], "das erste neue Bild zeigt die andere Waffe");
                 Assert.AreEqual("draw", acts[back], "… beim Ziehen");
                 Assert.AreEqual(target - 1, A.Active);

@@ -150,8 +150,10 @@ EJECT = dict(at=(55, 87, -20), dir=(0.3, 0.4, -1.0), case='pistol',
 EGO_GRIPS = {
     'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
                     src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
-    'support': dict(contact=(226, 26, 14.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.12, 0.0), fingers_pose='grip',
-                    src='E links am Vordergriff, Finger umfassen ihn von hinten nach vorn (Socket_SupportHand)'),
+    'support': dict(contact=(226, 16, 14.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.12, 0.0), fingers_pose='foregrip',
+                    finger_map=dict(open='foregrip_open'),       # beim Lösen und Greifen bleibt der Daumen eingerollt
+                    src='E links am Vordergriff, Faust um den Griff, Daumen hinter dem Griff unter dem Vorbau (ego.FINGER_POSES foregrip; 0.18 nach '
+                        'Nutzerhinweis: mit underhand stand der Daumen über dem Vorbau)'),
     'mag':     dict(part='magazine', contact=(-24, -96, 12.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0), fingers_pose='mag_hold',
                     src='E links am Magazin unter dem Griffboden, Hand greift von unten hinten (wie die Pilotwaffe)'),
     'charge':  dict(part='charging_handle', contact=(-60, 88, 28), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),

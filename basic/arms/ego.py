@@ -8,6 +8,8 @@ rechts −X (wie Toolgen `ego_arms.bind`). Meter, 30 fps. Herkunft je Wert im Ko
 import copy
 import math
 
+from basic.arms import robot_arm as RA
+
 FPS = 30
 CAMERA = dict(h_fov_deg=75.0, aspect=(16, 9), near_m=0.03)          # T: viewmodels.camera
 
@@ -43,6 +45,14 @@ GRIPS = {
     'charge':  dict(part='charging_handle', contact=(-84, 112, 30), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Ladehebel links (Toolgen: pinch)'),
 }
+
+# Fingerstellungen der Ego-Griffe: die des Rigs (robot_arm.FINGER_POSES) und weitere je Griff. Sie stehen hier, weil sie Bewegung sind,
+# keine Form (robot_arm.py liegt im Formquellen-Hash des Exports). foregrip (0.18): Faust um einen senkrechten Vordergriff direkt unter
+# dem Vorbau, Daumen eingerollt hinter den Griff (Nutzer 26.10.2026: „Der Daumen bei der MP sitzt irgendwie ungünstig“ – mit underhand
+# stand er 12–15 mm über dem Vorbau; von drei Proben wählte der Nutzer diese: „Oben links ist am besten“).
+# foregrip_open: Finger offen, Daumen bleibt eingerollt – ein gestreckter Daumen (open) zeigt bei dieser Handstellung in den Vorbau.
+FINGER_POSES = dict(RA.FINGER_POSES, foregrip=dict(f=[[62, 74, 48]] * 4, t=[80, 5, 60]),
+                    foregrip_open=dict(f=[[4, 4, 3]] * 4, t=[80, 5, 60]))
 
 # Aktionen. Kanäle: weapon (Haltung oder (Haltung, Versatz)), L/R (Griff, ('cam', Punkt) oder (Griff, Versatz mm in Waffenachsen)),
 # fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
@@ -421,13 +431,17 @@ def profile(W):
             if k not in C['poses']:
                 poses[k] = _follow(poses['hip'], POSES['hip'], POSES[k])
     actions = copy.deepcopy(ACTIONS)
+    grips = getattr(W, 'EGO_GRIPS', None) or GRIPS
+    # Stützhand: Fingerstellung des Griffs statt underhand (Pilotwaffe: underhand), dazu die Ersetzungen des Griffs (finger_map)
+    fmap = dict(grips['support'].get('finger_map', {}), underhand=grips['support']['fingers_pose'])
+    for A in actions.values():
+        A['fL'] = [(f, fmap.get(p, p)) for f, p in A.get('fL', [(0, 'underhand')])]
     for k, n in C['frames'].items():
         A = actions[k]
         old = A['frames']
         _retime(A, n / old)
         A['frames'] = int(math.ceil(n - 1e-9))
         A['src'] = f"{A['src']}; Klasse {t}: {old} → {n:g} Bilder ({C['frames_src']})"
-    grips = getattr(W, 'EGO_GRIPS', None) or GRIPS
     live = getattr(W, 'EGO_LIVE', None) or LIVE
     P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=C['gameplay'], src=C['src'],
              frames_src=C.get('frames_src', ''))

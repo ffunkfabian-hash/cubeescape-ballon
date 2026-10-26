@@ -313,7 +313,7 @@ def blend_hand(keys, f, part_world):
 
 def blend_fingers(keys, f):
     def flat(n):
-        P = RA.FINGER_POSES[n]
+        P = EG.FINGER_POSES[n]
         return [x for fi in P['f'] for x in fi] + list(P['t'])
     v = curve([k[0] for k in keys], [flat(k[1]) for k in keys], f)
     nf, nl = len(RA.FINGER_X), len(RA.FINGER_LINKS)
@@ -603,7 +603,8 @@ def evaluate(sc, A, f, report, state):
             carry = HL @ state['rel']
     if carry is not None or drop is not None:
         sc.set_weapon(R2, pos2, mech, report, carry=carry, drop=drop)
-    fps = {'L': blend_fingers(A.get('fL', [(0, 'underhand')]), f), 'R': blend_fingers(A.get('fR', [(0, 'trigger')]), f)}
+    # Standbilder ohne fL: Fingerstellung des Stützgriffs (Pilotwaffe underhand, MP foregrip)
+    fps = {'L': blend_fingers(A.get('fL', [(0, GRIPS['support']['fingers_pose'])]), f), 'R': blend_fingers(A.get('fR', [(0, 'trigger')]), f)}
     sc.hands({'L': HL, 'R': HR}, fps, report)
     sc.cam.matrix_world = sc.cam_base @ Matrix.Rotation(math.radians(cam_pitch), 4, 'X')
     fx_eval(sc, A, f, state)

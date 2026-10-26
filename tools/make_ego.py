@@ -246,7 +246,7 @@ def check():
                         err.append(f'{wid} {k}: Griff {g} fehlt')
             for ch in ('fL', 'fR'):
                 for f, p in A.get(ch, []):
-                    if p not in RA.FINGER_POSES:
+                    if p not in EG.FINGER_POSES:
                         err.append(f'{wid} {k}: Fingerstellung {p} fehlt')
             fr = [f for f, _ in A['weapon']]
             if fr != sorted(fr) or fr[-1] > A['frames']:
@@ -258,8 +258,9 @@ def check():
                 if r not in rows:
                     err.append(f'{k}: Matrixzeile {r} unbekannt')
         for g, G in P['grips'].items():
-            if G['fingers_pose'] not in RA.FINGER_POSES:
-                err.append(f"{wid} Griff {g}: Fingerstellung {G['fingers_pose']} fehlt")
+            for fp in [G['fingers_pose'], *G.get('finger_map', {}).values()]:
+                if fp not in EG.FINGER_POSES:
+                    err.append(f"{wid} Griff {g}: Fingerstellung {fp} fehlt")
             if G.get('part') and G['part'] not in ids:
                 err.append(f"{wid} Griff {g}: Bauteil {G['part']} fehlt")
         if set(P['grips']) != set(EG.GRIPS):
@@ -268,7 +269,7 @@ def check():
             if v not in ids:
                 err.append(f'{wid}: Live-Teil {k} = {v} fehlt')
         n.append(f'{wid} {len(P["actions"])} Aktionen/{len(P["poses"])} Haltungen/{len(P["grips"])} Griffe')
-    for nm, fp in RA.FINGER_POSES.items():
+    for nm, fp in EG.FINGER_POSES.items():
         if len(fp['f']) != len(RA.FINGER_X) or any(len(x) != len(RA.FINGER_LINKS) for x in fp['f']):
             err.append(f'Fingerstellung {nm}: {len(fp["f"])} Finger statt {len(RA.FINGER_X)}')
     print('\n'.join(err) if err else 'ego: ' + ', '.join(n) + ' konsistent')

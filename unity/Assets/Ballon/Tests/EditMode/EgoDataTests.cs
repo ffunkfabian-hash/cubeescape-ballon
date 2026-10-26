@@ -157,9 +157,18 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(2.7f, ai.weapon.First(k => k.pose == "ads").f, 1e-4f, "Schlüssel mitgestreckt");
             Assert.AreEqual(3, ai.events.Single(e => e.name == "Aimed").f);
             Assert.AreEqual(2.4f, MP.Action("aim_out").weapon.Last().f, 1e-4f, "aim_out 8 → 2,4 Bilder");
-            foreach (var A in MP.actions)                         // sonst alles wie die Automatik
-                if (A.name != "aim_in" && A.name != "aim_out")
-                    Assert.AreEqual(JsonUtility.ToJson(D.Action(A.name)), JsonUtility.ToJson(A), A.name);
+            string J(object x) => JsonUtility.ToJson(x);
+            string Hold = MP.Grip("support").fingers_pose;
+            Assert.AreEqual("foregrip", Hold, "Stützhand am Vordergriff");
+            foreach (var A in MP.actions)                         // sonst alles wie die Automatik; die Stützhand hält mit der Fingerstellung ihres Griffs
+            {
+                if (A.name == "aim_in" || A.name == "aim_out") continue;
+                var B = D.Action(A.name);
+                Assert.AreEqual(J(B.weapon) + J(B.L) + J(B.R) + J(B.fR) + J(B.mech) + J(B.events) + J(B.bob) + B.frames + string.Join(",", B.fire),
+                                J(A.weapon) + J(A.L) + J(A.R) + J(A.fR) + J(A.mech) + J(A.events) + J(A.bob) + A.frames + string.Join(",", A.fire), A.name);
+                CollectionAssert.AreEqual(B.fL.Select(k => k.pose == "underhand" ? Hold : k.pose == "open" ? "foregrip_open" : k.pose),
+                                          A.fL.Select(k => k.pose), A.name + " fL (Griff-Ersetzungen underhand → foregrip, open → foregrip_open)");
+            }
             Assert.AreEqual(1.45f, MP.gameplay.world_zoom, 1e-6f, "Weltzoom MP (1.2 A)");
             Assert.AreEqual(1.9f, D.gameplay.world_zoom, 1e-6f, "Weltzoom Automatik");
             Assert.AreEqual(720, MP.gameplay.rpm);
@@ -173,6 +182,50 @@ namespace Ballon.Ego.Tests
             foreach (var n in new[] { "hip", "sprint", "crouch", "air", "lowered", "ads", "reload" })
                 StringAssert.DoesNotContain("submachine", D.Pose(n).src, "Automatik unverändert");
             Assert.AreNotEqual(JsonUtility.ToJson(D.Pose("hip")), JsonUtility.ToJson(MP.Pose("hip")), "MP hat eine eigene Hüfte");
+        }
+
+        /// <summary>Hält die Hand im Bild f ganz am Griff g (Schlüssel davor und danach sind g ohne Versatz)?</summary>
+        static bool AtGrip(HandKey[] keys, float f, string g)
+        {
+            bool At(HandKey k) => k.kind == "grip" && k.grip == g && k.offset.All(v => v == 0);
+            var before = keys.LastOrDefault(k => k.f <= f + 1e-4f) ?? keys[0];
+            var after = keys.FirstOrDefault(k => k.f >= f - 1e-4f) ?? keys[keys.Length - 1];
+            return At(before) && At(after);
+        }
+
+        /// <summary>Nutzerhinweis 26.10.2026 („Der Daumen bei der MP sitzt irgendwie ungünstig“): mit der Fingerstellung underhand stand die
+        /// Daumenspitze der Stützhand 12–15 mm über dem Vorbau (durch ihn hindurch). Mit foregrip liegt sie in allen Bildern, in denen die
+        /// Hand am Vordergriff hält, unter der Vorbau-Oberkante und nicht im Vorbau.</summary>
+        [Test]
+        public void Daumen_der_Stuetzhand_nicht_im_Vorbau()
+        {
+            var S = new EgoSolver(MP);
+            var sh = MP.mesh_bounds.objects.First(b => b.name == "shroud");
+            Vector3 mn = V(sh.min), mx = V(sh.max);
+            int it = S.SegmentIndex("t_2"), n = 0;
+            float worst = float.MinValue;
+            string at = "";
+            void Check(string lab, EgoOutput o)
+            {
+                var tip = o.weapon.inverse.MultiplyPoint3x4(o.segL[it].MultiplyPoint3x4(new Vector3(0, 0, MP.arm.thumb_links.Last())));
+                bool inside = tip.x > mn.x && tip.x < mx.x && tip.y > mn.y && tip.y < mx.y && tip.z > mn.z && tip.z < mx.z;
+                Assert.IsFalse(inside, $"{lab}: Daumenspitze im Vorbau ({tip * 1000:F0} mm)");
+                Assert.Less(tip.z, mx.z, $"{lab}: Daumenspitze über dem Vorbau ({tip.z * 1000:0} mm, Oberkante {mx.z * 1000:0} mm)");
+                if (tip.z > worst) { worst = tip.z; at = lab; }
+                n++;
+            }
+            foreach (var p in new[] { "hip", "ads", "sprint", "crouch", "lowered" })
+                Check("Haltung " + p, S.Evaluate(S.StillAction(p), 0, new EgoState()));
+            foreach (var A in MP.actions)
+            {
+                var st = new EgoState();
+                for (int f = 0; f <= A.frames; f++)
+                {
+                    var o = S.Evaluate(A, f, st);
+                    if (AtGrip(A.L, f, "support")) Check($"{A.name}:{f}", o);
+                }
+            }
+            TestContext.WriteLine($"{n} Bilder mit der Stützhand am Vordergriff; Daumenspitze höchstens {worst * 1000:0} mm (Vorbau {mn.z * 1000:0}–{mx.z * 1000:0} mm) bei {at}");
         }
 
         /// <summary>Entscheidungsliste 2b / 2.1 A: Hüftlage der MP im Band der Kurzwaffen (x 53–71 / y 59–84 %, Destiny-MP Mündung ≈ 57/61 und
