@@ -39,7 +39,8 @@ namespace Ballon.Ego.Tests
         [UnitySetUp]
         public IEnumerator LoadScene()
         {
-            Object.FindAnyObjectByType<Bootstrap>()?.Player?.UseWeapon(0);   // jeder Test beginnt mit Waffe 1 (0.18), auch nach einem Abbruch
+            var boot = Object.FindAnyObjectByType<Bootstrap>();            // jeder Test beginnt mit Waffe 1 (0.18), auch nach einem Abbruch
+            if (boot != null && boot.Player != null) boot.Player.UseWeapon(0);
             if (_d == null)
             {
                 SceneManager.LoadScene("Firstfeel");
@@ -560,6 +561,27 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(p.loadouts[0].rig.space.gameObject.activeInHierarchy);
             Assert.IsFalse(p.loadouts[1].rig.space.gameObject.activeInHierarchy);
             Assert.IsFalse(p.C.Holstered, "gezogen");
+        }
+
+        /// <summary>Richter 0.18: der Treffertext der Anzeige entsteht nur bei geänderten Werten oder beim Waffenwechsel neu, nicht bei jedem
+        /// Aktionsbild (der Zustandstext folgt dem Bild).</summary>
+        [UnityTest]
+        public IEnumerator Anzeige_baut_Treffertext_nur_bei_Aenderung()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.C.ReadyNow();
+            p.input = new ScriptedInput().Add(0, 1000);
+            p.deltaOverride = () => 1f / 30f;
+            yield return null;
+            p.UpdateHudText();
+            var hit = p.HudHitText;
+            for (int k = 0; k < 10; k++) { yield return null; p.UpdateHudText(); }
+            Assert.AreSame(hit, p.HudHitText, "gleiche Werte: Treffertext nicht neu gebaut, obwohl die Aktionsbilder weiterlaufen");
+            p.UseWeapon(1);
+            p.UpdateHudText();
+            Assert.AreNotSame(hit, p.HudHitText, "Waffenwechsel: neu gebaut (Skin der anderen Waffe)");
+            p.UseWeapon(0);
+            p.deltaOverride = null;
         }
 
         /// <summary>Entscheidungsliste 1d (Destiny-Holo, Motiongen glidepath): der Weltzoom beginnt mit oder kurz nach dem Modell (0–2

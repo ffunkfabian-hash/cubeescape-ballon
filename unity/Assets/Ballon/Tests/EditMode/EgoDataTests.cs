@@ -700,7 +700,7 @@ namespace Ballon.Ego.Tests
                 Assert.IsNotNull(m.GetTexture("_BumpMap"));
                 Assert.IsNotNull(m.GetTexture("_OcclusionMap"));
             }
-            Assert.Greater(n, 120, $"{D.weapon.id}: gebackene Netzobjekte");
+            Assert.Greater(n, D.slot == 0 ? 150 : 120, $"{D.weapon.id}: gebackene Netzobjekte (Pilot wie bisher > 150)");
         }
 
         [Test]
@@ -863,7 +863,7 @@ namespace Ballon.Ego.Tests
             Assert.LessOrEqual(worstP, R.tolerance_m, $"Lage {worstP * 1000:0.000} mm bei {wp}");
             Assert.LessOrEqual(worstR, R.tolerance_deg, $"Drehung {worstR:0.000}° bei {wr}");
             Assert.LessOrEqual(worstA, R.tolerance_arm_deg, $"Arm {worstA:0.000}° bei {wa}");
-            Assert.Greater(checks, 4000);
+            Assert.Greater(checks, D.slot == 0 ? 5000 : 4000, "Matrizen (Pilot wie bisher > 5000)");
         }
     }
 }

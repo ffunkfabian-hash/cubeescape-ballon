@@ -448,11 +448,11 @@ namespace Ballon.Ego
             if (C.ammo != _hAmmo) { _hAmmo = C.ammo; _ammoText = $"{C.ammo} / {C.magSize}"; }
             string mk = Time.time - lastMarkerTime < 1.2f ? lastMarker : "";
             int fr = (int)C.Frame;
+            if (arsenal.Active != _hWeapon) _hHits = -1;          // Waffenwechsel: Skin-Name der neuen Waffe
             if (fr != _hFrame || !ReferenceEquals(C.ActionName, _hAction) || !ReferenceEquals(mk, _hMarker) || arsenal.Active != _hWeapon)
             {
                 _hFrame = fr; _hAction = C.ActionName; _hMarker = mk; _hWeapon = arsenal.Active;
                 _stateText = $"{arsenal.Active + 1} {C.S.D.weapon.name} · {C.ActionName} {fr}  ·  {mk}";
-                _hHits = -1;                                     // Skin-Name der aktiven Waffe
             }
             if (hits != _hHits)
             {
