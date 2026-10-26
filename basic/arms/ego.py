@@ -181,6 +181,136 @@ RECOIL = dict(
 # empty_s ist die Pause zwischen Ende von holster und Beginn von draw; die sichtbare leere Sicht ist länger, weil die Waffe schon vor
 # dem Ende des Wegsteckens unter dem Bildrand ist und beim Ziehen erst nach einigen Bildern auftaucht.
 SWITCH = dict(empty_s=0.03, src='M Destiny-Wechsel: leere Sicht 0,07–0,30 s (Motiongen wechsel › 4); Ziel 0,1–0,2 s (6.1 A), gemessen 0,13 s bei 60/s')
+# Mündungsfeuer (0.16, Entscheidungsliste 5.3 A): 1 Bild bei 30/s (in Unity dieselbe Dauer dur_s), kleiner heller Kern längs des Laufs
+# und kurze Seitenflammen quer dazu, reine Emission ohne Bloom an Socket_Muzzle. Destiny (Motiongen muendung › 3/6): Blitz 1–2 Bilder
+# bei 60/s, im Zielen deckt er bei der Automatik ≈ 20 % der Holo-Öffnung ab; hier höchstens 20 % (./check und Unity-Test messen es).
+# Farbe Stil v2.1: Flammen in der Familienfarbe Cyan (Leuchtfunktion), der Kern als einziger Akzent fast weiß. Je Schuss dreht der
+# Blitz um die Laufachse nach der festen Folge roll_deg (lebendig, aber in Blender und Unity gleich). Form E, am Bild geprüft.
+FLASH = dict(
+    dur_s=1.0 / 30,
+    core=dict(len_mm=80, r_mm=22, back_mm=4, ring_at=0.3, segs=8, role='flash_core'),
+    tongues=dict(n=4, len_mm=80, w_mm=30, t_mm=16, base_mm=10, sweep_deg=28, at=0.35, role='flash_flame'),
+    roll_deg=[45, 20, 65, 35, 55, 10],
+    roles=dict(flash_core=dict(color='#EAFBFF', emit=3.0, de='Mündungsfeuer Kern (fast weiß, reine Emission)'),
+               flash_flame=dict(color='#5FD3E0', emit=0.8, de='Mündungsfeuer Seitenflammen (Familienfarbe Cyan, reine Emission)')),
+    src='M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, '
+        'Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1)')
+# Hülsenauswurf (0.16, Entscheidungsliste 5.4 A, Nutzer 26.10.2026): je Schuss eine Messinghülse (Rolle brass) aus dem Auswurffenster
+# (Startlage und Richtung je Waffe: Modul-Feld EJECT, ohne Feld kein Auswurf), sichtbar ab dem Schussbild (delay_frames 0, 1 Bild später
+# frei über dem Gehäuse), kurze Bahn nach rechts und rechts unten mit Drehung, nach life_s ausgeblendet. Die Bahn rechnet im
+# Kameraraum (Viewmodel-Ebene wie die Waffe): Startlage aus der Waffe im Schussbild, Schwerkraft nach unten im Bild.
+# Destiny (Motiongen muendung › 3/6): goldene Hülse im 1. Blitzbild oder 1 Bild danach, nach rechts bzw. rechts unten.
+EJECT = dict(
+    speed_mps=2.4, gravity_mps2=9.81, spin_dps=1500.0, spin_axis=(1.0, 0.25, 0.0), life_s=0.4, max_live=6, delay_frames=0,
+    cases=dict(rifle=dict(len_mm=42, r_mm=4.8, segs=12)), role='brass',
+    src='M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); '
+        'Geschwindigkeit, Drehung, Lebensdauer E')
+
+
+def _norm(v):
+    n = math.sqrt(sum(a * a for a in v))
+    return tuple(a / n for a in v)
+
+
+def flash_mesh():
+    """Blitz als Netz im Autorenmaß (f vorn, u oben, x links; mm) relativ zu Socket_Muzzle: (Punkte, Dreiecke Kern, Dreiecke Flammen).
+    Kern = Spindel längs des Laufs, Flammen = n flache Doppelpyramiden quer zum Lauf, nach vorn geneigt. Blender und Unity bauen daraus
+    dasselbe Netz (Unity über ego.json › motion.flash)."""
+    C, T = FLASH['core'], FLASH['tongues']
+    V, core, flame = [], [], []
+    V.append((-C['back_mm'], 0.0, 0.0))
+    V.append((C['len_mm'], 0.0, 0.0))
+    f_ring = C['len_mm'] * C['ring_at']
+    for i in range(C['segs']):
+        a = 2 * math.pi * i / C['segs']
+        V.append((f_ring, C['r_mm'] * math.cos(a), C['r_mm'] * math.sin(a)))
+    n = C['segs']
+    for i in range(n):
+        a, b = 2 + i, 2 + (i + 1) % n
+        core += [(0, b, a), (1, a, b)]
+    sw = math.tan(math.radians(T['sweep_deg']))
+    for k in range(T['n']):
+        a = 2 * math.pi * k / T['n']
+        e = (0.0, math.cos(a), math.sin(a))                  # radial
+        t = (0.0, -math.sin(a), math.cos(a))                 # quer (tangential)
+        base = (T['base_mm'], 0.0, 0.0)
+        tip = (base[0] + T['len_mm'] * sw, T['len_mm'] * e[1], T['len_mm'] * e[2])
+        m = tuple(base[j] + (tip[j] - base[j]) * T['at'] for j in range(3))
+        i0 = len(V)
+        V += [base, tip,
+              tuple(m[j] + t[j] * T['w_mm'] / 2 for j in range(3)), tuple(m[j] - t[j] * T['w_mm'] / 2 for j in range(3)),
+              (m[0] + T['t_mm'] / 2, m[1], m[2]), (m[0] - T['t_mm'] / 2, m[1], m[2])]
+        ring = [i0 + 2, i0 + 4, i0 + 3, i0 + 5]
+        for j in range(4):
+            p, q = ring[j], ring[(j + 1) % 4]
+            flame += [(i0, q, p), (i0 + 1, p, q)]
+    return V, core, flame
+
+
+def case_mesh(kind):
+    """Hülse als Zylinder längs der Querachse x (liegt quer im Auswurffenster), Mitte im Ursprung; mm wie flash_mesh."""
+    c = EJECT['cases'][kind]
+    n, h, r = c['segs'], c['len_mm'] / 2, c['r_mm']
+    V = [(0.0, 0.0, -h), (0.0, 0.0, h)]
+    for s in (-h, h):
+        for i in range(n):
+            a = 2 * math.pi * i / n
+            V.append((r * math.cos(a), r * math.sin(a), s))
+    F = []
+    for i in range(n):
+        a0, a1, b0, b1 = 2 + i, 2 + (i + 1) % n, 2 + n + i, 2 + n + (i + 1) % n
+        F += [(0, a1, a0), (1, b0, b1), (a0, a1, b1), (a0, b1, b0)]
+    return V, F
+
+
+def flash_roll(n):
+    """Drehung des n-ten Blitzes (0-basiert) um die Laufachse in Grad."""
+    return FLASH['roll_deg'][n % len(FLASH['roll_deg'])]
+
+
+def flash_cover_ads(W, n=120):
+    """Größter Anteil der lichten Visieröffnung, den der Blitz im Zielen bedeckt (über alle Drehungen roll_deg), ohne Rendern: Haltung
+    'ads' (Auge in Socket_Eye, Blick längs des Laufs), Öffnung = Glasfenster (sight_glass) an seiner Rückseite geschnitten mit demselben
+    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim; Innenmaß dort gleich dem Glas), Raster n × n. Verdeckung durch die Waffe zählt nicht (obere Schranke). Für ./check (≤ 20 %, 5.3 A); Unity misst
+    dasselbe im Test mit dem laufenden Controller."""
+    th = math.tan(math.radians(CAMERA['h_fov_deg'] / 2))
+    tv = th * CAMERA['aspect'][1] / CAMERA['aspect'][0]
+    eye, mz = W.ANCHORS['Socket_Eye']['at'], W.ANCHORS['Socket_Muzzle']['at']
+
+    def proj(f, u, x):
+        d = f - eye[0]
+        return 50 - 50 * (x / d) / th, 50 - 50 * ((u - eye[1]) / d) / tv
+
+    P = {q['id']: q for q in W.PARTS}
+    g, t = P['sight_glass'], P['sight_frame_trim']
+    ga, gb = proj(g['f0'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(g['f0'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
+    ta, tb = proj(t['f1'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(t['f1'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
+    x0, y0, x1, y1 = max(ga[0], ta[0]), max(ga[1], ta[1]), min(gb[0], tb[0]), min(gb[1], tb[1])
+    V, core, flame = flash_mesh()
+
+    def inside(px, py, a, b, c):
+        def s(p, q):
+            return (px - q[0]) * (p[1] - q[1]) - (p[0] - q[0]) * (py - q[1])
+        d = (s(a, b), s(b, c), s(c, a))
+        return not (min(d) < 0 < max(d))
+
+    best = 0.0
+    for roll in sorted(set(FLASH['roll_deg'])):
+        r = math.radians(roll)
+        Q = [proj(mz[0] + f, mz[1] + u * math.cos(r) - x * math.sin(r), mz[2] + u * math.sin(r) + x * math.cos(r)) for f, u, x in V]
+        T = [(Q[a], Q[b], Q[c]) for a, b, c in core + flame]
+        hit = sum(any(inside(x0 + (i + .5) / n * (x1 - x0), y0 + (j + .5) / n * (y1 - y0), *t_) for t_ in T)
+                  for i in range(n) for j in range(n))
+        best = max(best, hit / (n * n))
+    return best
+
+
+def flash_visible(fire, f):
+    """Index des Schusses, dessen Blitz im Bild f (30/s) sichtbar ist, sonst None: sichtbar für dur_s ab dem Schussbild."""
+    for i, s in enumerate(fire):
+        if 0 <= f - s < FLASH['dur_s'] * FPS - 1e-6:
+            return i
+    return None
 
 
 def _retime(A, k):

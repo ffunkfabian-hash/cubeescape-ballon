@@ -24,6 +24,7 @@ python3 tools/unity_run.py sway             # MP4 Pendeln: schnelle Drehung hin 
 python3 tools/unity_run.py treffer          # MP4 Rückmeldung: Hüftschuss, im Zielen Einzelschuss und Feuerstoß (Ring, Treffer-X)
 python3 tools/unity_run.py huefte           # MP4 Hüft-Fadenkreuz (0.13): Hüfte, Hüftfeuer, Zielen, Sprint, Nachladen; Zustand je Bild in feedback.csv
 python3 tools/unity_run.py sprint|wechsel|rueckstoss   # MP4 (0.15): Sprint-Hub und Sprint → Zielen; Waffenwechsel; Rückstoß Hüfte/Zielen
+python3 tools/unity_run.py feuer            # MP4 (0.16): Mündungsfeuer und Hülsen aus der Hüfte und im Zielen
 BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1" python3 tools/unity_run.py feel   # Messlauf: 60/s, Waffe und Arme auf Magenta, ohne Fadenkreuz (…_mess)
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
@@ -73,16 +74,16 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/6`), `ego_reference.json` |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX (Waffe: Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/7`), `ego_reference.json` |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs`, `Runtime/EgoScreen.cs` (Bildlage, Silhouette; Tests und Messung) | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
-| Szene | `Runtime/EgoPlayer.cs`, `EgoRig.cs`, `Range.cs`, `Bootstrap.cs` | Bewegung, Kameras (Welt + Overlay), Treffer, Anzeige, Parcours, Aufnahme- und Vergleichsmodus |
+| Szene | `Runtime/EgoPlayer.cs`, `EgoRig.cs`, `Range.cs`, `Bootstrap.cs` | Bewegung, Kameras (Welt + Overlay), Treffer, Anzeige, Parcours, Aufnahme- und Vergleichsmodus; `EgoRig` baut seit 0.16 auch Blitz und Hülsenpool aus den Netzen in `ego.json` |
 | Szenen (0.8, 0.9) | `Runtime/SceneData.cs`, `MiniJson.cs`, `SceneLoader.cs`, `Course.cs` | Format `ballon-scene/2` (Leser mit Prüfung, JsonUtility kann keine Wörterbücher), Umrechnung Blender → Unity, Lader (Zonenmaterialien, Collider, Lichtszenen, Ziele, Wegmarken), Parcours-Lauf (`CourseRun`) |
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/6`. Der Abnehmer ist `unity/` ab 0.15. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/7`. Der Abnehmer ist `unity/` ab 0.16. Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
@@ -94,8 +95,11 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 - 6 (0.15): `motion.recoil` in vier Größen (Entscheidungsliste 5.2 A) – Modellkick mit `ads_back`/`ads_pitch`, Kamera-Ruck kritisch
   gedämpft mit `ads_cam`, Grundbahn `path_up_h`/`path_side_b`/`path_hz`, Erholung `recover_delay_s`/`recover_hz`, Salven
   `burst_shots`/`burst_rpm`, Streuung `spread_hip_deg`/`spread_ads_deg` (vorher `MoveTuning`) – und `motion.switch.empty_s` (Wechsel, 6.1 A).
+- 7 (0.16): `motion.flash` (Mündungsfeuer, 5.3 A: Dauer `dur_s` = 1/30 s, Netz relativ zu `Socket_Muzzle`, Kern- und Flammendreiecke,
+  Drehfolge `roll_deg`), `motion.eject` (Hülsenbahn, 5.4 A: Geschwindigkeit, Schwerkraft, Drehung, `life_s`, `max_live`, `delay_frames`),
+  `weapon.eject` (je Waffe aus dem Modul-Feld `EJECT`: `enabled`, Startlage, Richtung, Hülsennetz) und die Rollen `flash_core`/`flash_flame`.
 
-Ältere Exporte (`/1` bis `/5`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
+Ältere Exporte (`/1` bis `/6`) lehnt `EgoFile.Parse` mit dem Hinweis „neu exportieren“ ab.
 
 **Achsen.** Die Umrechnung steht einmal in `ego.json › axes.to_unity`: Unity = (−x, z, −y) aus Blender. Matrizen werden als
 M·B·Mᵀ umgerechnet. Gerechnet wird überall im Blender-Raum, umgerechnet erst beim Setzen der Transforms. Die Netze kommen aus dem
@@ -126,6 +130,13 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
 - **Wechsel (0.15, 6.1 A):** `holster` 0,27 s, dann `switch.empty_s`, dann `draw` ab dem letzten Bild ohne Waffe und Arme im Bild
   (`EgoController.DrawEnters`, aus der Silhouette gerechnet); der sichtbare Teil des Ziehens ist derselbe wie mit Taste 1. Marker
   `switch › Empty` und `switch › Draw`.
+- **Mündungsfeuer und Hülsen (0.16, Entscheidungsliste 5.3 A / 5.4 A):** Form und Bahn stehen nur in `basic/arms/ego.py` (`FLASH`,
+  `EJECT`, `flash_mesh`, `case_mesh`); Blender (`ego_build.fx_eval`) und Unity (`EgoSolver.FxScripted`, `EgoController.LiveFx`) rechnen
+  dieselben Formeln. Der Blitz kommt nur aus einem echten Schuss (`FireOne`), steht `dur_s` = 1/30 s (30/s: 1 Bild, 60/s: 2, 144/s: 5)
+  an `Socket_Muzzle` und dreht je Schuss nach `roll_deg`; reine Emission ohne Bloom, ohne Schatten. Je Schuss startet eine Hülse mit der
+  Waffe dieses Bilds im Auswurffenster und fliegt im Kameraraum (Viewmodel-Ebene) nach rechts, etwas hoch und dann nach unten, mit
+  Drehung; nach `life_s` 0,4 s ist sie weg. Unity nimmt dafür einen festen Pool aus `max_live` = 6 Objekten (Ring, der älteste wird
+  überschrieben), keine Speicheranforderung je Bild. Waffen ohne Feld `EJECT` (`weapon.eject.enabled` false) werfen nichts aus.
 - Das Hochziehen des Modells klingt erst nach dem Feuern ab.
 - Das Gehwippen folgt der Laufgeschwindigkeit, mit den Werten aus `walk`/`sprint`.
 - Das Atmen nutzt `BREATHE_ALL`, dazu in Ruhe die `idle_hip`-Formel.
@@ -141,13 +152,16 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 
 | Test | prüft |
 |---|---|
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/6` (`/1` bis `/5` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/7` (`/1` bis `/6` abgelehnt), 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |
 | `Armlaengen_in_allen_Bildern` | Ober-/Unterarm 0,32/0,30 m in allen Haltungen und allen Bildern aller Aktionen |
 | `Handgelenkknick_hoechstens_45_Grad` | Knick ≤ 45° in allen Haltungen und Bildern |
-| `Gleich_wie_Blender_Referenz` | Weltmatrizen von Waffe, Mechanik, Magazin, Kamera und 16 Armsegmenten in 219 Stichproben gegen `tools/ego_build.evaluate` (≤ 0,5 mm, ≤ 0,1°) |
+| `Gleich_wie_Blender_Referenz` | Weltmatrizen von Waffe, Mechanik, Magazin, Kamera und 16 Armsegmenten in 279 Stichproben gegen `tools/ego_build.evaluate` (≤ 0,5 mm, ≤ 0,1°); seit 0.16 Feueraktionen lückenlos, dazu Blitz und jede sichtbare Hülse (gleiche Sichtbarkeit wie Blender) |
+| `Clips_Blitz_ein_Bild_und_Huelse_je_Schuss` (EditMode, 0.16) | `fire_hip`, `fire_ads`, `sprint_to_fire` wie ego_build: je Schuss genau ein Blitzbild im Schussbild, je Schuss eine Hülse ab dem Schussbild, `life_s` lang, im Bild nach rechts und zuletzt nach unten |
+| `Muendungsfeuer_im_Zielen_hoechstens_20_Prozent_der_Oeffnung` (EditMode, 0.16) | jedes Blitzbild von `fire_ads`: Blitznetz projiziert und gerastert gegen die lichte Holo-Öffnung, höchstens 20 % (5.3 A), mehr als 5 % (sichtbar); `./check` rechnet dasselbe in Python (`ego.flash_cover_ads`) |
+| `Muendungsfeuer_ein_Bild_bei_30_gleiche_Dauer_bei_hoeherer_Rate`, `Huelse_je_Schuss_einmal_nach_rechts_unten`, `Kein_Feuer_und_keine_Huelse_bei_leerem_Magazin_und_Nachladen`, `Waffe_ohne_Auswurf_wirft_keine_Huelsen`, `Huelsenpool_ohne_neue_Objekte` (PlayMode, 0.16) | Live-Controller: Blitz 1 Bild bei 30/s, 2 bei 60/s, 5 bei 144/s, ab dem Bild des Schusses, im Dauerfeuer einer je Schuss; eine Hülse je Schuss im Bild des Schusses, nach 0,1 s ≥ 5 % B nach rechts, zuletzt nach unten, ≤ `max_live` gleichzeitig; kein Blitz und keine Hülse bei leerem Magazin und während des Nachladens (gehaltener Abzug); `weapon.eject.enabled` false: Blitz ja, Hülse nein (live, Clip, kein Pool im Modell); Spieler in der Szene, 2 s Dauerfeuer: keine neuen Objekte, kein GC je Bild |
 | `Jede_Aktion_endet_mit_Markern_in_Reihenfolge` | alle 19 Aktionen enden in ihrer Bildzahl, Marker in Datenreihenfolge, keine NaN |
 | Spielablauf (6 Tests) | Kadenz und Magazin, leeres/taktisches/automatisches Nachladen, Zielen hin und zurück (Auge auf der Kameraachse), Betrachten abbrechen, Wegstecken beim Nachladen und Ziehen, Sprintschleife und Übergänge, Ducken/Springen/Wandnähe |
 | `Zielen_live_ohne_Ueberschwingen` (0.10) | Live-Controller: Zielen aus der Hüfte, Überschwingen am `Socket_Reticle` < 0,3°, Rest nach 0,45 s < 1°; Messwerte im Testprotokoll |

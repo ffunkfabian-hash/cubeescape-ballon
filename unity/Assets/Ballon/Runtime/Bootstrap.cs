@@ -383,16 +383,28 @@ namespace Ballon.Ego
             .Add(4.3f, 5.25f, hold: "aim fire")
             .Add(6.0f, 6.6f);
 
+        /// <summary>Beleg 0.16 (5.3 A / 5.4 A): Mündungsfeuer und Hülsen aus der Hüfte (Einzelschuss, Feuerstoß) und im Zielen (zwei
+        /// Einzelschüsse, Feuerstoß) vor der 10-m-Mitte, 7,4 s.</summary>
+        public static ScriptedInput FireScript() => new ScriptedInput()
+            .Add(0.0f, 0.4f)
+            .Add(0.4f, 0.45f, hold: "fire")
+            .Add(1.0f, 1.45f, hold: "fire")
+            .Add(2.2f, 7.0f, hold: "aim")
+            .Add(3.0f, 3.05f, hold: "aim fire")
+            .Add(3.8f, 3.85f, hold: "aim fire")
+            .Add(4.6f, 5.5f, hold: "aim fire")
+            .Add(7.0f, 7.4f);
+
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
             Player.hud = false;
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
             var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript()
-                     : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : DemoScript();
+                     : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
-            Player.C.ammo = dn == "rueckstoss" ? Player.C.magSize : 9;
+            Player.C.ammo = dn == "rueckstoss" || dn == "feuer" ? Player.C.magSize : 9;
             float fps = float.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonFps") ?? "", out var fp) ? fp : 30f;   // Messläufe: 60
             float dt = 1f / fps;
             Player.deltaOverride = () => dt;
@@ -406,7 +418,7 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;

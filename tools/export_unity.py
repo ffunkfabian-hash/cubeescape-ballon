@@ -21,8 +21,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/6'   # 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/7'   # 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 WEAPON = 'pilot.w01_auto_rifle_v21'
+WEAPON_SRC = 'basic/pilot/w01_auto_rifle_v21.py'
 DST = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
 MM = 0.001
 AXES = dict(to_unity=[[-1, 0, 0], [0, 0, 1], [0, -1, 0]],
@@ -138,7 +139,36 @@ def weapon_data(W):
         parts.append(dict(id=p['id'], asm=p['asm'], role=p['mat'], parent=p.get('parent_part') or '', rest=rest, move=m))
     anchors = [dict(id=k, part=v.get('part', ''), pos=xyz(*v['at'])) for k, v in W.ANCHORS.items()]
     wid = W.META['id'] + (f"-{W.META['variant']}" if W.META.get('variant') else '')
-    return dict(id=wid, root=W.META['id'], name=W.META['name'], fbx=f'{wid}.fbx', parts=parts, anchors=anchors), kit_materials()
+    return dict(id=wid, root=W.META['id'], name=W.META['name'], fbx=f'{wid}.fbx', parts=parts, anchors=anchors,
+                eject=eject_data(W)), kit_materials()
+
+
+def mesh(V, tris):
+    """Netz im Autorenmaß (f, u, x mm) → flache Punktliste im Blender-Rahmen (m) und flache Dreiecksliste."""
+    return [c for v in V for c in xyz(*v)], [i for t in tris for i in t]
+
+
+def eject_data(W):
+    """Hülsenauswurf der Waffe (Modul-Feld EJECT, 5.4 A): Startlage im Auswurffenster, Richtung (Einheit) und Hülsennetz; enabled false ohne Feld."""
+    E = getattr(W, 'EJECT', None)
+    if not E:
+        return dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], src='kein Auswurf')
+    d = vdir(E['dir'])
+    n = sum(a * a for a in d) ** 0.5
+    vs, ts = mesh(*EG.case_mesh(E['case']))
+    return dict(enabled=True, pos=xyz(*E['at']), dir=r6([a / n for a in d]), case=E['case'],
+                verts=vs, tris=ts, src=E['src'])
+
+
+def flash_data():
+    """Mündungsfeuer (ego.FLASH, 5.3 A): Netz relativ zu Socket_Muzzle (Blender-Waffenrahmen, m), Kern- und Flammendreiecke, Dauer,
+    Drehfolge um die Laufachse, Rollen."""
+    F = EG.FLASH
+    V, core, flame = EG.flash_mesh()
+    vs, ct = mesh(V, core)
+    _, ft = mesh(V, flame)
+    return dict(dur_s=r6(F['dur_s']), verts=vs, core_tris=ct, flame_tris=ft, roll_deg=r6(F['roll_deg']), core_role=F['core']['role'],
+                flame_role=F['tongues']['role'], src=F['src'])
 
 
 def data():
@@ -169,13 +199,19 @@ def data():
             'tools/bake_unity.py']
     sources = dict(de='SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen',
                    files=[dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in srcs])
-    used = sorted({p['role'] for p in weapon['parts']} | {p['role'] for p in arm['pieces']})
+    used = sorted({p['role'] for p in weapon['parts']} | {p['role'] for p in arm['pieces']} | {EG.EJECT['role']})
+    for k, F in EG.FLASH['roles'].items():          # Leuchtrollen des Mündungsfeuers stehen in ego.FLASH (reine Emission wie Absehen)
+        roles[k] = dict(color=F['color'], rough=0.3, metal=0.0, emit=F['emit'], emit_only=True, spec=0.0, de=F['de'])
     motion = dict(interp=EG.INTERP, time_scale=EG.TIME_SCALE, keep_time=sorted(EG.KEEP_TIME),
                   secondary=dict(freq_hz=EG.SECONDARY['freq_hz'], zeta=EG.SECONDARY['zeta'],
                                  aim_freq_hz=EG.SECONDARY['aim_freq_hz'], aim_zeta=EG.SECONDARY['aim_zeta']),
                   breathe_all={k: r6(v) for k, v in EG.BREATHE_ALL.items()},
                   recoil={k: v if isinstance(v, int) else r6(v) for k, v in EG.RECOIL.items()},
                   switch=dict(empty_s=r6(EG.SWITCH['empty_s']), src=EG.SWITCH['src']),
+                  flash=flash_data(),
+                  eject=dict(speed_mps=r6(EG.EJECT['speed_mps']), gravity_mps2=r6(EG.EJECT['gravity_mps2']), spin_dps=r6(EG.EJECT['spin_dps']),
+                             spin_axis=r6(vdir(EG.EJECT['spin_axis'])), life_s=r6(EG.EJECT['life_s']), max_live=EG.EJECT['max_live'],
+                             delay_frames=EG.EJECT['delay_frames'], role=EG.EJECT['role'], src=EG.EJECT['src']),
                   de='Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoß, Wechsel, Tempo)')
     return dict(format=FORMAT, generated_by='tools/export_unity.py', sources=sources, axes=AXES, fps=EG.FPS, motion=motion,
                 camera=dict(h_fov_deg=EG.CAMERA['h_fov_deg'], aspect=list(EG.CAMERA['aspect']), near_m=EG.CAMERA['near_m']),
@@ -184,7 +220,7 @@ def data():
                 roles=[dict(role=r, color=roles[r]['color'], aaa_color=roles[r].get('aaa_color', roles[r]['color']),
                             rough=roles[r]['rough'], metal=roles[r]['metal'], alpha=roles[r].get('alpha', 1.0),
                             emit=roles[r].get('emit', 0.0), emit_only=bool(roles[r].get('emit_only')), spec=roles[r].get('spec', 0.5),
-                            de=roles[r]['de']) for r in used])
+                            de=roles[r]['de']) for r in used + sorted(EG.FLASH['roles'])])
 
 
 def write_json(path, obj):
@@ -208,9 +244,30 @@ def data_only_allowed(D):
         return None, f"altes ego.json ({old.get('format')}) ohne Atlanten oder Netzgrenzen"
     was = {f['path']: f['sha256'] for f in old.get('sources', {}).get('files', [])}
     changed = [f['path'] for f in D['sources']['files'] if f['path'] not in MOTION_SOURCES and was.get(f['path']) != f['sha256']]
+    if changed == [WEAPON_SRC]:
+        return old, 'bounds'           # nur das Waffenmodul (z. B. Anker, EJECT): erlaubt, wenn die Netze gleich bleiben (blender_main)
     if changed:
         return None, 'Form- oder Materialquellen geändert: ' + ', '.join(changed)
     return old, None
+
+
+def mesh_bounds():
+    """Netzgrenzen aller Netzobjekte der Szene im eigenen Objektraum (Modifikatoren angewandt), wie im vollen Export."""
+    import bpy
+    bounds = {}
+    dg = bpy.context.evaluated_depsgraph_get()
+    for ob in bpy.context.scene.objects:
+        if ob.type != 'MESH':
+            continue
+        e = ob.evaluated_get(dg)
+        me = e.to_mesh()
+        vs = [v.co for v in me.vertices]
+        if vs:
+            bounds[ob.name] = dict(name=ob.name, min=r6([min(v[i] for v in vs) for i in range(3)]),
+                                   max=r6([max(v[i] for v in vs) for i in range(3)]),
+                                   tris=sum(len(p.vertices) - 2 for p in me.polygons))
+        e.to_mesh_clear()
+    return bounds
 
 
 def write_reference(ref):
@@ -272,10 +329,10 @@ def blender_main():
     data_only = os.environ.get('BALLON_EXPORT_DATA_ONLY') == '1'
     if data_only:                                      # vor jeder Arbeit: darf der Datenexport Atlanten, Netze und FBX übernehmen?
         old, why = data_only_allowed(D)
-        if why:
+        if why and why != 'bounds':
             print(f'[export_unity] nur Daten nicht möglich: {why} – voller Export nötig (ohne BALLON_EXPORT_DATA_ONLY)', flush=True)
             sys.exit(2)
-    sc = EB.Scene(W, dict(stills=False, actions=[], gpu=False, samples=1, weapon=WEAPON))
+    sc = EB.Scene(W, dict(stills=False, actions=[], gpu=False, samples=1, weapon=WEAPON, fx=False))
 
     def flat(M):
         return r6([M[i][j] for i in range(4) for j in range(4)])
@@ -287,6 +344,10 @@ def blender_main():
         for s in ('R', 'L'):
             for g in REF_SEGMENTS:
                 objs[f'{s}_{g}'] = flat(sc.arms[s][0][g].matrix_world)
+        if sc.fx_now['flash'] is not None:                 # Mündungsfeuer und Hülsen (0.16): nur sichtbare, Name = Schuss in der Aktion
+            objs['flash'] = flat(sc.fx_now['flash'])
+        for k, M in sorted(sc.fx_now['shells'].items()):
+            objs[f'shell_{k}'] = flat(M)
         return dict(label=label, action=action, frame=frame, objects=[dict(name=k, m=v) for k, v in objs.items()])
 
     samples = []
@@ -300,6 +361,8 @@ def blender_main():
         st, rep = {}, {}
         n = A['frames']
         frames = sorted({*range(0, n + 1, max(1, n // 8)), n, *[f for f, _ in A.get('events', [])]})
+        if A.get('fire'):                                  # Feueraktionen lückenlos: jedes Blitz- und Hülsenbild prüfen
+            frames = list(range(0, n + 1))
         for f in range(0, n + 1):                          # lückenlos auswerten (Zustand Magazin), nur Stichproben speichern
             EB.evaluate(sc, A, f, rep, st)
             if f in frames:
@@ -315,6 +378,14 @@ def blender_main():
             e.matrix_world = Matrix.Identity(4)
     bpy.context.view_layer.update()
     if data_only:                                      # nur Bewegung/Daten geändert (0.10): Atlanten, Netzgrenzen und FBX bleiben
+        if why == 'bounds':                            # 0.16: Waffenmodul geändert – nur zulässig, wenn alle Netze gleich geblieben sind
+            now = mesh_bounds()
+            was = {b['name']: b for b in old['mesh_bounds']['objects']}
+            diff = sorted(k for k in set(now) | set(was) if now.get(k) != was.get(k))
+            if diff:
+                print(f'[export_unity] nur Daten nicht möglich: Netze geändert ({", ".join(diff[:6])}) – voller Export nötig', flush=True)
+                sys.exit(2)
+            print(f'[export_unity] Waffenmodul geändert, {len(now)} Netzgrenzen unverändert: FBX und Atlanten bleiben gültig', flush=True)
         D['textures'], D['mesh_bounds'] = old['textures'], old['mesh_bounds']
         write_json(os.path.join(DST, 'ego.json'), D)
         write_reference(ref)
@@ -363,19 +434,7 @@ def blender_main():
     textures['lut'] = BK.agx_lut(os.path.join(tex_dir, 'agx_lut.png'))
     D['textures'] = dict(de='Gebackene Atlanten (kit.aaa_nodes, Skin standard) und AgX-LUT; nicht gebacken: Glas, Leuchtteile',
                          **textures)
-    bounds = {}
-    dg = bpy.context.evaluated_depsgraph_get()
-    for ob in bpy.context.scene.objects:
-        if ob.type != 'MESH':
-            continue
-        e = ob.evaluated_get(dg)
-        me = e.to_mesh()
-        vs = [v.co for v in me.vertices]
-        if vs:
-            bounds[ob.name] = dict(name=ob.name, min=r6([min(v[i] for v in vs) for i in range(3)]),
-                                   max=r6([max(v[i] for v in vs) for i in range(3)]),
-                                   tris=sum(len(p.vertices) - 2 for p in me.polygons))
-        e.to_mesh_clear()
+    bounds = mesh_bounds()
     D['mesh_bounds'] = dict(de='Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)',
                             objects=list(bounds.values()))
 
