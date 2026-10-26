@@ -109,19 +109,29 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
         }
 
-        /// <summary>0.21 „Ironsight“ (Visier-Baukasten v3): bewusst geänderte Visierdaten alter Dateien auf den neuen Stand heben, alles
-        /// andere bleibt Feld für Feld gleich. Visierteile mit Rolle anodized → sight_anod (Abriebmaske A); an der MP ersetzt H2 „Pille“
-        /// das Holo – dort fallen nur die Visierteile und das Bauteil am Augenpunkt aus dem Vergleich (Lagen bleiben, H2 prüft Visier_v3).</summary>
-        static string Visier_0_21(EgoWeapon w)
+        /// <summary>0.21 „Ironsight“ (Visier-Baukasten v3): nur die ausdrücklich benannten Visierfelder werden normiert, alle übrigen Teile
+        /// (auch die unveränderten Visierteile mit Bewegung und Elternbezug) bleiben Feld für Feld gleich. Alle Waffen: Visierteile mit
+        /// Rolle anodized → sight_anod (Abriebmaske A). MP (H2 „Pille“ statt Holo): in der alten Datei entfallen Haube und Haubenkante,
+        /// die Scheibe ist glass_scope und der Augenpunkt hängt an der Scheibe; in der neuen Datei fehlen dafür nur die drei neuen
+        /// H2-Teile (Emitterblock, Leuchtkontur, Statuspunkte – geprüft in Visier_v3). Teile nach ID sortiert (H2 ordnet anders).</summary>
+        static readonly string[] H2_Neu = { "sight_block", "sight_line", "sight_status" };
+        static readonly string[] H2_Entfallen = { "sight_frame", "sight_frame_trim" };
+
+        static string Visier_0_21(EgoWeapon w, bool alt)
         {
             var c = JsonUtility.FromJson<EgoWeapon>(JsonUtility.ToJson(w));
             foreach (var p in c.parts)
                 if (p.asm == "sight" && p.role == "anodized") p.role = "sight_anod";
-            if (c.id == "BASIC-06-v2.1")
+            if (c.id == "BASIC-06-v2.1" && alt)
             {
-                c.parts = c.parts.Where(p => p.asm != "sight").ToArray();
-                foreach (var a in c.anchors) if (a.id == "Socket_Eye") a.part = "";
+                Assert.IsTrue(H2_Entfallen.All(id => c.parts.Any(p => p.id == id)), "alte MP hatte Haube und Haubenkante");
+                c.parts = c.parts.Where(p => !H2_Entfallen.Contains(p.id)).ToArray();
+                foreach (var p in c.parts) if (p.id == "sight_glass") p.role = "glass_scope";
+                foreach (var a in c.anchors) if (a.id == "Socket_Eye") a.part = "sight_glass";
             }
+            else if (c.id == "BASIC-06-v2.1")
+                c.parts = c.parts.Where(p => !H2_Neu.Contains(p.id)).ToArray();
+            c.parts = c.parts.OrderBy(p => p.id, StringComparer.Ordinal).ToArray();
             return JsonUtility.ToJson(c);
         }
 
@@ -132,8 +142,11 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(s.Any(p => p.role == "sight_anod"), $"{w.id}: Visier eloxiert als sight_anod");
             if (w.id == "BASIC-06-v2.1")
             {
-                CollectionAssert.IsSubsetOf(new[] { "sight_mount", "sight_block", "sight_line", "sight_status", "sight_glass", "sight_reticle" },
-                                            s.Select(p => p.id).ToArray(), "MP: H2 „Pille“");
+                CollectionAssert.IsSubsetOf(H2_Neu, s.Select(p => p.id).ToArray(), "MP: H2 „Pille“");
+                foreach (var p in s.Where(p => H2_Neu.Contains(p.id)))
+                    Assert.AreEqual("sight_mount", p.parent, $"{p.id} hängt am Klemmfuß (folgt dem Abnehmen)");
+                Assert.AreEqual("sight_anod", s.Single(p => p.id == "sight_block").role, "Emitterblock eloxiert");
+                Assert.AreEqual("energy", s.Single(p => p.id == "sight_status").role, "Statuspunkte leuchten");
                 Assert.IsFalse(s.Any(p => p.id == "sight_frame"), "MP: H2 ohne Haube");
                 Assert.AreEqual("sight_line", s.Single(p => p.id == "sight_line").role, "Pillenkontur als Leuchtrolle, nicht als Absehen (bleibt sichtbar)");
             }
@@ -167,7 +180,7 @@ namespace Ballon.Ego.Tests
             foreach (var (a, b) in new[] { (o.textures.weapon.albedo, D.textures.weapon.albedo), (o.textures.weapon.spec, D.textures.weapon.spec),
                                            (o.textures.weapon.normal, D.textures.weapon.normal), (o.textures.weapon.ao, D.textures.weapon.ao) })
                 Assert.AreEqual(Path.GetFileNameWithoutExtension(a), Path.GetFileNameWithoutExtension(b), "gleicher Dateiname ohne Endung");
-            Assert.AreEqual(Visier_0_21(o.weapon), Visier_0_21(D.weapon), "weapon (Teile, Anker, Hülsen, Live-Teile; Visierrolle 0.21)");
+            Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(D.weapon, false), "weapon (Teile, Anker, Hülsen, Live-Teile; Visierrolle 0.21)");
             Visier_v3(D.weapon);
             CollectionAssert.AreEqual(o.poses.Select(J), D.poses.Select(J), "Haltungen");
             CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
@@ -200,7 +213,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual("full_auto", o.gameplay.fire_mode, $"{o.weapon.id}: /8 ohne Feuerart → Dauerfeuer");
                 Assert.AreEqual(0f, o.motion.ads_hide.eye_m, "/8: keine Teile im Zielen aus");
                 Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
-                Assert.AreEqual(Visier_0_21(o.weapon), Visier_0_21(n.weapon), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
+                Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
                 Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide), $"{o.weapon.id}: kein Teil mit ads_hide");
                 Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
