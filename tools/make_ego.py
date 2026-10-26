@@ -107,10 +107,12 @@ def _src_table(W):
     H = G['hip']
     rows = [('Klasse', P['type'], P['src']),
             ('Kadenz', f"{G['rpm']}/min", G['src']), ('Magazin', str(G['magazine']), G['src']),
-            ('Weltzoom im Zielen', f"{G['world_zoom']:g}", 'M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM)'),
+            ('Feuerart', f"`{P['fire_mode']}` – {EG.FIRE_MODES[P['fire_mode']]}", 'Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20)'),
+            ('Weltzoom im Zielen', f"{G['world_zoom']:g}" + (f", beginnt bei {G['zoom_start'] * 100:.0f} % des Augenwegs" if 'zoom_start' in G else ''),
+             'M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM)' + ('; Beginn E (1d, siehe Kadenz)' if 'zoom_start' in G else '')),
             ('Hüft-Fadenkreuz', f"{H['kind']} {H['share_h'] * 100:.1f} % H", f"{H['status']} (4.1 A / 4.2 A, basic/reticles.py › HIP)"),
             ('Sprint-Fadenkreuz', H['sprint']['kind'] or 'aus', 'basic/reticles.py › HIP.sprint (4.1 A)')]
-    for k in C['poses']:
+    for k in list(C['poses']) + list(C.get('keep', {})):
         q = P['poses'][k]
         rows.append((f'Haltung `{k}`', f"Socket_Hand {list(q['pos'])}, Ziel {list(q['aim'])}, Rollen {q['roll']}°", q['src']))
     for k in EG.FOLLOW_HIP:
@@ -119,6 +121,9 @@ def _src_table(W):
             rows.append((f'Haltung `{k}`', f"Socket_Hand {list(q['pos'])}, Rollen {q['roll']}°", q['src']))
     for k, n in C['frames'].items():
         rows.append((f'Dauer `{k}`', f"{n:g} Bilder bei 30/s ({n / 30:.3f} s)", C['frames_src']))
+    hid = [p['id'] for p in W.PARTS if p.get('ads_hide')]
+    if hid:
+        rows.append(('Zielfernrohr im Zielen', f"aus: {', '.join(hid)} (Socket_Eye < {EG.ADS_HIDE['eye_m'] * 1000:.0f} mm)", EG.ADS_HIDE['src']))
     E = getattr(W, 'EJECT', None)
     rows += [('Mündungsfeuer', f"{EG.FLASH['dur_s'] * 1000:.0f} ms", EG.FLASH['src']),
              ('Hülsen', f"{E['case']} ({EG.EJECT['cases'][E['case']]['len_mm']} × {EG.EJECT['cases'][E['case']]['r_mm'] * 2:g} mm)" if E else 'keine',
@@ -126,7 +131,9 @@ def _src_table(W):
              ('Rückstoß', 'ego.RECOIL (gemeinsam)', ('M Destiny-Automatik: ' if P['type'] == 'auto_rifle' else 'übertragen von der Automatik: ')
               + 'Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A)'
               + ('' if P['type'] == 'auto_rifle' else '; Destiny-MP: Kick im Zielen ≤ 1 % H, Kamera-Anstieg < 2 % [M, ein PvP-Clip], '
-                                                       'keine Klassenmessung der Bahn')),
+                                                       'keine Klassenmessung der Bahn' if P['type'] == 'submachine_gun' else
+                 '; Destiny-Scout Tone Patrol: kräftiger Einzelimpuls, Rest wächst vor den Folgeschüssen, im Zielen fünf Schüsse ≈ 6 % H '
+                 '[M] (Motiongen rueckstoss › 4) – hier dieselbe Säule je Schuss, Salve = Schüsse im Abstand ≤ 1,5 × 60/rpm')),
              ('Sprint-Frequenz', '3,16 / 1,58 Hz (gemeinsam)', 'M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c)'),
              ('Griffe', ', '.join(P['grips']), 'Modul-Feld EGO_GRIPS' if getattr(W, 'EGO_GRIPS', None) else 'ego.GRIPS (Pilotwaffe)'),
              ('Live-Teile', ', '.join(f'{k} = {v}' for k, v in P['live'].items()), 'Modul-Feld EGO_LIVE' if getattr(W, 'EGO_LIVE', None) else 'ego.LIVE (Pilotwaffe)')]

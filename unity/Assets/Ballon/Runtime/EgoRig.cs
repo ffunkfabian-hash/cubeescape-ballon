@@ -66,6 +66,8 @@ namespace Ballon.Ego
                 if (role.TryGetValue(r.name, out var ro) && ro == WeaponAtlas) _atlasWeapon.Add(r);
             }
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
+            foreach (var p in s.D.weapon.parts)                // Zielfernrohr (0.20): Teile mit ads_hide schaltet Apply im Zielen aus
+                if (p.ads_hide && _parts[p.id].TryGetComponent<Renderer>(out var hr)) _adsHide.Add(hr);
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             foreach (var t in a.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             var fx = new GameObject("Fx").transform;
@@ -153,6 +155,12 @@ namespace Ballon.Ego
         }
 
         readonly List<Renderer> _atlasWeapon = new List<Renderer>();
+        readonly List<Renderer> _adsHide = new List<Renderer>();
+        bool _adsHidden;
+        /// <summary>Teile mit ads_hide sind gerade aus (Zielfernrohr im Zielen, 0.20).</summary>
+        public bool AdsHidden => _adsHidden;
+        /// <summary>Anzahl der Teile mit ads_hide (Okular, Rohr, Türme, Spannband).</summary>
+        public int AdsHideCount => _adsHide.Count;
 
         /// <summary>Waffen-Skin setzen: alle Teile mit dem Waffenatlas bekommen dessen Skin-Material (Arme bleiben).</summary>
         public void SetSkin(Material m)
@@ -185,6 +193,11 @@ namespace Ballon.Ego
                 Set(_parts[p.id], parent * world);
             }
             if (_mag != null && _mag.gameObject.activeSelf == o.magHidden) _mag.gameObject.SetActive(!o.magHidden);
+            if (_adsHidden != o.adsHidden)
+            {
+                _adsHidden = o.adsHidden;
+                for (int k = 0; k < _adsHide.Count; k++) _adsHide[k].enabled = !o.adsHidden;
+            }
             for (int i = 0; i < _segR.Length; i++)
             {
                 Set(_segR[i], o.segR[i]);

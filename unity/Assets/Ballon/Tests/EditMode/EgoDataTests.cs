@@ -14,13 +14,14 @@ namespace Ballon.Ego.Tests
     {
         const string Gen = "Assets/Ballon/Generated";
         static EgoFile[] _all;
-        /// <summary>Alle spielbaren Waffen (0.18: ego.json › weapons, Taste 1, 2).</summary>
+        /// <summary>Alle spielbaren Waffen (0.18: ego.json › weapons, Taste 1, 2; 0.20: 3 Scout).</summary>
         static EgoFile[] All => _all ?? (_all = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json")));
         static EgoFile D => All[0];                     // Pilotwaffe BASIC-01 (Automatik)
         static EgoFile MP => All.First(d => d.gameplay.weapon_type == "submachine_gun");
+        static EgoFile SR => All.First(d => d.gameplay.weapon_type == "scout_rifle");      // 0.20: Scout BASIC-03
 
         [Serializable] class RefObj { public string name; public float[] m; }
-        [Serializable] class RefSample { public string label, action; public int frame; public RefObj[] objects; }
+        [Serializable] class RefSample { public string label, action; public int frame; public bool ads_hidden; public RefObj[] objects; }
         [Serializable] class RefFile { public string format; public float tolerance_m, tolerance_deg, tolerance_arm_deg; public RefSample[] samples; }
 
         static Matrix4x4 M(float[] a)
@@ -46,8 +47,9 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Format_und_Umfang()
         {
-            Assert.AreEqual(2, All.Length, "zwei spielbare Waffen (Automatik, MP)");
-            CollectionAssert.AreEqual(new[] { "BASIC-01-v2.1", "BASIC-06-v2.1" }, All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2");
+            Assert.AreEqual(3, All.Length, "drei spielbare Waffen (Automatik, MP, Scout)");
+            CollectionAssert.AreEqual(new[] { "BASIC-01-v2.1", "BASIC-06-v2.1", "BASIC-03-v2.1" }, All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3");
+            CollectionAssert.AreEqual(new[] { "full_auto", "full_auto", "semi_auto" }, All.Select(d => d.gameplay.fire_mode).ToArray(), "Feuerart aus der Spec");
             Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
             foreach (var d in All) Umfang(d);
         }
@@ -103,7 +105,7 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/6\"}"));          // 0.15: ohne Mündungsfeuer und Hülsen
             StringAssert.Contains("neu exportieren", ex.Message);
-            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/9\"}"));          // unbekannt (neuer als der Leser)
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/10\"}"));         // unbekannt (neuer als der Leser)
             StringAssert.Contains("neu exportieren", ex.Message);
         }
 
@@ -120,16 +122,25 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(EgoFile.Format, D.format);
             Assert.AreEqual("bolt_carrier", o.weapon.live.bolt);
             Assert.AreEqual("weapon", o.atlas);
+            Assert.AreEqual("full_auto", o.gameplay.fire_mode, "/7 ohne Feuerart: Dauerfeuer (Migration im Leser, 0.20)");
+            Assert.AreEqual(0f, o.motion.ads_hide.eye_m, "/7 ohne Zielfernrohr-Regel: nie aus");
             string J(object x) => JsonUtility.ToJson(x);
+            o.motion.ads_hide = D.motion.ads_hide;                // neu in /9; die Pilotwaffe hat keine Teile mit ads_hide
             foreach (var (name, a, b) in new (string, object, object)[] {
                 ("gameplay", o.gameplay, D.gameplay), ("motion", o.motion, D.motion), ("camera", o.camera, D.camera), ("arm", o.arm, D.arm),
-                ("textures.weapon", o.textures.weapon, D.textures.weapon), ("textures.arms", o.textures.arms, D.textures.arms) })
+                ("textures.arms", o.textures.arms, D.textures.arms) })
                 Assert.AreEqual(J(a), J(b), name);
+            // Waffenatlas: gleiche Teile und Backgröße; die Dateien liegen seit 0.20 nach TEXTURE_STORE (97 A, albedo als JPG)
+            CollectionAssert.AreEqual(o.textures.weapon.objects, D.textures.weapon.objects, "Atlasobjekte");
+            Assert.AreEqual(o.textures.weapon.size, D.textures.weapon.size);
+            foreach (var (a, b) in new[] { (o.textures.weapon.albedo, D.textures.weapon.albedo), (o.textures.weapon.spec, D.textures.weapon.spec),
+                                           (o.textures.weapon.normal, D.textures.weapon.normal), (o.textures.weapon.ao, D.textures.weapon.ao) })
+                Assert.AreEqual(Path.GetFileNameWithoutExtension(a), Path.GetFileNameWithoutExtension(b), "gleicher Dateiname ohne Endung");
             Assert.AreEqual(J(o.weapon), J(D.weapon), "weapon (Teile, Anker, Hülsen, Live-Teile)");
             CollectionAssert.AreEqual(o.poses.Select(J), D.poses.Select(J), "Haltungen");
             CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
             CollectionAssert.AreEqual(o.actions.Select(J), D.actions.Select(J), "Aktionen");
-            CollectionAssert.AreEqual(o.textures.skins.Select(J), D.textures.skins.Select(J), "Skins");
+            CollectionAssert.AreEqual(o.textures.skins.Select(s => s.name + s.kind), D.textures.skins.Select(s => s.name + s.kind), "Skins");
             CollectionAssert.AreEquivalent(o.mesh_bounds.objects.Select(J), D.mesh_bounds.objects.Select(J), "Netzgrenzen");
             var S7 = new EgoSolver(o);
             var S8 = new EgoSolver(D);
@@ -137,6 +148,187 @@ namespace Ballon.Ego.Tests
             var a7 = S7.Evaluate(o.Action("fire_hip"), 12, new EgoState());
             var a8 = S8.Evaluate(A, 12, new EgoState());
             Assert.AreEqual(a7.weapon, a8.weapon, "gleiche Auswertung");
+        }
+
+        /// <summary>0.20 Formatwechsel /8 → /9: der Leser liest die Datei von main (0.19 „Saddle“, Kopie Tests/EditMode/Data/ego_v8.json)
+        /// weiter und setzt Dauerfeuer und keine Zielfernrohr-Regel. Automatik und MP sind in /9 Feld für Feld gleich – Haltungen, Griffe,
+        /// Aktionen, Spielwerte, Teile, Profil, Bewegung (bis auf die neue Regel motion.ads_hide): Automatik und MP unverändert.</summary>
+        [Test]
+        public void Altes_Format_8_wird_gelesen_Automatik_und_MP_unveraendert()
+        {
+            var old = EgoFile.ParseAll(File.ReadAllText("Assets/Ballon/Tests/EditMode/Data/ego_v8.json"));
+            Assert.AreEqual(2, old.Length, "/8 von main: Automatik und MP");
+            string J(object x) => JsonUtility.ToJson(x);
+            foreach (var o in old)
+            {
+                var n = All.Single(d => d.weapon.id == o.weapon.id);
+                Assert.AreEqual(EgoFile.Format8, o.format);
+                Assert.AreEqual("full_auto", o.gameplay.fire_mode, $"{o.weapon.id}: /8 ohne Feuerart → Dauerfeuer");
+                Assert.AreEqual(0f, o.motion.ads_hide.eye_m, "/8: keine Teile im Zielen aus");
+                Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
+                Assert.AreEqual(J(o.weapon), J(n.weapon), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile");
+                Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide), $"{o.weapon.id}: kein Teil mit ads_hide");
+                Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
+                CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
+                CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
+                CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
+                var m = JsonUtility.FromJson<Motion>(J(o.motion));
+                m.ads_hide = n.motion.ads_hide;
+                Assert.AreEqual(J(m), J(n.motion), "Bewegung (ohne die neue Regel ads_hide)");
+            }
+        }
+
+        // ---------------------------------------------------------------- Scout BASIC-03 0.20 (Entscheidungsliste Schritt 6, Visier-Standard 3)
+        /// <summary>Werte der Klasse Scout aus den Daten (ego.CLASSES › scout_rifle, keine Sonderlogik nach Waffen-ID): Einzelfeuer aus der
+        /// Spec, 180/min und 15 Schuss (Tone Patrol), Weltzoom 2,0 (1.2 A), Hüft-Fadenkreuz aus dem Katalog, Anflug 7 Bilder bei 30/s (4d,
+        /// am Unity-Bild 15–20 bei 60/s), aim_out 5; Hüfte und Sprint wie die Automatik (lange Waffe, 2.1 A / 3.2 A); Schussbilder der Clips in
+        /// der Klassenkadenz; die übrigen Aktionen wie die Automatik; Teile mit ads_hide sind Okular, Rohr, Türme, Okularlinse, Spannband.</summary>
+        [Test]
+        public void Werte_des_Scouts()
+        {
+            string J(object x) => JsonUtility.ToJson(x);
+            Assert.AreEqual("scout_rifle", SR.profile.type);
+            Assert.AreEqual("semi_auto", SR.gameplay.fire_mode, "Feuerart aus der Spec (META fire)");
+            Assert.IsTrue(SR.gameplay.Semi);
+            Assert.IsFalse(D.gameplay.Semi || MP.gameplay.Semi, "Automatik und MP: Dauerfeuer");
+            Assert.AreEqual(180, SR.gameplay.rpm);
+            Assert.AreEqual(15, SR.gameplay.magazine);
+            Assert.AreEqual(2.0f, SR.gameplay.world_zoom, 1e-6f, "Weltzoom Scout 2,0 (1.2 A, seit 0.13)");
+            Assert.AreEqual(0.2f, SR.gameplay.zoom_start, 1e-6f, "Zoom ab 20 % des Augenwegs (1d, am Unity-Bild gemessen)");
+            Assert.AreEqual(0f, D.gameplay.zoom_start + MP.gameplay.zoom_start, "Automatik und MP: 5 % wie bisher");
+            Assert.AreEqual("scope", SR.gameplay.sight);
+            Assert.AreEqual("cross", SR.gameplay.hip.kind, "Hüft-Fadenkreuz aus basic/reticles.py (DEFAULTS scout_rifle)");
+            Assert.AreEqual("", SR.gameplay.hip.sprint.kind, "im Sprint aus");
+            Assert.AreEqual(7, SR.Action("aim_in").frames, "aim_in 7 Bilder bei 30/s");
+            Assert.AreEqual(5, SR.Action("aim_out").frames, "aim_out 5 Bilder (Destiny-Scout ADS aus 0,17 s)");
+            CollectionAssert.AreEqual(new[] { 2, 12, 22 }, SR.Action("fire_hip").fire, "180/min = alle 10 Bilder bei 30/s");
+            CollectionAssert.AreEqual(new[] { 2, 12, 22 }, SR.Action("fire_ads").fire);
+            CollectionAssert.AreEqual(new[] { 7, 17 }, SR.Action("sprint_to_fire").fire);
+            foreach (var n in new[] { "hip", "sprint", "crouch", "air", "lowered", "ads", "reload" })
+            {
+                EgoPose a = D.Pose(n), b = SR.Pose(n);
+                Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
+            }
+            StringAssert.Contains("57,0/62,9", SR.Pose("hip").src, "Herkunft der Hüfte am Scout");
+            foreach (var A in SR.actions)
+            {
+                if (new[] { "aim_in", "aim_out", "fire_hip", "fire_ads", "sprint_to_fire" }.Contains(A.name)) continue;
+                var B = D.Action(A.name);
+                Assert.AreEqual(J(B.weapon) + J(B.L) + J(B.R) + J(B.fL) + J(B.fR) + J(B.mech) + J(B.events) + J(B.bob) + B.frames,
+                                J(A.weapon) + J(A.L) + J(A.R) + J(A.fL) + J(A.fR) + J(A.mech) + J(A.events) + J(A.bob) + A.frames, A.name);
+            }
+            Assert.IsTrue(SR.weapon.eject.enabled, "Scout wirft Hülsen aus (Feld EJECT)");
+            Assert.AreEqual("rifle", SR.weapon.eject.@case);
+            Assert.AreEqual("bolt", SR.weapon.live.bolt);
+            CollectionAssert.AreEquivalent(new[] { "scope_eye_trim", "scope_eyepiece", "scope_ocular_glass", "scope_strap", "scope_tube", "scope_turret",
+                                                   "scope_turret_w" }, SR.weapon.parts.Where(p => p.ads_hide).Select(p => p.id), "Teile mit ads_hide");
+            Assert.AreEqual(0.06f, SR.motion.ads_hide.eye_m, 1e-6f, "Augenabstand Okularende 30 mm + near 30 mm");
+        }
+
+        /// <summary>Entscheidungsliste 2.1 A, lange Waffe: Mündung des Scouts im Destiny-Band x 54–59 / y 60–71 % (Destiny-Scout Tone Patrol
+        /// ≈ 57/63), hinteres Okularende 7–34 pp rechts der Mündung, Kontur bis zum rechten und unteren Rand – gemessen wie das Ego-Still.</summary>
+        [Test]
+        public void Hueftlage_des_Scouts_im_Band()
+        {
+            var S = new EgoSolver(SR);
+            var E = new EgoScreen(S);
+            var o = S.Evaluate(S.StillAction("hip"), 0, new EgoState());
+            Vector3 At(string a) => E.ToScreen(o.weapon.MultiplyPoint3x4(V(SR.Anchor(a).pos)));
+            Vector3 m = At("Socket_Muzzle"), s = At("Socket_Sight"), r = At("Socket_Reticle");
+            var pts = new List<Vector2>();
+            E.Silhouette(o, pts, arms: false);
+            TestContext.WriteLine($"Scout-Hüfte: Mündung x {m.x:0.0} / y {m.y:0.0} %, Okularende x {s.x:0.0} / y {s.y:0.0} % ({s.x - m.x:0.0} pp rechts), " +
+                                  $"Absehen x {r.x:0.0} / y {r.y:0.0} %; Waffe x {pts.Min(p => p.x):0.0}–{pts.Max(p => p.x):0.0}, y {pts.Min(p => p.y):0.0}–{pts.Max(p => p.y):0.0} %");
+            Assert.That(m.x, Is.InRange(54f, 59f), "Mündung x (lange Waffen 54–59 %)");
+            Assert.That(m.y, Is.InRange(60f, 71f), "Mündung y (lange Waffen 60–71 %)");
+            Assert.That(s.x - m.x, Is.InRange(7f, 34f), "Okularende 7–34 pp rechts der Mündung");
+            Assert.Greater(pts.Max(p => p.x), 99f, "Kontur reicht bis zum rechten Rand");
+            Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
+        }
+
+        /// <summary>Visier-Standard 3 am Scout in Unity: eine Kamera, das Modell bleibt ungezoomt; im Zielen (Augenpunkt 90 mm hinter dem
+        /// Objektivring, 75°) misst die lichte Öffnung (Objektivlinse) 20–26 % der Bildbreite; Okular, Rohr und Türme (ads_hide) sind im
+        /// Zielen aus und in der Hüfte da; das Absehen chevron liegt auf der Bildmitte; der Weg dorthin: aim_in schaltet einmal um.</summary>
+        [Test]
+        public void Zielfernrohr_Oeffnung_und_Teile_im_Zielen()
+        {
+            var S = new EgoSolver(SR);
+            var E = new EgoScreen(S);
+            var ads = S.Evaluate(S.StillAction("ads"), 0, new EgoState());
+            var hip = S.Evaluate(S.StillAction("hip"), 0, new EgoState());
+            Assert.IsTrue(ads.adsHidden, "Zielen: Teile mit ads_hide aus");
+            Assert.IsFalse(hip.adsHidden, "Hüfte: Zielfernrohr ganz");
+            var g = SR.mesh_bounds.objects.First(b => b.name == "scope_glass");       // Objektivlinse im Waffenrahmen
+            Vector3 c = (V(g.min) + V(g.max)) / 2, hx = new Vector3((g.max[0] - g.min[0]) / 2, 0, 0);
+            Vector3 l = E.ToScreen(ads.weapon.MultiplyPoint3x4(c + hx)), rr = E.ToScreen(ads.weapon.MultiplyPoint3x4(c - hx));
+            float share = Mathf.Abs(l.x - rr.x);
+            Vector3 ret = E.ToScreen(ads.weapon.MultiplyPoint3x4(V(SR.Anchor("Socket_Reticle").pos)));
+            TestContext.WriteLine($"Scout im Zielen: lichte Öffnung {share:0.0} % B (Glas Ø {(g.max[0] - g.min[0]) * 1000:0.0} mm), Absehen x {ret.x:0.00} / y {ret.y:0.00} %");
+            Assert.That(share, Is.InRange(20f, 26f), "Öffnung im Zielen 20–26 % B (Visier-Standard 3, Zielfernrohr)");
+            Assert.AreEqual(50f, ret.x, 0.5f, "Absehen auf der Bildmitte (±0,5 %: Atmen und Feder im Standbild)");
+            Assert.AreEqual(50f, ret.y, 0.5f);
+            Assert.AreEqual("reticle_cyan", SR.Part("sight_reticle").role, "Absehen im Glas Cyan (chevron fein aus reticles.DEFAULTS, Teil des Modells)");
+            Assert.IsFalse(SR.Part("sight_reticle").ads_hide || SR.Part("scope_glass").ads_hide, "Absehen und Objektivlinse bleiben im Zielen");
+            var A = SR.Action("aim_in");
+            var st = new EgoState();
+            var seq = new List<bool>();
+            for (int f = 0; f <= A.frames + 12; f++) seq.Add(S.Evaluate(A, Mathf.Min(f, A.frames), st).adsHidden);
+            int at = seq.IndexOf(true);
+            TestContext.WriteLine($"aim_in (Clip, 30/s): Teile aus ab Bild {at} von {A.frames}");
+            Assert.IsFalse(seq[0]);
+            Assert.Greater(at, 0, "aim_in: Zielfernrohr wird umgeschaltet");
+            Assert.IsTrue(seq.Skip(at).All(x => x), "einmal umschalten, kein Flackern");
+        }
+
+        /// <summary>Einzelfeuer im Clip (0.20, ego.trigger_on): beim Scout wird der Abzug je Schuss gezogen und dazwischen losgelassen (ein
+        /// Zug je Schuss), bei Automatik und MP bleibt er über die ganze Salve gezogen.</summary>
+        [Test]
+        public void Einzelfeuer_im_Clip_ein_Zug_je_Schuss()
+        {
+            foreach (var d in new[] { D, MP, SR })
+            {
+                var S = new EgoSolver(d);
+                var A = d.Action("fire_hip");
+                var st = new EgoState();
+                int pulls = 0;
+                float prev = 0;
+                for (int f = 0; f <= A.frames; f++)
+                {
+                    float t = S.Evaluate(A, f, st).mech[d.weapon.live.trigger];
+                    if (t > 0.5f && prev <= 0.5f) pulls++;
+                    prev = t;
+                }
+                TestContext.WriteLine($"{d.weapon.id}: {A.fire.Length} Schüsse, {pulls} Züge am Abzug");
+                Assert.AreEqual(d.gameplay.Semi ? A.fire.Length : 1, pulls, d.weapon.id);
+            }
+        }
+
+        /// <summary>Entscheidung 97 A (Nutzer 26.10.2026: „A“): Waffenatlanten und Skins je Waffe unter der Grenze (≈ ¼ von BASIC-06 vorher,
+        /// 191 MB), abgelegt nach export_unity.TEXTURE_STORE (albedo JPG 4096, spec PNG 2048, normal PNG 8 bit 4096, ao PNG 2048); Unity
+        /// importiert die Dateien in dieser Größe.</summary>
+        [Test]
+        public void Texturen_je_Waffe_unter_der_Grenze()
+        {
+            foreach (var d in All)
+            {
+                var T = d.weaponTextures;
+                Assert.IsNotNull(T?.store, $"{d.weapon.id}: Ablage (textures.store) fehlt");
+                Assert.AreEqual(4, T.store.Length);
+                Assert.That(T.limit_mb, Is.InRange(1f, 50f), "Grenze ≤ 50 MB je Waffe");
+                var files = new HashSet<string> { T.weapon.albedo, T.weapon.spec, T.weapon.normal, T.weapon.ao };
+                foreach (var s in T.skins) { files.Add(s.albedo); files.Add(s.spec); }
+                long bytes = files.Sum(f => new FileInfo($"{Gen}/Textures/{f}").Length);
+                TestContext.WriteLine($"{d.weapon.id}: {files.Count} Dateien, {bytes / 1e6:0.0} MB (Grenze {T.limit_mb} MB)");
+                Assert.LessOrEqual(bytes / 1e6, T.limit_mb, $"{d.weapon.id}: Texturen über der Grenze");
+                foreach (var st in T.store)
+                {
+                    string f = st.kind == "albedo" ? T.weapon.albedo : st.kind == "spec" ? T.weapon.spec : st.kind == "normal" ? T.weapon.normal : T.weapon.ao;
+                    StringAssert.EndsWith("." + st.ext, f, $"{d.weapon.id} {st.kind}");
+                    var tex = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                    Assert.IsNotNull(tex, f);
+                    Assert.AreEqual(st.size, tex.width, $"{f}: Kantenlänge");
+                }
+            }
         }
 
         // ---------------------------------------------------------------- Ego-Übertrag je Klasse 0.18 (Entscheidungsliste Schritt 6)
@@ -677,11 +869,11 @@ namespace Ballon.Ego.Tests
             int n = 0;
             foreach (var (fbx, A) in new[] { (D.weapon.fbx, D.textures.weapon), (D.arm.fbx, D.textures.arms) })
             {
-                foreach (var f in new[] { A.albedo, A.spec, A.normal, A.ao })
+                foreach (var (kind, f) in new[] { ("albedo", A.albedo), ("spec", A.spec), ("normal", A.normal), ("ao", A.ao) })
                 {
                     var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
                     Assert.IsNotNull(t, f);
-                    Assert.AreEqual(A.size, t.width, f);
+                    Assert.AreEqual(fbx == D.weapon.fbx ? Stored(D, kind) : A.size, t.width, f);   // Waffe: Ablage je Kanal (0.20), Arme: Backgröße
                 }
                 var baked = new HashSet<string>(A.objects);
                 var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{fbx}");
@@ -703,6 +895,10 @@ namespace Ballon.Ego.Tests
             Assert.Greater(n, D.slot == 0 ? 150 : 120, $"{D.weapon.id}: gebackene Netzobjekte (Pilot wie bisher > 150)");
         }
 
+        /// <summary>Kantenlänge, mit der ein Kanal des Waffenatlas abgelegt ist (0.20, textures.store), sonst die Backgröße.</summary>
+        static int Stored(EgoFile D, string kind) =>
+            D.weaponTextures?.store?.FirstOrDefault(s => s.kind == kind)?.size ?? D.textures.weapon.size;
+
         [Test]
         public void Skins_gebacken_mit_Materialien()
         {
@@ -718,16 +914,16 @@ namespace Ballon.Ego.Tests
             foreach (var s in sk)
             {
                 Assert.IsTrue(names.Add(s.name), s.name);
-                foreach (var f in new[] { s.albedo, s.spec })
+                foreach (var (kind, f) in new[] { ("albedo", s.albedo), ("spec", s.spec) })
                 {
                     var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
                     Assert.IsNotNull(t, f);
-                    Assert.AreEqual(D.textures.weapon.size, t.width, f);
+                    Assert.AreEqual(Stored(D, kind), t.width, f);
                 }
                 if (s.name == "standard") continue;
                 var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{D.atlas}_{s.name}.mat");
                 Assert.IsNotNull(m, s.name);
-                Assert.AreEqual(s.albedo, m.GetTexture("_BaseMap").name + ".png", s.name);
+                Assert.AreEqual(Path.GetFileNameWithoutExtension(s.albedo), m.GetTexture("_BaseMap").name, s.name);
                 Assert.IsNotNull(m.GetTexture("_BumpMap"), s.name + ": Normale wie Standard");
             }
         }
@@ -846,6 +1042,7 @@ namespace Ballon.Ego.Tests
                     checks++;
                 }
                 Assert.AreEqual(fx, (o.flashOn ? 1 : 0) + o.shellCount, $"{s.label}: Blitz/Hülsen sichtbar in Unity, nicht in Blender");
+                Assert.AreEqual(s.ads_hidden, o.adsHidden, $"{s.label}: Zielfernrohr-Teile (ads_hide) wie Blender");
             }
             foreach (var s in R.samples.Where(s => s.label.StartsWith("still:")))
                 Compare(s, S.Evaluate(S.StillAction(s.label.Substring(6)), 0, new EgoState()));

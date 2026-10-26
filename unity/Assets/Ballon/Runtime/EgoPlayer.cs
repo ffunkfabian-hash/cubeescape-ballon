@@ -79,7 +79,7 @@ namespace Ballon.Ego
             public int skin;
         }
 
-        public EgoArsenal arsenal;                  // Waffen (Tasten 1/2, Q), je Waffe ein Controller
+        public EgoArsenal arsenal;                  // Waffen (Tasten 1/2/3, Q), je Waffe ein Controller
         public Loadout[] loadouts;
         public EgoController C => arsenal.Current;  // aktive Waffe
         public EgoRig rig => loadouts[arsenal.Active].rig;
@@ -124,7 +124,7 @@ namespace Ballon.Ego
         public string lightLabel;        // gezeigte Lichtszene (null im Parcours)
         int _lightCount;
         const string HelpA = "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
-                             "F Betrachten · 1/2 Waffe (Q wechseln) · K Skin · ";
+                             "F Betrachten · 1/2/3 Waffe (Q wechseln) · K Skin · ";
         const string HelpB = "Esc Maus frei · H Anzeige";
         string _help = HelpA + HelpB;
 

@@ -399,6 +399,22 @@ namespace Ballon.Ego
             .Add(4.8f, 6.6f, hold: "sprint", move: new Vector2(0, 1))
             .Add(6.6f, 7.6f);
 
+        /// <summary>Beleg 0.20 (Scout): Automatik in der Hüfte, Taste 3 (Wegstecken, leere Sicht, Ziehen), Scout in der Hüfte mit einem
+        /// Schuss, Zielen durchs Zielfernrohr mit drei Einzelschüssen, zurück in die Hüfte, Sprint, Hüfte; 8,6 s.</summary>
+        public static ScriptedInput SpotterScript() => new ScriptedInput()
+            .Add(0.0f, 0.8f)
+            .Add(0.8f, 0.85f, press: "weapon3")
+            .Add(0.85f, 2.0f)
+            .Add(2.0f, 2.05f, hold: "fire")
+            .Add(2.05f, 2.6f)
+            .Add(2.6f, 5.4f, hold: "aim")
+            .Add(3.4f, 3.45f, hold: "aim fire")
+            .Add(4.0f, 4.05f, hold: "aim fire")
+            .Add(4.6f, 4.65f, hold: "aim fire")
+            .Add(5.4f, 6.0f)
+            .Add(6.0f, 7.8f, hold: "sprint", move: new Vector2(0, 1))
+            .Add(7.8f, 8.6f);
+
         /// <summary>Rückstoß (0.15, 5.1 A / 5.2 A): Viererstoß aus der Hüfte, dann im Zielen zwei Viererstöße und ein langer Stoß
         /// (12 Schuss); die Welt wandert, das Visier steht; 6,6 s.</summary>
         public static ScriptedInput RecoilScript() => new ScriptedInput()
@@ -429,7 +445,7 @@ namespace Ballon.Ego
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
             var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript()
                      : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript()
-                    : dn == "quickdraw" ? QuickdrawScript() : DemoScript();
+                    : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = dn == "rueckstoss" || dn == "feuer" ? Player.C.magSize : 9;

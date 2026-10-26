@@ -12,6 +12,7 @@
   python3 tools/unity_run.py sprint|wechsel|rueckstoss → Belege 0.15: Sprint-Hub und Sprint → Zielen, Waffenwechsel, Rückstoß im Zielen
   python3 tools/unity_run.py feuer → Beleg 0.16: Mündungsfeuer und Hülsen aus der Hüfte und im Zielen
   python3 tools/unity_run.py quickdraw → Beleg 0.18: Automatik Hüfte/Zielen, Taste 2 → MP, MP Hüfte/Zielen/Sprint
+  python3 tools/unity_run.py spotter   → Beleg 0.20: Automatik, Taste 3 → Scout, Hüfte, Zielfernrohr mit Einzelfeuer, Sprint
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
@@ -104,8 +105,9 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'wechsel': 'BALLON 0.15 Plumb · Unity · Waffenwechsel (Q): Wegstecken 0,27 s, leere Sicht, Ziehen mit Nachfedern',
          'rueckstoss': 'BALLON 0.15 Plumb · Unity · Rückstoß: Hüfte, im Zielen Viererstöße und 12er-Stoß – Welt wandert, Visier steht',
          'feuer': 'BALLON 0.16 Flash · Unity · Mündungsfeuer (1 Bild bei 30/s) und Hülsen: Hüfte und Zielen',
-         'quickdraw': 'BALLON 0.18 Quickdraw · Unity · Automatik → Taste 2 → MP: Hüfte, Zielen (Anflug 4d), Sprint (tief, nach links gerollt)'}
-WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1'}          # Taste → Waffe (tools/export_unity.WEAPONS)
+         'quickdraw': 'BALLON 0.18 Quickdraw · Unity · Automatik → Taste 2 → MP: Hüfte, Zielen (Anflug 4d), Sprint (tief, nach links gerollt)',
+         'spotter': 'BALLON 0.20 Spotter · Unity · Taste 3 → Scout: Hüfte, Zielfernrohr (Weltzoom 2,0), Einzelfeuer, Sprint'}
+WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1'}   # Taste → Waffe (tools/export_unity.WEAPONS)
 
 
 def capture(scene=None, demo=None):
