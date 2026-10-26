@@ -75,7 +75,8 @@ SIGHT = dict(height_mm=66.0, height_tol_mm=4.0, viewmodel_zoom=1.0, fov_ref_deg=
                                        note='eigene Kontur je Waffe, außen schwarz')})
 # Visier-Standard 3, Erweiterung 0.21 „Ironsight“ (Nutzerwahl 26.10.2026, docs/visier-konzept.md › 7 Punkte 3–4: „Tiefer, Schiene + 11 mm“,
 # Größen „Zulassen für MG/Werfer“):
-# - Visierlinie über der Schienenoberkante (BRI-22): Holo und Zielfernrohr auf der H0-Plattform Schiene + 26 mm (Visierhöhe 66 ± 4 gilt);
+# - Visierlinie über der Schienenoberkante (BRI-22): Holo auf der H0-Plattform Schiene + 26 mm (Visierhöhe 66 ± 4 gilt); Zielfernrohre
+#   nach Konzept A (Sattel hinter dem Auge, Fuß unter dem Objektiv, zwei Schienen auf eigener Höhe) richten sich nur nach der Visierhöhe;
 #   Kimme/Korn (Handfeuerwaffe, Seitenwaffe, Schrot) Schiene + 11 mm und Mini-Reflex Schiene + 15 mm – dort gilt die Visierhöhe nicht.
 # - Größen außerhalb des Standards sind zugelassene Varianten mit Grenzen: Holo L nur an MG und Werfern bis 25 % Bildbreite,
 #   Zielfernrohr S ab 17 %. Standard je Typ bleibt Größe M.

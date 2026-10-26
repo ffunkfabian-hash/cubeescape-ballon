@@ -90,7 +90,8 @@ def doc():
             L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
     R = S['rail_line_mm']
     L += ['', f"**Erweiterung 0.21 „Ironsight“** (Nutzerwahl 26.10.2026, `docs/visier-konzept.md` › 7): Visierlinie über der "
-          f"Schienenoberkante (BRI-22) – Holo und Zielfernrohr auf der H0-Plattform + {R['holo']:g} mm (Visierhöhe gilt), Mini-Reflex "
+          f"Schienenoberkante (BRI-22) – Holo auf der H0-Plattform + {R['holo']:g} mm (Visierhöhe gilt; Zielfernrohre nach Konzept A mit zwei Schienen "
+          f"auf eigener Höhe richten sich nur nach der Visierhöhe), Mini-Reflex "
           f"+ {R['mini_reflex']:g} mm ({', '.join(S['line_exempt']['mini_reflex'])}), Kimme/Korn + {R['iron']:g} mm "
           f"({', '.join(S['line_exempt']['iron'])}); für die beiden letzten gilt die Visierhöhe {S['height_mm']:.0f} ± "
           f"{S['height_tol_mm']:.0f} mm nicht. Zielfernrohre sitzen nach Konzept A: Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, "

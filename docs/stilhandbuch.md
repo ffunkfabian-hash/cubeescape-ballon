@@ -205,7 +205,8 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
      optional) und 75° Bezugsbildwinkel: Holo 12–20 %, Zielfernrohr 20–26 % der Bildbreite
      (Holo-Fenster 26 × 20 mm, Objektivlinse Ø 28 mm), gemessen als lichte Öffnung im echten Abstand; zugelassene Varianten mit
      Grenzen: Holo L bis 25 % nur an MG und Werfern, Zielfernrohr S ab 17 %; `./check` prüft Anteil, Höhe 66 ± 4 mm und Augenabstand,
-     `tools/test_sights.py` jedes gebaute Visier in S/M/L. **Visierlinie:** Schiene + 26 mm (Holo, Zielfernrohr), Mini-Reflex
+     `tools/test_sights.py` jedes gebaute Visier in S/M/L. **Visierlinie:** Schiene + 26 mm (Holo auf der H0-Plattform; Zielfernrohre nach
+     Konzept A haben zwei Schienen auf eigener Höhe und richten sich nur nach der Visierhöhe 66 ± 4), Mini-Reflex
      Schiene + 15 mm, Kimme/Korn Schiene + 11 mm (≈ 51 mm über dem Lauf; dort gilt die Visierhöhe nicht).
   4. **Eine Kamera:** das Glas zeigt dasselbe Weltbild (kein eigenes Linsenbild); Waffenmodell ungezoomt, Weltzoom je Klasse als
      Bildmaßstab; Zielfernrohr-Rohr, Okular und Türme `ads_hide`.

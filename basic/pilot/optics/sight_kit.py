@@ -21,7 +21,7 @@ from basic.common import HOLO_SIZES, SCOPE_SIZES, SIGHT_T as T, SIGHT_MAT as MET
 from basic.reticles import SIGHT
 
 TOP, DECK = 135, 143                    # Gehäuseoberkante, Schienenoberkante (wie BASIC-01)
-CU = C.sight_line(DECK)                 # Visierlinie u 169 wie BASIC-01 (Schiene + 26)
+CU = C.sight_line(DECK)                 # Visierlinie u 169 wie BASIC-01 (Schiene + 26; Prüfkörper: Zielfernrohre auf derselben Schiene)
 CU_IRON = C.sight_line(DECK, 'iron')    # Kimme/Korn: eigene, tiefe Linie Schiene + 11 (Kritik: sonst „Türme“)
 CU_MINI = C.sight_line(DECK, 'mini_reflex')   # Mini-Reflex (Seitenwaffe, Handfeuerwaffe) Schiene + 15
 BORE = CU - 66

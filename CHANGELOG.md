@@ -7,7 +7,7 @@
   gebaut H0 (BASIC-01, unverändert bis aufs Absehen), H4 „Kasten“ (BASIC-02), H2 „Pille“ (BASIC-06, 19 × 23 mm wegen Mündungsfeuer ≤ 20 %, gemessen in der Pillenkontur),
   Z1 „Tropfen“ (BASIC-03) mit Sitz nach Konzept A (Wiege hinter dem Auge, Klemmfuß unter dem Objektiv, Ring 1,29 ohne Wulst).
   `sight_kit.py` nutzt dieselben Bausteine (25 Visiere im Katalogblatt v3).
-- Visier-Standard 3 erweitert: Visierlinien Schiene + 26/15/11 mm (Holo/Mini-Reflex/Kimme-Korn), Varianten Holo L (MG/Werfer ≤ 25 %) und
+- Visier-Standard 3 erweitert: Visierlinien Schiene + 26/15/11 mm (Holo-Plattform/Mini-Reflex/Kimme-Korn; Zielfernrohr nach Visierhöhe), Varianten Holo L (MG/Werfer ≤ 25 %) und
   Zielfernrohr S (≥ 17 %), Öffnung als lichte Öffnung im echten Abstand; Stilhandbuch § 4/§ 6, `absehen.md`, Entscheidungsliste 1.1.
 - Abriebmaske (Nutzerwahl A): Rolle `sight_anod` für alle Visierteile, Messradius 1,2 mm, ohne feine Kratzer; Leuchtrolle `sight_line`.
 - Prüfungen: neu `tools/test_sights.py` (Öffnung je Visier und Größe, Ring 1,29, Absehen flach, Kimme-Linie), `test_sight_seat.py` auf

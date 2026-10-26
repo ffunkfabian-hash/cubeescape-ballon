@@ -121,7 +121,7 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 | `scope` | Zielfernrohr | 90 mm | `Socket_Objective` | +0.8 | 20–26 % | 0.15 × Öffnung | glass |
 | `fullscreen` | Vollbild (Scharfschütze) | – | – | – | – | – | overlay: eigene Kontur je Waffe, außen schwarz |
 
-**Erweiterung 0.21 „Ironsight“** (Nutzerwahl 26.10.2026, `docs/visier-konzept.md` › 7): Visierlinie über der Schienenoberkante (BRI-22) – Holo und Zielfernrohr auf der H0-Plattform + 26 mm (Visierhöhe gilt), Mini-Reflex + 15 mm (hand_cannon, sidearm), Kimme/Korn + 11 mm (hand_cannon, sidearm, shotgun); für die beiden letzten gilt die Visierhöhe 66 ± 4 mm nicht. Zielfernrohre sitzen nach Konzept A: Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, Ring ohne Wulst (außen/innen 1,29). Öffnung im Zielen = lichte Öffnung (Scheibe bzw. Objektivlinse) im echten Abstand zum Augenpunkt.
+**Erweiterung 0.21 „Ironsight“** (Nutzerwahl 26.10.2026, `docs/visier-konzept.md` › 7): Visierlinie über der Schienenoberkante (BRI-22) – Holo auf der H0-Plattform + 26 mm (Visierhöhe gilt; Zielfernrohre nach Konzept A mit zwei Schienen auf eigener Höhe richten sich nur nach der Visierhöhe), Mini-Reflex + 15 mm (hand_cannon, sidearm), Kimme/Korn + 11 mm (hand_cannon, sidearm, shotgun); für die beiden letzten gilt die Visierhöhe 66 ± 4 mm nicht. Zielfernrohre sitzen nach Konzept A: Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, Ring ohne Wulst (außen/innen 1,29). Öffnung im Zielen = lichte Öffnung (Scheibe bzw. Objektivlinse) im echten Abstand zum Augenpunkt.
 
 | Visiertyp | zugelassene Variante | Öffnung im Zielen | nur an |
 |---|---|---|---|
