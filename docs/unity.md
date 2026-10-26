@@ -34,7 +34,7 @@ python3 tools/unity_run.py course tag       # Vorführlauf durch den Hangar-Parc
 open unity/Build/BallonFirstfeel.app        # spielen
 ```
 
-Alle Unity-Läufe gehen über `ce lock unity`. Protokolle, Testergebnisse und Belege liegen unter
+Vor einem Unity-Lauf lässt sich C# in einer Sekunde prüfen: `dotnet build` eines Wegwerf-csproj (außerhalb des Repos) gegen `Unity.app/Contents/Resources/Scripting/Managed/UnityEngine/*.dll`, `unity/Library/ScriptAssemblies/*.dll` und NUnit aus `Library/PackageCache` (0.20). Alle Unity-Läufe gehen über `ce lock unity`. Protokolle, Testergebnisse und Belege liegen unter
 `~/Library/Caches/CubeEscapeBallon/unity/`. Nach jeder Änderung an `basic/arms/*.py` oder der Pilotwaffe den Export wiederholen,
 danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuerst `cp -cR <Hauptprojekt>/unity/Library unity/Library`
 (bei beendetem Unity; APFS-Klon, Sekunden), sonst importiert der erste Lauf das ganze Projekt neu.
