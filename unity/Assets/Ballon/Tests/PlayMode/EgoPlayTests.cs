@@ -463,6 +463,19 @@ namespace Ballon.Ego.Tests
             Assert.GreaterOrEqual(gap, want - 1e-4f, "der zweite nach dem Schussabstand");
             Assert.Less(gap, want + 2 * Dt, "… und nicht später");
             Assert.AreEqual(SR.gameplay.magazine - 8, c.ammo, "acht Schüsse");
+            // Richter 0.20: kurzer Klick bei gehaltenem Sprint – der Schuss fällt nach sprint_to_fire, danach wieder Sprint
+            var sprint = new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f };
+            for (int j = 0; j < 60; j++, k++) c.Tick(Dt, sprint);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance, "im Sprint");
+            at.Clear();
+            var tap = sprint;
+            tap.fire = true;
+            c.Tick(Dt, tap); k++;
+            for (int j = 0; j < 45; j++, k++) c.Tick(Dt, sprint);
+            TestContext.WriteLine($"Scout: Klick im Sprint → {at.Count} Schuss nach {(at.Count > 0 ? at[0] - (k - 46) : -1)} Bildern, danach {c.CurrentStance}");
+            Assert.AreEqual(1, at.Count, "kurzer Klick im Sprint: ein Schuss");
+            for (int j = 0; j < 40; j++, k++) c.Tick(Dt, sprint);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance, "danach wieder Sprint");
             foreach (var d in new[] { D, MP })                                          // Dauerfeuer unverändert
             {
                 var a = new EgoController(new EgoSolver(d));

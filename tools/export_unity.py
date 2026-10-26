@@ -479,24 +479,37 @@ def store_main():
     return 0
 
 
-def texture_problems(D):
-    """Abweichungen der abgelegten Waffentexturen von TEXTURE_STORE (Dateiendung, Kantenlänge, Summe je Waffe ≤ limit_mb)."""
+def texture_problems(D, tex_dir=None, store=None):
+    """Abweichungen der abgelegten Waffentexturen von TEXTURE_STORE: je Datei (Atlas und Skins) Endung, Kantenlänge, 8 bit (AO ein Kanal),
+    Summe je Waffe ≤ limit_mb. tex_dir/store: für tools/test_texture_store.py."""
     bad = []
-    tex_dir = os.path.join(DST, 'Textures')
+    tex_dir = tex_dir or os.path.join(DST, 'Textures')
+    R = store or TEXTURE_STORE
     for e in D.get('weapons', []):
         T = e.get('textures')
         if not T:
             continue
-        for k in ('albedo', 'spec', 'normal', 'ao'):
-            if not T['weapon'][k].endswith('.' + TEXTURE_STORE[k]['ext']):
-                bad.append(f"{e['id']} {k} {T['weapon'][k]} statt .{TEXTURE_STORE[k]['ext']}")
-        missing = [f for f in texture_files(T) if not os.path.exists(os.path.join(tex_dir, f))]
-        if missing:
-            bad.append(f"{e['id']}: fehlt {', '.join(missing[:3])}")
+        files = [(k, T['weapon'][k]) for k in ('albedo', 'spec', 'normal', 'ao')]
+        files += [(k, s[k]) for s in T.get('skins', []) for k in ('albedo', 'spec')]
+        seen = set()
+        for k, f in files:
+            if f in seen:
+                continue
+            seen.add(f)
+            p = os.path.join(tex_dir, f)
+            if not f.endswith('.' + R[k]['ext']):
+                bad.append(f"{e['id']} {k} {f} statt .{R[k]['ext']}")
+            elif not os.path.exists(p):
+                bad.append(f"{e['id']}: fehlt {f}")
+            else:
+                w, z, ch = _identify(p)
+                if w != R[k]['size'] or z != 8 or (k == 'ao' and not ch.startswith('gray')):
+                    bad.append(f"{e['id']} {k} {f}: {w}² {z} bit {ch} statt {R[k]['size']}² 8 bit")
+        if any(b.startswith(f"{e['id']}: fehlt") for b in bad):
             continue
-        mb = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in texture_files(T)) / 1e6
-        if mb > TEXTURE_STORE['limit_mb']:
-            bad.append(f"{e['id']}: Texturen {mb:.1f} MB > {TEXTURE_STORE['limit_mb']:g} MB")
+        mb = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in seen if os.path.exists(os.path.join(tex_dir, f))) / 1e6
+        if mb > R['limit_mb']:
+            bad.append(f"{e['id']}: Texturen {mb:.1f} MB > {R['limit_mb']:g} MB")
     return bad
 
 

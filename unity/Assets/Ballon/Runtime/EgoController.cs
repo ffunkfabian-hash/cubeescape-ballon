@@ -453,7 +453,7 @@ namespace Ballon.Ego
                     Play("sprint_to_fire", stance: Stance.Hip, onEnd: _onReady);
                     _stance = Stance.Hip;
                 }
-                else if (_t.stance.HasValue || _t.ended)
+                else if ((_t.stance.HasValue || _t.ended) && !SemiShotWaits)
                 {
                     var w = Wanted(i);
                     if (w != _stance) EnterStance(w, i);
@@ -466,6 +466,10 @@ namespace Ballon.Ego
             UpdateLive(dt, i);
             return Compose();
         }
+
+        /// <summary>Einzelfeuer aus dem Sprint (Richter 0.20): ein kurzer Klick bei gehaltenem Sprint wartet in sprint_to_fire auf den Marker
+        /// „Fire“; ohne diese Sperre wählte Wanted() nach dem Loslassen wieder den Sprint und der Zug verfiel ohne Schuss.</summary>
+        bool SemiShotWaits => _semiQueue > 0 && _t.A.name == "sprint_to_fire" && !_t.ended && ammo > 0;
 
         void StartReload(EgoIntent i)
         {
