@@ -732,25 +732,26 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-25",
-      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet"
+      "date": "2026-10-26",
+      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet; 0.19 „Saddle“ (Entscheidungsliste 1.1 A): Rohr auf Gehäusebuckel – Workbench-Skizze, dann volles Rendering (hero_p, side_left, exploded, ego, part_sight, sightline, top, front, 8 Skins) und Zielbild rohr_ziel neben dem Stand von main; erster Durchlauf zeigte das Spannband im Zielen als Ring vor dem Objektiv → eigenes Teil scope_strap mit ads_hide, neu gerendert, danach ohne Befund"
     },
     "actions": {
       "fire_semi": {
         "status": "geprüft",
         "by": "Claude",
         "date": "2026-10-24",
-        "method": "Bildfolge motion/fire_semi, Bilder 0/3: Abzug, Verschluss zurück, Auswurfklappe offen"
+        "method": "Bildfolge motion/fire_semi, Bilder 0/3: Abzug, Verschluss zurück, Auswurfklappe offen; 0.19: Bildfolge mit Buckel neu gerendert (Bewegung unverändert)"
       },
       "reload_empty": {
         "status": "geprüft",
         "by": "Claude",
         "date": "2026-10-24",
-        "method": "Bildfolge motion/reload_empty, Bilder 0/20/62: Magazin heraus und wieder eingesetzt"
+        "method": "Bildfolge motion/reload_empty, Bilder 0/20/62: Magazin heraus und wieder eingesetzt; 0.19: Bildfolge mit Buckel neu gerendert (Bewegung unverändert)"
       }
     },
     "notes": [
-      "Formskizze: ~/Library/Caches/CubeEscapeBallon/sketch/BASIC-03-v2.1_skizze.blend"
+      "Formskizze: ~/Library/Caches/CubeEscapeBallon/sketch/BASIC-03-v2.1_skizze.blend",
+      "0.19 „Saddle“: Vorher/Nachher ~/Library/Caches/CubeEscapeBallon/saddle/vorher_nachher.png, Sichtung saddle/nachher_sichtung.png"
     ],
     "messungen": {
       "date": "2026-10-25",
@@ -771,6 +772,50 @@
         "destiny": "1,28–1,30",
         "abweichung": "Innenkante +0,01 bis +0,03; Glas +0,26 bis +0,28",
         "beleg": "~/Library/Caches/CubeEscapeBallon/messen/belege/1a_scout_ring_raster.png"
+      }
+    },
+    "messungen_0_19": {
+      "date": "2026-10-26",
+      "by": "Claude (BALLON 0.19 „Saddle“)",
+      "ref": "docs/entscheidungsliste-motiongen.md › 1a, 1b; docs/versions/0.19-saddle.md",
+      "1b_visier_ueber_gehaeuse": {
+        "methode": "tools/test_sight_seat.py am gebauten Netz (Fasen, Durchbrüche): senkrechte Strahlen bei x = 0 alle 0,5 mm entlang scope_tube; Gehäuse = Baugruppe receiver; L = Modelllänge",
+        "vorher": {
+          "stand": "main 96f13e4",
+          "spalt_mm": "21,5–25,5",
+          "auflage_mm": 0,
+          "gehaeuse_oben_mm": 130.0,
+          "visier_oben_mm": 181.95,
+          "visier_ueber_gehaeuse_mm": 51.95,
+          "visier_ueber_gehaeuse_L": 0.051,
+          "visierbaugruppe_hoehe_mm": 57,
+          "visierhoehe_mm": 65.0
+        },
+        "nachher": {
+          "spalt_mm": "0,33 (min)",
+          "auflage_mm": 57.5,
+          "gehaeuse_oben_mm": 151.2,
+          "visier_oben_mm": 181.95,
+          "visier_ueber_gehaeuse_mm": 30.75,
+          "visier_ueber_gehaeuse_L": 0.03,
+          "visierbaugruppe_hoehe_mm": 42,
+          "visierhoehe_mm": 65.0
+        },
+        "destiny": "0,02–0,04 L; Rohr direkt auf der Gehäuseoberkante",
+        "hinweis": "höchster Punkt ist die Fasenwulst des Objektivtrichters (r 21 mm); ohne sie 26,3 mm = 0,026 L"
+      },
+      "1a_scout_ring": {
+        "methode": "sight_options.py rohr_ziel.png (960x540, Kamera im Augenpunkt 90 mm, 75°), tools/messen_bild.py ring Zeile 270 – wie 25.10.",
+        "aussen_px": 322,
+        "ringinnenkante_px": 246,
+        "lichtes_glas_px": 207,
+        "aussen_durch_ringinnenkante": 1.31,
+        "aussen_durch_glas": 1.56,
+        "unsicherheit": "±0,02 (±2 px je Kante)",
+        "destiny": "1,28–1,30",
+        "abweichung": "Innenkante +0,01 bis +0,03; Glas +0,26 bis +0,28",
+        "befund": "gleich wie vorher (Ring nicht geändert, Kontrollrender von main ebenfalls 322/246/207 px). Die äußere Kante im Bild ist die Fasenwulst des Objektivtrichters (gerechnet r ≈ 21 mm bei 84,5 mm Abstand), nicht scope_rim (16,5 mm)",
+        "beleg": "~/Library/Caches/CubeEscapeBallon/saddle/nachher/sight_options/rohr_ziel.png"
       }
     }
   },

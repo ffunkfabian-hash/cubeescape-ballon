@@ -78,7 +78,7 @@ SIGHT_KIND = {'auto_rifle': 'holo', 'submachine_gun': 'holo', 'trace_rifle': 'ho
               'sidearm': 'irons_brackets', 'shotgun': 'irons_brackets', 'sniper_rifle': 'fullscreen', 'fusion_rifle': 'ring',
               'grenade_launcher': 'lens_chevron', 'rocket_launcher': 'lens_chevron', 'combat_bow': 'arrow_tip', 'sword': None,
               'glaive': None}
-SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr auf Trapezhals',
+SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse',
                  'irons_brackets': 'Kimme und Korn mit leuchtenden Klammern', 'fullscreen': 'Zielfernrohr außen, im Zielen Vollbild',
                  'ring': 'Ring oder Doppelring', 'lens_chevron': 'runde Linse mit Winkel', 'arrow_tip': 'Pfeilspitze, kein Visier',
                  None: 'kein Visier'}
