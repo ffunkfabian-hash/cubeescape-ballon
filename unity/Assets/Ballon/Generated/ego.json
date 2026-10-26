@@ -38,13 +38,14 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "cd6fbba917cfee135d50ae0ee20a344f8fcb691b14a5884cd369a13e46edd739"
+    "sha256": "172a93590336bcf9e09f3626af217a3b0471fa2859e35854ecdbed1008f2df14"
    },
    {
     "path": "tools/bake_unity.py",
     "sha256": "60d98b4b88509d66d76d35915382c3bf1f3b372a5e5d68a8b65e8b190c008fc7"
    }
-  ]
+  ],
+  "parts_sha256": "824f462fc38220d3b441e807db4b4f3518784099cc6fc6d2af469dfe1b108d8f"
  },
  "axes": {
   "to_unity": [

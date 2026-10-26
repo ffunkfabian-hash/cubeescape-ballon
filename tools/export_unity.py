@@ -198,7 +198,8 @@ def data():
             'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py', 'tools/blender_build.py', 'tools/export_unity.py',
             'tools/bake_unity.py']
     sources = dict(de='SHA-256 der Generatorquellen beim Export; --check meldet auch reine Formänderungen',
-                   files=[dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in srcs])
+                   files=[dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in srcs],
+                   parts_sha256=parts_sha(W))
     used = sorted({p['role'] for p in weapon['parts']} | {p['role'] for p in arm['pieces']} | {EG.EJECT['role']})
     for k, F in EG.FLASH['roles'].items():          # Leuchtrollen des Mündungsfeuers stehen in ego.FLASH (reine Emission wie Absehen)
         roles[k] = dict(color=F['color'], rough=0.3, metal=0.0, emit=F['emit'], emit_only=True, spec=0.0, de=F['de'])
@@ -244,11 +245,41 @@ def data_only_allowed(D):
         return None, f"altes ego.json ({old.get('format')}) ohne Atlanten oder Netzgrenzen"
     was = {f['path']: f['sha256'] for f in old.get('sources', {}).get('files', [])}
     changed = [f['path'] for f in D['sources']['files'] if f['path'] not in MOTION_SOURCES and was.get(f['path']) != f['sha256']]
-    if changed == [WEAPON_SRC]:
-        return old, 'bounds'           # nur das Waffenmodul (z. B. Anker, EJECT): erlaubt, wenn die Netze gleich bleiben (blender_main)
+    if changed == [WEAPON_SRC]:        # nur das Waffenmodul: erlaubt, wenn der Bauteil-Entwurf gleich ist (Form, Material, Bewegung; z. B.
+        want = old['sources'].get('parts_sha256') or parts_sha_at(WEAPON_SRC, was.get(WEAPON_SRC))   # nur EJECT neu) und die
+        if want is None:                                                                              # Netze gleich bleiben
+            return None, f'{WEAPON_SRC} geändert, Bauteil-Entwurf des letzten Exports nicht auffindbar'
+        if want != D['sources']['parts_sha256']:
+            return None, f'{WEAPON_SRC}: Bauteile geändert (Form, Material oder Bewegung)'
+        return old, 'bounds'           # dazu Netzgrenzen in blender_main (Richter 0.16: Grenzen allein beweisen keine gleiche Geometrie)
     if changed:
         return None, 'Form- oder Materialquellen geändert: ' + ', '.join(changed)
     return old, None
+
+
+def parts_sha(W):
+    """SHA-256 des Bauteil-Entwurfs der Waffe (PARTS und ASSEMBLIES: Form, Materialrolle, Bewegung) ohne Anker und Datenfelder wie EJECT."""
+    return hashlib.sha256(json.dumps(dict(parts=W.PARTS, assemblies=W.ASSEMBLIES), sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+def parts_sha_at(path, sha):
+    """parts_sha der Fassung von path, deren Datei-SHA-256 sha ist (aus der Git-Geschichte; für ego.json ohne parts_sha256), sonst None."""
+    import subprocess
+    import importlib.util
+    import tempfile
+    revs = subprocess.run(['git', '-C', ROOT, 'log', '--format=%H', '--', path], capture_output=True, text=True).stdout.split()
+    for rev in revs:
+        body = subprocess.run(['git', '-C', ROOT, 'show', f'{rev}:{path}'], capture_output=True).stdout
+        if hashlib.sha256(body).hexdigest() != sha:
+            continue
+        with tempfile.NamedTemporaryFile('wb', suffix='.py', delete=False) as fh:
+            fh.write(body)
+        spec = importlib.util.spec_from_file_location('_weapon_at_export', fh.name)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        os.unlink(fh.name)
+        return parts_sha(mod)
+    return None
 
 
 def mesh_bounds():
