@@ -394,6 +394,9 @@ def write_reference(path, ref):
                  + ', "samples": [\n' + ',\n'.join(json.dumps(s, separators=(',', ':')) for s in ref['samples']) + '\n]}\n')
 
 
+HAS_MAGICK = __import__('shutil').which('magick') is not None
+
+
 def _identify(path):
     """(Breite, Bit je Kanal, Kanäle) einer Bilddatei (ImageMagick)."""
     import subprocess
@@ -501,7 +504,7 @@ def texture_problems(D, tex_dir=None, store=None):
                 bad.append(f"{e['id']} {k} {f} statt .{R[k]['ext']}")
             elif not os.path.exists(p):
                 bad.append(f"{e['id']}: fehlt {f}")
-            else:
+            elif HAS_MAGICK:                        # Kantenlänge und Bittiefe brauchen ImageMagick (PR-Check auf Linux ohne: nur Mac)
                 w, z, ch = _identify(p)
                 if w != R[k]['size'] or z != 8 or (k == 'ao' and not ch.startswith('gray')):
                     bad.append(f"{e['id']} {k} {f}: {w}² {z} bit {ch} statt {R[k]['size']}² 8 bit")
@@ -550,6 +553,8 @@ def check():
             diff.append(e['reference'])
     if any(k not in cur for k in BAKED):
         diff.append('textures/mesh_bounds (Arme)')
+    if not HAS_MAGICK:
+        print('Hinweis: ImageMagick fehlt – Kantenlänge und Bittiefe der Waffentexturen nur auf dem Mac geprüft (Endung, Vollständigkeit, Grenze hier)')
     tex_bad = texture_problems(cur)
     if tex_bad:
         print('Waffentexturen nicht nach TEXTURE_STORE (' + '; '.join(tex_bad[:6]) + '): python3 tools/export_unity.py --store-textures')

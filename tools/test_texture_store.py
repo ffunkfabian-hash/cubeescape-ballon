@@ -18,6 +18,12 @@ def make(path, size, depth=8, alpha=False):
 
 
 def main():
+    if not XU.HAS_MAGICK:
+        if os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux ohne ImageMagick 7: Texturprüfungen nur auf dem Mac
+            print('Hinweis: magick fehlt im PR-Check – test_texture_store nur auf dem Mac')
+            return 0
+        print('test_texture_store: magick (ImageMagick 7) fehlt')
+        return 1
     err = []
     store = json.loads(json.dumps(XU.TEXTURE_STORE))
     for k, v in (('albedo', 64), ('spec', 32), ('normal', 64), ('ao', 32)):
