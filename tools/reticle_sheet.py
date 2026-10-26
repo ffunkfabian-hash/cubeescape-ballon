@@ -5,7 +5,7 @@ im Familienvisier (reflex_sight_v21), Blick durch das Glas; dazu ein Clip, wie A
 
 Ausgabe: <OUT>/reticles/{kind,color,weight}_<id>.png; mit --spread <OUT>/reticles/spread/<kind>/####.png und
 <EVIDENCE>/clips/reticle_spread.mp4 (Spreizung aus reticles.simulate, Profil 'auto', 10 Schuss mit 600/min); Katalogblatt mit `python3 tools/reticle_sheet.py --sheet` (ImageMagick, ohne Blender)
-→ <EVIDENCE>/reticles.png
+→ <EVIDENCE>/reticles.png; Hüftformen (0.13) mit `python3 tools/reticle_sheet.py --hip` → <EVIDENCE>/hip_reticles.png (SVG, ohne Blender)
 """
 import os
 import subprocess
@@ -112,6 +112,63 @@ def spread_video():
     print(out)
 
 
+HIP_SHEET = [('auto_rifle', False), ('pulse_rifle', False), ('submachine_gun', False), ('hand_cannon', False), ('sniper_rifle', False),
+             ('auto_rifle', True)]
+
+
+def hip_svg(kind, share_h, extent, spread, h=1080, size=200):
+    """Hüftform als SVG in Bildpunkten einer Bildhöhe h, 1:1 wie Unity (HipReticle.Mask): Außenmaß share_h · h, Linie LINE_R · fein,
+    Ringdicke · fein (innen fest), Punkt · (0,5 + 0,5 · fein), Linien mindestens 2 · min_line_px; Hintergrund wie der Unity-Parcours."""
+    w, mp, k, c = RT.WEIGHTS[RT.HIP['weight']][1], RT.HIP['min_line_px'], share_h * h / extent, size / 2
+    col, op = RT.COLORS[RT.HIP['color']][1], RT.SETTINGS['opacity']['default']
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}"><rect width="100%" height="100%" fill="#9EA8B3"/>',
+           f'<g fill="none" stroke="{col}" stroke-linecap="round" opacity="{op}">']
+    for q in RT.prims_at(kind, spread):
+        if q['t'] == 'line':
+            (ax, au), (bx, bu) = q['a'], q['b']
+            out.append(f'<line x1="{c - ax * k:.2f}" y1="{c - au * k:.2f}" x2="{c - bx * k:.2f}" y2="{c - bu * k:.2f}" '
+                       f'stroke-width="{2 * max(RT.LINE_R * w * k, mp):.2f}"/>')
+        elif q['t'] == 'ring':
+            inner = q['ri'] * k
+            outer = inner + max((q['r'] - q['ri']) * w * k, 2 * mp)
+            out.append(f'<circle cx="{c}" cy="{c}" r="{(inner + outer) / 2:.2f}" stroke-width="{outer - inner:.2f}"/>')
+        else:
+            out.append(f'<circle cx="{c}" cy="{c}" r="{max(q["r"] * (0.5 + 0.5 * w) * k, mp):.2f}" fill="{col}" stroke="none"/>')
+    return '\n'.join(out + ['</g></svg>'])
+
+
+def hip_sheet():
+    """Bogen der Hüftformen (Entscheidungsliste 4.2 A): je Typ Ruhe, nach 3 Schuss (720/min) und Maximum, 1:1 bei 1080 px Bildhöhe
+    (Ausschnitt 200 × 200 px), darunter 3-fach vergrößert."""
+    d = os.path.join(DST, 'hip')
+    os.makedirs(d, exist_ok=True)
+    rows = []
+    for t, sprint in HIP_SHEET:
+        H = RT.hip(t)
+        kind, share = (H['sprint']['kind'], H['sprint']['share_h']) if sprint else (H['kind'], H['share_h'])
+        S = RT.SPREAD[H['spread']]
+        three = RT.simulate(H['spread'], [i * 60 / 720 for i in range(3)], 3 * 60 / 720)[-1]
+        tiles = []
+        states = (('Sprint, geht nicht auf', 0.0),) if sprint else (('Ruhe', S['base']), ('3 Schuss', three), ('Maximum', S['max']))
+        for lab, sp in states:
+            svg = os.path.join(d, f"{t}{'_sprint' if sprint else ''}_{lab.split(',')[0].replace(' ', '')}.svg")
+            open(svg, 'w', encoding='utf-8').write(hip_svg(kind, share, RT.extent_mm(kind, RT.WEIGHTS[RT.HIP['weight']][1]), sp))
+            png = svg[:-4] + '.png'
+            subprocess.run(['magick', '-density', '96', svg, png], check=True)
+            big = svg[:-4] + '_x3.png'
+            subprocess.run(['magick', png, '-gravity', 'center', '-crop', '100x100+0+0', '+repage', '-filter', 'point', '-resize', '300%', big],
+                           check=True)
+            tiles += ['-label', f'{lab} · {sp:.1f} mm', png, '-label', '× 3 (Mitte)', big]
+        out = os.path.join(d, f"_row_{t}{'_sprint' if sprint else ''}.png")
+        name = f"{t}{' · Sprint' if sprint else ''} · `{kind}` {share * 100:.1f} %% H · {(H['status'] if not sprint else 'gemessen (Glidepath, 1,5 % H)').replace('%', '%%')}"
+        subprocess.run(['magick', 'montage', *tiles, '-tile', '6x1', '-geometry', '+4+4', '-pointsize', '14', '-font', FONT,
+                        '-background', '#4C525A', '-fill', '#ECEFF2', '-title', name, out], check=True)
+        rows.append(out)
+    out = os.path.join(EVIDENCE, 'hip_reticles.png')
+    subprocess.run(['magick', *rows, '-background', '#4C525A', '-gravity', 'west', '-append', out], check=True)
+    print(out)
+
+
 def render(o):
     import types
     import bpy
@@ -144,6 +201,8 @@ if __name__ == '__main__':
     a = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
     if '--sheet' in a:
         sheet()
+    elif '--hip' in a:
+        hip_sheet()
     elif '--video' in a:
         spread_video()
     elif '--spread' in a:

@@ -21,7 +21,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/4'   # 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/5'   # 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 WEAPON = 'pilot.w01_auto_rifle_v21'
 DST = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
 MM = 0.001
@@ -31,6 +31,37 @@ AXES = dict(to_unity=[[-1, 0, 0], [0, 0, 1], [0, -1, 0]],
 GAMEPLAY = dict(rpm=720, magazine=30, src='M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip folgt beim '
                                           'nächsten Rendern; Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)')
 AXIS = {'x': (0, -1.0), 'f': (1, -1.0), 'u': (2, 1.0)}   # wie tools/blender_build.AXIS (Index, Drehsinn)
+
+
+def prim(q):
+    """Grundelement aus basic/reticles.py für JsonUtility (feste Felder, Paare als Listen)."""
+    d = dict(t=q['t'])
+    if q['t'] == 'line':
+        d.update(a=r6(q['a']), b=r6(q['b']), d=r6(q['d']))
+    elif q['t'] == 'ring':
+        d.update(r=r6(q['r']), ri=r6(q['ri']), grow=r6(q['grow']))
+    else:
+        d.update(r=r6(q['r']))
+    return d
+
+
+def gameplay(weapon_type):
+    """Spielwerte der Pilotwaffe: Kadenz und Magazin (GAMEPLAY), Weltzoom der Klasse (Entscheidungsliste 1.2 A) und das
+    Hüft-Fadenkreuz (4.1 A / 4.2 A) aus dem Absehen-Katalog basic/reticles.py, aufgelöst für den Waffentyp."""
+    from basic import reticles as RT
+    H = RT.hip(weapon_type)
+    S = RT.SPREAD[H['spread']]
+    sp = H['sprint']
+    sprint = dict(kind=sp['kind'], share_h=sp['share_h'], extent_mm=sp['extent_mm'], prims=[prim(q) for q in RT.RETICLES[sp['kind']]['prims']]) \
+        if sp else dict(kind='', share_h=0.0, extent_mm=0.0, prims=[])
+    hip = dict(kind=H['kind'], share_h=H['share_h'], extent_mm=H['extent_mm'], status=H['status'],
+               color=RT.COLORS[RT.HIP['color']][1], weight=RT.WEIGHTS[RT.HIP['weight']][1], line_r_mm=RT.LINE_R,
+               opacity=RT.SETTINGS['opacity']['default'], min_line_px=RT.HIP['min_line_px'],
+               prims=[prim(q) for q in RT.RETICLES[H['kind']]['prims']],
+               spread=dict(id=H['spread'], **{k: S[k] for k in ('base', 'per_shot', 'max', 'recover_s', 'move')}), sprint=sprint,
+               src='basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)')
+    return dict(GAMEPLAY, weapon_type=weapon_type, sight=RT.sight_type(weapon_type), world_zoom=RT.class_world_zoom(weapon_type),
+                zoom_table=[dict(type=k, zoom=RT.class_world_zoom(k)) for k in RT.CLASS_ZOOM], hip=hip)
 
 
 def r6(v):
@@ -146,7 +177,7 @@ def data():
                   de='Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoßfeder, Tempo)')
     return dict(format=FORMAT, generated_by='tools/export_unity.py', sources=sources, axes=AXES, fps=EG.FPS, motion=motion,
                 camera=dict(h_fov_deg=EG.CAMERA['h_fov_deg'], aspect=list(EG.CAMERA['aspect']), near_m=EG.CAMERA['near_m']),
-                gameplay=GAMEPLAY, weapon=weapon, arm=arm, poses=poses, grips=grips, finger_poses=fingers,
+                gameplay=gameplay(W.META['type']), weapon=weapon, arm=arm, poses=poses, grips=grips, finger_poses=fingers,
                 actions=[action(k, A) for k, A in EG.ACTIONS.items()],
                 roles=[dict(role=r, color=roles[r]['color'], aaa_color=roles[r].get('aaa_color', roles[r]['color']),
                             rough=roles[r]['rough'], metal=roles[r]['metal'], alpha=roles[r].get('alpha', 1.0),

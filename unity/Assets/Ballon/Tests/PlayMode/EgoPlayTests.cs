@@ -401,6 +401,15 @@ namespace Ballon.Ego.Tests
                 NUnit.Framework.Assert.That(() => { for (int k = 0; k < 30; k++) c.Tick(Dt, s); },
                     Is.Not.AllocatingGCMemory(), $"{c.ActionName}");
             }
+            var hip = new HipReticle(D.gameplay.hip);            // Hüft-Fadenkreuz: Aufgehen, Sichtbarkeit, Rastern bei jeder Spreizung,
+            var atHip = Ready();                                 // Wechsel Sprint („^“) ↔ Hüfte in jedem Bild
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance);
+            hip.See(c); hip.Mask(1080); hip.See(atHip); hip.Mask(1080);
+            NUnit.Framework.Assert.That(() =>
+            {
+                for (int k = 0; k < 30; k++) { hip.Decay(Dt, 0.5f); hip.Kick(); hip.See(k % 2 == 0 ? c : atHip); hip.Mask(1080); }
+            }, Is.Not.AllocatingGCMemory(), "HipReticle");
+            hip.Release();
             var demo = Bootstrap.DemoScript();                   // Eingabeablauf der Aufnahme
             demo.Read(Dt, 1);
             NUnit.Framework.Assert.That(() => { for (int k = 0; k < 300; k++) demo.Read(Dt, 1); }, Is.Not.AllocatingGCMemory(), "ScriptedInput");
@@ -524,6 +533,103 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0.02f, AdsFeedback.ShotRingShareH, 1e-6f, "Ring 2 % H");
             Assert.AreEqual(0.045f, AdsFeedback.HitXShareH, 1e-6f, "Treffer-X 4,5 % H");
             Assert.AreEqual((Color)new Color32(0xE0, 0x65, 0x1E, 0xFF), AdsFeedback.Orange, "Familienfarbe Orange (kit accent)");
+        }
+
+        /// <summary>Entscheidungsliste 4.1 A: das Hüft-Fadenkreuz ist nur in der Hüfte sichtbar und geht beim Hüftfeuer auf; es ist im
+        /// ersten Bild des Zielens weg (nicht erst mit dem Zoom), im Sprint zeigt die Automatik nur „^“, beim Nachladen, Wegstecken und
+        /// Ziehen ist es aus; danach wieder da. Vorher (0.10 bis 0.12) gab es kein Hüft-Fadenkreuz.</summary>
+        [UnityTest]
+        public IEnumerator Hueft_Fadenkreuz_je_Zustand()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.C.ReadyNow();
+            p.C.ammo = p.C.magSize;
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            yield return null;
+            const float dt = 1f / 30f;
+            var script = new ScriptedInput().Add(0, 12)
+                .Add(0.5f, 0.75f, hold: "fire")                                  // Hüftfeuer
+                .Add(1.5f, 2.3f, hold: "aim")                                    // Zielen
+                .Add(3.0f, 3.9f, hold: "sprint", move: new Vector2(0, 1))        // Sprint
+                .Add(4.6f, 4.65f, press: "reload")                               // taktisch nachladen
+                .Add(8.0f, 8.05f, press: "holster")
+                .Add(9.4f, 9.45f, press: "draw");
+            p.input = script;
+            p.deltaOverride = () => dt;
+            var rows = new List<(float t0, bool vis, string why, EgoController.Stance st, string act, float spread, bool sprintForm, string kind)>();
+            for (int k = 0; k < 330; k++)                      // 11 s
+            {
+                float t0 = script.time;
+                yield return null;
+                var h = p.hipReticle;
+                rows.Add((t0, h.Visible, h.Reason, p.C.CurrentStance, p.C.ActionName, h.spread, h.SprintForm, h.Kind));
+            }
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            p.C.ReadyNow();
+            p.C.ammo = p.C.magSize;
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+
+            var runs = new System.Text.StringBuilder();          // Zustandsfolge (Grund, ab t) fürs Protokoll
+            for (int k = 0; k < rows.Count; k++)
+                if (k == 0 || rows[k].why != rows[k - 1].why) runs.Append($"{rows[k].t0:0.00} {rows[k].why}/{rows[k].act}{(rows[k].vis ? "+" : "-")} · ");
+            TestContext.WriteLine(runs.ToString());
+            var idle = rows.Where(r => r.t0 < 0.45f).ToList();
+            Assert.IsTrue(idle.All(r => r.vis && r.why == "hip" && r.kind == "ring_dot"), "Hüfte in Ruhe: sichtbar, Ring mit Punkt");
+            var fire = rows.Where(r => r.t0 >= 0.5f && r.t0 < 1.4f).ToList();
+            Assert.IsTrue(fire.All(r => r.vis), "Hüftfeuer: sichtbar");
+            float peak = fire.Max(r => r.spread);
+            Assert.Greater(peak, 2 * D.gameplay.hip.spread.per_shot, "geht beim Hüftfeuer auf (3 Schuss in 0,25 s)");
+            Assert.Less(rows.First(r => r.t0 >= 1.45f).spread, 0.25f * peak, "klingt ab");
+            int ads = rows.FindIndex(r => r.st == EgoController.Stance.Ads);
+            Assert.That(rows[ads].t0, Is.InRange(1.5f - 1e-4f, 1.5f + dt), "Zielen beginnt im Bild der Eingabe");
+            Assert.IsTrue(rows[ads - 1].vis, "Bild davor noch sichtbar");
+            Assert.IsFalse(rows[ads].vis, "im ersten Bild des Zielens weg");
+            Assert.IsTrue(rows.Where(r => r.t0 >= 1.5f && r.t0 < 2.3f).All(r => !r.vis), "im Zielen aus");
+            var back = rows.FindIndex(ads, r => r.t0 >= 2.3f && r.vis);
+            Assert.Greater(back, 0, "nach dem Zielen wieder da");
+            Assert.Less(rows[back].t0, 2.9f, "zurück in der Hüfte");
+            var spr = rows.Where(r => r.st == EgoController.Stance.Sprint).ToList();
+            Assert.Greater(spr.Count, 15, "Sprint erreicht");
+            Assert.IsTrue(spr.All(r => r.vis && r.sprintForm && r.kind == "caret"), "Sprint: Automatik nur „^“");
+            var rel = rows.Where(r => r.act == "reload_tactical").ToList();
+            Assert.Greater(rel.Count, 50, "Nachladen läuft (2,1 s)");
+            Assert.IsTrue(rel.All(r => !r.vis && r.why == "reload_tactical"), "Nachladen: aus");
+            Assert.IsTrue(rows.Where(r => r.t0 >= 7.0f && r.t0 < 7.9f).All(r => r.vis), "nach dem Nachladen wieder da");
+            var hol = rows.Where(r => r.t0 >= 8.0f + dt && r.t0 < 9.4f).ToList();
+            Assert.IsTrue(hol.All(r => !r.vis), "Wegstecken und weggesteckt: aus");
+            Assert.IsTrue(hol.Any(r => r.why == "holster") && hol.Any(r => r.why == "holstered"));
+            var drw = rows.Where(r => r.act == "draw").ToList();               // Grund „holstered“: der Controller ist bis Ready weggesteckt
+            Assert.Greater(drw.Count, 3, "Ziehen läuft");
+            Assert.IsTrue(drw.All(r => !r.vis), "Ziehen: aus");
+            Assert.IsTrue(rows[rows.Count - 1].vis && rows[rows.Count - 1].why == "hip", "danach wieder in der Hüfte");
+            TestContext.WriteLine($"Hüft-Fadenkreuz bei 30/s: Spitze {peak:0.00} mm, Zielen ab Bild {ads} (t {rows[ads].t0:0.000} s) weg, zurück ab " +
+                                  $"t {rows[back].t0:0.000} s, Sprint {spr.Count} Bilder „^“, Nachladen {rel.Count} Bilder aus, Ziehen {drw.Count} Bilder aus");
+        }
+
+        /// <summary>Entscheidungsliste 1.2 A: im Zielen zoomt die Welt mit dem Klassenwert der Pilot-Automatik (1,9 aus basic/reticles.py,
+        /// vorher fest 1,35): tan(Welt-FOV/2) = tan(Viewmodel-FOV/2) / 1,9; das Viewmodel bleibt bei 75° horizontal.</summary>
+        [UnityTest]
+        public IEnumerator Weltzoom_im_Spiel_aus_der_Klasse()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 1.2f, hold: "aim");
+            p.deltaOverride = () => 1f / 30f;
+            for (int k = 0; k < 30; k++) yield return null;
+            float zoom = Mathf.Tan(p.viewCam.fieldOfView * Mathf.Deg2Rad / 2) / Mathf.Tan(p.worldCam.fieldOfView * Mathf.Deg2Rad / 2);
+            float hip0 = p.viewCam.fieldOfView;
+            p.input = new ScriptedInput().Add(0, 1000);
+            for (int k = 0; k < 20; k++) yield return null;
+            float back = p.worldCam.fieldOfView;
+            p.deltaOverride = null;
+            TestContext.WriteLine($"Weltzoom im Zielen {zoom:0.000} (Daten {D.gameplay.world_zoom}), Welt-FOV Hüfte {back:0.00}° = Viewmodel {hip0:0.00}°");
+            Assert.AreEqual(1f, p.C.adsWeight > 0 ? 0f : 1f, "zurück in der Hüfte");
+            Assert.AreEqual(D.gameplay.world_zoom, zoom, 1e-3f, "Weltzoom = Klassenwert");
+            Assert.AreEqual(1.9f, zoom, 1e-3f, "Automatik 1,9");
+            Assert.AreEqual(hip0, back, 0.01f, "Hüfte ungezoomt");
         }
 
         [UnityTest]

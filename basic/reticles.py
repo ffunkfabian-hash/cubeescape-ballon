@@ -39,6 +39,14 @@ RETICLES = {
                     prims=[dict(t='line', a=(sx * 5, su * 5), b=(sx * 5, su * 3), d=(sx * _D, su * _D)) for sx in (1, -1) for su in (1, -1)]
                     + [dict(t='line', a=(sx * 5, su * 5), b=(sx * 3, su * 5), d=(sx * _D, su * _D)) for sx in (1, -1) for su in (1, -1)]
                     + [dict(t='dot', r=0.6)]),
+    # Hüftformen nach Glidepath (Entscheidungsliste 4.2 A, 25.10.2026): Handfeuerwaffe „Klammern + Punkt“, Scharfschütze und
+    # Automatik im Sprint „^“ (Motiongen destiny2 › Glidepath, [M])
+    'brackets': dict(de='Klammern', en='Brackets', use='Zwei eckige Klammern um einen Punkt; Klammern wandern seitlich nach außen',
+                     prims=[dict(t='line', a=(sx * 5, -3), b=(sx * 5, 3), d=(sx, 0)) for sx in (1, -1)]
+                     + [dict(t='line', a=(sx * 5, su * 3), b=(sx * 3.8, su * 3), d=(sx, 0)) for sx in (1, -1) for su in (1, -1)]
+                     + [dict(t='dot', r=0.6)]),
+    'caret': dict(de='Dach', en='Caret', use='Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander',
+                  prims=[dict(t='line', a=(2.0, -1.6), b=(0, 0), d=(1, 0)), dict(t='line', a=(0, 0), b=(-2.0, -1.6), d=(-1, 0))]),
 }
 COLORS = {'cyan': ('Cyan', '#5FD3E0', 'Standard, Familienfarbe'), 'red': ('Rot', '#FF3D2E', 'klassischer Leuchtpunkt'),
           'green': ('Grün', '#38E06E', 'hell auf dunklem Grund'), 'amber': ('Bernstein', '#FFB01F', 'warm, gut auf Grau'),
@@ -77,12 +85,15 @@ SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': '
 # Im Zielen (Destiny, REF 0.14 › 7): Leuchtpunkt am Zielpunkt getrennt vom Glas, kein Aufgehen, Schuss = kurzer Ring, Treffer = X
 ADS_FEEDBACK = dict(hud_dot=dict(share_h=0.011, color='cyan'), shot_ring=dict(share_h=0.02, frames=1),
                     hit_x=dict(share_h=0.045, min_s=0.17), spread_in_ads=0.0)
-# Grundzoom der Welt beim Zielen je Waffentyp (Destiny 2, Q-D2-ZOOM; „entworfen“ = keine Messung, abgeleitet)
-CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 2.1, 'hand_cannon': 1.5, 'sidearm': 1.25, 'submachine_gun': 1.25,
+# Grundzoom der Welt beim Zielen je Waffentyp (Destiny 2, Q-D2-ZOOM; „entworfen“ = keine Messung, abgeleitet).
+# Entscheidungsliste 1.2 A (Nutzer 25.10.2026): Weltzoom an die Glidepath-Messung (Motiongen destiny2 › Glidepath, [M]) angeglichen –
+# Scout 2,9 → 2,0 (Grundzoom 1,2 + Zielfernrohr 0,8), Handfeuerwaffe 1,5 → 1,15, MP 1,25 → 1,45; übrige Klassen unverändert.
+CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 1.2, 'hand_cannon': 1.15, 'sidearm': 1.25, 'submachine_gun': 1.45,
               'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 5.5, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,
               'trace_rifle': 1.5, 'rocket_launcher': 2.5, 'machine_gun': 1.6, 'combat_bow': 1.5, 'sword': 1.0, 'glaive': 1.25}
 CLASS_ZOOM_STATUS = {k: 'beobachtet' for k in ('auto_rifle', 'pulse_rifle', 'scout_rifle', 'hand_cannon', 'sidearm', 'submachine_gun',
                                                'shotgun', 'grenade_launcher', 'sniper_rifle')}
+CLASS_ZOOM_STATUS.update({k: 'gemessen (Glidepath)' for k in ('scout_rifle', 'hand_cannon', 'submachine_gun')})
 
 
 def world_zoom(weapon_type, sight_type):
@@ -90,6 +101,17 @@ def world_zoom(weapon_type, sight_type):
     base = CLASS_ZOOM[weapon_type]
     no_bonus = weapon_type in ('submachine_gun', 'sidearm', 'shotgun', 'hand_cannon', 'grenade_launcher', 'sniper_rifle')
     return round(base + (0.0 if no_bonus else SIGHT['types'][sight_type]['zoom_bonus']), 2)
+
+
+def sight_type(weapon_type):
+    """Visiertyp aus SIGHT['types'] für den Weltzoom eines Waffentyps (Zielfernrohr bei Ring-Zielfernrohren, sonst Reflex)."""
+    kind = SIGHT_KIND[weapon_type]
+    return 'scope' if kind == 'ring_scope' else 'fullscreen' if kind == 'fullscreen' else 'reflex'
+
+
+def class_world_zoom(weapon_type):
+    """Weltzoom beim Zielen mit dem Visier, das der Waffentyp nach Visier-Standard 3 trägt (Laufzeit: ego.json › gameplay)."""
+    return world_zoom(weapon_type, sight_type(weapon_type))
 
 
 # Glasvarianten der Reflexscheibe (Rolle glass_<id>, Wirkung in kit.glass_fx; v3: nur am Rand, Mitte klar, höchstens +0,15 Deckkraft)
@@ -112,24 +134,67 @@ SPREAD = {
 }
 # Vorgabe je Waffentyp (META['type']): Absehen im Visier (Optik) und Hüft-Fadenkreuz (HUD) mit Aufgehverhalten
 DEFAULTS = {
-    'auto_rifle':          dict(optic='ring_dot', hip='cross', spread='auto'),
-    'pulse_rifle':         dict(optic='circle_cross', hip='cross', spread='burst'),
+    'auto_rifle':          dict(optic='ring_dot', hip='ring_dot', spread='auto'),
+    'pulse_rifle':         dict(optic='circle_cross', hip='ring_dot', spread='burst'),
     'scout_rifle':         dict(optic='chevron', hip='cross', spread='precision'),
-    'hand_cannon':         dict(optic='dot', hip='cross', spread='precision'),
+    'hand_cannon':         dict(optic='dot', hip='brackets', spread='precision'),
     'sidearm':             dict(optic='dot', hip='cross', spread='auto'),
     'submachine_gun':      dict(optic='dot', hip='circle_cross', spread='auto'),
     'shotgun':             dict(optic='corners', hip='corners', spread='shotgun'),
-    'sniper_rifle':        dict(optic='t_post', hip='dot', spread='precision'),
+    'sniper_rifle':        dict(optic='t_post', hip='caret', spread='precision'),
     'fusion_rifle':        dict(optic='t_post', hip='corners', spread='charge'),
     'linear_fusion_rifle': dict(optic='t_post', hip='cross', spread='charge'),
     'trace_rifle':         dict(optic='corners', hip='circle_cross', spread='auto'),
     'grenade_launcher':    dict(optic='chevron', hip='circle_cross', spread='explosive'),
     'rocket_launcher':     dict(optic='circle_cross', hip='circle_cross', spread='explosive'),
-    'machine_gun':         dict(optic='circle_cross', hip='cross', spread='auto'),
+    'machine_gun':         dict(optic='circle_cross', hip='ring_dot', spread='auto'),
     'combat_bow':          dict(optic='dot', hip='chevron', spread='charge'),
     'sword':               dict(optic=None, hip='dot', spread='none'),
     'glaive':              dict(optic=None, hip='cross', spread='auto'),
 }
+# Hüft-Fadenkreuz (HUD), Entscheidungsliste 4.1 A / 4.2 A (Nutzer 25.10.2026), Maße nach Glidepath (Motiongen destiny2 › Glidepath,
+# [M], je 1 Clip in der Hüfte): Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens,
+# siehe extent_mm) als Anteil der Bildhöhe. Weiß, Linienstärke fein. Sichtbar nur in der Hüfte (auch geduckt und in der Luft); aus beim Zielen
+# (schon im ersten Bild), im Sprint (Automatik: nur „^“), beim Nachladen, Ziehen, Wegstecken, Betrachten und bei gesenkter Waffe.
+# Beim Schießen geht es nach SPREAD auf (Profil aus DEFAULTS); das „^“ im Sprint ist ein Haltungszeichen und geht nicht auf. Glidepath-Werte anderer Typen (Bogen 4,6 % H, kurze Fusion 5,5 %,
+# lineare Fusion 12–13 %, Granatwerfer 5,6 % H) folgen mit Form beim Ego-Übertrag je Klasse (Entscheidungsliste Schritt 6).
+HIP = dict(color='white', weight='fine', share_h={'auto_rifle': 0.032, 'pulse_rifle': 0.032, 'machine_gun': 0.032,
+                                                  'submachine_gun': 0.061, 'hand_cannon': 0.06, 'sniper_rifle': 0.01},
+           share_h_default=0.045, min_line_px=0.6,
+           sprint={'auto_rifle': dict(kind='caret', share_h=0.015)},
+           hidden_in=('ads', 'sprint', 'reload', 'draw', 'holster', 'inspect', 'lowered'))
+HIP_STATUS = {'auto_rifle': 'gemessen (Glidepath)', 'submachine_gun': 'gemessen (Glidepath, 5,9–6,3 % H)',
+              'hand_cannon': 'gemessen (Glidepath, ≈ 6 % H)', 'sniper_rifle': 'gemessen (Glidepath, ≈ 1 % H)',
+              'pulse_rifle': 'übertragen (Automatik)', 'machine_gun': 'übertragen (Automatik)'}
+
+
+def extent_mm(kind, weight=None):
+    """Außenmaß einer Form bei Spreizung 0 (mm): größere Seite des Rahmens um alle Grundelemente. Mit `weight` (Faktor aus WEIGHTS)
+    das sichtbare Maß wie gezeichnet (common.reticle, Unity HipReticle): Linien ± LINE_R·weight (runde Enden), Ringe außen
+    ri + (r − ri)·weight, Punkte r·(0,5 + 0,5·weight); ohne `weight` die Mittellinien und r."""
+    xs, us = [], []
+    lw = LINE_R * weight if weight is not None else 0.0
+    for p in RETICLES[kind]['prims']:
+        if p['t'] == 'line':
+            xs += [min(p['a'][0], p['b'][0]) - lw, max(p['a'][0], p['b'][0]) + lw]
+            us += [min(p['a'][1], p['b'][1]) - lw, max(p['a'][1], p['b'][1]) + lw]
+        else:
+            r = p['r'] if weight is None else p['ri'] + (p['r'] - p['ri']) * weight if p['t'] == 'ring' else p['r'] * (0.5 + 0.5 * weight)
+            xs += [-r, r]
+            us += [-r, r]
+    return round(float(max(max(xs) - min(xs), max(us) - min(us))), 4)
+
+
+def hip(weapon_type):
+    """Hüft-Fadenkreuz eines Waffentyps: Form, Größe (Anteil der Bildhöhe), Außenmaß in mm, Aufgehprofil, Sprintform (oder None)."""
+    D = DEFAULTS[weapon_type]
+    sp = HIP['sprint'].get(weapon_type)
+    w = WEIGHTS[HIP['weight']][1]
+    return dict(kind=D['hip'], share_h=HIP['share_h'].get(weapon_type, HIP['share_h_default']), extent_mm=extent_mm(D['hip'], w),
+                spread=D['spread'], status=HIP_STATUS.get(weapon_type, 'entworfen'),
+                sprint=dict(sp, extent_mm=extent_mm(sp['kind'], w)) if sp else None)
+
+
 # Einstellbare Optionen (Spieler): Wertebereich und Vorgabe
 SETTINGS = {
     'kind':       dict(de='Form', values=list(RETICLES), default='Vorgabe der Waffe'),

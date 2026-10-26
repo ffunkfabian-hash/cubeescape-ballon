@@ -1,5 +1,5 @@
 // Spielfigur: Bewegung (CharacterController), Blick, zwei Kameras (Welt mit Zoom, Viewmodel mit festen 75° horizontal),
-// Treffer per Strahl, Fadenkreuz und Munitionszähler. Die Ego-Bewegung selbst kommt aus EgoController.
+// Treffer per Strahl, Hüft-Fadenkreuz (HipReticle), Rückmeldung im Zielen und Munitionszähler. Die Ego-Bewegung selbst kommt aus EgoController.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace Ballon.Ego
         public float walk = 4.2f, sprint = 6.8f, crouch = 2.4f, aimMove = 2.8f;
         public float accelGround = 12f, accelAir = 2.5f, jumpSpeed = 5.0f, gravity = 16f;
         public float height = 1.8f, crouchHeight = 1.15f, eye = 1.62f, crouchEye = 1.0f, radius = 0.32f;
-        public float adsZoom = 1.35f;                // Welt-FOV im Zielen (Viewmodel bleibt 75°)
+        public float adsZoom = 1.35f;                // Weltzoom im Zielen (Bildmaßstab, Viewmodel bleibt 75°); Create setzt ego.json › gameplay.world_zoom
         public float spreadHipDeg = 1.1f, spreadAdsDeg = 0.12f;
         public float climbView = 0.18f;              // bleibendes Hochziehen des Blicks je Schuss (Grad, Hüfte)
         public float wallCheck = 0.75f;
@@ -82,6 +82,7 @@ namespace Ballon.Ego
         public readonly List<string> log = new List<string>();
         public bool hud = true;
         public Func<float> deltaOverride;          // Aufnahme: feste Zeitschritte
+        public HipReticle hipReticle;              // Hüft-Fadenkreuz (Entscheidungsliste 4.1 A / 4.2 A)
 
         CharacterController _cc;
         GUIStyle _big, _small, _time;
@@ -150,6 +151,8 @@ namespace Ballon.Ego
             p._cc.stepOffset = 0.35f;
             p._cc.skinWidth = 0.03f;
             p._eye = p.move.eye;
+            p.move.adsZoom = S.D.gameplay.world_zoom;          // Weltzoom der Klasse (Entscheidungsliste 1.2 A, basic/reticles.py)
+            p.hipReticle = new HipReticle(S.D.gameplay.hip);
             p.head = new GameObject("Head").transform;
             p.head.SetParent(go.transform, false);
             p.head.localPosition = new Vector3(0, p._eye, 0);
@@ -175,6 +178,8 @@ namespace Ballon.Ego
             return p;
         }
 
+        void OnDestroy() => hipReticle?.Release();
+
         static Camera NewCam(string name, Transform parent, int mask, float near, float far)
         {
             var c = new GameObject(name).AddComponent<Camera>();
@@ -197,10 +202,17 @@ namespace Ballon.Ego
         public bool ShotRingVisible => _ringFrames > 0;
         /// <summary>Treffer-X sichtbar (mindestens AdsFeedback.HitXMinS nach dem letzten Treffer).</summary>
         public bool HitXVisible => _hitX > 0;
+        /// <summary>Hüft-Fadenkreuz im nächsten gezeichneten Bild sichtbar (nur in der Hüfte; im Sprint der Automatik nur „^“).</summary>
+        public bool HipVisible => hipReticle != null && hipReticle.Visible;
 
-        /// <summary>Schuss-Ring und Treffer-X wie in OnGUI in ein Aufnahmebild zeichnen.</summary>
+        /// <summary>Hüft-Fadenkreuz, Schuss-Ring und Treffer-X wie in OnGUI in ein Aufnahmebild zeichnen.</summary>
         public void StampFeedback(Texture2D tex)
         {
+            if (HipVisible)
+            {
+                var m = hipReticle.Mask(tex.height);
+                AdsFeedback.Stamp(tex, m, m.width, hipReticle.Color);
+            }
             if (ShotRingVisible) AdsFeedback.Stamp(tex, AdsFeedback.Ring, AdsFeedback.ShotRingShareH * tex.height, Color.white);
             if (HitXVisible) AdsFeedback.Stamp(tex, AdsFeedback.X, AdsFeedback.HitXShareH * tex.height, AdsFeedback.Orange);
             tex.Apply(false);
@@ -220,7 +232,9 @@ namespace Ballon.Ego
                 speed01 = new Vector2(_vel.x, _vel.z).magnitude / move.walk, look = r.lookDeg, move = r.move,
                 nearWall = NearWall(),
             };
+            hipReticle?.Decay(dt, it.speed01);            // vor den Schüssen dieses Bilds, wie reticles.simulate
             var o = C.Tick(dt, it);
+            hipReticle?.See(C);
             rig.Apply(o);
             var kick = rig.CameraKick(o.camPitch);
             worldCam.transform.localRotation = kick;
@@ -296,6 +310,7 @@ namespace Ballon.Ego
             _pitch -= climb;           // bleibendes Hochziehen (Spieler gleicht aus)
             _viewClimb += climb;
             if (C.adsWeight > 0.5f) _ringFrames = AdsFeedback.ShotRingFrames;
+            hipReticle?.Kick();
             if (Physics.Raycast(worldCam.transform.position, dir, out var hit, 300f, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
             {
                 var t = hit.collider.GetComponentInParent<RangeTarget>();
@@ -342,9 +357,18 @@ namespace Ballon.Ego
         {
             if (!hud) return;
             float cx = Screen.width / 2f, cy = Screen.height / 2f;
-            // kein ständiges Fadenkreuz (Nutzer 25.10.2026): gezielt wird über das Visier; Schuss-Ring und Treffer-X (AdsFeedback)
+            // kein ständiges Fadenkreuz (Nutzer 25.10.2026): in der Hüfte das ausblendende Hüft-Fadenkreuz (4.1 A), im Zielen
+            // gezielt über das Visier mit Schuss-Ring und Treffer-X (AdsFeedback)
             if (Event.current.type == EventType.Repaint)
             {
+                if (HipVisible)
+                {
+                    var m = hipReticle.Mask(Screen.height);
+                    var old = GUI.color;
+                    GUI.color = hipReticle.Color;
+                    GUI.DrawTexture(new Rect(Mathf.Round(cx) - m.width / 2, Mathf.Round(cy) - m.height / 2, m.width, m.height), m);
+                    GUI.color = old;
+                }
                 if (ShotRingVisible) Mark(AdsFeedback.Ring, cx, cy, AdsFeedback.ShotRingShareH * Screen.height, Color.white);
                 if (HitXVisible) Mark(AdsFeedback.X, cx, cy, AdsFeedback.HitXShareH * Screen.height, AdsFeedback.Orange);
             }

@@ -403,6 +403,144 @@
      "r": 0.6
     }
    ]
+  },
+  "brackets": {
+   "de": "Klammern",
+   "en": "Brackets",
+   "use": "Zwei eckige Klammern um einen Punkt; Klammern wandern seitlich nach außen",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      5,
+      -3
+     ],
+     "b": [
+      5,
+      3
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -3
+     ],
+     "b": [
+      -5,
+      3
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      3
+     ],
+     "b": [
+      3.8,
+      3
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      -3
+     ],
+     "b": [
+      3.8,
+      -3
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      3
+     ],
+     "b": [
+      -3.8,
+      3
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -3
+     ],
+     "b": [
+      -3.8,
+      -3
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "dot",
+     "r": 0.6
+    }
+   ]
+  },
+  "caret": {
+   "de": "Dach",
+   "en": "Caret",
+   "use": "Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      2.0,
+      -1.6
+     ],
+     "b": [
+      0,
+      0
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0,
+      0
+     ],
+     "b": [
+      -2.0,
+      -1.6
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    }
+   ]
   }
  },
  "colors": {
@@ -541,12 +679,12 @@
  "defaults": {
   "auto_rifle": {
    "optic": "ring_dot",
-   "hip": "cross",
+   "hip": "ring_dot",
    "spread": "auto"
   },
   "pulse_rifle": {
    "optic": "circle_cross",
-   "hip": "cross",
+   "hip": "ring_dot",
    "spread": "burst"
   },
   "scout_rifle": {
@@ -556,7 +694,7 @@
   },
   "hand_cannon": {
    "optic": "dot",
-   "hip": "cross",
+   "hip": "brackets",
    "spread": "precision"
   },
   "sidearm": {
@@ -576,7 +714,7 @@
   },
   "sniper_rifle": {
    "optic": "t_post",
-   "hip": "dot",
+   "hip": "caret",
    "spread": "precision"
   },
   "fusion_rifle": {
@@ -606,7 +744,7 @@
   },
   "machine_gun": {
    "optic": "circle_cross",
-   "hip": "cross",
+   "hip": "ring_dot",
    "spread": "auto"
   },
   "combat_bow": {
@@ -635,7 +773,9 @@
     "chevron",
     "t_post",
     "circle_cross",
-    "corners"
+    "corners",
+    "brackets",
+    "caret"
    ],
    "default": "Vorgabe der Waffe"
   },
@@ -751,10 +891,10 @@
  "class_zoom": {
   "auto_rifle": 1.6,
   "pulse_rifle": 1.7,
-  "scout_rifle": 2.1,
-  "hand_cannon": 1.5,
+  "scout_rifle": 1.2,
+  "hand_cannon": 1.15,
   "sidearm": 1.25,
-  "submachine_gun": 1.25,
+  "submachine_gun": 1.45,
   "shotgun": 1.25,
   "grenade_launcher": 1.4,
   "sniper_rifle": 5.5,
@@ -777,20 +917,20 @@
    "scope": 2.5
   },
   "scout_rifle": {
-   "reflex": 2.4,
-   "scope": 2.9
+   "reflex": 1.5,
+   "scope": 2.0
   },
   "hand_cannon": {
-   "reflex": 1.5,
-   "scope": 1.5
+   "reflex": 1.15,
+   "scope": 1.15
   },
   "sidearm": {
    "reflex": 1.25,
    "scope": 1.25
   },
   "submachine_gun": {
-   "reflex": 1.25,
-   "scope": 1.25
+   "reflex": 1.45,
+   "scope": 1.45
   },
   "shotgun": {
    "reflex": 1.25,
@@ -835,6 +975,182 @@
   "glaive": {
    "reflex": 1.55,
    "scope": 2.05
+  }
+ },
+ "class_world_zoom": {
+  "auto_rifle": 1.9,
+  "pulse_rifle": 2.0,
+  "scout_rifle": 2.0,
+  "hand_cannon": 1.15,
+  "sidearm": 1.25,
+  "submachine_gun": 1.45,
+  "shotgun": 1.25,
+  "grenade_launcher": 1.4,
+  "sniper_rifle": 5.5,
+  "fusion_rifle": 1.8,
+  "linear_fusion_rifle": 3.8,
+  "trace_rifle": 1.8,
+  "rocket_launcher": 2.8,
+  "machine_gun": 1.9,
+  "combat_bow": 1.8,
+  "sword": 1.3,
+  "glaive": 1.55
+ },
+ "hip": {
+  "color": "white",
+  "weight": "fine",
+  "min_line_px": 0.6,
+  "hidden_in": [
+   "ads",
+   "sprint",
+   "reload",
+   "draw",
+   "holster",
+   "inspect",
+   "lowered"
+  ],
+  "size": "sichtbares Außenmaß bei Spreizung 0 mit Linienstärke als Anteil der Bildhöhe (share_h)",
+  "by_type": {
+   "auto_rifle": {
+    "kind": "ring_dot",
+    "share_h": 0.032,
+    "extent_mm": 5.91,
+    "spread": "auto",
+    "status": "gemessen (Glidepath)",
+    "sprint": {
+     "kind": "caret",
+     "share_h": 0.015,
+     "extent_mm": 4.39
+    }
+   },
+   "pulse_rifle": {
+    "kind": "ring_dot",
+    "share_h": 0.032,
+    "extent_mm": 5.91,
+    "spread": "burst",
+    "status": "übertragen (Automatik)",
+    "sprint": null
+   },
+   "scout_rifle": {
+    "kind": "cross",
+    "share_h": 0.045,
+    "extent_mm": 14.39,
+    "spread": "precision",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "hand_cannon": {
+    "kind": "brackets",
+    "share_h": 0.06,
+    "extent_mm": 10.39,
+    "spread": "precision",
+    "status": "gemessen (Glidepath, ≈ 6 % H)",
+    "sprint": null
+   },
+   "sidearm": {
+    "kind": "cross",
+    "share_h": 0.045,
+    "extent_mm": 14.39,
+    "spread": "auto",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "submachine_gun": {
+    "kind": "circle_cross",
+    "share_h": 0.061,
+    "extent_mm": 15.19,
+    "spread": "auto",
+    "status": "gemessen (Glidepath, 5,9–6,3 % H)",
+    "sprint": null
+   },
+   "shotgun": {
+    "kind": "corners",
+    "share_h": 0.045,
+    "extent_mm": 10.39,
+    "spread": "shotgun",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "sniper_rifle": {
+    "kind": "caret",
+    "share_h": 0.01,
+    "extent_mm": 4.39,
+    "spread": "precision",
+    "status": "gemessen (Glidepath, ≈ 1 % H)",
+    "sprint": null
+   },
+   "fusion_rifle": {
+    "kind": "corners",
+    "share_h": 0.045,
+    "extent_mm": 10.39,
+    "spread": "charge",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "linear_fusion_rifle": {
+    "kind": "cross",
+    "share_h": 0.045,
+    "extent_mm": 14.39,
+    "spread": "charge",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "trace_rifle": {
+    "kind": "circle_cross",
+    "share_h": 0.045,
+    "extent_mm": 15.19,
+    "spread": "auto",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "grenade_launcher": {
+    "kind": "circle_cross",
+    "share_h": 0.045,
+    "extent_mm": 15.19,
+    "spread": "explosive",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "rocket_launcher": {
+    "kind": "circle_cross",
+    "share_h": 0.045,
+    "extent_mm": 15.19,
+    "spread": "explosive",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "machine_gun": {
+    "kind": "ring_dot",
+    "share_h": 0.032,
+    "extent_mm": 5.91,
+    "spread": "auto",
+    "status": "übertragen (Automatik)",
+    "sprint": null
+   },
+   "combat_bow": {
+    "kind": "chevron",
+    "share_h": 0.045,
+    "extent_mm": 6.79,
+    "spread": "charge",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "sword": {
+    "kind": "dot",
+    "share_h": 0.045,
+    "extent_mm": 1.65,
+    "spread": "none",
+    "status": "entworfen",
+    "sprint": null
+   },
+   "glaive": {
+    "kind": "cross",
+    "share_h": 0.045,
+    "extent_mm": 14.39,
+    "spread": "auto",
+    "status": "entworfen",
+    "sprint": null
+   }
   }
  },
  "sight_kind": {

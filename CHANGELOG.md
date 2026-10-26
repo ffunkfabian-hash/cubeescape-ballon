@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.13.0 „Hipfire“ – Weltzoom je Klasse und Hüft-Fadenkreuz (Branch `claude/ballon-0.13-hipfire`)
+
+- Schritt 3 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) (1.2 A, 4.1 A, 4.2 A): Weltzoom nach Glidepath (Scout 2,0,
+  Handfeuerwaffe 1,15, MP 1,45; Unity zoomt mit dem Klassenwert, Automatik 1,9 statt fest 1,35); Hüftformen `ring_dot` (Automatik,
+  Impuls, MG), neu `brackets` (Handfeuerwaffe) und `caret` (Scharfschütze, Sprint der Automatik) mit Größen in % der Bildhöhe;
+  ausblendendes Hüft-Fadenkreuz in Unity (`HipReticle.cs`). `ego.json` jetzt `ballon-ego/5`. Bericht [docs/versions/0.13-hipfire.md](docs/versions/0.13-hipfire.md).
+
 ## 0.11.0 „Compact“ – in Arbeit (Branch `claude/ballon-0.11-compact`)
 
 - BASIC-06 Maschinenpistole im Stil v2.1: Kastenvorbau, Abzugsbügel und Bügel als ein Band, Magazin auf der Griffachse mit

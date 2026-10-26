@@ -28,6 +28,10 @@ def data():
                 glass={k: dict(de=v[0], note=v[1]) for k, v in RT.GLASS.items()},
                 spread=RT.SPREAD, defaults=RT.DEFAULTS, settings=RT.SETTINGS, sight_standard=RT.SIGHT, class_zoom=RT.CLASS_ZOOM,
                 world_zoom={k: {s: RT.world_zoom(k, s) for s in ('reflex', 'scope')} for k in RT.CLASS_ZOOM},
+                class_world_zoom={k: RT.class_world_zoom(k) for k in RT.CLASS_ZOOM},
+                hip=dict(color=RT.HIP['color'], weight=RT.HIP['weight'], min_line_px=RT.HIP['min_line_px'],
+                         hidden_in=list(RT.HIP['hidden_in']), size='sichtbares Außenmaß bei Spreizung 0 mit Linienstärke als Anteil der Bildhöhe (share_h)',
+                         by_type={k: RT.hip(k) for k in RT.DEFAULTS}),
                 sight_kind=RT.SIGHT_KIND, sight_kind_de={str(k): v for k, v in RT.SIGHT_KIND_DE.items()}, ads_feedback=RT.ADS_FEEDBACK,
                 spread_model='s ← base(+move) + (s − base)·exp(−dt/recover_s); je Schuss s ← min(max, s + per_shot); '
                              'beim Zielen s·ads; Linien wandern um s·d, Ringe wachsen um s·grow, Punkte bleiben')
@@ -56,6 +60,18 @@ def doc():
     L += ['', 'Profil `charge`: während des Aufladens schrumpft die Spreizung von `charge_from` auf die Basis.', '',
           '## Vorgabe je Waffentyp', '', '| Typ | Visier | Hüfte | Aufgehen |', '|---|---|---|---|']
     L += [f"| `{k}` | {('`' + v['optic'] + '`') if v['optic'] else '–'} | `{v['hip']}` | `{v['spread']}` |" for k, v in RT.DEFAULTS.items()]
+    H = RT.HIP
+    L += ['', '## Hüft-Fadenkreuz', '',
+          f"Nur in der Hüfte sichtbar, {RT.COLORS[H['color']][0].lower()}, Linienstärke {RT.WEIGHTS[H['weight']][0]} "
+          f"(Linien mindestens {2 * H['min_line_px']:g} px breit). Aus bei: {', '.join(H['hidden_in'])} – beim Zielen schon im ersten Bild. "
+          'Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit '
+          'Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. '
+          'Entscheidungsliste 4.1 A und 4.2 A.', '',
+          '| Typ | Hüfte | Größe (% H) | Außenmaß | Status | Sprint |', '|---|---|---|---|---|---|']
+    for k in RT.DEFAULTS:
+        h = RT.hip(k)
+        sp = f"`{h['sprint']['kind']}` {h['sprint']['share_h'] * 100:.1f} % H" if h['sprint'] else 'aus'
+        L.append(f"| `{k}` | `{h['kind']}` | {h['share_h'] * 100:.1f} | {h['extent_mm']:g} mm | {h['status']} | {sp} |")
     S = RT.SIGHT
     L += ['', '## Visier-Standard', '',
           f"Visierhöhe (Socket_Eye über der Laufachse) {S['height_mm']:.0f} ± {S['height_tol_mm']:.0f} mm. Socket_Eye ist der Augenpunkt "
@@ -72,9 +88,12 @@ def doc():
                      f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['frame_max']} × Öffnung | {T['ads_view']} |")
         else:
             L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
-    L += ['', '| Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']
+    L += ['', 'Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach '
+          'Glidepath.', '',
+          '| Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']
     L += [f"| `{k}` | {RT.SIGHT_KIND_DE[RT.SIGHT_KIND[k]]} | ×{z} | {RT.CLASS_ZOOM_STATUS.get(k, 'entworfen')} | "
-          f"×{RT.world_zoom(k, 'reflex')} | ×{RT.world_zoom(k, 'scope')} |" for k, z in RT.CLASS_ZOOM.items()]
+          + ' | '.join((f"**×{RT.world_zoom(k, s)}**" if RT.sight_type(k) == s or (s == 'reflex' and RT.sight_type(k) == 'fullscreen')
+                        else f"×{RT.world_zoom(k, s)}") for s in ('reflex', 'scope')) + ' |' for k, z in RT.CLASS_ZOOM.items()]
     F = RT.ADS_FEEDBACK
     L += ['', f"Im Zielen: Leuchtpunkt am Zielpunkt getrennt vom Glas ({F['hud_dot']['share_h'] * 100:.1f} % Bildhöhe), "
           f"kein Aufgehen (×{F['spread_in_ads']}), Schuss = kurzer Ring ({F['shot_ring']['share_h'] * 100:.0f} % Höhe, "
