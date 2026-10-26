@@ -13,14 +13,15 @@ CAMERA = dict(h_fov_deg=75.0, aspect=(16, 9), near_m=0.03)          # T: viewmod
 # Haltungen der Waffe: Lage von Socket_Hand im Kameraraum, Zielpunkt der Laufachse, Rollwinkel um die Laufachse.
 # 'ads' wird über Socket_Eye gesetzt (Auge auf der Kameraachse).
 POSES = {
-    'hip':       dict(pos=(-0.20, -0.42, -0.165), aim=(0.02, -3.0, 0.10), roll=6,
-                      src='E (Destiny-Hüfte: Griff unten rechts, Lauf zur Bildmitte); Toolgen-Hüfte (−0,21/−0,537/−0,176) als Start'),
+    'hip':       dict(pos=(-0.19, -0.42, -0.23), aim=(0.02, -3.0, -0.20), roll=6,
+                      src='M Destiny-Hüfte: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A), Lage E; '
+                          '0.15: Mündung x 58,8 / y 49,6 → x 58,2 / y 63,2 % (6,5 cm tiefer, Lauf zur Bildmitte); Toolgen-Hüfte als Start'),
     'ads':       dict(eye=(0.0, 0.0, 0.0), aim_dir=(0, -1, 0), roll=0,
                       src='Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse'),
     'sprint':    dict(pos=(-0.10, -0.34, -0.23), aim=(1.2, -1.6, -0.55), roll=-35, src='E nach Destiny-Sprint (quer, gesenkt)'),
     'lowered':   dict(pos=(-0.17, -0.38, -0.25), aim=(0.4, -2.0, -1.2), roll=10, src='E'),
-    'crouch':    dict(pos=(-0.19, -0.41, -0.18), aim=(0.02, -3.0, 0.05), roll=9, src='E'),
-    'air':       dict(pos=(-0.20, -0.42, -0.15), aim=(0.02, -3.0, 0.17), roll=4, src='E'),
+    'crouch':    dict(pos=(-0.18, -0.41, -0.245), aim=(0.02, -3.0, -0.25), roll=9, src='E (wie hip versetzt, 0.15 mit hip gesenkt)'),
+    'air':       dict(pos=(-0.19, -0.42, -0.215), aim=(0.02, -3.0, -0.13), roll=4, src='E (wie hip versetzt, 0.15 mit hip gesenkt)'),
     'holstered': dict(pos=(-0.24, -0.25, -0.62), aim=(0.5, -1.2, -1.8), roll=30, src='E (unter dem Bild)'),
     'reload':    dict(pos=(-0.07, -0.34, -0.135), aim=(0.75, -2.1, 0.45), roll=-40,
                       src='T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E)'),
@@ -46,22 +47,32 @@ GRIPS = {
 # fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
 # der Schüsse), events (Marker). Zwischen Schlüsseln wird geglättet (Ease In/Out).
 OFF_L = ('cam', (0.30, -0.25, -0.62))      # linke Hand unter dem Bild (Magazin holen)
+
+
+def shots_720(first, n):
+    """Schussbilder bei 720/min und 30 fps: alle 2,5 Bilder, also abwechselnd 2 und 3 Bilder Abstand (Unity: gameplay.rpm)."""
+    return [first + int(2.5 * k) for k in range(n)]
+
 ACTIONS = {
     'idle_hip': dict(de='Ruhe an der Hüfte (Atmen)', frames=60, weapon=[(0, 'hip'), (60, 'hip')], breathe=True,
                      events=[], src='E'),
     'draw': dict(de='Ziehen', frames=20, weapon=[(0, 'holstered'), (14, 'hip'), (20, 'hip')],
                  L=[(0, OFF_L), (6, OFF_L), (13, 'support'), (20, 'support')], fL=[(0, 'relaxed'), (11, 'open'), (14, 'underhand')],
                  events=[(14, 'Ready')], src='M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E'),
-    'holster': dict(de='Wegstecken', frames=14, weapon=[(0, 'hip'), (12, 'holstered'), (14, 'holstered')],
-                    L=[(0, 'support'), (2, 'support'), (8, OFF_L)], fL=[(0, 'underhand'), (3, 'open'), (10, 'relaxed')],
-                    events=[(2, 'HandOff'), (12, 'Holstered')], src='E (CE: Holster ab aktueller Stellung)'),
+    'holster': dict(de='Wegstecken', frames=8, weapon=[(0, 'hip'), (7.5, 'holstered'), (8, 'holstered')],
+                    L=[(0, 'support'), (1, 'support'), (5, OFF_L)], fL=[(0, 'underhand'), (2, 'open'), (6, 'relaxed')],
+                    events=[(1, 'HandOff'), (8, 'Holstered')],
+                    src='M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne '
+                        'TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung)'),
     'aim_in': dict(de='Hüfte → Zielen', frames=10, weapon=[(0, 'hip'), (9, 'ads'), (10, 'ads')], events=[(9, 'Aimed')],
                    src='E 0,30 s (CE-Handling Auto 0,39→0,20 s)'),
     'aim_out': dict(de='Zielen → Hüfte', frames=8, weapon=[(0, 'ads'), (8, 'hip')], events=[(8, 'Ready')], src='E'),
-    'fire_hip': dict(de='Dauerfeuer aus der Hüfte', frames=32, weapon=[(0, 'hip'), (32, 'hip')], fire=list(range(2, 26, 2)) + [25],
-                     kick=1.0, events=[(2, 'Fire')], src='M 720/min ≈ 1 Schuss je 2,5 Bilder (Q-REF); Rückstoß T 17,5 mm/3°'),
-    'fire_ads': dict(de='Dauerfeuer im Zielen', frames=32, weapon=[(0, 'ads'), (32, 'ads')], fire=list(range(2, 26, 2)) + [25],
-                     kick=0.45, events=[(2, 'AimFire')], src='M Kadenz wie fire_hip; Rückstoß im Zielen gedämpft E'),
+    'fire_hip': dict(de='Dauerfeuer aus der Hüfte', frames=32, weapon=[(0, 'hip'), (32, 'hip')], fire=shots_720(2, 10),
+                     kick=1.0, events=[(2, 'Fire')],
+                     src='M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°'),
+    'fire_ads': dict(de='Dauerfeuer im Zielen', frames=32, weapon=[(0, 'ads'), (32, 'ads')], fire=shots_720(2, 10),
+                     kick=1.0, events=[(2, 'AimFire')],
+                     src='M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E'),
     'reload_tactical': dict(
         de='Nachladen mit Restmunition', frames=50,
         weapon=[(0, 'hip'), (3, ('hip', dict(roll=-3, up=-0.004))), (10, 'reload'), (16, ('reload', dict(roll=-3))),
@@ -97,10 +108,12 @@ ACTIONS = {
                     fL=[(0, 'underhand'), (42, 'open'), (50, 'relaxed'), (86, 'open'), (94, 'underhand')],
                     events=[(16, 'Start'), (94, 'End')], src='E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect'),
     'sprint': dict(de='Sprint: Beginn, Schleife, Ende', frames=48, weapon=[(0, 'hip'), (8, 'sprint'), (38, 'sprint'), (48, 'hip')],
-                   bob=dict(start=8, end=38, period=19, amp=(0.012, 0.010), roll=3.5, shape='u'), events=[(8, 'SprintLoop'), (48, 'Ready')],
+                   bob=dict(start=8, end=38, period=19, amp=(0.022, 0.018), roll=3.5, shape='u'), events=[(8, 'SprintLoop'), (48, 'Ready')],
                    src='E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: '
                        '19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) '
-                       'nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“)'),
+                       'nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). '
+                       '0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik '
+                       '(Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante)'),
     'lowered': dict(de='Gesenkte Haltung / Wandnähe', frames=36, weapon=[(0, 'hip'), (8, 'lowered'), (26, 'lowered'), (36, 'hip')],
                     events=[(8, 'Lowered'), (36, 'Ready')], src='E'),
     'walk': dict(de='Gehen (liegende Acht)', frames=48, weapon=[(0, 'hip'), (48, 'hip')],
@@ -112,7 +125,7 @@ ACTIONS = {
     'sprint_to_aim': dict(de='Sprint → Zielen', frames=18, weapon=[(0, 'sprint'), (12, 'ads'), (18, 'ads')],
                           events=[(0, 'SprintOut'), (12, 'Aimed')], src='E (CE: ADS > Sprint)'),
     'sprint_to_fire': dict(de='Sprint → Feuer', frames=26, weapon=[(0, 'sprint'), (6, 'hip'), (26, 'hip')],
-                           fire=list(range(7, 22, 2)), kick=1.0, events=[(0, 'SprintOut'), (7, 'Fire')], src='E (CE: Fire > Sprint)'),
+                           fire=shots_720(7, 6), kick=1.0, events=[(0, 'SprintOut'), (7, 'Fire')], src='E (CE: Fire > Sprint)'),
     'draw_aim': dict(de='Ziehen bei gehaltenem Zielen', frames=28,
                      weapon=[(0, 'holstered'), (14, 'hip'), (24, 'ads'), (28, 'ads')],
                      L=[(0, OFF_L), (6, OFF_L), (13, 'support'), (28, 'support')], fL=[(0, 'relaxed'), (11, 'open'), (14, 'underhand')],
@@ -129,7 +142,8 @@ ACTIONS = {
 # ------------------------------------------------------------------ Bewegungsgefühl (v2, 24.10.2026; Nutzer: „zu schnell, rappelig,
 # abgehackt, statisch“). Alle Werte entworfen; Unity übernimmt sie über den Export.
 TIME_SCALE = 1.25        # Ablauftempo: 25 % langsamer als die Destiny-Messung (lesbar ohne Ton/Bewegungsunschärfe)
-KEEP_TIME = {'fire_hip', 'fire_ads', 'aim_in', 'aim_out', 'sprint_to_aim', 'sprint_to_fire'}   # Spielgefühl: Zielen/Feuern bleiben schnell
+KEEP_TIME = {'fire_hip', 'fire_ads', 'aim_in', 'aim_out', 'sprint_to_aim', 'sprint_to_fire',   # Spielgefühl: Zielen/Feuern bleiben schnell
+             'holster'}                                    # Wechsel straff wie Destiny (6.1 A); das Ziehen bleibt gestreckt
 INTERP = 'hermite_monotone'   # Kurven durch die Schlüssel (Tangente aus den Nachbarn, 0 bei Halt/Umkehr) statt Stopp an jedem Schlüssel
 SECONDARY = dict(freq_hz=3.2, zeta=0.55,    # Waffe folgt ihrer Kurve über eine gedämpfte Feder: Trägheit und leichtes Nachschwingen
                  aim_freq_hz=10.0, aim_zeta=1.0)  # Aktionen, die im Zielen enden: schneller und kritisch gedämpft, das Visier landet
@@ -141,8 +155,32 @@ def ends_in_ads(A):
     k = A['weapon'][-1][1]
     return (k[0] if isinstance(k, tuple) else k) == 'ads'
 BREATHE_ALL = dict(period_s=3.4, up_m=0.0010, pitch_deg=0.15)   # dezentes Atmen in jeder Aktion
-RECOIL = dict(freq_hz=5.0, zeta=0.5, back_mps=0.62, pitch_dps=115.0, climb_deg=0.12,    # Rückstoß als Federimpuls je Schuss
-              cam_freq_hz=4.0, cam_zeta=0.6, cam_dps=18.0)
+# Rückstoß (0.15, Entscheidungsliste 5.1 A und 5.2 A): vier getrennte Größen – Grundbahn, Kamera, Modellkick, Streuung.
+# Destiny (Motiongen rueckstoss › 2/4, zielbewegung › 6b): Automatik steigt als Säule ≈ 1 % H je Schuss mit ≤ 2,5 % B Seitenwackeln,
+# dreimal dieselbe Form; im Zielen wandert die Welt (Viererstoß ≈ 4 % H), das Holo-Visier bleibt < 1 % H; Rückkehr 0,4–0,6 s ohne
+# Unterschwingen.
+RECOIL = dict(
+    # Modellkick: Federimpuls je Schuss (Waffe zurück, Mündung hoch), Hüfte; im Zielen mit ads_back/ads_pitch (Visier bleibt
+    # < 1 % H) und ohne Hochziehen. Hüftwerte T 17,5 mm/3° (bis 0.14 im Zielen 0,45 für alles: „Visier springt leicht“)
+    freq_hz=5.0, zeta=0.5, back_mps=0.62, pitch_dps=115.0, climb_deg=0.12, ads_back=0.45, ads_pitch=0.02,
+    # Kamera: kurzer Ruck je Schuss, kritisch gedämpft (bis 0.14 ζ 0,6 mit Unterschwingen). Hüfte: Kamera samt Viewmodel;
+    # Zielen: nur die Welt (ads_cam), das Viewmodel bleibt stehen
+    cam_freq_hz=4.0, cam_zeta=1.0, cam_dps=18.0, ads_cam=0.45,
+    # Grundbahn (fest, lernbar): je Schuss path_up_h der Bildhöhe nach oben, seitlich die feste Folge path_side_b (Lage nach
+    # Schuss n in Bildbreite, wiederholt), beides im Bildmaßstab der Welt (im Zielen also kleinerer Winkel); die Kamera folgt der
+    # Bahn mit path_hz, Schüsse gehen dorthin
+    path_up_h=0.010, path_hz=10.0,
+    path_side_b=[0.0, 0.003, 0.006, 0.007, 0.004, 0.0, -0.004, -0.007, -0.008, -0.005, -0.001, 0.003, 0.006, 0.008, 0.006, 0.002,
+                 -0.003, -0.006],
+    # Salven zweistufig: in der Salve (Abstand ≤ recover_delay_s, mindestens 1,5 Schussabstände) steigt die Bahn ohne Erholung,
+    # danach kehrt sie kritisch gedämpft mit recover_hz zurück. burst_shots > 0: Salvenwaffe mit burst_rpm in der Salve
+    recover_delay_s=0.12, recover_hz=2.0, burst_shots=0, burst_rpm=0,
+    # Streuung um den Zielpunkt (Zufall, getrennt von der Bahn); bis 0.14 als MoveTuning in Unity
+    spread_hip_deg=1.1, spread_ads_deg=0.12)
+# Waffenwechsel (6.1 A): Wegstecken (holster 0,27 s), danach leere Sicht, dann Ziehen wie bisher (draw mit Nachfedern).
+# empty_s ist die Pause zwischen Ende von holster und Beginn von draw; die sichtbare leere Sicht ist länger, weil die Waffe schon vor
+# dem Ende des Wegsteckens unter dem Bildrand ist und beim Ziehen erst nach einigen Bildern auftaucht.
+SWITCH = dict(empty_s=0.03, src='M Destiny-Wechsel: leere Sicht 0,07–0,30 s (Motiongen wechsel › 4); Ziel 0,1–0,2 s (6.1 A), gemessen 0,13 s bei 60/s')
 
 
 def _retime(A, k):

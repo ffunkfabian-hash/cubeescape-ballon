@@ -8,6 +8,8 @@
   python3 tools/unity_run.py compare    → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR)
   python3 tools/unity_run.py sway|treffer → Belege Pendeln bzw. Schuss-Ring/Treffer-X (MP4, Kontaktbogen, feedback.csv)
   python3 tools/unity_run.py huefte    → Beleg Hüft-Fadenkreuz (0.13): Hüfte, Feuer, Zielen, Sprint, Nachladen (MP4, feedback.csv)
+  python3 tools/unity_run.py sprint|wechsel|rueckstoss → Belege 0.15: Sprint-Hub und Sprint → Zielen, Waffenwechsel, Rückstoß im Zielen
+      (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
 """
@@ -34,7 +36,8 @@ FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 
 def locked(cmd, log=None):
     print('»', ' '.join(cmd[:3]), '…')
-    r = subprocess.run([LOCK, 'lock', 'unity', '--'] + cmd)
+    what = os.environ.get('BALLON_LOCK_WHAT')          # Sitzung und Schritt für `ce lock status` (heavy_lock --what)
+    r = subprocess.run([LOCK, 'lock', 'unity'] + (['--what', what] if what else []) + ['--'] + cmd)
     if log and os.path.exists(log):
         bad = [ln for ln in open(log, encoding='utf-8', errors='replace') if 'error CS' in ln or 'Aborting batchmode' in ln]
         if bad:
@@ -94,13 +97,17 @@ def player(args, log):
 DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen, Sprint → Zielen',
          'sway': 'BALLON Patch unity-abgleich · Unity · Pendeln: schnelle Drehung, Rückkehr ohne Überschwingen (2,5 Hz, ζ 1)',
          'treffer': 'BALLON Patch unity-abgleich · Unity · 720/min · Schuss-Ring im Zielen (1 Bild) · Treffer-X orange ≥ 0,17 s',
-         'huefte': 'BALLON 0.13 Hipfire · Unity · Hüft-Fadenkreuz: Hüfte → Feuer → Zielen → Sprint („^“) → Nachladen'}
+         'huefte': 'BALLON 0.13 Hipfire · Unity · Hüft-Fadenkreuz: Hüfte → Feuer → Zielen → Sprint („^“) → Nachladen',
+         'sprint': 'BALLON 0.15 Plumb · Unity · Sprint-Hub ≈ 10 % H / 13 % B (3,16 Hz), Sprint → Zielen: Zoom mit dem Modell',
+         'wechsel': 'BALLON 0.15 Plumb · Unity · Waffenwechsel (Q): Wegstecken 0,27 s, leere Sicht, Ziehen mit Nachfedern',
+         'rueckstoss': 'BALLON 0.15 Plumb · Unity · Rückstoß: Hüfte, im Zielen Viererstöße und 12er-Stoß – Welt wandert, Visier steht'}
 
 
 def capture(scene=None, demo=None):
-    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '')
+    extra = os.environ.get('BALLON_CAPTURE_EXTRA', '').split()   # Messläufe: z. B. "-ballonFps 60 -ballonKey 1" (eigener Ordner, _mess)
+    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '') + ('_mess' if extra else '')
     shutil.rmtree(d, ignore_errors=True)
-    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []) + (['-ballonDemo', demo] if demo else []),
+    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []) + (['-ballonDemo', demo] if demo else []) + extra,
                 os.path.join(EV, 'capture.log'))
     frames = sorted(glob.glob(os.path.join(d, '[0-9]*.png')))
     if rc or not frames:
@@ -127,7 +134,7 @@ def capture(scene=None, demo=None):
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
-    stem = 'gefuehl' if demo == 'feel' else demo
+    stem = ('gefuehl' if demo == 'feel' else demo or '') + ('_mess' if extra else '')
     out = os.path.join(EV, f'{stem}_{scene or "parcours"}.mp4' if demo else 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
                     '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', out], check=True)
@@ -281,7 +288,7 @@ if __name__ == '__main__':
         sys.exit(tests())
     if a == 'capture':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
-    if a in ('feel', 'sway', 'treffer', 'huefte'):               # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13)
+    if a in DEMOS:            # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13); Sprint, Wechsel, Rückstoß (0.15)
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
     if a == 'scenes':
         d = os.path.join(EV, 'scene_shots')

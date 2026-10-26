@@ -11,7 +11,7 @@ namespace Ballon.Ego
     public struct EgoIntent
     {
         public bool fire, aim, sprint, crouch, grounded, nearWall;
-        public bool reload, inspect, draw, holster;     // gedrückt in diesem Bild
+        public bool reload, inspect, draw, holster, swap;   // gedrückt in diesem Bild (swap: Waffe wechseln, 6.1 A)
         public float speed01;                           // Laufgeschwindigkeit relativ zum Gehen (0 … ~1,6 im Sprint)
         public Vector2 look;                            // Mausbewegung in Grad in diesem Bild (x rechts, y hoch)
         public Vector2 move;                            // Bewegungsrichtung (x rechts, y vorn), Länge ≤ 1
@@ -23,7 +23,6 @@ namespace Ballon.Ego
     {
         public float fadeFrames = 4f;          // Überblendung zwischen Spuren
         public float cancelFadeFrames = 6f;    // Abbruch (Betrachten)
-        public float kickHip = 1.0f, kickAds = 0.45f;   // fire_hip.kick / fire_ads.kick
         // Pendeln kritisch gedämpft wie der Visier-Anflug (Frage 3.3 A, Destiny: Rückkehr ≈ 0,3 s ohne Überschwingen):
         // 2,5 Hz bei ζ 1 → Rest ≈ 5 % nach 0,30 s
         public float swayPerDeg = 0.35f, swayMaxDeg = 3.0f, swayFreq = 2.5f, swayDamp = 1.0f, swayPos = 0.0035f;
@@ -59,8 +58,14 @@ namespace Ballon.Ego
         public int ammo, magSize;
         public float rpm;
         public bool holstered = true;
-        public float adsWeight;            // 0 Hüfte … 1 Zielen (für FOV, Empfindlichkeit, Streuung)
+        public float adsWeight;            // 0 Hüfte … 1 Zielen (für FOV, Empfindlichkeit, Streuung); folgt dem Modell (1d)
         public long shots;
+        public float worldZoom;            // Weltzoom der Klasse im Zielen (ego.json › gameplay.world_zoom)
+        public float Zoom => Mathf.Lerp(1f, worldZoom, adsWeight);
+        /// <summary>Grundbahn der Welt in Grad (x Gieren rechts, y Nicken hoch) – Messwert für Tests und Aufnahme.</summary>
+        public Vector2 PathDeg => _path;
+        /// <summary>Waffenhaltung nach dem Feder-Nachlauf, ohne Live-Ebenen (Wippen, Rückstoß) – daraus folgt der Zoom (1d).</summary>
+        public Matrix4x4 BaseWeapon { get; private set; }
 
         Track _t;
         Stance _stance = Stance.Hip;
@@ -69,6 +74,18 @@ namespace Ballon.Ego
         bool _portOpen, _triggerHeld;
         Vector3 _recX, _recV, _recCx, _recCv;
         float _rClimb, _dt = 1f / 30f;
+        Vector3 _path, _pathV, _pathTgt;   // Grundbahn der Welt (x Gieren, y Nicken, Grad), Ziel der Salve
+        int _pathN, _burstLeft;            // Schuss in der Salve (feste Seitenfolge), Rest einer Salve (Salvenwaffen)
+        float _worldPitch, _worldYaw;
+        readonly float _tanH;              // tan des halben horizontalen Bildwinkels (ungezoomt)
+        /// <summary>Seitenverhältnis des Bilds (EgoPlayer setzt es je Bild aus der Kamera): die Grundbahn rechnet in Anteilen der Bildhöhe.</summary>
+        public float aspect;
+        readonly Vector3 _eyeLocal;
+        readonly float _dHip;              // Abstand Augenpunkt → Kamera in der Hüfte
+        float _d0 = 1, _leaveT;
+        bool _aimPrev, _leaving;
+        bool _swapPending;                 // Wechsel: nach dem Wegstecken leere Sicht, dann Ziehen
+        float _emptyT, _drawEnters = -1;
         bool _hasSec;
         Vector3 _secP, _secV, _secAv;
         Quaternion _secQ;
@@ -92,9 +109,33 @@ namespace Ballon.Ego
             output = s.NewOutput();
             magSize = ammo = s.D.gameplay.magazine;
             rpm = s.D.gameplay.rpm;
+            worldZoom = s.D.gameplay.world_zoom;
+            _tanH = Mathf.Tan(Rad(s.D.camera.h_fov_deg) / 2);
+            aspect = s.D.camera.aspect[0] / (float)s.D.camera.aspect[1];
+            _eyeLocal = V(s.D.Anchor("Socket_Eye").pos);
+            _dHip = s.PoseMatrix("hip").MultiplyPoint3x4(_eyeLocal).magnitude;
             _walk = s.D.Action("walk");
             _sprintA = s.D.Action("sprint");
             Hold("holster", Stance.Hip);
+        }
+
+        /// <summary>Wechsel (6.1 A): letztes Bild von draw, in dem weder Waffe noch Arme im Bild sind (Silhouette aus den Netzgrenzen). Beim
+        /// Wechsel beginnt das Ziehen dort – der unsichtbare Anfang (≈ 0,35 s) fiele sonst in die leere Sicht; der sichtbare Teil bleibt wie
+        /// beim Ziehen mit Taste 1. Der Controller rechnet es beim ersten Wechsel einmal (_drawEnters).</summary>
+        public static float DrawEnters(EgoSolver s)
+        {
+            var E = new EgoScreen(s);
+            var A = s.D.Action("draw");
+            var st = new EgoState();
+            var pts = new List<Vector2>();
+            float hidden = 0;
+            for (int f = 0; f <= A.frames; f++)
+            {
+                E.Silhouette(s.Evaluate(A, f, st), pts);
+                if (pts.Count > 0) break;
+                hidden = f;
+            }
+            return hidden;
         }
 
         public string ActionName => _t.A.name;
@@ -279,13 +320,30 @@ namespace Ballon.Ego
             // Eingaben, die Spuren starten
             if (holstered)
             {
-                if (i.draw && _t.ended && _t.A.name != "draw")
-                    Play(i.aim ? "draw_aim" : "draw", busy: true, fade: 0, onEnd: _ => Ready());
+                if (_swapPending && _t.ended) _emptyT -= dt;            // Wechsel: leere Sicht läuft
+                if ((i.draw || (_swapPending && _emptyT <= 0)) && _t.ended && _t.A.name != "draw")
+                {
+                    bool swap = _swapPending;
+                    if (swap)
+                    {
+                        Marker?.Invoke("switch", "Draw");
+                        _hasSec = false;                                // Feder-Nachlauf ab der übersprungenen Stelle neu
+                    }
+                    _swapPending = false;
+                    Play(i.aim ? "draw_aim" : "draw", from: swap ? (_drawEnters >= 0 ? _drawEnters : _drawEnters = DrawEnters(S)) : 0, busy: true, fade: 0, onEnd: _ => Ready());
+                }
             }
-            else if (i.holster && _t.A.name != "holster" && _t.A.name != "reload_to_switch")
+            else if ((i.holster || i.swap) && _t.A.name != "holster" && _t.A.name != "reload_to_switch")
             {
-                Play(reloading ? "reload_to_switch" : "holster", busy: true, onEnd: _ => holstered = true,
-                     fade: reloading ? 3 : -1);
+                bool swap = i.swap;
+                Play(reloading ? "reload_to_switch" : "holster", busy: true, fade: reloading ? 3 : -1, onEnd: _ =>
+                {
+                    holstered = true;
+                    if (!swap) return;
+                    _swapPending = true;                                // Wechsel (6.1 A): Wegstecken, leere Sicht, Ziehen
+                    _emptyT = S.D.motion.@switch.empty_s;
+                    Marker?.Invoke("switch", "Empty");
+                });
                 holstered = false;
             }
             else if (inspecting && (i.fire || i.aim || i.reload || (i.sprint && i.move.y > 0.3f)))
@@ -330,17 +388,33 @@ namespace Ballon.Ego
         bool CanFire => !holstered && !Busy && ammo > 0 && (_t.A.name != "sprint_to_fire" || _fireArmed) && _stance != Stance.Sprint
                         && !(_t.A.name == "sprint" && _t.frame < K("sprint", 2)) && _t.A.name != "draw" && _t.A.name != "holster";
 
+        /// <summary>Abstand zum nächsten Schuss: Dauerfeuer 60/rpm; Salvenwaffe (burst_shots > 0) in der Salve 60/burst_rpm, danach
+        /// bis zur nächsten Salve der Rest von 60/rpm.</summary>
+        float ShotInterval()
+        {
+            var Rc = S.D.motion.recoil;
+            if (Rc.burst_shots <= 0) return 60f / rpm;
+            float inBurst = 60f / Rc.burst_rpm;
+            return _burstLeft > 0 ? inBurst : Mathf.Max(inBurst, 60f / rpm - (Rc.burst_shots - 1) * inBurst);
+        }
+
+        /// <summary>Ende einer Salve: kein Schuss seit recover_delay_s, mindestens 1,5 Schussabstände in der Salve (5.2 A, zweistufig).</summary>
+        float RecoverDelay
+        {
+            get
+            {
+                var Rc = S.D.motion.recoil;
+                return Mathf.Max(Rc.recover_delay_s, 1.5f * (Rc.burst_shots > 0 ? 60f / Rc.burst_rpm : 60f / rpm));
+            }
+        }
+
         void UpdateLive(float dt, EgoIntent i)
         {
-            // Zielen-Anteil (aim_in 9 Bilder)
-            float adsTarget = (_stance == Stance.Ads && (_t.A.name != "sprint_to_aim" || _t.frame >= K("sprint_to_aim", 1) * 0.5f)) ? 1 : 0;
-            adsWeight = Mathf.MoveTowards(adsWeight, adsTarget, dt * S.fps / K("aim_in", 1));
-
-            // Feuer mit fester Kadenz
+            // Feuer mit fester Kadenz; eine angefangene Salve läuft zu Ende
             _triggerHeld = i.fire && CanFire;
             _sinceShot += dt;
-            float interval = 60f / rpm;
-            if (_triggerHeld)
+            float interval = ShotInterval();
+            if (_triggerHeld || (_burstLeft > 0 && CanFire))
             {
                 _shotClock += dt;
                 // erster Schuss sofort; Max statt Setzen behält im Dauerfeuer den Übertrag (sonst bei 30/s 3 Bilder = 600 statt 720/min)
@@ -349,15 +423,27 @@ namespace Ballon.Ego
                 {
                     _shotClock -= interval;
                     FireOne();
+                    interval = ShotInterval();
                 }
             }
             else _shotClock = 0;
 
-            // Rückstoß: Impuls je Schuss in gedämpfte Federn (ego.RECOIL), Kamera getrennt; Hochziehen klingt nach dem Feuern ab
+            // Rückstoß (ego.RECOIL): Modellkick und Kamera-Ruck als Federn (kritisch gedämpft: kein Unterschwingen), Hochziehen des
+            // Modells klingt nach dem Feuern ab; die Grundbahn steigt in der Salve und kehrt danach kritisch gedämpft zurück (5.2 A)
             var Rc = S.D.motion.recoil;
             EgoSolver.SpringStep(ref _recX, ref _recV, Vector3.zero, 2 * Mathf.PI * Rc.freq_hz, Rc.zeta, dt);
             EgoSolver.SpringStep(ref _recCx, ref _recCv, Vector3.zero, 2 * Mathf.PI * Rc.cam_freq_hz, Rc.cam_zeta, dt);
             if (_sinceShot > interval * 1.5f) _rClimb *= Mathf.Exp(-dt * S.fps / 8f);
+            bool salvo = _sinceShot <= RecoverDelay;
+            if (!salvo)
+            {
+                _pathTgt = Vector3.zero;
+                _pathN = 0;
+            }
+            EgoSolver.SpringStep(ref _path, ref _pathV, _pathTgt, 2 * Mathf.PI * (salvo ? Rc.path_hz : Rc.recover_hz), 1f, dt);
+            // Kamera-Ruck: in der Hüfte Kamera samt Viewmodel, im Zielen nur die Welt (das Visier bleibt stehen, 5.1 A)
+            _worldPitch = _path.y + _recCx.x * Mathf.Lerp(1f, Rc.ads_cam, adsWeight);
+            _worldYaw = _path.x;
             _boltT = Mathf.Max(0, _boltT - dt);
 
             // Pendeln aus der Mausbewegung: dieselbe Feder wie Feder-Nachlauf und Visier-Anflug (EgoSolver.SpringStep)
@@ -385,11 +471,19 @@ namespace Ballon.Ego
             _sinceShot = 0;
             _boltT = tune.boltOpenS;
             _portOpen = true;
-            float k = Mathf.Lerp(tune.kickHip, tune.kickAds, adsWeight);
             var Rc = S.D.motion.recoil;
-            _recV += new Vector3(Rc.back_mps * k, Rc.pitch_dps * k, 0);
-            _recCv += new Vector3(Rc.cam_dps * k, 0, 0);
-            _rClimb += Rc.climb_deg * k;
+            float w = adsWeight;
+            // Modellkick: im Zielen klein (Visier < 1 % H), ohne Hochziehen; Kamera-Ruck gleich, er wird erst beim Anwenden verteilt
+            _recV += new Vector3(Rc.back_mps * Mathf.Lerp(1f, Rc.ads_back, w), Rc.pitch_dps * Mathf.Lerp(1f, Rc.ads_pitch, w), 0);
+            _recCv += new Vector3(Rc.cam_dps, 0, 0);
+            _rClimb += Rc.climb_deg * (1 - w);
+            // Grundbahn: fester Schritt nach oben und feste Seitenfolge, als Anteil des Weltbilds (im Zielen kleinerer Winkel)
+            float th = _tanH / Zoom, tv = th / aspect;
+            _pathN++;
+            _pathTgt.y += Mathf.Atan(Rc.path_up_h * 2 * tv) * Mathf.Rad2Deg;
+            if (Rc.path_side_b != null && Rc.path_side_b.Length > 0)
+                _pathTgt.x = Mathf.Atan(Rc.path_side_b[_pathN % Rc.path_side_b.Length] * 2 * th) * Mathf.Rad2Deg;
+            if (Rc.burst_shots > 0) _burstLeft = _burstLeft > 0 ? _burstLeft - 1 : Rc.burst_shots - 1;
             Shot?.Invoke();
         }
 
@@ -416,11 +510,42 @@ namespace Ballon.Ego
             // Rückstoß
             L.pos += R.MultiplyVector(new Vector3(0, _recX.x, 0));
             L.rot = L.rot * RotX(Rad(-(_recX.y + _rClimb)));
-            L.camPitch = _recCx.x;
+            L.camPitch = _recCx.x * (1 - adsWeight);           // Viewmodel-Kamera: Ruck nur in der Hüfte (im Zielen nur die Welt)
             L.trigger = _triggerHeld ? 1 : 0;
             L.bolt = _boltT > 0 ? 1 : 0;
             L.port = _portOpen ? 1 : 0;
             return L;
+        }
+
+        // Weltzoom gegen Modell (1d): der Zoom beginnt, wenn der Augenpunkt AdsStart seines Wegs zur Kamera zurückgelegt hat, und ist
+        // bei AdsEnd ganz da; dazwischen folgt er dem Modell. Destiny-Holo: Zoom beginnt 0–2 Bilder nach dem Modell, Ende ±1 Bild.
+        // AdsEnd nah an 1: am Bild bewegen sich nahe Teile noch, wenn der Augenpunkt fast da ist (gemessen: Ende 0,99 → 3 Bilder zu früh)
+        const float AdsStart = 0.05f, AdsEnd = 0.9985f, LeaveGraceS = 0.1f, LeaveMaxS = 0.5f;
+
+        static float Remap(float p) => Mathf.Clamp01((p - AdsStart) / (AdsEnd - AdsStart));
+
+        /// <summary>Zielen-Anteil aus dem Weg des Augenpunkts (Socket_Eye nach dem Feder-Nachlauf, ohne Live-Ebenen) statt einer eigenen
+        /// Zeitkurve: Hüfte/Sprint → Zielen über den Abstand beim Beginn, Zielen → Hüfte über den Hüftabstand; Sprünge (Abbruch mitten
+        /// im Anflug) laufen über mindestens drei Bilder bei 30/s. Das Verlassen dauert höchstens LeaveMaxS (die Grenze greift erst nach
+        /// LeaveGraceS, beim normalen aim_out nie): aus dem Zielen direkt ins
+        /// Nachladen oder Betrachten liegt das Auge näher an der Kamera als in der Hüfte (Nachladen 0,37 statt 0,41 m), sonst bliebe Zoom.</summary>
+        void FollowModel(Matrix4x4 baseW)
+        {
+            float d = baseW.MultiplyPoint3x4(_eyeLocal).magnitude;
+            bool aiming = _stance == Stance.Ads || (_t.A.name == "draw_aim" && !_t.ended && _t.frame >= K("draw_aim", 1));
+            if (aiming && !_aimPrev) _d0 = Mathf.Max(_dHip, d);
+            if (!aiming && _aimPrev) { _leaving = true; _leaveT = 0; }
+            _aimPrev = aiming;
+            float target = 0;
+            if (aiming) target = Mathf.Max(adsWeight, Remap(1 - d / _d0));
+            else if (_leaving)
+            {
+                _leaveT += _dt;
+                float cap = 1 - Mathf.Max(0, _leaveT - LeaveGraceS) / (LeaveMaxS - LeaveGraceS);   // greift erst nach LeaveGraceS
+                target = Mathf.Min(Mathf.Min(adsWeight, Remap(1 - d / _dHip)), cap);
+                if (target <= 0) _leaving = false;
+            }
+            adsWeight = Mathf.MoveTowards(adsWeight, target, _dt * 30f / 3f);
         }
 
         /// <summary>Feder-Nachlauf (ego.SECONDARY) in Echtzeit über alle Spuren hinweg: glättet auch Spurwechsel.</summary>
@@ -451,6 +576,8 @@ namespace Ballon.Ego
             if (e < 1) baseW = Blend(_fromBase, baseW, e);
             _lastBase = baseW;
             baseW = _t.scripted ? S.Secondary(baseW, f, _t.st, A.EndsInAds) : SecondaryLive(baseW, A.EndsInAds);
+            BaseWeapon = baseW;
+            FollowModel(baseW);
             var L = _t.scripted ? S.Scripted(A, f, Rot3(baseW), _t.st) : LiveLayers(Rot3(baseW));
             var WM = EgoSolver.Apply(baseW, L);
             S.MechAt(A, f, L, _mech);
@@ -483,6 +610,8 @@ namespace Ballon.Ego
             S.SolveArm(true, o.handR, o.fingersR, o.segR, o);
             S.SolveArm(false, o.handL, o.fingersL, o.segL, o);
             o.camPitch = L.camPitch;
+            o.worldPitch = _t.scripted ? L.camPitch : _worldPitch;
+            o.worldYaw = _t.scripted ? 0 : _worldYaw;
             _hasOutput = true;
             return o;
         }

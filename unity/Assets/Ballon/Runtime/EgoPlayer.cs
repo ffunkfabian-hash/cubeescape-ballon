@@ -13,10 +13,8 @@ namespace Ballon.Ego
         public float walk = 4.2f, sprint = 6.8f, crouch = 2.4f, aimMove = 2.8f;
         public float accelGround = 12f, accelAir = 2.5f, jumpSpeed = 5.0f, gravity = 16f;
         public float height = 1.8f, crouchHeight = 1.15f, eye = 1.62f, crouchEye = 1.0f, radius = 0.32f;
-        public float adsZoom = 1.35f;                // Weltzoom im Zielen (Bildmaßstab, Viewmodel bleibt 75°); Create setzt ego.json › gameplay.world_zoom
-        public float spreadHipDeg = 1.1f, spreadAdsDeg = 0.12f;
-        public float climbView = 0.18f;              // bleibendes Hochziehen des Blicks je Schuss (Grad, Hüfte)
         public float wallCheck = 0.75f;
+        // Weltzoom (gameplay.world_zoom), Streuung und Hochziehen des Blicks (Grundbahn) kommen seit 0.15 aus ego.json (ego.RECOIL)
     }
 
     /// <summary>Rückmeldung nach Visier-Standard 3 §6 (`reticles.ADS_FEEDBACK`, Entscheidungsliste Frage 4.3 A): Schuss-Ring im Zielen
@@ -90,7 +88,6 @@ namespace Ballon.Ego
         int _ringFrames;
         Vector3 _vel;
         bool _grounded = true, _wasGrounded = true;
-        float _viewClimb;
         System.Random _rng = new System.Random(7);
         readonly Queue<GameObject> _decals = new Queue<GameObject>();
         public Material decalMat;
@@ -151,7 +148,6 @@ namespace Ballon.Ego
             p._cc.stepOffset = 0.35f;
             p._cc.skinWidth = 0.03f;
             p._eye = p.move.eye;
-            p.move.adsZoom = S.D.gameplay.world_zoom;          // Weltzoom der Klasse (Entscheidungsliste 1.2 A, basic/reticles.py)
             p.hipReticle = new HipReticle(S.D.gameplay.hip);
             p.head = new GameObject("Head").transform;
             p.head.SetParent(go.transform, false);
@@ -190,7 +186,7 @@ namespace Ballon.Ego
             return c;
         }
 
-        float Zoom => Mathf.Lerp(1f, move.adsZoom, C.adsWeight);
+        float Zoom => C.Zoom;                       // Weltzoom der Klasse (1.2 A), folgt dem Modell (1d)
 
         void Update()
         {
@@ -228,23 +224,23 @@ namespace Ballon.Ego
             var it = new EgoIntent
             {
                 fire = r.fire, aim = r.aim, sprint = r.sprint, crouch = r.crouch, grounded = _airT < 0.12f,   // kurze Luftphasen (Stufen) zählen nicht
-                reload = r.reload, inspect = r.inspect, draw = r.draw, holster = r.holster,
+                reload = r.reload, inspect = r.inspect, draw = r.draw, holster = r.holster, swap = r.swap,
                 speed01 = new Vector2(_vel.x, _vel.z).magnitude / move.walk, look = r.lookDeg, move = r.move,
                 nearWall = NearWall(),
             };
             hipReticle?.Decay(dt, it.speed01);            // vor den Schüssen dieses Bilds, wie reticles.simulate
+            C.aspect = worldCam.aspect > 0 ? worldCam.aspect : 16f / 9f;   // Grundbahn in Anteilen der Bildhöhe
             var o = C.Tick(dt, it);
             hipReticle?.See(C);
             rig.Apply(o);
-            var kick = rig.CameraKick(o.camPitch);
-            worldCam.transform.localRotation = kick;
-            viewCam.transform.localRotation = kick;
+            // Welt: Grundbahn und Kamera-Ruck; Viewmodel: nur der Ruck in der Hüfte (im Zielen steht das Visier, 5.1 A)
+            worldCam.transform.localRotation = rig.WorldKick(o.worldPitch, o.worldYaw);
+            viewCam.transform.localRotation = rig.CameraKick(o.camPitch);
             float h = C.S.D.camera.h_fov_deg;
             float aspect = worldCam.aspect > 0 ? worldCam.aspect : 16f / 9f;
             float v = Camera.HorizontalToVerticalFieldOfView(h, aspect);
             viewCam.fieldOfView = v;
             worldCam.fieldOfView = 2 * Mathf.Atan(Mathf.Tan(v * Mathf.Deg2Rad / 2) / Zoom) * Mathf.Rad2Deg;
-            _viewClimb *= Mathf.Exp(-dt * 3f);
             course?.Tick(transform.position + Vector3.up * CourseRun.BodyCenter, dt);
         }
 
@@ -302,13 +298,11 @@ namespace Ballon.Ego
 
         void OnShot()
         {
-            float spread = Mathf.Lerp(move.spreadHipDeg, move.spreadAdsDeg, C.adsWeight);
+            var Rc = C.S.D.motion.recoil;                // Streuung um den Zielpunkt, getrennt von der Grundbahn (5.2 A)
+            float spread = Mathf.Lerp(Rc.spread_hip_deg, Rc.spread_ads_deg, C.adsWeight);
             double a = _rng.NextDouble() * Math.PI * 2, rr = Math.Sqrt(_rng.NextDouble()) * spread;
             var dir = Quaternion.AngleAxis((float)(rr * Math.Cos(a)), worldCam.transform.up) *
                       Quaternion.AngleAxis((float)(rr * Math.Sin(a)), worldCam.transform.right) * worldCam.transform.forward;
-            float climb = move.climbView * Mathf.Lerp(1f, 0.5f, C.adsWeight);
-            _pitch -= climb;           // bleibendes Hochziehen (Spieler gleicht aus)
-            _viewClimb += climb;
             if (C.adsWeight > 0.5f) _ringFrames = AdsFeedback.ShotRingFrames;
             hipReticle?.Kick();
             if (Physics.Raycast(worldCam.transform.position, dir, out var hit, 300f, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))

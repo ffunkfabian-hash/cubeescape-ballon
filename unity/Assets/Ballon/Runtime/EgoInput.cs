@@ -9,7 +9,7 @@ namespace Ballon.Ego
     {
         public Vector2 lookDeg;         // Blickänderung in Grad (x rechts, y hoch)
         public Vector2 move;            // x rechts, y vorn
-        public bool sprint, crouch, jump, fire, aim, reload, inspect, draw, holster;
+        public bool sprint, crouch, jump, fire, aim, reload, inspect, draw, holster, swap;   // swap: Waffe wechseln (6.1 A)
     }
 
     public interface IEgoInput
@@ -53,6 +53,7 @@ namespace Ballon.Ego
             r.inspect = k.fKey.wasPressedThisFrame;
             r.draw = k.digit1Key.wasPressedThisFrame;
             r.holster = k.digit2Key.wasPressedThisFrame;
+            r.swap = k.qKey.wasPressedThisFrame;
             return r;
         }
     }
@@ -110,6 +111,7 @@ namespace Ballon.Ego
                 case "inspect": r.inspect = true; break;
                 case "draw": r.draw = true; break;
                 case "holster": r.holster = true; break;
+                case "swap": r.swap = true; break;
             }
         }
     }

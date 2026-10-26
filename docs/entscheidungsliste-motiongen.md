@@ -296,6 +296,35 @@ je Bild (auf 640 × 360 verkleinert) Schwerpunkt, linke und obere Kante der Waff
 bestimmt Start und Ende; deshalb stehen drei. Der Sprint-Hub hängt vom Messpunkt ab (Schwerpunkt, Oberkante und Mündungsende bewegen sich verschieden,
 weil die Waffe auch rollt); welcher Punkt Destiny entspricht, ist offen, hier nicht entschieden.
 
+## Messungen nach Schritt 4 (26.10.2026)
+
+BALLON 0.15 „Plumb“ ([Bericht](versions/0.15-plumb.md)). Gleiche Bezugsgrößen wie oben (75° horizontal, 16:9, % von B/H, Ursprung oben links).
+Bildmessung wie in Schritt 2: Unity-Build aus dem eigenen Worktree, `-ballonFps 60 -ballonKey 1`, `tools/messen_bild.py`. Neu: im Messlauf wird
+kein Fadenkreuz mehr ins Bild gestempelt (seit 0.13 lag das Sprint-„^“ in der Maske und hielt die Oberkante bei 50 %). Dazu die Unity-Tests
+mit `EgoScreen` (Projektion der Anker und der Kanten der Netzgrenzen). Mit den alten Daten liefert `EgoScreen` die Hüftlage 58,8 / 49,6 %,
+also genau den Blender-Messwert aus Schritt 2. Belege unter `~/Library/Caches/CubeEscapeBallon/plumb/`.
+
+| Punkt | vorher (Schritt 2 bzw. alter Code) | nachher (0.15) | Destiny (Liste) |
+|---|---|---|---|
+| **2.1** Hüftlage, Mündung | x 58,8 / y 49,6 % | x **58,1** / y **63,1** % (`Hueftlage_im_Destiny_Band`) | x 54–59 / y 60–71 |
+| **2.1** hintere Visieröffnung | x 80,3 % (21,5 pp rechts) | x 77,4 / y 67,5 % (**19,3 pp** rechts) | 7–34 pp rechts |
+| **3.1** Sprint, Oberkante vertikal | 5,1–5,7 % H | **9,5 / 8,9** % H (zwei Sprints; Silhouette im Test 10,5) | ≈ 10–11 % H |
+| **3.1** Sprint, linke Kante seitlich | 7,0–8,7 % B | **12,7 / 13,7** % B (Silhouette 13,8) | ≈ 13 % B |
+| **3.1** Sprint, Schwerpunkt | vertikal 2,1–2,3 % H, seitlich 0,3–1,4 % B | vertikal 4,0 / 3,8 % H, seitlich 3,1 / 3,0 % B | Messpunkt offen |
+| **3.1** Frequenz | 3,16 Hz | 3,16 Hz (seitlich 1,58 Hz) | 3,16 Hz |
+| **1d** Hüfte → Zielen (Schwelle 5/10/20 %) | Zoom − Modell: Start −2…−3, Ende −3…−5 | Start **+2 / +1 / 0**, Ende **−1 / 0 / +1** | Start 0…+2, Ende ±1 |
+| **1d** Sprint → Zielen | Start +11, Ende 0…+2 | Ende −1 / 0 / +1; Start am Bild +5, weil das Sprint-Wippen schon ab dem Eingabebild Bewegung zeigt; an der Grundhaltung (Test) +1 | wie oben |
+| **1d** Zielen → Hüfte | Start −1…−3, Ende −1…−12 | Start +1 / 0 / 0, Ende −12 / −2 / −1 (das Modell federt nach) | – |
+| **6.1** Wechsel (60/s) | Wegstecken 0,60 s (Marker); Waffe bis 0,27 s sichtbar | Waffe bis **0,150 s** sichtbar, `Holstered` **0,267 s**, leer **0,133 s**, erstes neues Bild 0,300 s, Hüfte 0,517 s, ruhig 0,750 s | Wegstecken 0,08–0,27 s, leer 0,07–0,30 s, Hüfte 4–14 Bilder nach dem ersten Bild |
+| **5.1** Rückstoß im Zielen, Viererstoß | Visier durch den Rückstoß 1,03 % H (alter Modellkick, Gegenprobe); Welt: bleibendes Hochziehen 0,09°/Schuss (rechnerisch ≈ 1,4 % H, ohne Rückkehr) | Welt **4,32 % H**, Visier **0,12 % H**, Rückkehr unter 0,25 % H nach **0,483 s**, kein Unterschwingen | Welt ≈ 4 pp H, Visier < 1 pp, Basis nach 36 Bildern (0,6 s) |
+| **5.2** Bahn, 12 Schuss Hüfte | bleibend 0,18°/Schuss (≈ 0,36 % H), keine Seitenbahn, keine Erholung | **12,0 % H**, seitlich **1,5 % B**, dreimal dieselbe Form, Erholung 0,60 s | ≈ 1 pp H je Schuss, ≤ 2,2–2,5 pp B, Rücklauf 0,4 s ins ±3-pp-Band |
+| **5.2** Salven (Daten im Test umgestellt) | Salven nicht getrennt | 3 Schuss im Abstand 4 Bilder, 22 Bilder Pause; Erholung in der Pause, keine in der Salve | Gridskipper: Stufe ≈ 4 pp je Salve, Erholung in der Pause |
+
+**Lesart Sprint seitlich:** Die linke Kante (Maße oben) pulsiert mit der Schrittfrequenz 3,16 Hz, nicht mit der Seitenfrequenz 1,58 Hz.
+Sie misst also vor allem den vertikalen Hub dort, wo Lauf und linker Arm den unteren Bildrand schneiden. Das galt schon für die
+Schritt-2-Werte 7,0–8,7 % B. Die echte Seitenbewegung (Schwerpunkt, 1,58 Hz) liegt bei 3 % B. Welcher Messpunkt der Destiny-Zahl 13 % B
+entspricht, ist weiter offen (siehe oben); eine reine Seitenbewegung von 13 % B bräuchte nach dem Schwerpunktmaß rund den vierfachen Seitenhub (≈ 90 statt 22 mm).
+
 ## Reihenfolge der Umsetzung (Vorschlag)
 
 Leitlinie: zuerst, was ohne Rendern geht und eine Regel verletzt; dann messen; dann die Bewegung; zuletzt neue Effekte. Einstufung
@@ -307,7 +336,7 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 | 1 | **Unity-Abgleich (erledigt 26.10.2026, Patch unity-abgleich, Messwerte in [unity.md](unity.md) › Tests):** Kadenz 720/min, Sway kritisch gedämpft, Schuss-Ring und Treffer-X in Orange, Test Nachlade-Abbruch vor und nach `MagIn`, Herkunft von `inspect` berichtigt | 7.1, 3.3, 4.3, 6c, 6.2 | Patch | unity | – |
 | 2 | **Messen (erledigt 25.10.2026, [Messungen](#messungen-25102026)):** ein Ego-Still je Haltung mit Mittenkreuz (Hüftlage, Scout-Ring), Unity-Aufnahme `feel` für Sprint-Hub und Zoom-Timing; Werte in diese Datei und `data/review.json` | 1a, 1d, 2.1, 3.1 | Patch (nur Messung) | gpu, unity | – |
 | 3 | **Weltzoom und Hüft-Fadenkreuz (erledigt 26.10.2026, BALLON 0.13 „Hipfire“, [Bericht](versions/0.13-hipfire.md)):** Weltzoom Scout 2,0 / Handfeuerwaffe 1,15 / MP 1,45, Unity zoomt mit dem Klassenwert (Automatik 1,9 statt fest 1,35); Hüftformen `ring_dot` (Automatik, Impuls, MG), `brackets` (Handfeuerwaffe, neu), `caret` (Scharfschütze und Sprint der Automatik, neu) im Katalog `reticles.py`; ausblendendes Hüft-Fadenkreuz in Unity (Hüfte, Sprint, Zielen, Nachladen, Ziehen) | 1.2, 4.1, 4.2 | Version | unity | 1 |
-| 4 | **Bewegung:** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` ≈ 0,25 s und leerer Sicht, Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips danach neu rendern (Nachtlauf) | 2.1, 3.1, 6.1, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
+| 4 | **Bewegung (erledigt 26.10.2026, BALLON 0.15 „Plumb“, [Bericht](versions/0.15-plumb.md), [Messungen](#messungen-nach-schritt-4-26102026)):** Hüftlage auf das Destiny-Band, Sprint-Hub ≈ 10 % H / 13 % B, Wechsel mit `holster` 0,27 s und leerer Sicht, Zoom mit dem Modell (1d), Rückstoß im Zielen in die Welt, feste Rückstoß-Bahn mit zweistufigen Salven; Ego-Clips neu gerendert | 2.1, 3.1, 6.1, 1d, 5.1, 5.2 | Version | unity, danach gpu | 2 (Messwerte) |
 | 5 | **Mündungsfeuer** in Blender und Unity (1 Bild bei 30/s, Emission ohne Bloom, ≤ 20 % der Holo-Öffnung) | 5.3 | Version | gpu, unity | 4 (Rückstoß im Zielen) |
 | 6 | **Beim Ego-Übertrag je Klasse:** Hüfthaltung, Sprint-Trageform und Anflugdauer je Klasse | 2.1, 3.2, 4d | je Klasse in der Version der Waffe | gpu, unity | 3, 4 |
 | 7 | **Beim nächsten Scout-Umbau:** Gehäuseoberkante unter dem Rohr anheben, Hals weg, Visierhöhe 66 ± 4 mm | 1.1 | in der Version des Umbaus | gpu | nach BALLON 0.12 „Silhouette“ (nicht parallel an `w03`) |
@@ -316,9 +345,9 @@ der Testkopie und mit `ce lock unity`, Messbilder mit `ce lock gpu`.
 Zwischen den Schritten: die Rückfrage an Motiongen zu den Widersprüchen 3 und 4 (über Sightline). Nach der Antwort entscheidet BASIC
 über den HUD-Punkt aus 4.3; das ist keine neue Nutzerfrage, solange Motiongen den Punkt im Spielbild belegt oder widerlegt.
 
-Befund aus Schritt 1 (für Schritt 4): Der Clip `fire_hip` hat die Herkunft „M 720/min ≈ 1 Schuss je 2,5 Bilder“, seine Schussbilder
-`fire` liegen aber 2 Bilder auseinander (13 Schüsse in Bild 2–25, ≈ 940/min; `fire_ads` gleich). Unity schießt live mit 720/min aus
-`gameplay.rpm`; die Schussbilder des Clips beim nächsten Rendern der Ego-Clips auf 2,5 Bilder (abwechselnd 2 und 3) setzen.
+Befund aus Schritt 1 (für Schritt 4, **erledigt in 0.15**): Der Clip `fire_hip` hatte die Herkunft „M 720/min ≈ 1 Schuss je 2,5 Bilder“, seine
+Schussbilder `fire` lagen aber 2 Bilder auseinander (13 Schüsse in Bild 2–25, ≈ 940/min; `fire_ads` gleich). Seit 0.15 liegen sie wie
+`gameplay.rpm` 2,5 Bilder auseinander (`ego.shots_720`: 2, 4, 7, 9, …, abwechselnd 2 und 3; `sprint_to_fire` ebenso), die Clips sind neu gerendert.
 
 [visiere]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/visiere.md
 [proportionen]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/4fa6f27/docs/proportionen.md

@@ -56,3 +56,5 @@
 - `gh repo create --source=.` erkennt einen Git-Worktree nicht als Repo („not a git repository“): aus dem Hauptcheckout aufrufen.
 - Magazin im Griff: Magazinmitte auf die Griffachse legen (`grip_v21`: f ≈ u·tan 15°), sonst steht es hinten aus dem Griff und das Sichtfenster liegt verdeckt ([w06 v2.1](../basic/pilot/w06_submachine_gun_v21.py)).
 - Unity-Aufnahmen lesen die Render-Textur der Kamera: `OnGUI`-Marken fehlen darin. Rückmeldungen (Ring, Treffer-X) deshalb mit denselben Masken ins Bild stempeln (`EgoPlayer.StampFeedback`, [unity.md](unity.md)).
+- Messläufe mit Schlüsselfarbe ohne HUD-Stempel: das seit 0.13 ins Bild gestempelte Sprint-„^“ lag in der Waffenmaske und hielt die Oberkante bei 50 % ([Bootstrap.cs](../unity/Assets/Ballon/Runtime/Bootstrap.cs)).
+- Eine Maskenkante am Bildrand misst Hub, nicht Seite (die linke Kante im Sprint pulsiert mit 3,16 Hz); Rückstoß am Visier gegen einen Zwilling ohne Schuss messen, sonst misst man das Atmen (≈ 3 % H im Zielen, [EgoPlayTests.cs](../unity/Assets/Ballon/Tests/PlayMode/EgoPlayTests.cs)).

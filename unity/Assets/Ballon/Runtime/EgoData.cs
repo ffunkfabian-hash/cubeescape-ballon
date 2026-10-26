@@ -1,4 +1,4 @@
-// Ego-Daten im Format ballon-ego/5, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
+// Ego-Daten im Format ballon-ego/6, erzeugt von tools/export_unity.py (nicht von Hand pflegen).
 // Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -128,13 +128,28 @@ namespace Ballon.Ego
     [Serializable] public class Spring { public float freq_hz, zeta, aim_freq_hz, aim_zeta; }     // aim_*: Aktionen, die im Zielen enden (ego.ends_in_ads)
     [Serializable] public class BreatheAll { public float period_s, up_m, pitch_deg; }
 
+    /// <summary>Rückstoß (ego.RECOIL, 6 ab 0.15): Modellkick (Feder, im Zielen ads_back/ads_pitch), Kamera-Ruck (Hüfte samt Viewmodel,
+    /// Zielen nur Welt: ads_cam), Grundbahn (path_up_h je Schuss, feste Seitenfolge path_side_b, Anteile des Weltbilds), Erholung nach der
+    /// Salve (recover_delay_s, recover_hz), Salvenwaffen (burst_shots, burst_rpm; 0 = Dauerfeuer) und Streuung (Grad).</summary>
     [Serializable]
-    public class Recoil { public float freq_hz, zeta, back_mps, pitch_dps, climb_deg, cam_freq_hz, cam_zeta, cam_dps; }
+    public class Recoil
+    {
+        public float freq_hz, zeta, back_mps, pitch_dps, climb_deg, ads_back, ads_pitch;
+        public float cam_freq_hz, cam_zeta, cam_dps, ads_cam;
+        public float path_up_h, path_hz;
+        public float[] path_side_b;
+        public float recover_delay_s, recover_hz;
+        public int burst_shots, burst_rpm;
+        public float spread_hip_deg, spread_ads_deg;
+    }
 
-    /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, TIME_SCALE).</summary>
+    /// <summary>Waffenwechsel (ego.SWITCH, 6.1 A): Pause ohne Waffe zwischen Wegstecken und Ziehen.</summary>
+    [Serializable] public class Switch { public float empty_s; public string src; }
+
+    /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, TIME_SCALE).</summary>
     [Serializable]
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
-                          public BreatheAll breathe_all; public Recoil recoil; }
+                          public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; }
 
     [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, spec, normal, ao; }
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
@@ -165,7 +180,7 @@ namespace Ballon.Ego
         public EgoTextures textures;
         [NonSerialized] public Matrix4x4 toUnity;   // aus axes.to_unity (JsonUtility kann keine verschachtelten Felder)
 
-        public const string Format = "ballon-ego/5";     // 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
+        public const string Format = "ballon-ego/6";     // 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
         Dictionary<string, EgoPose> _poses;
         Dictionary<string, EgoGrip> _grips;
