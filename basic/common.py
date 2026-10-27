@@ -436,8 +436,9 @@ RING_RATIO = 1.29                                            # Ring außen/innen
 
 
 def sight_line(u, kind='holo'):
-    """Visierlinie über der Schienenoberkante u (Visier-Standard 3, reticles.SIGHT['rail_line_mm']): Holo/Zielfernrohr + 26 mm,
-    Mini-Reflex + 15 mm, Kimme/Korn + 11 mm."""
+    """Visierlinie über der Schienenoberkante u (Visier-Standard 3, reticles.SIGHT['rail_line_mm']): Holo auf der H0-Plattform + 26 mm,
+    Mini-Reflex + 15 mm, Kimme/Korn + 11 mm. Zielfernrohre nach Konzept A haben zwei Schienen auf eigener Höhe und richten sich nur
+    nach der Visierhöhe 66 ± 4 mm (`scope_tropfen(…, cu)`)."""
     from basic.reticles import SIGHT
     return u + SIGHT['rail_line_mm'][kind]
 
@@ -579,7 +580,8 @@ def reflex_sight_v21(f, u, ww=26, wh=20, reticle_kind='ring_dot', reticle_color=
     (bei 90 mm Augenabstand 12–20 % der Bildbreite), Rahmen ≤ 0,10 × Öffnung (Bügel 1,6 mm, Dach 1,2 mm), gestufter Trapezsockel bis
     zur Fensterunterkante (nichts schwebt, Anzeigen unter der Visierlinie), neutrales Gehäuse mit einem Akzent (Klemmhebel). Plattform
     des Baukastens v3 (sight_platform). ww × wh = Glasfenster (Vertrag: 26 × 20 bis 44 × 30 mm). Absehen gezeichnet (0.21): Hüftform
-    von weapon_type flach im Glas; reticle_kind/reticle_weight bleiben für Katalogblätter (reticle()). Liefert (Teile, Anker)."""
+    von weapon_type flach im Glas in reticle_color; reticle_kind/reticle_weight wirken nicht mehr (Signatur für tools/reticle_sheet.py, das
+    die Röhrenform selbst einsetzt). Liefert (Teile, Anker)."""
     bt = u + 6                              # Oberkante Klemmfuß
     cu = bt + wh / 2 + 10                   # Visierlinie
     hw = ww / 2 + 0.8                       # Mitte der Haubenbügel
@@ -636,7 +638,7 @@ def holo_pille(f, u, size='M', weapon_type='submachine_gun', mat=SIGHT_MAT):
     """H2 „Pille“ (MP-Standard): H0-Fuß und Gehäuse ohne Haube (Merkmal 1); auf dem Sockel ein Emitterblock mit Leuchtschlitz nach
     oben und drei Cyanpunkten zum Auge (Merkmal 2); die Pillenkontur ist nur gezeichnet (flach, Rolle sight_line) und steht 2 mm über
     dem Block."""
-    w, h = {'S': (18, 21), 'M': (19, 23), 'L': (24, 29)}[size]     # Höhe M 26 → 23: Mündungsfeuer im Zielen sonst 21,8 % (5.3 A ≤ 20 %)
+    w, h = {'S': (18, 21), 'M': (19, 23), 'L': (24, 29)}[size]     # Höhe M 26 → 23: Mündungsfeuer im Zielen sonst 20,2 % der Kontur (5.3 A ≤ 20 %)
     cu = sight_line(u)
     gb = cu - h / 2 - 2
     blk = gb - 5

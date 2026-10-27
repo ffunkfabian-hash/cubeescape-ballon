@@ -6,7 +6,7 @@
   "files": [
    {
     "path": "basic/common.py",
-    "sha256": "30b0195ea71480359dd0fc4b443d141c978efdbc60ef9932d0527f0e53312443"
+    "sha256": "c58d166599d4756a2575e2b509aae7159125b473f47276321d427119f2ec7856"
    },
    {
     "path": "basic/kit.py",
