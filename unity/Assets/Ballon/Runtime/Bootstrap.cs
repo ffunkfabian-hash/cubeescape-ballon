@@ -415,6 +415,32 @@ namespace Ballon.Ego
             .Add(6.0f, 7.8f, hold: "sprint", move: new Vector2(0, 1))
             .Add(7.8f, 8.6f);
 
+        /// <summary>Beleg 0.22 (Impuls und Portalkanone): Wechsel durch alle fünf Waffen – Automatik, Taste 4 Impuls mit Salve aus der Hüfte
+        /// und zwei Salven im Zielen, Taste 5 Portalkanone mit Portal A (Linksklick) und Portal B (Rechtsklick), Taste 2 MP, Taste 3 Scout,
+        /// Taste 1 Automatik; 9,6 s.</summary>
+        public static ScriptedInput VolleyScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)
+            .Add(0.6f, 0.65f, press: "weapon4")
+            .Add(0.65f, 1.5f)
+            .Add(1.5f, 1.55f, hold: "fire")
+            .Add(1.55f, 2.1f)
+            .Add(2.1f, 3.8f, hold: "aim")
+            .Add(2.8f, 2.85f, hold: "aim fire")
+            .Add(3.3f, 3.35f, hold: "aim fire")
+            .Add(3.8f, 4.3f)
+            .Add(4.3f, 4.35f, press: "weapon5")
+            .Add(4.35f, 5.2f)
+            .Add(5.2f, 5.25f, hold: "fire")
+            .Add(5.25f, 5.9f)
+            .Add(5.9f, 5.95f, hold: "aim")
+            .Add(5.95f, 6.6f)
+            .Add(6.6f, 6.65f, press: "weapon2")
+            .Add(6.65f, 7.6f)
+            .Add(7.6f, 7.65f, press: "weapon3")
+            .Add(7.65f, 8.6f)
+            .Add(8.6f, 8.65f, press: "weapon1")
+            .Add(8.65f, 9.6f);
+
         /// <summary>Rückstoß (0.15, 5.1 A / 5.2 A): Viererstoß aus der Hüfte, dann im Zielen zwei Viererstöße und ein langer Stoß
         /// (12 Schuss); die Welt wandert, das Visier steht; 6,6 s.</summary>
         public static ScriptedInput RecoilScript() => new ScriptedInput()
@@ -445,7 +471,7 @@ namespace Ballon.Ego
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
             var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript()
                      : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript()
-                    : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : DemoScript();
+                    : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : dn == "volley" ? VolleyScript() : DemoScript();
             Player.input = demo;
             Player.C.ReadyNow();
             Player.C.ammo = dn == "rueckstoss" || dn == "feuer" ? Player.C.magSize : 9;
@@ -462,7 +488,7 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw" || dn == "volley") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
@@ -475,8 +501,11 @@ namespace Ballon.Ego
             }
             var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
             var markers = new List<string>();
-            Player.C.Marker += (a, m) => markers.Add($"{Time.frameCount - _f0},{a},{m}");
-            Player.C.Shot += () => markers.Add($"{Time.frameCount - _f0},shot,{Player.C.ammo}");
+            foreach (var c in Player.arsenal.C)                // alle Waffen (0.22: Wechsel durch fünf Waffen im Beleg)
+            {
+                c.Marker += (a, m) => markers.Add($"{Time.frameCount - _f0},{a},{m}");
+                c.Shot += () => markers.Add($"{Time.frameCount - _f0},shot,{Player.C.ammo}");
+            }
             Player.enabled = false;                    // Schritte hier, damit Bild und Auswertung zusammenpassen
             _f0 = Time.frameCount;
             int n = Mathf.CeilToInt(demo.Duration / dt);
@@ -487,7 +516,7 @@ namespace Ballon.Ego
                 ReadBack(rt, tex);
                 if (!key) Player.StampFeedback(tex);          // Messlauf ohne Fadenkreuz-Stempel: die Maske zeigt nur Waffe und Arme
                 File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), tex.EncodeToPNG());
-                File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{Player.C.ammo}\n");
+                File.AppendAllText(Path.Combine(dir, "frames.csv"), $"{i},{Player.C.ActionName},{Player.C.Frame:0.0},{(Player.C.S.D.gameplay.Unlimited ? "∞" : $"{Player.C.ammo} / {Player.C.magSize}")}\n");
                 File.AppendAllText(Path.Combine(dir, "feedback.csv"), FormattableString.Invariant(
                     $"{i},{Player.C.SwayDeg.x:0.000},{Player.C.SwayDeg.y:0.000},{(Player.ShotRingVisible ? 1 : 0)},{(Player.HitXVisible ? 1 : 0)},{Player.hits},{(Player.HipVisible ? 1 : 0)},{Player.hipReticle.Reason},{Player.hipReticle.spread:0.000},{Player.hipReticle.ExtentPx(720):0.0}\n"));
                 File.AppendAllText(Path.Combine(dir, "zoom.csv"), $"{i},{Player.C.adsWeight:0.0000},{Player.worldCam.fieldOfView:0.000}\n");
@@ -804,6 +833,7 @@ namespace Ballon.Ego
             var tex = new Texture2D(1600, 900, TextureFormat.RGB24, false);
             foreach (var pose in new[] { "hip", "ads", "reload", "inspect_r" })
             {
+                if (!D.HasPose(pose)) continue;     // Werkzeug ohne Zielen und Nachladen (0.22)
                 var o = S.Evaluate(S.StillAction(pose), 0, new EgoState());
                 Player.rig.Apply(o);
                 yield return new WaitForEndOfFrame();
@@ -825,6 +855,7 @@ namespace Ballon.Ego
             cam.backgroundColor = Color.black;
             foreach (var pose in new[] { "hip", "ads", "reload", "inspect_r" })
             {
+                if (!D.HasPose(pose)) continue;     // Werkzeug ohne Zielen und Nachladen (0.22)
                 Player.rig.Apply(S.Evaluate(S.StillAction(pose), 0, new EgoState()));
                 yield return new WaitForEndOfFrame();
                 ReadBack(rt, tex);

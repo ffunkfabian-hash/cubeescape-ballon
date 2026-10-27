@@ -1,5 +1,5 @@
-// Ego-Daten im Format ballon-ego/9 (je Waffe, Feuerart, Zielfernrohr, 0.20), erzeugt von tools/export_unity.py (nicht von Hand pflegen);
-// ballon-ego/8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
+// Ego-Daten im Format ballon-ego/10 (Salve und Bahnstufe je Klasse, Werkzeug mit Portalen, 0.22), erzeugt von tools/export_unity.py (nicht
+// von Hand pflegen); ballon-ego/9 (0.20), /8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
 // nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -18,9 +18,23 @@ namespace Ballon.Ego
         public EgoHip hip;                              // Hüft-Fadenkreuz (4.1 A / 4.2 A)
         public float zoom_start;                        // 9 (0.20): Anteil des Augenwegs, ab dem der Weltzoom beginnt (1d); 0 = 0,05
         public string fire_mode;                        // 9 (0.20): Feuerart aus der Spec (META fire): full_auto, semi_auto; leer (/7, /8) = full_auto
+                                                        // 10 (0.22): burst (Salve), single (Werkzeug: ein Schuss je Klick)
+        public int burst_shots, burst_rpm;              // 10: Salvenlänge (Spec burst_N) und Takt in der Salve; 0 = keine Salve
+        public float path_up_h;                         // 10: Bahnstufe je Schuss (Anteil der Bildhöhe) je Klasse; /9: motion.recoil.path_up_h
+        public float recover_delay_s, recover_hz;       // 10: Erholung der Bahn nach der Salve je Klasse; /9: motion.recoil
+        public bool muzzle_flash;                       // 10: Mündungsfeuer (Werkzeug ohne); /7–/9: true
+        public float ring_turn_s;                       // 10: Dauer der Ringdrehung je Schuss (Werkzeug)
+        public EgoPortal[] portals;                     // 10: Portale des Werkzeugs (Taste, Rolle, Farbe, Ringrichtung); leer = Waffe
+        public float range_m;                           // 10: Reichweite der Portalschüsse (Werkzeug); 0 = Waffe
 
-        /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto).</summary>
-        public bool Semi => fire_mode == "semi_auto";
+        /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto, Werkzeug single).</summary>
+        public bool Semi => fire_mode == "semi_auto" || fire_mode == "single";
+        /// <summary>Salvenwaffe: burst_shots Schuss je Zug, gehalten Salve um Salve (Feuerart burst).</summary>
+        public bool Burst => burst_shots > 0;
+        /// <summary>Ohne Magazin (Werkzeug): unbegrenzt, kein Nachladen.</summary>
+        public bool Unlimited => magazine <= 0;
+        /// <summary>Werkzeug mit Portalen: Linksklick und Rechtsklick lösen je ein Portal aus (kein Zielen).</summary>
+        public bool HasPortals => portals != null && portals.Length > 0;
 
         /// <summary>Weltzoom eines Waffentyps aus der Tabelle (NaN, wenn unbekannt).</summary>
         public float ZoomFor(string type)
@@ -31,6 +45,10 @@ namespace Ballon.Ego
     }
 
     [Serializable] public class EgoZoom { public string type; public float zoom; }
+
+    /// <summary>Portal des Werkzeugs (10, 0.22, ego.CLASSES['portal_cannon']): Eingabe fire (Linksklick) oder aim (Rechtsklick), Leuchtrolle,
+    /// Farbe (#RRGGBB) und Richtung der Ringdrehung (+1 im Uhrzeigersinn von hinten).</summary>
+    [Serializable] public class EgoPortal { public string name, input, role, color; public int ring; }
 
     /// <summary>Grundelement aus basic/reticles.py in mm auf der Scheibe (x links, u oben): line a→b mit Spreizrichtung d,
     /// ring r/ri mit grow, dot r.</summary>
@@ -65,7 +83,7 @@ namespace Ballon.Ego
     public class WeaponEject { public bool enabled; public string @case, src; public float[] pos, dir, verts; public int[] tris; }
 
     /// <summary>Live-Teile im laufenden Feuer (8, 0.18; ego.LIVE bzw. Modul-Feld EGO_LIVE): Abzug, Verschluss, Auswurfklappe.</summary>
-    [Serializable] public class WeaponLive { public string trigger, bolt, port; }
+    [Serializable] public class WeaponLive { public string trigger, bolt, port, ring; }    // 10: ring (Werkzeug); leer = Teil fehlt
 
     [Serializable]
     public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject;
@@ -160,7 +178,7 @@ namespace Ballon.Ego
         public float path_up_h, path_hz;
         public float[] path_side_b;
         public float recover_delay_s, recover_hz;
-        public int burst_shots, burst_rpm;
+        public int burst_shots, burst_rpm;              // bis /9 (immer 0); seit /10 je Klasse in gameplay
         public float spread_hip_deg, spread_ads_deg;
     }
 
@@ -225,7 +243,8 @@ namespace Ballon.Ego
         [NonSerialized] public int slot;            // Platz in weapons[] (Taste slot + 1)
         [NonSerialized] public WeaponTextures weaponTextures;   // je Waffe mit Ablage (store, limit_mb; 9); /7: null
 
-        public const string Format = "ballon-ego/9";     // 9: gameplay.fire_mode, parts[].ads_hide, motion.ads_hide, textures.store/limit_mb (0.20)
+        public const string Format = "ballon-ego/10";    // 10: gameplay.burst_shots/burst_rpm/path_up_h/muzzle_flash/portals/ring_turn_s, weapon.live.ring, Klassen ohne Zielen/Nachladen (0.22)
+        public const string Format9 = "ballon-ego/9";    // 9: gameplay.fire_mode, parts[].ads_hide, motion.ads_hide, textures.store/limit_mb (0.20)
         public const string Format8 = "ballon-ego/8";    // 8: weapons[] je Waffe (gameplay, weapon mit live, poses, grips, actions, profile, Atlanten, Netzgrenzen, Referenz), gemeinsam Bewegung, Kamera, Arme, Rollen (0.18)
         public const string FormatLegacy = "ballon-ego/7";   // 7: motion.flash, motion.eject, weapon.eject, Rollen flash_* (0.16); 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
 
@@ -254,12 +273,13 @@ namespace Ballon.Ego
                     f.weapon.live = new WeaponLive { trigger = "trigger", bolt = "bolt_carrier", port = "port_cover" };   // bis 0.17 fest im Code
                 f.profile = new EgoProfile { type = f.gameplay.weapon_type, src = FormatLegacy, poses = new string[0], frames = new ProfileFrames[0] };
                 Migrate9(f);
+                Migrate10(f);
                 f.toUnity = ParseAxes(json);
                 f.Index();
                 return new[] { f };
             }
-            if (fmt != Format && fmt != Format8)
-                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
+            if (fmt != Format && fmt != Format9 && fmt != Format8)
+                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format9}, {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
             var s = JsonUtility.FromJson<EgoFile8>(json);
             if (s.weapons == null || s.weapons.Length == 0) throw new FormatException("ego.json: weapons leer");
             var axes = ParseAxes(json);
@@ -281,9 +301,12 @@ namespace Ballon.Ego
                 };
                 if (f.weapon == null || f.weapon.live == null || string.IsNullOrEmpty(f.weapon.live.trigger))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");
-                if (fmt == Format && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
-                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({Format})");
+                if (fmt != Format8 && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({fmt})");
+                if (fmt == Format && f.gameplay.Burst != (f.gameplay.fire_mode == "burst"))
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu burst_shots {f.gameplay.burst_shots}");
                 if (fmt == Format8) Migrate9(f);
+                if (fmt != Format) Migrate10(f);
                 f.Index();
                 res[k] = f;
             }
@@ -296,6 +319,22 @@ namespace Ballon.Ego
             if (string.IsNullOrEmpty(f.gameplay.fire_mode)) f.gameplay.fire_mode = "full_auto";
             if (f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0)
                 f.motion.ads_hide = new AdsHide { eye_m = 0, src = "vor ballon-ego/9: keine Teile im Zielen aus" };
+        }
+
+        /// <summary>/7–/9 nach /10 (0.22): Salve und Bahnstufe standen gemeinsam in motion.recoil, alle Waffen hatten Mündungsfeuer, Verschluss
+        /// und Auswurfklappe, keine Portale.</summary>
+        static void Migrate10(EgoFile f)
+        {
+            var g = f.gameplay;
+            g.burst_shots = f.motion.recoil.burst_shots;
+            g.burst_rpm = f.motion.recoil.burst_rpm;
+            g.path_up_h = f.motion.recoil.path_up_h;
+            g.recover_delay_s = f.motion.recoil.recover_delay_s;
+            g.recover_hz = f.motion.recoil.recover_hz;
+            g.muzzle_flash = true;
+            g.ring_turn_s = 0;
+            g.portals = new EgoPortal[0];
+            if (f.weapon.live.ring == null) f.weapon.live.ring = "";
         }
 
         [Serializable]
@@ -371,6 +410,12 @@ namespace Ballon.Ego
         public EgoPart Part(string n) => _parts.TryGetValue(n, out var p) ? p : throw new KeyError("Bauteil", n);
         public bool HasPart(string n) => _parts.ContainsKey(n);
         public EgoAnchor Anchor(string n) => _anchors.TryGetValue(n, out var p) ? p : throw new KeyError("Anker", n);
+        public bool HasAnchor(string n) => _anchors.ContainsKey(n);
+        public bool HasPose(string n) => _poses.ContainsKey(n);
+        /// <summary>Waffe mit Zielen (Visier, Aktion aim_in); das Werkzeug ohne Visier hat keine (0.22).</summary>
+        public bool CanAim => _actions.ContainsKey("aim_in");
+        /// <summary>Waffe mit Nachladen (Magazin); das Werkzeug hat keins (0.22).</summary>
+        public bool CanReload => _actions.ContainsKey("reload_tactical") && !gameplay.Unlimited;
         public EgoRole Role(string n) => Array.Find(roles, r => r.role == n) ?? throw new KeyError("Materialrolle", n);
 
         public class KeyError : KeyNotFoundException

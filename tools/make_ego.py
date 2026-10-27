@@ -102,16 +102,28 @@ def _src_table(W):
     """Klassen- und Spielwerte einer Waffe mit Herkunft (M gemessen, E entworfen, T Toolgen, S Sekundärquelle)."""
     P = EG.profile(W)
     from tools import export_unity as XU
-    G = XU.gameplay(P['type'])
+    G = XU.gameplay(P['type'], P['gameplay'])
     C = EG.CLASSES[P['type']]
     H = G['hip']
     rows = [('Klasse', P['type'], P['src']),
             ('Kadenz', f"{G['rpm']}/min", G['src']), ('Magazin', str(G['magazine']), G['src']),
             ('Feuerart', f"`{P['fire_mode']}` – {EG.FIRE_MODES[P['fire_mode']]}", 'Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20)'),
-            ('Weltzoom im Zielen', f"{G['world_zoom']:g}" + (f", beginnt bei {G['zoom_start'] * 100:.0f} % des Augenwegs" if 'zoom_start' in G else ''),
+            ('Weltzoom im Zielen', 'kein Zielen (Werkzeug ohne Visier)' if G['sight'] == 'none' else f"{G['world_zoom']:g}" + (f", beginnt bei {G['zoom_start'] * 100:.0f} % des Augenwegs" if 'zoom_start' in G else ''),
              'M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM)' + ('; Beginn E (1d, siehe Kadenz)' if 'zoom_start' in G else '')),
             ('Hüft-Fadenkreuz', f"{H['kind']} {H['share_h'] * 100:.1f} % H", f"{H['status']} (4.1 A / 4.2 A, basic/reticles.py › HIP)"),
             ('Sprint-Fadenkreuz', H['sprint']['kind'] or 'aus', 'basic/reticles.py › HIP.sprint (4.1 A)')]
+    if G['burst_shots']:                         # 0.22: Salve je Klasse
+        rows.append(('Salve', f"{G['burst_shots']} Schuss je Zug, {G['burst_rpm']}/min in der Salve ({60 / G['burst_rpm']:.3f} s), Salvenbeginn alle "
+                              f"{G['burst_shots'] * 60 / G['rpm']:.3f} s; gehalten Salve um Salve", 'Länge aus der Spec (META fire), Takt und Folge: ' + G['src']))
+    if G['portals']:                             # 0.22: Werkzeug
+        rows.append(('Bedienung', '; '.join(f"Portal {q['name']} {'Linksklick' if q['input'] == 'fire' else 'Rechtsklick'} ({q['color']}, Ring "
+                                            f"{'im' if q['ring'] > 0 else 'gegen den'} Uhrzeigersinn)" for q in G['portals'])
+                     + f"; kein Zielen, kein Nachladen; Ring 120° in {G['ring_turn_s']:.3f} s; Reichweite {G['range_m']:g} m", C['src']))
+    if P['drop']:
+        rows.append(('Ohne', 'Aktionen ' + ', '.join(f'`{a}`' for a in P['drop']['actions']) + '; Haltungen ' +
+                     ', '.join(f'`{a}`' for a in P['drop']['poses']), P['drop']['src']))
+    rows.append(('Bahnstufe je Schuss', f"{G['path_up_h'] * 100:.2f} % H", G['src'] if G['path_up_h'] != EG.RECOIL['path_up_h'] else
+                 'ego.RECOIL (gemeinsam, Automatik ≈ 1 % H je Schuss, 5.2 A)'))
     for k in list(C['poses']) + list(C.get('keep', {})):
         q = P['poses'][k]
         rows.append((f'Haltung `{k}`', f"Socket_Hand {list(q['pos'])}, Ziel {list(q['aim'])}, Rollen {q['roll']}°", q['src']))
@@ -125,7 +137,7 @@ def _src_table(W):
     if hid:
         rows.append(('Zielfernrohr im Zielen', f"aus: {', '.join(hid)} (Socket_Eye < {EG.ADS_HIDE['eye_m'] * 1000:.0f} mm)", EG.ADS_HIDE['src']))
     E = getattr(W, 'EJECT', None)
-    rows += [('Mündungsfeuer', f"{EG.FLASH['dur_s'] * 1000:.0f} ms", EG.FLASH['src']),
+    rows += [('Mündungsfeuer', f"{EG.FLASH['dur_s'] * 1000:.0f} ms" if G['muzzle_flash'] else 'keins (Werkzeug)', EG.FLASH['src'] if G['muzzle_flash'] else G['src']),
              ('Hülsen', f"{E['case']} ({EG.EJECT['cases'][E['case']]['len_mm']} × {EG.EJECT['cases'][E['case']]['r_mm'] * 2:g} mm)" if E else 'keine',
               (E['src'] + '; Bahn: ' + EG.EJECT['src']) if E else 'Waffe ohne Feld EJECT'),
              ('Rückstoß', 'ego.RECOIL (gemeinsam)', ('M Destiny-Automatik: ' if P['type'] == 'auto_rifle' else 'übertragen von der Automatik: ')
@@ -133,7 +145,11 @@ def _src_table(W):
               + ('' if P['type'] == 'auto_rifle' else '; Destiny-MP: Kick im Zielen ≤ 1 % H, Kamera-Anstieg < 2 % [M, ein PvP-Clip], '
                                                        'keine Klassenmessung der Bahn' if P['type'] == 'submachine_gun' else
                  '; Destiny-Scout Tone Patrol: kräftiger Einzelimpuls, Rest wächst vor den Folgeschüssen, im Zielen fünf Schüsse ≈ 6 % H '
-                 '[M] (Motiongen rueckstoss › 4) – hier dieselbe Säule je Schuss, Salve = Schüsse im Abstand ≤ 1,5 × 60/rpm')),
+                 '[M] (Motiongen rueckstoss › 4) – hier dieselbe Säule je Schuss, Salve = Schüsse im Abstand ≤ 1,5 × 60/rpm' if P['type'] == 'scout_rifle' else
+                 '; Destiny-Impuls Gridskipper: Stufe ≈ 4 pp H je Salve, Erholung in der Pause, im Zielen Welt ≈ 5 pp H, Visier < 1 pp [M] '
+                 '(Motiongen rueckstoss › r-d2-gridskipper) – Bahnstufe der Klasse, zweistufig' if P['type'] == 'pulse_rifle' else
+                 '; Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten '
+                 'Schussbild)')),
              ('Sprint-Frequenz', '3,16 / 1,58 Hz (gemeinsam)', 'M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c)'),
              ('Griffe', ', '.join(P['grips']), 'Modul-Feld EGO_GRIPS' if getattr(W, 'EGO_GRIPS', None) else 'ego.GRIPS (Pilotwaffe)'),
              ('Live-Teile', ', '.join(f'{k} = {v}' for k, v in P['live'].items()), 'Modul-Feld EGO_LIVE' if getattr(W, 'EGO_LIVE', None) else 'ego.LIVE (Pilotwaffe)')]
@@ -174,7 +190,7 @@ def docs(_wid=None):
             L.append(f"| `{k}` | {A['de']} | {A['frames']} ({A['frames'] / 30:.2f} s) | {ev} | {m.get('wrist_bend_max_deg', 'offen')}° | "
                      f"{clip} | {sv.get('status', 'offen')}{(': ' + sv['method']) if sv.get('method') else ''} | {A['src']} |")
         L += ['', '### Abdeckung der Matrixzeilen', '', '| Zeile | durch Aktion | Status |', '|---|---|---|']
-        rows = {r: a for a, rs in EG.ROWS.items() for r in rs}
+        rows = {r: a for a, rs in EG.ROWS.items() for r in rs if a in P['actions']}
         for r, a in rows.items():
             st = 'dargestellt (mit Händen)' if rv.get(a, {}).get('status') == 'geprüft' else 'offen (nicht gesichtet)'
             L.append(f'| `{r}` | `{a}` | {st} |')
@@ -270,10 +286,11 @@ def check():
                     err.append(f"{wid} Griff {g}: Fingerstellung {fp} fehlt")
             if G.get('part') and G['part'] not in ids:
                 err.append(f"{wid} Griff {g}: Bauteil {G['part']} fehlt")
-        if set(P['grips']) != set(EG.GRIPS):
-            err.append(f'{wid}: Griffe {sorted(P["grips"])} statt {sorted(EG.GRIPS)}')
+        want = set(EG.GRIPS) if not P['drop'] else {'grip', 'support'}   # Werkzeug ohne Nachladen (0.22): ohne Magazin- und Ladegriff
+        if set(P['grips']) != want:
+            err.append(f'{wid}: Griffe {sorted(P["grips"])} statt {sorted(want)}')
         for k, v in P['live'].items():
-            if v not in ids:
+            if v and v not in ids:
                 err.append(f'{wid}: Live-Teil {k} = {v} fehlt')
         n.append(f'{wid} {len(P["actions"])} Aktionen/{len(P["poses"])} Haltungen/{len(P["grips"])} Griffe')
     for nm, fp in EG.FINGER_POSES.items():

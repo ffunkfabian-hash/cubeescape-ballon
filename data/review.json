@@ -1124,5 +1124,218 @@
       "Zielbild: unter dem Objektivring liegt die Oberseite von Schiene und Rohrsattel als große Fläche (Form aus 0.19, Nutzerhinweis 26.10.2026) – Visier-Konzept offen (docs/uebergabe-visier-konzept.md)",
       "Blender zeigt das Absehen als Modellteil (chevron); Unity zeichnet seit 0.20 die Hüftform im Visier (Nutzerwunsch)"
     ]
+  },
+  "BASIC-02-v2.1-ego": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude (0.22 Volley)",
+      "date": "2026-10-27",
+      "method": "Ego-Stills 1600 × 900 mit Mittenkreuz (volley/stills): Hüfte Mündung 57,9/63,4 %, Absehen 72/63 %; Sprint wie die Automatik 29,6/87,1 %; Zielen durch H4 „Kasten“ mit gezeichnetem Absehen"
+    },
+    "actions": {
+      "idle_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "draw": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "holster": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "aim_in": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "aim_out": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "fire_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "fire_ads": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "reload_tactical": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "inspect": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "sprint": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "lowered": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "walk": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "crouch": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "jump_land": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "sprint_to_aim": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "sprint_to_fire": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "draw_aim": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      },
+      "reload_to_switch": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-02-v2.1_<aktion>.png); eigene Hüfte, übrige Haltungen der Automatik, Stützhand underhand auf dem Griffpolster; Salven 3 Schuss im Takt 2 Bilder bei 30/s, Blitz klein im Kasten, Hülse rechts"
+      }
+    },
+    "notes": [
+      "Clip-Rückstoß wie die Automatik (Modellkick je Schuss); die Bahnstufe je Salve wirkt nur in Unity auf die Welt"
+    ]
+  },
+  "BASIC-T01-v2.1-ego": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude (0.22 Volley)",
+      "date": "2026-10-27",
+      "method": "Ego-Stills 1600 × 900 mit Mittenkreuz (volley/stills): Hüfte Achskrone 56,9/71,1 %, quer gestellt, Kern A (Cyan) und B (Orange) sichtbar (Nutzerhinweis 27.10.2026, Variante c14 von vier); Sprint 44,3/80,3 %; Hände außen an Griff und Vordergriff (Faust)"
+    },
+    "actions": {
+      "idle_hip": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "draw": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "holster": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "inspect": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "sprint": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "lowered": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "walk": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "crouch": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "jump_land": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "sprint_to_fire": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "fire_a": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      },
+      "fire_b": {
+        "status": "geprüft",
+        "by": "Claude (0.22 Volley)",
+        "date": "2026-10-27",
+        "method": "Ego-Clip 0.22 gerendert und gesichtet (Kontaktbogen evidence/ego_BASIC-T01-v2.1_<aktion>.png); fire_a Ring im, fire_b gegen den Uhrzeigersinn 120°, ohne Mündungsfeuer und Hülsen; ohne Zielen und Nachladen"
+      }
+    },
+    "notes": [
+      "Im Sprint verdeckt die Eischale die Kerne (Trageform E)",
+      "Kern-Aufleuchten beim Schuss (Modul-Feld FLASH) noch nicht in Ego-Clips und Unity"
+    ]
   }
 }

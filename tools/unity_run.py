@@ -106,8 +106,9 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'rueckstoss': 'BALLON 0.15 Plumb · Unity · Rückstoß: Hüfte, im Zielen Viererstöße und 12er-Stoß – Welt wandert, Visier steht',
          'feuer': 'BALLON 0.16 Flash · Unity · Mündungsfeuer (1 Bild bei 30/s) und Hülsen: Hüfte und Zielen',
          'quickdraw': 'BALLON 0.18 Quickdraw · Unity · Automatik → Taste 2 → MP: Hüfte, Zielen (Anflug 4d), Sprint (tief, nach links gerollt)',
-         'spotter': 'BALLON 0.20 Spotter · Unity · Taste 3 → Scout: Hüfte, Zielfernrohr (Weltzoom 2,0), Einzelfeuer, Sprint'}
-WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1'}   # Taste → Waffe (tools/export_unity.WEAPONS)
+         'spotter': 'BALLON 0.20 Spotter · Unity · Taste 3 → Scout: Hüfte, Zielfernrohr (Weltzoom 2,0), Einzelfeuer, Sprint',
+         'volley': 'BALLON 0.22 Volley · Unity · 1 → 4 Impuls (Salve Hüfte/Zielen) → 5 Portalkanone (A links, B rechts) → 2 → 3 → 1'}
+WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1', 4: 'BASIC-02-v2.1', 5: 'BASIC-T01-v2.1'}   # Taste → Waffe (tools/export_unity.WEAPONS)
 
 
 def capture(scene=None, demo=None):
@@ -137,7 +138,7 @@ def capture(scene=None, demo=None):
         cmd = ['magick', p, '-font', FONT, '-fill', '#F2F3F4', '-stroke', '#00000060', '-pointsize', '20', '-annotate', '+18+34',
                head, '-pointsize', '16', '-annotate', '+18+58',
                f'Bild {i} · {i * 1000 / 30:.0f} ms · {act} {fr}', '-gravity', 'SouthEast', '-pointsize', '30', '-annotate', '+26+22',
-               f'{ammo} / 30']
+               ammo if ('/' in ammo or ammo == '∞') else f'{ammo} / 30']   # 0.22: Bootstrap schreibt Munition / Magazin bzw. ∞
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)

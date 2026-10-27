@@ -761,6 +761,11 @@
    "optic": null,
    "hip": "cross",
    "spread": "auto"
+  },
+  "portal_cannon": {
+   "optic": null,
+   "hip": "ring_dot",
+   "spread": "none"
   }
  },
  "settings": {
@@ -1200,6 +1205,14 @@
     "spread": "auto",
     "status": "entworfen",
     "sprint": null
+   },
+   "portal_cannon": {
+    "kind": "ring_dot",
+    "share_h": 0.045,
+    "extent_mm": 5.91,
+    "spread": "none",
+    "status": "entworfen (Werkzeug, Portal 2 / Cube Escape)",
+    "sprint": null
    }
   }
  },
@@ -1220,7 +1233,8 @@
   "rocket_launcher": "lens_chevron",
   "combat_bow": "arrow_tip",
   "sword": null,
-  "glaive": null
+  "glaive": null,
+  "portal_cannon": null
  },
  "sight_kind_de": {
   "holo": "offenes Holo (abgerundetes Rechteck)",

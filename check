@@ -237,10 +237,17 @@ if (RT.HIP['color'], RT.HIP['weight']) != ('white', 'fine') or {k: v['kind'] for
     fail('Hüft-Fadenkreuz: weiß, fein, im Sprint nur die Automatik mit „^“ (Entscheidungsliste 4.1 A)')
 from basic.arms import ego as EG   # Entscheidungsliste 5.3 A: Mündungsfeuer 1 Bild bei 30/s, im Zielen ≤ 20 % der Holo-Öffnung
 import tools.export_unity as _XU
-for _m in _XU.WEAPONS:              # jede spielbare Waffe (0.18)
-    _cov = EG.flash_cover_ads(importlib.import_module(f'basic.{_m}'))
+for _m in _XU.WEAPONS:              # jede spielbare Waffe mit Visier (0.18; Werkzeug ohne Visier und Mündungsfeuer seit 0.22)
+    _W = importlib.import_module(f'basic.{_m}')
+    if 'Socket_Eye' not in _W.ANCHORS:
+        if EG.profile(_W)['gameplay'].get('muzzle_flash', True) or 'ads' in EG.profile(_W)['poses']:
+            fail(f'{_m}: ohne Visier weder Mündungsfeuer noch Zielen (Werkzeug, 0.22)')
+        continue
+    _cov = EG.flash_cover_ads(_W)
     if _cov > 0.20 or abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
         fail(f'Mündungsfeuer {_m}: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
+    elif _W.META['type'] == 'pulse_rifle':
+        print(f'Mündungsfeuer im Zielen {EG.weapon_id(_W)}: {_cov * 100:.1f} % der Öffnung (≤ 20 %, Destiny-Impuls ≈ 5 %)')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))

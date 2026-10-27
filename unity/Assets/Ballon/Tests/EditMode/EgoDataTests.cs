@@ -19,6 +19,8 @@ namespace Ballon.Ego.Tests
         static EgoFile D => All[0];                     // Pilotwaffe BASIC-01 (Automatik)
         static EgoFile MP => All.First(d => d.gameplay.weapon_type == "submachine_gun");
         static EgoFile SR => All.First(d => d.gameplay.weapon_type == "scout_rifle");      // 0.20: Scout BASIC-03
+        static EgoFile PR => All.First(d => d.gameplay.weapon_type == "pulse_rifle");      // 0.22: Impulsgewehr BASIC-02
+        static EgoFile PC => All.First(d => d.gameplay.weapon_type == "portal_cannon");    // 0.22: Portalkanone BASIC-T01 (Werkzeug)
 
         [Serializable] class RefObj { public string name; public float[] m; }
         [Serializable] class RefSample { public string label, action; public int frame; public bool ads_hidden; public RefObj[] objects; }
@@ -47,9 +49,11 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Format_und_Umfang()
         {
-            Assert.AreEqual(3, All.Length, "drei spielbare Waffen (Automatik, MP, Scout)");
-            CollectionAssert.AreEqual(new[] { "BASIC-01-v2.1", "BASIC-06-v2.1", "BASIC-03-v2.1" }, All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3");
-            CollectionAssert.AreEqual(new[] { "full_auto", "full_auto", "semi_auto" }, All.Select(d => d.gameplay.fire_mode).ToArray(), "Feuerart aus der Spec");
+            Assert.AreEqual(5, All.Length, "fünf spielbare Waffen (Automatik, MP, Scout, Impuls, Portalkanone)");
+            CollectionAssert.AreEqual(new[] { "BASIC-01-v2.1", "BASIC-06-v2.1", "BASIC-03-v2.1", "BASIC-02-v2.1", "BASIC-T01-v2.1" },
+                                      All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3, 4, 5");
+            CollectionAssert.AreEqual(new[] { "full_auto", "full_auto", "semi_auto", "burst", "single" }, All.Select(d => d.gameplay.fire_mode).ToArray(),
+                                      "Feuerart aus der Spec");
             Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
             foreach (var d in All) Umfang(d);
         }
@@ -59,11 +63,12 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(EgoFile.Format, D.format);
             Assert.AreEqual(30, D.fps);
             Assert.AreEqual(75f, D.camera.h_fov_deg);
-            Assert.AreEqual(10, D.poses.Length, "Haltungen");
-            Assert.AreEqual(4, D.grips.Length, "Griffe");
-            Assert.AreEqual(19, D.actions.Length, "Aktionen");
-            Assert.GreaterOrEqual(D.weapon.parts.Length, 40, "Waffenteile");
-            foreach (var n in new[] { D.weapon.live.trigger, D.weapon.live.bolt, D.weapon.live.port })
+            bool tool = D.gameplay.HasPortals;                // Werkzeug (0.22): ohne Zielen, Nachladen, Magazin und Visier
+            Assert.AreEqual(tool ? 8 : 10, D.poses.Length, "Haltungen");
+            Assert.AreEqual(tool ? 2 : 4, D.grips.Length, "Griffe");
+            Assert.AreEqual(tool ? 12 : 19, D.actions.Length, "Aktionen");
+            Assert.GreaterOrEqual(D.weapon.parts.Length, tool ? 20 : 40, "Waffenteile");
+            foreach (var n in tool ? new[] { D.weapon.live.trigger, D.weapon.live.ring } : new[] { D.weapon.live.trigger, D.weapon.live.bolt, D.weapon.live.port })
                 Assert.IsTrue(D.HasPart(n), $"{D.weapon.id}: Live-Teil {n}");
             var meshes = new HashSet<string>(D.mesh_bounds.objects.Select(o => o.name));
             Assert.IsTrue(D.weapon.parts.All(p => meshes.Contains(p.id)), "jedes Teil hat ein Netz im Export");
@@ -85,10 +90,13 @@ namespace Ballon.Ego.Tests
                 Assert.LessOrEqual(fr.Last(), A.frames, A.name);
                 CollectionAssert.IsOrdered(A.events.Select(e => e.f).ToArray(), A.name + " Marker");
             }
-            foreach (var n in new[] { "Socket_Hand", "Socket_SupportHand", "Socket_Sight", "Socket_Eye", "Socket_Charge" })
+            foreach (var n in tool ? new[] { "Socket_Hand", "Socket_SupportHand", "Socket_Muzzle" }
+                                   : new[] { "Socket_Hand", "Socket_SupportHand", "Socket_Sight", "Socket_Eye", "Socket_Charge" })
                 Assert.DoesNotThrow(() => D.Anchor(n));
+            Assert.AreEqual(tool, !D.CanAim && !D.CanReload, $"{D.weapon.id}: Zielen und Nachladen nur mit Visier und Magazin");
             Assert.Greater(D.gameplay.rpm, 0);
-            Assert.Greater(D.gameplay.magazine, 0);
+            if (tool) Assert.AreEqual(0, D.gameplay.magazine, "Werkzeug ohne Magazin (unbegrenzt)");
+            else Assert.Greater(D.gameplay.magazine, 0);
         }
 
         [Test]
@@ -105,7 +113,7 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/6\"}"));          // 0.15: ohne Mündungsfeuer und Hülsen
             StringAssert.Contains("neu exportieren", ex.Message);
-            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/10\"}"));         // unbekannt (neuer als der Leser)
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/11\"}"));         // unbekannt (neuer als der Leser; /10 seit 0.22)
             StringAssert.Contains("neu exportieren", ex.Message);
         }
 
@@ -294,6 +302,168 @@ namespace Ballon.Ego.Tests
             Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
         }
 
+        // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 0.22 (Schritt 6)
+        /// <summary>0.22 Formatwechsel /9 → /10: der Leser liest die Datei von main (0.21 „Ironsight“, Kopie Tests/EditMode/Data/ego_v9.json)
+        /// weiter und setzt Salve, Bahnstufe, Mündungsfeuer und Portale wie bisher (keine Salve, gemeinsame Bahnstufe, mit Blitz, ohne Portale).
+        /// Automatik, MP und Scout sind in /10 Feld für Feld gleich: Spielwerte, Teile, Profil, Haltungen, Griffe, Aktionen, Bewegung.</summary>
+        [Test]
+        public void Altes_Format_9_wird_gelesen_drei_Waffen_unveraendert()
+        {
+            var old = EgoFile.ParseAll(File.ReadAllText("Assets/Ballon/Tests/EditMode/Data/ego_v9.json"));
+            Assert.AreEqual(3, old.Length, "/9 von main: Automatik, MP, Scout");
+            string J(object x) => JsonUtility.ToJson(x);
+            foreach (var o in old)
+            {
+                var n = All.Single(d => d.weapon.id == o.weapon.id);
+                Assert.AreEqual(EgoFile.Format9, o.format);
+                Assert.AreEqual(0, o.gameplay.burst_shots, "/9: keine Salve");
+                Assert.IsTrue(o.gameplay.muzzle_flash, "/9: Mündungsfeuer");
+                Assert.AreEqual(o.motion.recoil.path_up_h, o.gameplay.path_up_h, "/9: Bahnstufe aus motion.recoil");
+                Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
+                Assert.AreEqual(J(o.weapon), J(n.weapon), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile");
+                Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
+                CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
+                CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
+                CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
+                Assert.AreEqual(J(o.motion), J(n.motion), "Bewegung");
+            }
+        }
+
+        /// <summary>Werte der Klasse Impuls aus den Daten (ego.CLASSES › pulse_rifle, keine Sonderlogik nach Waffen-ID): Salve aus der Spec
+        /// (burst_3), 900/min in der Salve, 540/min gemittelt (Gridskipper), Magazin 36, Bahnstufe 1,33 % H je Schuss (≈ 4 pp je Salve),
+        /// Weltzoom 2,0 (Holo), Hüftform ring_dot, Anflug 10 Bilder bei 30/s wie die Automatik (Destiny 20 bei 60/s), Sprint wie die Automatik,
+        /// eigene Hüfte; Schussbilder der Clips in ganzen Salven; Hülsen, Verschluss und Klappe aus dem Modul.</summary>
+        [Test]
+        public void Werte_des_Impulses()
+        {
+            string J(object x) => JsonUtility.ToJson(x);
+            var G = PR.gameplay;
+            Assert.AreEqual("pulse_rifle", PR.profile.type);
+            Assert.AreEqual("burst", G.fire_mode, "Feuerart aus der Spec (META fire burst_3)");
+            Assert.IsTrue(G.Burst && !G.Semi);
+            Assert.AreEqual(3, G.burst_shots, "Salvenlänge aus der Spec");
+            Assert.AreEqual(900, G.burst_rpm, "4 Bilder bei 60/s in der Salve");
+            Assert.AreEqual(540, G.rpm, "Gridskipper 540/min");
+            Assert.AreEqual(36, G.magazine);
+            Assert.AreEqual(0.0133f, G.path_up_h, 1e-6f, "≈ 4 pp H je Salve");
+            Assert.AreEqual(0.010f, D.gameplay.path_up_h, 1e-6f, "Automatik unverändert");
+            Assert.AreEqual(0.10f, G.recover_delay_s, 1e-6f, "Erholung nach 1,5 Takten");
+            Assert.AreEqual(5.0f, G.recover_hz, 1e-6f, "≈ 80 % zurück in der Pause (Gridskipper)");
+            foreach (var d in new[] { D, MP, SR })
+            {
+                Assert.AreEqual(d.motion.recoil.recover_delay_s, d.gameplay.recover_delay_s, 1e-6f, $"{d.weapon.id}: gemeinsame Erholung wie bisher");
+                Assert.AreEqual(d.motion.recoil.recover_hz, d.gameplay.recover_hz, 1e-6f, $"{d.weapon.id}: gemeinsame Erholung wie bisher");
+            }
+            Assert.IsFalse(D.gameplay.Burst || MP.gameplay.Burst || SR.gameplay.Burst, "keine andere Klasse feuert Salven");
+            Assert.AreEqual(2.0f, G.world_zoom, 1e-6f, "Weltzoom Impuls 2,0 (Holo, seit 0.13)");
+            Assert.AreEqual("reflex", G.sight);
+            Assert.AreEqual("ring_dot", G.hip.kind, "Hüftform ring_dot");
+            Assert.AreEqual(10, PR.Action("aim_in").frames, "aim_in 10 Bilder wie die Automatik (4d: Impuls 20 bei 60/s)");
+            Assert.AreEqual(8, PR.Action("aim_out").frames);
+            CollectionAssert.AreEqual(new[] { 2, 4, 6, 12, 14, 16, 22, 24, 26 }, PR.Action("fire_hip").fire, "drei Salven: 2 Bilder Takt, 10 Bilder Folge");
+            CollectionAssert.AreEqual(PR.Action("fire_hip").fire, PR.Action("fire_ads").fire);
+            CollectionAssert.AreEqual(new[] { 7, 9, 11, 17, 19, 21 }, PR.Action("sprint_to_fire").fire);
+            foreach (var n in new[] { "sprint", "ads", "reload" })
+            {
+                EgoPose a = D.Pose(n), b = PR.Pose(n);
+                Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
+            }
+            Assert.AreNotEqual(J(D.Pose("hip")), J(PR.Pose("hip")), "eigene Hüfte");
+            StringAssert.Contains("57,9/63,6", PR.Pose("hip").src, "Herkunft der Hüfte");
+            Assert.IsTrue(PR.weapon.eject.enabled, "Hülsen über EJECT");
+            Assert.AreEqual("rifle", PR.weapon.eject.@case);
+            Assert.AreEqual("bolt_carrier", PR.weapon.live.bolt);
+            Assert.AreEqual("", PR.weapon.live.ring);
+        }
+
+        /// <summary>Werte der Portalkanone (Werkzeug, ego.CLASSES › portal_cannon): kein Visier, kein Zielen, kein Nachladen (die Aktionen
+        /// fehlen in den Daten), Magazin 0 = unbegrenzt, ohne Mündungsfeuer und Hülsen, Bahnstufe 0; Bedienung nach Nutzerwahl A (27.10.2026):
+        /// Linksklick Portal A (Cyan, Ring im Uhrzeigersinn), Rechtsklick Portal B (Orange, gegen den Uhrzeigersinn), Abklingzeit 0,25 s, 24 m;
+        /// Ring 120° je Schuss in 10 Bildern bei 30/s (fire_a/fire_b wie das Modul).</summary>
+        [Test]
+        public void Werte_der_Portalkanone()
+        {
+            var G = PC.gameplay;
+            Assert.AreEqual("portal_cannon", PC.profile.type);
+            Assert.AreEqual("single", G.fire_mode);
+            Assert.IsTrue(G.Semi && G.HasPortals && G.Unlimited && !G.Burst);
+            Assert.AreEqual(240, G.rpm, "Abklingzeit 0,25 s");
+            Assert.AreEqual(24f, G.range_m, 1e-6f);
+            Assert.AreEqual("none", G.sight);
+            Assert.AreEqual(1f, G.world_zoom, 1e-6f);
+            Assert.IsFalse(G.muzzle_flash, "ohne Mündungsfeuer");
+            Assert.AreEqual(0f, G.path_up_h, "ohne Bahnstufe");
+            Assert.IsFalse(PC.weapon.eject.enabled, "ohne Hülsen");
+            Assert.AreEqual(2, G.portals.Length);
+            Assert.AreEqual("A fire portal_a #1AD9FF 1", $"{G.portals[0].name} {G.portals[0].input} {G.portals[0].role} {G.portals[0].color} {G.portals[0].ring}");
+            Assert.AreEqual("B aim portal_b #FF7314 -1", $"{G.portals[1].name} {G.portals[1].input} {G.portals[1].role} {G.portals[1].color} {G.portals[1].ring}");
+            Assert.AreEqual(10f / 30f, G.ring_turn_s, 1e-5f);
+            Assert.IsFalse(PC.CanAim, "kein Zielen");
+            Assert.IsFalse(PC.CanReload, "kein Nachladen");
+            foreach (var a in new[] { "aim_in", "aim_out", "fire_ads", "fire_hip", "reload_tactical", "reload_empty", "sprint_to_aim", "draw_aim", "reload_to_switch" })
+                Assert.IsFalse(PC.HasAction(a), a);
+            Assert.IsFalse(PC.HasPose("ads") || PC.HasPose("reload"));
+            Assert.IsFalse(PC.HasAnchor("Socket_Eye"));
+            Assert.AreEqual("emitter_ring", PC.weapon.live.ring);
+            foreach (var core in new[] { "core_a", "core_b", "core_glass" })               // Leuchtkerne und Glas mit eigenem Material (wie Absehen)
+                CollectionAssert.DoesNotContain(PC.textures.weapon.objects, core, $"{core} nicht im Atlas");
+            foreach (var q in G.portals)
+                Assert.IsTrue(PC.Role(q.role).emit_only && PC.Role(q.role).emit > 0, $"{q.role}: reine Emission");
+            Assert.AreEqual("", PC.weapon.live.bolt + PC.weapon.live.port, "ohne Verschluss und Klappe");
+            var ring = PC.weapon.parts.Single(p => p.id == "emitter_ring").move;
+            Assert.AreEqual(120f, ring.a1 - ring.a0, 1e-4f, "eine Dritteldrehung je Wert 1");
+            foreach (var (n, sign) in new[] { ("fire_a", 1f), ("fire_b", -1f) })
+            {
+                var A = PC.Action(n);
+                CollectionAssert.AreEqual(new[] { 2 }, A.fire, n);
+                var tr = A.mech.Single(m => m.part == "emitter_ring");
+                Assert.AreEqual(sign, tr.keys.Last().v, n);
+                Assert.AreEqual(10f, tr.keys.First(k => Mathf.Abs(k.v) > 0.99f).f - tr.keys.Last(k => k.v == 0).f, 1e-4f, n + ": 10 Bilder");
+            }
+            Assert.AreEqual("foregrip", PC.Grip("support").fingers_pose, "Stützhand am Vordergriff (Faust wie an der MP)");
+        }
+
+        /// <summary>2.1 A, lange Waffe: Mündung des Impulses im Destiny-Band x 54–59 / y 60–71 % (Gridskipper ≈ 57/61), Kontur bis zum
+        /// rechten und unteren Rand. Mit der Hüfte der Automatik lag sie bei x 59,7 % (außerhalb).</summary>
+        [Test]
+        public void Hueftlage_des_Impulses_im_Band()
+        {
+            var S = new EgoSolver(PR);
+            var E = new EgoScreen(S);
+            var o = S.Evaluate(S.StillAction("hip"), 0, new EgoState());
+            Vector3 At(string a) => E.ToScreen(o.weapon.MultiplyPoint3x4(V(PR.Anchor(a).pos)));
+            Vector3 m = At("Socket_Muzzle"), r = At("Socket_Reticle");
+            var pts = new List<Vector2>();
+            E.Silhouette(o, pts, arms: false);
+            TestContext.WriteLine($"Impuls-Hüfte: Mündung x {m.x:0.0} / y {m.y:0.0} %, Absehen x {r.x:0.0} / y {r.y:0.0} %; " +
+                                  $"Waffe x {pts.Min(p => p.x):0.0}–{pts.Max(p => p.x):0.0}, y {pts.Min(p => p.y):0.0}–{pts.Max(p => p.y):0.0} %");
+            Assert.That(m.x, Is.InRange(54f, 59f), "Mündung x (lange Waffen 54–59 %)");
+            Assert.That(m.y, Is.InRange(60f, 71f), "Mündung y (lange Waffen 60–71 %)");
+            Assert.Greater(pts.Max(p => p.x), 99f, "Kontur reicht bis zum rechten Rand");
+            Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
+        }
+
+        /// <summary>Werkzeug-Hüfte nach Portal 2 (M, cubeescape-reference portal2.md): vorderes Rohrende ≈ 57/75 %, beim Gehen 54–63 / 68–75 %;
+        /// die Kerbe (Leitkante) oben auf der Schale ist im Bild; die Stützhand hält den Vordergriff unter der Unterlippe.</summary>
+        [Test]
+        public void Hueftlage_der_Portalkanone()
+        {
+            var S = new EgoSolver(PC);
+            var E = new EgoScreen(S);
+            var o = S.Evaluate(S.StillAction("hip"), 0, new EgoState());
+            Vector3 m = E.ToScreen(o.weapon.MultiplyPoint3x4(V(PC.Anchor("Socket_Muzzle").pos)));
+            Vector3 kerbe = E.ToScreen(o.weapon.MultiplyPoint3x4(new Vector3(0, 0.070f, 0.174f)));     // f −70, u 174 (Blender: x, −f, u)
+            var sup = Pos(o.handL);
+            var fg = o.weapon.MultiplyPoint3x4(V(PC.Anchor("Socket_SupportHand").pos));
+            TestContext.WriteLine($"Portalkanone-Hüfte: Achskrone x {m.x:0.0} / y {m.y:0.0} %, Kerbe x {kerbe.x:0.0} / y {kerbe.y:0.0} %, " +
+                                  $"Stützhand {Vector3.Distance(sup, fg) * 1000:0} mm von Socket_SupportHand");
+            Assert.That(m.x, Is.InRange(54f, 63f), "Rohrende x (Portal 2: 54–63 %)");
+            Assert.That(m.y, Is.InRange(68f, 76f), "Rohrende y (Portal 2: 68–75 %)");
+            Assert.That(kerbe.x, Is.InRange(0f, 100f), "Kerbe im Bild");
+            Assert.That(kerbe.y, Is.InRange(0f, 100f), "Kerbe im Bild");
+            Assert.Less(Vector3.Distance(sup, fg), 0.08f, "Stützhand am Vordergriff");
+        }
+
         /// <summary>Visier-Standard 3 am Scout in Unity: eine Kamera, das Modell bleibt ungezoomt; im Zielen (Augenpunkt 90 mm hinter dem
         /// Objektivring, 75°) misst die lichte Öffnung (Objektivlinse) 20–26 % der Bildbreite; Okular, Rohr und Türme (ads_hide) sind im
         /// Zielen aus und in der Hüfte da; das Absehen chevron liegt auf der Bildmitte; der Weg dorthin: aim_in schaltet einmal um.</summary>
@@ -333,7 +503,7 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Einzelfeuer_im_Clip_ein_Zug_je_Schuss()
         {
-            foreach (var d in new[] { D, MP, SR })
+            foreach (var d in new[] { D, MP, SR, PR })
             {
                 var S = new EgoSolver(d);
                 var A = d.Action("fire_hip");
@@ -502,7 +672,7 @@ namespace Ballon.Ego.Tests
                 var o = S.Evaluate(S.StillAction("sprint"), 0, new EgoState());
                 var up = o.weapon.MultiplyVector(new Vector3(0, 0, 1));           // Oberseite der Waffe im Blender-Kameraraum (+X = links)
                 Vector3 m = E.ToScreen(o.weapon.MultiplyPoint3x4(V(d.Anchor("Socket_Muzzle").pos)));
-                Vector3 r = E.ToScreen(o.weapon.MultiplyPoint3x4(V(d.Anchor("Socket_Reticle").pos)));
+                Vector3 r = E.ToScreen(o.weapon.MultiplyPoint3x4(V(d.Anchor(d.HasAnchor("Socket_Reticle") ? "Socket_Reticle" : "Socket_Muzzle").pos)));
                 float roll = Mathf.Atan2(up.x, up.z) * Mathf.Rad2Deg;            // > 0: Oberseite nach links geneigt
                 TestContext.WriteLine($"{d.weapon.id} Sprint: Oberseite {roll:0.0}° (links +), Mündung {m.x:0.0}/{m.y:0.0} %, Absehen {r.x:0.0}/{r.y:0.0} %");
                 if (d.profile.type == "submachine_gun")
@@ -512,7 +682,13 @@ namespace Ballon.Ego.Tests
                     Assert.That(m.y, Is.InRange(75f, 85f), "Mündung y nahe Destiny-MP 80 %");
                     Assert.That(r.y, Is.InRange(66f, 78f), "Holo tief, nahe Destiny-MP 72 %");
                 }
-                else Assert.Less(roll, -10f, "Automatik: Oberseite nach rechts (quer, wie bisher)");
+                else if (d.profile.type == "portal_cannon")
+                {
+                    Assert.Greater(roll, 15f, "Werkzeug wie Kurzwaffen nach links gerollt (E, Klasse Werkzeug)");
+                    Assert.That(m.x, Is.InRange(38f, 50f), "Achskrone tief links wie die MP-Mündung");
+                    Assert.That(m.y, Is.InRange(74f, 86f));
+                }
+                else Assert.Less(roll, -10f, "Gewehre: Oberseite nach rechts (quer, wie bisher)");
             }
             Assert.AreEqual(JsonUtility.ToJson(D.Action("sprint").bob), JsonUtility.ToJson(MP.Action("sprint").bob), "Frequenz und Hub wie bisher (3c)");
         }
@@ -533,7 +709,8 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("auto_rifle", G.weapon_type);
             Assert.AreEqual("reflex", G.sight);
             Assert.AreEqual(G.ZoomFor(G.weapon_type), G.world_zoom, 1e-6f, "Pilot zoomt mit dem Wert seiner Klasse");
-            foreach (var d in All) Assert.AreEqual(d.gameplay.ZoomFor(d.gameplay.weapon_type), d.gameplay.world_zoom, 1e-6f, d.weapon.id);
+            foreach (var d in All)
+                Assert.AreEqual(d.gameplay.sight == "none" ? 1f : d.gameplay.ZoomFor(d.gameplay.weapon_type), d.gameplay.world_zoom, 1e-6f, d.weapon.id);
             TestContext.WriteLine($"Weltzoom Pilot {G.world_zoom}, Scout {G.ZoomFor("scout_rifle")}, " +
                                   $"Handfeuerwaffe {G.ZoomFor("hand_cannon")}, MP {G.ZoomFor("submachine_gun")}");
         }
@@ -1108,7 +1285,7 @@ namespace Ballon.Ego.Tests
             Assert.LessOrEqual(worstP, R.tolerance_m, $"Lage {worstP * 1000:0.000} mm bei {wp}");
             Assert.LessOrEqual(worstR, R.tolerance_deg, $"Drehung {worstR:0.000}° bei {wr}");
             Assert.LessOrEqual(worstA, R.tolerance_arm_deg, $"Arm {worstA:0.000}° bei {wa}");
-            Assert.Greater(checks, D.slot == 0 ? 5000 : 4000, "Matrizen (Pilot wie bisher > 5000)");
+            Assert.Greater(checks, D.slot == 0 ? 5000 : D.gameplay.HasPortals ? 3000 : 4000, "Matrizen (Pilot wie bisher > 5000; Werkzeug: 12 Aktionen, 22 Objekte)");
         }
     }
 }

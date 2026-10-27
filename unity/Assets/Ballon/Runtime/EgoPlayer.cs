@@ -97,6 +97,8 @@ namespace Ballon.Ego
         public string lastMarker = "";
         public float lastMarkerTime;
         public int hits;
+        /// <summary>Portalschüsse des Werkzeugs mit Treffermarke (Fläche in Reichweite, 0.22).</summary>
+        public int portalHits;
         public readonly List<string> log = new List<string>();
         public bool hud = true;
         public Func<float> deltaOverride;          // Aufnahme: feste Zeitschritte
@@ -130,7 +132,7 @@ namespace Ballon.Ego
         public string lightLabel;        // gezeigte Lichtszene (null im Parcours)
         int _lightCount;
         const string HelpA = "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
-                             "F Betrachten · 1/2/3 Waffe (Q wechseln) · K Skin · ";
+                             "F Betrachten · 1–5 Waffe (Q wechseln; 5 Portalkanone: LMT Portal A, RMT Portal B) · K Skin · ";
         const string HelpB = "Esc Maus frei · H Anzeige";
         string _help = HelpA + HelpB;
 
@@ -285,7 +287,7 @@ namespace Ballon.Ego
                 AdsFeedback.Stamp(tex, m, m.width, Current.sightColor, s.x, s.y);
             }
             if (ShotRingVisible) AdsFeedback.Stamp(tex, AdsFeedback.Ring, AdsFeedback.ShotRingShareH * tex.height, Color.white);
-            if (HitXVisible) AdsFeedback.Stamp(tex, AdsFeedback.X, AdsFeedback.HitXShareH * tex.height, AdsFeedback.Orange);
+            if (HitXVisible) AdsFeedback.Stamp(tex, AdsFeedback.X, AdsFeedback.HitXShareH * tex.height, HitColor);
             tex.Apply(false);
         }
 
@@ -371,17 +373,35 @@ namespace Ballon.Ego
                                       QueryTriggerInteraction.Ignore) && hit.collider.gameObject != gameObject;
         }
 
+        /// <summary>Farbe der Treffermarke: Familienfarbe Orange, beim Werkzeug die Farbe des Portals des letzten Schusses (0.22).</summary>
+        public Color HitColor { get; private set; } = AdsFeedback.Orange;
+
+        /// <summary>Farbe eines Portals aus gameplay.portals[].color (#RRGGBB).</summary>
+        public static Color PortalColor(EgoPortal p) => ColorUtility.TryParseHtmlString(p.color, out var c) ? c : AdsFeedback.Orange;
+
         void OnShot()
         {
+            var G = C.S.D.gameplay;
             var Rc = C.S.D.motion.recoil;                // Streuung um den Zielpunkt, getrennt von der Grundbahn (5.2 A)
-            float spread = Mathf.Lerp(Rc.spread_hip_deg, Rc.spread_ads_deg, C.adsWeight);
+            // Werkzeug (0.22): Portale gehen ohne Streuung auf den Zielpunkt (Cube Escape: Sichtlinie zum Fadenkreuz, Q-CE-15)
+            float spread = G.HasPortals ? 0 : Mathf.Lerp(Rc.spread_hip_deg, Rc.spread_ads_deg, C.adsWeight);
             double a = _rng.NextDouble() * Math.PI * 2, rr = Math.Sqrt(_rng.NextDouble()) * spread;
             var dir = Quaternion.AngleAxis((float)(rr * Math.Cos(a)), worldCam.transform.up) *
                       Quaternion.AngleAxis((float)(rr * Math.Sin(a)), worldCam.transform.right) * worldCam.transform.forward;
             if (C.adsWeight > 0.5f) _ringFrames = AdsFeedback.ShotRingFrames;
             hipReticle?.Kick();
-            if (Physics.Raycast(worldCam.transform.position, dir, out var hit, 300f, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
+            float range = G.HasPortals && G.range_m > 0 ? G.range_m : 300f;
+            if (Physics.Raycast(worldCam.transform.position, dir, out var hit, range, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
             {
+                if (G.HasPortals && C.LastPortal >= 0)
+                {
+                    // Werkzeug: Treffermarke in Portalfarbe auf jeder Fläche in Reichweite (die Portale selbst sind nicht Teil von 0.22)
+                    HitColor = PortalColor(G.portals[C.LastPortal]);
+                    _hitX = AdsFeedback.HitXMinS;
+                    portalHits++;
+                    return;
+                }
+                HitColor = AdsFeedback.Orange;
                 var t = hit.collider.GetComponentInParent<RangeTarget>();
                 if (t != null)
                 {
@@ -454,11 +474,11 @@ namespace Ballon.Ego
                     GUI.color = old;
                 }
                 if (ShotRingVisible) Mark(AdsFeedback.Ring, cx, cy, AdsFeedback.ShotRingShareH * Screen.height, Color.white);
-                if (HitXVisible) Mark(AdsFeedback.X, cx, cy, AdsFeedback.HitXShareH * Screen.height, AdsFeedback.Orange);
+                if (HitXVisible) Mark(AdsFeedback.X, cx, cy, AdsFeedback.HitXShareH * Screen.height, HitColor);
             }
             var big = _big ?? (_big = new GUIStyle(GUI.skin.label) { fontSize = 34, alignment = TextAnchor.LowerRight, fontStyle = FontStyle.Bold });
             var small = _small ?? (_small = new GUIStyle(GUI.skin.label) { fontSize = 14 });
-            big.normal.textColor = C.ammo == 0 ? new Color(1f, 0.5f, 0.3f) : Color.white;
+            big.normal.textColor = C.ammo == 0 && !C.S.D.gameplay.Unlimited ? new Color(1f, 0.5f, 0.3f) : Color.white;
             UpdateHudText();
             GUI.Label(new Rect(Screen.width - 260, Screen.height - 80, 230, 60), _ammoText, big);
             small.normal.textColor = new Color(1, 1, 1, 0.85f);
@@ -485,7 +505,11 @@ namespace Ballon.Ego
         /// <summary>Anzeigetexte aktualisieren; baut nur bei geänderten Werten neu (öffentlich für den GC-Test).</summary>
         public void UpdateHudText()
         {
-            if (C.ammo != _hAmmo) { _hAmmo = C.ammo; _ammoText = $"{C.ammo} / {C.magSize}"; }
+            if (C.ammo != _hAmmo || arsenal.Active != _hWeapon)
+            {
+                _hAmmo = C.ammo;
+                _ammoText = C.S.D.gameplay.Unlimited ? "∞" : $"{C.ammo} / {C.magSize}";   // Werkzeug ohne Magazin (0.22)
+            }
             string mk = Time.time - lastMarkerTime < 1.2f ? lastMarker : "";
             int fr = (int)C.Frame;
             if (arsenal.Active != _hWeapon) _hHits = -1;          // Waffenwechsel: Skin-Name der neuen Waffe
