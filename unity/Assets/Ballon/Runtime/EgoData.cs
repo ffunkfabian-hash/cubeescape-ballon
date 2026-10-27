@@ -22,6 +22,7 @@ namespace Ballon.Ego
         public int burst_shots, burst_rpm;              // 10: Salvenlänge (Spec burst_N) und Takt in der Salve; 0 = keine Salve
         public float path_up_h;                         // 10: Bahnstufe je Schuss (Anteil der Bildhöhe) je Klasse; /9: motion.recoil.path_up_h
         public float recover_delay_s, recover_hz;       // 10: Erholung der Bahn nach der Salve je Klasse; /9: motion.recoil
+        public float kick;                              // 10: Modellkick, Kamera-Ruck und Hochziehen je Schuss relativ zu motion.recoil (Werkzeug 0,6); /9: 1
         public bool muzzle_flash;                       // 10: Mündungsfeuer (Werkzeug ohne); /7–/9: true
         public float ring_turn_s;                       // 10: Dauer der Ringdrehung je Schuss (Werkzeug)
         public EgoPortal[] portals;                     // 10: Portale des Werkzeugs (Taste, Rolle, Farbe, Ringrichtung); leer = Waffe
@@ -303,6 +304,8 @@ namespace Ballon.Ego
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");
                 if (fmt != Format8 && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({fmt})");
+                if (fmt == Format && (f.gameplay.kick <= 0 || f.gameplay.recover_hz <= 0))
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.kick oder recover_hz ({Format})");
                 if (fmt == Format && f.gameplay.Burst != (f.gameplay.fire_mode == "burst"))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu burst_shots {f.gameplay.burst_shots}");
                 if (fmt == Format8) Migrate9(f);
@@ -331,6 +334,7 @@ namespace Ballon.Ego
             g.path_up_h = f.motion.recoil.path_up_h;
             g.recover_delay_s = f.motion.recoil.recover_delay_s;
             g.recover_hz = f.motion.recoil.recover_hz;
+            g.kick = 1;
             g.muzzle_flash = true;
             g.ring_turn_s = 0;
             g.portals = new EgoPortal[0];

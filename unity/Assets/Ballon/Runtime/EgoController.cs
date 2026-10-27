@@ -628,9 +628,10 @@ namespace Ballon.Ego
             var Rc = S.D.motion.recoil;
             float w = adsWeight;
             // Modellkick: im Zielen klein (Visier < 1 % H), ohne Hochziehen; Kamera-Ruck gleich, er wird erst beim Anwenden verteilt
-            _recV += new Vector3(Rc.back_mps * Mathf.Lerp(1f, Rc.ads_back, w), Rc.pitch_dps * Mathf.Lerp(1f, Rc.ads_pitch, w), 0);
-            _recCv += new Vector3(Rc.cam_dps, 0, 0);
-            _rClimb += Rc.climb_deg * (1 - w);
+            float kick = S.D.gameplay.kick;               // je Klasse (0.22, Werkzeug 0,6), wie die Feueraktion im Clip
+            _recV += kick * new Vector3(Rc.back_mps * Mathf.Lerp(1f, Rc.ads_back, w), Rc.pitch_dps * Mathf.Lerp(1f, Rc.ads_pitch, w), 0);
+            _recCv += kick * new Vector3(Rc.cam_dps, 0, 0);
+            _rClimb += kick * Rc.climb_deg * (1 - w);
             // Grundbahn: fester Schritt nach oben und feste Seitenfolge, als Anteil des Weltbilds (im Zielen kleinerer Winkel)
             float th = _tanH / Zoom, tv = th / aspect;
             _pathN++;

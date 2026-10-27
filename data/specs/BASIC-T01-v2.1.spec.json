@@ -217,10 +217,10 @@
    "name_de": "Kernglas",
    "name_en": "Core glass",
    "assembly": "receiver",
-   "function_de": "Schützt den offen liegenden Kern",
+   "function_de": "Schützt den offen liegenden Kern (klar wie die Linse, 0.22: Kerne in Unity sichtbar)",
    "attachment_de": "zwischen Schale und Emitter",
-   "material_role": "glass",
-   "material_de": "Visierglas",
+   "material_role": "glass_scope",
+   "material_de": "Linse im Zielfernrohr (ohne Klarlack-Spiegelung)",
    "interface": null,
    "parent_part": null,
    "shape": "cyl",
@@ -1220,8 +1220,8 @@
   "Socket_CenterOfMass": {
    "position_m": [
     -0.0,
-    -0.00613,
-    0.09941
+    -0.01026,
+    0.1001
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",

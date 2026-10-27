@@ -540,21 +540,20 @@ CLASSES = {
                   src='Werkzeug ohne Visier und Magazin (0.17): kein Zielen, kein Nachladen; Feuer als fire_a/fire_b (Portale)'),
         actions=dict(
             fire_a=dict(de='Portal A (Linksklick): Ring dreht 120° im Uhrzeigersinn (von hinten)', frames=18,
-                        weapon=[(0, 'hip'), (18, 'hip')], fire=[2], kick=0.6, portal='A',
+                        weapon=[(0, 'hip'), (18, 'hip')], fire=[2], portal='A',
                         mech={'emitter_ring': [(0, 0), (2, 0), (12, 1), (18, 1)]}, events=[(2, 'Fire')],
-                        src='Ablauf aus dem Modul (t01 ACTIONS fire_a, 0.17): Ring 2 → 12 Bilder; Kick E 0,6 (Portal 2: obere Klaue ≈ 7 % H '
-                            'im ersten Schussbild, portal2.md)'),
+                        src='Ablauf aus dem Modul (t01 ACTIONS fire_a, 0.17): Ring 2 → 12 Bilder; Kick aus gameplay.kick'),
             fire_b=dict(de='Portal B (Rechtsklick): Ring dreht 120° gegen den Uhrzeigersinn', frames=18,
-                        weapon=[(0, 'hip'), (18, 'hip')], fire=[2], kick=0.6, portal='B',
+                        weapon=[(0, 'hip'), (18, 'hip')], fire=[2], portal='B',
                         mech={'emitter_ring': [(0, 0), (2, 0), (12, -1), (18, -1)]}, events=[(2, 'Fire')],
                         src='wie fire_a, Gegenrichtung (t01 ACTIONS fire_b)'),
         ),
         frames={},
-        gameplay=dict(rpm=240, magazine=0, path_up_h=0.0, muzzle_flash=False, range_m=24.0, ring_turn_s=round(10 / 30, 6),
+        gameplay=dict(rpm=240, magazine=0, path_up_h=0.0, muzzle_flash=False, range_m=24.0, kick=0.6, ring_turn_s=round(10 / 30, 6),
                       portals=[dict(name='A', input='fire', role='portal_a', color='#1AD9FF', ring=1),
                                dict(name='B', input='aim', role='portal_b', color='#FF7314', ring=-1)],
                       src='Cube Escape (Q-CE-14/15): Linksklick Portal A (Cyan #1AD9FF), Rechtsklick Portal B (Orange #FF7314), Abklingzeit '
-                          '0,25 s → 240/min, Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul '
+                          '0,25 s → 240/min, Kick E 0,6 der Automatik (Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild, portal2.md), Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul '
                           't01 fire_a/fire_b), Richtung je Portal; ohne Mündungsfeuer und ohne Bahnstufe (E: Werkzeug, Rückmeldung über '
                           'Ring und Treffermarke in Portalfarbe)'),
         src='Werkzeug der Familie (0.22 „Volley“): Hüfte nach Portal 2 (M) und Familienmaßen, Sprint als Klasse „Werkzeug“ E; Bedienung '
@@ -624,6 +623,10 @@ def profile(W):
     G = dict(C['gameplay'])
     for k in ('path_up_h', 'recover_delay_s', 'recover_hz'):   # Bahn je Klasse (0.22), sonst gemeinsam (ego.RECOIL)
         G.setdefault(k, RECOIL[k])
+    G.setdefault('kick', 1.0)                   # Modellkick und Kamera-Ruck je Schuss relativ zu ego.RECOIL (0.22; Clips und Unity gleich)
+    for A in actions.values():
+        if A.get('fire') and G['kick'] != 1.0:
+            A['kick'] = G['kick']
     if burst:
         G['burst_shots'] = burst                  # Salvenlänge aus der Spec (META fire burst_N)
     rpm = G['rpm']

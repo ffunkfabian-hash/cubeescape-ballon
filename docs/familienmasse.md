@@ -36,4 +36,4 @@ Magazin; Schussachse statt Laufachse.
 
 | Werkzeug | L × H × B | Schussachse u | Mündung f | Heck f | Stützhand f / u | Schwerpunkt f / u | Teile / Dreiecke |
 |---|---|---|---|---|---|---|---|
-| BASIC-T01-v2.1 Portalkanone | 404 × 251 × 120 | 112 | 254 | -150 | 158 / 20 | 6 / 99 | 26 / 14940 |
+| BASIC-T01-v2.1 Portalkanone | 404 × 251 × 120 | 112 | 254 | -150 | 158 / 20 | 10 / 100 | 26 / 14940 |

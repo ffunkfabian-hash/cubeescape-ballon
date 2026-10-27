@@ -821,6 +821,31 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("idle_hip", c.ActionName, "kein Nachladen");
             Assert.AreEqual(ammo0, c.ammo, "unbegrenzt");
             Assert.IsFalse(c.output.flashOn, "ohne Mündungsfeuer");
+            // Kick je Klasse (gameplay.kick 0,6) wie der Clip: Rückweg der Waffe je Schuss gegen denselben Schuss mit Kick 1
+            float Kick(float kv)
+            {
+                float old = G.kick;
+                G.kick = kv;
+                try
+                {
+                    var a = new EgoController(new EgoSolver(PC));
+                    var b = new EgoController(new EgoSolver(PC));
+                    a.ReadyNow(); b.ReadyNow();
+                    Run(a, Idle, 0.3f); Run(b, Idle, 0.3f);
+                    float m = 0;
+                    for (int j = 0; j < 20; j++)
+                    {
+                        a.Tick(Dt, new EgoIntent { grounded = true, fire = j == 0 });
+                        b.Tick(Dt, Idle);
+                        m = Mathf.Max(m, Vector3.Distance(BMath.Pos(a.output.weapon), BMath.Pos(b.output.weapon)));
+                    }
+                    return m;
+                }
+                finally { G.kick = old; }
+            }
+            float k6 = Kick(G.kick), k1 = Kick(1f);
+            TestContext.WriteLine($"Kick: Werkzeug {k6 * 1000:0.00} mm, mit Kick 1 {k1 * 1000:0.00} mm (Verhältnis {k6 / k1:0.00})");
+            Assert.AreEqual(0.6f, k6 / k1, 0.02f, "Kick 0,6 wie die Feueraktion im Clip");
             // aus dem Sprint: Rechtsklick setzt Portal B über sprint_to_fire
             var sprint = new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f };
             for (int j = 0; j < 60; j++, k++) c.Tick(Dt, sprint);

@@ -405,6 +405,10 @@ namespace Ballon.Ego.Tests
             Assert.IsFalse(PC.HasPose("ads") || PC.HasPose("reload"));
             Assert.IsFalse(PC.HasAnchor("Socket_Eye"));
             Assert.AreEqual("emitter_ring", PC.weapon.live.ring);
+            Assert.AreEqual(0.6f, G.kick, 1e-6f, "Kick je Klasse (Werkzeug 0,6)");
+            foreach (var a in new[] { "fire_a", "fire_b", "sprint_to_fire" })
+                Assert.AreEqual(G.kick, PC.Action(a).kick, 1e-6f, $"{a}: Clip-Kick = gameplay.kick");
+            foreach (var d in new[] { D, MP, SR, PR }) Assert.AreEqual(1f, d.gameplay.kick, $"{d.weapon.id}: Kick wie bisher");
             foreach (var core in new[] { "core_a", "core_b", "core_glass" })               // Leuchtkerne und Glas mit eigenem Material (wie Absehen)
                 CollectionAssert.DoesNotContain(PC.textures.weapon.objects, core, $"{core} nicht im Atlas");
             foreach (var q in G.portals)

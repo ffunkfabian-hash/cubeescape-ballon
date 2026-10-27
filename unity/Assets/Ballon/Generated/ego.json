@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "6fb4d2dacaadab287860cad474c6524a87162551de9ba298a763c117b5ffaad8"
+    "sha256": "e2d99bc76dc2d7ae664f04532571184bfbf8659d7afbd24027484a62e0d382a9"
    },
    {
     "path": "tools/ego_build.py",
@@ -1329,6 +1329,7 @@
     "path_up_h": 0.01,
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "kick": 1.0,
     "weapon_type": "auto_rifle",
     "sight": "reflex",
     "world_zoom": 1.9,
@@ -8517,6 +8518,7 @@
     "path_up_h": 0.01,
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "kick": 1.0,
     "weapon_type": "submachine_gun",
     "sight": "reflex",
     "world_zoom": 1.45,
@@ -14766,6 +14768,7 @@
     "path_up_h": 0.01,
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "kick": 1.0,
     "weapon_type": "scout_rifle",
     "sight": "scope",
     "world_zoom": 2.0,
@@ -21372,6 +21375,7 @@
     "recover_delay_s": 0.1,
     "recover_hz": 5.0,
     "src": "M Gridskipper (Rapid-Fire Frame): Menü 540/min und Magazin 36 [S], in der Salve 4 Bilder Abstand bei 60/s = 900/min [M], Salvenbeginn → Salvenbeginn 3 · 60/540 = 0,333 s (beobachtet ≥ 0,383 s im Spielertakt, kein Grenzwert; Motiongen destiny2 › z-gridskipper-salve); Salvenlänge aus der Spec (META fire burst_3); Bahnstufe ≈ 4 pp H je Salve, Erholung in der Pause (Motiongen rueckstoss › r-d2-gridskipper, 5.2 A) → path_up_h 0,0133 je Schuss (Automatik 0,010); Erholung zwischen den Salven ≈ 80 % (Gridskipper, Salvenfolge 0,38–0,40 s, Motiongen destiny2 › z-gridskipper-salve) → E Erholung ab 0,10 s nach dem Schuss (1,5 Takte) mit 5 Hz kritisch gedämpft: in der Pause von 0,2 s bleiben ≈ 20 % (gemeinsam 0,12 s / 2 Hz: ≈ 78 % blieben, und die nächste Salve sank anfangs ab)",
+    "kick": 1.0,
     "weapon_type": "pulse_rifle",
     "sight": "reflex",
     "world_zoom": 2.0,
@@ -27899,7 +27903,8 @@
     "rpm": 240,
     "magazine": 0,
     "path_up_h": 0.0,
-    "src": "Cube Escape (Q-CE-14/15): Linksklick Portal A (Cyan #1AD9FF), Rechtsklick Portal B (Orange #FF7314), Abklingzeit 0,25 s → 240/min, Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul t01 fire_a/fire_b), Richtung je Portal; ohne Mündungsfeuer und ohne Bahnstufe (E: Werkzeug, Rückmeldung über Ring und Treffermarke in Portalfarbe)",
+    "kick": 0.6,
+    "src": "Cube Escape (Q-CE-14/15): Linksklick Portal A (Cyan #1AD9FF), Rechtsklick Portal B (Orange #FF7314), Abklingzeit 0,25 s → 240/min, Kick E 0,6 der Automatik (Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild, portal2.md), Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul t01 fire_a/fire_b), Richtung je Portal; ohne Mündungsfeuer und ohne Bahnstufe (E: Werkzeug, Rückmeldung über Ring und Treffermarke in Portalfarbe)",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
     "weapon_type": "portal_cannon",
@@ -30379,7 +30384,7 @@
       7,
       14
      ],
-     "kick": 1.0,
+     "kick": 0.6,
      "breathe": false,
      "bob": {
       "enabled": false,
@@ -30408,7 +30413,7 @@
      "de": "Portal A (Linksklick): Ring dreht 120° im Uhrzeigersinn (von hinten)",
      "frames": 18,
      "time_scale": 1.0,
-     "src": "Ablauf aus dem Modul (t01 ACTIONS fire_a, 0.17): Ring 2 → 12 Bilder; Kick E 0,6 (Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild, portal2.md)",
+     "src": "Ablauf aus dem Modul (t01 ACTIONS fire_a, 0.17): Ring 2 → 12 Bilder; Kick aus gameplay.kick",
      "weapon": [
       {
        "f": 0.0,
