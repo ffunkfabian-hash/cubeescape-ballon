@@ -17,8 +17,9 @@ namespace Ballon.Ego
         public Matrix4x4 rot;
         public float camPitch;
         public float trigger, bolt, port;   // Mechanik beim Feuern, < 0 = aus der Aktion
+        public float ring;                  // 0.22: Ringdrehung des Werkzeugs in Dritteln (live), NaN = aus der Aktion
 
-        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1 };
+        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN };
     }
 
     public sealed class EgoOutput
@@ -76,7 +77,7 @@ namespace Ballon.Ego
         {
             D = d;
             fps = d.fps;
-            _eyeLocal = V(d.Anchor("Socket_Eye").pos);
+            _eyeLocal = d.HasAnchor("Socket_Eye") ? V(d.Anchor("Socket_Eye").pos) : Vector3.zero;   // Werkzeug ohne Visier (0.22)
             _palmCenter = V(d.arm.palm_center);
             foreach (var p in d.weapon.parts)
                 if (p.move.kind != "none" && string.IsNullOrEmpty(p.parent)) _movers.Add(p);
@@ -106,7 +107,7 @@ namespace Ballon.Ego
 
         /// <summary>Zielfernrohr (ego.ADS_HIDE, 0.20): Teile mit ads_hide aus, solange Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf,
         /// ohne Live-Ebenen) näher als motion.ads_hide.eye_m an der Kamera liegt – wie ego_build.evaluate.</summary>
-        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && baseW.MultiplyPoint3x4(_eyeLocal).magnitude < D.motion.ads_hide.eye_m;
+        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && D.HasAnchor("Socket_Eye") && baseW.MultiplyPoint3x4(_eyeLocal).magnitude < D.motion.ads_hide.eye_m;
         public int SegmentIndex(string s) => _seg[s];
         public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length],
                                                         shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live] };
@@ -147,7 +148,7 @@ namespace Ballon.Ego
             o.shellCount = 0;
             var fire = A.fire;
             if (fire == null || fire.Length == 0) return;
-            int i = FlashVisible(fire, f);
+            int i = D.gameplay.muzzle_flash ? FlashVisible(fire, f) : -1;     // Werkzeug (0.22): ohne Mündungsfeuer
             if (i >= 0) { o.flashOn = true; o.flashShot = i; o.flash = FlashMatrix(WM, i); }
             if (!Ejects) return;
             if (st.shotWM == null || st.shotWM.Length != fire.Length) { st.shotWM = new Matrix4x4[fire.Length]; st.shotSet = new bool[fire.Length]; }
@@ -410,8 +411,9 @@ namespace Ballon.Ego
                 foreach (var tr in A.mech) mech[tr.part] = ValueAt(tr.keys, f);
             var live = D.weapon.live;                       // Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE, 0.18)
             if (L.trigger >= 0) mech[live.trigger] = L.trigger;
-            if (L.bolt >= 0) mech[live.bolt] = L.bolt;
-            if (L.port >= 0) mech[live.port] = L.port;
+            if (L.bolt >= 0 && !string.IsNullOrEmpty(live.bolt)) mech[live.bolt] = L.bolt;      // Werkzeug (0.22): ohne Verschluss
+            if (L.port >= 0 && !string.IsNullOrEmpty(live.port)) mech[live.port] = L.port;      // und ohne Auswurfklappe
+            if (!float.IsNaN(L.ring) && !string.IsNullOrEmpty(live.ring)) mech[live.ring] = L.ring;
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));

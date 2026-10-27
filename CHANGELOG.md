@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 0.22.0 „Volley“ – Impulsgewehr BASIC-02 und Portalkanone BASIC-T01 spielbar (Tasten 4 und 5) (Branch `claude/ballon-0.22-volley`)
+
+- Schritt 6 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) für die Klasse Impuls: eigene Hüfte (Mündung 57,9/63,4 %, mit der
+  Automatik-Hüfte lag sie bei 59,7 % außerhalb des Bands), Sprint wie die Automatik, Anflug 20 Bilder bei 60/s, Weltzoom 2,0, `ring_dot`;
+  Feuerart **Salve** aus der Spec (`burst_3`): 3 Schuss im Takt 900/min, Salvenbeginn alle 0,333 s (540/min wie Gridskipper), Magazin 36,
+  Bahnstufe 4,0 % H je Salve, Erholung je Klasse (≈ 80 % zwischen den Salven); Mündungsfeuer im Zielen 13,5 % der H4-Öffnung, Hülsen über `EJECT`.
+- Portalkanone als Klasse „Werkzeug“ (Nutzerwahl A über Sightline): Linksklick Portal A (Cyan, Ring 120° im Uhrzeigersinn), Rechtsklick
+  Portal B (Orange, gegen den Uhrzeigersinn), kein Zielen, kein Nachladen, Abklingzeit 0,25 s, Reichweite 24 m, Treffermarke in Portalfarbe;
+  Hüfte nach Portal 2, auf Nutzerhinweis quer gestellt, damit beide Kerne sichtbar sind; Sprint E. Präzision (X) zurückgestellt (EXT-18).
+- Format `ballon-ego/10`: Salve, Bahnstufe und Erholung je Klasse in `gameplay`, Portale, `weapon.live.ring`; Klassen ohne Zielen/Nachladen
+  lassen diese Aktionen weg (Unity schaltet nach den Daten, nicht nach der Waffen-ID). Leser liest `/9`–`/7`; `/9` von main als Fixture,
+  Automatik, MP und Scout Feld für Feld unverändert. Export: Leuchtrollen aus Modulen nicht im Atlas (Lehre). Bericht [docs/versions/0.22-volley.md](docs/versions/0.22-volley.md).
+
 ## 0.21.0 „Ironsight“ – Visier-Baukasten v3 als Produktionsform, Visiere an BASIC-01/02/03/06 (Branch `claude/ballon-0.21-ironsight`)
 
 - Baukasten v3 in `basic/common.py` (Nutzerwahl „v3 bauen“): H0-Plattform `sight_platform`, Flachprofil `xprof` (neue Form in `kit.py`),

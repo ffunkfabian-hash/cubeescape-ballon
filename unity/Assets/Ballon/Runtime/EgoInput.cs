@@ -52,7 +52,8 @@ namespace Ballon.Ego
             r.jump = k.spaceKey.wasPressedThisFrame;
             r.reload = k.rKey.wasPressedThisFrame;
             r.inspect = k.fKey.wasPressedThisFrame;
-            r.select = k.digit1Key.wasPressedThisFrame ? 1 : k.digit2Key.wasPressedThisFrame ? 2 : k.digit3Key.wasPressedThisFrame ? 3 : 0;   // 0.18: bis 0.17 1/2 Ziehen/Wegstecken; 0.20: 3 Scout
+            r.select = k.digit1Key.wasPressedThisFrame ? 1 : k.digit2Key.wasPressedThisFrame ? 2 : k.digit3Key.wasPressedThisFrame ? 3
+                     : k.digit4Key.wasPressedThisFrame ? 4 : k.digit5Key.wasPressedThisFrame ? 5 : 0;   // 0.18: bis 0.17 1/2 Ziehen/Wegstecken; 0.20: 3 Scout; 0.22: 4 Impuls, 5 Portalkanone
             r.swap = k.qKey.wasPressedThisFrame;
             return r;
         }
@@ -115,6 +116,8 @@ namespace Ballon.Ego
                 case "weapon1": r.select = 1; break;
                 case "weapon2": r.select = 2; break;
                 case "weapon3": r.select = 3; break;
+                case "weapon4": r.select = 4; break;
+                case "weapon5": r.select = 5; break;
             }
         }
     }

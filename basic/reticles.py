@@ -105,7 +105,7 @@ SIGHT_KIND = {'auto_rifle': 'holo', 'submachine_gun': 'holo', 'trace_rifle': 'ho
               'scout_rifle': 'ring_scope', 'linear_fusion_rifle': 'ring_scope', 'hand_cannon': 'irons_brackets',
               'sidearm': 'irons_brackets', 'shotgun': 'irons_brackets', 'sniper_rifle': 'fullscreen', 'fusion_rifle': 'ring',
               'grenade_launcher': 'lens_chevron', 'rocket_launcher': 'lens_chevron', 'combat_bow': 'arrow_tip', 'sword': None,
-              'glaive': None}
+              'glaive': None, 'portal_cannon': None}
 SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv',
                  'irons_brackets': 'Kimme und Korn mit leuchtenden Klammern', 'fullscreen': 'Zielfernrohr außen, im Zielen Vollbild',
                  'ring': 'Ring oder Doppelring', 'lens_chevron': 'runde Linse mit Winkel', 'arrow_tip': 'Pfeilspitze, kein Visier',
@@ -179,6 +179,8 @@ DEFAULTS = {
     'combat_bow':          dict(optic='dot', hip='chevron', spread='charge'),
     'sword':               dict(optic=None, hip='dot', spread='none'),
     'glaive':              dict(optic=None, hip='cross', spread='auto'),
+    # Werkzeug (0.22): kein Visier; Hüftform Ring mit Punkt (Portal 2: Halbkreise um die Mitte, Cube Escape: Fadenkreuz), ohne Aufgehen
+    'portal_cannon':       dict(optic=None, hip='ring_dot', spread='none'),
 }
 # Hüft-Fadenkreuz (HUD), Entscheidungsliste 4.1 A / 4.2 A (Nutzer 25.10.2026), Maße nach Glidepath (Motiongen destiny2 › Glidepath,
 # [M], je 1 Clip in der Hüfte): Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens,
@@ -193,7 +195,8 @@ HIP = dict(color='white', weight='fine', share_h={'auto_rifle': 0.032, 'pulse_ri
            hidden_in=('ads', 'sprint', 'reload', 'draw', 'holster', 'inspect', 'lowered'))
 HIP_STATUS = {'auto_rifle': 'gemessen (Glidepath)', 'submachine_gun': 'gemessen (Glidepath, 5,9–6,3 % H)',
               'hand_cannon': 'gemessen (Glidepath, ≈ 6 % H)', 'sniper_rifle': 'gemessen (Glidepath, ≈ 1 % H)',
-              'pulse_rifle': 'übertragen (Automatik)', 'machine_gun': 'übertragen (Automatik)'}
+              'pulse_rifle': 'übertragen (Automatik)', 'machine_gun': 'übertragen (Automatik)',
+              'portal_cannon': 'entworfen (Werkzeug, Portal 2 / Cube Escape)'}
 
 
 def extent_mm(kind, weight=None):

@@ -15,11 +15,13 @@ namespace Ballon.Ego.Tests
     public class EgoPlayTests
     {
         const float Dt = 1f / 60f;
-        static EgoFile _d, _mp, _sr;
+        static EgoFile _d, _mp, _sr, _pr, _pc;
 
         static EgoFile D => _d;
         static EgoFile MP => _mp;                           // zweite Waffe (0.18): Maschinenpistole BASIC-06
         static EgoFile SR => _sr;                           // dritte Waffe (0.20): Scout BASIC-03
+        static EgoFile PR => _pr;                           // vierte Waffe (0.22): Impulsgewehr BASIC-02
+        static EgoFile PC => _pc;                           // fünfte (0.22): Portalkanone BASIC-T01 (Werkzeug)
 
         static EgoIntent Idle => new EgoIntent { grounded = true };
 
@@ -51,6 +53,8 @@ namespace Ballon.Ego.Tests
                 _d = b.Solvers[0].D;
                 _mp = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "submachine_gun");
                 _sr = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "scout_rifle");
+                _pr = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "pulse_rifle");
+                _pc = b.Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == "portal_cannon");
             }
         }
 
@@ -421,7 +425,8 @@ namespace Ballon.Ego.Tests
                                       $"mit Schwelle 0,3 % des Wegs: {nr} Bilder");
                 return n;
             }
-            int mp = Frames(MP), ar = Frames(D), sr = Frames(SR);
+            int mp = Frames(MP), ar = Frames(D), sr = Frames(SR), pr = Frames(PR);
+            Assert.That(pr, Is.InRange(18, 22), "Impuls-Anflug ≈ 20 Bilder bei 60/s (4d: Destiny-Impuls 20, wie die Automatik)");
             Assert.That(sr, Is.InRange(15, 20), "Scout-Anflug 15–20 Bilder bei 60/s (zwischen Scharfschütze 15 und Impuls 20; Destiny-Scout 12–22)");
             Assert.LessOrEqual(mp, 12, "MP-Anflug ≤ 12 Bilder bei 60/s (Destiny-MP 8–12)");
             Assert.GreaterOrEqual(mp, 8, "MP-Anflug ≥ 8 Bilder (Destiny-MP 8–12)");
@@ -658,6 +663,11 @@ namespace Ballon.Ego.Tests
                 p.UseWeapon(w);
                 p.C.ReadyNow();
                 var L = p.Current;
+                if (!p.C.S.D.CanAim)                                   // Werkzeug ohne Visier (0.22): kein Absehen
+                {
+                    Assert.IsNull(L.sight, $"{p.C.S.D.weapon.id}: ohne Visier kein gezeichnetes Absehen");
+                    continue;
+                }
                 Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
                 Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
                 var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
@@ -684,6 +694,293 @@ namespace Ballon.Ego.Tests
             p.deltaOverride = null;
             p.UseWeapon(0);
             p.C.ReadyNow();
+        }
+
+        // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 (0.22 „Volley“)
+        /// <summary>Feuerart Salve (Spec burst_3, Klasse Impuls): ein kurzer Zug feuert genau burst_shots Schüsse im Takt 60/burst_rpm
+        /// (4 Bilder bei 60/s) und die Salve läuft nach dem Loslassen zu Ende; gehaltener Abzug feuert Salve um Salve, Salvenbeginn alle
+        /// burst_shots · 60/rpm (0,333 s); die Bahn steigt in der Salve und erholt sich in der Pause (zweistufig, 5.2 A) um ≈ 4 % H je Salve.
+        /// Bis 0.21 stand die Salve gemeinsam in motion.recoil (0 für alle): der Impuls hätte Dauerfeuer geschossen.</summary>
+        [Test]
+        public void Salve_feuert_genau_n_Schuss_je_Abzug_mit_Salvenabstand()
+        {
+            var G = PR.gameplay;
+            int n = G.burst_shots;
+            Assert.AreEqual(3, n);
+            var c = new EgoController(new EgoSolver(PR));
+            var at = new List<(int k, float y)>();
+            var ys = new List<float>();
+            int k = 0;
+            c.Shot += () => at.Add((k, c.PathDeg.y));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            c.Tick(Dt, fire); k++;                                                    // ein Bild gedrückt
+            for (int j = 0; j < 60; j++, k++) c.Tick(Dt, Idle);
+            var gaps = at.Zip(at.Skip(1), (a, b) => b.k - a.k).ToList();
+            TestContext.WriteLine($"Impuls: kurzer Zug → {at.Count} Schüsse in Bild {string.Join(",", at.Select(a => a.k))} (60/s)");
+            Assert.AreEqual(n, at.Count, "ein Zug: genau eine Salve");
+            float inBurst = 60f / G.burst_rpm;
+            foreach (var g in gaps) Assert.AreEqual(inBurst, g * Dt, Dt / 2, "Takt in der Salve 60/burst_rpm");
+            Assert.AreEqual(G.magazine - n, c.ammo);
+            at.Clear();
+            int k0 = k;
+            for (int j = 0; j < 90; j++, k++) { c.Tick(Dt, fire); ys.Add(c.PathDeg.y); }   // 1,5 s gehalten
+            for (int j = 0; j < 60; j++, k++) { c.Tick(Dt, Idle); ys.Add(c.PathDeg.y); }
+            var starts = at.Where((a, i) => i % n == 0).Select(a => a.k).ToList();
+            TestContext.WriteLine($"Impuls: 1,5 s gehalten → {at.Count} Schüsse, Salvenbeginn {string.Join(",", starts.Select(x => x - k0))}; Bahn je Schuss " +
+                                  string.Join(" ", at.Select(a => (a.y).ToString("0.00"))) + "°");
+            Assert.AreEqual(0, at.Count % n, "nur ganze Salven");
+            float period = n * 60f / G.rpm;
+            for (int i = 1; i < starts.Count; i++) Assert.AreEqual(period, (starts[i] - starts[i - 1]) * Dt, Dt, "Salvenbeginn alle n · 60/rpm");
+            Assert.AreEqual(Mathf.CeilToInt(1.5f / period), starts.Count, "Salven in 1,5 s");
+            Assert.Greater(at[2].y, at[1].y, "keine Erholung in der Salve");
+            float peak1 = ys.Take(at[3].k - k0).Max();                                // Spitze nach der ersten Salve
+            float tanV = Mathf.Tan(PR.camera.h_fov_deg * Mathf.Deg2Rad / 2) * PR.camera.aspect[1] / PR.camera.aspect[0];
+            float stepH = Mathf.Tan(peak1 * Mathf.Deg2Rad) / tanV / 2 * 100;          // Anteil der Bildhöhe (Hüfte, ungezoomt)
+            TestContext.WriteLine($"Impuls: Bahn nach der ersten Salve {peak1:0.00}° = {stepH:0.0} % H, beim Beginn der zweiten {at[3].y:0.00}°");
+            Assert.That(stepH, Is.InRange(3f, 5f), "Stufe ≈ 4 % H je Salve (Gridskipper)");
+            Assert.Less(at[3].y, 0.4f * peak1, "Erholung in der Pause (zweistufig, Gridskipper ≈ 80 %)");
+            for (int i = 0; i + 1 < at.Count; i++)
+                if ((i + 1) % n != 0) Assert.Greater(at[i + 1].y, at[i].y, $"Schuss {i + 2}: keine Erholung in der Salve");
+            foreach (var d in new[] { D, MP })                                          // Dauerfeuer unverändert
+            {
+                var a = new EgoController(new EgoSolver(d));
+                a.ReadyNow();
+                Run(a, Idle, 0.3f);
+                long s0 = a.shots;
+                for (int j = 0; j < 60; j++) a.Tick(Dt, fire);
+                Assert.AreEqual(12, a.shots - s0, 1, $"{d.weapon.id}: Dauerfeuer 720/min");
+            }
+        }
+
+        /// <summary>Portalkanone nach Nutzerwahl A (27.10.2026): Linksklick Portal A, Rechtsklick Portal B, kein Zielen; je Schuss dreht der
+        /// Ring 120° (A im, B gegen den Uhrzeigersinn) in ring_turn_s; Abklingzeit 60/rpm = 0,25 s; unbegrenzt, R lädt nicht nach.</summary>
+        [Test]
+        public void Portalkanone_dreht_Ring_120_je_Schuss_und_wechselt_Portal()
+        {
+            var G = PC.gameplay;
+            var c = new EgoController(new EgoSolver(PC));
+            var at = new List<(int k, int portal)>();
+            int k = 0;
+            c.Shot += () => at.Add((k, c.LastPortal));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var ring = PC.weapon.live.ring;
+            float RingDeg()                                                       // Drehung des Rings um die Schussachse gegen die Waffe
+            {
+                var rel = c.output.weapon.inverse * c.output.movers[ring];
+                var rest = BMath.T(BMath.V(PC.Part(ring).rest));
+                var R = rest.inverse * rel;                                       // Drehung um den Drehpunkt
+                Vector3 up = R.MultiplyVector(Vector3.forward), ax = BMath.V(PC.Part(ring).move.axis);
+                return Mathf.Atan2(Vector3.Dot(Vector3.Cross(Vector3.forward, up), ax), Vector3.Dot(Vector3.forward, up)) * Mathf.Rad2Deg;
+            }
+            var lmb = new EgoIntent { grounded = true, fire = true };
+            var rmb = new EgoIntent { grounded = true, aim = true };
+            int ammo0 = c.ammo;
+            void Click(EgoIntent i) { c.Tick(Dt, i); k++; for (int j = 0; j < 30; j++, k++) c.Tick(Dt, Idle); }
+            Click(lmb);
+            float a1 = RingDeg();
+            Assert.AreEqual(0, c.LastPortal, "Linksklick: Portal A");
+            Assert.AreEqual(1f, c.RingTurns, 1e-4f, "nach ring_turn_s eine Dritteldrehung");
+            Assert.AreEqual(1f, c.output.mech[ring], 1e-4f);
+            Click(rmb);
+            float b1 = RingDeg();
+            Assert.AreEqual(1, c.LastPortal, "Rechtsklick: Portal B");
+            Assert.AreEqual(0f, c.RingTurns, 1e-4f, "B dreht zurück");
+            Click(rmb);
+            float b2 = RingDeg();
+            TestContext.WriteLine($"Ring: A → {a1:0.0}°, B → {b1:0.0}°, B → {b2:0.0}° (Achse {string.Join(",", PC.Part(ring).move.axis)}); Portale {string.Join(",", at.Select(a => a.portal))}");
+            Assert.AreEqual(120f, Mathf.Abs(a1), 0.5f, "A: 120°");
+            Assert.AreEqual(0f, b1, 0.5f);
+            Assert.AreEqual(-Mathf.Sign(a1) * 120f, b2, 0.5f, "B: 120° in der Gegenrichtung");
+            Assert.AreEqual(EgoController.Stance.Hip, c.CurrentStance, "Rechtsklick zielt nicht");
+            Assert.AreEqual(0f, c.adsWeight, "kein Zielen");
+            Assert.AreEqual(1f, c.Zoom, "kein Weltzoom");
+            // mittendrin: der Ring dreht weich, nicht sprunghaft
+            c.Tick(Dt, lmb); k++;
+            for (int j = 0; j < 5; j++, k++) c.Tick(Dt, Idle);
+            Assert.That(c.RingTurns - c.RingTarget, Is.InRange(-0.95f, -0.05f), "Ring nach 0,1 s auf dem Weg");
+            for (int j = 0; j < 30; j++, k++) c.Tick(Dt, Idle);
+            // Abklingzeit: zwei Klicks im Abstand 0,1 s → zwei Schüsse, der zweite nach 60/rpm
+            at.Clear();
+            c.Tick(Dt, lmb); k++;
+            for (int j = 0; j < 5; j++, k++) c.Tick(Dt, Idle);
+            c.Tick(Dt, rmb); k++;
+            for (int j = 0; j < 40; j++, k++) c.Tick(Dt, Idle);
+            float gap = at.Count == 2 ? (at[1].k - at[0].k) * Dt : 0;
+            TestContext.WriteLine($"zwei Klicks in 0,1 s → {at.Count} Schüsse, Abstand {gap:0.000} s (60/rpm {60f / G.rpm:0.000} s)");
+            Assert.AreEqual(2, at.Count);
+            Assert.AreEqual(new[] { 0, 1 }, at.Select(a => a.portal).ToArray(), "A, dann B");
+            Assert.AreEqual(60f / G.rpm, gap, Dt, "Abklingzeit 0,25 s");
+            // gehalten: ein Schuss je Klick; R lädt nicht nach; Munition unbegrenzt
+            at.Clear();
+            for (int j = 0; j < 60; j++, k++) c.Tick(Dt, lmb);
+            Assert.AreEqual(1, at.Count, "gehalten: ein Portal");
+            c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            Assert.AreEqual("idle_hip", c.ActionName, "kein Nachladen");
+            Assert.AreEqual(ammo0, c.ammo, "unbegrenzt");
+            Assert.IsFalse(c.output.flashOn, "ohne Mündungsfeuer");
+            // Kick je Klasse (gameplay.kick 0,6) wie der Clip: Rückweg der Waffe je Schuss gegen denselben Schuss mit Kick 1
+            float Kick(float kv)
+            {
+                float old = G.kick;
+                G.kick = kv;
+                try
+                {
+                    var a = new EgoController(new EgoSolver(PC));
+                    var b = new EgoController(new EgoSolver(PC));
+                    a.ReadyNow(); b.ReadyNow();
+                    Run(a, Idle, 0.3f); Run(b, Idle, 0.3f);
+                    float m = 0;
+                    for (int j = 0; j < 20; j++)
+                    {
+                        a.Tick(Dt, new EgoIntent { grounded = true, fire = j == 0 });
+                        b.Tick(Dt, Idle);
+                        m = Mathf.Max(m, Vector3.Distance(BMath.Pos(a.output.weapon), BMath.Pos(b.output.weapon)));
+                    }
+                    return m;
+                }
+                finally { G.kick = old; }
+            }
+            float k6 = Kick(G.kick), k1 = Kick(1f);
+            TestContext.WriteLine($"Kick: Werkzeug {k6 * 1000:0.00} mm, mit Kick 1 {k1 * 1000:0.00} mm (Verhältnis {k6 / k1:0.00})");
+            Assert.AreEqual(0.6f, k6 / k1, 0.02f, "Kick 0,6 wie die Feueraktion im Clip");
+            // aus dem Sprint: Rechtsklick setzt Portal B über sprint_to_fire
+            var sprint = new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f };
+            for (int j = 0; j < 60; j++, k++) c.Tick(Dt, sprint);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance);
+            at.Clear();
+            var tap = sprint;
+            tap.aim = true;
+            c.Tick(Dt, tap); k++;
+            for (int j = 0; j < 45; j++, k++) c.Tick(Dt, sprint);
+            Assert.AreEqual(1, at.Count, "Rechtsklick im Sprint: ein Schuss");
+            Assert.AreEqual(1, at[0].portal, "… Portal B");
+        }
+
+        /// <summary>Tasten 1 → 4 → 5 → 2 (6.1 A wie 0.18/0.20): jede Waffe wird weggesteckt, die leere Sicht dauert 0,1–0,2 s, das erste neue
+        /// Bild gehört zum Ziehen der gewählten Waffe; Automatik und Impuls behalten ihre Munition, die Portalkanone feuert unbegrenzt.</summary>
+        [Test]
+        public void Wechsel_1_4_5_2_mit_leerer_Sicht_ohne_Munitionsverlust()
+        {
+            int k = 0;
+            var marks = new List<(int k, string a, string m, int w)>();
+            var A = new EgoArsenal(new[] { D, MP, SR, PR, PC }.Select(d => new EgoController(new EgoSolver(d))).ToArray());
+            for (int w = 0; w < 5; w++) { int ww = w; A.C[w].Marker += (a, m) => marks.Add((k, a, m, ww)); }
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            var scr = A.C.Select(c => new EgoScreen(c.S)).ToArray();
+            var pts = new List<Vector2>();
+            for (int t = 0; t < 20; t++) A.Tick(Dt, new EgoIntent { grounded = true, fire = true });   // Automatik schießt
+            int ar = A.C[0].ammo, pr = -1;
+            Assert.Less(ar, 30);
+            foreach (int target in new[] { 4, 5, 2 })
+            {
+                marks.Clear();
+                var vis = new List<bool>();
+                var who = new List<int>();
+                var acts = new List<string>();
+                int from = A.Active;
+                for (k = 0; k < 120; k++)
+                {
+                    A.Tick(Dt, Idle, k == 0 ? target : 0);
+                    scr[A.Active].Silhouette(A.Current.output, pts);
+                    vis.Add(pts.Count > 0);
+                    who.Add(A.Active);
+                    acts.Add(A.Current.ActionName);
+                }
+                int gone = vis.IndexOf(false), back = vis.IndexOf(true, Mathf.Max(0, gone));
+                float tEmpty = (back - gone) * Dt;
+                int hol = marks.FindIndex(x => x.a == "holster" && x.m == "Holstered" && x.w == from);
+                TestContext.WriteLine($"Taste {target} (von {from + 1}): Holstered {(hol >= 0 ? (marks[hol].k + 1) * Dt : -1):0.000} s, leer {tEmpty:0.000} s, " +
+                                      $"erstes neues Bild {(back + 1) * Dt:0.000} s ({acts[back]} von Waffe {who[back] + 1})");
+                Assert.GreaterOrEqual(hol, 0, $"Taste {target}: weggesteckt");
+                Assert.That(tEmpty, Is.InRange(0.1f - 1e-4f, 0.2f + 1e-4f), $"Taste {target}: leere Sicht 0,1–0,2 s");
+                Assert.AreEqual(target - 1, who[back], "das erste neue Bild zeigt die gewählte Waffe");
+                Assert.AreEqual("draw", acts[back], "… beim Ziehen");
+                Assert.AreEqual(target - 1, A.Active);
+                Assert.AreEqual(ar, A.C[0].ammo, "Automatik behält ihre Munition");
+                if (target == 4)
+                {
+                    A.Tick(Dt, new EgoIntent { grounded = true, fire = true });           // eine Salve
+                    for (int t = 0; t < 40; t++) A.Tick(Dt, Idle);
+                    pr = A.C[3].ammo;
+                    Assert.AreEqual(PR.gameplay.magazine - PR.gameplay.burst_shots, pr, "Impuls: eine Salve");
+                }
+                if (target == 5)
+                {
+                    long s0 = A.C[4].shots;
+                    A.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+                    for (int t = 0; t < 20; t++) A.Tick(Dt, Idle);
+                    A.Tick(Dt, new EgoIntent { grounded = true, aim = true });
+                    for (int t = 0; t < 20; t++) A.Tick(Dt, Idle);
+                    Assert.AreEqual(2, A.C[4].shots - s0, "Portalkanone: zwei Portale");
+                    Assert.AreEqual(0, A.C[4].ammo, "unbegrenzt (Magazin 0 bleibt)");
+                }
+                if (pr >= 0) Assert.AreEqual(pr, A.C[3].ammo, "Impuls behält seine Munition");
+                Assert.AreEqual(30, A.C[1].ammo, "MP unberührt");
+                Assert.AreEqual(SR.gameplay.magazine, A.C[2].ammo, "Scout unberührt");
+            }
+        }
+
+        /// <summary>Salve und Portalschüsse ohne Speicher je Bild (wie Dauerfeuer und Wechsel seit 0.18).</summary>
+        [Test]
+        public void Kein_GC_Muell_bei_Salve_und_Portal()
+        {
+            var pr = new EgoController(new EgoSolver(PR));
+            var pc = new EgoController(new EgoSolver(PC));
+            pr.ammo = pr.magSize = 100000;
+            void Round()
+            {
+                for (int j = 0; j < 40; j++) pr.Tick(Dt, new EgoIntent { grounded = true, fire = j < 30 });
+                for (int j = 0; j < 40; j++) pc.Tick(Dt, new EgoIntent { grounded = true, fire = j % 20 == 0, aim = j % 20 == 10 });
+            }
+            foreach (var c in new[] { pr, pc }) { c.ReadyNow(); c.Tick(Dt, Idle); }
+            Round();
+            Round();
+            long s0 = pr.shots + pc.shots;
+            NUnit.Framework.Assert.That(() => Round(), Is.Not.AllocatingGCMemory(), "Salve und Portale");
+            Assert.Greater(pr.shots + pc.shots, s0 + 6, "es wurde geschossen");
+        }
+
+        /// <summary>Portalkanone im Spieler (Taste 5 über die Eingabekette): kein Weltzoom und kein Visier beim Rechtsklick, Hüft-Fadenkreuz
+        /// ring_dot bleibt; die Treffermarke nimmt die Portalfarbe an – Linksklick Cyan (A), Rechtsklick Orange (B); Munition „∞“.</summary>
+        [UnityTest]
+        public IEnumerator Portalkanone_im_Spieler_Taste_5_Treffermarke_in_Portalfarbe()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.UseWeapon(0);
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 0.05f, press: "weapon5").Add(0.05f, 1.4f);
+            p.deltaOverride = () => 1f / 30f;
+            for (int k = 0; k < 42; k++) yield return null;
+            Assert.AreEqual(4, p.arsenal.Active, "Taste 5: Portalkanone");
+            Assert.AreEqual("ring_dot", p.hipReticle.Kind);
+            int h0 = p.portalHits;
+            float fov = p.worldCam.fieldOfView;
+            p.input = new ScriptedInput().Add(0, 0.05f, hold: "fire").Add(0.05f, 0.4f);
+            for (int k = 0; k < 4; k++) yield return null;
+            Assert.AreEqual(0, p.C.LastPortal, "Linksklick: Portal A");
+            Assert.AreEqual(h0 + 1, p.portalHits, "Treffermarke auf einer Fläche in 24 m");
+            Assert.IsTrue(p.HitXVisible);
+            Assert.AreEqual(EgoPlayer.PortalColor(PC.gameplay.portals[0]), p.HitColor, "Treffermarke Cyan");
+            for (int k = 0; k < 10; k++) yield return null;
+            p.input = new ScriptedInput().Add(0, 0.6f, hold: "aim");
+            for (int k = 0; k < 18; k++) yield return null;
+            Assert.AreEqual(1, p.C.LastPortal, "Rechtsklick: Portal B");
+            Assert.AreEqual(EgoPlayer.PortalColor(PC.gameplay.portals[1]), p.HitColor, "Treffermarke Orange");
+            Assert.AreEqual(fov, p.worldCam.fieldOfView, 1e-4f, "Rechtsklick zoomt nicht");
+            Assert.IsTrue(p.HipVisible, "Hüft-Fadenkreuz bleibt");
+            Assert.IsFalse(p.SightVisible, "kein Visier");
+            p.UpdateHudText();
+            p.input = new ScriptedInput().Add(0, 0.05f, press: "weapon1").Add(0.05f, 1.5f);
+            for (int k = 0; k < 45; k++) yield return null;
+            p.input = new ScriptedInput().Add(0, 1000);
+            yield return null;
+            p.deltaOverride = null;
+            Assert.AreEqual(0, p.arsenal.Active);
         }
 
         static EgoArsenal Arsenal(List<(int k, string a, string m, int w)> marks, System.Func<int> k)
@@ -799,7 +1096,7 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
-            Assert.AreEqual(3, p.loadouts.Length, "drei Waffen in der Szene (0.20: Scout)");
+            Assert.AreEqual(5, p.loadouts.Length, "fünf Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone)");
             p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
@@ -963,7 +1260,7 @@ namespace Ballon.Ego.Tests
             Assert.That(upAds, Is.InRange(3.5f, 4.5f), "Viererstoß im Zielen ≈ 4 % H (Destiny Chroma Rush)");
 
             // Salvenwaffe: Takt in der Salve, Erholung danach (Daten nur für diesen Test umgestellt)
-            var Rc = D.motion.recoil;
+            var Rc = D.gameplay;                                       // 0.22: Salve je Klasse in gameplay (bis 0.21 motion.recoil)
             int oldShots = Rc.burst_shots, oldBurstRpm = Rc.burst_rpm;
             try
             {
@@ -971,14 +1268,14 @@ namespace Ballon.Ego.Tests
                 Rc.burst_rpm = 900;
                 var cb = Ready();
                 cb.ammo = cb.magSize = 1000;
-                cb.rpm = 120;                                          // eine Salve je 0,5 s
+                cb.rpm = 360;                                          // eine Salve je 0,5 s (3 · 60/360; rpm gemittelt wie das Destiny-Menü)
                 var at = new List<(int k, float y)>();
                 int kk = 0;
                 cb.Shot += () => at.Add((kk, cb.PathDeg.y));
                 var ys = new List<float>();
                 for (; kk < 90; kk++) { cb.Tick(Dt, new EgoIntent { grounded = true, fire = kk < 75 }); ys.Add(cb.PathDeg.y); }
                 var gaps = at.Zip(at.Skip(1), (a, b) => b.k - a.k).ToList();
-                TestContext.WriteLine($"Salvenwaffe (3 × 900/min, alle 0,5 s): Schüsse in Bild {string.Join(",", at.Select(a => a.k))}; Bahn je Schuss " +
+                TestContext.WriteLine($"Salvenwaffe (3 × 900/min, 360/min gemittelt = alle 0,5 s): Schüsse in Bild {string.Join(",", at.Select(a => a.k))}; Bahn je Schuss " +
                                       string.Join(" ", at.Select(a => ShareH(a.y, 1).ToString("0.0"))) + " % H");
                 Assert.AreEqual(new[] { 4, 4, 22, 4, 4, 22, 4, 4 }, gaps.Take(8).ToArray(), "Takt in der Salve 4 Bilder, Salve alle 30 Bilder");
                 float peak1 = ys.Skip(at[2].k).Take(12).Max(), atNext = at[3].y;

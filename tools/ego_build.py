@@ -431,7 +431,7 @@ def fx_eval(sc, A, f, state):
     life_s, höchstens max_live gleichzeitig) im Bild f; Ergebnis in sc.fx_now, Objekte (falls gebaut) werden gesetzt."""
     fire = A.get('fire', [])
     now = dict(flash=None, shells={})
-    i = EG.flash_visible(fire, f)
+    i = EG.flash_visible(fire, f) if sc.P['gameplay'].get('muzzle_flash', True) else None   # Werkzeug (0.22): ohne Mündungsfeuer
     if i is not None:
         mz = vdir(sc.W.ANCHORS['Socket_Muzzle']['at']) * MM
         now['flash'] = sc.WM @ Matrix.Translation(mz) @ Matrix.Rotation(math.radians(EG.flash_roll(i)), 4, 'Y')
@@ -582,9 +582,11 @@ def evaluate(sc, A, f, report, state):
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
-        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] == 'semi_auto') else 0.0   # Einzelfeuer: je Schuss
-        mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
-        mech[live['port']] = 1.0 if shots else 0.0
+        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in ('semi_auto', 'single')) else 0.0   # je Schuss
+        if live.get('bolt'):                 # Werkzeug (0.22): ohne Verschluss und Auswurfklappe
+            mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
+        if live.get('port'):
+            mech[live['port']] = 1.0 if shots else 0.0
     R2 = R @ off_rot
     pos2 = pos + off_pos
     # Magazin: fallen (leer) oder in der linken Hand
@@ -629,12 +631,14 @@ def main():
     out = os.path.join(OUT, wid, 'ego')
     os.makedirs(os.path.join(out, 'stills'), exist_ok=True)
     sc = Scene(W, o)
+    if o['actions'] == list(EG.ACTIONS):          # 'all': Aktionen der Klasse (Werkzeug ohne Zielen/Nachladen, mit fire_a/fire_b; 0.22)
+        o['actions'] = list(sc.P['actions'])
     meta = dict(weapon=wid, camera=EG.CAMERA, fps=EG.FPS, poses={}, actions={}, source=RA.SOURCE)
     scn = bpy.context.scene
     if o['stills']:
         scn.render.resolution_x, scn.render.resolution_y = 1600, 900
         scn.cycles.samples = max(96, o['samples'])
-        for name in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch'):
+        for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch') if k in sc.P['poses']]:
             rep = {}
             A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else 'support')], R=[(0, 'grip')])   # wie Aktion inspect
             if name == 'reload':

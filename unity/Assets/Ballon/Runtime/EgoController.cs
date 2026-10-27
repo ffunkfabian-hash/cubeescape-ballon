@@ -135,6 +135,16 @@ namespace Ballon.Ego
         int _shNext;
         /// <summary>Schüsse seit dem Start, die eine Hülse auswarfen (Messwert für Tests).</summary>
         public long shellsEjected;
+        // Werkzeug mit Portalen (0.22, gameplay.portals): Ring in Dritteln (live, folgt dem Ziel in ring_turn_s), letztes Portal, Zug je Taste
+        float _ring, _ringFrom, _ringTgt, _ringT = 1;
+        bool _portalPrevA, _portalPrevB;
+        int _portalQueued = -1;
+        /// <summary>Portal des letzten Schusses (Index in gameplay.portals), −1 bei Waffen ohne Portale.</summary>
+        public int LastPortal { get; private set; } = -1;
+        /// <summary>Ringdrehung des Werkzeugs in Dritteln (1 = 120°), wie sie das Modell gerade zeigt.</summary>
+        public float RingTurns => _ring;
+        /// <summary>Ziel der Ringdrehung in Dritteln (je Schuss ± 1).</summary>
+        public float RingTarget => _ringTgt;
 
         public EgoController(EgoSolver s, EgoTuning tuning = null)
         {
@@ -146,7 +156,7 @@ namespace Ballon.Ego
             worldZoom = s.D.gameplay.world_zoom;
             _tanH = Mathf.Tan(Rad(s.D.camera.h_fov_deg) / 2);
             aspect = s.D.camera.aspect[0] / (float)s.D.camera.aspect[1];
-            _eyeLocal = V(s.D.Anchor("Socket_Eye").pos);
+            _eyeLocal = V(s.D.Anchor(s.D.HasAnchor("Socket_Eye") ? "Socket_Eye" : "Socket_Muzzle").pos);   // Werkzeug ohne Visier (0.22)
             _dHip = s.PoseMatrix("hip").MultiplyPoint3x4(_eyeLocal).magnitude;
             _walk = s.D.Action("walk");
             _sprintA = s.D.Action("sprint");
@@ -332,7 +342,7 @@ namespace Ballon.Ego
             _t.loopA = 0;
             _t.loopB = _t.A.frames;
             _t.end = _t.A.frames;
-            if (i.aim) EnterStance(Stance.Ads, i);
+            if (i.aim && S.D.CanAim) EnterStance(Stance.Ads, i);
         }
 
         void EnterStance(Stance target, EgoIntent i)
@@ -390,12 +400,18 @@ namespace Ballon.Ego
         /// <summary>Bild des Waffenschlüssels i einer Aktion (Haltung erreicht/gehalten; nach TIME_SCALE gestreckt).</summary>
         float K(string action, int i) => S.D.Action(action).weapon[i].f;
 
+        /// <summary>Nachladen möglich: Waffe mit Magazin und Nachladeaktion, nicht voll (Werkzeug: nie, 0.22).</summary>
+        bool CanReload => S.D.CanReload && ammo < magSize;
+
+        /// <summary>Werkzeug (0.22): Rechtsklick (aim) löst Portal B aus statt zu zielen.</summary>
+        bool PortalB(EgoIntent i) => i.aim && S.D.gameplay.HasPortals;
+
         Stance Wanted(EgoIntent i)
         {
             if (i.sprint && i.move.y > 0.3f && i.grounded && !i.aim && !i.fire) return Stance.Sprint;
-            if (i.aim) return Stance.Ads;
+            if (i.aim && S.D.CanAim) return Stance.Ads;
             if (!i.grounded) return Stance.Air;
-            if (i.nearWall && !i.fire) return Stance.Lowered;
+            if (i.nearWall && !i.fire && !PortalB(i)) return Stance.Lowered;
             if (i.crouch) return Stance.Crouch;
             return Stance.Hip;
         }
@@ -426,7 +442,7 @@ namespace Ballon.Ego
                         _hasSec = false;                                // Feder-Nachlauf ab der übersprungenen Stelle neu
                     }
                     _swapPending = false;
-                    Play(i.aim ? "draw_aim" : "draw", from: swap ? (_drawEnters >= 0 ? _drawEnters : _drawEnters = DrawEnters(S)) : 0, busy: true, fade: 0, onEnd: _onReady);
+                    Play(i.aim && S.D.CanAim ? "draw_aim" : "draw", from: swap ? (_drawEnters >= 0 ? _drawEnters : _drawEnters = DrawEnters(S)) : 0, busy: true, fade: 0, onEnd: _onReady);
                 }
             }
             else if ((i.holster || i.swap) && _t.A.name != "holster" && _t.A.name != "reload_to_switch")
@@ -436,18 +452,18 @@ namespace Ballon.Ego
             }
             else if (inspecting && (i.fire || i.aim || i.reload || (i.sprint && i.move.y > 0.3f)))
             {
-                if (i.reload && ammo < magSize) StartReload(i);     // R beim Betrachten: gleich nachladen
+                if (i.reload && CanReload) StartReload(i);          // R beim Betrachten: gleich nachladen
                 else Cancel(i);
             }
             else if (!Busy)
             {
-                if (i.reload && ammo < magSize)
+                if (i.reload && CanReload)
                     StartReload(i);
-                else if (i.fire && !_firePrev && ammo == 0 && !reloading)     // Abzug bei leerem Magazin: selbst nachladen
+                else if (i.fire && !_firePrev && ammo == 0 && !reloading && CanReload)     // Abzug bei leerem Magazin: selbst nachladen
                     StartReload(i);
                 else if (i.inspect && _stance != Stance.Sprint)
                     Play("inspect", busy: true, fade: 2, onEnd: _onReady);
-                else if (_stance == Stance.Sprint && i.fire)
+                else if (_stance == Stance.Sprint && (i.fire || PortalB(i)))
                 {
                     _fireArmed = false;
                     Play("sprint_to_fire", stance: Stance.Hip, onEnd: _onReady);
@@ -469,7 +485,10 @@ namespace Ballon.Ego
 
         /// <summary>Einzelfeuer aus dem Sprint (Richter 0.20): ein kurzer Klick bei gehaltenem Sprint wartet in sprint_to_fire auf den Marker
         /// „Fire“; ohne diese Sperre wählte Wanted() nach dem Loslassen wieder den Sprint und der Zug verfiel ohne Schuss.</summary>
-        bool SemiShotWaits => _semiQueue > 0 && _t.A.name == "sprint_to_fire" && !_t.ended && ammo > 0;
+        bool SemiShotWaits => _semiQueue > 0 && _t.A.name == "sprint_to_fire" && !_t.ended && HasAmmo;
+
+        /// <summary>Munition da (Werkzeug ohne Magazin: immer, 0.22).</summary>
+        bool HasAmmo => S.D.gameplay.Unlimited || ammo > 0;
 
         void StartReload(EgoIntent i)
         {
@@ -477,17 +496,18 @@ namespace Ballon.Ego
             Play(ammo == 0 ? "reload_empty" : "reload_tactical", busy: true, fade: 3, onEnd: _onReady);
         }
 
-        bool CanFire => !holstered && !Busy && ammo > 0 && (_t.A.name != "sprint_to_fire" || _fireArmed) && _stance != Stance.Sprint
+        bool CanFire => !holstered && !Busy && HasAmmo && (_t.A.name != "sprint_to_fire" || _fireArmed) && _stance != Stance.Sprint
                         && !(_t.A.name == "sprint" && _t.frame < K("sprint", 2)) && _t.A.name != "draw" && _t.A.name != "holster";
 
-        /// <summary>Abstand zum nächsten Schuss: Dauerfeuer 60/rpm; Salvenwaffe (burst_shots > 0) in der Salve 60/burst_rpm, danach
-        /// bis zur nächsten Salve der Rest von 60/rpm.</summary>
+        /// <summary>Abstand zum nächsten Schuss: Dauerfeuer 60/rpm; Salvenwaffe (gameplay.burst_shots n > 0, 0.22 je Klasse) in der Salve
+        /// 60/burst_rpm, danach bis zur nächsten Salve der Rest der Salvenfolge n · 60/rpm (rpm wie das Destiny-Menü: Schuss je Minute über
+        /// die Salvenfolge gemittelt; bis 0.21 Salven je Minute).</summary>
         float ShotInterval()
         {
-            var Rc = S.D.motion.recoil;
-            if (Rc.burst_shots <= 0) return 60f / rpm;
-            float inBurst = 60f / Rc.burst_rpm;
-            return _burstLeft > 0 ? inBurst : Mathf.Max(inBurst, 60f / rpm - (Rc.burst_shots - 1) * inBurst);
+            var G = S.D.gameplay;
+            if (!G.Burst) return 60f / rpm;
+            float inBurst = 60f / G.burst_rpm;
+            return _burstLeft > 0 ? inBurst : Mathf.Max(inBurst, G.burst_shots * 60f / rpm - (G.burst_shots - 1) * inBurst);
         }
 
         /// <summary>Ende einer Salve: kein Schuss seit recover_delay_s, mindestens 1,5 Schussabstände in der Salve (5.2 A, zweistufig).</summary>
@@ -495,8 +515,8 @@ namespace Ballon.Ego
         {
             get
             {
-                var Rc = S.D.motion.recoil;
-                return Mathf.Max(Rc.recover_delay_s, 1.5f * (Rc.burst_shots > 0 ? 60f / Rc.burst_rpm : 60f / rpm));
+                var G = S.D.gameplay;
+                return Mathf.Max(G.recover_delay_s, 1.5f * (G.Burst ? 60f / G.burst_rpm : 60f / rpm));   // je Klasse (0.22)
             }
         }
 
@@ -517,7 +537,15 @@ namespace Ballon.Ego
                 // Sprint) wartet höchstens SemiQueueS und fällt dann, sobald geschossen werden darf; gehaltener Abzug schießt nicht nach.
                 if (i.fire && !_semiPrev) _semiQueue = SemiQueueS;
                 _semiPrev = i.fire;
-                if (_semiQueue > 0 && CanFire && _sinceShot >= interval && ammo > 0)
+                if (S.D.gameplay.HasPortals)
+                {
+                    // Werkzeug (0.22): je Taste ein Portal (gameplay.portals[].input: fire = Linksklick, aim = Rechtsklick); der jüngste Zug gilt
+                    if (i.fire && !_portalPrevA) { _portalQueued = PortalIndex("fire"); _semiQueue = SemiQueueS; }
+                    if (i.aim && !_portalPrevB) { _portalQueued = PortalIndex("aim"); _semiQueue = SemiQueueS; }
+                    _portalPrevA = i.fire;
+                    _portalPrevB = i.aim;
+                }
+                if (_semiQueue > 0 && CanFire && _sinceShot >= interval && HasAmmo)
                 {
                     _semiQueue = 0;
                     FireOne();
@@ -530,7 +558,7 @@ namespace Ballon.Ego
                 _shotClock += dt;
                 // erster Schuss sofort; Max statt Setzen behält im Dauerfeuer den Übertrag (sonst bei 30/s 3 Bilder = 600 statt 720/min)
                 if (_sinceShot >= interval && _shotClock > 0) _shotClock = Mathf.Max(_shotClock, interval);
-                while (_shotClock >= interval && ammo > 0)
+                while (_shotClock >= interval && HasAmmo)
                 {
                     _shotClock -= interval;
                     FireOne();
@@ -551,11 +579,16 @@ namespace Ballon.Ego
                 _pathTgt = Vector3.zero;
                 _pathN = 0;
             }
-            EgoSolver.SpringStep(ref _path, ref _pathV, _pathTgt, 2 * Mathf.PI * (salvo ? Rc.path_hz : Rc.recover_hz), 1f, dt);
+            EgoSolver.SpringStep(ref _path, ref _pathV, _pathTgt, 2 * Mathf.PI * (salvo ? Rc.path_hz : S.D.gameplay.recover_hz), 1f, dt);
             // Kamera-Ruck: in der Hüfte Kamera samt Viewmodel, im Zielen nur die Welt (das Visier bleibt stehen, 5.1 A)
             _worldPitch = _path.y + _recCx.x * Mathf.Lerp(1f, Rc.ads_cam, adsWeight);
             _worldYaw = _path.x;
             _boltT = Mathf.Max(0, _boltT - dt);
+            if (_ringT < 1)                                 // Ringdrehung (Werkzeug): weich vom alten zum neuen Drittel in ring_turn_s
+            {
+                _ringT = Mathf.Min(1, _ringT + dt / Mathf.Max(1e-3f, S.D.gameplay.ring_turn_s));
+                _ring = Mathf.Lerp(_ringFrom, _ringTgt, Smooth(_ringT));
+            }
 
             // Pendeln aus der Mausbewegung: dieselbe Feder wie Feder-Nachlauf und Visier-Anflug (EgoSolver.SpringStep)
             Vector3 target = Vector2.ClampMagnitude(-i.look * tune.swayPerDeg, tune.swayMaxDeg) * Mathf.Lerp(1, tune.swayAds, adsWeight);
@@ -575,9 +608,19 @@ namespace Ballon.Ego
             _dt = dt;
         }
 
+        /// <summary>Index des Portals für eine Eingabe (fire, aim), −1 ohne.</summary>
+        int PortalIndex(string input)
+        {
+            var P = S.D.gameplay.portals;
+            for (int k = 0; k < P.Length; k++) if (P[k].input == input) return k;
+            return -1;
+        }
+
+        static float Smooth(float t) => t * t * (3 - 2 * t);
+
         void FireOne()
         {
-            ammo--;
+            if (!S.D.gameplay.Unlimited) ammo--;
             shots++;
             _sinceShot = 0;
             _boltT = tune.boltOpenS;
@@ -585,18 +628,32 @@ namespace Ballon.Ego
             var Rc = S.D.motion.recoil;
             float w = adsWeight;
             // Modellkick: im Zielen klein (Visier < 1 % H), ohne Hochziehen; Kamera-Ruck gleich, er wird erst beim Anwenden verteilt
-            _recV += new Vector3(Rc.back_mps * Mathf.Lerp(1f, Rc.ads_back, w), Rc.pitch_dps * Mathf.Lerp(1f, Rc.ads_pitch, w), 0);
-            _recCv += new Vector3(Rc.cam_dps, 0, 0);
-            _rClimb += Rc.climb_deg * (1 - w);
+            float kick = S.D.gameplay.kick;               // je Klasse (0.22, Werkzeug 0,6), wie die Feueraktion im Clip
+            _recV += kick * new Vector3(Rc.back_mps * Mathf.Lerp(1f, Rc.ads_back, w), Rc.pitch_dps * Mathf.Lerp(1f, Rc.ads_pitch, w), 0);
+            _recCv += kick * new Vector3(Rc.cam_dps, 0, 0);
+            _rClimb += kick * Rc.climb_deg * (1 - w);
             // Grundbahn: fester Schritt nach oben und feste Seitenfolge, als Anteil des Weltbilds (im Zielen kleinerer Winkel)
             float th = _tanH / Zoom, tv = th / aspect;
             _pathN++;
-            _pathTgt.y += Mathf.Atan(Rc.path_up_h * 2 * tv) * Mathf.Rad2Deg;
+            _pathTgt.y += Mathf.Atan(S.D.gameplay.path_up_h * 2 * tv) * Mathf.Rad2Deg;   // Bahnstufe je Klasse (0.22)
             if (Rc.path_side_b != null && Rc.path_side_b.Length > 0)
                 _pathTgt.x = Mathf.Atan(Rc.path_side_b[_pathN % Rc.path_side_b.Length] * 2 * th) * Mathf.Rad2Deg;
-            if (Rc.burst_shots > 0) _burstLeft = _burstLeft > 0 ? _burstLeft - 1 : Rc.burst_shots - 1;
-            _flashLeft = S.D.motion.flash.dur_s;          // Mündungsfeuer nur aus einem echten Schuss (Munition, Kadenz, kein Nachladen)
-            _flashShot = (int)(shots - 1);
+            if (S.D.gameplay.Burst) _burstLeft = _burstLeft > 0 ? _burstLeft - 1 : S.D.gameplay.burst_shots - 1;
+            if (S.D.gameplay.muzzle_flash)
+            {
+                _flashLeft = S.D.motion.flash.dur_s;      // Mündungsfeuer nur aus einem echten Schuss (Munition, Kadenz, kein Nachladen)
+                _flashShot = (int)(shots - 1);
+            }
+            LastPortal = -1;
+            if (S.D.gameplay.HasPortals)                  // Werkzeug: Ring dreht je Schuss ein Drittel in Richtung des Portals
+            {
+                LastPortal = _portalQueued >= 0 ? _portalQueued : 0;
+                _portalQueued = -1;
+                if (Mathf.Abs(_ringTgt) >= 3) { float wrap = 3 * Mathf.Sign(_ringTgt); _ringTgt -= wrap; _ring -= wrap; }   // Drehung ist 3-periodisch
+                _ringFrom = _ring;
+                _ringTgt += S.D.gameplay.portals[LastPortal].ring;
+                _ringT = 0;
+            }
             if (S.Ejects) _pendingShells++;               // Hülse startet in Compose mit der Waffe dieses Bilds
             Shot?.Invoke();
         }
@@ -628,6 +685,7 @@ namespace Ballon.Ego
             L.trigger = _triggerHeld ? 1 : 0;
             L.bolt = _boltT > 0 ? 1 : 0;
             L.port = _portOpen ? 1 : 0;
+            if (S.D.gameplay.HasPortals) L.ring = _ring;
             return L;
         }
 

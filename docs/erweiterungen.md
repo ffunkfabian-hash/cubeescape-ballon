@@ -23,3 +23,4 @@ folgt nur auf ausdrücklichen Folgeauftrag. Vorhandene Formgen-Entwürfe bleiben
 | EXT-15 | Wurf-/Energieschwerter | Sword | Spezialaktionen | – („Praxic Blade“, Renegades) | Formgen `waffentypen.md` | — |
 | EXT-16 | Besondere Langbogen-Ausführungen | Combat Bow | High-Impact Longbow | – | Formgen | BASIC-07 bleibt Kampfbogen |
 | EXT-17 | Alternative Feuermodi, weitere Sonderformen | je Typ | abweichende Mechanik | – | bei Fund eintragen | — |
+| EXT-18 | Präzision der Portalkanone (X) | Werkzeug BASIC-T01 | X hält „Präzision“ ohne Visier (Cube Escape Q-CE-14): Weltzoom ohne Modellbewegung, Fadenkreuz schrumpft | – | Nutzer 27.10.2026 über Sightline (0.22 „Volley“): „Präzision (X) später“ | Portale selbst (Durchgang, Rendering) |

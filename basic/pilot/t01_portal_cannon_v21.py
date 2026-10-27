@@ -87,7 +87,7 @@ P = [
         'vorn in die Schale gesetzt', 'f', (B, 0), CORE[0], CORE[0] + 6, 46, r_in=27, segs=SEGS * 2, bevel=0.6),
     prof('belly', 'Bauch', 'Belly', 'receiver', 'graphite', 'Trägt Schale, Kernträger und Griff; Abzugsgruppe',
          'unter die Schale geschraubt, Fuge 1 mm', [(-112, 72), (-84, 50), (-54, 40), (92, 40), (104, 56), (104, 80), (-112, 80)], 70),   # unten gerade über den Abzugsbügel
-    cyl('core_glass', 'Kernglas', 'Core glass', 'receiver', 'glass', 'Schützt den offen liegenden Kern', 'zwischen Schale und Emitter',
+    cyl('core_glass', 'Kernglas', 'Core glass', 'receiver', 'glass_scope', 'Schützt den offen liegenden Kern (klar wie die Linse, 0.22: Kerne in Unity sichtbar)', 'zwischen Schale und Emitter',
         'f', (B, 0), CORE[0], CORE[1], 24, segs=32, bevel=0),
     cyl('core_b', 'Kern B', 'Core B', 'receiver', 'portal_b', 'Kern für Portal B (Orange, Rechtsklick); leuchtet beim Schuss auf',
         'hinten im Kernglas', 'f', (B, 0), CORE[0] + 4, 79, 11, segs=24, bevel=R_FINE),
@@ -165,3 +165,15 @@ ACTIONS = {
 EXPLODE = {'barrel': (110, 0, 0), 'support': (40, -80, 0), 'grip_controls': (-10, -80, 0), 'receiver': (0, 0, 0),
            'core_glass': (0, 0, 70), 'shell': (-60, 30, 0), 'shell_rim': (-60, 30, 0)}
 HERO = (0.78, -0.50, 0.42)      # Hauptansicht von links vorn
+# Ego-Griffe (0.22 „Volley“, basic/arms/ego.profile): Autorenmaß wie ego.GRIPS. Werkzeug ohne Magazin und Ladehebel: nur Griff und
+# Stützhand am Vordergriff unter der Unterlippe (Faust wie an der MP, Daumen eingerollt).
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(154, 16, 14.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.12, 0.0), fingers_pose='foregrip',
+                    finger_map=dict(open='foregrip_open'),
+                    src='E links am Vordergriff unter der Unterlippe (foregrip f 138–178, Breite 26; Socket_SupportHand 158/20), Faust um den '
+                        'Griff wie an der MP (ego.FINGER_POSES foregrip, Nutzerwahl 0.18)'),
+}
+# Live-Teile: Abzug und Emitterring (dreht je Schuss um 120°, Laufzeit); kein Verschluss, keine Auswurfklappe
+EGO_LIVE = dict(trigger='trigger', bolt='', port='', ring='emitter_ring')

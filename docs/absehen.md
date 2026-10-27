@@ -86,6 +86,7 @@ Profil `charge`: während des Aufladens schrumpft die Spreizung von `charge_from
 | `combat_bow` | `dot` | `chevron` | `charge` |
 | `sword` | – | `dot` | `none` |
 | `glaive` | – | `cross` | `auto` |
+| `portal_cannon` | – | `ring_dot` | `none` |
 
 ## Hüft-Fadenkreuz
 
@@ -110,6 +111,7 @@ Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px 
 | `combat_bow` | `chevron` | 4.5 | 6.79 mm | entworfen | aus |
 | `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus |
 | `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
+| `portal_cannon` | `ring_dot` | 4.5 | 5.91 mm | entworfen (Werkzeug, Portal 2 / Cube Escape) | aus |
 
 ## Visier-Standard
 

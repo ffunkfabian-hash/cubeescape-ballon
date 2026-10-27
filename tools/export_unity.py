@@ -26,10 +26,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/9'   # 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
-# Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
-# 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“)
-WEAPONS = ['pilot.w01_auto_rifle_v21', 'pilot.w06_submachine_gun_v21', 'pilot.w03_scout_rifle_v21']
+FORMAT = 'ballon-ego/10'   # 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+# Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3, 4, 5 (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
+# 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“, Impuls BASIC-02 und Portalkanone BASIC-T01 seit 0.22 „Volley“)
+WEAPONS = ['pilot.w01_auto_rifle_v21', 'pilot.w06_submachine_gun_v21', 'pilot.w03_scout_rifle_v21', 'pilot.w02_pulse_rifle_v21',
+           'pilot.t01_portal_cannon_v21']
 WEAPON = WEAPONS[0]                 # Pilotwaffe (./check: Mündungsfeuer im Zielen, Bezug der Automatik)
 SHARED_SRC = ['basic/common.py', 'basic/kit.py', 'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py',
               'tools/blender_build.py', 'tools/export_unity.py', 'tools/bake_unity.py']
@@ -67,11 +68,16 @@ def prim(q):
     return d
 
 
-def gameplay(weapon_type):
-    """Spielwerte der Klasse: Kadenz und Magazin (ego.CLASSES › gameplay), Weltzoom der Klasse (Entscheidungsliste 1.2 A) und das
-    Hüft-Fadenkreuz (4.1 A / 4.2 A) aus dem Absehen-Katalog basic/reticles.py, aufgelöst für den Waffentyp."""
+# Felder von gameplay, die nicht jede Klasse nennt (0.22): ohne Salve, mit Mündungsfeuer, ohne Portale
+GAMEPLAY_DEFAULTS = dict(burst_shots=0, burst_rpm=0, muzzle_flash=True, ring_turn_s=0.0, portals=[], range_m=0.0)
+
+
+def gameplay(weapon_type, G=None):
+    """Spielwerte der Klasse: Kadenz, Magazin, Salve, Bahnstufe, Portale (ego.profile › gameplay, sonst ego.CLASSES), Weltzoom der Klasse
+    (Entscheidungsliste 1.2 A) und das Hüft-Fadenkreuz (4.1 A / 4.2 A) aus dem Absehen-Katalog basic/reticles.py, aufgelöst für den
+    Waffentyp. Ohne Visier (Werkzeug) Visiertyp 'none' und Weltzoom 1."""
     from basic import reticles as RT
-    GAMEPLAY = EG.CLASSES[weapon_type]['gameplay']
+    GAMEPLAY = dict(GAMEPLAY_DEFAULTS, **(G if G is not None else EG.CLASSES[weapon_type]['gameplay']))
     H = RT.hip(weapon_type)
     S = RT.SPREAD[H['spread']]
     sp = H['sprint']
@@ -83,7 +89,9 @@ def gameplay(weapon_type):
                prims=[prim(q) for q in RT.RETICLES[H['kind']]['prims']],
                spread=dict(id=H['spread'], **{k: S[k] for k in ('base', 'per_shot', 'max', 'recover_s', 'move')}), sprint=sprint,
                src='basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)')
-    return dict(GAMEPLAY, weapon_type=weapon_type, sight=RT.sight_type(weapon_type), world_zoom=RT.class_world_zoom(weapon_type),
+    sighted = RT.SIGHT_KIND[weapon_type] is not None
+    return dict(GAMEPLAY, weapon_type=weapon_type, sight=RT.sight_type(weapon_type) if sighted else 'none',
+                world_zoom=RT.class_world_zoom(weapon_type) if sighted else 1.0,
                 zoom_table=[dict(type=k, zoom=RT.class_world_zoom(k)) for k in RT.CLASS_ZOOM], hip=hip)
 
 
@@ -163,11 +171,11 @@ def weapon_data(W, live):
     anchors = [dict(id=k, part=v.get('part', ''), pos=xyz(*v['at'])) for k, v in W.ANCHORS.items()]
     wid = EG.weapon_id(W)
     ids = {p['id'] for p in parts}
-    missing = [v for v in live.values() if v not in ids]
+    missing = [v for v in live.values() if v and v not in ids]
     if missing:
         raise KeyError(f'{wid}: Live-Teile {missing} fehlen (ego.LIVE bzw. Modul-Feld EGO_LIVE)')
     return dict(id=wid, root=W.META['id'], name=W.META['name'], fbx=f'{wid}.fbx', parts=parts, anchors=anchors,
-                eject=eject_data(W), live=dict(live))
+                eject=eject_data(W), live={k: live.get(k, '') for k in ('trigger', 'bolt', 'port', 'ring')})
 
 
 def mesh(V, tris):
@@ -225,7 +233,7 @@ def weapon_entry(W):
     C = EG.CLASSES[P['type']]
     profile = dict(type=P['type'], src=P['src'], poses=sorted(C['poses']), frames=[dict(action=k, frames=r6(v)) for k, v in C['frames'].items()],
                    frames_src=P['frames_src'])
-    return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type']), fire_mode=P['fire_mode']), weapon=weapon, poses=poses, grips=grips,
+    return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type'], P['gameplay']), fire_mode=P['fire_mode']), weapon=weapon, poses=poses, grips=grips,
                 actions=[action(k, A) for k, A in P['actions'].items()], atlas=ATLAS_KEY.get(wid, f'weapon_{wid}'),
                 reference=f'ego_reference_{wid}.json',
                 sources=dict(files=sha_files(weapon_files(W)), parts_sha256=parts_sha(W)))
@@ -235,6 +243,8 @@ def data():
     Ws = [importlib.import_module(f'basic.{m}') for m in WEAPONS]
     entries = [weapon_entry(W) for W in Ws]
     roles = kit_materials()
+    for W in Ws:                                    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, 0.17: kit.py liegt im Quellenhash)
+        roles.update({k: v for k, v in getattr(W, 'PORTAL_ROLES', {}).items() if k not in roles})
     fingers = [dict(name=k, f=[float(a) for row in v['f'] for a in row], t=[float(a) for a in v['t']])
                for k, v in EG.FINGER_POSES.items()]
     arm = dict(rig_version=RA.RIG_VERSION, upper_m=r6(RA.UPPER_MM * MM), fore_m=r6(RA.FORE_MM * MM),
@@ -609,7 +619,7 @@ def reference(sc, e):
                     objects=[dict(name=k, m=v) for k, v in objs.items()])
 
     samples = []
-    for name in ('hip', 'ads', 'reload', 'inspect_r'):          # Standbilder wie ego_build.main (Handbelegung je Haltung)
+    for name in [k for k in ('hip', 'ads', 'reload', 'inspect_r') if k in sc.P['poses']]:   # Standbilder wie ego_build.main
         A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else 'support')], R=[(0, 'grip')])
         if name == 'reload':
             A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
@@ -663,6 +673,9 @@ def bake_weapon(sc, e, tex_dir, gpu):
     wobs = [sc.root] + list(sc.root.children_recursive)
     meshes = [o for o in wobs if o.type == 'MESH']
     BK.apply_modifiers(meshes)
+    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, in kit.MATERIALS erst beim Import des Moduls registriert) gehören wie die
+    # übrigen Leucht- und Glasrollen nicht in den Atlas; bake_unity.SKIP_ROLES entstand vorher (0.22, sonst lagen Kern A/B im Atlas)
+    BK.SKIP_ROLES |= BK._skip_roles()
     bake = [o for o in meshes if BK.bakeable(o)]
     BK.unwrap(bake)
     key = e['atlas']
@@ -695,6 +708,9 @@ def bake_arms(sc, tex_dir, gpu):
     aobs = [o for s in ('R', 'L') for e in sc.arms[s][0].values() for o in [e] + list(e.children)]
     meshes = [o for o in aobs if o.type == 'MESH']
     BK.apply_modifiers(meshes)
+    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, in kit.MATERIALS erst beim Import des Moduls registriert) gehören wie die
+    # übrigen Leucht- und Glasrollen nicht in den Atlas; bake_unity.SKIP_ROLES entstand vorher (0.22, sonst lagen Kern A/B im Atlas)
+    BK.SKIP_ROLES |= BK._skip_roles()
     bake = [o for o in meshes if BK.bakeable(o)]
     BK.unwrap(bake)
     for si, s in enumerate(('R', 'L')):

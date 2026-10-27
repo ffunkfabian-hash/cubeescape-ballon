@@ -74,6 +74,17 @@ def shots_at(first, last, rpm):
     return out
 
 
+def shots_burst(first, last, n, burst_rpm, rpm):
+    """Schussbilder einer Salvenwaffe bei 30 fps (0.22): Salven zu n Schuss im Abstand 60/burst_rpm, Salvenbeginn alle n · 60/rpm
+    (rpm wie das Destiny-Menü: Schuss je Minute über die Salvenfolge gemittelt); nur ganze Salven, die bis `last` beginnen."""
+    step, period, out = 60.0 * FPS / burst_rpm, n * 60.0 * FPS / rpm, []
+    k = 0
+    while first + period * k <= last + 1e-9:
+        out += [first + int(period * k + step * i + 1e-9) for i in range(n)]
+        k += 1
+    return out
+
+
 def trigger_on(fire, f, semi=False):
     """Abzug gezogen im Bild f einer Feueraktion: Dauerfeuer vom Bild vor dem ersten bis nach dem letzten Schuss; Einzelfeuer (0.20,
     Feuerart semi_auto) je Schuss ein Bild davor bis ein Bild danach, dazwischen losgelassen (ein Schuss je Zug)."""
@@ -203,8 +214,9 @@ RECOIL = dict(
     path_side_b=[0.0, 0.003, 0.006, 0.007, 0.004, 0.0, -0.004, -0.007, -0.008, -0.005, -0.001, 0.003, 0.006, 0.008, 0.006, 0.002,
                  -0.003, -0.006],
     # Salven zweistufig: in der Salve (Abstand ≤ recover_delay_s, mindestens 1,5 Schussabstände) steigt die Bahn ohne Erholung,
-    # danach kehrt sie kritisch gedämpft mit recover_hz zurück. burst_shots > 0: Salvenwaffe mit burst_rpm in der Salve
-    recover_delay_s=0.12, recover_hz=2.0, burst_shots=0, burst_rpm=0,
+    # danach kehrt sie kritisch gedämpft mit recover_hz zurück. Salvenwaffen (0.22): Salvenlänge und Takt je Klasse in
+    # CLASSES[...]['gameplay'] (burst_shots aus der Spec, burst_rpm), Bahnstufe je Schuss path_up_h je Klasse (Vorgabe hier)
+    recover_delay_s=0.12, recover_hz=2.0,
     # Streuung um den Zielpunkt (Zufall, getrennt von der Bahn); bis 0.14 als MoveTuning in Unity
     spread_hip_deg=1.1, spread_ads_deg=0.12)
 # Zielfernrohr im Zielen (0.20, Visier-Standard 3: eine Kamera, Modell ungezoomt; Entscheidungsliste 1d): Teile mit `ads_hide` (Rohr,
@@ -484,8 +496,81 @@ CLASSES = {
                           'oder kurz nach dem Modell beginnt'),
         src='Entscheidungsliste Schritt 6, zweite übertragene Klasse (0.20 „Spotter“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, '
             'Zielfernrohr nach Visier-Standard 3'),
+    'pulse_rifle': dict(
+        # Hüfte E an der Automatik ausgerichtet: deren Haltung trifft am Impuls x 59,7 / y 65,6 % (über dem Band 54–59), die kürzere
+        # Kammer liegt weiter rechts; 2 cm weiter zur Mitte, 1,6 cm höher, Lauf leicht zur Mitte
+        poses=dict(
+            hip=dict(pos=(-0.17, -0.42, -0.214), aim=(0.07, -3.0, -0.184), roll=6,
+                     src='M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); '
+                         'Destiny-Impuls Gridskipper Mündung ≈ 57/61 (Motiongen destiny2 › z-gridskipper-salve); Lage E, gerechnet auf '
+                         'Mündung 57,9/63,6 % (Automatik-Hüfte am Impuls: 59,7/65,6)'),
+        ),
+        keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Impuls-Sprint nicht gemessen'),
+        frames={},
+        frames_src='M Destiny-Anflug Automatik/Impuls/MG 20 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen Glidepath, Entscheidungsliste '
+                   '4d; Gridskipper ADS ein 18 Bilder bis ruhig, Motiongen destiny2): aim_in 10 Bilder bei 30/s wie die Automatik',
+        gameplay=dict(rpm=540, magazine=36, burst_rpm=900, path_up_h=0.0133, recover_delay_s=0.10, recover_hz=5.0,
+                      src='M Gridskipper (Rapid-Fire Frame): Menü 540/min und Magazin 36 [S], in der Salve 4 Bilder Abstand bei 60/s = '
+                          '900/min [M], Salvenbeginn → Salvenbeginn 3 · 60/540 = 0,333 s (beobachtet ≥ 0,383 s im Spielertakt, kein '
+                          'Grenzwert; Motiongen destiny2 › z-gridskipper-salve); Salvenlänge aus der Spec (META fire burst_3); Bahnstufe '
+                          '≈ 4 pp H je Salve, Erholung in der Pause (Motiongen rueckstoss › r-d2-gridskipper, 5.2 A) → path_up_h 0,0133 je '
+                          'Schuss (Automatik 0,010); Erholung zwischen den Salven ≈ 80 % (Gridskipper, Salvenfolge 0,38–0,40 s, Motiongen '
+                          'destiny2 › z-gridskipper-salve) → E Erholung ab 0,10 s nach dem Schuss (1,5 Takte) mit 5 Hz kritisch gedämpft: in der '
+                          'Pause von 0,2 s bleiben ≈ 20 % (gemeinsam 0,12 s / 2 Hz: ≈ 78 % blieben, und die nächste Salve sank anfangs ab)'),
+        src='Entscheidungsliste Schritt 6, dritte übertragene Klasse (0.22 „Volley“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, '
+            'Salve aus der Spec'),
+    'portal_cannon': dict(
+        # Werkzeug (0.17 „Gateway“): nur Hüfte, kein Visier (kein Socket_Eye), kein Magazin – ohne Zielen und Nachladen; diese Haltungen
+        # und Aktionen fehlen in den Daten (drop), Unity schaltet danach (nicht nach der Waffen-ID)
+        poses=dict(
+            hip=dict(pos=(-0.16, -0.40, -0.24), aim=(1.4, -3.0, 0.0), roll=-20,
+                     src='M Portal-2-Portalkanone: rechts unten, vorderes Rohrende ≈ 57/75 %, beim Gehen 54–63/68–75 %, Rohr von rechts '
+                         'unten nach links oben (cubeescape-reference/docs/portal2.md › weißes Modell); Lage E, gerechnet auf Achskrone '
+                         '56,9/71,2 %; quer gestellt, damit die linke Flanke beide Kerne zeigt (Nutzer 27.10.2026: „Schade dass man von der '
+                         'Portal Gun die Farb-Elemente nicht sieht“; von vier Varianten c14: Kern A und B sichtbar, Achskrone im Band); '
+                         'Kerbe (Leitkante) rechts im Bild; Stützhand am Vordergriff unter der Unterlippe'),
+            sprint=dict(pos=(-0.10, -0.34, -0.22), aim=(0.6, -2.1, -0.4), roll=30,
+                        src='E (Klasse Werkzeug, in der Entscheidungsliste nicht gemessen; Portal 2 ohne eigene Sprintpose): Trageform der '
+                            'Kurzwaffen nach 3.2 A (MP: tief, nach links gerollt, Mündung ≈ 43/80 %), Rollen +30° statt +40° wegen der breiten '
+                            'Eischale; gerechnet Achskrone 44,3/80,4 %'),
+        ),
+        drop=dict(poses=('ads', 'reload'),
+                  actions=('aim_in', 'aim_out', 'fire_hip', 'fire_ads', 'reload_tactical', 'reload_empty', 'sprint_to_aim', 'draw_aim',
+                           'reload_to_switch'),
+                  src='Werkzeug ohne Visier und Magazin (0.17): kein Zielen, kein Nachladen; Feuer als fire_a/fire_b (Portale)'),
+        actions=dict(
+            fire_a=dict(de='Portal A (Linksklick): Ring dreht 120° im Uhrzeigersinn (von hinten)', frames=18,
+                        weapon=[(0, 'hip'), (18, 'hip')], fire=[2], portal='A',
+                        mech={'emitter_ring': [(0, 0), (2, 0), (12, 1), (18, 1)]}, events=[(2, 'Fire')],
+                        src='Ablauf aus dem Modul (t01 ACTIONS fire_a, 0.17): Ring 2 → 12 Bilder; Kick aus gameplay.kick'),
+            fire_b=dict(de='Portal B (Rechtsklick): Ring dreht 120° gegen den Uhrzeigersinn', frames=18,
+                        weapon=[(0, 'hip'), (18, 'hip')], fire=[2], portal='B',
+                        mech={'emitter_ring': [(0, 0), (2, 0), (12, -1), (18, -1)]}, events=[(2, 'Fire')],
+                        src='wie fire_a, Gegenrichtung (t01 ACTIONS fire_b)'),
+        ),
+        frames={},
+        gameplay=dict(rpm=240, magazine=0, path_up_h=0.0, muzzle_flash=False, range_m=24.0, kick=0.6, ring_turn_s=round(10 / 30, 6),
+                      portals=[dict(name='A', input='fire', role='portal_a', color='#1AD9FF', ring=1),
+                               dict(name='B', input='aim', role='portal_b', color='#FF7314', ring=-1)],
+                      src='Cube Escape (Q-CE-14/15): Linksklick Portal A (Cyan #1AD9FF), Rechtsklick Portal B (Orange #FF7314), Abklingzeit '
+                          '0,25 s → 240/min, Kick E 0,6 der Automatik (Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild, portal2.md), Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul '
+                          't01 fire_a/fire_b), Richtung je Portal; ohne Mündungsfeuer und ohne Bahnstufe (E: Werkzeug, Rückmeldung über '
+                          'Ring und Treffermarke in Portalfarbe)'),
+        src='Werkzeug der Familie (0.22 „Volley“): Hüfte nach Portal 2 (M) und Familienmaßen, Sprint als Klasse „Werkzeug“ E; Bedienung '
+            'Linksklick A / Rechtsklick B ohne Zielen (Nutzer 27.10.2026 über Sightline: „A“ – „Linksklick = Portal A …, Rechtsklick = Portal '
+            'B …, kein Zielen …, Abklingzeit 0,25 s als Datenfeld“; Präzision X zurückgestellt, docs/erweiterungen.md)'),
 }
-FIRE_MODES = {'full_auto': 'Dauerfeuer', 'semi_auto': 'Einzelfeuer (ein Schuss je Zug)'}   # META fire der spielbaren Waffen
+# META fire der spielbaren Waffen → Feuerart in Unity (gameplay.fire_mode). burst_N (0.22): Salve zu N Schuss je Zug, gehalten Salve um
+# Salve; single (Werkzeug): ein Schuss je Klick, bei zwei Portalen je Taste
+FIRE_MODES = {'full_auto': 'Dauerfeuer', 'semi_auto': 'Einzelfeuer (ein Schuss je Zug)', 'burst': 'Salve (n Schuss je Zug)',
+              'single': 'Einzelschuss je Klick (Werkzeug)'}
+
+
+def fire_spec(fire):
+    """Feuerart und Salvenlänge aus META fire: 'burst_3' → ('burst', 3), sonst (fire, 0)."""
+    if fire.startswith('burst_'):
+        return 'burst', int(fire.split('_')[1])
+    return fire, 0
 # Live-Teile der Pilotwaffe (Abzug, Verschluss, Auswurfklappe im laufenden Feuer); andere Waffen nennen ihre im Modul-Feld EGO_LIVE
 LIVE = dict(trigger='trigger', bolt='bolt_carrier', port='port_cover')
 _PROFILES = {}
@@ -505,10 +590,13 @@ def profile(W):
     if t not in CLASSES:
         raise KeyError(f'{wid}: Waffentyp {t} hat kein Ego-Profil (ego.CLASSES)')
     C = CLASSES[t]
-    fire_mode = W.META.get('fire', 'full_auto')
+    fire_mode, burst = fire_spec(W.META.get('fire', 'full_auto'))
     if fire_mode not in FIRE_MODES:
         raise KeyError(f'{wid}: Feuerart {fire_mode} nicht spielbar (ego.FIRE_MODES)')
-    poses = {k: dict(v) for k, v in POSES.items()}
+    if (fire_mode == 'burst') != ('burst_rpm' in C['gameplay']):
+        raise KeyError(f'{wid}: Salve braucht burst_rpm in der Klasse {t} (und nur sie)')
+    drop = C.get('drop', {})
+    poses = {k: dict(v) for k, v in POSES.items() if k not in drop.get('poses', ())}
     for k, note in C.get('keep', {}).items():      # Haltung der Automatik übernommen, Herkunft für diese Klasse
         poses[k]['src'] = f"{note} (Haltung POSES['{k}'] unverändert)"
     for k, v in C['poses'].items():
@@ -517,7 +605,10 @@ def profile(W):
         for k in FOLLOW_HIP:
             if k not in C['poses']:
                 poses[k] = _follow(poses['hip'], POSES['hip'], POSES[k])
-    actions = copy.deepcopy(ACTIONS)
+    actions = {k: copy.deepcopy(A) for k, A in ACTIONS.items() if k not in drop.get('actions', ())}
+    for k, A in C.get('actions', {}).items():        # Aktionen der Klasse (Werkzeug: fire_a/fire_b), Feuerzeit wie fire_hip (KEEP_TIME)
+        actions[k] = copy.deepcopy(A)
+        _retime(actions[k], 1.0)
     grips = getattr(W, 'EGO_GRIPS', None) or GRIPS
     # Stützhand: Fingerstellung des Griffs statt underhand (Pilotwaffe: underhand), dazu die Ersetzungen des Griffs (finger_map)
     fmap = dict(grips['support'].get('finger_map', {}), underhand=grips['support']['fingers_pose'])
@@ -529,13 +620,29 @@ def profile(W):
         _retime(A, n / old)
         A['frames'] = int(math.ceil(n - 1e-9))
         A['src'] = f"{A['src']}; Klasse {t}: {old} → {n:g} Bilder ({C['frames_src']})"
-    rpm = C['gameplay']['rpm']
-    for A in actions.values():                  # Schussbilder der Feueraktionen in der Kadenz der Klasse (Clips wie Unity: gameplay.rpm)
-        if A.get('fire') and rpm != 720:
+    G = dict(C['gameplay'])
+    for k in ('path_up_h', 'recover_delay_s', 'recover_hz'):   # Bahn je Klasse (0.22), sonst gemeinsam (ego.RECOIL)
+        G.setdefault(k, RECOIL[k])
+    G.setdefault('kick', 1.0)                   # Modellkick und Kamera-Ruck je Schuss relativ zu ego.RECOIL (0.22; Clips und Unity gleich)
+    for A in actions.values():
+        if A.get('fire') and G['kick'] != 1.0:
+            A['kick'] = G['kick']
+    if burst:
+        G['burst_shots'] = burst                  # Salvenlänge aus der Spec (META fire burst_N)
+    rpm = G['rpm']
+    for k, A in actions.items():                # Schussbilder der Feueraktionen in der Kadenz der Klasse (Clips wie Unity: gameplay.rpm)
+        if not A.get('fire') or k in C.get('actions', {}):
+            continue
+        if burst:
+            A['fire'] = shots_burst(A['fire'][0], A['fire'][-1], burst, G['burst_rpm'], rpm)
+            A['de'] = A['de'].replace('Dauerfeuer', 'Salven')
+        elif rpm != 720:
             A['fire'] = shots_at(A['fire'][0], A['fire'][-1], rpm)
-            A['src'] = f"{A['src']}; Klasse {t}: {rpm}/min, {FIRE_MODES[fire_mode]} (Schussbilder {A['fire']})"
+        else:
+            continue
+        A['src'] = f"{A['src']}; Klasse {t}: {rpm}/min, {FIRE_MODES[fire_mode]} (Schussbilder {A['fire']})"
     live = getattr(W, 'EGO_LIVE', None) or LIVE
-    P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=C['gameplay'], src=C['src'],
-             frames_src=C.get('frames_src', ''), fire_mode=fire_mode)
+    P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=G, src=C['src'],
+             frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop)
     _PROFILES[wid] = P
     return P

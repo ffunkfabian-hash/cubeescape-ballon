@@ -195,3 +195,19 @@ ACTIONS = {
 }
 EXPLODE = {'sight': (0, 110, 0), 'ammo': (30, -140, 0), 'stock': (-110, 0, 0), 'barrel': (140, 0, 0), 'support': (60, -60, 0),
            'grip_controls': (-10, -80, 0), 'mechanism': (0, 0, -90), 'receiver': (0, 0, 0)}
+# Hülsen und Ego-Griffe (0.22 „Volley“, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. contact = Mitte
+# der Handfläche auf der Oberfläche, palm = Richtung in das Bauteil, fingers = Fingerrichtung; part = Bauteil, an dem der Griff hängt.
+EJECT = dict(at=(48, 104, -23), dir=(0.3, 0.4, -1.0), case='rifle',
+             src='E: Auswurffenster rechts im Oberen Gehäuse (port_cover f 22–74), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)')
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(272, 60.5, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter dem Handschutz auf dem Griffpolster (handguard_grip f 214–330, Unterkante u 60,5), Lage wie die '
+                        'Pilotwaffe (Toolgen: underhand)'),
+    'mag':     dict(part='magazine', contact=(102, 10, 12.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.45, 0.0), fingers_pose='mag_hold',
+                    src='E links am kurzen geraden Magazin (Breite 24), Hand greift von unten hinten (wie die Pilotwaffe)'),
+    'charge':  dict(part='charging_handle', contact=(-75, 114, 27.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Ladehebel links (Socket_Charge), wie die Pilotwaffe'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='bolt_carrier', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer
