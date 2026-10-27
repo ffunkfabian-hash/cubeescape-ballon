@@ -742,7 +742,7 @@ namespace Ballon.Ego.Tests
             Assert.That(stepH, Is.InRange(3f, 5f), "Stufe ≈ 4 % H je Salve (Gridskipper)");
             Assert.Less(at[3].y, 0.4f * peak1, "Erholung in der Pause (zweistufig, Gridskipper ≈ 80 %)");
             for (int i = 0; i + 1 < at.Count; i++)
-                if ((i + 1) % n != 0) Assert.Greater(at[i + 1].y, at[i].y, $"Schuss {i + 2}: keine Erholung in der Salve (setzt auf der Bahn auf)");
+                if ((i + 1) % n != 0) Assert.Greater(at[i + 1].y, at[i].y, $"Schuss {i + 2}: keine Erholung in der Salve");
             foreach (var d in new[] { D, MP })                                          // Dauerfeuer unverändert
             {
                 var a = new EgoController(new EgoSolver(d));

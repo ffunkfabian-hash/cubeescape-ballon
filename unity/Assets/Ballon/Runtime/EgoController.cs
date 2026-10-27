@@ -633,7 +633,6 @@ namespace Ballon.Ego
             _rClimb += Rc.climb_deg * (1 - w);
             // Grundbahn: fester Schritt nach oben und feste Seitenfolge, als Anteil des Weltbilds (im Zielen kleinerer Winkel)
             float th = _tanH / Zoom, tv = th / aspect;
-            if (S.D.gameplay.Burst && _pathN == 0) _pathTgt.y = _path.y;   // Salvenwaffe (0.22): die neue Salve setzt auf der erreichten Bahn auf
             _pathN++;
             _pathTgt.y += Mathf.Atan(S.D.gameplay.path_up_h * 2 * tv) * Mathf.Rad2Deg;   // Bahnstufe je Klasse (0.22)
             if (Rc.path_side_b != null && Rc.path_side_b.Length > 0)

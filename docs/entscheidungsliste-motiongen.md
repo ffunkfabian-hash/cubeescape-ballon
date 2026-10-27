@@ -386,7 +386,7 @@ aus 0.21 unverändert) und Portalkanone BASIC-T01 v2.1 als Klasse „Werkzeug“
 | **4d** Anflug erste Bewegung → Ruhe, 60/s | 20 Bilder | `aim_in` 10 Bilder bei 30/s → **20 Bilder** (0,333 s) | kein Zielen (Nutzerwahl A) | Automatik/Impuls/MG 20 |
 | Weltzoom, Hüftform | 1,9, `ring_dot` | **2,0** (Holo, seit 0.13), `ring_dot` 3,2 % H | 1 (kein Zielen), `ring_dot` 4,5 % H ohne Aufgehen (E) | Impuls 2,10 [M] |
 | Feuerart | 720/min Dauerfeuer | **Salve** aus der Spec (`burst_3`): 3 Schuss im Takt 4 Bilder bei 60/s (900/min), Salvenbeginn alle 20 Bilder (540/min gemittelt), Magazin 36 | Linksklick Portal A, Rechtsklick Portal B, Abklingzeit 0,25 s, unbegrenzt, Reichweite 24 m | Gridskipper: Takt 4 Bilder [M], Menü 540/min, 36 Schuss [S]; Cube Escape Q-CE-14/15 |
-| **5.2** Bahn je Salve | Säule 1 % H je Schuss | Stufe **4,0 % H** je Salve, Erholung ab 0,10 s mit 5 Hz (≈ 80 % in der Pause), die nächste Salve setzt auf der erreichten Bahn auf | keine Bahnstufe (Ring und Treffermarke als Rückmeldung) | Gridskipper: ≈ 4 pp je Salve, ≈ 80 % zurück zwischen den Salven |
+| **5.2** Bahn je Salve | Säule 1 % H je Schuss | Stufe **4,0 % H** je Salve, Erholung ab 0,10 s mit 5 Hz (≈ 80 % in der Pause; gemessen 75 %) | keine Bahnstufe (Ring und Treffermarke als Rückmeldung) | Gridskipper: ≈ 4 pp je Salve, ≈ 80 % zurück zwischen den Salven |
 | **5.3 A** Mündungsfeuer im Zielen | 13,1 % der Öffnung | **13,5 %** der H4-Öffnung (`./check`; Grenze 20) | kein Mündungsfeuer | Destiny-Impuls ≈ 5 % |
 | **6.1** Wechsel 1 → 4 → 5 → 2 | – | Holstered 0,267 s, leer 0,133 s, erstes neues Bild 0,300 s, Munition je Waffe bleibt | gleich | Wegstecken 0,08–0,27 s, leer 0,07–0,30 s |
 
