@@ -168,6 +168,16 @@ zeigt ein Linsenbild, die Teile hinter dem Auge sind beim Zielen ausgeblendet.
 `docs/visiere.md` (31 Spiele, Destiny 2 mit 8 Herstellern/31 Waffen, gemessene Bildanteile, fünf Darstellungsarten) und
 `data/visiere.json`; Abschnitt 11 „Empfehlungen für BASIC“ ist die Grundlage des Visier-Standards 3 (anfangs „Visier-Designsprache v3“). Status der Werte dort.
 
+## Q-D2-PARADE und Q-ARMOR-ORANGE · Körperreferenzen des Nutzers für den Roboter (27.10.2026)
+
+Zwei Bilder, vom Nutzer als **Inspiration** angehängt, Status **beobachtet**. Sie liegen nicht auf der Platte (siehe
+[uebergabe-roboter.md](uebergabe-roboter.md)).
+
+| Satz | Bild | Beobachtetes Prinzip | Übernommen in |
+|---|---|---|---|
+| Q-D2-PARADE | Destiny-2-Charakterblatt „Guardian: Parade Armor“ (Titan, Bungie 2017), Vorder-, Seiten- und Rückansicht mit Nahansichten | kompakt-heroisch: Hüfte bei halber Höhe, Helm tief im Kragen, große gefaste Schulterpanzer, die über den Oberarm greifen, V-Brust, Knieschutz, Stiefel mit Schaft, Zehen- und Fersenkappe; helle Platten über dunklem Anzug | Roboter 0.23 Runden 2–4 |
+| Q-ARMOR-ORANGE | Konzeptblatt einer schweren orangen Rüstung (Zeichnung, Vorder-, Seiten- und Rückansicht) | sehr gedrungen und breit, Platten überlappen in Lagen, runder Helm mit Visier, Rückenmodul, sichtbare Gurte und Gelenke, stämmige Arme | Roboterarme ×1,22, Runde 5 (runder, mehr Technik) |
+
 ## Q-BG · Bungie-Startpunkte des Auftrags
 
 Bungie-Seiten aus dem Auftrag (Neuspieler-Guide, „Your Guardian“, Dev Insights, TWID 06.11./26.11.2025) waren über den

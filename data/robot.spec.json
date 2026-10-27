@@ -1,0 +1,212 @@
+{
+ "format": "cubeescape-ballon/robot-spec",
+ "format_version": 1,
+ "id": "BASIC-ROBOT",
+ "version": "0.23",
+ "pose": "idle",
+ "measured": {
+  "height_mm": 1709,
+  "width_mm": 755,
+  "depth_mm": 399,
+  "assemblies": {
+   "head": {
+    "objects": 9,
+    "parts": 9,
+    "triangles": 11248,
+    "size_mm": [
+     227,
+     240,
+     297
+    ]
+   },
+   "arms": {
+    "objects": 134,
+    "parts": 67,
+    "triangles": 23072,
+    "size_mm": [
+     753,
+     362,
+     752
+    ]
+   },
+   "upper_body": {
+    "objects": 23,
+    "parts": 23,
+    "triangles": 28928,
+    "size_mm": [
+     755,
+     301,
+     509
+    ]
+   },
+   "lower_body": {
+    "objects": 7,
+    "parts": 7,
+    "triangles": 8456,
+    "size_mm": [
+     439,
+     198,
+     316
+    ]
+   },
+   "legs": {
+    "objects": 44,
+    "parts": 22,
+    "triangles": 73576,
+    "size_mm": [
+     577,
+     398,
+     942
+    ]
+   }
+  }
+ },
+ "anchor_gap_mm": {
+  "Socket_Neck": 0.0,
+  "Socket_Shoulder_R": 0.0,
+  "Socket_Shoulder_L": 0.0,
+  "Socket_Waist": 0.0,
+  "Socket_Hip_R": 0.0,
+  "Socket_Hip_L": 0.0
+ },
+ "parts": {
+  "head": [
+   "neck",
+   "neck_ring",
+   "helmet",
+   "helmet_seam",
+   "face",
+   "visor",
+   "temple_disc",
+   "temple_ring",
+   "temple_hub"
+  ],
+  "arms": [
+   "upper_body",
+   "upper_shell",
+   "elbow",
+   "elbow_disc",
+   "elbow_ring",
+   "elbow_hub",
+   "fore_body",
+   "fore_shell",
+   "fore_inset",
+   "fore_top",
+   "fore_bolt_a",
+   "fore_bolt_b",
+   "fore_cuff",
+   "fore_cuff_trim",
+   "wrist_block",
+   "wrist_pin",
+   "palm",
+   "back_plate",
+   "back_inset",
+   "knuckles",
+   "knuckle_guard",
+   "thumb_mount",
+   "f0_0_core",
+   "f0_0_plate",
+   "f0_0_joint",
+   "f0_1_core",
+   "f0_1_plate",
+   "f0_1_joint",
+   "f0_2_core",
+   "f0_2_plate",
+   "f0_2_joint",
+   "f1_0_core",
+   "f1_0_plate",
+   "f1_0_joint",
+   "f1_1_core",
+   "f1_1_plate",
+   "f1_1_joint",
+   "f1_2_core",
+   "f1_2_plate",
+   "f1_2_joint",
+   "f2_0_core",
+   "f2_0_plate",
+   "f2_0_joint",
+   "f2_1_core",
+   "f2_1_plate",
+   "f2_1_joint",
+   "f2_2_core",
+   "f2_2_plate",
+   "f2_2_joint",
+   "f3_0_core",
+   "f3_0_plate",
+   "f3_0_joint",
+   "f3_1_core",
+   "f3_1_plate",
+   "f3_1_joint",
+   "f3_2_core",
+   "f3_2_plate",
+   "f3_2_joint",
+   "t_0_core",
+   "t_0_plate",
+   "t_0_joint",
+   "t_1_core",
+   "t_1_plate",
+   "t_1_joint",
+   "t_2_core",
+   "t_2_plate",
+   "t_2_joint"
+  ],
+  "upper_body": [
+   "waist_core",
+   "waist_ring_a",
+   "waist_ring_b",
+   "torso_core",
+   "collar",
+   "chest",
+   "chest_plate",
+   "chest_line",
+   "chest_bolt_a",
+   "chest_bolt_b",
+   "back",
+   "shoulder_joint_r",
+   "pauldron_r",
+   "pauldron_band_r",
+   "shoulder_r_disc",
+   "shoulder_r_ring",
+   "shoulder_r_hub",
+   "shoulder_joint_l",
+   "pauldron_l",
+   "pauldron_band_l",
+   "shoulder_l_disc",
+   "shoulder_l_ring",
+   "shoulder_l_hub"
+  ],
+  "lower_body": [
+   "pelvis_core",
+   "belt",
+   "tasset",
+   "tasset_side_r",
+   "hip_joint_r",
+   "tasset_side_l",
+   "hip_joint_l"
+  ],
+  "legs": [
+   "thigh_core",
+   "thigh_shell",
+   "knee",
+   "knee_med_disc",
+   "knee_med_ring",
+   "knee_med_hub",
+   "knee_cap",
+   "shin_core",
+   "shin_shell",
+   "shin_plate",
+   "calf",
+   "boot_cuff",
+   "shin_bolt_a",
+   "shin_bolt_b",
+   "ankle",
+   "ankle_med_disc",
+   "ankle_med_ring",
+   "ankle_med_hub",
+   "foot_core",
+   "toe_cap",
+   "heel_cap",
+   "sole"
+  ]
+ }
+}

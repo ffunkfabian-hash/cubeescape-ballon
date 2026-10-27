@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.23.0 „Gauntlet“ – Formstudien Ego-Arme, Roboter für die Außenansicht (Entwurf) (Branch `claude/ballon-0.23-gauntlet`)
+
+- Neue Formen `basic/arms/forms.py` (`loft`, `wrap` mit Pfeilschnitt und Ring, `tube`; Querschnitt Superellipse oder gefast) in
+  `tools/ego_build.form_mesh`; `--rig`/`--poses` für Studien in eigenem Ordner. Drei Formstudien für die Ego-Arme auf dem Skelett von
+  Arm v3: A „Konzept“, B „Panzer“, C „Mechanik“ (`basic/arms/studies/`). Arm v3 bleibt Standard („V3 … gerne auch behalten“).
+- Roboter für die Außenansicht: Paket `basic/robot/` aus 0.5 übernommen, Körper neu in der Formsprache von Arm v3, vier Runden
+  nach Nutzerkritik (kompakt, stämmige Arme ×1,22, Haltung, Schultergürtel und Beintaschen). Form **nicht freigegeben**; Runde 5
+  (runder, mehr sichtbare Technik, drei Varianten) in [docs/uebergabe-roboter.md](docs/uebergabe-roboter.md). `./check` prüft den
+  Roboter wieder. Bericht [docs/versions/0.23-gauntlet.md](docs/versions/0.23-gauntlet.md).
+
 ## 0.22.0 „Volley“ – Impulsgewehr BASIC-02 und Portalkanone BASIC-T01 spielbar (Tasten 4 und 5) (Branch `claude/ballon-0.22-volley`)
 
 - Schritt 6 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) für die Klasse Impuls: eigene Hüfte (Mündung 57,9/63,4 %, mit der

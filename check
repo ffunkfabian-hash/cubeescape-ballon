@@ -217,6 +217,21 @@ else:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_sights.py')], capture_output=True, text=True)   # 0.21 Baukasten v3
 if r.returncode or 'Visiere geprüft' not in r.stdout:
     fail('Visiere: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln) + r.stderr[-300:])
+# BASIC-Roboter (basic/robot, 0.5 Struktur, 0.23 Form): Baugruppen, Teile, Anker; Anschlüsse und Messwerte in Blender (~2 s) samt
+# Regressionstest; Teileliste docs/roboter.md aktuell
+from basic import robot  # noqa: E402
+err += [f'Roboter: {e}' for e in robot.validate()]
+if os.path.exists(BL):
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'robot_build.py'), '--', '--check'],
+                       capture_output=True, text=True)
+    if r.returncode or 'robot_check:' not in r.stdout:
+        fail('Roboter: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'robot_check' in ln or 'Error' in ln))
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_robot.py')], capture_output=True, text=True)
+    if r.returncode or 'test_robot:' not in r.stdout:
+        fail('Roboter-Regressionstest: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'test_robot' in ln or 'Error' in ln))
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'robot_doc.py'), '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Roboter: ' + r.stdout.strip())
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_ego.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Ego-Daten: ' + r.stdout.strip())
@@ -262,5 +277,5 @@ if r.returncode:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')
-print('\n'.join(err) if err else 'check: alles in Ordnung (17 Grundtypen, Specs, Matrix, Doku)')
+print('\n'.join(err) if err else 'check: alles in Ordnung (17 Grundtypen, Specs, Matrix, Doku, Roboter)')
 sys.exit(1 if err else 0)

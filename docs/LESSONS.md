@@ -14,7 +14,7 @@
 - Bloom mit Schwelle ≤ 4 erfasst helle Lackflächen; Nutzerwunsch: Bloom aus ([stilhandbuch](stilhandbuch.md#1-entscheidungen-des-nutzers)).
 - Ego-Kamera in Blender: 90° um X schaut nach +Y; für Blick −Y zusätzlich 180° um Z ([ego_build.py](../tools/ego_build.py)).
 - Viewmodel-Arme: Unterarm an der Hand ausrichten und den Knick begrenzen, statt die Schulter festzuhalten; Hände greifen von unten hinten ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
-- Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst.
+- Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst. Roboterkörper: ein Entwurf mit Korrektur je Kritik scheiterte viermal, drei Varianten zur Wahl trafen bei den Armen sofort ([0.23](versions/0.23-gauntlet.md)).
 - `ce lock` wechselt in das Nexogen-Verzeichnis: Skriptpfade für Blender/Unity absolut übergeben ([unity.md](unity.md)).
 - Blender-FBX mit „Apply Transform“: Netze kommen richtig an, Kindknoten nicht (90°/218 mm) – Knotenlagen beim Import aus `ego.json` setzen ([BallonSetup.cs](../unity/Assets/Ballon/Editor/BallonSetup.cs)).
 - `Quaternion.Angle` meldet unter ≈ 0,16° null: Drehabweichungen in Tests über atan2 der Achsen messen ([EgoDataTests.cs](../unity/Assets/Ballon/Tests/EditMode/EgoDataTests.cs)).
