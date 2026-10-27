@@ -344,9 +344,22 @@ def export_plan(D, old):
 
 
 
+def _rounded(v, nd=6):
+    """Floats auf nd Nachkommastellen (µm bei mm-Maßen) – Winkelfunktionen liefern auf macOS-libm und glibc nicht bitgleiche Werte (0.21)."""
+    if isinstance(v, float):
+        return round(v, nd) + 0.0                  # + 0.0: −0.0 und 0.0 gleich
+    if isinstance(v, dict):
+        return {k: _rounded(x, nd) for k, x in v.items()}
+    if isinstance(v, (list, tuple)):
+        return [_rounded(x, nd) for x in v]
+    return v
+
+
 def parts_sha(W):
-    """SHA-256 des Bauteil-Entwurfs der Waffe (PARTS und ASSEMBLIES: Form, Materialrolle, Bewegung) ohne Anker und Datenfelder wie EJECT."""
-    return hashlib.sha256(json.dumps(dict(parts=W.PARTS, assemblies=W.ASSEMBLIES), sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    """SHA-256 des Bauteil-Entwurfs der Waffe (PARTS und ASSEMBLIES: Form, Materialrolle, Bewegung) ohne Anker und Datenfelder wie EJECT.
+    Zahlen gerundet (`_rounded`), damit der Hash auf Mac und Linux (CI) gleich ist."""
+    return hashlib.sha256(json.dumps(_rounded(dict(parts=W.PARTS, assemblies=W.ASSEMBLIES)), sort_keys=True,
+                                     ensure_ascii=False).encode()).hexdigest()
 
 
 def parts_sha_at(path, sha):

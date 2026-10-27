@@ -12,7 +12,7 @@
 - Abriebmaske (Nutzerwahl A): Rolle `sight_anod` für alle Visierteile, Messradius 1,2 mm, ohne feine Kratzer; Leuchtrolle `sight_line`.
 - Prüfungen: neu `tools/test_sights.py` (Öffnung je Visier und Größe, Ring 1,29, Absehen flach, Kimme-Linie), `test_sight_seat.py` auf
   Konzept A (Sattel hinter dem Auge, unteres Bilddrittel frei); Unity-Formattests ohne die bewusst geänderte Baugruppe Visier.
-- Export mit Backen für BASIC-01/03/06 und Arme; Bericht [docs/versions/0.21-ironsight.md](docs/versions/0.21-ironsight.md).
+- Export: Bauteil-Hash `parts_sha256` gerundet (plattformfest, CI unter Linux). Export mit Backen für BASIC-01/03/06 und Arme; Bericht [docs/versions/0.21-ironsight.md](docs/versions/0.21-ironsight.md).
 
 ## Patch visier-konzept – Visier-Konzept und Baukasten v3 (Branch `claude/ballon-patch-visier-konzept`)
 

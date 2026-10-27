@@ -9,6 +9,7 @@
 - Absehen gezeichnet: `sight_reticle` flach (Querprofile ≤ 0,1 mm) in der Glasebene (± 0,5 mm), reine Emission, Hüftform der
   Klasse in Hüftgröße (± 3 %), Linien mindestens 1,6 px bei 1280 px Bildbreite.
 - Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
+- Bauteil-Hash des Unity-Exports (`export_unity.parts_sha`) ist bei 1 ulp Abweichung gleich (Mac und Linux-CI).
 - Mündungsfeuer im Zielen an der MP-Pille: in der Kontur gezählt (kleiner als im umschließenden Rechteck) und ≤ 20 % (5.3 A).
 """
 import glob
@@ -140,6 +141,16 @@ def main():
     print(f'[test_sights] BASIC-02-v2.1: Mündungsfeuer im Zielen {cov2 * 100:.1f} % (Glas und Haubenöffnung; nur Glas {cov2_glass * 100:.1f} %)')
     if cov2 > 0.20 or abs(cov2 - cov2_glass) < 1e-9 and cov2 > 0:
         bad.append(f'BASIC-02-v2.1: Mündungsfeuer {cov2 * 100:.1f} % – Haubenöffnung nicht als Kontur gezählt oder > 20 %')
+    # Bauteil-Hash des Exports plattformfest (0.21, CI unter Linux): Werte mit 1 ulp Abstand (libm-Unterschied bei cos/sin) ergeben
+    # denselben Hash, eine echte Maßänderung von 0,01 mm einen anderen
+    from tools.export_unity import parts_sha
+    x = 23.799999999999997
+
+    def H(v):
+        return parts_sha(types.SimpleNamespace(PARTS=[dict(id='p', pts=[(v, -0.0), (math.cos(0.3), 1.0)])], ASSEMBLIES=[]))
+    n += 1
+    if H(x) != H(math.nextafter(x, math.inf)) or H(x) != H(math.nextafter(x, -math.inf)) or H(x) == H(x + 0.01):
+        bad.append('export_unity.parts_sha: 1 ulp Abweichung ändert den Hash oder 0,01 mm nicht (plattformabhängig)')
     from basic.pilot.optics import sight_kit as K
     for kid, kind in (('iron_klammer', 'iron'), ('iron_hoerner', 'iron'), ('mini_reflex', 'mini_reflex')):
         for s in ('S', 'M', 'L'):

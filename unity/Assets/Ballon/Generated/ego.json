@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "e36cb6a602172da966a89d16c1a33ccbd9405b373e43ad19f0ae1422a4dee073"
+    "sha256": "98cbda0922612cc668f9a45e2428fa85c017626e45a72532396c91b88683f6e5"
    },
    {
     "path": "tools/bake_unity.py",
@@ -7271,7 +7271,7 @@
       "sha256": "e8fff7faa7e8377e00e1973467dc542aa47b0dd38cbd2fa5e53bcdc2519acd3d"
      }
     ],
-    "parts_sha256": "b65fad53a6c5672d398d9b03e58ce3474b460b19c7677d6d010d2f5aded8d0a5"
+    "parts_sha256": "37ae03c7c0da647b5e3002d90062d02d85e2c05ed62a86fb20f7a40a08b5db15"
    },
    "textures": {
     "weapon": {
@@ -13857,7 +13857,7 @@
       "sha256": "494ad26432c6519a0b5cf3a98c40b8454e2c5fd56eafd1b7b10e8c14253ff531"
      }
     ],
-    "parts_sha256": "359dce4abd23109d06608fdbbe558de28d6c1cfa758a3b1b52fc1511512c989f"
+    "parts_sha256": "b525ec206f134002e6ca2e612845ea82866513ed4168adcea0815d6b41ba415f"
    },
    "textures": {
     "weapon": {
@@ -20324,7 +20324,7 @@
       "sha256": "9bdacceafd30058a1b55c04139a8b30fec4f05fec5bdb873b05716108b3d8b85"
      }
     ],
-    "parts_sha256": "73edb38486cfbf0d39134dfa2bfd4f8b52593ef57ae972fa4e8487f67769686d"
+    "parts_sha256": "0cefa29672cde8e57564638e400cd72ef604e321035a2d325592f9f82998a9a8"
    },
    "textures": {
     "weapon": {
