@@ -123,15 +123,14 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         rel = W.ANCHORS[T['ref']]['at'][0] - e['at'][0]
         if abs(rel - T['eye_relief_mm']) > 0.5:
             fail(f'{wid}: Augenabstand {rel:.1f} mm statt {T["eye_relief_mm"]:.0f} mm ({e["sight_type"]})')
-        # Visier-Standard 3: Öffnung im Zielen (Anteil der Bildbreite beim Bezugsbildwinkel) und Visiertyp passend zur Klasse
-        import math as _m
-        from basic.reticles import SIGHT_KIND
-        byid = {p['id']: p for p in W.PARTS}
-        width = byid['sight_glass']['ww'] if e['sight_type'] == 'reflex' else 2 * byid['scope_rim']['r']
-        share = width / (2 * T['eye_relief_mm'] * _m.tan(_m.radians(SIGHT['fov_ref_deg'] / 2)))
-        lo, hi = T['target_share']
+        # Visier-Standard 3: lichte Öffnung im Zielen (Anteil der Bildbreite beim Bezugsbildwinkel, im echten Abstand der Scheibe bzw.
+        # Objektivlinse; Größe außerhalb des Standards nur als zugelassene Variante des Typs, 0.21) und Visiertyp passend zur Klasse
+        from basic.reticles import SIGHT_KIND, share_band
+        from tools.test_sights import opening_share
+        share = opening_share(W.PARTS, W.ANCHORS)
+        lo, hi, band = share_band(e['sight_type'], W.META['type'], getattr(W, 'SIGHT_SIZE', 'M'))
         if not lo <= share <= hi:
-            fail(f'{wid}: Öffnung im Zielen {share * 100:.1f} % außerhalb {lo * 100:.0f}–{hi * 100:.0f} %')
+            fail(f'{wid}: Öffnung im Zielen {share * 100:.1f} % außerhalb {band} {lo * 100:.0f}–{hi * 100:.0f} %')
         want = {'holo': 'reflex', 'ring_scope': 'scope'}.get(SIGHT_KIND.get(W.META['type']))
         if want and want != e['sight_type']:
             fail(f'{wid}: Visiertyp {e["sight_type"]} passt nicht zur Klasse (Visier-Standard 3: {SIGHT_KIND[W.META["type"]]})')
@@ -215,6 +214,9 @@ elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux: Blender
     print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test nur auf dem Mac')
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_sights.py')], capture_output=True, text=True)   # 0.21 Baukasten v3
+if r.returncode or 'Visiere geprüft' not in r.stdout:
+    fail('Visiere: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln) + r.stderr[-300:])
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_ego.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Ego-Daten: ' + r.stdout.strip())

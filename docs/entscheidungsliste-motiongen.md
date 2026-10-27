@@ -52,7 +52,11 @@ Destiny-Schalen ΔL* 64–78 [M].
 - **A (Empfehlung):** Beim nächsten Scout-Umbau steigt die Gehäuseoberkante unter dem Rohr. Das Rohr sitzt dann wie bei Destiny direkt
   auf dem Gehäuse, der Hals entfällt, die Visierhöhe bleibt 66 ± 4 mm.
 - **B:** So lassen. Der Hals bleibt sichtbar, die Optik steht etwas höher als bei Destiny.
-- Antwort (Nutzer, 25.10.2026): „Block 1: 1.1 A, 1.2 A, Rest wie empfohlen.“ → **A**
+- Antwort (Nutzer, 25.10.2026): „Block 1: 1.1 A, 1.2 A, Rest wie empfohlen.“ → **A** – *überholt* durch die Antwort vom 26.10.2026 (umgesetzt in 0.19 „Saddle“)
+- Neue Antwort (Nutzer, 26.10.2026, Visier-Konzept [visier-konzept.md](visier-konzept.md) › 7, Auswahl im Dialog): „v3 bauen“ →
+  **Konzept A „Hals“:** Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, Ring ohne Wulst; die Visierhöhe bleibt 66 ± 4 mm, das
+  Rohr liegt hinten auf einem Gehäusebuckel auf. Umgesetzt in **0.21 „Ironsight“** ([Bericht](versions/0.21-ironsight.md)), am Netz
+  geprüft mit `tools/test_sight_seat.py` (Sattel hinter dem Auge, unteres Bilddrittel zwischen Auge und Objektiv frei).
 
 **Frage 1.2 – Weltzoom an die Glidepath-Messung angleichen?**
 - **A (Empfehlung):** Ja, für die drei abweichenden Klassen: Scout 2,0 statt 2,9, Handfeuerwaffe 1,15–1,2 statt 1,5, MP 1,45 statt 1,25.

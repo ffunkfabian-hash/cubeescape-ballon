@@ -1,6 +1,6 @@
 """Optionsblatt Visier-Konzept: Holo (BASIC-01 v2.1) und Zielfernrohr (BASIC-03 v2.1) je Konzept – Blick beim Zielen und Seitenansicht.
 
-  blender -b --factory-startup -P tools/sight_options.py -- [--gpu] [--samples N] [--only jetzt,hals]
+  blender -b --factory-startup -P tools/sight_options.py -- [--gpu] [--samples N] [--only jetzt,hals] [--weapons holo,scope,pulse,mp]
                                                                       → <OUT>/sight_options/<option>_<waffe>_{ziel,seite}.png
   python3 tools/sight_options.py --sheet                              → <EVIDENCE>/sight_options.png
 
@@ -26,7 +26,9 @@ FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 REFS = [os.path.expanduser(f'~/Library/Caches/CubeEscapeBallon/refs/video/scout_frames/{n}.png') for n in ('f_230', 'f_450')]
 HFOV = 75.0
 RES = (1280, 720)
-WEAPONS = [('holo', 'pilot.w01_auto_rifle_v21', 'auto_rifle'), ('scope', 'pilot.w03_scout_rifle_v21', 'scout_rifle')]
+WEAPONS = [('holo', 'pilot.w01_auto_rifle_v21', 'auto_rifle'), ('scope', 'pilot.w03_scout_rifle_v21', 'scout_rifle'),
+           ('pulse', 'pilot.w02_pulse_rifle_v21', 'pulse_rifle'), ('mp', 'pilot.w06_submachine_gun_v21', 'submachine_gun')]
+CONCEPT_WEAPONS = ('holo', 'scope')        # Konzepte A/B/C gibt es nur für Holo und Zielfernrohr; Impuls und MP nur „jetzt“ (0.21)
 
 
 def options():
@@ -112,7 +114,7 @@ def ground(z):
     bpy.context.scene.collection.objects.link(ob)
 
 
-def render(o, only=None):
+def render(o, only=None, weapons=None):
     import bpy
     from mathutils import Vector, Matrix
     from basic import kit
@@ -125,6 +127,8 @@ def render(o, only=None):
         if only and opt not in only:
             continue
         for w, _, wtype in WEAPONS:
+            if (weapons and w not in weapons) or (opt != 'jetzt' and w not in CONCEPT_WEAPONS):
+                continue
             W = weapon(opt, w)
             kit.reset_scene()
             root, objs, anc = kit.build(W)
@@ -197,4 +201,5 @@ if __name__ == '__main__':
         sheet()
     else:
         render(dict(gpu='--gpu' in a, samples=int(a[a.index('--samples') + 1]) if '--samples' in a else 48),
-               only=a[a.index('--only') + 1].split(',') if '--only' in a else None)
+               only=a[a.index('--only') + 1].split(',') if '--only' in a else None,
+               weapons=a[a.index('--weapons') + 1].split(',') if '--weapons' in a else None)

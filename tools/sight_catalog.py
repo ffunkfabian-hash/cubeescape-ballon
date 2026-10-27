@@ -4,6 +4,7 @@
                                                                       → <OUT>/sight_catalog/<id>_<größe>_{ziel,nah}.png
   python3 tools/sight_catalog.py --sheet                              → <EVIDENCE>/sight_catalog.png, sight_catalog_sizes.png
 
+Baukasten seit 0.21 Produktionsform (basic/common.py, Form `xprof` und Rolle `sight_anod` in kit.py).
 Zielbild wie tools/sight_options.py (Augenpunkt, 75°, `ads_hide` aus, gezeichnetes Absehen in Hüftform der Klasse). Kimme/Korn
 ohne gezeichnetes Absehen (die Leuchtklammern sind das Absehen); das Scharfschützen-ZF zeigt im Zielen das Vollbild (Art A): Waffe
 aus, Kreis 82 % der Bildhöhe, außen schwarz, Hüftform in der Mitte.
@@ -57,58 +58,12 @@ def jobs():
     return out
 
 
-def install(kit):
-    """Entwurfsergänzungen nur für dieses Blatt (kit.py bleibt unverändert, Unity-Quellenhash): Rolle `sight_anod` wie `anodized`
-    mit feinem Relief, Form `xprof` (Kontur quer zur Laufachse, entlang f extrudiert)."""
-    import bmesh
-    if 'sight_anod' not in kit.MATERIALS:
-        kit.MATERIALS['sight_anod'] = dict(kit.MATERIALS['anodized'], de='Visier eloxiert (Entwurf, Abrieb für dünne Teile)')
-        kit.WEAR['sight_anod'] = kit.WEAR['anodized']
-        kit.BUMP['sight_anod'] = ('noise', 1200.0, 0.04)
-    if getattr(kit.build_shape, '_xprof', False):
-        return
-    orig = kit.build_shape
-
-    def build_shape(name, p):
-        if p.get('shape') != 'xprof':
-            return orig(name, p)
-        pts = p['pts']
-        area = sum(x0 * u1 - x1 * u0 for (x0, u0), (x1, u1) in zip(pts, pts[1:] + pts[:1]))
-        if area < 0:
-            pts = pts[::-1]
-        bm = bmesh.new()
-        a = [bm.verts.new(kit.to_xyz(p['f0'], p['cu'] + u, x)) for x, u in pts]
-        b = [bm.verts.new(kit.to_xyz(p['f1'], p['cu'] + u, x)) for x, u in pts]
-        bm.faces.new(a)
-        bm.faces.new(b[::-1])
-        n = len(pts)
-        for i in range(n):
-            j = (i + 1) % n
-            bm.faces.new((a[i], a[j], b[j], b[i]))
-        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-        return kit._mesh_obj(name, bm)
-    build_shape._xprof = True
-    kit.build_shape = build_shape
-
-
-def thin_wear(radius=0.0012):
-    """Abriebmaske der Visierrolle auf dünne Teile einstellen (Messradius 4 → 1,2 mm): sonst gilt eine 2–4 mm dünne Haube ganz als
-    Kante und wird hellgrau-marmoriert (Befund Visier-Konzept)."""
-    import bpy
-    for m in bpy.data.materials:
-        if m.name.startswith('MT_sight_anod') and m.node_tree:
-            for nd in m.node_tree.nodes:
-                if nd.type == 'BEVEL':
-                    nd.inputs['Radius'].default_value = radius
-
-
 def render(o, only=None):
     import bpy
     from mathutils import Vector, Matrix
     from basic import kit
     import tools.blender_build as BB
     os.makedirs(DST, exist_ok=True)
-    install(kit)
     for kid, size in jobs():
         if only and kid not in only:
             continue
@@ -117,7 +72,6 @@ def render(o, only=None):
         root, objs, anc = kit.build(W)
         BB.setup_render(RES[0], o['samples'], gpu=o['gpu'], aaa=True, bloom=False, bg='mid')
         kit.set_mode(objs, 'aaa')
-        thin_wear()
         cam = bpy.data.objects.new('Cam', bpy.data.cameras.new('Cam'))
         cam.data.sensor_fit = 'HORIZONTAL'
         cam.data.sensor_width = 36
@@ -175,11 +129,12 @@ def sheet():
                               SIZED=[k for k, (M, v) in kits().items() if k in getattr(M, 'SIZED', ())])
     T = ['-geometry', '560x315+4+4', '-pointsize', '15', '-font', FONT, '-background', '#4C525A', '-fill', '#ECEFF2']
     tiles = []
+    built = ('holo_ref', 'holo_pille', 'holo_kasten', 'scope_tropfen')      # 0.21: gebaut in basic/common.py
     for kid, (_, name, wtype, use, feat) in K.KIT.items():
-        tiles += ['-label', f'{name} · {use}', os.path.join(DST, f'{kid}_M_ziel.png'),
+        tiles += ['-label', f'{name} · {use}' + (' · GEBAUT' if kid in built else ''), os.path.join(DST, f'{kid}_M_ziel.png'),
                   '-label', feat, os.path.join(DST, f'{kid}_M_nah.png')]
     out = os.path.join(EVIDENCE, 'sight_catalog.png')
-    subprocess.run(['magick', 'montage', *tiles, '-tile', '4x', *T, '-title', 'BALLON Visier-Baukasten (Entwurf) – Größe M',
+    subprocess.run(['magick', 'montage', *tiles, '-tile', '4x', *T, '-title', 'BALLON Visier-Baukasten v3 (0.21) – Größe M; gebaut: H0, H2, H4, Z1',
                     '-depth', '8', out], check=True)
     tiles = []
     for kid in K.SIZED:

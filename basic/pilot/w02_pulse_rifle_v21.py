@@ -17,14 +17,14 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Magazintrichter im Unterteil angeformt; Kammer schließt mit 1 mm Fuge an das Gehäuse an |
 | Ergonomie | Griff BGM-1 in v2.1-Form, gerades kurzes Magazin mit Sichtfenster, Griffpolster am Handschutz |
 
-Absehen: Vorgabe `circle_cross` (basic/reticles.py › DEFAULTS), Glas klar.
-Schlichtheitsbudget: Leuchten 2 Funktionen (Salvenanzeige, Visier-Emitter mit Absehen) · Grafik 1 Band · Schrift 1 · Orange 3 (Ladehebel,
+Visier: H4 „Kasten“ (Baukasten v3, 0.21) – Haube mit runden Dachecken, Seiten einwärts, Ziffernfeld im Sockel zum Auge; Absehen
+gezeichnet (Hüftform `ring_dot` flach im Glas), Glas klar.
+Schlichtheitsbudget: Leuchten 3 Funktionen (Salvenanzeige, Visier-Emitter mit Absehen, Ziffernfeld) · Grafik 1 Band · Schrift 1 · Orange 3 (Ladehebel,
 Feuerwahl beidseitig, Magazinhalter) · Schrauben nur an Paneelen, Kammer und Schaft.
 Status: Maße entworfen (Länge an Toolgen-Bezug 0,862 m angelehnt), Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
-                          grip_v21, reflex_sight_v21, R_BODY, R_MID, R_SMALL, R_FINE)
-from basic.reticles import DEFAULTS as RETICLE_DEFAULTS
+                          grip_v21, holo_kasten, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w02_pulse_rifle as V1
 
 META = dict(V1.META, variant='v2.1', name='Impuls v2.1', nick='Familie v2.1',
@@ -73,8 +73,8 @@ P += [
 ]
 P += [dict(p, mat='anodized') for p in rail(-90, 120, TOP)]
 P[-1]['cuts'] = [cut_box(-84 + 14 * i, -77 + 14 * i, TOP + 4, TOP + 9, 30) for i in range(14)]
-_sight, SIGHT_ANCHORS = reflex_sight_v21(-12, TOP + 8, ww=27, wh=21,       # Holo: etwas größer als 01 (Visier-Standard 3)
-                                         reticle_kind=RETICLE_DEFAULTS['pulse_rifle']['optic'])
+# Visier H4 „Kasten“ (Baukasten v3, Standard Impuls nach visier-konzept › 6a): Fenster 26 × 20 wie 01, Ziffernfeld im Sockel
+_sight, SIGHT_ANCHORS = holo_kasten(-12, TOP + 8, weapon_type=V1.META['type'])
 P += _sight
 # ---------------------------------------------------------------- Impulskammer (Leitmerkmal): Oberschale + Handschutz
 _recess = dict(shape='cyl', axis='f', c=(BORE, 0), a0=CH1 - 22, a1=CH1 + 12, r=16, segs=32)          # Mündungsmulde in der Stirn

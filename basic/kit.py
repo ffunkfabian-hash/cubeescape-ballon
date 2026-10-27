@@ -11,6 +11,8 @@ Bauteil-Formen (alle mit Bevel-Modifier, Radius `bevel` in mm, 2 Segmente, Winke
   box    Quader f0..f1, u0..u1, Breite w, Mitte x
   cyl    Zylinder entlang einer Achse ('f' längs, 'x' quer, 'u' hoch), optional hohl (r_in)
   plan   Draufsicht-Profil [(f,x) …] hochextrudiert u0..u1 (Bogen-Wurfarme quer, Glefenklinge)
+  xprof  Querprofil [(x,u) …] um die Visierlinie cu, entlang f0..f1 extrudiert (Visier-Baukasten v3: Hauben, Sockel, Glas, Absehen);
+         Durchbrüche als `cuts` mit derselben Form
 
 Drehsinn beweglicher Teile (move.range_deg, verbindlich, geprüft von tools/test_motion.py über move.expect):
   axis 'x'  positiv = gegen den Uhrzeigersinn in der Seitenansicht mit vorn rechts und oben oben (wie common.rot):
@@ -46,6 +48,9 @@ MATERIALS = {
     'rubber':   dict(color='#1A1B1E', rough=0.85, metal=0.0, de='Gummi mit Stippling', aaa_color='#111214', spec=0.2),
     'trim':     dict(color='#C9CDD2', rough=0.22, metal=1.0, de='Blanke Zierkante', aniso=0.6),
     'anodized': dict(color='#202227', rough=0.4, metal=0.6, de='Schwarz eloxiert'),
+    # Visierteile (0.21, Nutzerwahl A zur Abriebmaske): wie eloxiert, feines Relief, Abrieb mit 1,2 mm Messradius (WEAR_RADIUS) –
+    # mit 4 mm galten 2–4 mm dünne Hauben, Ringe und Sockel ganz als Kante (hellgrau-marmoriert); Skins wie `anodized`
+    'sight_anod': dict(color='#202227', rough=0.4, metal=0.6, de='Visier eloxiert (Abrieb für dünne Teile)', skin_as='anodized'),
     'brass':    dict(color='#B8913E', rough=0.3, metal=1.0, de='Messing (Patronen)'),
     'decal':    dict(color='#ECE8DF', rough=0.5, metal=0.0, de='Markierung hell'),
     # Absehen-Farben (basic/reticles.COLORS): gedämpfte Leuchtstärke (AgX bleicht helle Lichter zu Weiß), damit dünne Linien ihre Farbe behalten
@@ -54,9 +59,12 @@ MATERIALS = {
     'reticle_green': dict(color='#38E06E', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Absehen Grün'),
     'reticle_amber': dict(color='#FFB01F', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Absehen Bernstein'),
     'reticle_white': dict(color='#EEF2F5', rough=0.3, metal=0.0, emit=0.5, emit_only=True, de='Absehen Weiß'),
+    # Gezeichnete Leuchtkontur am Visier (0.21, H2 „Pille“): wie Absehen Cyan, aber kein Absehen – Unity blendet `reticle_*` aus
+    'sight_line':    dict(color='#5FD3E0', rough=0.3, metal=0.0, emit=0.6, emit_only=True, de='Leuchtkontur am Visier'),
 }
 # Rollen mit Lack auf Metall: im AAA-Modus Kantenabrieb zum blanken Metall
-WEAR = {'shell': 1.0, 'accent': 0.8, 'graphite': 0.15, 'anodized': 0.3, 'dark_metal': 0.25}   # dunkle Teile dezent (schlicht)
+WEAR = {'shell': 1.0, 'accent': 0.8, 'graphite': 0.15, 'anodized': 0.3, 'dark_metal': 0.25, 'sight_anod': 0.3}   # dunkle Teile dezent (schlicht)
+WEAR_RADIUS = {'sight_anod': 0.0012}   # Messradius der Kantenmaske (m), sonst 4 mm (größer als die Modellfase)
 # Farb- und Texturvarianten (Skins): überschreiben je Materialrolle die Farbe, skalieren Abrieb/Schmutz, optional Muster.
 # Form und Bauteile bleiben gleich; nur im AAA-Modus wirksam. Regeln: docs/stilhandbuch.md › Skins.
 SKINS = {
@@ -72,9 +80,10 @@ SKINS = {
 }
 SKIN = dict(name='standard')   # aktiver Skin (tools/blender_build.py --skin)
 
-GRIME = {'shell': 0.45, 'accent': 0.35, 'decal': 0.3, 'anodized': 0.25}
+GRIME = {'shell': 0.45, 'accent': 0.35, 'decal': 0.3, 'anodized': 0.25, 'sight_anod': 0.25}
+SCRATCH = {'sight_anod': 0.0}   # feine Kratzer (Standard 0,55); Visier ohne: quer zur Rohrachse wirken sie als weiße Sprenkel (0.21)
 BUMP = {'rubber': ('voronoi', 2600.0, 0.5), 'graphite': ('noise', 900.0, 0.12), 'shell': ('noise', 400.0, 0.04),
-        'dark_metal': ('noise', 1200.0, 0.05)}
+        'dark_metal': ('noise', 1200.0, 0.05), 'sight_anod': ('noise', 1200.0, 0.04)}
 
 
 def hex_rgba(h, a=1.0):
@@ -226,8 +235,8 @@ def aaa_nodes(m, role, d):
     b = N['Principled BSDF']
     sk = SKINS[SKIN['name']]
     d = dict(d)
-    if role in sk['roles']:
-        d['color'] = d['aaa_color'] = sk['roles'][role]
+    if d.get('skin_as', role) in sk['roles']:
+        d['color'] = d['aaa_color'] = sk['roles'][d.get('skin_as', role)]
     if role == 'shell' and sk.get('metal_shell'):
         d.update(metal=0.85, rough=0.32)
     col = hex_rgba(d.get('aaa_color', d['color']))
@@ -307,7 +316,7 @@ def aaa_nodes(m, role, d):
         bev = N.new('ShaderNodeBevel')
         bev.samples = 8
         # Messradius größer als die Modellfase (3–5 mm), sonst findet die Maske keine Kante
-        bev.inputs['Radius'].default_value = 0.004 * (1.75 if sk.get('wear', 1.0) > 2 else 1.0)
+        bev.inputs['Radius'].default_value = WEAR_RADIUS.get(role, 0.004) * (1.75 if sk.get('wear', 1.0) > 2 else 1.0)
         geo = N.new('ShaderNodeNewGeometry')
         dot = N.new('ShaderNodeVectorMath')
         dot.operation = 'DOT_PRODUCT'
@@ -383,7 +392,7 @@ def aaa_nodes(m, role, d):
         sr = N.new('ShaderNodeMapRange')
         sr.inputs['From Min'].default_value = 0.70
         sr.inputs['From Max'].default_value = 0.74
-        sr.inputs['To Max'].default_value = 0.55
+        sr.inputs['To Max'].default_value = SCRATCH.get(role, 0.55)
         L.new(sc.outputs['Fac'], sr.inputs['Value'])
         scr = N.new('ShaderNodeMix')
         scr.data_type = 'RGBA'
@@ -431,6 +440,22 @@ def mesh_plan(name, pts, u0, u1):
     bm = bmesh.new()
     a = [bm.verts.new(to_xyz(f, u0, x)) for f, x in pts]
     b = [bm.verts.new(to_xyz(f, u1, x)) for f, x in pts]
+    n = len(pts)
+    bm.faces.new(a)
+    bm.faces.new(b[::-1])
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((a[i], a[j], b[j], b[i]))
+    return _mesh_obj(name, bm)
+
+
+def mesh_xprof(name, pts, f0, f1, cu, cx=0.0):
+    """Querprofil [(x, u) …] in mm (u relativ zu cu, Blick von hinten), entlang der Laufachse f0..f1 extrudiert (Visier-Baukasten v3)."""
+    if _area2(pts) < 0:
+        pts = pts[::-1]
+    bm = bmesh.new()
+    a = [bm.verts.new(to_xyz(f0, cu + u, cx + x)) for x, u in pts]
+    b = [bm.verts.new(to_xyz(f1, cu + u, cx + x)) for x, u in pts]
     n = len(pts)
     bm.faces.new(a)
     bm.faces.new(b[::-1])
@@ -596,6 +621,8 @@ def build_shape(name, p):
         ob = mesh_cyl(name, p['axis'], p['c'], p['a0'], p['a1'], p['r'], p.get('segs', 24), p.get('r_in'), p.get('r1'))
     elif k == 'plan':
         ob = mesh_plan(name, p['pts'], p['u0'], p['u1'])
+    elif k == 'xprof':
+        ob = mesh_xprof(name, p['pts'], p['f0'], p['f1'], p['cu'], p.get('cx', 0))
     elif k == 'xbox':
         ob = mesh_frame(name, p['f0'], p['f1'], p['cu'], p['ww'], p['hh'], 0, 0, 0, 0, p.get('cx', 0))
     elif k == 'frame':

@@ -40,7 +40,7 @@ def data():
 def doc():
     L = ['# Absehen, Visierglas und Visier-Standard', '',
          '> Erzeugt aus `basic/reticles.py` mit `python3 tools/export_reticles.py` – nicht von Hand ändern.', '',
-         'Eine Quelle für Blender (`basic/common.reticle`, Familienvisier `reflex_sight_v21`) und die Laufzeit (`data/reticles.json`). '
+         'Eine Quelle für Blender (`basic/common.drawn_reticle`, Visier-Baukasten v3 in `basic/common.py`; `reticle()` für Katalogblätter) und die Laufzeit (`data/reticles.json`). '
          'Katalogblatt: `python3 tools/reticle_sheet.py --sheet` (Belege `reticles.png`, Clip `clips/reticle_spread.mp4`).', '',
          '## Formen', '', '| ID | Name | Einsatz | Aufgehen |', '|---|---|---|---|']
     for k, R in RT.RETICLES.items():
@@ -88,6 +88,23 @@ def doc():
                      f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['frame_max']} × Öffnung | {T['ads_view']} |")
         else:
             L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
+    R = S['rail_line_mm']
+    L += ['', f"**Erweiterung 0.21 „Ironsight“** (Nutzerwahl 26.10.2026, `docs/visier-konzept.md` › 7): Visierlinie über der "
+          f"Schienenoberkante (BRI-22) – Holo auf der H0-Plattform + {R['holo']:g} mm (Visierhöhe gilt; Zielfernrohre nach Konzept A mit zwei Schienen "
+          f"auf eigener Höhe richten sich nur nach der Visierhöhe), Mini-Reflex "
+          f"+ {R['mini_reflex']:g} mm ({', '.join(S['line_exempt']['mini_reflex'])}), Kimme/Korn + {R['iron']:g} mm "
+          f"({', '.join(S['line_exempt']['iron'])}); für die beiden letzten gilt die Visierhöhe {S['height_mm']:.0f} ± "
+          f"{S['height_tol_mm']:.0f} mm nicht. Zielfernrohre sitzen nach Konzept A: Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, "
+          'Ring ohne Wulst (außen/innen 1,29). Öffnung im Zielen = lichte Öffnung (Scheibe bzw. Objektivlinse) im echten Abstand zum Augenpunkt.', '',
+          '| Visiertyp | zugelassene Variante | Öffnung im Zielen | nur an |', '|---|---|---|---|']
+    for k, T in S['types'].items():
+        for sz, V in T.get('variants', {}).items():
+            L.append(f"| `{k}` | {V['de']} (Größe {sz}) | {V['share'][0] * 100:.0f}–{V['share'][1] * 100:.0f} % | "
+                     + ', '.join(f'`{t}`' for t in V['weapon_types']) + ' |')
+    D = S['drawn']
+    L += ['', f"Absehen gezeichnet: {D['de']}; Linien mindestens {D['min_line_px']:g} px bei {D['ref_w_px']} px Bildbreite "
+          f"({S['fov_ref_deg']:.0f}°), Ebene höchstens {D['plane_tol_mm']:g} mm neben der Scheibe (`common.drawn_reticle`; Unity zeichnet es selbst). "
+          'Geprüft in `tools/test_sights.py` und `tools/test_sight_seat.py`.']
     L += ['', 'Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach '
           'Glidepath.', '',
           '| Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']

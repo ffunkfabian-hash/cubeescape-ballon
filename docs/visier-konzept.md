@@ -151,7 +151,13 @@ Die Fragen waren:
 4. **Größen außerhalb des Standards:** Holo L (24,6 %) für MG/Werfer und Zielfernrohr S (17,4 %) zulassen oder streichen?
 5. **Material:** neue Abriebmaske für dünne Teile (Messradius 4 → 1,2 mm) in `kit.py` – ändert den Unity-Quellenhash, voller Export.
 
-## 8. Umsetzung danach (eigene Version, `./ce session reserve`)
+## 8. Umsetzung danach (eigene Version, `./ce session reserve`) – erledigt in 0.21 „Ironsight“
+
+**Erledigt (26.10.2026, [Bericht](versions/0.21-ironsight.md)):** Baukasten v3 in `basic/common.py` (Form `xprof` in `kit.py`, Rolle
+`sight_anod` nach Punkt 5 = Antwort A), Visier-Standard 3 erweitert (Visierlinien, Varianten Holo L / Zielfernrohr S), Absehen in
+Blender flach; BASIC-01 H0, BASIC-02 H4, BASIC-03 Z1 nach Konzept A, BASIC-06 H2; Unity-Export mit Backen für 01/03/06. Die bisher
+visierlosen Waffen sind **nicht** Teil von 0.21 (Auftrag: zwei Hauptziele) – Zuordnung nach § 6a bleibt offen für eine eigene Version.
+
 
 Baukasten in `basic/common.py` (Form `xprof` in `kit.py`), gewählte Visiere an BASIC-01/02/03/06 und den bisher visierlosen Waffen,
 Visier-Standard 3 und Stilhandbuch § 6 anpassen (Profil, Sitz, Kimme-Linie), `test_sight_seat.py`, Export mit Backen, Unity-Vergleich

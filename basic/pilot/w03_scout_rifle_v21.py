@@ -7,27 +7,29 @@ nicht übernommen. Leitmerkmal 03 nach Designvertrag: schlankes Einteilgehäuse,
 Formsprache-Checkliste (stilhandbuch §3):
 | Frage | Scoutgewehr v2.1 |
 |---|---|
-| Leitmerkmal der Silhouette | lange, flache Linie: schlankes Einteilgehäuse mit Buckel, auf dem das Zielfernrohr direkt liegt; langer schmaler Handschutz, Lauf mit Unterrohr |
-| Schichten | Einteilgehäuse (Creme) → Seitenpaneele, Deckplatte, kurze Schiene auf dem Buckel; Handschutz (Graphit) mit 1 mm Fuge; Endkappe |
+| Leitmerkmal der Silhouette | lange, flache Linie: schlankes Einteilgehäuse mit Buckel hinter dem Augenpunkt, auf dem das Zielfernrohr liegt; langer schmaler Handschutz, Lauf mit Unterrohr |
+| Schichten | Einteilgehäuse (Creme) → Seitenpaneele, Deckplatte, kurze Schienen auf dem Buckel und unter dem Objektiv; Handschutz (Graphit) mit 1 mm Fuge; Endkappe |
 | Negativraum | Schlitzfenster im Handschutz quer durch (Lauf sichtbar); offener Spalt zwischen Lauf und Unterrohr vor dem Handschutz; Daumenloch im Schaft |
-| Blickfang | Zielfernrohr mit orangem Höhenturm und blanker Objektivkante; Ladeanzeige links (eine Leuchtfunktion) |
+| Blickfang | Zielfernrohr Z1 „Tropfen“ mit orangem Höhenturm, blankem Absatz am Objektiv und blanker Innenkante; Ladeanzeige links (eine Leuchtfunktion) |
 | Zweiton-Blockung | Gehäuse Lack (`shell`), Handschutz, Griff, Schaft Polymer (`graphite`/`rubber`) |
 | Grafik | ein Schrägband vorn am Gehäuse, ein Schriftzug „BASIC SR-03“ |
 | Front | dreifach geschlitzte Mündungsbremse mit blanker Krone, kannelierter Lauf, Gasblock mit Unterrohr |
 | Übergänge | Magazintrichter und Visierbuckel im Gehäuse angeformt (Rampen vorn und hinten); Gehäusefront schräg zum Handschutz |
 | Ergonomie | Griff BGM-1 in v2.1-Form, kurzes Kastenmagazin (8) mit Sichtfenster, Wangenauflage am Schaft |
 
-Absehen: Vorgabe `chevron` (basic/reticles.py › DEFAULTS) im Zielfernrohr, Glas klar.
+Absehen gezeichnet: Hüftform `cross` flach auf der Objektivlinse (Baukasten v3, 0.21), Glas klar.
 Schlichtheitsbudget: Leuchten 2 Funktionen (Ladeanzeige, Absehen) · Grafik 1 Band · Schrift 1 · Orange 3 (Ladehebel, Feuerwahl
-beidseitig, Höhenturm) · Schrauben nur an Paneelen, Ringen und Schaft.
-Visiersitz (0.19 „Saddle“, Entscheidungsliste 1.1 A, Motiongen [visiere] › 6): das Rohr liegt wie bei Destiny direkt auf dem
-Gehäuse (Spalt 0,3 mm), der Trapezhals aus Visier-Standard 3 entfällt, ein flacher Rohrsattel mit Spannband klemmt auf der Schiene.
-Visierhöhe 65 mm (Soll 66 ± 4), Visier über Gehäuse 0,02–0,04 L – geprüft am Netz mit tools/test_sight_seat.py.
+beidseitig, Höhenturm) · Schrauben nur an Paneelen, Sattel und Schaft.
+Visiersitz nach Konzept A (0.21 „Ironsight“, Nutzerwahl 26.10.2026 „v3 bauen“, Entscheidungsliste 1.1, docs/visier-konzept.md › 3):
+Visier Z1 „Tropfen“ (common.scope_tropfen); das Rohr liegt hinten auf einem Gehäusebuckel **hinter dem Augenpunkt** (Rohrsattel mit
+Spannband auf kurzer Schiene, Spalt 0,3 mm; im Zielen unsichtbar), vorn trägt ein H0-Klemmfuß auf einer zweiten kurzen Schiene den
+Tropfensockel unter dem Ring – zwischen Auge und Objektiv liegt nichts mehr im unteren Bilddrittel (0.19 „Saddle“: Sattel und Schiene
+davor). Ring ohne Wulst, außen/innen 1,29. Visierhöhe 65 mm (Soll 66 ± 4), Visier über Gehäuse 0,02–0,04 L – geprüft am Netz mit
+tools/test_sight_seat.py.
 Status: Maße entworfen (Länge an Toolgen-Bezug 1,00 m angelehnt), Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
-                          grip_v21, scope_v21, R_BODY, R_MID, R_SMALL, R_FINE)
-from basic.reticles import DEFAULTS as RETICLE_DEFAULTS
+                          grip_v21, scope_tropfen, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w03_scout_rifle as V1
 
 META = dict(V1.META, variant='v2.1', name='Fernblick v2.1', nick='Familie v2.1',
@@ -36,19 +38,22 @@ ASSEMBLIES = V1.ASSEMBLIES
 BORE = 96
 TOP = 122
 HG0, HG1 = 201, 476      # Handschutz
-# Visiersattel (0.19 „Saddle“, Entscheidungsliste 1.1 A): das Rohr liegt wie bei Destiny direkt auf dem Gehäuse. Die Visierlinie
-# bleibt bei u 161 (Visierhöhe 65 mm); das Gehäuse steigt darunter zu einem Buckel, die kurze Schiene darauf trägt das Rohr.
-_scope, SIGHT_ANCHORS, _cu = scope_v21(-48, TOP + 2, reticle_kind=RETICLE_DEFAULTS['scout_rifle']['optic'])
-SEAT = _cu - 9.5 - 0.3            # Schienenoberkante: Rohrunterkante (r_tube 9,5) mit 0,3 mm Luft
+# Visiersitz nach Konzept A (0.21): Visierlinie bleibt u 161 (Visierhöhe 65 mm), Ringstirn f 72, Augenpunkt f −18. Der Buckel mit
+# kurzer Schiene liegt hinter dem Auge (Rohr liegt auf, 1b), vorn eine zweite kurze Schiene für den Klemmfuß unter dem Objektiv.
+_cu = 161
+F_OBJ = 72
+SEAT = 148                        # Schienenoberkante hinten: unter der Okular-Unterkante (u 150), der Sattel umgreift die Schiene
 HUMP = SEAT - 8                   # Buckeloberkante unter der Schiene (rail: u − 0,5 … u + 8)
-SEAT_F = (-24, 34)                # Schiene zwischen Okular (bis f −26) und Objektivbeginn (f 36)
+SEAT_F = (-52, -18)               # Schiene hinter dem Augenpunkt (f −18); Sattel f −46 … −20 als Wiege unter Okular und Rohr
+FOOT_F = (38, 76)                 # vordere Schiene unter dem Klemmfuß (f 42–72)
+_scope, SIGHT_ANCHORS = scope_tropfen(F_OBJ, TOP + 8, _cu, weapon_type=V1.META['type'], seat_u=SEAT)
 
 
 def receiver(seat=True):
-    """Einteilgehäuse; seat=False ist der Stand vor 0.19 ohne Buckel (für die Kastenoptiken in basic/pilot/optics)."""
-    top = [(194, TOP), (88, TOP), (46, HUMP), (-40, HUMP), (-64, TOP), (-112, TOP)] if seat else [(194, TOP), (-112, TOP)]
+    """Einteilgehäuse mit Buckel hinter dem Augenpunkt (Konzept A); seat=False ohne Buckel (Kastenoptiken in basic/pilot/optics)."""
+    top = [(194, TOP), (6, TOP), (-16, HUMP), (-54, HUMP), (-74, TOP), (-112, TOP)] if seat else [(194, TOP), (-112, TOP)]
     return prof('receiver', 'Gehäuse', 'Receiver', 'receiver', 'shell', 'Schlankes Einteilgehäuse: Lauf, Schiene, Griffmodul, Schacht',
-                'Grundkörper; Magazintrichter und Buckel unter dem Zielfernrohr angeformt' if seat else
+                'Grundkörper; Magazintrichter und Buckel hinter dem Augenpunkt angeformt' if seat else
                 'Grundkörper; Magazintrichter angeformt',
                 [(-122, 64), (-74, 40), (82, 40), (88, 28), (92, 20), (128, 20), (134, 30), (146, 64), (200, 76), (200, 116)]
                 + top + [(-122, 114)], 38,
@@ -58,10 +63,12 @@ def receiver(seat=True):
 
 
 def top_rail(seat=True):
-    """Schiene BRI-22: kurz auf dem Buckel, glatt (das Rohr liegt auf); seat=False lang mit Rillen wie vor 0.19."""
+    """Schienen BRI-22: kurz auf dem Buckel hinter dem Auge (glatt, das Rohr liegt auf) und vorn unter dem Klemmfuß des Objektivs;
+    seat=False lang mit Rillen wie vor 0.19."""
     if seat:
-        return [dict(p, mat='anodized', attach='auf dem Gehäusebuckel unter dem Zielfernrohr (fest)')
-                for p in rail(*SEAT_F, HUMP)]
+        return [dict(p, mat='anodized', attach='auf dem Gehäusebuckel hinter dem Augenpunkt (fest)') for p in rail(*SEAT_F, HUMP)] \
+            + [dict(p, id='rail_front', de='Schiene vorn', en='Front rail', mat='anodized',
+                    attach='auf dem Gehäuse unter dem Objektiv (fest)') for p in rail(*FOOT_F, TOP)]
     r = [dict(p, mat='anodized') for p in rail(-104, 186, TOP)]
     r[-1]['cuts'] = [cut_box(-98 + 14 * i, -91 + 14 * i, TOP + 4, TOP + 9, 30) for i in range(20)]
     return r
@@ -80,9 +87,9 @@ P += [
     part('panel_screws', 'Paneelschrauben', 'Panel screws', 'receiver', 'multi', 'trim', 'Halten die Seitenpaneele',
          'in den Paneelen', bevel=0.2, items=mirror(screws([(-90, 87), (-90, 93), (-26, 87), (-26, 93)], 18.8, r=1.5, h=0.8))),
     box('top_cover', 'Deckplatte', 'Top cover', 'receiver', 'shell', 'Staubschutz über dem Verschluss; zweite Schicht',
-        'auf das Gehäuse gesetzt, Stufe 3 mm', -112, -66, TOP - 1, TOP + 3, 32, bevel=R_SMALL),
+        'auf das Gehäuse gesetzt, Stufe 3 mm', -112, -76, TOP - 1, TOP + 3, 32, bevel=R_SMALL),
     box('top_cover_trim', 'Deckplatten-Kante', 'Top cover trim', 'receiver', 'trim', 'Blanke Zierkante der Deckplatte',
-        'vorn an der Deckplatte', -70, -65, TOP - 1, TOP + 3.6, 33, bevel=0.4),
+        'vorn an der Deckplatte', -80, -75, TOP - 1, TOP + 3.6, 33, bevel=0.4),
     box('chamber_pip', 'Ladeanzeige', 'Chamber indicator', 'receiver', 'energy', 'Leuchtet, wenn eine Patrone im Lager ist',
         'links über dem Lager eingelassen', 72, 86, 106, 110, 1.0, bevel=0.3, x=19.4),
     box('pip_bezel', 'Anzeigenrahmen', 'Indicator bezel', 'receiver', 'anodized', 'Fasst die Ladeanzeige', 'aufgeschraubt',
@@ -100,18 +107,7 @@ P += [
                    expect=((45, 106, -20), (0, 0, -1)))),
 ]
 P += top_rail()
-# Rohrsattel statt Trapezhals: Klemmblock um die Schiene (Oberkante = Schiene) und Spannband um das Rohr, hinter dem Seitenturm
-_sf = (12, 28)
-_scope[0].update(de='Rohrsattel', en='Scope saddle', func='Trägt das Zielfernrohr auf der Schiene BRI-22; Klemmblock um die Schiene',
-                 items=[dict(shape='box', f0=_sf[0], f1=_sf[1], u0=HUMP + 0.5, u1=SEAT, w=28)]
-                 + screws([(_sf[0] + 4, HUMP + 4), (_sf[1] - 4, HUMP + 4)], -14.0, r=1.2, h=0.6))   # rechts; links der Hebel
-_scope[0]['move'] = dict(_scope[0]['move'], pivot=((_sf[0] + _sf[1]) / 2, SEAT, 0))
-_scope[1].update(func='Spannt den Rohrsattel werkzeuglos', attach='links am Rohrsattel', x=14.9,
-                 pts=[(_sf[0], HUMP + 1.5), (_sf[1] - 2, HUMP + 1.5), (_sf[1], HUMP + 4), (_sf[0], HUMP + 4.4)])
-# Spannband als eigenes Teil mit ads_hide: es umschließt das Rohr nah am Auge und stünde im Zielen als Ring vor dem Objektiv
-P += _scope[:2] + [cyl('scope_strap', 'Spannband', 'Scope strap', 'sight', 'anodized', 'Hält das Rohr im Rohrsattel',
-                       'um das Mittelrohr, im Klemmblock verschraubt', 'f', (_cu, 0), _sf[0] + 3, _sf[1] - 3, 9.5 + 1.6, r_in=9.5,
-                       segs=40, ads_hide=True, parent_part='scope_mount_r')] + _scope[2:]
+P += _scope
 # ---------------------------------------------------------------- Handschutz, Lauf, Unterrohr, Mündung
 P += [
     prof('handguard', 'Handschutz', 'Handguard', 'support', 'graphite', 'Griffbereich der Stützhand; lang, schmal, geschlitzt',

@@ -92,13 +92,14 @@
     "sight_clamp",
     "sight_body",
     "sight_base",
+    "sight_knob_w",
+    "sight_battery",
+    "sight_emitter",
     "sight_frame",
     "sight_frame_trim",
+    "sight_status",
     "sight_glass",
-    "sight_emitter",
-    "sight_reticle",
-    "sight_knob_w",
-    "sight_battery"
+    "sight_reticle"
    ]
   },
   {
@@ -732,8 +733,8 @@
    "assembly": "sight",
    "function_de": "Klemmt das Visier auf die Schiene BRI-22; gestuftes Trapez",
    "attachment_de": "Klemmung auf Schiene (lösbar)",
-   "material_role": "anodized",
-   "material_de": "Schwarz eloxiert",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
    "interface": "BRI-22",
    "parent_part": null,
    "shape": "multi",
@@ -829,8 +830,8 @@
    "assembly": "sight",
    "function_de": "Trägt Emitter und Batterie; flach, hinten",
    "attachment_de": "auf Klemmfuß (fest)",
-   "material_role": "anodized",
-   "material_de": "Schwarz eloxiert",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
    "interface": null,
    "parent_part": "sight_mount",
    "shape": "prof",
@@ -870,8 +871,8 @@
    "assembly": "sight",
    "function_de": "Trägt Haube und Glas bis zur Fensterunterkante; trapezförmig verjüngt, Anzeigen unter der Visierlinie",
    "attachment_de": "auf Klemmfuß (fest)",
-   "material_role": "anodized",
-   "material_de": "Schwarz eloxiert",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
    "interface": null,
    "parent_part": "sight_mount",
    "shape": "prof",
@@ -884,228 +885,23 @@
    ],
    "bounds_m": {
     "min": [
-     -0.0151,
+     -0.0146,
      -0.0346,
      0.1435
     ],
     "max": [
-     0.0151,
+     0.0146,
      -0.01729,
      0.1536
     ]
    },
    "size_mm": [
-    30.2,
+    29.2,
     17.3,
     10.1
    ],
    "triangles": 108,
-   "volume_cm3": 4.72,
-   "moving": null,
-   "removable": false
-  },
-  {
-   "id": "sight_frame",
-   "name_de": "Visierhaube",
-   "name_en": "Sight hood",
-   "assembly": "sight",
-   "function_de": "Offene Haube aus zwei Bügeln und dünnem Dach",
-   "attachment_de": "auf dem Haubensockel (fest)",
-   "material_role": "anodized",
-   "material_de": "Schwarz eloxiert",
-   "interface": null,
-   "parent_part": "sight_mount",
-   "shape": "multi",
-   "bevel_mm": 0.5,
-   "blender_object": "sight_frame",
-   "origin_m": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "bounds_m": {
-    "min": [
-     -0.0151,
-     -0.034,
-     0.1531
-    ],
-    "max": [
-     0.0151,
-     -0.02204,
-     0.177
-    ]
-   },
-   "size_mm": [
-    30.2,
-    12.0,
-    23.9
-   ],
-   "triangles": 324,
-   "volume_cm3": 1.17,
-   "moving": null,
-   "removable": false
-  },
-  {
-   "id": "sight_frame_trim",
-   "name_de": "Haubenkante",
-   "name_en": "Hood trim",
-   "assembly": "sight",
-   "function_de": "Blanke Stirnkante der Haube (dünn)",
-   "attachment_de": "vorn an der Haube",
-   "material_role": "trim",
-   "material_de": "Blanke Zierkante",
-   "interface": null,
-   "parent_part": "sight_mount",
-   "shape": "frame",
-   "bevel_mm": 0.3,
-   "blender_object": "sight_frame_trim",
-   "origin_m": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "bounds_m": {
-    "min": [
-     -0.0151,
-     -0.0346,
-     0.1527
-    ],
-    "max": [
-     0.0151,
-     -0.0336,
-     0.1767
-    ]
-   },
-   "size_mm": [
-    30.2,
-    1.0,
-    24.0
-   ],
-   "triangles": 480,
-   "volume_cm3": 0.14,
-   "moving": null,
-   "removable": false
-  },
-  {
-   "id": "sight_glass",
-   "name_de": "Visierglas",
-   "name_en": "Sight glass",
-   "assembly": "sight",
-   "function_de": "Beschichtete Reflexscheibe",
-   "attachment_de": "in der Haube (fest)",
-   "material_role": "glass",
-   "material_de": "Visierglas",
-   "interface": null,
-   "parent_part": "sight_mount",
-   "shape": "xbox",
-   "bevel_mm": 0,
-   "blender_object": "sight_glass",
-   "origin_m": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "bounds_m": {
-    "min": [
-     -0.0135,
-     -0.0288,
-     0.154
-    ],
-    "max": [
-     0.0135,
-     -0.028,
-     0.175
-    ]
-   },
-   "size_mm": [
-    27.0,
-    0.8,
-    21.0
-   ],
-   "triangles": 12,
-   "volume_cm3": 0.45,
-   "moving": null,
-   "removable": false
-  },
-  {
-   "id": "sight_emitter",
-   "name_de": "Emitter",
-   "name_en": "Reticle emitter",
-   "assembly": "sight",
-   "function_de": "Leuchtfenster des Absehen-Projektors (unter der Visierlinie)",
-   "attachment_de": "vorn im Emitterblock",
-   "material_role": "energy",
-   "material_de": "Energieanzeige (leuchtend)",
-   "interface": null,
-   "parent_part": "sight_mount",
-   "shape": "box",
-   "bevel_mm": 0.3,
-   "blender_object": "sight_emitter",
-   "origin_m": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "bounds_m": {
-    "min": [
-     -0.003,
-     -0.0055,
-     0.1476
-    ],
-    "max": [
-     0.003,
-     -0.0035,
-     0.1494
-    ]
-   },
-   "size_mm": [
-    6.0,
-    2.0,
-    1.8
-   ],
-   "triangles": 108,
-   "volume_cm3": 0.02,
-   "moving": null,
-   "removable": false
-  },
-  {
-   "id": "sight_reticle",
-   "name_de": "Absehen Kreis mit Kreuzmarken",
-   "name_en": "Reticle Circle with ticks",
-   "assembly": "sight",
-   "function_de": "Zielpunkt im Glas: Kreis mit Kreuzmarken, Cyan, fein (vom Emitter projiziert)",
-   "attachment_de": "auf der Reflexscheibe",
-   "material_role": "reticle_cyan",
-   "material_de": "Absehen Cyan",
-   "interface": null,
-   "parent_part": "sight_mount",
-   "shape": "multi",
-   "bevel_mm": 0,
-   "blender_object": "sight_reticle",
-   "origin_m": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "bounds_m": {
-    "min": [
-     -0.0074,
-     -0.0278,
-     0.1571
-    ],
-    "max": [
-     0.0074,
-     -0.0274,
-     0.1719
-    ]
-   },
-   "size_mm": [
-    14.8,
-    0.4,
-    14.8
-   ],
-   "triangles": 1468,
-   "volume_cm3": 0.03,
+   "volume_cm3": 4.56,
    "moving": null,
    "removable": false
   },
@@ -1157,8 +953,8 @@
    "assembly": "sight",
    "function_de": "Batteriefach links",
    "attachment_de": "links am Gehäuse (schraubbar)",
-   "material_role": "anodized",
-   "material_de": "Schwarz eloxiert",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
    "interface": null,
    "parent_part": "sight_mount",
    "shape": "cyl",
@@ -1188,6 +984,252 @@
    ],
    "triangles": 188,
    "volume_cm3": 0.07,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_emitter",
+   "name_de": "Emitter",
+   "name_en": "Reticle emitter",
+   "assembly": "sight",
+   "function_de": "Leuchtfenster des Absehen-Projektors (unter der Visierlinie)",
+   "attachment_de": "vorn im Emitterblock",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "sight_emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.003,
+     -0.0055,
+     0.1476
+    ],
+    "max": [
+     0.003,
+     -0.0035,
+     0.1494
+    ]
+   },
+   "size_mm": [
+    6.0,
+    2.0,
+    1.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.02,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame",
+   "name_de": "Haube",
+   "name_en": "Sight hood",
+   "assembly": "sight",
+   "function_de": "Haube aus Flachprofil",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0146,
+     -0.034,
+     0.1524
+    ],
+    "max": [
+     0.0146,
+     -0.022,
+     0.1756
+    ]
+   },
+   "size_mm": [
+    29.2,
+    12.0,
+    23.2
+   ],
+   "triangles": 448,
+   "volume_cm3": 1.73,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame_trim",
+   "name_de": "Stirnkante",
+   "name_en": "Hood trim",
+   "assembly": "sight",
+   "function_de": "Blanke Stirnkante der Haube (dünn)",
+   "attachment_de": "vorn an der Haube",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_frame_trim",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0146,
+     -0.0346,
+     0.1524
+    ],
+    "max": [
+     0.0146,
+     -0.0336,
+     0.1756
+    ]
+   },
+   "size_mm": [
+    29.2,
+    1.0,
+    23.2
+   ],
+   "triangles": 448,
+   "volume_cm3": 0.14,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_status",
+   "name_de": "Ziffernfeld",
+   "name_en": "Digit field",
+   "assembly": "sight",
+   "function_de": "Ziffern 14 × 4 mm zum Auge (Munition)",
+   "attachment_de": "in der Sockelrückseite",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "sight_status",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0062,
+     -0.01972,
+     0.1471
+    ],
+    "max": [
+     0.0059,
+     -0.01872,
+     0.1511
+    ]
+   },
+   "size_mm": [
+    12.1,
+    1.0,
+    4.0
+   ],
+   "triangles": 36,
+   "volume_cm3": 0.03,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_glass",
+   "name_de": "Visierglas",
+   "name_en": "Sight glass",
+   "assembly": "sight",
+   "function_de": "Reflexscheibe ohne Spiegelung; das Absehen liegt flach darauf",
+   "attachment_de": "in der Haube (fest)",
+   "material_role": "glass_scope",
+   "material_de": "Linse im Zielfernrohr (ohne Klarlack-Spiegelung)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0,
+   "blender_object": "sight_glass",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.0288,
+     0.154
+    ],
+    "max": [
+     0.013,
+     -0.028,
+     0.174
+    ]
+   },
+   "size_mm": [
+    26.0,
+    0.8,
+    20.0
+   ],
+   "triangles": 60,
+   "volume_cm3": 0.39,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_reticle",
+   "name_de": "Absehen Ring mit Punkt",
+   "name_en": "Reticle Ring and dot",
+   "assembly": "sight",
+   "function_de": "Zielpunkt im Glas: Ring mit Punkt gezeichnet (Hüftform der Klasse, Cyan, vom Emitter projiziert)",
+   "attachment_de": "flach auf der Glasebene",
+   "material_role": "reticle_cyan",
+   "material_de": "Absehen Cyan",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "sight_reticle",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00124,
+     -0.028,
+     0.16276
+    ],
+    "max": [
+     0.00124,
+     -0.02795,
+     0.16524
+    ]
+   },
+   "size_mm": [
+    2.5,
+    0.1,
+    2.5
+   ],
+   "triangles": 652,
+   "volume_cm3": 0.0,
    "moving": null,
    "removable": false
   },
@@ -2652,7 +2694,7 @@
    "position_m": [
     0.0,
     0.011,
-    0.1645
+    0.164
    ],
    "part": "sight_body",
    "note": null,
@@ -2662,7 +2704,7 @@
    "position_m": [
     0.0,
     -0.0284,
-    0.1645
+    0.164
    ],
    "part": "sight_glass",
    "note": null,
@@ -2672,7 +2714,7 @@
    "position_m": [
     0.0,
     0.0616,
-    0.1645
+    0.164
    ],
    "part": "sight_frame",
    "note": "Augenpunkt beim Zielen (Visier-Standard: 90 mm hinter dem Glas)",
@@ -2681,8 +2723,8 @@
   "Socket_CenterOfMass": {
    "position_m": [
     0.00015,
-    -0.06846,
-    0.07852
+    -0.06844,
+    0.07855
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
@@ -2699,18 +2741,18 @@
    "max": [
     0.027,
     0.30352,
-    0.177
+    0.1756
    ]
   },
   "length_m": 0.8155,
-  "height_m": 0.256,
+  "height_m": 0.2546,
   "width_m": 0.051,
   "reference_length_m": 0.862,
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
-  "parts": 56,
-  "triangles": 29350,
+  "parts": 57,
+  "triangles": 28710,
   "assemblies": 8
  },
  "actions": {

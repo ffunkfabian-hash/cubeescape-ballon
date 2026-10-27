@@ -312,7 +312,8 @@ def flash_roll(n):
 def flash_cover_ads(W, n=120):
     """Größter Anteil der lichten Visieröffnung, den der Blitz im Zielen bedeckt (über alle Drehungen roll_deg), ohne Rendern: Haltung
     'ads' (Auge in Socket_Eye, Blick längs des Laufs), Öffnung = Glasfenster (sight_glass) an seiner Rückseite geschnitten mit demselben
-    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim; Innenmaß dort gleich dem Glas), Raster n × n; beim Zielfernrohr
+    Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim, falls vorhanden; Innenmaß dort gleich dem Glas; Glas als Querprofil:
+nur Rasterpunkte in der projizierten Kontur, 0.21), Raster n × n; beim Zielfernrohr
     (0.20) die kreisrunde Objektivlinse (scope_glass). Verdeckung durch die Waffe zählt nicht (obere Schranke). Für ./check (≤ 20 %, 5.3 A); Unity misst
     dasselbe im Test mit dem laufenden Controller."""
     th = math.tan(math.radians(CAMERA['h_fov_deg'] / 2))
@@ -324,11 +325,21 @@ def flash_cover_ads(W, n=120):
         return 50 - 50 * (x / d) / th, 50 - 50 * ((u - eye[1]) / d) / tv
 
     P = {q['id']: q for q in W.PARTS}
-    circle = None
+    circle = poly = None
     if 'sight_glass' in P:
-        g, t = P['sight_glass'], P['sight_frame_trim']
-        ga, gb = proj(g['f0'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(g['f0'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
-        ta, tb = proj(t['f1'], g['cu'] + g['hh'] / 2, g['ww'] / 2), proj(t['f1'], g['cu'] - g['hh'] / 2, -g['ww'] / 2)
+        g = P['sight_glass']
+        if 'pts' in g:                       # Baukasten v3 (0.21): Fenster als Querprofil – gezählt wird nur innerhalb der Kontur
+            poly = [[proj(g['f0'], g['cu'] + u, x) for x, u in g['pts']]]
+            tr = P.get('sight_frame_trim')   # vordere Haubenöffnung (Durchbruch der Stirnkante) als zweite Kontur
+            if tr and tr.get('cuts') and 'pts' in tr['cuts'][0]:
+                poly.append([proj(tr['f1'], tr['cu'] + u, x) for x, u in tr['cuts'][0]['pts']])
+            xs, us = [q[0] for q in g['pts']], [q[1] for q in g['pts']]
+            hw, hu, cu = (max(xs) - min(xs)) / 2, (max(us) - min(us)) / 2, g['cu'] + (max(us) + min(us)) / 2
+        else:
+            hw, hu, cu = g['ww'] / 2, g['hh'] / 2, g['cu']
+        ga, gb = proj(g['f0'], cu + hu, hw), proj(g['f0'], cu - hu, -hw)
+        t = P.get('sight_frame_trim')         # ohne Haube (H2 „Pille“) begrenzt nur das Glas
+        ta, tb = (proj(t['f1'], cu + hu, hw), proj(t['f1'], cu - hu, -hw)) if t else (ga, gb)
         x0, y0, x1, y1 = max(ga[0], ta[0]), max(ga[1], ta[1]), min(gb[0], tb[0]), min(gb[1], tb[1])
     else:                                    # Zielfernrohr (0.20): lichte Öffnung = Objektivlinse, ein Kreis
         g = P['scope_glass']
@@ -352,6 +363,14 @@ def flash_cover_ads(W, n=120):
         pts = [(x0 + (i + .5) / n * (x1 - x0), y0 + (j + .5) / n * (y1 - y0)) for i in range(n) for j in range(n)]
         if circle:                           # % B und % H: Kreis im Bild als Ellipse (16:9)
             pts = [(x, y) for x, y in pts if ((x - circle[0]) / circle[2]) ** 2 + ((y - circle[1]) * 9 / 16 / circle[2]) ** 2 <= 1]
+        if poly:                             # Querprofil-Glas: Punkte in allen projizierten Konturen (Glas, Haubenöffnung; Strahlwurf)
+            def in_poly(px, py, pg):
+                c = False
+                for (ax, ay), (bx, by) in zip(pg, pg[1:] + pg[:1]):
+                    if (ay > py) != (by > py) and px < ax + (py - ay) * (bx - ax) / (by - ay):
+                        c = not c
+                return c
+            pts = [(x, y) for x, y in pts if all(in_poly(x, y, pg) for pg in poly)]
         hit = sum(any(inside(x, y, *t_) for t_ in T) for x, y in pts)
         best = max(best, hit / len(pts))
     return best

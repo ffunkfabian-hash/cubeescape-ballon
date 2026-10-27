@@ -4,7 +4,8 @@ Nutzerwünsche 24.10.2026: „verschiedene Varianten … Fadenkreuz“, „einfa
 Linienstärken“, „beim Schießen größer werden wie man das von Shootern kennt“, „dass das Pattern eingestellt werden kann“.
 „Pfeil von unten“ wurde gebaut und wieder entfernt („sieht kacke aus“).
 
-Eine Quelle für zwei Abnehmer: `basic/common.reticle()` baut daraus die Geometrie im Visierglas (Blender), `tools/export_reticles.py`
+Eine Quelle für zwei Abnehmer: `basic/common.drawn_reticle()` baut daraus das flache Absehen im Visierglas (Blender; `reticle()` die
+Röhrenform für Katalogblätter), `tools/export_reticles.py`
 schreibt `data/reticles.json` für die Laufzeit (Unity zeichnet Absehen und Hüft-Fadenkreuz prozedural und lässt sie aufgehen).
 
 Grundelemente in mm auf der Scheibe (Zielpunkt = 0,0; x nach links, u nach oben), bei Größe 1,0:
@@ -72,13 +73,40 @@ SIGHT = dict(height_mm=66.0, height_tol_mm=4.0, viewmodel_zoom=1.0, fov_ref_deg=
                                   target_share=(0.20, 0.26), ads_view='glass', frame_max=0.15),
                     'fullscreen': dict(de='Vollbild (Scharfschütze)', ads_view='overlay', zoom_bonus=0.0,
                                        note='eigene Kontur je Waffe, außen schwarz')})
+# Visier-Standard 3, Erweiterung 0.21 „Ironsight“ (Nutzerwahl 26.10.2026, docs/visier-konzept.md › 7 Punkte 3–4: „Tiefer, Schiene + 11 mm“,
+# Größen „Zulassen für MG/Werfer“):
+# - Visierlinie über der Schienenoberkante (BRI-22): Holo auf der H0-Plattform Schiene + 26 mm (Visierhöhe 66 ± 4 gilt); Zielfernrohre
+#   nach Konzept A (Sattel hinter dem Auge, Fuß unter dem Objektiv, zwei Schienen auf eigener Höhe) richten sich nur nach der Visierhöhe;
+#   Kimme/Korn (Handfeuerwaffe, Seitenwaffe, Schrot) Schiene + 11 mm und Mini-Reflex Schiene + 15 mm – dort gilt die Visierhöhe nicht.
+# - Größen außerhalb des Standards sind zugelassene Varianten mit Grenzen: Holo L nur an MG und Werfern bis 25 % Bildbreite,
+#   Zielfernrohr S ab 17 %. Standard je Typ bleibt Größe M.
+# - Absehen gezeichnet (visier-konzept › 5): Hüftform der Klasse in Hüftgröße, flach in der Glasebene, Linien mindestens 1,6 px bei
+#   1280 px Bildbreite (75°), reine Emission – Blender legt es als flaches Modellteil ins Glas (common.drawn_reticle), Unity zeichnet es.
+SIGHT['rail_line_mm'] = {'holo': 26.0, 'mini_reflex': 15.0, 'iron': 11.0}
+SIGHT['line_exempt'] = {'iron': ('hand_cannon', 'sidearm', 'shotgun'), 'mini_reflex': ('hand_cannon', 'sidearm')}
+SIGHT['types']['reflex']['variants'] = {'L': dict(de='Holo L', share=(0.20, 0.25),
+                                                  weapon_types=('machine_gun', 'grenade_launcher', 'rocket_launcher'))}
+SIGHT['types']['scope']['variants'] = {'S': dict(de='Zielfernrohr S', share=(0.17, 0.20),
+                                                 weapon_types=('scout_rifle', 'linear_fusion_rifle', 'pulse_rifle'))}
+SIGHT['drawn'] = dict(ref_w_px=1280, min_line_px=1.6, plane_tol_mm=0.5, de='Hüftform der Klasse, flach in der Glasebene, reine Emission')
+
+
+def share_band(sight_type, weapon_type=None, size='M'):
+    """Zulässiger Bereich der Öffnung im Zielen (Anteil der Bildbreite): Standard, für Größe `size` auch die zugelassene Variante
+    (nur an den genannten Waffentypen; ohne Waffentyp – Baukasten – jede). Gibt (lo, hi, Name) zurück."""
+    T = SIGHT['types'][sight_type]
+    V = T.get('variants', {}).get(size)
+    if V and (weapon_type is None or weapon_type in V['weapon_types']):
+        lo, hi = T['target_share']
+        return min(lo, V['share'][0]), max(hi, V['share'][1]), V['de']
+    return (*T['target_share'], 'Standard')
 # Visiertyp je Waffentyp (Form nach Visiertyp, Farbe nach Familie/Hersteller – Destiny-Muster, REF 0.14 › 3)
 SIGHT_KIND = {'auto_rifle': 'holo', 'submachine_gun': 'holo', 'trace_rifle': 'holo', 'machine_gun': 'holo', 'pulse_rifle': 'holo',
               'scout_rifle': 'ring_scope', 'linear_fusion_rifle': 'ring_scope', 'hand_cannon': 'irons_brackets',
               'sidearm': 'irons_brackets', 'shotgun': 'irons_brackets', 'sniper_rifle': 'fullscreen', 'fusion_rifle': 'ring',
               'grenade_launcher': 'lens_chevron', 'rocket_launcher': 'lens_chevron', 'combat_bow': 'arrow_tip', 'sword': None,
               'glaive': None}
-SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr, direkt auf dem Gehäuse',
+SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv',
                  'irons_brackets': 'Kimme und Korn mit leuchtenden Klammern', 'fullscreen': 'Zielfernrohr außen, im Zielen Vollbild',
                  'ring': 'Ring oder Doppelring', 'lens_chevron': 'runde Linse mit Winkel', 'arrow_tip': 'Pfeilspitze, kein Visier',
                  None: 'kein Visier'}

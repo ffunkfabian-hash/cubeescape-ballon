@@ -6,11 +6,11 @@
   "files": [
    {
     "path": "basic/common.py",
-    "sha256": "5031f28231f7ff174b574e7be205485e16a20098df5781e276fa00e6ffe59ead"
+    "sha256": "c58d166599d4756a2575e2b509aae7159125b473f47276321d427119f2ec7856"
    },
    {
     "path": "basic/kit.py",
-    "sha256": "3a75f557bb3ad5328fe16e479654006cb99e4cdc21d22c5d6c9b8f51e60ec2a3"
+    "sha256": "04ad458b4082ae247c81969d8254575054304f5e56f3bee942394e18d43590b6"
    },
    {
     "path": "basic/arms/robot_arm.py",
@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "c705046d5c93856b7b199464833c24a6742ac4cde331f42b572a3993a8baf78a"
+    "sha256": "7164d194bc9ed69bd6ae2c23f28b6c891c2f3aa92981832b1314f956a995d377"
    },
    {
     "path": "tools/ego_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "e36cb6a602172da966a89d16c1a33ccbd9405b373e43ad19f0ae1422a4dee073"
+    "sha256": "98cbda0922612cc668f9a45e2428fa85c017626e45a72532396c91b88683f6e5"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1217,6 +1217,32 @@
    "de": "Lackiertes Gehäuse (Creme)"
   },
   {
+   "role": "sight_anod",
+   "color": "#202227",
+   "aaa_color": "#202227",
+   "rough": 0.4,
+   "metal": 0.6,
+   "alpha": 1.0,
+   "emit": 0.0,
+   "emit_only": false,
+   "spec": 0.5,
+   "no_coat": false,
+   "de": "Visier eloxiert (Abrieb für dünne Teile)"
+  },
+  {
+   "role": "sight_line",
+   "color": "#5FD3E0",
+   "aaa_color": "#5FD3E0",
+   "rough": 0.3,
+   "metal": 0.0,
+   "alpha": 1.0,
+   "emit": 0.6,
+   "emit_only": true,
+   "spec": 0.5,
+   "no_coat": false,
+   "de": "Leuchtkontur am Visier"
+  },
+  {
    "role": "trim",
    "color": "#C9CDD2",
    "aaa_color": "#C9CDD2",
@@ -2152,7 +2178,7 @@
      {
       "id": "sight_mount",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "",
       "rest": [
        0.0,
@@ -2206,7 +2232,7 @@
      {
       "id": "sight_body",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -2233,7 +2259,7 @@
      {
       "id": "sight_base",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -2260,7 +2286,7 @@
      {
       "id": "sight_frame",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -2422,7 +2448,7 @@
      {
       "id": "sight_battery",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -7245,7 +7271,7 @@
       "sha256": "e8fff7faa7e8377e00e1973467dc542aa47b0dd38cbd2fa5e53bcdc2519acd3d"
      }
     ],
-    "parts_sha256": "824f462fc38220d3b441e807db4b4f3518784099cc6fc6d2af469dfe1b108d8f"
+    "parts_sha256": "37ae03c7c0da647b5e3002d90062d02d85e2c05ed62a86fb20f7a40a08b5db15"
    },
    "textures": {
     "weapon": {
@@ -7905,16 +7931,16 @@
      {
       "name": "sight_reticle",
       "min": [
-       -0.002949,
-       -0.0338,
-       0.166051
+       -0.001238,
+       -0.034,
+       0.167762
       ],
       "max": [
-       0.002949,
-       -0.0334,
-       0.171949
+       0.001238,
+       -0.03395,
+       0.170238
       ],
-      "tris": 444
+      "tris": 652
      },
      {
       "name": "sight_knob_w",
@@ -8927,7 +8953,7 @@
      {
       "id": "sight_mount",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "",
       "rest": [
        0.0,
@@ -8981,7 +9007,7 @@
      {
       "id": "sight_body",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -9008,142 +9034,7 @@
      {
       "id": "sight_base",
       "asm": "sight",
-      "role": "anodized",
-      "parent": "sight_mount",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "sight_frame",
-      "asm": "sight",
-      "role": "anodized",
-      "parent": "sight_mount",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "sight_frame_trim",
-      "asm": "sight",
-      "role": "trim",
-      "parent": "sight_mount",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "sight_glass",
-      "asm": "sight",
-      "role": "glass",
-      "parent": "sight_mount",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "sight_emitter",
-      "asm": "sight",
-      "role": "energy",
-      "parent": "sight_mount",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "sight_reticle",
-      "asm": "sight",
-      "role": "reticle_cyan",
+      "role": "sight_anod",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -9197,7 +9088,169 @@
      {
       "id": "sight_battery",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
+      "parent": "sight_mount",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_block",
+      "asm": "sight",
+      "role": "sight_anod",
+      "parent": "sight_mount",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_emitter",
+      "asm": "sight",
+      "role": "energy",
+      "parent": "sight_mount",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_line",
+      "asm": "sight",
+      "role": "sight_line",
+      "parent": "sight_mount",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_glass",
+      "asm": "sight",
+      "role": "glass_scope",
+      "parent": "sight_mount",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_status",
+      "asm": "sight",
+      "role": "energy",
+      "parent": "sight_mount",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_reticle",
+      "asm": "sight",
+      "role": "reticle_cyan",
       "parent": "sight_mount",
       "rest": [
        0.0,
@@ -9990,7 +10043,7 @@
      },
      {
       "id": "Socket_Eye",
-      "part": "sight_frame",
+      "part": "sight_glass",
       "pos": [
        0.0,
        0.0596,
@@ -13797,14 +13850,14 @@
     "files": [
      {
       "path": "basic/pilot/w06_submachine_gun_v21.py",
-      "sha256": "d01801a410c142e2efc45d2da189cc297d72b51fd02b439a3b3eb0af4fcd2291"
+      "sha256": "b80f67776311d1ad6ff2ae4f257d66297ebd870af72f8788f33d0ad35fee1043"
      },
      {
       "path": "basic/weapons/w06_submachine_gun.py",
       "sha256": "494ad26432c6519a0b5cf3a98c40b8454e2c5fd56eafd1b7b10e8c14253ff531"
      }
     ],
-    "parts_sha256": "d027d3cc9b36cddb50f227bcb64873c32185b677744a292ea919bd38cf4874a8"
+    "parts_sha256": "b525ec206f134002e6ca2e612845ea82866513ed4168adcea0815d6b41ba415f"
    },
    "textures": {
     "weapon": {
@@ -13841,10 +13894,9 @@
       "side_panel_r",
       "sight_base",
       "sight_battery",
+      "sight_block",
       "sight_body",
       "sight_clamp",
-      "sight_frame",
-      "sight_frame_trim",
       "sight_knob_w",
       "sight_mount",
       "stock",
@@ -14148,86 +14200,16 @@
      {
       "name": "sight_base",
       "min": [
-       -0.0146,
+       -0.008,
        -0.0366,
        0.1265
       ],
       "max": [
-       0.0146,
-       -0.019295,
-       0.1366
+       0.008,
+       -0.019444,
+       0.1285
       ],
-      "tris": 108
-     },
-     {
-      "name": "sight_frame",
-      "min": [
-       -0.0146,
-       -0.036,
-       0.1361
-      ],
-      "max": [
-       0.0146,
-       -0.024044,
-       0.159
-      ],
-      "tris": 324
-     },
-     {
-      "name": "sight_frame_trim",
-      "min": [
-       -0.0146,
-       -0.0366,
-       0.1357
-      ],
-      "max": [
-       0.0146,
-       -0.0356,
-       0.1587
-      ],
-      "tris": 480
-     },
-     {
-      "name": "sight_glass",
-      "min": [
-       -0.013,
-       -0.0308,
-       0.137
-      ],
-      "max": [
-       0.013,
-       -0.03,
-       0.157
-      ],
-      "tris": 12
-     },
-     {
-      "name": "sight_emitter",
-      "min": [
-       -0.003,
-       -0.0075,
-       0.1306
-      ],
-      "max": [
-       0.003,
-       -0.0055,
-       0.1324
-      ],
-      "tris": 108
-     },
-     {
-      "name": "sight_reticle",
-      "min": [
-       -0.000809,
-       -0.0298,
-       0.146191
-      ],
-      "max": [
-       0.000809,
-       -0.0294,
-       0.147809
-      ],
-      "tris": 60
+      "tris": 92
      },
      {
       "name": "sight_knob_w",
@@ -14256,6 +14238,90 @@
        0.131939
       ],
       "tris": 188
+     },
+     {
+      "name": "sight_block",
+      "min": [
+       -0.008,
+       -0.0366,
+       0.128
+      ],
+      "max": [
+       0.008,
+       -0.019111,
+       0.1333
+      ],
+      "tris": 108
+     },
+     {
+      "name": "sight_emitter",
+      "min": [
+       -0.0006,
+       -0.036,
+       0.1331
+      ],
+      "max": [
+       0.0006,
+       -0.024,
+       0.1335
+      ],
+      "tris": 108
+     },
+     {
+      "name": "sight_line",
+      "min": [
+       -0.0095,
+       -0.03,
+       0.1355
+      ],
+      "max": [
+       0.0095,
+       -0.02995,
+       0.1585
+      ],
+      "tris": 352
+     },
+     {
+      "name": "sight_glass",
+      "min": [
+       -0.009,
+       -0.0308,
+       0.136
+      ],
+      "max": [
+       0.009,
+       -0.03,
+       0.158
+      ],
+      "tris": 172
+     },
+     {
+      "name": "sight_status",
+      "min": [
+       -0.003276,
+       -0.0192,
+       0.130324
+      ],
+      "max": [
+       0.003276,
+       -0.0184,
+       0.131676
+      ],
+      "tris": 132
+     },
+     {
+      "name": "sight_reticle",
+      "min": [
+       -0.002296,
+       -0.0299,
+       0.144704
+      ],
+      "max": [
+       0.002296,
+       -0.02985,
+       0.149296
+      ],
+      "tris": 700
      },
      {
       "name": "shroud",
@@ -15199,37 +15265,10 @@
       "ads_hide": false
      },
      {
-      "id": "scope_mount_r",
-      "asm": "sight",
+      "id": "rail_front",
+      "asm": "receiver",
       "role": "anodized",
       "parent": "",
-      "rest": [
-       0.0,
-       -0.02,
-       0.1512
-      ],
-      "move": {
-       "kind": "translate",
-       "vec": [
-        0.0,
-        0.0,
-        0.08
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "sight_clamp",
-      "asm": "sight",
-      "role": "accent",
-      "parent": "scope_mount_r",
       "rest": [
        0.0,
        0.0,
@@ -15253,9 +15292,36 @@
       "ads_hide": false
      },
      {
+      "id": "scope_mount_r",
+      "asm": "sight",
+      "role": "sight_anod",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.033,
+       0.148
+      ],
+      "move": {
+       "kind": "translate",
+       "vec": [
+        0.0,
+        0.0,
+        0.08
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
       "id": "scope_strap",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "scope_mount_r",
       "rest": [
        0.0,
@@ -15282,7 +15348,7 @@
      {
       "id": "scope_tube",
       "asm": "sight",
-      "role": "graphite",
+      "role": "sight_anod",
       "parent": "scope_mount_r",
       "rest": [
        0.0,
@@ -15309,7 +15375,7 @@
      {
       "id": "scope_eyepiece",
       "asm": "sight",
-      "role": "graphite",
+      "role": "sight_anod",
       "parent": "scope_mount_r",
       "rest": [
        0.0,
@@ -15361,9 +15427,9 @@
       "ads_hide": true
      },
      {
-      "id": "scope_objective",
+      "id": "scope_ocular_glass",
       "asm": "sight",
-      "role": "graphite",
+      "role": "glass_scope",
       "parent": "scope_mount_r",
       "rest": [
        0.0,
@@ -15385,61 +15451,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
-     },
-     {
-      "id": "scope_rim",
-      "asm": "sight",
-      "role": "anodized",
-      "parent": "scope_mount_r",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
-     },
-     {
-      "id": "scope_crown",
-      "asm": "sight",
-      "role": "trim",
-      "parent": "scope_mount_r",
-      "rest": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "move": {
-       "kind": "none",
-       "vec": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "axis": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "a0": 0.0,
-       "a1": 0.0
-      },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_turret",
@@ -15471,7 +15483,7 @@
      {
       "id": "scope_turret_w",
       "asm": "sight",
-      "role": "anodized",
+      "role": "sight_anod",
       "parent": "scope_mount_r",
       "rest": [
        0.0,
@@ -15523,9 +15535,9 @@
       "ads_hide": false
      },
      {
-      "id": "scope_ocular_glass",
+      "id": "scope_objective",
       "asm": "sight",
-      "role": "glass_scope",
+      "role": "sight_anod",
       "parent": "scope_mount_r",
       "rest": [
        0.0,
@@ -15547,7 +15559,196 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": true
+      "ads_hide": false
+     },
+     {
+      "id": "scope_step",
+      "asm": "sight",
+      "role": "trim",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_objective_b",
+      "asm": "sight",
+      "role": "sight_anod",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_rim",
+      "asm": "sight",
+      "role": "sight_anod",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_crown",
+      "asm": "sight",
+      "role": "trim",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_mount_f",
+      "asm": "sight",
+      "role": "sight_anod",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "sight_clamp",
+      "asm": "sight",
+      "role": "accent",
+      "parent": "scope_mount_f",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "scope_keel",
+      "asm": "sight",
+      "role": "sight_anod",
+      "parent": "scope_mount_r",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
      },
      {
       "id": "sight_reticle",
@@ -16318,10 +16519,10 @@
      },
      {
       "id": "Socket_Reticle",
-      "part": "sight_reticle",
+      "part": "scope_glass",
       "pos": [
        0.0,
-       -0.066,
+       -0.0675,
        0.161
       ]
      },
@@ -20116,14 +20317,14 @@
     "files": [
      {
       "path": "basic/pilot/w03_scout_rifle_v21.py",
-      "sha256": "b7230caacfeb7cd6e651d62912ab9143d580cc61ece183e723e35f8bfc9dce9c"
+      "sha256": "6128630ef0b45d7e0e7d5c1df7c616d747789a243c3a64802b6b48355e90ee45"
      },
      {
       "path": "basic/weapons/w03_scout_rifle.py",
       "sha256": "9bdacceafd30058a1b55c04139a8b30fec4f05fec5bdb873b05716108b3d8b85"
      }
     ],
-    "parts_sha256": "50a123ceea31dd0fab8b69032f7d2661b019ba9fe6a9fd816caa9643ef8a206e"
+    "parts_sha256": "0cefa29672cde8e57564638e400cd72ef604e321035a2d325592f9f82998a9a8"
    },
    "textures": {
     "weapon": {
@@ -20155,13 +20356,18 @@
       "pip_bezel",
       "port_cover",
       "rail",
+      "rail_front",
       "receiver",
       "scope_crown",
       "scope_eye_trim",
       "scope_eyepiece",
+      "scope_keel",
+      "scope_mount_f",
       "scope_mount_r",
       "scope_objective",
+      "scope_objective_b",
       "scope_rim",
+      "scope_step",
       "scope_strap",
       "scope_tube",
       "scope_turret",
@@ -20283,9 +20489,9 @@
       "max": [
        0.019,
        0.122,
-       0.1432
+       0.14
       ],
-      "tris": 876
+      "tris": 914
      },
      {
       "name": "mag_well",
@@ -20347,7 +20553,7 @@
       "name": "top_cover",
       "min": [
        -0.016,
-       0.066,
+       0.076,
        0.121
       ],
       "max": [
@@ -20361,12 +20567,12 @@
       "name": "top_cover_trim",
       "min": [
        -0.0165,
-       0.065,
+       0.075,
        0.121
       ],
       "max": [
        0.0165,
-       0.07,
+       0.08,
        0.1256
       ],
       "tris": 108
@@ -20459,55 +20665,55 @@
       "name": "rail",
       "min": [
        -0.011,
-       -0.034,
-       0.1427
+       0.018,
+       0.1395
       ],
       "max": [
        0.011,
-       0.024,
-       0.1512
+       0.052,
+       0.148
+      ],
+      "tris": 108
+     },
+     {
+      "name": "rail_front",
+      "min": [
+       -0.011,
+       -0.076,
+       0.1215
+      ],
+      "max": [
+       0.011,
+       -0.038,
+       0.13
       ],
       "tris": 108
      },
      {
       "name": "scope_mount_r",
       "min": [
-       -0.0146,
-       -0.008,
+       -0.0136,
+       -0.013,
        -0.0075
       ],
       "max": [
-       0.014,
-       0.008,
-       0.0
+       0.0136,
+       0.013,
+       0.0032
       ],
-      "tris": 516
-     },
-     {
-      "name": "sight_clamp",
-      "min": [
-       0.014,
-       -0.027688,
-       0.1447
-      ],
-      "max": [
-       0.0158,
-       -0.012,
-       0.14758
-      ],
-      "tris": 108
+      "tris": 1076
      },
      {
       "name": "scope_strap",
       "min": [
-       -0.011066,
-       -0.025,
-       0.149934
+       -0.012389,
+       0.032,
+       0.148611
       ],
       "max": [
-       0.011066,
-       -0.015,
-       0.172066
+       0.012389,
+       0.042,
+       0.173389
       ],
       "tris": 960
      },
@@ -20515,7 +20721,7 @@
       "name": "scope_tube",
       "min": [
        -0.009471,
-       -0.038,
+       -0.029449,
        0.151529
       ],
       "max": [
@@ -20554,90 +20760,6 @@
       "tris": 960
      },
      {
-      "name": "scope_objective",
-      "min": [
-       -0.020953,
-       -0.068,
-       0.140047
-      ],
-      "max": [
-       0.020953,
-       -0.036,
-       0.181953
-      ],
-      "tris": 1152
-     },
-     {
-      "name": "scope_rim",
-      "min": [
-       -0.016465,
-       -0.072,
-       0.144535
-      ],
-      "max": [
-       0.016465,
-       -0.068,
-       0.177465
-      ],
-      "tris": 1152
-     },
-     {
-      "name": "scope_crown",
-      "min": [
-       -0.014768,
-       -0.0716,
-       0.146232
-      ],
-      "max": [
-       0.014768,
-       -0.066,
-       0.175768
-      ],
-      "tris": 1152
-     },
-     {
-      "name": "scope_turret",
-      "min": [
-       -0.005474,
-       -0.009474,
-       0.1685
-      ],
-      "max": [
-       0.005474,
-       0.001474,
-       0.1765
-      ],
-      "tris": 380
-     },
-     {
-      "name": "scope_turret_w",
-      "min": [
-       -0.0145,
-       -0.008478,
-       0.156522
-      ],
-      "max": [
-       -0.0075,
-       0.000478,
-       0.165478
-      ],
-      "tris": 380
-     },
-     {
-      "name": "scope_glass",
-      "min": [
-       -0.01397,
-       -0.068,
-       0.14703
-      ],
-      "max": [
-       0.01397,
-       -0.067,
-       0.17497
-      ],
-      "tris": 188
-     },
-     {
       "name": "scope_ocular_glass",
       "min": [
        -0.008972,
@@ -20652,18 +20774,172 @@
       "tris": 156
      },
      {
-      "name": "sight_reticle",
+      "name": "scope_turret",
       "min": [
-       -0.004082,
-       -0.06644,
-       0.157623
+       -0.004976,
+       -0.0047,
+       0.1685
       ],
       "max": [
-       0.004082,
-       -0.06596,
-       0.161177
+       0.004976,
+       0.005252,
+       0.1755
       ],
-      "tris": 512
+      "tris": 380
+     },
+     {
+      "name": "scope_turret_w",
+      "min": [
+       -0.0135,
+       -0.003705,
+       0.157019
+      ],
+      "max": [
+       -0.0075,
+       0.004256,
+       0.164981
+      ],
+      "tris": 380
+     },
+     {
+      "name": "scope_glass",
+      "min": [
+       -0.01397,
+       -0.068,
+       0.14703
+      ],
+      "max": [
+       0.01397,
+       -0.0675,
+       0.17497
+      ],
+      "tris": 188
+     },
+     {
+      "name": "scope_objective",
+      "min": [
+       -0.013285,
+       -0.046724,
+       0.147715
+      ],
+      "max": [
+       0.013285,
+       -0.027449,
+       0.174285
+      ],
+      "tris": 1152
+     },
+     {
+      "name": "scope_step",
+      "min": [
+       -0.013252,
+       -0.048224,
+       0.147748
+      ],
+      "max": [
+       0.013252,
+       -0.046724,
+       0.174252
+      ],
+      "tris": 1152
+     },
+     {
+      "name": "scope_objective_b",
+      "min": [
+       -0.017328,
+       -0.066,
+       0.143672
+      ],
+      "max": [
+       0.017328,
+       -0.048224,
+       0.178328
+      ],
+      "tris": 1152
+     },
+     {
+      "name": "scope_rim",
+      "min": [
+       -0.018884,
+       -0.072,
+       0.142116
+      ],
+      "max": [
+       0.018884,
+       -0.066,
+       0.179884
+      ],
+      "tris": 1536
+     },
+     {
+      "name": "scope_crown",
+      "min": [
+       -0.015318,
+       -0.0721,
+       0.145682
+      ],
+      "max": [
+       0.015318,
+       -0.0705,
+       0.176318
+      ],
+      "tris": 1536
+     },
+     {
+      "name": "scope_mount_f",
+      "min": [
+       -0.0115,
+       -0.072,
+       0.1305
+      ],
+      "max": [
+       0.0115,
+       -0.042,
+       0.136
+      ],
+      "tris": 216
+     },
+     {
+      "name": "sight_clamp",
+      "min": [
+       0.0115,
+       -0.067692,
+       0.1308
+      ],
+      "max": [
+       0.0133,
+       -0.046,
+       0.133585
+      ],
+      "tris": 108
+     },
+     {
+      "name": "scope_keel",
+      "min": [
+       -0.014042,
+       -0.07,
+       0.136
+      ],
+      "max": [
+       0.014042,
+       -0.056,
+       0.148107
+      ],
+      "tris": 384
+     },
+     {
+      "name": "sight_reticle",
+      "min": [
+       -0.001616,
+       -0.0675,
+       0.159384
+      ],
+      "max": [
+       0.001616,
+       -0.06745,
+       0.162616
+      ],
+      "tris": 124
      },
      {
       "name": "handguard",
@@ -21178,7 +21454,7 @@
   }
  },
  "mesh_bounds": {
-  "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
+  "de": "Netzgrenzen der Armteile im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
   "objects": [
    {
     "name": "R_upper_body",

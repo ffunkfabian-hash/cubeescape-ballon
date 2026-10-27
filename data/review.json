@@ -682,8 +682,8 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-25",
-      "method": "Drei Runden: (1) Silhouette/Zweiton an hero_p und side_left – Kammerfenster war nur Mulde, quer durchgeschnitten; (2) Schichten/Negativraum an side_left (Ausschnitt) – Anzeigenleiste lag unter der Oberfläche, 1,8 mm herausgehoben; (3) Material/Budget an hero, exploded, sightline, ego und 8 Skins; Absehen ergänzt (Nutzerhinweis); Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet"
+      "date": "2026-10-26",
+      "method": "Drei Runden: (1) Silhouette/Zweiton an hero_p und side_left – Kammerfenster war nur Mulde, quer durchgeschnitten; (2) Schichten/Negativraum an side_left (Ausschnitt) – Anzeigenleiste lag unter der Oberfläche, 1,8 mm herausgehoben; (3) Material/Budget an hero, exploded, sightline, ego und 8 Skins; Absehen ergänzt (Nutzerhinweis); Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet; 0.21 „Ironsight“: Visier H4 „Kasten“ (Dachradius 6 mm, Seiten 4° einwärts, Ziffernfeld im Sockel), Absehen gezeichnet – hero_p, side_left, part_sight, sightline, ego, 8 Skins und Zielbild 75° gesichtet"
     },
     "actions": {
       "fire_burst": {
@@ -707,8 +707,8 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-25",
-      "method": "Drei Sichtungsrunden laut docs/versions/0.2-pilot.md; Nachtrag: Absehen ergänzt, sightline und part_sight neu gesichtet; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet"
+      "date": "2026-10-26",
+      "method": "Drei Sichtungsrunden laut docs/versions/0.2-pilot.md; Nachtrag: Absehen ergänzt, sightline und part_sight neu gesichtet; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet; 0.21 „Ironsight“: H0 unverändert, Absehen gezeichnet (ring_dot flach im Glas), Visierrolle sight_anod (Abrieb 1,2 mm, ohne Kratzer) – hero_p, side_left, part_sight, sightline, ego, 8 Skins und Zielbild 75° neu gesichtet (kein Marmor am Sockel)"
     },
     "actions": {
       "fire_auto": {
@@ -733,7 +733,7 @@
       "status": "geprüft",
       "by": "Claude",
       "date": "2026-10-26",
-      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet; 0.19 „Saddle“ (Entscheidungsliste 1.1 A): Rohr auf Gehäusebuckel – Workbench-Skizze, dann volles Rendering (hero_p, side_left, exploded, ego, part_sight, sightline, top, front, 8 Skins) und Zielbild rohr_ziel neben dem Stand von main; erster Durchlauf zeigte das Spannband im Zielen als Ring vor dem Objektiv → eigenes Teil scope_strap mit ads_hide, neu gerendert, danach ohne Befund"
+      "method": "Formskizze per Blender-MCP im Viewport in zwei Runden (Gehäuse 6 mm niedriger, Unterkante vorn steil, Schaft flacher, Zielfernrohr tiefer); danach hero_p, side_left, exploded, ego, 8 Skins; Visierlinie mit Absehen chevron nach Farbkorrektur; Visier-Designsprache v3 (25.10.2026): hero_p, part_sight, Visierbild 70/90/110 mm und 8 Skins neu gesichtet; 0.19 „Saddle“ (Entscheidungsliste 1.1 A): Rohr auf Gehäusebuckel – Workbench-Skizze, dann volles Rendering (hero_p, side_left, exploded, ego, part_sight, sightline, top, front, 8 Skins) und Zielbild rohr_ziel neben dem Stand von main; erster Durchlauf zeigte das Spannband im Zielen als Ring vor dem Objektiv → eigenes Teil scope_strap mit ads_hide, neu gerendert, danach ohne Befund; 0.21 „Ironsight“: Z1 „Tropfen“ mit Sitz nach Konzept A (Wiege hinter dem Auge auf dem Buckel, Klemmfuß unter dem Objektiv, Ring 1,29 ohne Wulst), Absehen gezeichnet – hero_p, side_left, part_sight, sightline, ego, 8 Skins und Zielbild 75° gesichtet; test_sight_seat grün"
     },
     "actions": {
       "fire_semi": {
@@ -823,8 +823,8 @@
     "static": {
       "status": "geprüft",
       "by": "Claude",
-      "date": "2026-10-25",
-      "method": "Drei Runden: (1) Silhouette/Zweiton an side_left, hero_p, ego, silhouette – Magazin saß 11 mm hinter der Griffachse und stand hinten aus dem Griff → auf die Griffachse, 165 mm, Sichtfenster mit Patronen unter dem Griffboden; Bügel wirkte wie Draht → Abzugsbügel und Bügel als ein Band (anodized, 9–13 mm); (2) Schichten/Negativraum an exploded und ego ohne Befund; (3) Material/Budget an 8 Skins (hero, side_left) und Visierlinie sightline (Absehen dot mittig, Glas klar); Budget 2 Leuchten, 1 Band, 1 Schrift, 3 Orange"
+      "date": "2026-10-26",
+      "method": "Drei Runden: (1) Silhouette/Zweiton an side_left, hero_p, ego, silhouette – Magazin saß 11 mm hinter der Griffachse und stand hinten aus dem Griff → auf die Griffachse, 165 mm, Sichtfenster mit Patronen unter dem Griffboden; Bügel wirkte wie Draht → Abzugsbügel und Bügel als ein Band (anodized, 9–13 mm); (2) Schichten/Negativraum an exploded und ego ohne Befund; (3) Material/Budget an 8 Skins (hero, side_left) und Visierlinie sightline (Absehen dot mittig, Glas klar); Budget 2 Leuchten, 1 Band, 1 Schrift, 3 Orange; 0.21 „Ironsight“: Visier H2 „Pille“ (19 × 23, Emitterblock mit Statuspunkten, Kontur gezeichnet), Absehen gezeichnet – hero_p, side_left, part_sight, sightline, ego, 8 Skins und Zielbild 75° gesichtet; Mündungsfeuer im Zielen 16,4 % der Pillenkontur"
     },
     "actions": {
       "fire_auto": {
