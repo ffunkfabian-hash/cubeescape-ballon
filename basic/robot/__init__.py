@@ -33,8 +33,8 @@ PELVIS = (0, 0, 870)          # Ursprung des Beckensegments
 HEAD_H = 260
 TORSO_HINT = (0.16, -1, 0)    # Vorderseite des Rumpfs (+Y lokal); x > 0 dreht zur Mündung (links vorn)
 HEAD_HINT = (0.36, -1, 0)
-HEAD_TOP = (0, NECK[1] - 22, NECK[2] + HEAD_H)
 SHOULDER_LOCAL = (250, 0, 360)   # Socket_Shoulder im Rumpfrahmen (upper_body.SHOULDER_X/Z)
+HEAD_TOP = (0, NECK[1] - 22, NECK[2] + HEAD_H)
 
 
 def _frame(A, B, hint):
@@ -55,17 +55,40 @@ def _torso_point(local):
     return tuple(round(WAIST[i] + local[0] * x[i] + local[1] * y[i] + local[2] * z[i], 3) for i in range(3))
 
 
-SHOULDER = {'R': _torso_point(SHOULDER_LOCAL), 'L': _torso_point((-SHOULDER_LOCAL[0],) + SHOULDER_LOCAL[1:])}
+def _derive():
+    """Schultern und Anker aus dem Skelett (beim Laden und nach use())."""
+    global SHOULDER, ANCHORS
+    SHOULDER = {'R': _torso_point(SHOULDER_LOCAL), 'L': _torso_point((-SHOULDER_LOCAL[0],) + tuple(SHOULDER_LOCAL[1:]))}
+    # Anker zwischen den Baugruppen (Welt, mm, Grundhaltung): Elternbaugruppe → Kindbaugruppe
+    ANCHORS = {
+        'Socket_Neck': dict(pos=NECK, parent='upper_body', child='head', de='Hals'),
+        'Socket_Shoulder_R': dict(pos=SHOULDER['R'], parent='upper_body', child='arms', side='R', de='Schulter rechts'),
+        'Socket_Shoulder_L': dict(pos=SHOULDER['L'], parent='upper_body', child='arms', side='L', de='Schulter links'),
+        'Socket_Waist': dict(pos=WAIST, parent='upper_body', child='lower_body', de='Taille'),
+        'Socket_Hip_R': dict(pos=legs.JOINTS['R'][0], parent='lower_body', child='legs', side='R', de='Hüfte rechts'),
+        'Socket_Hip_L': dict(pos=legs.JOINTS['L'][0], parent='lower_body', child='legs', side='L', de='Hüfte links'),
+    }
 
-# Anker zwischen den Baugruppen (Welt, mm, Grundhaltung): Elternbaugruppe → Kindbaugruppe
-ANCHORS = {
-    'Socket_Neck': dict(pos=NECK, parent='upper_body', child='head', de='Hals'),
-    'Socket_Shoulder_R': dict(pos=SHOULDER['R'], parent='upper_body', child='arms', side='R', de='Schulter rechts'),
-    'Socket_Shoulder_L': dict(pos=SHOULDER['L'], parent='upper_body', child='arms', side='L', de='Schulter links'),
-    'Socket_Waist': dict(pos=WAIST, parent='upper_body', child='lower_body', de='Taille'),
-    'Socket_Hip_R': dict(pos=legs.JOINTS['R'][0], parent='lower_body', child='legs', side='R', de='Hüfte rechts'),
-    'Socket_Hip_L': dict(pos=legs.JOINTS['L'][0], parent='lower_body', child='legs', side='L', de='Hüfte links'),
-}
+
+_derive()
+
+
+def use(study):
+    """Formstudie (basic/robot/studies/<study>.py, Runde 5) statt des Standardkörpers: Skelett, Haltung und parts() der Baugruppen
+    übernehmen. Nur für Studienbilder (tools/robot_build.py --study); Spec und Teileliste gelten für den Standardkörper."""
+    import importlib
+    global WAIST, NECK, PELVIS, HEAD_H, TORSO_HINT, HEAD_HINT, HEAD_TOP, SHOULDER_LOCAL
+    V = importlib.import_module(f'basic.robot.studies.{study}')
+    WAIST, NECK, PELVIS, HEAD_H, TORSO_HINT, HEAD_HINT, HEAD_TOP, SHOULDER_LOCAL = (
+        V.WAIST, V.NECK, V.PELVIS, V.HEAD_H, V.TORSO_HINT, V.HEAD_HINT, V.HEAD_TOP, V.SHOULDER_LOCAL)
+    legs.JOINTS, legs.FOOT_H = V.JOINTS, V.FOOT_H
+    head.parts, upper_body.parts, lower_body.parts, legs.parts = V.head, V.upper_body, V.lower_body, V.legs
+    arms.BULK, arms.DROP, arms.EXTRA = V.ARM_BULK, set(V.ARM_DROP), V.arm_extra()
+    for k, v in getattr(V, 'POSES', {}).items():
+        POSES[k] = dict(POSES[k], **v)
+    META['study'] = study
+    _derive()
+
 
 # Armhaltungen. ready (nach Zielbild): Pilotwaffe diagonal vor dem Körper, Griff rechts vor dem Bauch, Mündung vorn links gesenkt, Hände an den Griffen
 # aus basic/arms/ego.GRIPS, Zwei-Knochen-IK mit Ellbogen-Pol. idle: ohne Waffe, Arme hängen leicht gebeugt (Richtungen je Glied).

@@ -1,13 +1,17 @@
 """BASIC-Roboter (basic/robot): Aufbau, Prüfung, Standbilder, Explosionsansicht, Einzelblätter je Baugruppe.
 
   blender -b --factory-startup -P tools/robot_build.py -- [--check] [--spec] [--dry] [--only hero,nah,seite,explode,parts]
-                                                          [--gpu] [--samples N] [--res 1000] [--preview] [--tag T]
+                                                          [--gpu] [--samples N] [--res 1000] [--preview] [--tag T] [--study NAME]
 
 --check   nur aufbauen (Grundhaltung idle, ohne Waffe) und prüfen: Kind- und Elternbaugruppe berühren sich am Anschluss jedes Ankers
           (Umkreis ANCHOR_R_MM), Messwerte gleich data/robot.spec.json; Ausgabe „robot_check: …“, Exit 1 bei Fehler. Keine Bilder.
 --dry     Haltung ready aufbauen (IK an die Waffe), nichts rendern oder schreiben.
 --spec    zusätzlich data/robot.spec.json schreiben (gemessene Maße, Teile, Dreiecke je Baugruppe, Ankerabstände).
 --preview Workbench statt Cycles (Formskizze, schnell, kein schwerer Lauf).
+--study   Formstudie basic/robot/studies/<NAME>.py statt des Standardkörpers (Runde 5); Bilder nach <OUT>/robot/studies/<NAME>/,
+          --check prüft dann nur die Anschlüsse (die Spec gilt für den Standardkörper).
+Ansichten vorn und profil: Haltung idle ohne Waffe von vorn und von rechts (Vergleichsblatt wie die Referenzen); kopf: nur die
+Baugruppe Kopf aus vier Richtungen im Kopfrahmen (kopf_vorn, kopf_34, kopf_seite, kopf_hinten).
 Renderings (Cycles) nur mit ~/Claude/cubeescape-nexogen/ce lock gpu -- … und --gpu.
 Alle Bilder auf dem grauen Standardhintergrund der Waffen (--bg mid), ohne Bloom; kein Hangar (Nutzer 24.10.2026).
 Ausgabe: <OUT>/robot/{hero,nah,seite}.png (Haltung ready), explode.png, asm_<baugruppe>.png (Haltung idle), robot.blend;
@@ -41,11 +45,11 @@ GAP_TOL_MM = 1.0
 ANCHOR_R_MM = 140.0
 AMBIENT = 0.35           # Anteil des Umgebungslichts von --bg mid (Roboter: mehr Schatten, Zielbild)
 SPEC = os.path.join(ROOT, 'data', 'robot.spec.json')
-ALL_VIEWS = ('hero', 'nah', 'seite', 'explode', 'parts')
+ALL_VIEWS = ('hero', 'nah', 'seite', 'vorn', 'profil', 'kopf', 'explode', 'parts')
 
 
 FLAGS = {'--gpu', '--check', '--spec', '--preview', '--dry'}
-VALUED = {'--samples', '--res', '--only', '--tag'}
+VALUED = {'--samples', '--res', '--only', '--tag', '--study'}
 
 
 def args():
@@ -59,7 +63,7 @@ def args():
         else:
             sys.exit(f'robot_build: unbekanntes Argument {a[i]} (erlaubt: {sorted(FLAGS | VALUED)})')
     o = dict(gpu='--gpu' in a, check='--check' in a, spec='--spec' in a, preview='--preview' in a, dry='--dry' in a,
-             samples=96, res=1000, only=set(ALL_VIEWS), tag='')
+             samples=96, res=1000, only=set(ALL_VIEWS), tag='', study=None)
     for k in ('samples', 'res'):
         if f'--{k}' in a:
             o[k] = int(a[a.index(f'--{k}') + 1])
@@ -69,6 +73,13 @@ def args():
             sys.exit(f"robot_build: unbekannte Ansicht {sorted(o['only'] - set(ALL_VIEWS))}")
     if '--tag' in a:
         o['tag'] = a[a.index('--tag') + 1]
+    if '--study' in a:
+        from basic.robot import studies
+        o['study'] = a[a.index('--study') + 1]
+        if o['study'] not in studies.NAMES:
+            sys.exit(f"robot_build: unbekannte Studie {o['study']} (erlaubt: {list(studies.NAMES)})")
+        if o['spec']:
+            sys.exit('robot_build: --spec gilt nur für den Standardkörper, nicht mit --study')
     return o
 
 
@@ -116,6 +127,12 @@ def _piece(name, kind, p, role, asm, pid, side, parent, sx=1):
         for f in ob.data.polygons:
             f.use_smooth = True
         ob.data.set_sharp_from_angle(angle=math.radians(p.get('sharp', 40)))
+    if p.get('rot'):                       # Runde 5: Teil um eine Segmentachse kippen, rot = (Achse, Grad, Drehpunkt mm)
+        ax, deg, piv = p['rot']
+        if sx < 0:                         # linke Seite: Drehpunkt und Drehsinn gespiegelt (form_mesh spiegelt schon)
+            piv, deg = (-piv[0], piv[1], piv[2]), (deg if ax == 'x' else -deg)
+        P = Vector(piv) * MM
+        ob.data.transform(Matrix.Translation(P) @ Matrix.Rotation(math.radians(deg), 4, ax.upper()) @ Matrix.Translation(-P))
     ob.data.materials.append(kit.material(role))
     if p.get('bevel'):
         kit.add_bevel(ob, p['bevel'])
@@ -405,6 +422,9 @@ def contact_sheet(out, tag):
 def main():
     o = args()
     out = os.path.join(OUT, 'robot')
+    if o['study']:
+        RB.use(o['study'])
+        out = os.path.join(out, 'studies', o['study'])
     os.makedirs(out, exist_ok=True)
     tag = o['tag'] and f"_{o['tag']}"
     if o['check'] or o['spec']:
@@ -414,12 +434,17 @@ def main():
         bad = {k: v for k, v in gaps.items() if v > GAP_TOL_MM}
         if o['spec']:
             write_spec(F['obs'], gaps)
-        drift = spec_drift(F['obs'], gaps)
+        drift = [] if o['study'] else spec_drift(F['obs'], gaps)
         msg = []
         if bad:
             msg.append('Lücke an ' + ', '.join(f'{k} {v:.1f} mm' for k, v in bad.items()))
         if drift:
             msg.append('Spec veraltet (' + ', '.join(drift) + '): tools/robot_build.py --spec')
+        if o['study']:
+            m = measure(F['obs'])
+            print(f"[robot] Studie {o['study']}: {m['height_mm']} × {m['width_mm']} × {m['depth_mm']} mm, "
+                  f"{sum(len(a['module'].parts()) for a in RB.ASSEMBLIES)} Teile, "
+                  f"{sum(v['triangles'] for v in m['assemblies'].values())} Dreiecke")
         print('robot_check: ' + ('; '.join(msg) if msg else f'{len(gaps)} Anker ohne Lücke, Spec aktuell'))
         if o['check']:
             sys.exit(1 if msg else 0)
@@ -445,6 +470,29 @@ def main():
                 camera_persp(cam, pos, at, lens)
                 render_to(os.path.join(out, f'{name}{tag}.png'))
         bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, f'robot{tag}.blend'))
+    # Haltung idle ohne Waffe von vorn und von rechts (Vergleichsblatt wie die Referenzbilder, lange Brennweite)
+    if o['only'] & {'vorn', 'profil'}:
+        setup(o, aspect=(2, 3))
+        lights()
+        floor()
+        build('idle', mode)
+        cam = BB.camera()
+        for name, pos in (('vorn', (0.0, -7.0, 1.0)), ('profil', (-7.0, 0.0, 1.0))):
+            if name in o['only']:
+                camera_persp(cam, pos, (0.0, 0.0, 0.9), 110)
+                render_to(os.path.join(out, f'{name}{tag}.png'))
+    if 'kopf' in o['only']:     # Helmblatt: nur der Kopf, Kameras im Kopfrahmen (vorn, Dreiviertel rechts, Seite rechts, hinten)
+        setup(o, aspect=(1, 1))
+        lights()
+        F = build('idle', mode)
+        for ob in F['obs'].values():
+            ob.hide_render = ob['asm'] != 'head'
+        cam = BB.camera()
+        x, y, z = (Vector(v) for v in RB._frame(RB.NECK, RB.HEAD_TOP, RB.HEAD_HINT))
+        c = Vector(RB.NECK) * MM + z * 0.17
+        for name, (u, v) in (('kopf_vorn', (0, 1)), ('kopf_34', (0.75, 0.66)), ('kopf_seite', (1, 0.08)), ('kopf_hinten', (0.62, -0.78))):
+            camera_persp(cam, c + (x * u + y * v).normalized() * 1.6 + z * 0.06, c, 105)
+            render_to(os.path.join(out, f'{name}{tag}.png'))
     # Haltung idle ohne Waffe: Explosionsansicht und Einzelblätter je Baugruppe (orthografisch, Dreiviertel von vorn rechts)
     if o['only'] & {'explode', 'parts'}:
         setup(o)
