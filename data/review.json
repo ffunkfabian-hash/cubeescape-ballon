@@ -1493,5 +1493,55 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-10-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kindle/"
     ]
+  },
+  "BASIC-12-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.27 „Tracer“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette (tracer/runde1_12.jpg) – Erstentwurf: dünne Haube wie ein Brett über dem Rohr → Haube auf dem Gehäuse beginnend, Oberkante in Linie mit der Schiene (u 138), umgreift hinten den Rohransatz und vorn den Kegel; Nutzerwahl a; Gehäuse vorn unten abgeschrägt; (2) Schichten/Negativraum an exploded, top, front, sightline (tracer/runde2_12.jpg): Fenster 12 mm über dem Rohr zwischen Ansatz und Nase, Rohr unten frei, Daumenloch; Ringe mit dem Rohr in support (Explosion zeigte sie an der Haube); H3 im Zielbild mit offenen Zinken, Emitterpunkt unter dem Fenster, Haubennase unten im Fenster; Posenprüfung (BVH in Weltkoordinaten je Endlage): nur Sitzkontakte, Schachtlippe 0,2 mm im Abzugsbügel → 1 mm kürzer; (3) Material/Budget an 8 Skins (tracer/runde3_12.jpg): alle lesbar; Budget 3 Leuchtfunktionen (Strahl: Fokuslinse und Scheibenmitte, Munition: Ladefenster, Visier: Emitterpunkt und Absehen), 1 Band, 1 Schrift, 2 Orange (Zellenhalter, Klemmhebel)"
+    },
+    "actions": {
+      "beam": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/beam, Bilder 0/16/34 (tracer/bewegung_12.jpg): Fokuslinse und Scheibenmitte aus, leuchten beim Strahl, wieder aus; kein Hülsenauswurf"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/16/34 (tracer/bewegung_12.jpg): Zellenhalter, Zelle senkrecht nach unten heraus und wieder ein"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-12-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/tracer/"
+    ]
+  },
+  "BASIC-15-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.27 „Tracer“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette (tracer/runde1_15.jpg) – Erstentwurf: Kasten klein, Tragegriff als Bügel mit Loch las sich wie ein Lüftungsfenster → Kasten tiefer (u −62) mit Seitenmulden und Griffleiste, Tragegriff als Gummistange auf zwei Griffböcken, Fenster davor; Nutzerwahl a mit Wunsch „eine Art Eingang für die Munition“ → Gurteinlauf mit blanker Lippe; (2) Schichten/Negativraum an exploded, top, front, sightline (tracer/runde2_15.jpg): Gurtsäule links frei zwischen Kasten und Einlauf, Lauf in den Fenstern, Durchbruch im Schaft; H6 L im Zielbild, Mantel unten im Fenster; Posenprüfung (BVH in Weltkoordinaten je Endlage): Glieder 0,4 mm in der Gehäusewand und an der Einlaufwand → Säule x 31,8, Einlauf breiter, danach nur Sitzkontakte (Deckelscharnier, Kasten im Schacht, Gurt im Kasten und in der Führung); (3) Material/Budget an 8 Skins (tracer/runde3_15.jpg): alle lesbar; Budget 2 Leuchtfunktionen (Munition: Zählfenster, Visier: Emitter und Absehen), 1 Band, 1 Schrift, 3 Orange (Ladehebel, Deckelriegel, Klemmhebel)"
+    },
+    "actions": {
+      "fire_auto": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire_auto, Bilder 0/5/6 (tracer/bewegung_15.jpg): Auswurfklappe öffnet, Verschluss läuft im Fenster; Gurtvorschub links aus dieser Kamera (rechts) nicht sichtbar – Richtung und ein Hub je Schuss per test_motion und check"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/44/76 (tracer/bewegung_15.jpg): Deckel hinten nach oben mit Visier, Kasten mit Gurt senkrecht heraus und wieder ein, Deckel zu"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-15-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/tracer/"
+    ]
   }
 }

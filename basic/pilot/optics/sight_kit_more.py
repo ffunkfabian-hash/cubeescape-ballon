@@ -13,13 +13,7 @@ import types
 from basic.common import part, cyl, prof
 from basic.pilot.optics.sight_kit import (CU, CU_IRON, CU_MINI, DECK, F, MET, REL, T, HOLO_SIZES, SCOPE_SIZES, stub, _arc,
                                           _rr, _sector, _x, _hood, _glass, _eye, platform, _scope_body, _scope_foot,
-                                          _scope_anchors, _irons_anchor, BORE)
-
-
-def _oct(w, h, c):
-    """Achteck w × h, Ecken 45° um c gefast."""
-    return [(w / 2, -h / 2 + c), (w / 2, h / 2 - c), (w / 2 - c, h / 2), (-w / 2 + c, h / 2), (-w / 2, h / 2 - c),
-            (-w / 2, -h / 2 + c), (-w / 2 + c, -h / 2), (w / 2 - c, -h / 2)]
+                                          _scope_anchors, _irons_anchor, BORE, achteck)
 
 
 def _iron_foot(fr, top):
@@ -33,27 +27,8 @@ def _iron_foot(fr, top):
 
 # ------------------------------------------------------------------------------------------------ Holo
 def holo_octagon(size='M'):
-    """H6 „Achteck“ (MG): schlanke Achteckhaube aus Flachprofil 1,6 × 12, Ecken 45° gefast (Merkmal 1, BF6 2PRO ohne dessen
-    Wucht); die vier Fasenflächen außen blank abgesetzt (Merkmal 2). Sockel so breit wie die untere Achteckseite."""
-    w, h, c = {'S': (26, 19, 5), 'M': (30, 22, 6), 'L': (34, 26, 7)}[size]
-    gb = CU - h / 2 - 0.4
-    co = c + T * (2 - math.sqrt(2))
-    inner, outer = _oct(w, h, c), _oct(w + 2 * T, h + 2 * T, co)
-    fr = F + 34
-    W, H = w / 2 + T, h / 2 + T
-    facets = []
-    for sx, su in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
-        p, q = (sx * W, su * (H - co)), (sx * (W - co), su * H)
-        L = math.hypot(q[0] - p[0], q[1] - p[1])
-        d = ((q[0] - p[0]) / L, (q[1] - p[1]) / L)
-        n = (sx / math.sqrt(2), su / math.sqrt(2))
-        a, b = (p[0] + 0.9 * d[0], p[1] + 0.9 * d[1]), (q[0] - 0.9 * d[0], q[1] - 0.9 * d[1])
-        facets.append([(a[0] - 0.1 * n[0], a[1] - 0.1 * n[1]), (b[0] - 0.1 * n[0], b[1] - 0.1 * n[1]),
-                       (b[0] + 0.45 * n[0], b[1] + 0.45 * n[1]), (a[0] + 0.45 * n[0], a[1] + 0.45 * n[1])])
-    P = platform(w + 2 * T - 2 * co, gb) + _hood(inner, outer, fr=fr, depth=12)
-    P += [_x(f'sight_facet_{i}', 'Fasenfläche', 'trim', fr + 1.5, fr + 12.4, pts, func='Blanke Fasenfläche außen', bevel=0.15)
-          for i, pts in enumerate(facets)]
-    return P + [_glass(F + 40, inner)], _eye(F + 40.4)
+    """H6 „Achteck“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `sight_kit.achteck` (seit 0.27 an BASIC-15 v2.1, Größe L)."""
+    return achteck(F, DECK, size)
 
 
 def holo_visor(size='M'):

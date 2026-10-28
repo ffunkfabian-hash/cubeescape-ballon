@@ -128,6 +128,13 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Komodo-4FR | Linear Fusion Rifle | `…/screenshots/2697058914.jpg` | lange obere Laufhaube über schlanker unterer Schiene, vorn offen; Block hinter dem Griff; Lochreihe und Haken vorn nicht übernommen |
 | Taipan-4fr | Linear Fusion Rifle | `…/screenshots/1911060537.jpg` | wie Komodo: oben schwer, unten schlank, dazwischen Luft; Zweiton dunkel/hell |
 | Threaded Needle | Linear Fusion Rifle | `…/screenshots/3075224551.jpg` | lange offene Gabel nach vorn, Spulenhülse gerippt (vermessen in Motiongen proportionen › 2); spitze Zinken nicht übernommen (Stacheln, Budget) |
+| Keraunios | Trace Rifle | `…/screenshots/2029899814.jpg` | lange helle Oberschale kragt vorn über den Emitter aus, darunter frei ein runder Strahlkanal; runde Scheibe am Übergang Gehäuse → Kanal; Zelle wie ein Magazin vor dem Griff; geschlossener Schaft mit Daumenloch (H/L grob 0,4–0,55, 3/4-Bild) |
+| Retraced Path | Trace Rifle | `…/screenshots/548958835.jpg` | wie Keraunios (gleiche Grundform): Oberschale, untere Zinke, goldener Kanal frei dazwischen, Scheibe mittig; Höcker hinter dem Visier und untere Zinke nicht übernommen (Rohr unten frei, Schlichtheit) |
+| Ribbontail | Trace Rifle | `…/screenshots/407150808.jpg` | gestufte Schale über rundem Kern, Scheibe mit Leuchtmitte, kurzer Hinterbau (H/L grob 0,4, 3/4-Bild); gestufte Dreieckspanzer nicht übernommen |
+| Hammerhead | Machine Gun | `…/screenshots/1346714574.jpg` | breites Gehäuse, Trommel unter dem Gehäuse vor dem Griff, Gurt als Patronensäule an der linken Seite bis zur Zuführung, Deckel mit Visier, Skelettschaft |
+| Avalanche | Machine Gun | `…/screenshots/1845978721.jpg` | kurzer Kastenkörper, Gurt sichtbar links, Behälter unten, gefensterter Mantel; Lochmuster nicht übernommen |
+| Retrofit Escapade | Machine Gun | `…/screenshots/3103325054.jpg` | lange gerade Oberkante, offener Laufmantel, Gurtsäule links in den Einlauf; Leuchtpunktvisier nicht übernommen (H6 nach Baukasten) |
+| Shattered Cipher | Machine Gun | `…/screenshots/2434225986.jpg` | Zweibein unter dem Lauf (vermessen in Motiongen proportionen › 2: H/L 0,30 mit Zweibein); Zweibein nicht übernommen (Spec verlangt keines) |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
@@ -150,6 +157,14 @@ Für BASIC-10 und BASIC-11 v2.1 (0.26 „Kindle“, gesichtet 28.10.2026, Bungie
 Zelle vor dem Griff; beim Linearen Fusionsgewehr die zwei Schienen mit Luft dazwischen, die offene Gabel vorn und der Block hinter dem
 Griff. Gesichtet und verworfen: Main Ingredient und Elatha FR4/Proelium FR3 (Varianten derselben Grundformen), Stormchaser und Doomed
 Petitioner (Klingenspitze, organische Linien), Cataclysmic (Raid-Waffe, Zahnreihe).
+Für BASIC-12 und BASIC-15 v2.1 (0.27 „Tracer“, gesichtet 28.10.2026, Bungie-Manifest wie 0.24; Bilder nur im Cache
+`refs/q-d2-img/tr_*`, `mg_*`): übernommen beim Spurgewehr die Oberschale, die über den freien runden Kanal auskragt, die runde Scheibe
+am Kanalansatz, die Zelle vor dem Griff und der geschlossene Schaft mit Daumenloch; beim Maschinengewehr der Behälter unter dem Gehäuse
+vor dem Griff mit sichtbarer Gurtsäule links bis in den Einlauf, der Deckel mit Visier und der lange Mantel mit Fenstern. Gesichtet und
+verworfen: Hollow Denial und Unsworn (Rippen-/Zahnreihen, organisch), Path of Least Resistance (Rohr mit Schild, nahe am Linearen
+Fusionsgewehr), Bane of Sorrow, Corrective Measure und Fixed Odds (Verzierungen, Leuchtfenster als Schmuck). Die Spurgewehr-Werte H/L
+sind eigene grobe Messungen an 3/4-Menübildern (Sightline 28.10.2026: „(a) passt … im Bericht als ‚beobachtet (BALLON 0.27)‘ mit
+Unsicherheit führen, nicht in Motiongen schreiben“).
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).
