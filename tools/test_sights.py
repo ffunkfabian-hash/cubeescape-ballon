@@ -219,7 +219,7 @@ def check_kit_form(parts, anchors, sight_id=None):
         return bad
     if 'F1' in ids:
         (ti, _), (bi, bo) = _radii(P['sight_frame']), _radii(P['sight_frame_b'])
-        gx = max(q[0] for q in P['sight_glass']['pts'])
+        gx = max(math.hypot(x, u) for x, u in P['sight_glass']['pts'])      # Glasrand als Radius wie die Bögen (Richter Runde 5)
         cu = P['sight_frame']['cu']
         if abs(bi - ti - 3.0) > 0.05:
             bad.append(f'F1: Radiusversatz der Bögen {bi - ti:.2f} mm statt 3 (S-Öffnung)')
