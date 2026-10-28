@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.26.0 „Kindle“ – Fusionsgewehr BASIC-10 und Lineares Fusionsgewehr BASIC-11 im Stil v2.1 (Branch `claude/ballon-0.26-kindle`)
+
+- BASIC-10 v2.1: gerade Creme-Oberkante über quer offener Ladekammer (drei Spulenringe um den Glutkern), gestufter Schlitz-Emitter, Zelle vor
+  dem Griff, Schaft S2 mit Daumenloch; BASIC-11 v2.1: offene Doppelschiene (oben Creme, unten Graphit) mit Leuchtkern und vier Spulen, stumpfe
+  Gabel vor der Mündungsbrücke, Zelle hinter dem Griff, Schaft S1. Grundform nach Zwischenstopp, Nutzerwahl „a“; Ladekern als reine Emission
+  (`charge_core`, „Kern weniger grell“). Energiewaffen ohne Hülsenauswurf (`EJECT = None`, `check` verlangt es bei Energiezelle BEC-1).
+- Visiere F1 „Bögen“ (`sight_kit.boegen`, Glas Ø 26) und Z2 „Gabel“ (`sight_kit.gabel`, Sitz nach Konzept A) gebaut; `test_sights` prüft
+  ihre Merkmale, `test_sight_seat` den Sitz von Z2.
+- Quellen Q-D2-IMG (6 Vertreter über das Bungie-Manifest); Bericht [docs/versions/0.26-kindle.md](docs/versions/0.26-kindle.md).
+
 ## 0.25.0 „Longshot“ – Schrotflinte BASIC-08 und Scharfschützengewehr BASIC-09 im Stil v2.1 (Branch `claude/ballon-0.25-longshot`)
 
 - BASIC-08 v2.1: gerade Oberkante aus Schiene und Lüftungsschiene über dickem Lauf und Röhrenmagazin, große Graphit-Pumpe, Ladeschacht mit

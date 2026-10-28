@@ -1,0 +1,2242 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-10",
+  "num": "10",
+  "type": "fusion_rifle",
+  "type_de": "Fusionsgewehr",
+  "type_en": "Fusion Rifle",
+  "name": "Glutkern v2.1",
+  "nick": "Familie v2.1",
+  "ammo": "special",
+  "fire": "charge_burst",
+  "reference_length_m": 0.96,
+  "reference_length_source": "Toolgen fusion_rifle (Formgen KG07 spec units)",
+  "reference_note": "kompakter Emitter statt langem Lauf (entworfen); Bezug aus Toolgen-Weltmodell",
+  "summary": "Fusionsgewehr mit offener Ladekammer (Spulenringe um den Glutkern), Schlitz-Emitter und Visier F1 (Stil v2.1).",
+  "variant": "v2.1"
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "upper",
+    "lower",
+    "cell_lip",
+    "side_panel_l",
+    "side_panel_r",
+    "panel_screws",
+    "takedown_pins",
+    "rail"
+   ]
+  },
+  {
+   "id": "barrel",
+   "de": "Lauf / Emitter",
+   "en": "Barrel / emitter",
+   "parts": [
+    "chamber_hood",
+    "hood_screws",
+    "ember_core",
+    "band_side",
+    "emitter",
+    "emitter_crown"
+   ]
+  },
+  {
+   "id": "ammo",
+   "de": "Munitionsversorgung",
+   "en": "Ammunition feed",
+   "parts": [
+    "energy_cell",
+    "cell_band",
+    "cell_window"
+   ]
+  },
+  {
+   "id": "sight",
+   "de": "Visier",
+   "en": "Sight",
+   "parts": [
+    "sight_mount",
+    "sight_clamp",
+    "sight_body",
+    "sight_base",
+    "sight_knob_w",
+    "sight_battery",
+    "sight_frame",
+    "sight_frame_b",
+    "sight_frame_trim",
+    "sight_frame_trim_b",
+    "sight_web",
+    "sight_web_r",
+    "sight_emitter",
+    "sight_glass",
+    "sight_reticle"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "cell_release",
+    "grip",
+    "trigger",
+    "trigger_guard",
+    "grip_cap"
+   ]
+  },
+  {
+   "id": "support",
+   "de": "Stützbereich",
+   "en": "Support",
+   "parts": [
+    "handguard",
+    "handguard_grip",
+    "text_l"
+   ]
+  },
+  {
+   "id": "stock",
+   "de": "Schaft",
+   "en": "Stock",
+   "parts": [
+    "stock",
+    "butt_pad",
+    "stock_bolts"
+   ]
+  },
+  {
+   "id": "cooling",
+   "de": "Kühlung",
+   "en": "Cooling",
+   "parts": [
+    "coils",
+    "coil_rims"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "upper",
+   "name_de": "Gehäuse",
+   "name_en": "Upper receiver",
+   "assembly": "receiver",
+   "function_de": "Tragkörper für Kammer, Zellenschacht und Schiene",
+   "attachment_de": "mit dem Unteren Gehäuse über zwei Querbolzen (fest)",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "upper",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.022,
+     -0.15,
+     0.082
+    ],
+    "max": [
+     0.022,
+     0.11,
+     0.128
+    ]
+   },
+   "size_mm": [
+    44.0,
+    260.0,
+    46.0
+   ],
+   "triangles": 360,
+   "volume_cm3": 520.87,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "lower",
+   "name_de": "Unteres Gehäuse",
+   "name_en": "Lower receiver",
+   "assembly": "receiver",
+   "function_de": "Griffmodul, Abzugsgruppe, Zellenschacht",
+   "attachment_de": "unter dem Gehäuse, Fuge 1 mm; Zellentrichter angeformt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "lower",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.021,
+     -0.15,
+     0.02
+    ],
+    "max": [
+     0.021,
+     0.11,
+     0.081
+    ]
+   },
+   "size_mm": [
+    42.0,
+    260.0,
+    61.0
+   ],
+   "triangles": 212,
+   "volume_cm3": 460.01,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "cell_lip",
+   "name_de": "Schachtlippe",
+   "name_en": "Cell well lip",
+   "assembly": "receiver",
+   "function_de": "Blanke Einführkante des Zellenschachts",
+   "attachment_de": "unten am Trichter des Unteren Gehäuses",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": "BEC-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.6,
+   "blender_object": "cell_lip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0215,
+     -0.13184,
+     0.0175
+    ],
+    "max": [
+     0.0215,
+     -0.08016,
+     0.021
+    ]
+   },
+   "size_mm": [
+    43.0,
+    51.7,
+    3.5
+   ],
+   "triangles": 108,
+   "volume_cm3": 7.64,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "side_panel_l",
+   "name_de": "Seitenpaneel links",
+   "name_en": "Side panel left",
+   "assembly": "receiver",
+   "function_de": "Wartungsdeckel über der Steuerung",
+   "attachment_de": "in die Mulde geschraubt (4 Schrauben)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "side_panel_l",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0206,
+     0.012,
+     0.094
+    ],
+    "max": [
+     0.0218,
+     0.09,
+     0.114
+    ]
+   },
+   "size_mm": [
+    1.2,
+    78.0,
+    20.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 1.83,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "side_panel_r",
+   "name_de": "Seitenpaneel rechts",
+   "name_en": "Side panel right",
+   "assembly": "receiver",
+   "function_de": "Wartungsdeckel über der Steuerung",
+   "attachment_de": "in die Mulde geschraubt (4 Schrauben)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "side_panel_r",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0218,
+     0.012,
+     0.094
+    ],
+    "max": [
+     -0.0206,
+     0.09,
+     0.114
+    ]
+   },
+   "size_mm": [
+    1.2,
+    78.0,
+    20.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 1.83,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "panel_screws",
+   "name_de": "Paneelschrauben",
+   "name_en": "Panel screws",
+   "assembly": "receiver",
+   "function_de": "Halten die Seitenpaneele",
+   "attachment_de": "in den Paneelen",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.2,
+   "blender_object": "panel_screws",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0226,
+     0.01445,
+     0.09645
+    ],
+    "max": [
+     0.0226,
+     0.08755,
+     0.11155
+    ]
+   },
+   "size_mm": [
+    45.2,
+    73.1,
+    15.1
+   ],
+   "triangles": 2016,
+   "volume_cm3": 0.08,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "takedown_pins",
+   "name_de": "Querbolzen",
+   "name_en": "Takedown pins",
+   "assembly": "receiver",
+   "function_de": "Verbinden Gehäuse und Unteres Gehäuse",
+   "attachment_de": "quer durch das Gehäuse (lösbar)",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.4,
+   "blender_object": "takedown_pins",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.022,
+     -0.14148,
+     0.07052
+    ],
+    "max": [
+     0.022,
+     0.09948,
+     0.07748
+    ]
+   },
+   "size_mm": [
+    44.0,
+    241.0,
+    7.0
+   ],
+   "triangles": 912,
+   "volume_cm3": 0.24,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "cell_release",
+   "name_de": "Zellenhalter",
+   "name_en": "Cell release",
+   "assembly": "grip_controls",
+   "function_de": "Löst die Energiezelle",
+   "attachment_de": "Druckknopf links",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "cell_release",
+   "origin_m": [
+    0.021,
+    -0.076,
+    0.054
+   ],
+   "bounds_m": {
+    "min": [
+     0.019,
+     -0.08094,
+     0.04906
+    ],
+    "max": [
+     0.0235,
+     -0.07106,
+     0.05894
+    ]
+   },
+   "size_mm": [
+    4.5,
+    9.9,
+    9.9
+   ],
+   "triangles": 236,
+   "volume_cm3": 0.34,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.021,
+     -0.076,
+     0.054
+    ],
+    "vector_m": [
+     -0.0025,
+     0.0,
+     0.0
+    ],
+    "travel_mm": 2.5
+   },
+   "removable": false
+  },
+  {
+   "id": "rail",
+   "name_de": "Schiene",
+   "name_en": "Top rail",
+   "assembly": "receiver",
+   "function_de": "Aufnahme für Visiere (BRI-22)",
+   "attachment_de": "auf Oberem Gehäuse (fest)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": "BRI-22",
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "rail",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.011,
+     -0.07,
+     0.1275
+    ],
+    "max": [
+     0.011,
+     0.06,
+     0.136
+    ]
+   },
+   "size_mm": [
+    22.0,
+    130.0,
+    8.5
+   ],
+   "triangles": 1116,
+   "volume_cm3": 18.25,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_mount",
+   "name_de": "Visier-Klemmfuß",
+   "name_en": "Sight mount",
+   "assembly": "sight",
+   "function_de": "Klemmt das Visier auf die Schiene BRI-22; gestuftes Trapez",
+   "attachment_de": "Klemmung auf Schiene (lösbar)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": "BRI-22",
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_mount",
+   "origin_m": [
+    0.0,
+    -0.011,
+    0.136
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0115,
+     -0.034,
+     0.1365
+    ],
+    "max": [
+     0.0115,
+     0.012,
+     0.142
+    ]
+   },
+   "size_mm": [
+    23.0,
+    46.0,
+    5.5
+   ],
+   "triangles": 216,
+   "volume_cm3": 5.1,
+   "moving": {
+    "kind": "translate",
+    "event": "swap_sight",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.011,
+     0.136
+    ],
+    "vector_m": [
+     0.0,
+     0.0,
+     0.07
+    ],
+    "travel_mm": 70.0
+   },
+   "removable": true
+  },
+  {
+   "id": "sight_clamp",
+   "name_de": "Klemmhebel",
+   "name_en": "Clamp lever",
+   "assembly": "sight",
+   "function_de": "Spannt den Klemmfuß werkzeuglos",
+   "attachment_de": "Drehachse links am Klemmfuß",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_clamp",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0115,
+     -0.02169,
+     0.1368
+    ],
+    "max": [
+     0.0133,
+     0.0,
+     0.13959
+    ]
+   },
+   "size_mm": [
+    1.8,
+    21.7,
+    2.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.08,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_body",
+   "name_de": "Visiergehäuse",
+   "name_en": "Sight housing",
+   "assembly": "sight",
+   "function_de": "Trägt Emitter und Batterie; flach, hinten",
+   "attachment_de": "auf Klemmfuß (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_body",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.008,
+     -0.018,
+     0.1415
+    ],
+    "max": [
+     0.008,
+     0.011,
+     0.148
+    ]
+   },
+   "size_mm": [
+    16.0,
+    29.0,
+    6.5
+   ],
+   "triangles": 164,
+   "volume_cm3": 2.33,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_base",
+   "name_de": "Haubensockel",
+   "name_en": "Hood base",
+   "assembly": "sight",
+   "function_de": "Trägt Haube und Glas bis zur Fensterunterkante; trapezförmig verjüngt, Anzeigen unter der Visierlinie",
+   "attachment_de": "auf Klemmfuß (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_base",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0161,
+     -0.0346,
+     0.1415
+    ],
+    "max": [
+     0.0161,
+     -0.01731,
+     0.1471
+    ]
+   },
+   "size_mm": [
+    32.2,
+    17.3,
+    5.6
+   ],
+   "triangles": 108,
+   "volume_cm3": 2.78,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_knob_w",
+   "name_de": "Seitenverstellung",
+   "name_en": "Windage knob",
+   "assembly": "sight",
+   "function_de": "Verstellt das Absehen seitlich",
+   "attachment_de": "rechts am Gehäuse",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_knob_w",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01,
+     -0.01435,
+     0.14145
+    ],
+    "max": [
+     -0.0075,
+     -0.00965,
+     0.14615
+    ]
+   },
+   "size_mm": [
+    2.5,
+    4.7,
+    4.7
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_battery",
+   "name_de": "Batteriedeckel",
+   "name_en": "Battery cap",
+   "assembly": "sight",
+   "function_de": "Batteriefach links",
+   "attachment_de": "links am Gehäuse (schraubbar)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_battery",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0075,
+     -0.01514,
+     0.14066
+    ],
+    "max": [
+     0.01,
+     -0.00886,
+     0.14694
+    ]
+   },
+   "size_mm": [
+    2.5,
+    6.3,
+    6.3
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.07,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame",
+   "name_de": "Oberer Bogen",
+   "name_en": "Upper bow",
+   "assembly": "sight",
+   "function_de": "Oberer Bogen, Lücken auf 3 und 9 Uhr",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01269,
+     -0.034,
+     0.16458
+    ],
+    "max": [
+     0.01269,
+     -0.022,
+     0.1751
+    ]
+   },
+   "size_mm": [
+    25.4,
+    12.0,
+    10.5
+   ],
+   "triangles": 852,
+   "volume_cm3": 0.63,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame_b",
+   "name_de": "Unterer Bogen",
+   "name_en": "Lower bow",
+   "assembly": "sight",
+   "function_de": "Unterer Bogen, 3 mm weiter außen (S-Öffnung)",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_frame_b",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01562,
+     -0.034,
+     0.1459
+    ],
+    "max": [
+     0.01562,
+     -0.022,
+     0.15878
+    ]
+   },
+   "size_mm": [
+    31.2,
+    12.0,
+    12.9
+   ],
+   "triangles": 852,
+   "volume_cm3": 0.78,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame_trim",
+   "name_de": "Stirnkante oben",
+   "name_en": "Upper bow trim",
+   "assembly": "sight",
+   "function_de": "Stirnkante oben",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_frame_trim",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01274,
+     -0.0346,
+     0.16453
+    ],
+    "max": [
+     0.01274,
+     -0.0336,
+     0.1751
+    ]
+   },
+   "size_mm": [
+    25.5,
+    1.0,
+    10.6
+   ],
+   "triangles": 852,
+   "volume_cm3": 0.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame_trim_b",
+   "name_de": "Stirnkante unten",
+   "name_en": "Lower bow trim",
+   "assembly": "sight",
+   "function_de": "Stirnkante unten",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_frame_trim_b",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01567,
+     -0.0346,
+     0.1459
+    ],
+    "max": [
+     0.01567,
+     -0.0336,
+     0.15882
+    ]
+   },
+   "size_mm": [
+    31.3,
+    1.0,
+    12.9
+   ],
+   "triangles": 852,
+   "volume_cm3": 0.06,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_web",
+   "name_de": "Steg links",
+   "name_en": "Web left",
+   "assembly": "sight",
+   "function_de": "Verbindet die Bogenenden schräg",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_web",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.01139,
+     -0.034,
+     0.1586
+    ],
+    "max": [
+     0.01558,
+     -0.022,
+     0.16475
+    ]
+   },
+   "size_mm": [
+    4.2,
+    12.0,
+    6.1
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.11,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_web_r",
+   "name_de": "Steg rechts",
+   "name_en": "Web right",
+   "assembly": "sight",
+   "function_de": "Verbindet die Bogenenden schräg",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_web_r",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01558,
+     -0.034,
+     0.1586
+    ],
+    "max": [
+     -0.01139,
+     -0.022,
+     0.16475
+    ]
+   },
+   "size_mm": [
+    4.2,
+    12.0,
+    6.1
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.11,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_emitter",
+   "name_de": "Ladebalken",
+   "name_en": "Charge bar",
+   "assembly": "sight",
+   "function_de": "Zeigt die Ladung (10 × 1,5 mm, leuchtet beim Aufladen)",
+   "attachment_de": "oben auf dem Visiergehäuse eingelassen",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "box",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00075,
+     -0.001,
+     0.1478
+    ],
+    "max": [
+     0.00075,
+     0.009,
+     0.1483
+    ]
+   },
+   "size_mm": [
+    1.5,
+    10.0,
+    0.5
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": {
+    "kind": "glow",
+    "event": "charge",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "sight_glass",
+   "name_de": "Visierglas",
+   "name_en": "Sight glass",
+   "assembly": "sight",
+   "function_de": "Reflexscheibe ohne Spiegelung; das Absehen liegt flach darauf",
+   "attachment_de": "in der Haube (fest)",
+   "material_role": "glass_scope",
+   "material_de": "Linse im Zielfernrohr (ohne Klarlack-Spiegelung)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0,
+   "blender_object": "sight_glass",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.0288,
+     0.149
+    ],
+    "max": [
+     0.013,
+     -0.028,
+     0.175
+    ]
+   },
+   "size_mm": [
+    26.0,
+    0.8,
+    26.0
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.42,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_reticle",
+   "name_de": "Absehen Eckklammern",
+   "name_en": "Reticle Corner brackets",
+   "assembly": "sight",
+   "function_de": "Zielpunkt im Glas: Eckklammern gezeichnet (Hüftform der Klasse, Cyan, vom Emitter projiziert)",
+   "attachment_de": "flach auf der Glasebene",
+   "material_role": "reticle_cyan",
+   "material_de": "Absehen Cyan",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "sight_reticle",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00176,
+     -0.028,
+     0.16024
+    ],
+    "max": [
+     0.00176,
+     -0.02795,
+     0.16376
+    ]
+   },
+   "size_mm": [
+    3.5,
+    0.1,
+    3.5
+   ],
+   "triangles": 172,
+   "volume_cm3": 0.0,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "chamber_hood",
+   "name_de": "Kammerhaube",
+   "name_en": "Chamber hood",
+   "assembly": "barrel",
+   "function_de": "Oberschale über der offenen Ladekammer; gerade Oberkante",
+   "attachment_de": "am Gehäuse verschraubt, Fuge 1 mm; vorn im Emitterblock",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "chamber_hood",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.022,
+     -0.384,
+     0.112
+    ],
+    "max": [
+     0.022,
+     -0.151,
+     0.128
+    ]
+   },
+   "size_mm": [
+    44.0,
+    233.0,
+    16.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 155.72,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "handguard",
+   "name_de": "Handschutz",
+   "name_en": "Handguard",
+   "assembly": "support",
+   "function_de": "Unterschale der Ladekammer; Griffbereich der Stützhand",
+   "attachment_de": "am Unteren Gehäuse, Fuge 1 mm; vorn im Emitterblock",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "handguard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.021,
+     -0.384,
+     0.06
+    ],
+    "max": [
+     0.021,
+     -0.151,
+     0.08
+    ]
+   },
+   "size_mm": [
+    42.0,
+    233.0,
+    20.0
+   ],
+   "triangles": 120,
+   "volume_cm3": 180.77,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "handguard_grip",
+   "name_de": "Griffpolster",
+   "name_en": "Grip pad",
+   "assembly": "support",
+   "function_de": "Rutschfeste Zone für die Stützhand",
+   "attachment_de": "unten auf den Handschutz geklebt",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "handguard_grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.018,
+     -0.33,
+     0.0565
+    ],
+    "max": [
+     0.018,
+     -0.2,
+     0.062
+    ]
+   },
+   "size_mm": [
+    36.0,
+    130.0,
+    5.5
+   ],
+   "triangles": 108,
+   "volume_cm3": 25.3,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "hood_screws",
+   "name_de": "Haubenschrauben",
+   "name_en": "Hood screws",
+   "assembly": "barrel",
+   "function_de": "Halten Haube und Handschutz am Gehäuse",
+   "attachment_de": "seitlich am Kammeranfang",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.2,
+   "blender_object": "hood_screws",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0232,
+     -0.16374,
+     0.06826
+    ],
+    "max": [
+     0.0232,
+     -0.16026,
+     0.12174
+    ]
+   },
+   "size_mm": [
+    46.4,
+    3.5,
+    53.5
+   ],
+   "triangles": 816,
+   "volume_cm3": 0.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "ember_core",
+   "name_de": "Glutkern",
+   "name_en": "Ember core",
+   "assembly": "barrel",
+   "function_de": "Ladekern: leuchtet beim Aufladen auf (Blickfang)",
+   "attachment_de": "zwischen Gehäuse und Emitter gespannt",
+   "material_role": "charge_core",
+   "material_de": "Ladekern Cyan (reine Emission, leuchtet beim Aufladen auf)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "ember_core",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00397,
+     -0.392,
+     0.09203
+    ],
+    "max": [
+     0.00397,
+     -0.149,
+     0.09997
+    ]
+   },
+   "size_mm": [
+    7.9,
+    243.0,
+    7.9
+   ],
+   "triangles": 92,
+   "volume_cm3": 12.08,
+   "moving": {
+    "kind": "glow",
+    "event": "charge",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 6.0
+   },
+   "removable": false
+  },
+  {
+   "id": "coils",
+   "name_de": "Spulenringe",
+   "name_en": "Coil rings",
+   "assembly": "cooling",
+   "function_de": "Kondensatorspulen um den Glutkern; im Fenster sichtbar",
+   "attachment_de": "auf den Kern gepresst",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "coils",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01446,
+     -0.361,
+     0.08154
+    ],
+    "max": [
+     0.01446,
+     -0.171,
+     0.11046
+    ]
+   },
+   "size_mm": [
+    28.9,
+    190.0,
+    28.9
+   ],
+   "triangles": 2880,
+   "volume_cm3": 90.65,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "coil_rims",
+   "name_de": "Spulenkanten",
+   "name_en": "Coil rims",
+   "assembly": "cooling",
+   "function_de": "Blanke Stirnringe der Spulen",
+   "attachment_de": "an den Spulen",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.3,
+   "blender_object": "coil_rims",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01505,
+     -0.3616,
+     0.08095
+    ],
+    "max": [
+     0.01505,
+     -0.1704,
+     0.11105
+    ]
+   },
+   "size_mm": [
+    30.1,
+    191.2,
+    30.1
+   ],
+   "triangles": 5760,
+   "volume_cm3": 2.82,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "band_side",
+   "name_de": "Schrägband",
+   "name_en": "Slanted band",
+   "assembly": "barrel",
+   "function_de": "Lackiertes Band (einziges Grafikelement)",
+   "attachment_de": "lackiert",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "band_side",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0223,
+     -0.356,
+     0.1125
+    ],
+    "max": [
+     0.0223,
+     -0.334,
+     0.1275
+    ]
+   },
+   "size_mm": [
+    44.6,
+    22.0,
+    15.0
+   ],
+   "triangles": 24,
+   "volume_cm3": 0.13,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "text_l",
+   "name_de": "Schriftzug",
+   "name_en": "Lettering",
+   "assembly": "support",
+   "function_de": "Kennung „BASIC FR-10“ (einzige Schrift)",
+   "attachment_de": "aufgedruckt",
+   "material_role": "decal",
+   "material_de": "Markierung hell",
+   "interface": null,
+   "parent_part": null,
+   "shape": "text",
+   "bevel_mm": 0,
+   "blender_object": "text_l",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.02093,
+     -0.23562,
+     0.06595
+    ],
+    "max": [
+     0.02117,
+     -0.20816,
+     0.06945
+    ]
+   },
+   "size_mm": [
+    0.2,
+    27.5,
+    3.5
+   ],
+   "triangles": 2176,
+   "volume_cm3": 0.01,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "emitter",
+   "name_de": "Schlitz-Emitter",
+   "name_en": "Slit emitter",
+   "assembly": "barrel",
+   "function_de": "Formt die Salve; hinten Block, vorn schmalere Stirn",
+   "attachment_de": "auf Haube und Handschutz geschraubt (Fuge 1 mm)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.023,
+     -0.42,
+     0.06
+    ],
+    "max": [
+     0.023,
+     -0.385,
+     0.129
+    ]
+   },
+   "size_mm": [
+    46.0,
+    35.0,
+    69.0
+   ],
+   "triangles": 332,
+   "volume_cm3": 95.66,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "emitter_crown",
+   "name_de": "Schlitzkrone",
+   "name_en": "Slit crown",
+   "assembly": "barrel",
+   "function_de": "Blanke Kante um den Schlitz",
+   "attachment_de": "vorn im Emitter",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "frame",
+   "bevel_mm": 0.3,
+   "blender_object": "emitter_crown",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02,
+     -0.4206,
+     0.089
+    ],
+    "max": [
+     0.02,
+     -0.4185,
+     0.103
+    ]
+   },
+   "size_mm": [
+    40.0,
+    2.1,
+    14.0
+   ],
+   "triangles": 480,
+   "volume_cm3": 0.4,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Pistolengriff",
+   "name_en": "Pistol grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand hält die Waffe; trägt Socket_Hand",
+   "attachment_de": "mit Unterem Gehäuse verschraubt (fest)",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": "BGM-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.03024,
+     -0.076
+    ],
+    "max": [
+     0.015,
+     0.04215,
+     0.04
+    ]
+   },
+   "size_mm": [
+    30.0,
+    72.4,
+    116.0
+   ],
+   "triangles": 360,
+   "volume_cm3": 144.82,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen (Zeigefinger)",
+   "attachment_de": "Drehpunkt im Unteren Gehäuse",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.04472,
+    0.037
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     -0.05072,
+     0.01319
+    ],
+    "max": [
+     0.0035,
+     -0.04289,
+     0.039
+    ]
+   },
+   "size_mm": [
+    7.0,
+    7.8,
+    25.8
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.89,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.04472,
+     0.037
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "trigger_guard",
+   "name_de": "Abzugsbügel",
+   "name_en": "Trigger guard",
+   "assembly": "grip_controls",
+   "function_de": "Schützt den Abzug, Fingerfreiraum ≥ 22 mm",
+   "attachment_de": "Griff vorn und Unteres Gehäuse (fest)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "trigger_guard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.006,
+     -0.08272,
+     0.006
+    ],
+    "max": [
+     0.006,
+     -0.02513,
+     0.041
+    ]
+   },
+   "size_mm": [
+    12.0,
+    57.6,
+    35.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 6.87,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip_cap",
+   "name_de": "Griffboden",
+   "name_en": "Grip cap",
+   "assembly": "grip_controls",
+   "function_de": "Ausgestellter Abschluss; schützt den Griff",
+   "attachment_de": "unten auf den Griff geschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "grip_cap",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.00385,
+     -0.079
+    ],
+    "max": [
+     0.016,
+     0.04246,
+     -0.073
+    ]
+   },
+   "size_mm": [
+    32.0,
+    46.3,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 8.43,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "energy_cell",
+   "name_de": "Energiezelle",
+   "name_en": "Energy cell",
+   "assembly": "ammo",
+   "function_de": "Speichert die Ladungen; austauschbar",
+   "attachment_de": "rastet im Zellenschacht ein (lösbar)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": "BEC-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "energy_cell",
+   "origin_m": [
+    0.0,
+    -0.106,
+    0.01
+   ],
+   "bounds_m": {
+    "min": [
+     -0.012,
+     -0.126,
+     -0.032
+    ],
+    "max": [
+     0.012,
+     -0.086,
+     0.06
+    ]
+   },
+   "size_mm": [
+    24.0,
+    40.0,
+    92.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 86.14,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.106,
+     0.01
+    ],
+    "vector_m": [
+     0.0,
+     0.0,
+     -0.11
+    ],
+    "travel_mm": 110.0
+   },
+   "removable": true
+  },
+  {
+   "id": "cell_band",
+   "name_de": "Zellenband",
+   "name_en": "Cell band",
+   "assembly": "ammo",
+   "function_de": "Blankes Band über dem Zellenboden; Greifkante",
+   "attachment_de": "um die Zelle",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "energy_cell",
+   "shape": "box",
+   "bevel_mm": 0.4,
+   "blender_object": "cell_band",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0126,
+     -0.1266,
+     -0.024
+    ],
+    "max": [
+     0.0126,
+     -0.0854,
+     -0.02
+    ]
+   },
+   "size_mm": [
+    25.2,
+    41.2,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 4.14,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "cell_window",
+   "name_de": "Ladefenster",
+   "name_en": "Charge window",
+   "assembly": "ammo",
+   "function_de": "Zeigt den Ladezustand der Zelle",
+   "attachment_de": "links in die Zelle eingelassen",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "energy_cell",
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "cell_window",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0117,
+     -0.119,
+     -0.014
+    ],
+    "max": [
+     0.0127,
+     -0.114,
+     0.008
+    ]
+   },
+   "size_mm": [
+    1.0,
+    5.0,
+    22.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.11,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "stock",
+   "name_de": "Schulterstütze S2",
+   "name_en": "Stock S2",
+   "assembly": "stock",
+   "function_de": "Einteilige Schulterstütze mit Daumenloch",
+   "attachment_de": "mit zwei Bolzen am Gehäuse (fest)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": "BST-2",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "stock",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.017,
+     0.108,
+     0.0205
+    ],
+    "max": [
+     0.017,
+     0.268,
+     0.122
+    ]
+   },
+   "size_mm": [
+    34.0,
+    160.0,
+    101.5
+   ],
+   "triangles": 356,
+   "volume_cm3": 291.59,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "butt_pad",
+   "name_de": "Schaftkappe",
+   "name_en": "Butt pad",
+   "assembly": "stock",
+   "function_de": "Anlage an der Schulter",
+   "attachment_de": "auf das Schaftende geschraubt",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "butt_pad",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.019,
+     0.267,
+     0.01854
+    ],
+    "max": [
+     0.019,
+     0.28,
+     0.11897
+    ]
+   },
+   "size_mm": [
+    38.0,
+    13.0,
+    100.4
+   ],
+   "triangles": 132,
+   "volume_cm3": 46.6,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "stock_bolts",
+   "name_de": "Schaftbolzen",
+   "name_en": "Stock bolts",
+   "assembly": "stock",
+   "function_de": "Halten den Schaft am Gehäuse",
+   "attachment_de": "quer durch den Schaftansatz",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.3,
+   "blender_object": "stock_bolts",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0184,
+     0.11949,
+     0.06749
+    ],
+    "max": [
+     0.0184,
+     0.12451,
+     0.11251
+    ]
+   },
+   "size_mm": [
+    36.8,
+    5.0,
+    45.0
+   ],
+   "triangles": 688,
+   "volume_cm3": 0.13,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": "Haupthand, auf der Griffachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_SupportHand": {
+   "position_m": [
+    0.0,
+    -0.265,
+    0.0565
+   ],
+   "part": "handguard",
+   "note": "Griffpolster unter der Ladekammer",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.42,
+    0.096
+   ],
+   "part": "emitter",
+   "note": "Stirn des Schlitz-Emitters auf der Kernachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Cell": {
+   "position_m": [
+    0.0,
+    -0.106,
+    0.02
+   ],
+   "part": "energy_cell",
+   "note": "Einrastpunkt der Energiezelle (Schnittstelle BEC-1)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Sight": {
+   "position_m": [
+    0.0,
+    0.011,
+    0.162
+   ],
+   "part": "sight_body",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Reticle": {
+   "position_m": [
+    0.0,
+    -0.0284,
+    0.162
+   ],
+   "part": "sight_glass",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Eye": {
+   "position_m": [
+    0.0,
+    0.0616,
+    0.162
+   ],
+   "part": "sight_frame",
+   "note": "Augenpunkt beim Zielen (Visier-Standard: 90 mm hinter dem Glas)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    0.0,
+    -0.04941,
+    0.07167
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.0232,
+    -0.4206,
+    -0.079
+   ],
+   "max": [
+    0.0235,
+    0.28,
+    0.1751
+   ]
+  },
+  "length_m": 0.7006,
+  "height_m": 0.2541,
+  "width_m": 0.0467,
+  "reference_length_m": 0.96,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 45,
+  "triangles": 25456,
+  "assemblies": 8
+ },
+ "actions": {
+  "charge_fire": {
+   "de": "Aufladen und Salve",
+   "frames": 40,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "ember_core",
+    "sight_emitter"
+   ],
+   "events": [
+    [
+     2,
+     "charge_start"
+    ],
+    [
+     24,
+     "charged"
+    ],
+    [
+     27,
+     "burst"
+    ],
+    [
+     40,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "charge_cancel": {
+   "de": "Aufladen abbrechen",
+   "frames": 24,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "ember_core",
+    "sight_emitter"
+   ],
+   "events": [
+    [
+     12,
+     "cancel"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "reload": {
+   "de": "Energiezelle wechseln",
+   "frames": 70,
+   "fps": 30,
+   "parts": [
+    "cell_release",
+    "energy_cell"
+   ],
+   "events": [
+    [
+     16,
+     "cell_out"
+    ],
+    [
+     50,
+     "cell_in"
+    ],
+    [
+     58,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BEC-1",
+  "BGM-1",
+  "BRI-22",
+  "BST-2"
+ ]
+}

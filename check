@@ -149,6 +149,8 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         if len(E.get('at', ())) != 3 or E.get('case') not in cases or len(E.get('dir', ())) != 3 \
                 or any(k not in cases[E['case']] for k in ('len_mm', 'r_mm', 'segs')):
             fail(f'{wid}: EJECT unvollständig (Startlage f/u/x, Hülsenform aus ego.EJECT.cases oder EJECT_CASES, Richtung f/u/x)')
+    if any(p.get('iface') == 'BEC-1' for p in W.PARTS) and (not hasattr(W, 'EJECT') or E is not None):   # 0.26: Energiezelle → keine Hülse
+        fail(f'{wid}: Waffe mit Energiezelle (BEC-1) braucht ausdrücklich EJECT = None (kein Hülsenauswurf)')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})

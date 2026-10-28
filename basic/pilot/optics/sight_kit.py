@@ -137,11 +137,24 @@ def ring_haekke(size='M'):
 
 
 def fusion_boegen(size='M'):
-    """F1 „Bögen“ (Fusion): zwei Bögen aus Flachprofil mit Radiusversatz – oben r, unten r + 3, Lücken 25° auf 3 und 9 Uhr – ergeben
-    im Zielen eine S-Öffnung (Merkmal 1); Ladeanzeige als Leuchtbalken 10 × 1,5 mm auf dem Gehäuse (Merkmal 2)."""
-    r = {'S': 11.5, 'M': 13.5, 'L': 17}[size]
-    gb = CU - r - 3 - 0.4
-    fr = F + 34
+    """F1 „Bögen“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `boegen` (seit 0.26 an BASIC-10 v2.1)."""
+    return boegen(F, DECK, size)
+
+
+BOEGEN_SIZES = {'S': 10.0, 'M': 11.5, 'L': 15.0}   # Innenradius des oberen Bogens; Glas r + 1,5 (M: Ø 26 wie das Holo-Fenster → 18,9 %)
+
+
+def boegen(f, u, size='M', weapon_type='fusion_rifle', mat=MET):
+    """F1 „Bögen“ (Fusion; seit 0.26 an BASIC-10 v2.1): H0-Plattform ohne Emitterblock; zwei Bögen aus Flachprofil mit Radiusversatz –
+    oben r, unten r + 3, Lücken 25° auf 3 und 9 Uhr, schräge Stege verbinden die Bogenenden – ergeben im Zielen eine S-Öffnung
+    (Merkmal 1); Ladebalken 10 × 1,5 mm oben auf dem Gehäuse, leuchtet mit der Ladung (Merkmal 2, `glow` beim Aufladen). Gezeichnetes
+    Absehen (Hüftform der Klasse) flach im Glas. f = Hinterkante Klemmfuß, u = Schienenoberkante; Visierlinie Schiene + 26 wie das
+    Holo (Visier-Standard 3). Größe M: Glas Ø 26 (Katalog 0.21: r 13,5, Glas Ø 30 = 21,8 % über dem Holo-Band 12–20 %).
+    Liefert (Teile, Anker). Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
+    r = BOEGEN_SIZES[size]
+    cu = C.sight_line(u)
+    gb = cu - r - 3 - 0.4
+    fr, fg = f + 34, f + 40
     top, bot = _sector(r, r + T, 12.5, 167.5), _sector(r + 3, r + 3 + T, 192.5, 347.5)
 
     def pt(rr, a):
@@ -149,16 +162,24 @@ def fusion_boegen(size='M'):
     # Stege in den Lücken (3/9 Uhr): verbinden das Bogenende oben schräg mit dem Bogenanfang unten
     webs = [[pt(r + T, 12.5), pt(r, 12.5), pt(r + 3, -12.5), pt(r + 3 + T, -12.5)],
             [pt(r, 167.5), pt(r + T, 167.5), pt(r + 3 + T, 192.5), pt(r + 3, 192.5)]]
-    bt = DECK + 6
-    P = platform(2 * (r + 3 + T), gb, emitter=False) + [
-        _x('sight_frame', 'Oberer Bogen', MET, fr, fr + 12, top), _x('sight_frame_b', 'Unterer Bogen', MET, fr, fr + 12, bot),
-        _x('sight_frame_trim', 'Stirnkante oben', 'trim', fr + 11.6, fr + 12.6, top, bevel=0.2),
-        _x('sight_frame_trim_b', 'Stirnkante unten', 'trim', fr + 11.6, fr + 12.6, bot, bevel=0.2),
-        _x('sight_web', 'Steg', MET, fr, fr + 12, webs[0]), _x('sight_web_r', 'Steg', MET, fr, fr + 12, webs[1]),
-        part('sight_emitter', 'Ladebalken', 'Charge bar', 'sight', 'box', 'energy', 'Ladeanzeige 10 × 1,5 mm', 'oben auf dem Gehäuse',
-             bevel=0.2, f0=F + 3, f1=F + 13, u0=bt + 5.8, u1=bt + 6.3, w=1.5),
-        _glass(F + 40, _arc(r + 1.5, 0, 360, 48)[:-1])]
-    return P, _eye(F + 40.4)
+    bt = u + 6
+
+    def bow(pid, de, en, pts, f0, f1, m=mat, bevel=0.4, func=''):
+        return xprof(pid, de, m, f0, f1, pts, cu, func=func or de, attach='auf dem Haubensockel (fest)', bevel=bevel, en=en,
+                     parent_part='sight_mount')
+    P = C.sight_platform(f, u, 2 * (r + 3 + T), gb, emitter=False, mat=mat) + [
+        bow('sight_frame', 'Oberer Bogen', 'Upper bow', top, fr, fr + 12, func='Oberer Bogen, Lücken auf 3 und 9 Uhr'),
+        bow('sight_frame_b', 'Unterer Bogen', 'Lower bow', bot, fr, fr + 12, func='Unterer Bogen, 3 mm weiter außen (S-Öffnung)'),
+        bow('sight_frame_trim', 'Stirnkante oben', 'Upper bow trim', top, fr + 11.6, fr + 12.6, m='trim', bevel=0.2),
+        bow('sight_frame_trim_b', 'Stirnkante unten', 'Lower bow trim', bot, fr + 11.6, fr + 12.6, m='trim', bevel=0.2),
+        bow('sight_web', 'Steg links', 'Web left', webs[0], fr, fr + 12, func='Verbindet die Bogenenden schräg'),
+        bow('sight_web_r', 'Steg rechts', 'Web right', webs[1], fr, fr + 12, func='Verbindet die Bogenenden schräg'),
+        part('sight_emitter', 'Ladebalken', 'Charge bar', 'sight', 'box', 'energy', 'Zeigt die Ladung (10 × 1,5 mm, leuchtet beim Aufladen)',
+             'oben auf dem Visiergehäuse eingelassen', bevel=0.2, f0=f + 3, f1=f + 13, u0=bt + 5.8, u1=bt + 6.3, w=1.5,
+             parent_part='sight_mount', move=dict(kind='glow', pivot=None, event='charge', max=5.0)),
+        C.sight_glass_x(fg, _arc(r + 1.5, 0, 360, 48)[:-1], cu),
+        C.drawn_reticle(fg, cu, weapon_type, REL - 0.4)]
+    return P, C._reflex_anchors(f, fg, cu)
 
 
 def mini_reflex(size='M'):
@@ -234,22 +255,42 @@ def scope_tropfen(size='M'):
 
 
 def scope_gabel(size='M'):
-    """Z2 „Gabel“ (lineare Fusion): geschlossener flacher Ring; darum eine U-Gabel aus Flachprofil 3 × 10 mit 3 mm Abstand, Enden auf
-    3/9 Uhr schräg gekappt, in derselben Ebene (Merkmal 1); kurze Laschen verbinden Ring und Gabel (Merkmal 2)."""
-    r_in = SCOPE_SIZES[size]
-    ro = r_in + 2.2
-    f_obj = 72
+    """Z2 „Gabel“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `gabel` (seit 0.26 an BASIC-11 v2.1)."""
+    return gabel(72, DECK, CU, size)
+
+
+def gabel(f_obj, u, cu, size='M', weapon_type='linear_fusion_rifle', seat_u=None, length=120, saddle_f=None, mat=MET):
+    """Z2 „Gabel“ (lineare Fusion; seit 0.26 an BASIC-11 v2.1), Sitz nach Konzept A wie Z1: Rohrsattel hinter dem Auge (Wiege unter
+    dem Okular, Klemmblock um die Schiene mit Oberkante seat_u, Standard u; saddle_f = Längslage, Standard Okularende + 2 bis
+    Augenpunkt − 2), H0-Klemmfuß unter dem Objektiv auf der Schiene u. Flacher Ring ohne Wulst (außen/innen 1,29, `scope_ring`),
+    Objektiv als ein Kegel zum Auge; um den Ring eine U-Gabel aus Flachprofil 3 × 10 mm mit 3 mm Abstand, Enden auf 3/9 Uhr schräg
+    gekappt, in der Ringebene (Merkmal 1); kurze Laschen verbinden Ring und Gabel auf 3/9 Uhr (Merkmal 2). Die Gabel ruht unten auf dem
+    Klemmfuß (Fußoberkante bis an die Gabel, dazwischen höchstens ein kurzer Sockel) – kein eigener Sockelblock. f_obj = Ringstirn,
+    cu = Visierlinie. Liefert (Teile, Anker) mit sight_type 'scope'. Liegt hier statt in common.py (Unity-Quellenhash)."""
+    rel = SIGHT['types']['scope']['eye_relief_mm']
+    r_lens = SCOPE_SIZES[size]
+    ring, ro = C.scope_ring(f_obj, cu, r_lens, mat=mat)
+    eye, fe = f_obj - rel, f_obj - length
     g0, g1 = ro + 3, ro + 6
     fork = [(g1, 1.6), (g0, 0.0)] + _arc(g0, 0, -180, 32)[1:-1] + [(-g0, 0.0), (-g1, 1.6)] + _arc(g1, -180, 0, 32)[1:-1]
-    tabs = [[(s * (ro - 0.3), -1.2), (s * (g0 + 0.3), -1.2), (s * (g0 + 0.3), 1.2), (s * (ro - 0.3), 1.2)] for s in (1, -1)]
-    bottom = CU - g1
-    return _scope_body(f_obj, r_in, g1 * 0.0 + ro, step=False) + _scope_foot(f_obj - 28, f_obj, bottom + 0.5) + [
-        cyl('scope_rim', 'Objektivring', 'Objective ring', 'sight', MET, 'Geschlossener flacher Ring', 'vorn', 'f', (CU, 0), f_obj - 6,
-            f_obj, ro * (REL - 6) / REL - 0.1, r1=ro, r_in=r_in, segs=64, bevel=0.5),
-        _x('scope_fork', 'Gabel', MET, f_obj - 10, f_obj, fork, func='U-Gabel, 3 mm Abstand zum Ring'),
-        _x('scope_fork_trim', 'Gabelkante', 'trim', f_obj - 0.4, f_obj + 0.6, fork, bevel=0.2),
-        _x('scope_tabs', 'Laschen', MET, f_obj - 8, f_obj - 2, tabs[0]), _x('scope_tabs_r', 'Laschen', MET, f_obj - 8, f_obj - 2, tabs[1])], \
-        _scope_anchors(f_obj)
+    tabs = [[(s * (ro - 1.2), -1.2), (s * (g0 + 0.3), -1.2), (s * (g0 + 0.3), 1.2), (s * (ro - 1.2), 1.2)] for s in (1, -1)]
+    bt = max(u + 4.5, min(u + 6, cu - g1 + 1))       # Fußoberkante: bis an die Gabelunterkante (1 mm eingesetzt), sonst H0-Höhe
+    sf = saddle_f or (fe + 2, eye - 2)
+
+    def x(pid, de, en, m, f0, f1, pts, func, bevel=0.4):
+        return xprof(pid, de, m, f0, f1, pts, cu, func=func, attach='am Objektivring (fest)', bevel=bevel, en=en, parent_part='scope_mount_r')
+    P = C.scope_saddle(sf[0], sf[1], u if seat_u is None else seat_u, cu, fe, mat=mat) \
+        + C.scope_body(f_obj, cu, r_lens, ro, length=length, step=False, mat=mat) + ring \
+        + C.scope_foot(f_obj - 30, f_obj, u, bt, mat=mat) + [
+            x('scope_fork', 'Gabel', 'Fork', mat, f_obj - 10, f_obj, fork, 'U-Gabel um den Ring, 3 mm Abstand (Merkmal)'),
+            x('scope_fork_trim', 'Gabelkante', 'Fork trim', 'trim', f_obj - 0.4, f_obj + 0.6, fork, 'Blanke Stirnkante der Gabel', bevel=0.2),
+            x('scope_tabs', 'Lasche links', 'Tab left', mat, f_obj - 6, f_obj - 1, tabs[0], 'Verbindet Ring und Gabel auf 3 Uhr'),
+            x('scope_tabs_r', 'Lasche rechts', 'Tab right', mat, f_obj - 6, f_obj - 1, tabs[1], 'Verbindet Ring und Gabel auf 9 Uhr'),
+            C.drawn_reticle(f_obj - 4.5, cu, weapon_type, rel - 4.5, parent='scope_mount_r')]
+    if cu - g1 > bt + 0.2:                           # kleine Ringe: kurzer Sockel vom Fuß bis in die Gabel
+        P.append(x('scope_keel', 'Sockel', 'Fork base', mat, f_obj - 10, f_obj - 1,
+                   [(-8, bt - cu - 0.5), (8, bt - cu - 0.5), (6, -g1 + 1.5), (-6, -g1 + 1.5)], 'Trägt die Gabel auf dem Klemmfuß'))
+    return P, C.scope_anchors(f_obj, fe, cu)
 
 
 def sniper_lang(size='M'):
