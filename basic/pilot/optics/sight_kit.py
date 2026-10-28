@@ -375,6 +375,8 @@ def side_mount(P, A, dx):
                 q['a0'], q['a1'] = q['a0'] + dx, q['a1'] + dx
             else:
                 q['c'] = (q['c'][0], q['c'][1] + dx)
+        elif k != 'multi':                       # Richter 0.28: unbekannte Form nicht stillschweigend liegen lassen
+            raise ValueError(f'side_mount: Form {k} wird nicht verschoben')
         for i in q.get('items', ()):
             sh(i)
         for c in q.get('cuts', ()):

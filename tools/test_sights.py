@@ -179,6 +179,9 @@ def check_fullscreen(W):
     return bad
 
 
+FOOT_GAP = min(i['u0'] for i in C.sight_platform(0, 0, 10, 20)[0]['items'])   # Klemmfuß über der Schiene (common.sight_platform)
+
+
 def check_reflex_seat(W):
     """Sitz eines Holo/Reflex-Visiers an der Waffe (0.28): der Klemmfuß der H0-Plattform liegt auf einer Schiene BRI-22 (Unterkante
     0,5 mm über der Schienenoberkante wie common.sight_platform, ± 0,1), ganz innerhalb ihrer Länge und mittig auf ihr (± 0,5 mm,
@@ -187,9 +190,9 @@ def check_reflex_seat(W):
     m = P.get('sight_mount')
     if not m or m.get('shape') != 'multi':
         return ['Holo ohne Klemmfuß der H0-Plattform (sight_mount)']
-    foot = m['items'][0]
+    foot = min(m['items'], key=lambda i: i['u0'])                        # unterste Stufe = Klemmfuß
     for r in (p for p in W.PARTS if p.get('iface') == 'BRI-22' and p['id'] != 'sight_mount' and 'u1' in p):
-        if abs(foot['u0'] - 0.5 - r['u1']) <= 0.1 and r['f0'] - 1e-6 <= foot['f0'] and foot['f1'] <= r['f1'] + 1e-6 \
+        if abs(foot['u0'] - FOOT_GAP - r['u1']) <= 0.1 and r['f0'] - 1e-6 <= foot['f0'] and foot['f1'] <= r['f1'] + 1e-6 \
                 and abs(foot.get('x', 0) - r.get('x', 0)) <= 0.5:
             return []
     return [f"Klemmfuß (f {foot['f0']:g}–{foot['f1']:g}, u {foot['u0']:g}) liegt auf keiner Schiene BRI-22"]
@@ -453,7 +456,7 @@ def _check_dlinse(P):
         xi, xo = i.get('x', 0) - i['w'] / 2, i.get('x', 0) + i['w'] / 2
         if xi <= 0 or not xi < xw <= xo or xo - xw > 0.6:
             bad.append(f'W1: Fallmarke u {du:+.1f} sitzt nicht links innen an der Wand (x {xi:.2f}–{xo:.2f}, Wand {xw:.2f})')
-    bad += _glass_inside(P, lambda x, u: u <= top + 1e-6 and (u >= 0 or math.hypot(x, u) <= r + 1e-6), 'W1')
+    bad += _glass_inside(P, lambda x, u: u <= top + 1e-6 and math.hypot(x, u) <= r + 1e-6, 'W1')   # D: überall Bogen r, oben die Gerade
     bad += _hood_seat(P, 'W1')
     bt, bw = _base_top(P)
     chord = 2 * math.sqrt(max(fo[0] ** 2 - (bt - cu) ** 2, 0))

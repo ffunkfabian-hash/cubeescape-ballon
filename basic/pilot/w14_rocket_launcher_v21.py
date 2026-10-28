@@ -37,7 +37,7 @@ hinten rechts auf, Rakete von hinten eingeschoben, Klappe zu, Anzeige an (`reloa
 Rohr ganz (`EJECT = None`; die Rakete trägt `caseless`, check: hülsenlose Munition → EJECT None).
 Status: Maße entworfen (an Familie 15 angelehnt, Länge kürzer als v1; gemessene Werte im Spec), Formprinzipien abgeleitet.
 """
-from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, R_BODY, R_MID, R_SMALL, R_FINE)
+from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, sight_line, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Schellen ohne feine Kratzer)
 from basic.pilot.optics.sight_kit import entfernung, side_mount
 from basic.weapons import w14_rocket_launcher as V1
@@ -49,7 +49,7 @@ GRIP_TOP = 40
 BORE = 112                   # Rohrachse
 R_F, R_R, R_IN = 46.0, 33.0, 28.0    # Startrohr Ø 92, Heckrohr Ø 66, Bohrung Ø 56
 SIDE = 66.0                  # Visier seitlich links: Visierlinie auf Achshöhe, 66 mm neben der Rohrachse (Visierhöhe als Abstand)
-DECK = BORE - 26             # Schienenoberkante am Visierarm; Visierlinie u = BORE (Holo: Schiene + 26)
+DECK = BORE - sight_line(0)  # Schienenoberkante am Visierarm; Visierlinie u = BORE (Holo: Schiene + 26)
 ARM = (2, 38)                # Visierarm f0, f1 (trägt die Schiene, endet vor der Schelle des Griffmoduls); Visierschelle um das Startrohr
 
 CONE = (-14, 6)              # Kegel Heckrohr → Startrohr

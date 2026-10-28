@@ -187,7 +187,10 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
     elif not e.get('std') or e.get('sight_type') not in SIGHT['types']:
         fail(f'{wid}: Socket_Eye nicht nach Visier-Standard (std, sight_type)')
     else:
-        h = math.hypot(e['at'][1] - W.BORE, e['at'][2] if len(e['at']) > 2 else 0)   # 0.28: seitliches Visier = Abstand zur Achse
+        ex = e['at'][2] if len(e['at']) > 2 else 0
+        h = math.hypot(e['at'][1] - W.BORE, ex)   # 0.28: seitliches Visier = Abstand zur Achse
+        if e['at'][1] < W.BORE - SIGHT['height_tol_mm'] or ex < -0.5:   # Richter 0.28: nur über der Achse oder links (Ego-Seite)
+            fail(f'{wid}: Visierlinie unter der Achse oder rechts daneben (u {e["at"][1]:.1f}, x {ex:.1f}; seitlich nur links)')
         if abs(h - SIGHT['height_mm']) > SIGHT['height_tol_mm']:
             fail(f'{wid}: Visierhöhe {h:.1f} mm außerhalb {SIGHT["height_mm"]:.0f} ± {SIGHT["height_tol_mm"]:.0f} mm')
         T = SIGHT['types'][e['sight_type']]
