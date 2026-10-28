@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.24.0 „Holster“ – Handfeuerwaffe BASIC-04 und Seitenwaffe BASIC-05 im Stil v2.1 (Branch `claude/ballon-0.24-holster`)
+
+- BASIC-04 v2.1: lange gerade Creme-Haube über freistehender, kannelierter Trommel auf Kran, Kastenunterlauf mit Fenster zum Lauf;
+  BASIC-05 v2.1: hoher Schlitten mit dunkler Kappe, Auswurffenster und Magazin auf der Griffachse. Grundform nach Zwischenstopp, Nutzerwahl „a“.
+- Visier K1 „Klammer“ gebaut (`sight_kit.klammer`, Linie Träger + 11 mm); `check`, `test_sights` und `make_docs` kennen Kimme/Korn.
+- Quellen Q-D2-IMG über das Bungie-Manifest; Bericht [docs/versions/0.24-holster.md](docs/versions/0.24-holster.md).
+
 ## 0.22.0 „Volley“ – Impulsgewehr BASIC-02 und Portalkanone BASIC-T01 spielbar (Tasten 4 und 5) (Branch `claude/ballon-0.22-volley`)
 
 - Schritt 6 der [Entscheidungsliste](docs/entscheidungsliste-motiongen.md) für die Klasse Impuls: eigene Hüfte (Mündung 57,9/63,4 %, mit der

@@ -27,6 +27,7 @@ Arm-Rig. Ein Waffenstil v3 existiert nicht.
 | 24.10.2026 | Absehen-Katalog mit Formen, Farben, Linienstärken, Glasvarianten, Aufgehen und Spieleroptionen; „Pfeil von unten“ verworfen |
 | 25.10.2026 | Visier-Standard 3 (anfangs „Visier-Designsprache v3“) nach Motiongen REF 0.14 „Eyebox“: „Mach alles so wie du empfiehlst“ (Augenpunkt bleibt 90 mm, kleinere Öffnungen; Impuls bleibt Holo) |
 | 25.10.2026 | Kein Waffenstil v3: Familie bleibt im Stil v2.1, nur die Namen werden geklärt (Wahl (a) auf „Warum wird nicht erst v3 gemacht?“); weiter mit der Maschinenpistole |
+| 28.10.2026 | Handfeuerwaffe BASIC-04 und Seitenwaffe BASIC-05 v2.1 (0.24 „Holster“): Grundform nach Zwischenstopp mit Wahl „a“ übernommen (04 lange gerade Haube über freistehender Trommel, Kastenunterlauf; 05 hoher Schlitten auf kurzem Rahmen); Feinschliff nur in der Form: 05 dunkle Schlittenkappe hinten statt leerer Griffmulde, Magazinboden bündig; 04 Hahngehäuse runder und kleiner. Visier K1 „Klammer“ gebaut, M1 „Mini“ nur dokumentiert |
 | 26.10.2026 | Portalkanone BASIC-T01 (0.17 „Gateway“): Werkzeug mit eigener Silhouette statt Familienkörper; nur Hüfte mit Kerbe als Leitkante, kein Visier; zwei Portalfarben (vorn Cyan = Portal A, hinten Orange = Portal B), Bedienelemente neutral; nach Skizze A „Ring“ der Wunsch „mehr an der Portal-2-Portalgun orientieren, nur im BALLON-Stil“ → Skizze P2 „Ei und Ring“ (facettierte Eischale, offener Zweifarbkern, Ring fest auf Speichen, dreht je Schuss 120°); „am Abzug sind die Teile in der Luft“ → Spalte gemessen und geschlossen |
 
 ## 2 Gestaltungsregeln v2
@@ -151,6 +152,7 @@ Startpunkt nehmen.
 | `holo_kasten(f, u, size, weapon_type)` | **H4 „Kasten“** (Impuls): Haube mit runden Dachecken, Seiten einwärts, Ziffernfeld im Sockel | `size` S/M/L (`HOLO_SIZES`, L nur MG/Werfer) | 02 |
 | `holo_pille(f, u, size, weapon_type)` | **H2 „Pille“** (MP): ohne Haube, Emitterblock mit Statuspunkten, Pillenkontur gezeichnet (Rolle `sight_line`) | `size` S/M/L | 06 |
 | `scope_tropfen(f_obj, u, cu, size, weapon_type, seat_u, saddle_f)` | **Z1 „Tropfen“** (Scout), Sitz nach Konzept A: Wiege hinter dem Auge (`scope_saddle`), H0-Klemmfuß unter dem Objektiv (`scope_foot`), Ring ohne Wulst (`scope_ring`, außen/innen 1,29), Tropfensockel, zweistufiges Objektiv | `f_obj` Ringstirn, `cu` Visierlinie, `seat_u` Schiene unter dem Sattel, `size` S/M/L (`SCOPE_SIZES`, S Variante) | 03 |
+| `klammer(fr, ff, deck, size, parent)` (in `basic/pilot/optics/sight_kit.py`) | **K1 „Klammer“** (Kimme/Korn, 0.24): Kimmenblatt mit Kerbe und bündigen Leuchtklammern auf flachem Fuß, Korn mit Leuchtpunkt; Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme; gibt `(Teile, Anker)` mit `Socket_Sight` zurück. Liegt nicht in `common.py`, weil dieses im Unity-Quellenhash steht (Umzug mit dem Ego-Übertrag) | `fr` Kimmenrückseite, `ff` Kornspitze, `deck` Oberkante des Trägers, `parent` Schlitten | 04, 05 |
 | `sight_platform`, `sight_hood`, `sight_glass_x`, `xprof`, `scope_body` | Bausteine der übrigen Visiere: H0-Plattform (Klemmfuß 46 × 23/18, oranger Hebel, Gehäuse, Trapezsockel), Flachprofil-Haube (Stirn 1,6 mm) mit blanker Stirnkante, flache Scheibe | Katalog und Entwürfe: `basic/pilot/optics/sight_kit.py`, Blatt `tools/sight_catalog.py` | über Visiere |
 | `drawn_reticle(f, cu, weapon_type, dist)` | gezeichnetes Absehen: Hüftform der Klasse in Hüftgröße, flach in der Glasebene, Linien ≥ 1,6 px, reine Emission | `dist` Abstand zum Augenpunkt | über Visiere |
 | `box_scope_v21(f, u, style)` | Kastenoptik (`prism`/`flat`) – nur als Entwurf | `style` | – |
@@ -229,7 +231,9 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
    Renderings von Bungie über die Treffer-Metadaten holen:
    `[...document.querySelectorAll('a.iusc')].map(a=>JSON.parse(a.getAttribute('m')).murl).filter(u=>u.includes('screenshots'))`
    → `bungie.net/common/destiny2_content/screenshots/<id>.jpg`. Zwei bis drei gewöhnliche Legendary-Vertreter ansehen, Prinzipien
-   in `docs/quellen.md › Q-D2-IMG` eintragen (Waffe, Typ, URL, beobachtetes Prinzip). Keine Bilder ins Repo.
+   in `docs/quellen.md › Q-D2-IMG` eintragen (Waffe, Typ, URL, beobachtetes Prinzip). Keine Bilder ins Repo. Ohne Browser (0.24): Typ und
+   Bild-ID stehen im öffentlichen Bungie-Manifest (`bungie.net/Platform/Destiny2/Manifest/` › `DestinyInventoryItemDefinition`,
+   Felder `itemTypeDisplayName`, `screenshot`); light.gg lehnt direkte Abrufe ab.
 2. **Checkliste (Abschnitt 3)** im Modul-Docstring ausfüllen; Schlichtheitsbudget (Abschnitt 2) einplanen.
 3. **Modul bauen:** neue Waffe als `basic/weapons/wNN_*.py`; Neugestaltung einer bestehenden zuerst als `basic/pilot/…` mit
    `META['variant']` (eigener Ausgabeordner, Reihe bleibt unberührt).
@@ -282,6 +286,8 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - Helle Markierung (`decal`) auf Creme verschwindet: Schrift und Marken auf Graphit legen oder dunkel (`anodized`) ausführen (BASIC-T01, Runde 1).
 - Teile am Abzug „in der Luft“: Bauchunterkante muss gerade über den ganzen Abzugsbügel laufen (f ≈ 83 mm bei `grip_v21(top=40)`); der Bügel beginnt 2,7 mm vor dem Griff – Spalte am gebauten Modell messen (BVH-Abstand je Teilpaar), nicht schätzen (BASIC-T01).
 - Leuchtende Flächen (Kammerkerne) mit beleuchteter Grundfarbe wirken pastellig wie dünne Linien: `emit_only`, Stärke 1,2 für Orange, 0,7 für Cyan (helles Cyan bleicht unter AgX sonst zu Weiß; BASIC-T01).
+- Dünne Stege mit großer Fase: 5 mm Rahmen unter der Trommel mit `R_MID` fiel auf der Seitenfläche zusammen (dunkler Keil im Render)
+  → Stege ≥ 3 × Fase, Fenster ins Profil legen statt per Boolean (BASIC-04 v2.1).
 - Magazin im Griff neben die Griffachse gesetzt steht hinten aus dem Griff und versteckt sein Sichtfenster → Magazinmitte auf
   der Griffachse von `grip_v21` (f ≈ u·tan 15°), Fenster in den Teil unter dem Griffboden (BASIC-06 v2.1).
 
@@ -344,6 +350,6 @@ Dicke); Standbilder müssen die Handbelegung der Aktion übernehmen (inspect_r o
 ## 11 Stand
 
 Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hintergrund); v2 als Vorstufe erhalten.
-Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Familie Stil v2.1 mit Visier-Standard 3: BASIC-01, 02, 03 und
-06 (Maschinenpistole, 0.11 „Compact“); als erstes Werkzeug die Portalkanone BASIC-T01 (0.17 „Gateway“). Die 13 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
+Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Familie Stil v2.1 mit Visier-Standard 3: BASIC-01, 02, 03,
+04 und 05 (Handfeuerwaffe und Seitenwaffe mit Kimme/Korn K1, 0.24 „Holster“; ohne Ego-Übertrag und Unity) und 06 (Maschinenpistole, 0.11 „Compact“); als erstes Werkzeug die Portalkanone BASIC-T01 (0.17 „Gateway“). Die 11 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
 nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.
