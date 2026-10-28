@@ -400,7 +400,7 @@
     38.0
    ],
    "triangles": 1020,
-   "volume_cm3": 220.83,
+   "volume_cm3": 217.47,
    "moving": {
     "kind": "translate",
     "event": "fire",
@@ -1261,9 +1261,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    -0.00045,
-    -0.07439,
-    0.02989
+    -0.00037,
+    -0.07391,
+    0.02964
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",

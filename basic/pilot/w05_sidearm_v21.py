@@ -65,7 +65,7 @@ P += [
     prof('slide', 'Schlitten', 'Slide', 'mechanism', 'shell', 'Verschluss; läuft beim Schuss zurück; trägt Kimme und Korn',
          'auf den Rahmenschienen (gleitet), Fuge 1 mm', [(SL_F[0], SL_U), (SL_F[1] - 6, SL_U), (SL_F[1], SL_U + 6), (SL_F[1], DECK - 4),
                                                          (SL_F[1] - 4, DECK), (SL_F[0] + 4, DECK), (SL_F[0], DECK - 4)], SL_W, bevel=R_MID,
-         cuts=[cut_box(52, 94, 72, DECK + 2, 12, x=-SL_W / 2 - 2),                      # Auswurffenster rechts, oben offen
+         cuts=[cut_box(52, 94, 72, DECK + 2, 16, x=-SL_W / 2),     # Auswurffenster rechts, oben offen, 8 mm tief bis über den Block (Richter)
                cut_box(140, 180, 82, DECK + 2, 12),                                    # Schlitz im Schlittenkopf über dem Lauf
                dict(shape='cyl', axis='f', c=(BORE, 0), a0=SL_F[1] - 8, a1=SL_F[1] + 2, r=8.5, segs=32),      # Mündungsmulde
                dict(shape='cyl', axis='f', c=(ROD_U, 0), a0=SL_F[1] - 6, a1=SL_F[1] + 2, r=3.6, segs=16)],    # Stangenloch
