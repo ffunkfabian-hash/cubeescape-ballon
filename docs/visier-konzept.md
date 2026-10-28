@@ -161,7 +161,13 @@ visierlosen Waffen sind **nicht** Teil von 0.21 (Auftrag: zwei Hauptziele) – Z
 **Erledigt (28.10.2026, [Bericht](versions/0.25-longshot.md)):** K2 „Hörner“ an BASIC-08 v2.1 (`sight_kit.hoerner`, Kimme auf der Schiene,
 Korn auf der Lüftungsschiene, Linie Träger + 11 mm, Kerbe als Lücke des Hörner-Querprofils) und Z3 „Lang“ an BASIC-09 v2.1
 (`sight_kit.lang`, Sitz nach Konzept A wie Z1, Ring ohne Wulst, Vollbild-Typ `fullscreen` mit `FULLSCREEN`); `test_sights` und
-`test_sight_seat` prüfen beide. K3 „Lochkimme“ bleibt Variante im Katalog.
+`test_sight_seat` prüfen beide. K3 „Lochkimme“ bleibt Variante im Katalog. Bauteil-IDs der Katalog-Entwürfe beim Übergang zur
+Produktionsform (keine Spec, kein Export, kein Abnehmer – `grep` über das Repo leer): K2 `sight_rear` (Block) → `sight_mount` (Fuß),
+`sight_horn`/`sight_horn_r` → `sight_rear` (ein U-Querprofil), `sight_front`, `sight_glass`, `sight_clamp` bleiben – damit wie K1
+(`sight_mount` Fuß, `sight_rear` Blatt); Z3 `scope_rings` und `scope_mount_f_0/_1`, `sight_clamp_0/_1` → Sitz nach Konzept A wie Z1
+(`scope_mount_r` Sattel, `scope_strap`, `scope_mount_f` Fuß, `sight_clamp`, `scope_keel`), dazu `scope_rim`, `scope_crown`,
+`scope_eye_trim`, `scope_ocular_glass`, `scope_turret_w`, `sight_reticle`; `scope_tube`, `scope_eyepiece`, `scope_objective`,
+`scope_glass`, `scope_turret`, `scope_shade` bleiben.
 
 
 Baukasten in `basic/common.py` (Form `xprof` in `kit.py`), gewählte Visiere an BASIC-01/02/03/06 und den bisher visierlosen Waffen,
