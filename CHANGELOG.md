@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.27.0 „Tracer“ – Spurgewehr BASIC-12 und Maschinengewehr BASIC-15 im Stil v2.1 (Branch `claude/ballon-0.27-tracer`)
+
+- BASIC-12 v2.1: Creme-Haube in Linie mit der Schiene über dem freien runden Fokusrohr (drei Ringe, Griffband), umgreift Rohransatz und
+  Kegel, Fokusscheibe beidseitig, Zelle vor dem Griff, Einteilkörper mit Daumenloch, kein Auswurf; BASIC-15 v2.1: Zuführdeckel mit Visier,
+  Kasten seitlich links, flach und breit (Nutzerwünsche nach dem Zwischenstopp), Gurtsäule in einen Gurteinlauf (Nutzerwunsch „Eingang“), Mantel mit Fenstern, Tragegriff links,
+  Hülse und Glied als `EJECT`-Daten, Gurtvorschub je Schuss (`cycle='shot'`). Grundform nach Zwischenstopp, Nutzerwahl „a“.
+- Visiere H3 „Zinken“ (`sight_kit.zinken`, M 18,7 %) und H6 „Achteck“ L (`sight_kit.achteck`, 24,7 %) gebaut; `test_sights` prüft ihre
+  Merkmale, `check` Gurtwaffe → Hülse und Glied sowie den Takt je Schuss.
+- Quellen Q-D2-IMG (7 Vertreter über das Bungie-Manifest); Bericht [docs/versions/0.27-tracer.md](docs/versions/0.27-tracer.md).
+
 ## 0.26.0 „Kindle“ – Fusionsgewehr BASIC-10 und Lineares Fusionsgewehr BASIC-11 im Stil v2.1 (Branch `claude/ballon-0.26-kindle`)
 
 - BASIC-10 v2.1: gerade Creme-Oberkante über quer offener Ladekammer (drei Spulenringe um den Glutkern), gestufter Schlitz-Emitter, Zelle vor

@@ -90,27 +90,52 @@ def holo_pille(size='M'):
 
 
 def holo_zinken(size='M'):
-    """H3 „Zinken“ (Spur, MP): H0-Haube ohne Dach – zwei Seitenplatten 15° nach außen geneigt, unten 3, oben 1,5 mm Stirn, Spitzen
-    45° nach innen gekappt (Merkmal 1, VEIST); Emitterpunkt auf der Sockelrückseite zum Auge (Merkmal 2)."""
-    w, h = HOLO_SIZES[size]
-    gb = CU - h / 2 - 0.4
+    """H3 „Zinken“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `zinken` (seit 0.27 an BASIC-12 v2.1)."""
+    return zinken(F, DECK, size)
+
+
+ZINKEN_SIZES = {'S': (13.0, 17.0), 'M': (16.0, 19.0), 'L': (21.5, 24.0)}   # Glasbreite unten × Glashöhe (oben breiter, 15° je Seite)
+ZINKEN_DEG = 15.0                                                       # Neigung der Seitenplatten nach außen
+
+
+def zinken(f, u, size='M', weapon_type='trace_rifle', mat=MET):
+    """H3 „Zinken“ (Spur; seit 0.27 an BASIC-12 v2.1): H0-Plattform, Haube ohne Dach – zwei Seitenplatten 15° nach außen geneigt,
+    unten 3, oben 1,5 mm Stirn, Spitzen 45° nach innen gekappt, oben offen (Merkmal 1); Emitterpunkt auf der Sockelrückseite zum Auge
+    (Merkmal 2). Das Glas folgt den Platten als Trapez (unten schmal, oben breit) und endet auf Fensterhöhe; die Platten stehen 3 mm
+    darüber. Größe M: Glas unten 15,6, oben 25,8 mm (18,7 % der Bildbreite; der Katalog-Entwurf 0.21 mit unten 26 mm lag oben bei
+    36 mm = 26 %, über dem Holo-Band 12–20 %). f = Hinterkante Klemmfuß, u = Schienenoberkante; Visierlinie Schiene + 26 (Holo).
+    Gezeichnetes Absehen flach im Glas. Liefert (Teile, Anker). Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem
+    Ego-Übertrag)."""
+    w, h = ZINKEN_SIZES[size]
+    cu = C.sight_line(u)
+    gb = cu - h / 2 - 0.4
     ub, ut = -h / 2 - 0.4, h / 2 + 3
-    tn = math.tan(math.radians(15)) * (ut - ub)
-    plates = []
-    for s in (1, -1):
+    tg = math.tan(math.radians(ZINKEN_DEG))
+    tn = tg * (ut - ub)
+    fr, fg = f + 34, f + 40
+
+    def plate(s):                                # Innenkante genau 15°, Spitze innen um 1,5 mm gekappt
         xb, xt = w / 2, w / 2 + tn
-        plates.append([(s * xb, ub), (s * (xb + 3), ub), (s * (xt + 1.5), ut), (s * xt, ut - 1.5)])
-    fr = F + 34
-    P = platform(w + 6, gb) + [_x(f'sight_frame{"" if s > 0 else "_r"}', 'Zinke', MET, fr, fr + 12, pl, func='Seitenplatte, oben offen')
-                               for s, pl in zip((1, -1), plates)]
-    P += [_x(f'sight_frame_trim{"" if s > 0 else "_r"}', 'Zinkenkante', 'trim', fr + 11.6, fr + 12.6, pl, bevel=0.2)
-          for s, pl in zip((1, -1), plates)]
+        return [(s * xb, ub), (s * (xb + 3), ub), (s * (xt + 1.5), ut), (s * (xb + tg * (ut - 1.5 - ub)), ut - 1.5)]
+
+    def x(pid, de, en, m, f0, f1, pts, func, bevel=0.4):
+        return xprof(pid, de, m, f0, f1, pts, cu, func=func, attach='auf dem Haubensockel (fest)', bevel=bevel, en=en,
+                     parent_part='sight_mount')
+    gu = h / 2                                   # Glasoberkante (Fensterhöhe); die Platten stehen 3 mm darüber
+    gx = w / 2 - 0.2 + tg * (gu - ub - 0.4)      # Glas folgt der Platteninnenkante mit 0,2 mm Luft
     ue = gb - 3.5
-    fe = _base_rear_f(gb, u_at=ue)
-    P += [part('sight_status', 'Emitterpunkt', 'Emitter pip', 'sight', 'cyl', 'energy', 'Leuchtpunkt zum Auge', 'Sockelrückseite',
-               bevel=0, axis='f', c=(ue, 0), a0=fe - 0.4, a1=fe + 0.6, r=0.9, segs=16),
-          _glass(F + 40, [(w / 2 - 0.2, ub + 0.4), (w / 2 + tn * 0.8, ut - 3), (-w / 2 - tn * 0.8, ut - 3), (-w / 2 + 0.2, ub + 0.4)])]
-    return P, _eye(F + 40.4)
+    fe = C.sight_base_rear_f(f, u, gb, ue)
+    P = C.sight_platform(f, u, w + 6, gb, mat=mat)
+    P += [x('sight_frame', 'Zinke links', 'Tine left', mat, fr, fr + 12, plate(1), 'Seitenplatte 15° nach außen, oben offen'),
+          x('sight_frame_r', 'Zinke rechts', 'Tine right', mat, fr, fr + 12, plate(-1), 'Seitenplatte 15° nach außen, oben offen'),
+          x('sight_frame_trim', 'Zinkenkante links', 'Tine trim left', 'trim', fr + 11.6, fr + 12.6, plate(1), 'Blanke Stirnkante', bevel=0.2),
+          x('sight_frame_trim_r', 'Zinkenkante rechts', 'Tine trim right', 'trim', fr + 11.6, fr + 12.6, plate(-1), 'Blanke Stirnkante',
+            bevel=0.2),
+          part('sight_status', 'Emitterpunkt', 'Emitter pip', 'sight', 'cyl', 'energy', 'Leuchtpunkt zum Auge (Visier bereit)',
+               'in der Sockelrückseite', bevel=0, axis='f', c=(ue, 0), a0=fe - 0.4, a1=fe + 0.6, r=0.9, segs=16, parent_part='sight_mount'),
+          C.sight_glass_x(fg, [(w / 2 - 0.2, ub + 0.4), (gx, gu), (-gx, gu), (-w / 2 + 0.2, ub + 0.4)], cu),
+          C.drawn_reticle(fg, cu, weapon_type, REL - 0.4)]
+    return P, C._reflex_anchors(f, fg, cu)
 
 
 def holo_kasten(size='M'):
@@ -179,6 +204,45 @@ def boegen(f, u, size='M', weapon_type='fusion_rifle', mat=MET):
              parent_part='sight_mount', move=dict(kind='glow', pivot=None, event='charge', max=5.0)),
         C.sight_glass_x(fg, _arc(r + 1.5, 0, 360, 48)[:-1], cu),
         C.drawn_reticle(fg, cu, weapon_type, REL - 0.4)]
+    return P, C._reflex_anchors(f, fg, cu)
+
+
+ACHTECK_SIZES = {'S': (26, 19, 5), 'M': (30, 22, 6), 'L': (34, 26, 7)}   # Fenster B × H, Fase 45°; L = Holo-L-Variante (MG, Werfer)
+
+
+def _oct(w, h, c):
+    """Achteck w × h, Ecken 45° um c gefast."""
+    return [(w / 2, -h / 2 + c), (w / 2, h / 2 - c), (w / 2 - c, h / 2), (-w / 2 + c, h / 2), (-w / 2, h / 2 - c),
+            (-w / 2, -h / 2 + c), (-w / 2 + c, -h / 2), (w / 2 - c, -h / 2)]
+
+
+def achteck(f, u, size='L', weapon_type='machine_gun', mat=MET):
+    """H6 „Achteck“ (MG; seit 0.27 an BASIC-15 v2.1): H0-Plattform, schlanke Achteckhaube aus Flachprofil 1,6 × 12, Ecken 45° gefast
+    (Merkmal 1); die vier Fasenflächen außen blank abgesetzt (Merkmal 2). Sockel so breit wie die untere Achteckseite. Standard am MG
+    ist Größe L (34 × 26, 24,7 % der Bildbreite; zugelassene Variante Holo L bis 25 % an MG und Werfern, Visier-Standard 3 seit 0.21):
+    M (30 × 22) läge mit 21,8 % über dem Holo-Band 12–20 % und ist keine zugelassene Größe. f = Hinterkante Klemmfuß, u =
+    Schienenoberkante; Visierlinie Schiene + 26 (Holo). Gezeichnetes Absehen flach im Glas. Liefert (Teile, Anker). Liegt hier statt in
+    common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
+    w, h, c = ACHTECK_SIZES[size]
+    cu = C.sight_line(u)
+    gb = cu - h / 2 - 0.4
+    co = c + T * (2 - math.sqrt(2))              # äußere Fase: gleiche Stirn 1,6 mm auch über den Ecken
+    inner, outer = _oct(w, h, c), _oct(w + 2 * T, h + 2 * T, co)
+    fr, fg = f + 34, f + 40
+    W, H = w / 2 + T, h / 2 + T
+    facets = []
+    for sx, su in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+        p, q = (sx * W, su * (H - co)), (sx * (W - co), su * H)
+        L = math.hypot(q[0] - p[0], q[1] - p[1])
+        d = ((q[0] - p[0]) / L, (q[1] - p[1]) / L)
+        n = (sx / math.sqrt(2), su / math.sqrt(2))
+        a, b = (p[0] + 0.9 * d[0], p[1] + 0.9 * d[1]), (q[0] - 0.9 * d[0], q[1] - 0.9 * d[1])
+        facets.append([(a[0] - 0.1 * n[0], a[1] - 0.1 * n[1]), (b[0] - 0.1 * n[0], b[1] - 0.1 * n[1]),
+                       (b[0] + 0.45 * n[0], b[1] + 0.45 * n[1]), (a[0] + 0.45 * n[0], a[1] + 0.45 * n[1])])
+    P = C.sight_platform(f, u, w + 2 * T - 2 * co, gb, mat=mat) + C.sight_hood(inner, outer, fr, cu, depth=12, mat=mat)
+    P += [xprof(f'sight_facet_{i}', 'Fasenfläche', 'trim', fr + 1.5, fr + 12.4, pts, cu, func='Blanke Fasenfläche außen',
+                attach='auf der Haube', bevel=0.15, en='Chamfer facet', parent_part='sight_mount') for i, pts in enumerate(facets)]
+    P += [C.sight_glass_x(fg, inner, cu), C.drawn_reticle(fg, cu, weapon_type, REL - 0.4)]
     return P, C._reflex_anchors(f, fg, cu)
 
 

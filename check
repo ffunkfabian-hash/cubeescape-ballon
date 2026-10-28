@@ -12,6 +12,17 @@ sys.path.insert(0, ROOT)
 err = []
 
 
+
+def _key_value(keys, fr):
+    """Wert einer Bewegung im Bild fr wie tools/blender_build.value_at (dort mit bpy geladen): erster passender Abschnitt, Smoothstep."""
+    if fr <= keys[0][0]:
+        return keys[0][1]
+    for (f0, v0), (f1, v1) in zip(keys, keys[1:]):
+        if f0 <= fr <= f1:
+            x = max(0.0, min(1.0, (fr - f0) / (f1 - f0))) if f1 > f0 else 1.0
+            return v0 + (v1 - v0) * x * x * (3 - 2 * x)
+    return keys[-1][1]
+
 def fail(msg):
     err.append(msg)
 
@@ -53,6 +64,16 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'weapons', 'w*.py'))):
             p = next((x for x in W.PARTS if x['id'] == pid), None)
             if not p or 'move' not in p:
                 fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+            elif p['move'].get('cycle') == 'shot':     # 0.27: Vorschub je Schuss (Gurt) – zwischen zwei Schüssen genau ein Hub 0 → 1 → 0
+                shots = [fr for fr, ev in A.get('events', ()) if ev == 'shot']
+                ks = A['keys'][pid]
+                for s0, s1 in zip(shots, shots[1:] + [A['frames'] + 1]):
+                    # ausgewertet wie die Bildfolgen (Richter 0.27); der Rücksprung darf auf das Bild des nächsten Schusses fallen
+                    seg = [_key_value(ks, fr) for fr in range(s0, min(s1, A['frames']) + 1)]
+                    ups = sum(1 for x, y in zip(seg, seg[1:]) if x < 0.5 <= y)
+                    if seg[0] > 1e-9 or max(seg) < 1 - 1e-9 or seg[-1] > 1e-9 or ups != 1:
+                        fail(f'{wid}/{a}: {pid} (Vorschub je Schuss) macht zwischen Schuss {s0} und {s1} nicht genau einen Hub 0 → 1 → 0')
+                        break
     sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')
     if not os.path.exists(sp):
         fail(f'{wid}: Spec fehlt (tools/sync_specs.py)')
@@ -99,6 +120,16 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
             p = next((x for x in W.PARTS if x['id'] == pid), None)
             if not p or 'move' not in p:
                 fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+            elif p['move'].get('cycle') == 'shot':     # 0.27: Vorschub je Schuss (Gurt) – zwischen zwei Schüssen genau ein Hub 0 → 1 → 0
+                shots = [fr for fr, ev in A.get('events', ()) if ev == 'shot']
+                ks = A['keys'][pid]
+                for s0, s1 in zip(shots, shots[1:] + [A['frames'] + 1]):
+                    # ausgewertet wie die Bildfolgen (Richter 0.27); der Rücksprung darf auf das Bild des nächsten Schusses fallen
+                    seg = [_key_value(ks, fr) for fr in range(s0, min(s1, A['frames']) + 1)]
+                    ups = sum(1 for x, y in zip(seg, seg[1:]) if x < 0.5 <= y)
+                    if seg[0] > 1e-9 or max(seg) < 1 - 1e-9 or seg[-1] > 1e-9 or ups != 1:
+                        fail(f'{wid}/{a}: {pid} (Vorschub je Schuss) macht zwischen Schuss {s0} und {s1} nicht genau einen Hub 0 → 1 → 0')
+                        break
     sp = os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json')     # Quelle der Familienmaße (docs/familienmasse.md)
     if not os.path.exists(sp):
         fail(f'{wid}: Spec fehlt in data/specs (Vollrendering, dann tools/sync_specs.py)')
@@ -146,9 +177,16 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
     if E is not None:
         from basic.arms import ego as EG
         cases = dict(EG.EJECT['cases'], **getattr(W, 'EJECT_CASES', {}))   # 0.25: eigene Hülsenform im Modul (ego.py im Unity-Quellenhash)
-        if len(E.get('at', ())) != 3 or E.get('case') not in cases or len(E.get('dir', ())) != 3 \
-                or any(k not in cases[E['case']] for k in ('len_mm', 'r_mm', 'segs')):
+
+        def _incomplete(e):
+            return len(e.get('at', ())) != 3 or e.get('case') not in cases or len(e.get('dir', ())) != 3 \
+                or any(k not in cases[e['case']] for k in ('len_mm', 'r_mm', 'segs'))
+        if _incomplete(E):
             fail(f'{wid}: EJECT unvollständig (Startlage f/u/x, Hülsenform aus ego.EJECT.cases oder EJECT_CASES, Richtung f/u/x)')
+        if 'links' in E and _incomplete(E['links']):    # 0.27: Gurtglieder wie eine Hülse (eigene Form in EJECT_CASES)
+            fail(f'{wid}: EJECT.links unvollständig (Startlage f/u/x, Gliedform aus EJECT_CASES, Richtung f/u/x)')
+    if any(p.get('iface') == 'BAB-1' for p in W.PARTS) and (E is None or 'links' not in E):   # 0.27: Gurt aus dem Munitionskasten
+        fail(f'{wid}: Gurtwaffe (Munitionskasten BAB-1) braucht EJECT mit Hülse und links (Gurtglied)')
     if any(p.get('iface') == 'BEC-1' for p in W.PARTS) and (not hasattr(W, 'EJECT') or E is not None):   # 0.26: Energiezelle → keine Hülse
         fail(f'{wid}: Waffe mit Energiezelle (BEC-1) braucht ausdrücklich EJECT = None (kein Hülsenauswurf)')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
@@ -188,6 +226,16 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 't*_v21.py'))):
             p = next((x for x in W.PARTS if x['id'] == pid), None)
             if not p or 'move' not in p:
                 fail(f'{wid}/{a}: Teil {pid} ohne Bewegung')
+            elif p['move'].get('cycle') == 'shot':     # 0.27: Vorschub je Schuss (Gurt) – zwischen zwei Schüssen genau ein Hub 0 → 1 → 0
+                shots = [fr for fr, ev in A.get('events', ()) if ev == 'shot']
+                ks = A['keys'][pid]
+                for s0, s1 in zip(shots, shots[1:] + [A['frames'] + 1]):
+                    # ausgewertet wie die Bildfolgen (Richter 0.27); der Rücksprung darf auf das Bild des nächsten Schusses fallen
+                    seg = [_key_value(ks, fr) for fr in range(s0, min(s1, A['frames']) + 1)]
+                    ups = sum(1 for x, y in zip(seg, seg[1:]) if x < 0.5 <= y)
+                    if seg[0] > 1e-9 or max(seg) < 1 - 1e-9 or seg[-1] > 1e-9 or ups != 1:
+                        fail(f'{wid}/{a}: {pid} (Vorschub je Schuss) macht zwischen Schuss {s0} und {s1} nicht genau einen Hub 0 → 1 → 0')
+                        break
         fl = getattr(W, 'FLASH', {}).get(a)
         if fl and (fl['part'] not in ids or fl['role'] not in roles):
             fail(f'{wid}/{a}: FLASH verweist auf unbekanntes Teil oder Rolle')

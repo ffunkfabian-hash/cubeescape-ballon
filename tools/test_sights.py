@@ -183,6 +183,9 @@ BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffe
     # 0.26 „Kindle“: F1 an BASIC-10, Z2 an BASIC-11 (sight_kit; Umzug nach common.py mit dem Ego-Übertrag)
     'F1 Bögen': (lambda s: _kit().boegen(-6, 143, s), 'reflex', 'fusion_rifle', ('S', 'M', 'L')),
     'Z2 Gabel': (lambda s: _kit().gabel(72, 143, 169, s), 'scope', 'linear_fusion_rifle', ('S', 'M', 'L')),
+    # 0.27 „Tracer“: H3 an BASIC-12, H6 an BASIC-15 in Größe L (M läge mit 21,8 % über dem Holo-Band und ist keine zugelassene Größe)
+    'H3 Zinken': (lambda s: _kit().zinken(-6, 143, s), 'reflex', 'trace_rifle', ('S', 'M', 'L')),
+    'H6 Achteck': (lambda s: _kit().achteck(-6, 143, s), 'reflex', 'machine_gun', ('S', 'L')),
 }
 
 
@@ -196,10 +199,18 @@ def _radii(p):
     return min(rs), max(rs)
 
 
-KIT_PARTS = {   # Pflichtteile der Merkmale je Visier-ID (0.26): F1 Bögen, Z2 Gabel
+KIT_PARTS = {   # Pflichtteile der Merkmale je Visier-ID (0.26): F1 Bögen, Z2 Gabel; 0.27: H3 Zinken, H6 Achteck
     'F1': ('sight_frame', 'sight_frame_b', 'sight_web', 'sight_web_r', 'sight_glass', 'sight_base'),
     'Z2': ('scope_rim', 'scope_fork', 'scope_tabs', 'scope_tabs_r', 'scope_mount_f'),
+    'H3': ('sight_frame', 'sight_frame_r', 'sight_status', 'sight_glass', 'sight_base'),
+    'H6': ('sight_frame', 'sight_frame_trim', 'sight_facet_0', 'sight_facet_1', 'sight_facet_2', 'sight_facet_3', 'sight_glass',
+           'sight_base'),
 }
+# Teile, an denen ein Visier ohne ausdrückliche ID erkannt wird (nur Merkmalsteile, die kein anderes Visier der Familie trägt)
+KIT_MARKERS = {'F1': ('sight_frame_b', 'sight_web', 'sight_web_r'), 'Z2': ('scope_fork', 'scope_tabs', 'scope_tabs_r'),
+               'H3': ('sight_frame_r',), 'H6': ('sight_facet_0', 'sight_facet_1', 'sight_facet_2', 'sight_facet_3')}
+ZINKEN_TOL_DEG = 0.5      # Neigung der Zinken 15° ± 0,5°
+DIAG_TOL_DEG = 0.5        # Achteck: Fasen 45° ± 0,5°
 
 
 def check_kit_form(parts, anchors, sight_id=None):
@@ -208,8 +219,7 @@ def check_kit_form(parts, anchors, sight_id=None):
     Klemmfuß (nichts schwebt). sight_id ('F1'/'Z2') kommt vom Aufrufer (Baukasten-Name, Modulfeld SIGHT_ID); ohne Angabe gilt ein
     Visier als F1/Z2, sobald eines seiner Pflichtteile außer Ring, Glas und Sockel da ist. Fehlerliste (leer ohne F1/Z2)."""
     P = {p['id']: p for p in parts}
-    ids = [sight_id] if sight_id else [k for k, req in KIT_PARTS.items()
-                                       if any(r in P for r in req if r not in ('scope_rim', 'sight_glass', 'sight_base', 'scope_mount_f', 'sight_frame'))]
+    ids = [sight_id] if sight_id else [k for k, mark in KIT_MARKERS.items() if any(r in P for r in mark)]
     bad = []
     for k in ids:
         missing = [r for r in KIT_PARTS.get(k, ()) if r not in P]
@@ -244,6 +254,116 @@ def check_kit_form(parts, anchors, sight_id=None):
         support = foot if 'scope_keel' not in P else max(q[1] for q in P['scope_keel']['pts']) + cu
         if support < cu - g1 - 1e-6:
             bad.append(f'Z2: Gabel schwebt {cu - g1 - support:.2f} mm über dem Klemmfuß')
+    if 'H3' in ids:
+        bad += _check_zinken(P)
+    if 'H6' in ids:
+        bad += _check_achteck(P)
+    return bad
+
+
+def _base_top(P):
+    """Oberkante (u) und Breite des Haubensockels der H0-Plattform (common.sight_platform: pts[2] = vorn oben)."""
+    b = P['sight_base']
+    return b['pts'][2][1], b['w']
+
+
+def _check_zinken(P):
+    """H3 „Zinken“ (0.27): Platten 15° nach außen und spiegelgleich, oben offen (kein Teil quer über dem Glas), Platten sitzen auf dem
+    Sockel, Glas zwischen den Platten und nicht über ihnen, Emitterpunkt mittig auf der Sockelrückseite unter dem Fenster (zum Auge)."""
+    bad = []
+    L, R, g = P['sight_frame'], P['sight_frame_r'], P['sight_glass']
+    cu = L['cu']
+    for pid in ('sight_frame', 'sight_frame_r'):
+        pts = P[pid]['pts']
+        if not (all(x > 0 for x, _ in pts) or all(x < 0 for x, _ in pts)):
+            bad.append(f'H3: {pid} kreuzt die Mitte (Platte statt Haube)')
+            return bad
+    pts = L['pts']
+    u_lo, u_hi = min(q[1] for q in pts), max(q[1] for q in pts)
+    lo = min((q for q in pts if q[1] == u_lo), key=lambda q: abs(q[0]))            # Innenkante unten
+    hi = min((q for q in pts if q[1] > (u_lo + u_hi) / 2), key=lambda q: abs(q[0]))   # Innenkante oben
+    ang = math.degrees(math.atan2(abs(hi[0]) - abs(lo[0]), hi[1] - lo[1]))
+    if abs(ang - _kit().ZINKEN_DEG) > ZINKEN_TOL_DEG:
+        bad.append(f'H3: Zinken {ang:+.1f}° statt {_kit().ZINKEN_DEG:.0f}° nach außen geneigt')
+    if sorted((-x, u) for x, u in R['pts']) != sorted(pts) and \
+            any(abs(a[0] + b[0]) > 1e-6 or abs(a[1] - b[1]) > 1e-6 for a, b in zip(sorted((-x, u) for x, u in R['pts']), sorted(pts))):
+        bad.append('H3: rechte Zinke ist nicht das Spiegelbild der linken')
+    gu = max(q[1] for q in g['pts'])
+    for p in P.values():                     # oben offen: kein Querprofil über die Mitte oberhalb des Glases
+        if p.get('shape') == 'xprof' and p['id'] not in ('sight_glass', 'sight_reticle') and p['id'].startswith('sight') \
+                and min(q[0] for q in p['pts']) < -1 and max(q[0] for q in p['pts']) > 1 and max(q[1] for q in p['pts']) > gu + 0.5:
+            bad.append(f"H3: {p['id']} schließt die Zinken oben (Dach)")
+    bt, bw = _base_top(P)
+    if not bt - 1.0 - 1e-6 <= cu + u_lo <= bt + 1e-6 or max(abs(q[0]) for q in pts if q[1] == u_lo) > bw / 2 + 1e-6:
+        bad.append(f'H3: Zinken sitzen nicht auf dem Sockel (unten u {cu + u_lo:.2f}, Sockel u {bt:.2f}, Breite {bw:g})')
+    tg = math.tan(math.radians(ang))
+    for x, u in g['pts']:
+        if abs(x) > abs(lo[0]) + tg * (u - lo[1]) + 1e-6 or u > u_hi:
+            bad.append(f'H3: Glaspunkt ({x:.2f}, {u:.2f}) liegt außerhalb der Zinken')
+            break
+    pip = P['sight_status']
+    b = P['sight_base']['pts']
+    fr = b[0][0] + (b[3][0] - b[0][0]) * (pip['c'][0] - b[0][1]) / (b[3][1] - b[0][1])   # Sockelrückseite in Höhe des Punkts
+    if pip['mat'] != 'energy' or abs(pip['c'][1]) > 1e-6 or not pip['c'][0] < bt or not pip['a0'] - 1e-6 <= fr <= pip['a1'] + 1e-6:
+        bad.append(f"H3: Emitterpunkt nicht mittig in der Sockelrückseite unter dem Fenster (f {pip['a0']:.1f}–{pip['a1']:.1f}, "
+                   f"Rückseite f {fr:.1f}, u {pip['c'][0]:.1f})")
+    return bad
+
+
+def _diag_k(pts):
+    """Fasen eines Achtecks: {(sx, su): Abstand der Fasenlinie vom Mittelpunkt}; None, wenn eine Kante weder achsparallel noch 45° ist."""
+    k = {}
+    for a, b in zip(pts, pts[1:] + pts[:1]):
+        d = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0])) % 90
+        if min(d, 90 - d) < DIAG_TOL_DEG:
+            continue
+        if abs(d - 45) > DIAG_TOL_DEG:
+            return None
+        sx, su = (1 if a[0] + b[0] > 0 else -1), (1 if a[1] + b[1] > 0 else -1)
+        k[(sx, su)] = (sx * (a[0] + b[0]) / 2 + su * (a[1] + b[1]) / 2) / math.sqrt(2)
+    return k
+
+
+def _check_achteck(P):
+    """H6 „Achteck“ (0.27): Haube innen und außen Achtecke mit vier 45°-Fasen, Stirn 1,6 mm ringsum (auch über den Fasen), je Fase
+    eine blanke Fasenfläche außen auf der Haube, Glas in der Innenkontur, Haube sitzt im Sockel (nichts schwebt), Sockel so breit wie
+    die untere Achteckseite."""
+    from basic.common import SIGHT_T
+    bad = []
+    hood, g = P['sight_frame'], P['sight_glass']
+    outer, inner = hood['pts'], hood['cuts'][0]['pts']
+    ko, ki = _diag_k(outer), _diag_k(inner)
+    if ko is None or ki is None or len(ko) != 4 or len(ki) != 4:
+        return ['H6: Haube ist kein Achteck mit vier 45°-Fasen']
+    for q in ko:
+        if abs(ko[q] - ki[q] - SIGHT_T) > 0.05:
+            bad.append(f'H6: Stirn über der Fase {q} {ko[q] - ki[q]:.2f} mm statt {SIGHT_T}')
+    if abs(max(x for x, _ in outer) - max(x for x, _ in inner) - SIGHT_T) > 0.05 or \
+            abs(max(u for _, u in outer) - max(u for _, u in inner) - SIGHT_T) > 0.05:
+        bad.append(f'H6: Stirn an den Seiten nicht {SIGHT_T} mm')
+    mids = {}                               # Mitte jeder Außenfase
+    for a, b in zip(outer, outer[1:] + outer[:1]):
+        if abs(a[0] - b[0]) > 1e-6 and abs(a[1] - b[1]) > 1e-6:
+            mids[(1 if a[0] + b[0] > 0 else -1, 1 if a[1] + b[1] > 0 else -1)] = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    seen = set()
+    for i in range(4):                       # je Fase genau eine Fläche, mittig auf der Außenfase (± 0,5 mm)
+        f = P[f'sight_facet_{i}']
+        cx, cu_ = sum(x for x, _ in f['pts']) / len(f['pts']), sum(u for _, u in f['pts']) / len(f['pts'])
+        q = (1 if cx > 0 else -1, 1 if cu_ > 0 else -1)
+        d = math.dist((cx, cu_), mids[q])
+        if q in seen or d > 0.5:
+            bad.append(f'H6: Fasenfläche {i} liegt nicht mittig auf einer eigenen Außenfase ({d:.2f} mm daneben)')
+        seen.add(q)
+    xs, us = [x for x, _ in inner], [u for _, u in inner]
+    if any(not min(xs) - 1e-6 <= x <= max(xs) + 1e-6 or not min(us) - 1e-6 <= u <= max(us) + 1e-6 for x, u in g['pts']):
+        bad.append('H6: Glas steht über die Innenkontur der Haube')
+    bt, bw = _base_top(P)
+    cu = hood['cu']
+    if not cu + min(u for _, u in outer) - 1e-6 <= bt <= cu + min(us) + 1e-6:
+        bad.append(f'H6: Haube sitzt nicht im Sockel (Sockel u {bt:.2f}, Haube unten u {cu + min(u for _, u in outer):.2f})')
+    flat = [abs(a[0] - b[0]) for a, b in zip(outer, outer[1:] + outer[:1]) if abs(a[1] - b[1]) < 1e-6 and a[1] < 0]
+    if not flat or abs(bw - flat[0]) > 0.5:
+        bad.append(f'H6: Sockel {bw:.1f} mm breit statt der unteren Achteckseite {flat[0] if flat else 0:.1f} mm')
     return bad
 
 
