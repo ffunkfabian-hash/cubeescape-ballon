@@ -20,6 +20,8 @@ mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der
 | BASIC-06-v2.1 Maschinenpistole | 547 × 291 × 47 | 82 | 326 | -221 | 147 | 65.0 | 90 (Reflex-/Holovisier) | 230 / 24 | 9 / 40 | 22 / 53 | 49 / 18172 |
 | BASIC-08-v2.1 Schrotflinte | 869 × 222 × 52 | 100 | 602 | -267 | 139 | 39.0 | 70 (Kimme/Korn) | 310 / 46 | 122 / 32 (Ladeklappe) | 118 / 74 | 36 / 12798 |
 | BASIC-09-v2.1 Scharfschützengewehr | 1135 × 268 × 72 | 96 | 807 | -328 | 162 | 66.0 | 90 (Zielfernrohr, Vollbild) | 340 / 52 | 112 / 20 | 103 / 75 | 47 / 21626 |
+| BASIC-10-v2.1 Fusionsgewehr | 701 × 254 × 47 | 96 | 420 | -280 | 162 | 66.0 | 90 (Reflex-/Holovisier) | 265 / 56 | – | 49 / 72 | 45 / 25456 |
+| BASIC-11-v2.1 Lineares Fusionsgewehr | 1098 × 256 × 50 | 92 | 729 | -328 | 158 | 66.0 | 90 (Zielfernrohr) | 350 / 42 | – | 126 / 75 | 53 / 29610 |
 
 ## Größen der Hauptteile
 
@@ -36,6 +38,8 @@ als einzelne Teile.
 | BASIC-06-v2.1 | 262 × 81 × 43 | 222 × 121 × 40 | 130 × 115 × 40 | 47 × 37 × 25 | 72 × 116 × 30 | 70 × 166 × 22 |
 | BASIC-08-v2.1 | 220 × 96 × 43 | – | 198 × 118 × 40 | 631 × 15 × 26 | 73 × 120 × 30 | – |
 | BASIC-09-v2.1 | 330 × 130 × 40 | 290 × 29 × 34 | 207 × 128 × 40 | 217 × 61 × 51 | 72 × 116 × 30 | 37 × 60 × 24 |
+| BASIC-10-v2.1 | 260 × 119 × 45 | 233 × 24 × 42 | 172 × 103 × 38 | 47 × 39 × 32 | 72 × 116 × 30 | – |
+| BASIC-11-v2.1 | 322 × 124 × 41 | 559 × 38 × 30 | 207 × 128 × 40 | 192 × 46 × 50 | 72 × 116 × 30 | – |
 
 ## Werkzeuge
 

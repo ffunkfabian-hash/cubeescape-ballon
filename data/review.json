@@ -1437,5 +1437,61 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-09-v2.1/ (views/ mit 8 Skins und sightline.png, motion/ von links, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/longshot/"
     ]
+  },
+  "BASIC-11-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.26 „Kindle“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette (kindle/runde1_11.jpg) – Erstentwurf zu dünn und lang, Gabelspitzen spitz (Stacheln) → Kern 92, untere Schiene hinten als tiefe Griffzone, Schienen 60 mm kürzer, Spitzen stumpf, Z2 Rohr 190 mm; Nutzerwahl a; (2) Schichten/Negativraum an exploded, top, front, sightline (kindle/runde2_11.jpg): Spalt zwischen den Schienen zeigt Kern und vier Spulen, Gabel offen vor der Brücke, Z2 mit Gabel und Laschen um den Ring im Zielbild; Posenprüfung (BVH je Endlage): nur Sitzkontakte (Zelle im Schacht, Zellenhalter im Gehäuse, Sattel auf der Schiene); Sitz Z2 test_sight_seat (Auflage 70,5 mm, Sattel endet f 56 vor dem Auge f 60, 0,028 L über dem Gehäuse, unteres Drittel frei); (3) Material/Budget an 8 Skins (kindle/runde3_11.jpg): alle lesbar, Kern als reine Emission (charge_core) bleibt Cyan; Budget 3 Leuchtfunktionen (Ladung, Munition, Absehen), 1 Band, 1 Schrift, 3 Orange (Höhenturm, Klemmhebel, Zellenhalter)"
+    },
+    "actions": {
+      "charge_fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/charge_fire, Bilder 0/10/18/24 (kindle/bewegung_11.jpg): Kern aus, lädt sichtbar auf, voll beim Strahl, wieder aus; kein Hülsenauswurf"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/6/18/56 (kindle/bewegung_11.jpg): Zellenhalter gedrückt, Zelle senkrecht nach unten heraus und wieder ein"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-11-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kindle/"
+    ]
+  },
+  "BASIC-10-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.26 „Kindle“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette (kindle/runde1_10.jpg) – Erstentwurf: dicker Kern in energy las sich als Leuchtröhre, Vorbau lang und kastig → Kammer 42 mm kürzer, Kern r 4, Spulen 50 mm mit 20-mm-Lücken; Nutzerwahl a; Kern als reine Emission (charge_core); (2) Schichten/Negativraum an exploded, top, front, sightline (kindle/runde2_10.jpg): Kammerfenster quer durch, Spulen und Kern beidseitig sichtbar, Emitter zweistufig mit Schlitz, F1 im Zielbild mit S-Öffnung und Stegen; Posenprüfung (BVH je Endlage): Zelle bei f 80 schnitt den Abzugsbügel 2,7 mm → ab f 86, danach nur Sitzkontakte; (3) Material/Budget an 8 Skins (kindle/runde3_10.jpg): alle lesbar; Budget 3 Leuchtfunktionen (Ladung: Kern und Ladebalken, Munition, Absehen), 1 Band, 1 Schrift, 2 Orange (Zellenhalter, Klemmhebel)"
+    },
+    "actions": {
+      "charge_fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/charge_fire, Bilder 0/14/24/36 (kindle/bewegung_10.jpg): Kern aus, lädt auf, voll bei der Salve, wieder aus; kein Hülsenauswurf"
+      },
+      "charge_cancel": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/charge_cancel, Bild 12 (kindle/bewegung_10.jpg): Kern halb geladen beim Abbruch, fällt danach ab"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/16/50 (kindle/bewegung_10.jpg): Zellenhalter, Zelle senkrecht nach unten heraus und wieder ein"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-10-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kindle/"
+    ]
   }
 }

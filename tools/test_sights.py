@@ -180,7 +180,54 @@ BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffe
     'H2 Pille': (lambda s: C.holo_pille(-6, 143, s), 'reflex', 'submachine_gun', ('S', 'M', 'L')),
     'H4 Kasten': (lambda s: C.holo_kasten(-6, 143, s), 'reflex', 'pulse_rifle', ('S', 'M', 'L')),
     'Z1 Tropfen': (lambda s: C.scope_tropfen(72, 143, 169, s), 'scope', 'scout_rifle', ('S', 'M', 'L')),
+    # 0.26 „Kindle“: F1 an BASIC-10, Z2 an BASIC-11 (sight_kit; Umzug nach common.py mit dem Ego-Übertrag)
+    'F1 Bögen': (lambda s: _kit().boegen(-6, 143, s), 'reflex', 'fusion_rifle', ('S', 'M', 'L')),
+    'Z2 Gabel': (lambda s: _kit().gabel(72, 143, 169, s), 'scope', 'linear_fusion_rifle', ('S', 'M', 'L')),
 }
+
+
+def _kit():
+    from basic.pilot.optics import sight_kit
+    return sight_kit
+
+
+def _radii(p):
+    rs = [math.hypot(x, u) for x, u in p['pts']]
+    return min(rs), max(rs)
+
+
+def check_kit_form(parts, anchors):
+    """Merkmale von F1 und Z2 (0.26) am Entwurf: F1 – unterer Bogen 3 mm weiter außen (S-Öffnung), Stege in beiden Lücken, Glas hinter
+    dem oberen Bogen, unterer Bogen sitzt im Sockel; Z2 – Gabel 3 mm außerhalb des Rings, Laschen an beiden Seiten, Gabel ruht auf dem
+    Klemmfuß (nichts schwebt). Fehlerliste (leer ohne F1/Z2)."""
+    P = {p['id']: p for p in parts}
+    bad = []
+    if 'sight_frame_b' in P and 'sight_web' in P:
+        (ti, _), (bi, bo) = _radii(P['sight_frame']), _radii(P['sight_frame_b'])
+        gx = max(q[0] for q in P['sight_glass']['pts'])
+        cu = P['sight_frame']['cu']
+        if abs(bi - ti - 3.0) > 0.05:
+            bad.append(f'F1: Radiusversatz der Bögen {bi - ti:.2f} mm statt 3 (S-Öffnung)')
+        if 'sight_web_r' not in P:
+            bad.append('F1: Steg in der rechten Lücke fehlt')
+        if not ti < gx < bi:
+            bad.append(f'F1: Glasrand r {gx:.2f} nicht zwischen den Bögen ({ti:.2f}–{bi:.2f})')
+        if P['sight_base']['pts'][2][1] < cu - bo - 1e-6 or P['sight_base']['pts'][2][1] > cu - bi:
+            bad.append('F1: unterer Bogen sitzt nicht auf dem Sockel (schwebt oder steht darüber)')
+    if 'scope_fork' in P:
+        rim = P['scope_rim']
+        ro = rim.get('r1', rim['r'])
+        g0, g1 = _radii(P['scope_fork'])
+        foot = max(i['u1'] for i in P['scope_mount_f']['items'])
+        cu = P['scope_fork']['cu']
+        if abs(g0 - ro - 3.0) > 0.1:
+            bad.append(f'Z2: Gabel {g0 - ro:.2f} mm vom Ring statt 3 mm')
+        if 'scope_tabs_r' not in P or 'scope_tabs' not in P:
+            bad.append('Z2: Laschen fehlen')
+        support = foot if 'scope_keel' not in P else max(q[1] for q in P['scope_keel']['pts']) + cu
+        if support < cu - g1 - 1e-6:
+            bad.append(f'Z2: Gabel schwebt {cu - g1 - support:.2f} mm über dem Klemmfuß')
+    return bad
 
 
 def main():
@@ -197,6 +244,7 @@ def main():
             if typ == 'scope' and abs(ring_ratio(P) - C.RING_RATIO) > 0.02:
                 bad.append(f'{name} {s}: Ring außen/innen {ring_ratio(P):.3f} statt ≈ {C.RING_RATIO}')
             bad += [f'{name} {s}: {b}' for b in check_reticle(P, A, wtype)]
+            bad += [f'{name} {s}: {b}' for b in check_kit_form(P, A)]
     for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
         wid, e = f"{W.META['id']}-{W.META['variant']}", W.ANCHORS.get('Socket_Eye', {})
@@ -227,6 +275,7 @@ def main():
         if e['sight_type'] == 'scope' and abs(ring_ratio(W.PARTS) - C.RING_RATIO) > 0.02:
             bad.append(f'{wid}: Ring außen/innen {ring_ratio(W.PARTS):.3f} statt ≈ {C.RING_RATIO} (Wulst)')
         bad += [f'{wid}: {b}' for b in check_reticle(W.PARTS, W.ANCHORS, W.META['type'])]
+        bad += [f'{wid}: {b}' for b in check_kit_form(W.PARTS, W.ANCHORS)]
     # Mündungsfeuer im Zielen (5.3 A) bei Querprofil-Glas: nur innerhalb der Kontur gezählt (0.21, Richter) – die Pille misst weniger
     # als ihr umschließendes Rechteck und bleibt unter 20 %
     import types

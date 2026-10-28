@@ -122,6 +122,12 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Elegy-49 | Sniper Rifle | `…/screenshots/3666954563.jpg` | hohes helles Gehäuse, Laufmantel mit Längsschlitz, freier Lauf mit großer Mündung, großes Kastenmagazin; gelochter Mündungsmantel nicht übernommen |
 | Maxim XI | Sniper Rifle | `…/screenshots/3239754990.jpg` | lange durchgehende Haube vom Schaft bis vor die Hälfte, darunter dunkler Vorderschaft, Kastenmagazin vor dem Griff |
 | Far Future | Sniper Rifle | `…/screenshots/893527433.jpg` | Längsstaffelung: dünner, sehr langer freier Lauf (vermessen in Motiongen proportionen › 3); Zellen und Goldplatten nicht übernommen |
+| Cruoris FR4 | Fusion Rifle | `…/screenshots/891996636.jpg` | kurzes hohes Gehäuse über dem Griff, davor ein offener Bund paralleler Kondensatorrohre bis zur stumpfen Front; Rohrbündel als Spulenringe um einen Kern vereinfacht |
+| Erentil FR4 | Fusion Rifle | `…/screenshots/3027844941.jpg` | wie Cruoris (gleiche Hersteller-Grundform), Kammer offen zwischen Gehäuse und Front; Rohrschellen und Bügel nicht übernommen |
+| Nox Echo III | Fusion Rifle | `…/screenshots/2502422774.jpg` | kastige helle Oberschale mit flacher Stirn über dunkler Unterseite, Zellenblock vor dem Griff (vermessen in Motiongen proportionen › 2) |
+| Komodo-4FR | Linear Fusion Rifle | `…/screenshots/2697058914.jpg` | lange obere Laufhaube über schlanker unterer Schiene, vorn offen; Block hinter dem Griff; Lochreihe und Haken vorn nicht übernommen |
+| Taipan-4fr | Linear Fusion Rifle | `…/screenshots/1911060537.jpg` | wie Komodo: oben schwer, unten schlank, dazwischen Luft; Zweiton dunkel/hell |
+| Threaded Needle | Linear Fusion Rifle | `…/screenshots/3075224551.jpg` | lange offene Gabel nach vorn, Spulenhülse gerippt (vermessen in Motiongen proportionen › 2); spitze Zinken nicht übernommen (Stacheln, Budget) |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
@@ -139,6 +145,11 @@ Traveler's Judgment 5 (Schläuche, Kapsel) gesichtet und verworfen. Für BASIC-0
 Oberkante mit Lüftungsschiene, dicker Lauf über der Röhre und die große Pumpe; beim Scharfschützen die lange Creme-Haube (geteilt in
 Gehäuse und Laufmantel) mit Längsschlitz, freier Lauf mit großer Bremse und Kastenmagazin vor dem Griff. Gesichtet und verworfen:
 Badlander und Retold Tale (organisch, Verzierungen), Beloved (Leuchtzellen), Twilight Oath (geschwungene Klinge), Uzume RR4 (Kastenoptik).
+Für BASIC-10 und BASIC-11 v2.1 (0.26 „Kindle“, gesichtet 28.10.2026, Bungie-Manifest wie 0.24; Bilder nur im Cache
+`refs/q-d2-img/fr_*`, `lf_*`): übernommen beim Fusionsgewehr das kurze Gehäuse mit offener Ladekammer davor, die stumpfe Front und die
+Zelle vor dem Griff; beim Linearen Fusionsgewehr die zwei Schienen mit Luft dazwischen, die offene Gabel vorn und der Block hinter dem
+Griff. Gesichtet und verworfen: Main Ingredient und Elatha FR4/Proelium FR3 (Varianten derselben Grundformen), Stormchaser und Doomed
+Petitioner (Klingenspitze, organische Linien), Cataclysmic (Raid-Waffe, Zahnreihe).
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).
