@@ -1337,5 +1337,55 @@
       "Im Sprint verdeckt die Eischale die Kerne (Trageform E)",
       "Kern-Aufleuchten beim Schuss (Modul-Feld FLASH) noch nicht in Ego-Clips und Unity"
     ]
+  },
+  "BASIC-04-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.24 „Holster“): (1) Silhouette/Zweiton an side_left, hero_p, silhouette, ego – Erstentwurf: 5 mm Rahmen unter der Trommel fiel unter der Fase zusammen (dunkler Keil) → Rahmen 9 mm, Trommelfenster im Profil; Schriftzug lief in die Laufaufnahme → nach vorn; Nutzerwahl a (Grundform bleibt) → Hahngehäuse hinten rund und kleiner; (2) Schichten/Negativraum an exploded, top, part_sight: Haube 4 mm schmaler als der Rahmen, Laufmantelfenster zeigt den Lauf, Trommel steht seitlich 5,5 mm vor, ohne Befund; Zielbild sightline: Kornpunkt in der Kerbe zwischen den Leuchtklammern; (3) Material/Budget an 8 Skins: alle lesbar, Sprenkel nur wie in der Familie bei nacht/kobalt; Budget 1 Leuchtfunktion, 1 Band, 1 Schrift, 2 Orange"
+    },
+    "actions": {
+      "fire_da": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire_da, Bilder 0/6: Hahn gespannt und vorgeschlagen, Trommel dreht 60° oben nach links (Gegenprobe test_motion: +60° fiel durch und wurde umgedreht)"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/8/18/62: Riegel nach vorn, Kran schwenkt die Trommel links unten neben den Rahmen (Kammern sichtbar), zurück; keine Hülse beim Schuss (EJECT None)"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-04-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/holster/"
+    ]
+  },
+  "BASIC-05-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.24 „Holster“): (1) Silhouette/Zweiton an side_left, hero_p, silhouette, ego – Erstentwurf: Magazinboden schräg unter dem waagerechten Griffboden (Keil) → Magazin auf der Griffachse selbst gebaut, Boden waagerecht; Schlitten +10 mm (H/L 0,86 → 0,80); Nutzerwahl a → dunkle Schlittenkappe hinten statt leerer Griffmulde, Magazinboden bündig; (2) Schichten/Negativraum an exploded, top, part_sight: Auswurffenster rechts mit Verriegelungsblock, Schlitz im Schlittenkopf über dem Lauf, ohne Befund; Zielbild sightline: Kornpunkt in der Kerbe; (3) Material/Budget an 8 Skins: Schlittenkappe in anodized zeigte Kratz-Sprenkel auf den Seitenflächen → graphite, danach sauber; Budget 2 Leuchtfunktionen, 1 Band, 1 Schrift, 3 Orange; Richter Runde 1: Auswurffenster schnitt nur 4 mm tief, der Verriegelungsblock blieb verdeckt → 8 mm tief, Block in hero_p sichtbar (Bogen holster/auswurf_05_nah.jpg)"
+    },
+    "actions": {
+      "fire_semi": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire_semi, Bilder 0/2/4: Abzug, Schlitten läuft 32 mm zurück mit Kimme, Korn, Kappe und Band, Lauf und Führungsstange stehen vorn frei"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload_empty, Bilder 0/14/40/50: Schlitten hinten, Magazin entlang der Griffachse heraus und wieder ein, Schlitten vor"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-05-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/holster/"
+    ]
   }
 }

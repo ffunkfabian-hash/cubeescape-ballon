@@ -110,13 +110,25 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Parabellum | Submachine Gun | `…/screenshots/3769072067.jpg` | kastiger Vorbau über dem Lauf, kräftiger gebogener Bügel vom Abzugsbügel nach vorn, langes Magazin im Griff tritt unten aus, kurzer Schaft |
 | The Recluse | Submachine Gun | `…/screenshots/1050806815.jpg` | schlanke, nach vorn abfallende Linie; großer Bügel als Handstütze unter dem Lauf; Magazin im Griff |
 | New City | Submachine Gun | `…/screenshots/2414612776.jpg` | gleiche Grundform wie Parabellum: Kastenvorbau, Bügel, Magazin im Griff mit geripptem Unterteil |
+| Fatebringer | Hand Cannon | `…/screenshots/2171478765.jpg` | lange, gerade Oberkante über Lauf und Trommel; Kastenlauf mit Schlitzfenstern; Kastenunterlauf; dunkler, leicht geneigter Griff mit schmaler Kappe; hell oben, dunkel unten |
+| Austringer | Hand Cannon | `…/screenshots/3055790362.jpg` | rechteckiger, schlichter Hauptblock; dunkler Rahmen hinten, heller Lauf vorn; offene runde Mündung, Hahn sichtbar; Zierfenster und Lampe nicht übernommen |
+| Igneous Hammer | Hand Cannon | `…/screenshots/2351180975.jpg` | heller Deckel über dunklem Rahmen; Fächerrippen und Wickelgriff zu verziert (nicht übernommen) |
+| Minimum Distance | Sidearm | `…/screenshots/1911843789.jpg` | klassischer Schlitten mit Auswurffenster und Farbzonen, dunkler Rahmen mit Schiene, Führungsstange vorn sichtbar, eckiger Abzugsbügel |
+| Drang | Sidearm | `…/screenshots/2362471600.jpg` | flacher, kantiger Schlitten auf kurzem Kastenrahmen, Kimme am Schlittenende; langer Dämpfer und Medaillon nicht übernommen |
+| Brass Attacks | Sidearm | `…/screenshots/2121785039.jpg` | Zweiton Schlitten/Rahmen; Nieten und Lüftungsfenster zu verziert (nicht übernommen) |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
 legendary scout rifle light.gg“): übernommen lange flache Linie, geschlitzter Handschutz, Unterrohr, dreifach geschlitzte Bremse. Für BASIC-06 v2.1 (Namen aus der
 Vorsitzung, Bilder am 25.10.2026 selbst gesichtet): übernommen Kastenvorbau, Bügel aus dem Abzugsbügel, Magazin im Griff mit
 Austritt unten; nicht übernommen der gebogene Bügel ohne Vordergriff (Designvertrag 06 verlangt den Vordergriff; gerades Band ist
-schlichter) und das gerippte Magazin (Schlichtheitsbudget).
+schlichter) und das gerippte Magazin (Schlichtheitsbudget). Für BASIC-04 und BASIC-05 v2.1 (0.24 „Holster“, gesichtet 28.10.2026;
+Typ und Bild-ID aus dem öffentlichen Bungie-Manifest `bungie.net/Platform/Destiny2/Manifest/` › `DestinyInventoryItemDefinition`
+(`itemTypeDisplayName`, `screenshot`), weil light.gg den Abruf ablehnt; Bilder nur im Cache `refs/q-d2-img/`): übernommen bei der
+Handfeuerwaffe die lange gerade Oberkante, der Kastenlauf mit Fenster und der Kastenunterlauf, hell oben/dunkel unten; bei der
+Seitenwaffe der Schlitten mit Auswurffenster, die sichtbare Führungsstange und der kurze dunkle Rahmen. Nicht übernommen: Zierfenster,
+Fächerrippen, Lampen, Dämpfer, Medaillons, Nieten und Rautengriffe (Schlichtheitsbudget); Midnight Coup (Keil wie ein Gewehr) und
+Traveler's Judgment 5 (Schläuche, Kapsel) gesichtet und verworfen.
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).

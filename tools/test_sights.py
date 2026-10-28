@@ -9,6 +9,9 @@
 - Absehen gezeichnet: `sight_reticle` flach (Querprofile ≤ 0,1 mm) in der Glasebene (± 0,5 mm), reine Emission, Hüftform der
   Klasse in Hüftgröße (± 3 %), Linien mindestens 1,6 px bei 1280 px Bildbreite.
 - Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
+- Kimme/Korn K1 an Familienwaffen (0.24, BASIC-04/05): Klasse passt, Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme,
+  Lichtspalt zwischen Korn und Kerbe je Seite ≥ 0,25° (≈ 4 px bei 1280 px), Kornpunkt in der Kerbe, Kimmen- und Kornfuß liegen
+  auf dem Träger auf.
 - Bauteil-Hash des Unity-Exports (`export_unity.parts_sha`) ist bei 1 ulp Abweichung gleich (Mac und Linux-CI).
 - Mündungsfeuer im Zielen an der MP-Pille: in der Kontur gezählt (kleiner als im umschließenden Rechteck) und ≤ 20 % (5.3 A).
 """
@@ -82,6 +85,51 @@ def check_reticle(parts, anchors, wtype):
     return bad
 
 
+IRON_GAP_MIN_DEG = 0.25     # Lichtspalt je Seite zwischen Korn und Kerbe, mindestens ≈ 4 px bei 1280 px Bildbreite (75°)
+
+
+def iron_picture(parts, anchors):
+    """Zielbild über Kimme und Korn (K1, 0.24) im Augenpunkt: Winkel in Grad (Kerbe halb, Korn halb, Lichtspalt je Seite, Kornpunkt,
+    Kerbengrund, Blattoberkante; u nach oben positiv) und Abstände Auge–Kimme, Auge–Korn in mm."""
+    P = {p['id']: p for p in parts}
+    eye_f, cu = anchors['Socket_Eye']['at'][0], anchors['Socket_Eye']['at'][1]
+    rear, front, dot = P['sight_rear'], P['sight_front'], P['sight_glass']
+    fr = min(q[0] for q in rear['pts'])
+    notch = rear['cuts'][0]
+    post = front['items'][0]
+    ff = max(q[0] for q in post['pts'] if q[1] == max(v[1] for v in post['pts']))
+    dr, df = fr - eye_f, (dot['a0'] + dot['a1']) / 2 - eye_f
+    deg = math.degrees
+    notch_half, post_half = deg(math.atan(notch['w'] / 2 / dr)), deg(math.atan(post['w'] / 2 / (ff - eye_f)))
+    return dict(eye_rear=dr, eye_front=df, notch_half=notch_half, post_half=post_half, gap=notch_half - post_half,
+                dot=deg(math.atan((dot['c'][0] - cu) / df)), notch_floor=deg(math.atan((notch['u0'] - cu) / dr)),
+                blade_top=deg(math.atan((max(q[1] for q in rear['pts']) - cu) / dr)))
+
+
+def check_iron(W):
+    """Kimme/Korn einer Familienwaffe (Visier-Standard 3, Erweiterung 0.21; gebaut 0.24): Fehlerliste."""
+    from basic.pilot.optics.sight_kit import IRON_EYE_MM
+    bad, e, t = [], W.ANCHORS['Socket_Eye'], W.META['type']
+    if t not in RT.SIGHT['line_exempt']['iron'] or RT.SIGHT_KIND.get(t) != 'irons_brackets':
+        bad.append(f'Kimme/Korn passt nicht zur Klasse {t} (Visier-Standard 3: {RT.SIGHT_KIND.get(t)})')
+    want = RT.SIGHT['rail_line_mm']['iron']
+    if e.get('deck') is None or abs(e['at'][1] - e['deck'] - want) > 1e-6:
+        bad.append(f"Visierlinie u {e['at'][1]} statt Träger {e.get('deck')} + {want:g} mm")
+    P = {p['id']: p for p in W.PARTS}
+    for pid in ('sight_mount', 'sight_front'):          # Kimmenfuß und Kornfuß liegen auf dem Träger auf (nichts schwebt)
+        low = min(i['u0'] if 'u0' in i else min(q[1] for q in i['pts']) for i in P[pid]['items'])
+        if e.get('deck') is not None and low > e['deck'] + 1e-6:
+            bad.append(f"{pid} beginnt bei u {low:g} über dem Träger {e['deck']:g} (schwebt)")
+    g = iron_picture(W.PARTS, W.ANCHORS)
+    if abs(g['eye_rear'] - IRON_EYE_MM) > 0.5:
+        bad.append(f"Augenpunkt {g['eye_rear']:.1f} mm statt {IRON_EYE_MM:.0f} mm hinter der Kimme")
+    if g['gap'] < IRON_GAP_MIN_DEG:
+        bad.append(f"Lichtspalt {g['gap']:.2f}° je Seite < {IRON_GAP_MIN_DEG}° (Korn füllt die Kerbe)")
+    if not g['notch_floor'] < g['dot'] < g['blade_top']:
+        bad.append(f"Kornpunkt bei {g['dot']:.2f}° nicht in der Kerbe ({g['notch_floor']:.2f}° … {g['blade_top']:.2f}°)")
+    return bad
+
+
 BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffentyp der Hüftform, Größen)
     'H0 Referenz': (lambda s: C.reflex_sight_v21(-6, 143), 'reflex', 'auto_rifle', ('M',)),
     'H2 Pille': (lambda s: C.holo_pille(-6, 143, s), 'reflex', 'submachine_gun', ('S', 'M', 'L')),
@@ -107,6 +155,13 @@ def main():
     for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
         wid, e = f"{W.META['id']}-{W.META['variant']}", W.ANCHORS.get('Socket_Eye', {})
+        if e.get('sight_type') == 'iron':
+            g = iron_picture(W.PARTS, W.ANCHORS)
+            n += 1
+            print(f"[test_sights] {wid}: Kimme/Korn, Linie Träger + {e['at'][1] - e['deck']:g} mm, Auge {g['eye_rear']:.0f} mm hinter der "
+                  f"Kimme, Kerbe ±{g['notch_half']:.2f}°, Korn ±{g['post_half']:.2f}°, Lichtspalt {g['gap']:.2f}°, Kornpunkt {g['dot']:.2f}°")
+            bad += [f'{wid}: {b}' for b in check_iron(W)]
+            continue
         if e.get('sight_type') not in ('reflex', 'scope'):
             continue
         sh = opening_share(W.PARTS, W.ANCHORS)

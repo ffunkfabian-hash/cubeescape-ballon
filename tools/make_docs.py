@@ -262,12 +262,14 @@ def family_dims():
         A = {k: fu(v['position_m']) for k, v in S['anchors'].items()}
         D = S['dimensions']
         e = W.ANCHORS['Socket_Eye']
-        ref = SIGHT['types'][e['sight_type']]['ref']
+        iron = e['sight_type'] == 'iron'     # Kimme/Korn (0.24): Augenabstand zur Kimme, eigene Linie (Visierhöhe gilt nicht)
+        ref = 'Socket_Sight' if iron else SIGHT['types'][e['sight_type']]['ref']
+        de = 'Kimme/Korn' if iron else SIGHT['types'][e['sight_type']]['de']
         mf, mu = A['Socket_Muzzle']
         rear = -D['bounds_m']['max'][1] * 1000
         rows.append(f"| {wid} {W.META['type_de']} | {D['length_m'] * 1000:.0f} × {D['height_m'] * 1000:.0f} × {D['width_m'] * 1000:.0f} | "
                     f"{mu:.0f} | {mf:.0f} | {rear:.0f} | {A['Socket_Eye'][1]:.0f} | {A['Socket_Eye'][1] - mu:.1f} | "
-                    f"{A[ref][0] - A['Socket_Eye'][0]:.0f} ({SIGHT['types'][e['sight_type']]['de']}) | "
+                    f"{A[ref][0] - A['Socket_Eye'][0]:.0f} ({de}) | "
                     f"{A['Socket_SupportHand'][0]:.0f} / {A['Socket_SupportHand'][1]:.0f} | "
                     f"{A['Socket_MagWell'][0]:.0f} / {A['Socket_MagWell'][1]:.0f} | "
                     f"{A['Socket_CenterOfMass'][0]:.0f} / {A['Socket_CenterOfMass'][1]:.0f} | "
@@ -288,7 +290,8 @@ def family_dims():
          '## Lagen', '',
          'mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der Mündung, Heck f = hinterste Kante',
          '(negativ = hinter dem Griff). Visierhöhe = Visierlinie über der Laufachse (Soll '
-         f"{SIGHT['height_mm']:.0f} ± {SIGHT['height_tol_mm']:.0f} mm), Augenabstand = Augenpunkt bis Glas bzw. Objektiv.", '',
+         f"{SIGHT['height_mm']:.0f} ± {SIGHT['height_tol_mm']:.0f} mm; Kimme/Korn mit eigener Linie Träger + "
+         f"{SIGHT['rail_line_mm']['iron']:g} mm, dort gilt sie nicht), Augenabstand = Augenpunkt bis Glas, Objektiv bzw. Kimme.", '',
          '| Waffe | L × H × B | Laufachse u | Mündung f | Heck f | Visierlinie u | Visierhöhe | Augenabstand | Stützhand f / u | '
          'Magazinschacht f / u | Schwerpunkt f / u | Teile / Dreiecke |',
          '|---|---|---|---|---|---|---|---|---|---|---|---|'] + rows + [

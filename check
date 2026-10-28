@@ -113,7 +113,11 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
                 fail(f'{wid}: Anker {k} im Spec weicht vom Entwurf ab (neu bauen, tools/sync_specs.py)')
     from basic.reticles import SIGHT   # Visier-Standard: Höhe 66 ± 4 mm, Augenabstand je Visiertyp
     e = W.ANCHORS.get('Socket_Eye', {})
-    if not e.get('std') or e.get('sight_type') not in SIGHT['types']:
+    if e.get('sight_type') == 'iron':  # Kimme/Korn (0.24): eigene Linie Träger + 11 mm, Visierhöhe gilt nicht (Visier-Standard 3)
+        from tools.test_sights import check_iron
+        for b in check_iron(W):
+            fail(f'{wid}: {b}')
+    elif not e.get('std') or e.get('sight_type') not in SIGHT['types']:
         fail(f'{wid}: Socket_Eye nicht nach Visier-Standard (std, sight_type)')
     else:
         h = e['at'][1] - W.BORE
@@ -131,7 +135,7 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         lo, hi, band = share_band(e['sight_type'], W.META['type'], getattr(W, 'SIGHT_SIZE', 'M'))
         if not lo <= share <= hi:
             fail(f'{wid}: Öffnung im Zielen {share * 100:.1f} % außerhalb {band} {lo * 100:.0f}–{hi * 100:.0f} %')
-        want = {'holo': 'reflex', 'ring_scope': 'scope'}.get(SIGHT_KIND.get(W.META['type']))
+        want = {'holo': 'reflex', 'ring_scope': 'scope', 'irons_brackets': 'iron'}.get(SIGHT_KIND.get(W.META['type']))
         if want and want != e['sight_type']:
             fail(f'{wid}: Visiertyp {e["sight_type"]} passt nicht zur Klasse (Visier-Standard 3: {SIGHT_KIND[W.META["type"]]})')
     E = getattr(W, 'EJECT', None)   # Hülsenauswurf (0.16, 5.4 A): Datenfeld je Waffe, Startlage und Hülsenform müssen bestehen

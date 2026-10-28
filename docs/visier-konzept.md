@@ -157,6 +157,7 @@ Die Fragen waren:
 `sight_anod` nach Punkt 5 = Antwort A), Visier-Standard 3 erweitert (Visierlinien, Varianten Holo L / Zielfernrohr S), Absehen in
 Blender flach; BASIC-01 H0, BASIC-02 H4, BASIC-03 Z1 nach Konzept A, BASIC-06 H2; Unity-Export mit Backen für 01/03/06. Die bisher
 visierlosen Waffen sind **nicht** Teil von 0.21 (Auftrag: zwei Hauptziele) – Zuordnung nach § 6a bleibt offen für eine eigene Version.
+**Erledigt (28.10.2026, [Bericht](versions/0.24-holster.md)):** K1 „Klammer“ an BASIC-04/05 v2.1 gebaut (`sight_kit.klammer`, Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme, `test_sights` prüft Lichtspalt und Kornpunkt); M1 „Mini“ (04/05) und H8 „Halbmond“ (05) bleiben Varianten im Katalog.
 
 
 Baukasten in `basic/common.py` (Form `xprof` in `kit.py`), gewählte Visiere an BASIC-01/02/03/06 und den bisher visierlosen Waffen,

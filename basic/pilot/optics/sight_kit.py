@@ -281,39 +281,56 @@ def sniper_lang(size='M'):
 
 
 # ------------------------------------------------------------------------------------------------ Kimme/Korn
-def _irons_anchor(fr, ff):
-    return {'Socket_Reticle': dict(at=(ff, CU_IRON, 0), part='sight_glass'),
-            'Socket_Eye': dict(at=(fr - 70, CU_IRON, 0), part='sight_rear', sight_type='iron', std=False,
-                               note='70 mm hinter der Kimme, eigene Linie Schiene + 11 mm')}
+IRON_EYE_MM = 70.0                      # Augenpunkt hinter der Kimme (Entwurf 0.21; Visier-Standard 3 legt für Kimme/Korn keinen fest)
+KLAMMER_SIZES = {'S': 0.85, 'M': 1.0, 'L': 1.2}
+
+
+def _irons_anchor(fr, ff, cu=CU_IRON, deck=DECK):
+    return {'Socket_Reticle': dict(at=(ff, cu, 0), part='sight_glass'),
+            'Socket_Sight': dict(at=(fr, cu, 0), part='sight_rear', note='Kimme (Rückseite des Kimmenblatts) auf der Visierlinie'),
+            'Socket_Eye': dict(at=(fr - IRON_EYE_MM, cu, 0), part='sight_rear', sight_type='iron', std=False, deck=deck,
+                               note=f'{IRON_EYE_MM:.0f} mm hinter der Kimme, eigene Linie Schiene + {cu - deck:g} mm')}
 
 
 def iron_klammer(size='M'):
-    """K1 „Klammer“ (Handfeuerwaffe, Seitenwaffe): Kimme als ein Blatt 20 × 7 × 6 mm mit Kerbe 4,6 auf flachem Fuß (H0-Profilsprache);
-    Leuchtklammern „[ ]“ bündig in der Blattrückseite (Merkmal 1); Korn 3 mm mit Leuchtpunkt (Merkmal 2)."""
-    s = {'S': 0.85, 'M': 1.0, 'L': 1.2}[size]
-    fr, ff, notch, cu = 20, 330, 4.6 * s, CU_IRON
-    b0 = DECK + 6
+    """K1 „Klammer“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `klammer`."""
+    return klammer(20, 330, DECK, size)
+
+
+def klammer(fr, ff, deck, size='M', parent=None):
+    """K1 „Klammer“ (Handfeuerwaffe, Seitenwaffe; seit 0.24 an BASIC-04/05 v2.1): Kimme als ein Blatt 20 × 7 × 6 mm mit Kerbe 4,6 auf
+    flachem Fuß (H0-Profilsprache); Leuchtklammern „[ ]“ bündig in der Blattrückseite (Merkmal 1); Korn 3 mm mit Leuchtpunkt
+    (Merkmal 2). fr = Rückseite des Kimmenblatts, ff = Kornspitze, deck = Oberkante des Trägers (Schiene, Oberbrücke, Schlitten);
+    Visierlinie Schiene + 11 mm (Visier-Standard 3). parent: bewegliches Trägerteil (Schlitten). Gibt (Teile, Anker) zurück.
+    Liegt hier statt in common.py, weil common.py im Unity-Quellenhash steht (export_unity.SHARED_SRC; Umzug mit dem Ego-Übertrag)."""
+    s = KLAMMER_SIZES[size]
+    notch, cu = 4.6 * s, C.sight_line(deck, 'iron')
+    b0 = deck + 6
     br = []
     for x in (1, -1):
         xi = x * (notch / 2 + 2.6 * s)
         br += [dict(shape='box', f0=fr - 0.1, f1=fr + 0.3, u0=cu - 3.6 * s, u1=cu + 1.2 * s, w=0.7 * s, x=xi),
                dict(shape='box', f0=fr - 0.1, f1=fr + 0.3, u0=cu + 0.5 * s, u1=cu + 1.2 * s, w=1.6 * s, x=xi - x * 0.8 * s),
                dict(shape='box', f0=fr - 0.1, f1=fr + 0.3, u0=cu - 3.6 * s, u1=cu - 2.9 * s, w=1.6 * s, x=xi - x * 0.8 * s)]
-    return [part('sight_mount', 'Kimmenfuß', 'Rear base', 'sight', 'multi', MET, 'Flacher Fuß, gestuft', 'hinten auf der Schiene',
-                 bevel=0.8, items=[dict(shape='box', f0=fr - 4, f1=fr + 18, u0=DECK + 0.5, u1=DECK + 3.5, w=23),
-                                   dict(shape='box', f0=fr - 2, f1=fr + 14, u0=DECK + 3, u1=b0, w=16)]),
-            part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Fuß', 'links am Fuß', bevel=0.4,
-                 pts=[(fr, DECK + 0.8), (fr + 12, DECK + 0.8), (fr + 14, DECK + 3.2), (fr, DECK + 3.6)], w=1.8, x=12.4),
-            part('sight_rear', 'Kimmenblatt', 'Rear blade', 'sight', 'prof', MET, 'Blatt 20 × 7 × 6 mm mit Kerbe', 'auf dem Kimmenfuß',
-                 bevel=0.5, pts=[(fr, b0 - 0.5), (fr + 8, b0 - 0.5), (fr + 6, cu + 2 * s), (fr, cu + 2 * s)], w=20 * s,
-                 cuts=[cut_box(fr - 3, fr + 12, cu - 2.6 * s, cu + 6, notch)]),
-            part('sight_status', 'Leuchtklammern', 'Glow brackets', 'sight', 'multi', 'energy', 'Klammern „[ ]“ bündig zum Auge',
-                 'in der Blattrückseite', bevel=0, items=br),
-            part('sight_front', 'Korn', 'Front sight', 'sight', 'multi', MET, 'Korn 3 mm auf flachem Fuß', 'vorn auf der Schiene', bevel=0.4,
-                 items=[dict(shape='prof', pts=[(ff - 7, DECK - 0.5), (ff + 6, DECK - 0.5), (ff + 2, cu - 0.8), (ff, cu - 0.8)], w=3.0),
-                        dict(shape='box', f0=ff - 8, f1=ff + 8, u0=DECK - 0.5, u1=DECK + 2.5, w=12)]),
-            part('sight_glass', 'Kornpunkt', 'Front dot', 'sight', 'cyl', 'energy', 'Leuchtpunkt auf dem Korn', 'oben am Korn', bevel=0,
-                 axis='f', c=(cu - 1.4, 0), a0=ff - 0.5, a1=ff + 0.1, r=0.9 * s, segs=16)], _irons_anchor(fr, ff)
+    P = [part('sight_mount', 'Kimmenfuß', 'Rear base', 'sight', 'multi', MET, 'Flacher Fuß, gestuft', 'hinten auf der Schiene',
+              bevel=0.8, items=[dict(shape='box', f0=fr - 4, f1=fr + 18, u0=deck - 0.5, u1=deck + 3.5, w=23),     # sitzt auf (Richter 0.24: lag 0,5 mm darüber)
+                                dict(shape='box', f0=fr - 2, f1=fr + 14, u0=deck + 3, u1=b0, w=16)]),
+         part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Fuß', 'links am Fuß', bevel=0.4,
+              pts=[(fr, deck + 0.8), (fr + 12, deck + 0.8), (fr + 14, deck + 3.2), (fr, deck + 3.6)], w=1.8, x=12.4),
+         part('sight_rear', 'Kimmenblatt', 'Rear blade', 'sight', 'prof', MET, 'Blatt 20 × 7 × 6 mm mit Kerbe', 'auf dem Kimmenfuß',
+              bevel=0.5, pts=[(fr, b0 - 0.5), (fr + 8, b0 - 0.5), (fr + 6, cu + 2 * s), (fr, cu + 2 * s)], w=20 * s,
+              cuts=[cut_box(fr - 3, fr + 12, cu - 2.6 * s, cu + 6, notch)]),
+         part('sight_status', 'Leuchtklammern', 'Glow brackets', 'sight', 'multi', 'energy', 'Klammern „[ ]“ bündig zum Auge',
+              'in der Blattrückseite', bevel=0, items=br),
+         part('sight_front', 'Korn', 'Front sight', 'sight', 'multi', MET, 'Korn 3 mm auf flachem Fuß', 'vorn auf der Schiene', bevel=0.4,
+              items=[dict(shape='prof', pts=[(ff - 7, deck - 0.5), (ff + 6, deck - 0.5), (ff + 2, cu - 0.8), (ff, cu - 0.8)], w=3.0),
+                     dict(shape='box', f0=ff - 8, f1=ff + 8, u0=deck - 0.5, u1=deck + 2.5, w=12)]),
+         part('sight_glass', 'Kornpunkt', 'Front dot', 'sight', 'cyl', 'energy', 'Leuchtpunkt auf dem Korn', 'oben am Korn', bevel=0,
+              axis='f', c=(cu - 1.4, 0), a0=ff - 0.5, a1=ff + 0.1, r=0.9 * s, segs=16)]
+    if parent:
+        for p in P:
+            p['parent_part'] = parent
+    return P, _irons_anchor(fr, ff, cu, deck)
 
 
 def iron_hoerner(size='M'):

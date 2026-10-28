@@ -1,0 +1,1347 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-05",
+  "num": "05",
+  "type": "sidearm",
+  "type_de": "Pistole",
+  "type_en": "Sidearm",
+  "name": "Seitenwaffe v2.1",
+  "nick": "Familie v2.1",
+  "ammo": "primary",
+  "fire": "semi_auto",
+  "reference_length_m": 0.243,
+  "reference_length_source": "Toolgen 0.13 pistol (Formgen KG01 spec units)",
+  "summary": "Kompakte Schlittenpistole mit hohem Creme-Schlitten, Magazin im Griff und Kimme/Korn K1 (Stil v2.1).",
+  "variant": "v2.1"
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "frame",
+    "counter_bezel",
+    "ammo_counter",
+    "text_l"
+   ]
+  },
+  {
+   "id": "barrel",
+   "de": "Lauf / Emitter",
+   "en": "Barrel / emitter",
+   "parts": [
+    "barrel_hood",
+    "barrel",
+    "muzzle_crown",
+    "guide_rod"
+   ]
+  },
+  {
+   "id": "ammo",
+   "de": "Munitionsversorgung",
+   "en": "Ammunition feed",
+   "parts": [
+    "magazine",
+    "magazine_base"
+   ]
+  },
+  {
+   "id": "sight",
+   "de": "Visier",
+   "en": "Sight",
+   "parts": [
+    "sight_mount",
+    "sight_clamp",
+    "sight_rear",
+    "sight_status",
+    "sight_front",
+    "sight_glass"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "slide_stop",
+    "mag_release",
+    "grip",
+    "trigger",
+    "trigger_guard",
+    "grip_cap"
+   ]
+  },
+  {
+   "id": "mechanism",
+   "de": "Bewegliche Mechanik",
+   "en": "Moving mechanism",
+   "parts": [
+    "slide",
+    "slide_cap",
+    "band_side"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "frame",
+   "name_de": "Rahmen",
+   "name_en": "Frame",
+   "assembly": "receiver",
+   "function_de": "Trägt Schlitten, Abzug, Griff und Magazinschacht",
+   "attachment_de": "Grundkörper",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.17,
+     0.034
+    ],
+    "max": [
+     0.013,
+     0.02985,
+     0.053
+    ]
+   },
+   "size_mm": [
+    26.0,
+    199.9,
+    19.0
+   ],
+   "triangles": 216,
+   "volume_cm3": 81.28,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "slide_stop",
+   "name_de": "Schlittenfang",
+   "name_en": "Slide stop",
+   "assembly": "grip_controls",
+   "function_de": "Hält den Schlitten nach dem letzten Schuss offen",
+   "attachment_de": "links am Rahmen (dreht)",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "slide_stop",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0124,
+     -0.064,
+     0.047
+    ],
+    "max": [
+     0.0148,
+     -0.04,
+     0.0525
+    ]
+   },
+   "size_mm": [
+    2.4,
+    24.0,
+    5.5
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.29,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "mag_release",
+   "name_de": "Magazinhalter",
+   "name_en": "Magazine release",
+   "assembly": "grip_controls",
+   "function_de": "Löst das Magazin im Griff",
+   "attachment_de": "Druckknopf links am Griff",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "mag_release",
+   "origin_m": [
+    0.016,
+    -0.022,
+    0.028
+   ],
+   "bounds_m": {
+    "min": [
+     0.0145,
+     -0.02615,
+     0.02385
+    ],
+    "max": [
+     0.0175,
+     -0.01785,
+     0.03215
+    ]
+   },
+   "size_mm": [
+    3.0,
+    8.3,
+    8.3
+   ],
+   "triangles": 236,
+   "volume_cm3": 0.15,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.016,
+     -0.022,
+     0.028
+    ],
+    "vector_m": [
+     -0.0025,
+     0.0,
+     0.0
+    ],
+    "travel_mm": 2.5
+   },
+   "removable": false
+  },
+  {
+   "id": "counter_bezel",
+   "name_de": "Anzeigenrahmen",
+   "name_en": "Counter bezel",
+   "assembly": "receiver",
+   "function_de": "Fasst die Munitionsanzeige",
+   "attachment_de": "in den Staubschutz eingelassen",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.6,
+   "blender_object": "counter_bezel",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0124,
+     -0.136,
+     0.041
+    ],
+    "max": [
+     0.0148,
+     -0.1,
+     0.05
+    ]
+   },
+   "size_mm": [
+    2.4,
+    36.0,
+    9.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.76,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "ammo_counter",
+   "name_de": "Munitionsanzeige",
+   "name_en": "Ammo counter",
+   "assembly": "receiver",
+   "function_de": "Füllstand; Blickfang links",
+   "attachment_de": "im Anzeigenrahmen",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.2,
+   "blender_object": "ammo_counter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0141,
+     -0.132,
+     0.0425
+    ],
+    "max": [
+     0.0151,
+     -0.104,
+     0.0485
+    ]
+   },
+   "size_mm": [
+    1.0,
+    28.0,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.17,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "text_l",
+   "name_de": "Schriftzug",
+   "name_en": "Lettering",
+   "assembly": "receiver",
+   "function_de": "Kennung „BASIC SA-05“ (einzige Schrift)",
+   "attachment_de": "aufgedruckt (hell auf Graphit)",
+   "material_role": "decal",
+   "material_de": "Markierung hell",
+   "interface": null,
+   "parent_part": null,
+   "shape": "text",
+   "bevel_mm": 0,
+   "blender_object": "text_l",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.01293,
+     -0.04373,
+     0.03747
+    ],
+    "max": [
+     0.01317,
+     -0.02388,
+     0.03999
+    ]
+   },
+   "size_mm": [
+    0.2,
+    19.8,
+    2.5
+   ],
+   "triangles": 2588,
+   "volume_cm3": 0.0,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "slide",
+   "name_de": "Schlitten",
+   "name_en": "Slide",
+   "assembly": "mechanism",
+   "function_de": "Verschluss; läuft beim Schuss zurück; trägt Kimme und Korn",
+   "attachment_de": "auf den Rahmenschienen (gleitet), Fuge 1 mm",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "slide",
+   "origin_m": [
+    0.0,
+    -0.06,
+    0.074
+   ],
+   "bounds_m": {
+    "min": [
+     -0.014,
+     -0.196,
+     0.054
+    ],
+    "max": [
+     0.014,
+     0.022,
+     0.092
+    ]
+   },
+   "size_mm": [
+    28.0,
+    218.0,
+    38.0
+   ],
+   "triangles": 1020,
+   "volume_cm3": 217.47,
+   "moving": {
+    "kind": "translate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.06,
+     0.074
+    ],
+    "vector_m": [
+     0.0,
+     0.032,
+     0.0
+    ],
+    "travel_mm": 32.0
+   },
+   "removable": false
+  },
+  {
+   "id": "slide_cap",
+   "name_de": "Schlittenkappe",
+   "name_en": "Slide rear cap",
+   "assembly": "mechanism",
+   "function_de": "Dunkle Griffzone hinten am Schlitten (zweite Schicht; Nutzerwahl a, 28.10.2026, statt leerer Griffmulde)",
+   "attachment_de": "hinten auf den Schlitten gesetzt (0,6 mm), folgt dem Schlitten",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "slide_cap",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0146,
+     -0.01369,
+     0.057
+    ],
+    "max": [
+     0.0146,
+     0.023,
+     0.089
+    ]
+   },
+   "size_mm": [
+    29.2,
+    36.7,
+    32.0
+   ],
+   "triangles": 136,
+   "volume_cm3": 31.52,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "barrel_hood",
+   "name_de": "Verriegelungsblock",
+   "name_en": "Barrel hood",
+   "assembly": "barrel",
+   "function_de": "Verriegelt den Lauf im Schlitten; im Auswurffenster sichtbar",
+   "attachment_de": "am Lauf (fest)",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "barrel_hood",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.008,
+     -0.096,
+     0.066
+    ],
+    "max": [
+     0.008,
+     -0.05,
+     0.081
+    ]
+   },
+   "size_mm": [
+    16.0,
+    46.0,
+    15.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 10.84,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "barrel",
+   "name_de": "Lauf",
+   "name_en": "Barrel",
+   "assembly": "barrel",
+   "function_de": "Führt das Geschoss",
+   "attachment_de": "im Rahmen gelagert",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "barrel",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00644,
+     -0.193,
+     0.06756
+    ],
+    "max": [
+     0.00644,
+     -0.094,
+     0.08044
+    ]
+   },
+   "size_mm": [
+    12.9,
+    99.0,
+    12.9
+   ],
+   "triangles": 284,
+   "volume_cm3": 12.98,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "muzzle_crown",
+   "name_de": "Mündungskrone",
+   "name_en": "Muzzle crown",
+   "assembly": "barrel",
+   "function_de": "Blanke Stirnkante in der Mündungsmulde",
+   "attachment_de": "Laufende",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.5,
+   "blender_object": "muzzle_crown",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00714,
+     -0.193,
+     0.06686
+    ],
+    "max": [
+     0.00714,
+     -0.189,
+     0.08114
+    ]
+   },
+   "size_mm": [
+    14.3,
+    4.0,
+    14.3
+   ],
+   "triangles": 576,
+   "volume_cm3": 0.47,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "guide_rod",
+   "name_de": "Führungsstange",
+   "name_en": "Guide rod",
+   "assembly": "barrel",
+   "function_de": "Führt die Schließfeder; vorn in der Schlittenstirn sichtbar",
+   "attachment_de": "im Rahmen (fest)",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "guide_rod",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00294,
+     -0.193,
+     0.05656
+    ],
+    "max": [
+     0.00294,
+     -0.1,
+     0.06244
+    ]
+   },
+   "size_mm": [
+    5.9,
+    93.0,
+    5.9
+   ],
+   "triangles": 188,
+   "volume_cm3": 2.56,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "band_side",
+   "name_de": "Chevronband",
+   "name_en": "Chevron band",
+   "assembly": "mechanism",
+   "function_de": "Lackiertes Band (einziges Grafikelement)",
+   "attachment_de": "lackiert",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "band_side",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0143,
+     -0.174,
+     0.06
+    ],
+    "max": [
+     0.0143,
+     -0.16,
+     0.086
+    ]
+   },
+   "size_mm": [
+    28.6,
+    14.0,
+    26.0
+   ],
+   "triangles": 40,
+   "volume_cm3": 0.11,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Pistolengriff",
+   "name_en": "Pistol grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand hält die Waffe; trägt Socket_Hand",
+   "attachment_de": "mit Unterem Gehäuse verschraubt (fest)",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": "BGM-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.02857,
+     -0.076
+    ],
+    "max": [
+     0.015,
+     0.04215,
+     0.034
+    ]
+   },
+   "size_mm": [
+    30.0,
+    70.7,
+    110.0
+   ],
+   "triangles": 360,
+   "volume_cm3": 137.44,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen (Zeigefinger)",
+   "attachment_de": "Drehpunkt im Unteren Gehäuse",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.04311,
+    0.031
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     -0.04911,
+     0.00719
+    ],
+    "max": [
+     0.0035,
+     -0.04128,
+     0.033
+    ]
+   },
+   "size_mm": [
+    7.0,
+    7.8,
+    25.8
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.89,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.04311,
+     0.031
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "trigger_guard",
+   "name_de": "Abzugsbügel",
+   "name_en": "Trigger guard",
+   "assembly": "grip_controls",
+   "function_de": "Schützt den Abzug, Fingerfreiraum ≥ 22 mm",
+   "attachment_de": "Griff vorn und Unteres Gehäuse (fest)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "trigger_guard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.006,
+     -0.08111,
+     0.0
+    ],
+    "max": [
+     0.006,
+     -0.02352,
+     0.035
+    ]
+   },
+   "size_mm": [
+    12.0,
+    57.6,
+    35.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 6.87,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip_cap",
+   "name_de": "Griffboden",
+   "name_en": "Grip cap",
+   "assembly": "grip_controls",
+   "function_de": "Ausgestellter Abschluss; schützt den Griff",
+   "attachment_de": "unten auf den Griff geschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "grip_cap",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.00385,
+     -0.079
+    ],
+    "max": [
+     0.016,
+     0.04246,
+     -0.073
+    ]
+   },
+   "size_mm": [
+    32.0,
+    46.3,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 8.43,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "magazine",
+   "name_de": "Magazin im Griff",
+   "name_en": "Magazine",
+   "assembly": "ammo",
+   "function_de": "Hält die Patronen; steckt im Griff, entnehmbar",
+   "attachment_de": "rastet im Griff ein (lösbar, Magazinhalter)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 3.0,
+   "blender_object": "magazine",
+   "origin_m": [
+    0.0,
+    0.00536,
+    -0.02
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01,
+     -0.02562,
+     -0.079
+    ],
+    "max": [
+     0.01,
+     0.03339,
+     0.05
+    ]
+   },
+   "size_mm": [
+    20.0,
+    59.0,
+    129.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 65.24,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": "Entnahme entlang der Griffachse nach unten",
+    "pivot_m": [
+     0.0,
+     0.00536,
+     -0.02
+    ],
+    "vector_m": [
+     0.0,
+     0.0362,
+     -0.1352
+    ],
+    "travel_mm": 140.0
+   },
+   "removable": true
+  },
+  {
+   "id": "magazine_base",
+   "name_de": "Magazinboden",
+   "name_en": "Magazine base plate",
+   "assembly": "ammo",
+   "function_de": "Greifkante; schließt den Griff unten ab",
+   "attachment_de": "am Magazin (fest); bündig mit dem Griffboden (Nutzerwahl a)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": "magazine",
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "magazine_base",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.00026,
+     -0.085
+    ],
+    "max": [
+     0.016,
+     0.04262,
+     -0.079
+    ]
+   },
+   "size_mm": [
+    32.0,
+    42.9,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 7.86,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_mount",
+   "name_de": "Kimmenfuß",
+   "name_en": "Rear base",
+   "assembly": "sight",
+   "function_de": "Flacher Fuß, gestuft",
+   "attachment_de": "hinten auf der Schiene",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_mount",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0115,
+     -0.006,
+     0.0915
+    ],
+    "max": [
+     0.0115,
+     0.016,
+     0.098
+    ]
+   },
+   "size_mm": [
+    23.0,
+    22.0,
+    6.5
+   ],
+   "triangles": 216,
+   "volume_cm3": 2.73,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_clamp",
+   "name_de": "Klemmhebel",
+   "name_en": "Clamp lever",
+   "assembly": "sight",
+   "function_de": "Spannt den Fuß",
+   "attachment_de": "links am Fuß",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "prof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_clamp",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0115,
+     -0.00184,
+     0.0928
+    ],
+    "max": [
+     0.0133,
+     0.012,
+     0.09559
+    ]
+   },
+   "size_mm": [
+    1.8,
+    13.8,
+    2.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.06,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_rear",
+   "name_de": "Kimmenblatt",
+   "name_en": "Rear blade",
+   "assembly": "sight",
+   "function_de": "Blatt 20 × 7 × 6 mm mit Kerbe",
+   "attachment_de": "auf dem Kimmenfuß",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "prof",
+   "bevel_mm": 0.5,
+   "blender_object": "sight_rear",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01,
+     0.00413,
+     0.0975
+    ],
+    "max": [
+     0.01,
+     0.012,
+     0.105
+    ]
+   },
+   "size_mm": [
+    20.0,
+    7.9,
+    7.5
+   ],
+   "triangles": 220,
+   "volume_cm3": 0.9,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_status",
+   "name_de": "Leuchtklammern",
+   "name_en": "Glow brackets",
+   "assembly": "sight",
+   "function_de": "Klammern „[ ]“ bündig zum Auge",
+   "attachment_de": "in der Blattrückseite",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "sight_status",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00525,
+     0.0117,
+     0.0994
+    ],
+    "max": [
+     0.00525,
+     0.0121,
+     0.1042
+    ]
+   },
+   "size_mm": [
+    10.5,
+    0.4,
+    4.8
+   ],
+   "triangles": 72,
+   "volume_cm3": 0.0,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_front",
+   "name_de": "Korn",
+   "name_en": "Front sight",
+   "assembly": "sight",
+   "function_de": "Korn 3 mm auf flachem Fuß",
+   "attachment_de": "vorn auf der Schiene",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "multi",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_front",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.006,
+     -0.192,
+     0.0915
+    ],
+    "max": [
+     0.006,
+     -0.176,
+     0.1022
+    ]
+   },
+   "size_mm": [
+    12.0,
+    16.0,
+    10.7
+   ],
+   "triangles": 216,
+   "volume_cm3": 0.81,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_glass",
+   "name_de": "Kornpunkt",
+   "name_en": "Front dot",
+   "assembly": "sight",
+   "function_de": "Leuchtpunkt auf dem Korn",
+   "attachment_de": "oben am Korn",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "slide",
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "sight_glass",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.00088,
+     -0.1841,
+     0.10072
+    ],
+    "max": [
+     0.00088,
+     -0.1835,
+     0.10248
+    ]
+   },
+   "size_mm": [
+    1.8,
+    0.6,
+    1.8
+   ],
+   "triangles": 60,
+   "volume_cm3": 0.0,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": "Haupthand, auf der Griffachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_SupportHand": {
+   "position_m": [
+    0.017,
+    0.004,
+    -0.034
+   ],
+   "part": "grip",
+   "note": "Stützhand umfasst die Griffhand von links (Pistolengriff beidhändig)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.193,
+    0.074
+   ],
+   "part": "muzzle_crown",
+   "note": "Stirn der Mündungskrone auf der Laufachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_MagWell": {
+   "position_m": [
+    0.0,
+    -0.0091,
+    0.034
+   ],
+   "part": "grip",
+   "note": "Magazinschacht im Griff",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Reticle": {
+   "position_m": [
+    0.0,
+    -0.184,
+    0.103
+   ],
+   "part": "sight_glass",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Sight": {
+   "position_m": [
+    0.0,
+    0.012,
+    0.103
+   ],
+   "part": "sight_rear",
+   "note": "Kimme (Rückseite des Kimmenblatts) auf der Visierlinie",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Eye": {
+   "position_m": [
+    0.0,
+    0.082,
+    0.103
+   ],
+   "part": "sight_rear",
+   "note": "70 mm hinter der Kimme, eigene Linie Schiene + 11 mm",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    -0.00037,
+    -0.07384,
+    0.0297
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.016,
+    -0.196,
+    -0.085
+   ],
+   "max": [
+    0.0175,
+    0.04262,
+    0.105
+   ]
+  },
+  "length_m": 0.2386,
+  "height_m": 0.19,
+  "width_m": 0.0335,
+  "reference_length_m": 0.243,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 25,
+  "triangles": 7588,
+  "assemblies": 6
+ },
+ "actions": {
+  "fire_semi": {
+   "de": "Einzelschuss (Schlitten)",
+   "frames": 10,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "slide"
+   ],
+   "events": [
+    [
+     2,
+     "shot"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "reload_empty": {
+   "de": "Nachladen aus leerem Zustand",
+   "frames": 60,
+   "fps": 30,
+   "parts": [
+    "mag_release",
+    "magazine",
+    "slide"
+   ],
+   "events": [
+    [
+     14,
+     "mag_out"
+    ],
+    [
+     40,
+     "mag_seated"
+    ],
+    [
+     50,
+     "slide_release"
+    ],
+    [
+     54,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BGM-1"
+ ]
+}
