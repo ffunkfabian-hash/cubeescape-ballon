@@ -169,4 +169,5 @@ ACTIONS = {
 }
 EXPLODE = {'sight': (0, 130, 0), 'ammo': (0, -140, 0), 'stock': (-120, 0, 0), 'barrel': (200, 0, 0), 'cooling': (0, 0, 80),
            'support': (60, -60, 0), 'grip_controls': (-10, -80, 0), 'receiver': (0, 0, 0)}
+SIGHT_ID = 'Z2'    # Visier des Baukastens v3 (visier-konzept › 6a); test_sights prüft dessen Pflichtteile und Merkmale
 EJECT = None    # Energiewaffe: keine Hülse (Daten statt Sonderlogik; check: Energiezelle BEC-1 → EJECT None)
