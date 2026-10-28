@@ -10,7 +10,8 @@
   Klasse in Hüftgröße (± 3 %), Linien mindestens 1,6 px bei 1280 px Bildbreite.
 - Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
 - Kimme/Korn K1 an Familienwaffen (0.24, BASIC-04/05): Klasse passt, Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme,
-  Lichtspalt zwischen Korn und Kerbe je Seite ≥ 0,25° (≈ 4 px bei 1280 px), Kornpunkt in der Kerbe.
+  Lichtspalt zwischen Korn und Kerbe je Seite ≥ 0,25° (≈ 4 px bei 1280 px), Kornpunkt in der Kerbe, Kimmen- und Kornfuß liegen
+  auf dem Träger auf.
 - Bauteil-Hash des Unity-Exports (`export_unity.parts_sha`) ist bei 1 ulp Abweichung gleich (Mac und Linux-CI).
 - Mündungsfeuer im Zielen an der MP-Pille: in der Kontur gezählt (kleiner als im umschließenden Rechteck) und ≤ 20 % (5.3 A).
 """
@@ -114,6 +115,11 @@ def check_iron(W):
     want = RT.SIGHT['rail_line_mm']['iron']
     if e.get('deck') is None or abs(e['at'][1] - e['deck'] - want) > 1e-6:
         bad.append(f"Visierlinie u {e['at'][1]} statt Träger {e.get('deck')} + {want:g} mm")
+    P = {p['id']: p for p in W.PARTS}
+    for pid in ('sight_mount', 'sight_front'):          # Kimmenfuß und Kornfuß liegen auf dem Träger auf (nichts schwebt)
+        low = min(i['u0'] if 'u0' in i else min(q[1] for q in i['pts']) for i in P[pid]['items'])
+        if e.get('deck') is not None and low > e['deck'] + 1e-6:
+            bad.append(f"{pid} beginnt bei u {low:g} über dem Träger {e['deck']:g} (schwebt)")
     g = iron_picture(W.PARTS, W.ANCHORS)
     if abs(g['eye_rear'] - IRON_EYE_MM) > 0.5:
         bad.append(f"Augenpunkt {g['eye_rear']:.1f} mm statt {IRON_EYE_MM:.0f} mm hinter der Kimme")

@@ -313,7 +313,7 @@ def klammer(fr, ff, deck, size='M', parent=None):
                dict(shape='box', f0=fr - 0.1, f1=fr + 0.3, u0=cu + 0.5 * s, u1=cu + 1.2 * s, w=1.6 * s, x=xi - x * 0.8 * s),
                dict(shape='box', f0=fr - 0.1, f1=fr + 0.3, u0=cu - 3.6 * s, u1=cu - 2.9 * s, w=1.6 * s, x=xi - x * 0.8 * s)]
     P = [part('sight_mount', 'Kimmenfuß', 'Rear base', 'sight', 'multi', MET, 'Flacher Fuß, gestuft', 'hinten auf der Schiene',
-              bevel=0.8, items=[dict(shape='box', f0=fr - 4, f1=fr + 18, u0=deck + 0.5, u1=deck + 3.5, w=23),
+              bevel=0.8, items=[dict(shape='box', f0=fr - 4, f1=fr + 18, u0=deck - 0.5, u1=deck + 3.5, w=23),     # sitzt auf (Richter 0.24: lag 0,5 mm darüber)
                                 dict(shape='box', f0=fr - 2, f1=fr + 14, u0=deck + 3, u1=b0, w=16)]),
          part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Fuß', 'links am Fuß', bevel=0.4,
               pts=[(fr, deck + 0.8), (fr + 12, deck + 0.8), (fr + 14, deck + 3.2), (fr, deck + 3.6)], w=1.8, x=12.4),
