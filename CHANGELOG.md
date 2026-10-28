@@ -4,7 +4,7 @@
 
 - BASIC-12 v2.1: Creme-Haube in Linie mit der Schiene über dem freien runden Fokusrohr (drei Ringe, Griffband), umgreift Rohransatz und
   Kegel, Fokusscheibe beidseitig, Zelle vor dem Griff, Einteilkörper mit Daumenloch, kein Auswurf; BASIC-15 v2.1: Zuführdeckel mit Visier,
-  Kasten unter dem Gehäuse, Gurtsäule links in einen Gurteinlauf (Nutzerwunsch „Eingang“), Mantel mit Fenstern, Tragegriff links,
+  Kasten seitlich links (Nutzerwunsch nach dem Zwischenstopp), Gurtsäule in einen Gurteinlauf (Nutzerwunsch „Eingang“), Mantel mit Fenstern, Tragegriff links,
   Hülse und Glied als `EJECT`-Daten, Gurtvorschub je Schuss (`cycle='shot'`). Grundform nach Zwischenstopp, Nutzerwahl „a“.
 - Visiere H3 „Zinken“ (`sight_kit.zinken`, M 18,7 %) und H6 „Achteck“ L (`sight_kit.achteck`, 24,7 %) gebaut; `test_sights` prüft ihre
   Merkmale, `check` Gurtwaffe → Hülse und Glied sowie den Takt je Schuss.

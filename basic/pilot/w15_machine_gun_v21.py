@@ -1,7 +1,7 @@
 """BASIC-15 v2.1 – Maschinengewehr im Stil v2.1 („Destiny-Detaildichte + AAA-Material, schlicht“), Familie des Piloten BASIC-01 v2.1.
 
 Recherche (docs/quellen.md › Q-D2-IMG, gesichtet 28.10.2026, Bungie-Manifest): Hammerhead, Avalanche, Retrofit Escapade (breites
-Gehäuse, Munitionsbehälter unter dem Gehäuse vor dem Griff, Gurt sichtbar als Patronensäule an der linken Seite bis zur
+Gehäuse, Munitionsbehälter vor dem Griff, Gurt sichtbar als Patronensäule an der linken Seite bis zur
 Zuführung, Deckel mit Visier oben, langer Laufmantel mit Lüftung), Corrective Measure und Fixed Odds (gerade lange Oberkante,
 Laufmantel mit Fenstern, freier Lauf vorn), Shattered Cipher (Zweibein; hier nicht verlangt). Nur Prinzipien; Leitmerkmal 15 nach
 Designvertrag: Zuführdeckel, Munitionskasten, Tragegriff.
@@ -9,15 +9,15 @@ Designvertrag: Zuführdeckel, Munitionskasten, Tragegriff.
 Formsprache-Checkliste (stilhandbuch §3):
 | Frage | Maschinengewehr v2.1 |
 |---|---|
-| Leitmerkmal der Silhouette | breites Gehäuse mit Zuführdeckel (Visier darauf), darunter vor dem Griff der Munitionskasten; links steigt der Gurt als Patronensäule vom Kasten in die Zuführung; langer Laufmantel mit Lüftungsfenstern, freier Lauf |
+| Leitmerkmal der Silhouette | breites Gehäuse mit Zuführdeckel (Visier darauf), links vor dem Griff der seitlich eingehängte Munitionskasten (Nutzer: „Kasten seitlich“); aus ihm steigt der Gurt als Patronensäule in den Einlauf; langer Laufmantel mit Lüftungsfenstern, freier Lauf |
 | Schichten | Unteres Gehäuse, Handschutz, Schaft (Graphit) → Gehäuse, Zuführdeckel, Laufmantel (Creme, Fuge 1 mm) → Seitenpaneele, Kasten (eloxiert/Metall) → Schiene → Visier H6 |
 | Negativraum | Gurt frei zwischen Kasten und Zuführung (Patronen sichtbar); Lüftungsfenster im Laufmantel zeigen den Lauf; Durchbruch im Schaft S1 |
 | Blickfang | Gurtsäule: Messingpatronen in dunklen Gliedern an der linken Seite (Ego-Seite), die in den Gurteinlauf mit blanker Lippe laufen – starker Kontrast ohne Leuchten |
 | Zweiton-Blockung | Gehäuse, Deckel, Laufmantel Lack (`shell`), Unteres Gehäuse, Handschutz, Schaft Polymer (`graphite`), Kasten `dark_metal` |
 | Grafik | ein Schrägband vorn am Laufmantel, ein Schriftzug „BASIC MG-15“ (hell auf Graphit) |
 | Front | gerändelte Mündungsbremse mit Schlitzen und blanker Krone vor dem freien Lauf |
-| Übergänge | Kastenschacht im Unteren Gehäuse angeformt; Deckel liegt auf dem Gehäuse (Scharnier vorn, darunter die Zuführschale), Laufmantel stößt mit Fuge 1 mm an |
-| Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Kasten vor dem Griff, Handschutz unter dem Mantel mit Griffpolster; Tragegriff links am Mantel angeklappt (Laufwechsel), außerhalb des Zielbilds |
+| Übergänge | Kasten an einer blanken Einhängeleiste links am Unteren Gehäuse; Deckel liegt auf dem Gehäuse (Scharnier vorn, darunter die Zuführschale), Laufmantel stößt mit Fuge 1 mm an |
+| Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Kasten links vor dem Griff (Ego-Seite, Stützhand wechselt ihn), Handschutz unter dem Mantel mit Griffpolster; Tragegriff links am Mantel angeklappt (Laufwechsel), außerhalb des Zielbilds |
 
 Visier: H6 „Achteck“ (Baukasten v3, visier-konzept › 6a; `sight_kit.achteck`) in **Größe L**: Fenster 34 × 26, 24,7 % der
 Bildbreite – zugelassene Variante Holo L (bis 25 %, nur MG/Werfer, seit 0.21). Begründung: das MG zielt aus der Bewegung auf
@@ -38,7 +38,7 @@ from basic.pilot.optics.sight_kit import achteck
 from basic.weapons import w15_machine_gun as V1
 
 META = dict(V1.META, variant='v2.1', name='Dauerlauf v2.1', nick='Familie v2.1',
-            summary='Maschinengewehr mit Zuführdeckel, Munitionskasten unter dem Gehäuse, sichtbarem Gurt und Visier H6 L (Stil v2.1).')
+            summary='Maschinengewehr mit Zuführdeckel, seitlichem Munitionskasten, sichtbarem Gurt und Visier H6 L (Stil v2.1).')
 ASSEMBLIES = V1.ASSEMBLIES
 GRIP_TOP = 40
 BORE = 106                   # Laufachse
@@ -47,8 +47,9 @@ COVER = (-60, 150, TOP, 138)  # Zuführdeckel f0, f1, u0, u1
 COVER_PIV = (150, 130)       # Scharnier vorn
 REC0, REC1 = -150, 210       # Gehäuse hinten / vorn
 W_REC = 52
-BOX = (92, 200, -62, 40)     # Munitionskasten f0, f1, u0, u1 (vor dem Griff, 9 mm vor dem Abzugsbügel)
-BOX_X = 6.0                  # Kasten 6 mm nach links: der Gurt verlässt ihn außerhalb der Gehäusewand
+BOX = (92, 196, -36, 60)     # Munitionskasten f0, f1, u0, u1: seitlich links am Unteren Gehäuse eingehängt (Nutzer 28.10.2026)
+_bw = 46                     # Kastenbreite x
+BOX_X = 24.6 + _bw / 2       # Kastenmitte x: Innenseite an der linken Seite des Unteren Gehäuses (x 24)
 BELT_X = 31.8                # Mitte der Gurtsäule (außen an der linken Wand x 26; Glieder r 5,4 frei)
 FEED = (98, 152, 96, 118)    # Zuführfenster links f0, f1, u0, u1
 PORT = (100, 142, 86, 104)   # Auswurffenster rechts
@@ -68,13 +69,13 @@ P += [
                cut_box(-128, -88, 108, 116, 10, x=W_REC / 2),                           # Ladehebel-Nut links
                cut_box(-132, -40, 86, 102, 3.0, x=W_REC / 2 + 0.6), cut_box(-132, -40, 86, 102, 3.0, x=-W_REC / 2 - 0.6),   # Paneel-Mulden
                cut_box(FEED[0] - 2, FEED[1] + 2, COVER[2] - 5, TOP + 2, W_REC - 8)]),   # Öffnung unter dem Deckel (Zuführschale)
-    prof('lower', 'Unteres Gehäuse', 'Lower receiver', 'receiver', 'graphite', 'Griffmodul, Abzugsgruppe, Kastenschacht',
-         'unter dem Gehäuse, Fuge 1 mm; Kastenschacht angeformt',
-         [(REC0, 62), (-70, 40), (BOX[0] - 6, 40), (BOX[0] - 2, 36), (BOX[1] + 2, 36), (BOX[1] + 8, 44), (REC1, 62), (REC1, 79),
+    prof('lower', 'Unteres Gehäuse', 'Lower receiver', 'receiver', 'graphite', 'Griffmodul, Abzugsgruppe, Kastenaufnahme links',
+         'unter dem Gehäuse, Fuge 1 mm',
+         [(REC0, 62), (-70, 40), (BOX[1] + 8, 40), (REC1, 62), (REC1, 79),
           (REC0, 79)], W_REC - 4),
-    prof('box_lip', 'Schachtlippe', 'Box well lip', 'receiver', 'trim', 'Blanke Einführkante des Kastenschachts',
-         'unten am Schacht des Unteren Gehäuses', [(BOX[0] - 3, 34), (BOX[1] + 3, 34), (BOX[1] + 4, 37), (BOX[0] - 4, 37)], W_REC - 3,
-         bevel=0.6, iface='BAB-1'),
+    box('box_lip', 'Einhängeleiste', 'Box hanger', 'receiver', 'trim', 'Blanke Leiste, an der der Kasten links eingehängt wird',
+        'links am Unteren Gehäuse über dem Kasten', BOX[0] - 2, BOX[1] + 2, BOX[3], BOX[3] + 4, 2.4, bevel=0.6, x=24.6 + 1.2 - 0.6,
+        iface='BAB-1'),
     box('side_panel_l', 'Seitenpaneel links', 'Side panel left', 'receiver', 'anodized', 'Wartungsdeckel über dem Puffer',
         'in die Mulde geschraubt (4 Schrauben)', -130, -42, 88, 100, 1.2, bevel=R_FINE, x=W_REC / 2 - 0.8),
     box('side_panel_r', 'Seitenpaneel rechts', 'Side panel right', 'receiver', 'anodized', 'Wartungsdeckel über dem Puffer',
@@ -117,16 +118,15 @@ for p in _sight:
 P += _sight
 # ---------------------------------------------------------------- Munitionskasten und Gurt (Blickfang)
 _bc = ((BOX[0] + BOX[1]) / 2, (BOX[2] + BOX[3]) / 2)
-_bw = 46
 PITCH = 10.4                                        # Gliedteilung (Patronenabstand im Gurt)
-ROUNDS = [44 + PITCH * i for i in range(6)]         # Patronenmitten u der Gurtsäule (Kasten → Einlauf)
+ROUNDS = [BOX[3] + 4.4 + PITCH * i for i in range(4)]   # Patronenmitten u der Gurtsäule (Kastenoberkante innen → Einlauf)
 MOUTH = FEED[2] - 2                                 # Unterkante des Gurteinlaufs (Lippe); darüber läuft der Gurt ins Gehäuse
 P += [
     part('ammo_box', 'Munitionskasten', 'Ammo box', 'ammo', 'box', 'dark_metal', 'Hält den Gurt; austauschbar',
-         'rastet im Kastenschacht ein (lösbar)', bevel=R_MID, iface='BAB-1', f0=BOX[0], f1=BOX[1], u0=BOX[2], u1=BOX[3], w=_bw, x=BOX_X,
+         'links am Unteren Gehäuse eingehängt (lösbar)', bevel=R_MID, iface='BAB-1', f0=BOX[0], f1=BOX[1], u0=BOX[2], u1=BOX[3], w=_bw, x=BOX_X,
          cuts=[cut_box(BOX[0] + 8, BOX[1] - 8, BOX[2] + 14, BOX[3] - 10, 3.0, x=BOX_X + sx * _bw / 2) for sx in (1, -1)],   # Seitenmulden
-         move=dict(kind='translate', pivot=(_bc[0], _bc[1], BOX_X), vector_mm=(0, -110, 0), event='reload', removable=True,
-                   expect=((_bc[0], BOX[2], BOX_X), (0, -1, 0)))),
+         move=dict(kind='translate', pivot=(_bc[0], _bc[1], BOX_X), vector_mm=(0, -70, 90), event='reload', removable=True,
+                   expect=((_bc[0], BOX[2], BOX_X + _bw / 2), (0, -1, 1)))),
     box('box_band', 'Kastenband', 'Box band', 'ammo', 'trim', 'Blankes Band über dem Kastenboden; Greifkante', 'um den Kasten',
         BOX[0] - 0.6, BOX[1] + 0.6, BOX[2] + 6, BOX[2] + 10, _bw + 1.2, bevel=0.4, x=BOX_X, parent_part='ammo_box'),
     box('box_counter', 'Zählfenster', 'Round counter', 'ammo', 'energy', 'Zeigt den Füllstand des Kastens', 'links in den Kasten eingelassen',
@@ -209,7 +209,7 @@ P += [
 ]
 # ---------------------------------------------------------------- Griff, Schaft S1 mit Durchbruch
 P += grip_v21(top=GRIP_TOP)
-_f0, _s, _ua = REC0, 1.0, BORE
+_f0, _s, _ua = REC0, 1.0, BORE - 6    # Schaftachse 6 mm unter dem Lauf: Verbindung und Schulterstütze nicht über dem Gehäuse (Nutzer)
 
 
 def _L(d):
@@ -218,7 +218,8 @@ def _L(d):
 
 for p in stock_s1(_f0, _ua, s=_s):
     if p['id'] == 'stock':
-        p['cuts'] = [dict(shape='prof', pts=[(_L(96), _ua + 8), (_L(146), _ua + 10), (_L(150), _ua - 62), (_L(104), _ua - 30)], w=50)]
+        # Durchbruch mit ≥ 12 mm Rand zur schrägen Unterkante (dünner Steg gab einen schwarzen Keil, Nutzer)
+        p['cuts'] = [dict(shape='prof', pts=[(_L(100), _ua + 8), (_L(146), _ua + 10), (_L(148), _ua - 58), (_L(118), _ua - 36)], w=50)]
         p['func'] = 'Anlage an der Schulter; Durchbruch'
     if p['id'] == 'butt_pad':
         p['mat'] = 'rubber'

@@ -159,8 +159,8 @@ Griff. Gesichtet und verworfen: Main Ingredient und Elatha FR4/Proelium FR3 (Var
 Petitioner (Klingenspitze, organische Linien), Cataclysmic (Raid-Waffe, Zahnreihe).
 Für BASIC-12 und BASIC-15 v2.1 (0.27 „Tracer“, gesichtet 28.10.2026, Bungie-Manifest wie 0.24; Bilder nur im Cache
 `refs/q-d2-img/tr_*`, `mg_*`): übernommen beim Spurgewehr die Oberschale, die über den freien runden Kanal auskragt, die runde Scheibe
-am Kanalansatz, die Zelle vor dem Griff und der geschlossene Schaft mit Daumenloch; beim Maschinengewehr der Behälter unter dem Gehäuse
-vor dem Griff mit sichtbarer Gurtsäule links bis in den Einlauf, der Deckel mit Visier und der lange Mantel mit Fenstern. Gesichtet und
+am Kanalansatz, die Zelle vor dem Griff und der geschlossene Schaft mit Daumenloch; beim Maschinengewehr der Behälter vor dem Griff (bei BASIC seitlich links
+statt unten, Nutzerwunsch) mit sichtbarer Gurtsäule links bis in den Einlauf, der Deckel mit Visier und der lange Mantel mit Fenstern. Gesichtet und
 verworfen: Hollow Denial und Unsworn (Rippen-/Zahnreihen, organisch), Path of Least Resistance (Rohr mit Schild, nahe am Linearen
 Fusionsgewehr), Bane of Sorrow, Corrective Measure und Fixed Odds (Verzierungen, Leuchtfenster als Schmuck). Die Spurgewehr-Werte H/L
 sind eigene grobe Messungen an 3/4-Menübildern (Sightline 28.10.2026: „(a) passt … im Bericht als ‚beobachtet (BALLON 0.27)‘ mit

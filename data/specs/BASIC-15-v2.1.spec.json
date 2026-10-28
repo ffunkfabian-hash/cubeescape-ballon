@@ -18,7 +18,7 @@
   "fire": "full_auto_belt",
   "reference_length_m": 1.15,
   "reference_length_source": "Formgen KG16 ref_len (Schätzung claude-0.10)",
-  "summary": "Maschinengewehr mit Zuführdeckel, Munitionskasten unter dem Gehäuse, sichtbarem Gurt und Visier H6 L (Stil v2.1).",
+  "summary": "Maschinengewehr mit Zuführdeckel, seitlichem Munitionskasten, sichtbarem Gurt und Visier H6 L (Stil v2.1).",
   "variant": "v2.1"
  },
  "units": {
@@ -199,8 +199,8 @@
    "name_de": "Unteres Gehäuse",
    "name_en": "Lower receiver",
    "assembly": "receiver",
-   "function_de": "Griffmodul, Abzugsgruppe, Kastenschacht",
-   "attachment_de": "unter dem Gehäuse, Fuge 1 mm; Kastenschacht angeformt",
+   "function_de": "Griffmodul, Abzugsgruppe, Kastenaufnahme links",
+   "attachment_de": "unter dem Gehäuse, Fuge 1 mm",
    "material_role": "graphite",
    "material_de": "Griffpolymer / Graphit",
    "interface": null,
@@ -217,7 +217,7 @@
     "min": [
      -0.024,
      -0.21,
-     0.036
+     0.04
     ],
     "max": [
      0.024,
@@ -228,25 +228,25 @@
    "size_mm": [
     48.0,
     360.0,
-    43.0
+    39.0
    ],
-   "triangles": 216,
-   "volume_cm3": 648.23,
+   "triangles": 132,
+   "volume_cm3": 616.04,
    "moving": null,
    "removable": false
   },
   {
    "id": "box_lip",
-   "name_de": "Schachtlippe",
-   "name_en": "Box well lip",
+   "name_de": "Einhängeleiste",
+   "name_en": "Box hanger",
    "assembly": "receiver",
-   "function_de": "Blanke Einführkante des Kastenschachts",
-   "attachment_de": "unten am Schacht des Unteren Gehäuses",
+   "function_de": "Blanke Leiste, an der der Kasten links eingehängt wird",
+   "attachment_de": "links am Unteren Gehäuse über dem Kasten",
    "material_role": "trim",
    "material_de": "Blanke Zierkante",
    "interface": "BAB-1",
    "parent_part": null,
-   "shape": "prof",
+   "shape": "box",
    "bevel_mm": 0.6,
    "blender_object": "box_lip",
    "origin_m": [
@@ -256,23 +256,23 @@
    ],
    "bounds_m": {
     "min": [
-     -0.0245,
-     -0.20381,
-     0.034
+     0.024,
+     -0.198,
+     0.06
     ],
     "max": [
-     0.0245,
-     -0.08819,
-     0.037
+     0.0264,
+     -0.09,
+     0.064
     ]
    },
    "size_mm": [
-    49.0,
-    115.6,
-    3.0
+    2.4,
+    108.0,
+    4.0
    ],
    "triangles": 108,
-   "volume_cm3": 16.84,
+   "volume_cm3": 0.99,
    "moving": null,
    "removable": false
   },
@@ -1464,7 +1464,7 @@
    "name_en": "Ammo box",
    "assembly": "ammo",
    "function_de": "Hält den Gurt; austauschbar",
-   "attachment_de": "rastet im Kastenschacht ein (lösbar)",
+   "attachment_de": "links am Unteren Gehäuse eingehängt (lösbar)",
    "material_role": "dark_metal",
    "material_de": "Brüniertes Metall",
    "interface": "BAB-1",
@@ -1473,44 +1473,44 @@
    "bevel_mm": 3.0,
    "blender_object": "ammo_box",
    "origin_m": [
-    0.006,
-    -0.146,
-    -0.011
+    0.0476,
+    -0.144,
+    0.012
    ],
    "bounds_m": {
     "min": [
-     -0.017,
-     -0.2,
-     -0.062
+     0.0246,
+     -0.196,
+     -0.036
     ],
     "max": [
-     0.029,
+     0.0706,
      -0.092,
-     0.04
+     0.06
     ]
    },
    "size_mm": [
     46.0,
-    108.0,
-    102.0
+    104.0,
+    96.0
    ],
    "triangles": 332,
-   "volume_cm3": 485.04,
+   "volume_cm3": 440.1,
    "moving": {
     "kind": "translate",
     "event": "reload",
     "note": null,
     "pivot_m": [
-     0.006,
-     -0.146,
-     -0.011
+     0.0476,
+     -0.144,
+     0.012
     ],
     "vector_m": [
+     0.09,
      0.0,
-     0.0,
-     -0.11
+     -0.07
     ],
-    "travel_mm": 110.0
+    "travel_mm": 114.0
    },
    "removable": true
   },
@@ -1535,23 +1535,23 @@
    ],
    "bounds_m": {
     "min": [
-     -0.0176,
-     -0.2006,
-     -0.056
+     0.024,
+     -0.1966,
+     -0.03
     ],
     "max": [
-     0.0296,
+     0.0712,
      -0.0914,
-     -0.052
+     -0.026
     ]
    },
    "size_mm": [
     47.2,
-    109.2,
+    105.2,
     4.0
    ],
    "triangles": 108,
-   "volume_cm3": 20.59,
+   "volume_cm3": 19.83,
    "moving": null,
    "removable": false
   },
@@ -1576,14 +1576,14 @@
    ],
    "bounds_m": {
     "min": [
-     0.0275,
-     -0.186,
-     -0.042
+     0.0691,
+     -0.182,
+     -0.016
     ],
     "max": [
-     0.0285,
-     -0.17,
-     -0.036
+     0.0701,
+     -0.166,
+     -0.01
     ]
    },
    "size_mm": [
@@ -1617,14 +1617,14 @@
    ],
    "bounds_m": {
     "min": [
-     -0.005,
-     -0.205,
-     -0.03941
+     0.0366,
+     -0.201,
+     -0.01341
     ],
     "max": [
-     0.017,
-     -0.199,
-     -0.00059
+     0.0586,
+     -0.195,
+     0.02541
     ]
    },
    "size_mm": [
@@ -1654,27 +1654,27 @@
    "origin_m": [
     0.0318,
     -0.12,
-    0.096
+    0.0956
    ],
    "bounds_m": {
     "min": [
      0.02729,
      -0.152,
-     0.03949
+     0.05989
     ],
     "max": [
      0.03631,
      -0.1,
-     0.10051
+     0.10011
     ]
    },
    "size_mm": [
     9.0,
     52.0,
-    61.0
+    40.2
    ],
-   "triangles": 2256,
-   "volume_cm3": 18.21,
+   "triangles": 1504,
+   "volume_cm3": 12.14,
    "moving": {
     "kind": "translate",
     "event": "fire",
@@ -1682,7 +1682,7 @@
     "pivot_m": [
      0.0318,
      -0.12,
-     0.096
+     0.0956
     ],
     "vector_m": [
      0.0,
@@ -1716,21 +1716,21 @@
     "min": [
      0.0265,
      -0.135,
-     0.0387
+     0.0591
     ],
     "max": [
      0.0371,
      -0.106,
-     0.1013
+     0.1009
     ]
    },
    "size_mm": [
     10.6,
     29.0,
-    62.6
+    41.8
    ],
-   "triangles": 4608,
-   "volume_cm3": 2.27,
+   "triangles": 3072,
+   "volume_cm3": 1.52,
    "moving": null,
    "removable": false
   },
@@ -1757,7 +1757,7 @@
     "min": [
      0.0258,
      -0.157,
-     0.038
+     0.058
     ],
     "max": [
      0.0378,
@@ -1768,10 +1768,10 @@
    "size_mm": [
     12.0,
     63.0,
-    56.0
+    36.0
    ],
    "triangles": 216,
-   "volume_cm3": 5.27,
+   "volume_cm3": 3.38,
    "moving": null,
    "removable": false
   },
@@ -2592,12 +2592,12 @@
     "min": [
      -0.015,
      0.149,
-     0.084
+     0.078
     ],
     "max": [
      0.015,
      0.161,
-     0.126
+     0.12
     ]
    },
    "size_mm": [
@@ -2633,12 +2633,12 @@
     "min": [
      -0.014,
      0.16,
-     0.094
+     0.088
     ],
     "max": [
      0.014,
      0.242,
-     0.122
+     0.116
     ]
    },
    "size_mm": [
@@ -2674,21 +2674,21 @@
     "min": [
      -0.018,
      0.236,
-     0.02336
+     0.01765
     ],
     "max": [
      0.018,
      0.314,
-     0.12988
+     0.12386
     ]
    },
    "size_mm": [
     36.0,
     78.0,
-    106.5
+    106.2
    ],
-   "triangles": 286,
-   "volume_cm3": 118.23,
+   "triangles": 280,
+   "volume_cm3": 134.81,
    "moving": null,
    "removable": false
   },
@@ -2715,12 +2715,12 @@
     "min": [
      -0.02,
      0.313,
-     0.01846
+     0.01246
     ],
     "max": [
      0.02,
      0.329,
-     0.13354
+     0.12754
     ]
    },
    "size_mm": [
@@ -2756,12 +2756,12 @@
     "min": [
      -0.013,
      0.23,
-     0.126
+     0.12
     ],
     "max": [
      0.013,
      0.296,
-     0.136
+     0.13
     ]
    },
    "size_mm": [
@@ -2797,12 +2797,12 @@
     "min": [
      -0.0164,
      0.15368,
-     0.08768
+     0.08168
     ],
     "max": [
      0.0164,
      0.15832,
-     0.12032
+     0.11432
     ]
    },
    "size_mm": [
@@ -2859,9 +2859,9 @@
   },
   "Socket_AmmoBox": {
    "position_m": [
-    0.006,
-    -0.146,
-    -0.062
+    0.0476,
+    -0.144,
+    -0.036
    ],
    "part": "ammo_box",
    "note": "Griffpunkt am Kastenboden (Schnittstelle BAB-1)",
@@ -2899,9 +2899,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    0.00137,
-    -0.10947,
-    0.06869
+    0.00722,
+    -0.10003,
+    0.07475
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
@@ -2916,20 +2916,20 @@
     -0.079
    ],
    "max": [
-    0.0401,
+    0.0712,
     0.329,
     0.1866
    ]
   },
   "length_m": 0.983,
   "height_m": 0.2656,
-  "width_m": 0.0675,
+  "width_m": 0.0986,
   "reference_length_m": 1.15,
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
   "parts": 62,
-  "triangles": 34398,
+  "triangles": 32020,
   "assemblies": 8
  },
  "actions": {

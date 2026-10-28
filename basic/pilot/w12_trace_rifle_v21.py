@@ -51,7 +51,7 @@ TUBE1 = 448                  # Rohrende = Kegelansatz
 TIP = 496                    # Stirn der Fokuslinse (Socket_Muzzle)
 HOOD1 = 500                  # Haubennase, 4 mm vor der Linse
 CELL = (86, 126)             # Energiezelle vor dem Griff (f; wie BASIC-10, 3 mm vor dem Abzugsbügel)
-DISC = (150, 100, 19.0)      # Fokusscheibe: Mitte f, u und Radius (beidseitig am Gehäuse)
+DISC = (144, 105, 17.0)      # Fokusscheibe: Mitte f, u und Radius, mittig im Creme-Feld u 82–128 vor dem Paneel (Nutzer: „zu tief, nicht mittig“)
 W_REC = 44
 
 P = []
@@ -139,7 +139,7 @@ P += [
     cyl('focus_lens', 'Fokuslinse', 'Focus lens', 'barrel', 'energy', 'Leuchtet bei aktivem Strahl', 'in der Kegelspitze',
         'f', (BORE, 0), TIP - 2.5, TIP, 6.2, bevel=0, segs=32, move=dict(kind='glow', pivot=None, event='beam', max=6.0)),
     part('text_l', 'Schriftzug', 'Lettering', 'receiver', 'text', 'decal', 'Kennung „BASIC TR-12“ (einzige Schrift)',
-         'aufgedruckt', bevel=0, text='BASIC  TR-12', size=5.0, f=-100, u=68, x=21.05, side=1, depth=0.12),
+         'aufgedruckt', bevel=0, text='BASIC  TR-12', size=5.0, f=-20, u=66, x=21.05, side=1, depth=0.12),
 ]
 # ---------------------------------------------------------------- Griff, Zelle, Einteilkörper (BST-T) mit Daumenloch
 P += grip_v21(top=GRIP_TOP)
