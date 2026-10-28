@@ -23,7 +23,7 @@ mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der
 | BASIC-10-v2.1 Fusionsgewehr | 701 × 254 × 47 | 96 | 420 | -280 | 162 | 66.0 | 90 (Reflex-/Holovisier) | 265 / 56 | – | 49 / 72 | 45 / 25456 |
 | BASIC-11-v2.1 Lineares Fusionsgewehr | 1098 × 256 × 50 | 92 | 729 | -328 | 158 | 66.0 | 90 (Zielfernrohr) | 350 / 42 | – | 126 / 75 | 53 / 29610 |
 | BASIC-12-v2.1 Spurgewehr | 777 × 253 × 49 | 96 | 496 | -277 | 162 | 66.0 | 90 (Reflex-/Holovisier) | 259 / 79 | – | 55 / 75 | 50 / 26096 |
-| BASIC-15-v2.1 Maschinengewehr | 983 × 266 × 99 | 106 | 654 | -329 | 172 | 66.0 | 90 (Reflex-/Holovisier) | 335 / 60 | – | 100 / 75 | 62 / 32020 |
+| BASIC-15-v2.1 Maschinengewehr | 983 × 266 × 99 | 106 | 654 | -329 | 172 | 66.0 | 90 (Reflex-/Holovisier) | 335 / 60 | – | 101 / 78 | 62 / 32020 |
 
 ## Größen der Hauptteile
 

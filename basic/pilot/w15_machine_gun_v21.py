@@ -47,7 +47,8 @@ COVER = (-60, 150, TOP, 138)  # Zuführdeckel f0, f1, u0, u1
 COVER_PIV = (150, 130)       # Scharnier vorn
 REC0, REC1 = -150, 210       # Gehäuse hinten / vorn
 W_REC = 52
-BOX = (92, 196, -36, 60)     # Munitionskasten f0, f1, u0, u1: seitlich links am Unteren Gehäuse eingehängt (Nutzer 28.10.2026)
+BOX = (92, 228, 0, 60)       # Munitionskasten f0, f1, u0, u1: seitlich links am Unteren Gehäuse eingehängt, flach und lang
+                             # (Nutzer 28.10.2026: „Kasten seitlich“, dann „eher in die Breite … als in die Höhe“: 136 × 60 statt 104 × 96)
 _bw = 46                     # Kastenbreite x
 BOX_X = 24.6 + _bw / 2       # Kastenmitte x: Innenseite an der linken Seite des Unteren Gehäuses (x 24)
 BELT_X = 31.8                # Mitte der Gurtsäule (außen an der linken Wand x 26; Glieder r 5,4 frei)
@@ -71,10 +72,10 @@ P += [
                cut_box(FEED[0] - 2, FEED[1] + 2, COVER[2] - 5, TOP + 2, W_REC - 8)]),   # Öffnung unter dem Deckel (Zuführschale)
     prof('lower', 'Unteres Gehäuse', 'Lower receiver', 'receiver', 'graphite', 'Griffmodul, Abzugsgruppe, Kastenaufnahme links',
          'unter dem Gehäuse, Fuge 1 mm',
-         [(REC0, 62), (-70, 40), (BOX[1] + 8, 40), (REC1, 62), (REC1, 79),
+         [(REC0, 62), (-70, 40), (204, 40), (REC1, 62), (REC1, 79),
           (REC0, 79)], W_REC - 4),
     box('box_lip', 'Einhängeleiste', 'Box hanger', 'receiver', 'trim', 'Blanke Leiste, an der der Kasten links eingehängt wird',
-        'links am Unteren Gehäuse über dem Kasten', BOX[0] - 2, BOX[1] + 2, BOX[3], BOX[3] + 4, 2.4, bevel=0.6, x=24.6 + 1.2 - 0.6,
+        'links am Unteren Gehäuse über dem Kasten', BOX[0] - 2, REC1 - 2, BOX[3], BOX[3] + 4, 2.4, bevel=0.6, x=24.6 + 1.2 - 0.6,
         iface='BAB-1'),
     box('side_panel_l', 'Seitenpaneel links', 'Side panel left', 'receiver', 'anodized', 'Wartungsdeckel über dem Puffer',
         'in die Mulde geschraubt (4 Schrauben)', -130, -42, 88, 100, 1.2, bevel=R_FINE, x=W_REC / 2 - 0.8),
@@ -130,9 +131,9 @@ P += [
     box('box_band', 'Kastenband', 'Box band', 'ammo', 'trim', 'Blankes Band über dem Kastenboden; Greifkante', 'um den Kasten',
         BOX[0] - 0.6, BOX[1] + 0.6, BOX[2] + 6, BOX[2] + 10, _bw + 1.2, bevel=0.4, x=BOX_X, parent_part='ammo_box'),
     box('box_counter', 'Zählfenster', 'Round counter', 'ammo', 'energy', 'Zeigt den Füllstand des Kastens', 'links in den Kasten eingelassen',
-        BOX[1] - 30, BOX[1] - 14, BOX[2] + 20, BOX[2] + 26, 1.0, bevel=0.3, x=BOX_X + _bw / 2 - 1.0, parent_part='ammo_box'),
+        BOX[1] - 34, BOX[1] - 14, BOX[2] + 18, BOX[2] + 24, 1.0, bevel=0.3, x=BOX_X + _bw / 2 - 1.0, parent_part='ammo_box'),
     prof('box_grip', 'Kastengriff', 'Box grip', 'ammo', 'anodized', 'Griffleiste vorn am Kasten (Kasten ziehen)', 'vorn am Kasten verschraubt',
-         [(BOX[1] - 1, BOX[2] + 22), (BOX[1] + 5, BOX[2] + 26), (BOX[1] + 5, BOX[2] + 58), (BOX[1] - 1, BOX[2] + 62)], 22, bevel=R_SMALL,
+         [(BOX[1] - 1, BOX[2] + 12), (BOX[1] + 5, BOX[2] + 16), (BOX[1] + 5, BOX[3] - 16), (BOX[1] - 1, BOX[3] - 12)], 22, bevel=R_SMALL,
          x=BOX_X, parent_part='ammo_box'),
     part('belt', 'Gurt', 'Belt', 'ammo', 'multi', 'brass', 'Patronen im Gurt vom Kasten zur Zuführung (sichtbarer Füllstand)',
          'im Kasten, durch die Gurtführung in den Einlauf', bevel=0.3, smooth=True, parent_part='ammo_box',
