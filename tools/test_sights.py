@@ -7,11 +7,15 @@
   (`reticles.share_band`); Familienwaffen im Standard oder in der Variante ihres Typs.
 - Ring ohne Wulst: Zielfernrohre außen/innen an der Ringstirn ≈ 1,29 (± 0,02), Innenfläche läuft auf den Augenpunkt zu.
 - Absehen gezeichnet: `sight_reticle` flach (Querprofile ≤ 0,1 mm) in der Glasebene (± 0,5 mm), reine Emission, Hüftform der
-  Klasse in Hüftgröße (± 3 %), Linien mindestens 1,6 px bei 1280 px Bildbreite.
+  Klasse in Hüftgröße (± 3 %, dazu der Zuwachs, wenn die Linie auf die Mindestbreite geklemmt ist – 0.25, Caret 1 % H), Linien
+  mindestens 1,6 px bei 1280 px Bildbreite.
 - Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
 - Kimme/Korn K1 an Familienwaffen (0.24, BASIC-04/05): Klasse passt, Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme,
   Lichtspalt zwischen Korn und Kerbe je Seite ≥ 0,25° (≈ 4 px bei 1280 px), Kornpunkt in der Kerbe, Kimmen- und Kornfuß liegen
   auf dem Träger auf.
+- Scharfschütze Z3 (0.25, BASIC-09): Vollbild-Typ zur Klasse, Visierhöhe 66 ± 4, Augenpunkt 90 mm hinter dem Ring, Ring ohne Wulst,
+  gezeichnetes Absehen; Vollbild-Zielbild: Linse auf der Visierlinie, Kreis 80–83 % H, Duplex mit freier Mitte (`sight_kit.FULLSCREEN`).
+  Kimme/Korn K2 (BASIC-08): wie K1, Kerbe als Lücke des Hörner-Querprofils auf der Visierlinie.
 - Bauteil-Hash des Unity-Exports (`export_unity.parts_sha`) ist bei 1 ulp Abweichung gleich (Mac und Linux-CI).
 - Mündungsfeuer im Zielen an der MP-Pille: in der Kontur gezählt (kleiner als im umschließenden Rechteck) und ≤ 20 % (5.3 A).
 """
@@ -75,8 +79,12 @@ def check_reticle(parts, anchors, wtype):
     us = [pt[1] for i in items for pt in i['pts']]
     xs = [pt[0] for i in items for pt in i['pts']]
     ext = max(max(us) - min(us), max(xs) - min(xs))
-    share = ext / (2 * d * TAN * 9 / 16)
-    if q.get('drawn', {}).get('kind') != h['kind'] or abs(share / h['share_h'] - 1) > 0.03:
+    Hh = 2 * d * TAN * 9 / 16
+    share = ext / Hh
+    # Mindestlinie geht vor der Hüftgröße (0.25, Caret des Scharfschützen 1 % H): Zuwachs durch die auf min_line_px geklemmte Linie zulassen
+    lw_nom = RT.LINE_R * RT.WEIGHTS[RT.HIP['weight']][1] * h['share_h'] * Hh / h['extent_mm']
+    grow = 2 * max(0.0, RT.SIGHT['drawn']['min_line_px'] / 2 * 2 * d * TAN / RT.SIGHT['drawn']['ref_w_px'] - lw_nom) / Hh
+    if q.get('drawn', {}).get('kind') != h['kind'] or abs(share - h['share_h']) > 0.03 * h['share_h'] + grow + 1e-9:
         bad.append(f"Absehen {q.get('drawn', {}).get('kind')} {share * 100:.2f} % H statt Hüftform {h['kind']} {h['share_h'] * 100:.1f} % H")
     px = 2 * d * TAN / RT.SIGHT['drawn']['ref_w_px']
     thin = min(math.dist(i['pts'][0], i['pts'][1]) for i in items if len(i['pts']) == 4)   # Linie: quer, Ring: radial
@@ -94,16 +102,25 @@ def iron_picture(parts, anchors):
     P = {p['id']: p for p in parts}
     eye_f, cu = anchors['Socket_Eye']['at'][0], anchors['Socket_Eye']['at'][1]
     rear, front, dot = P['sight_rear'], P['sight_front'], P['sight_glass']
-    fr = min(q[0] for q in rear['pts'])
-    notch = rear['cuts'][0]
+    if rear['shape'] == 'xprof':        # K2 „Hörner“ (0.25): Kimme als U-Querprofil um die Visierlinie, Kerbe = Lücke bei u 0
+        fr, pts = rear['f0'], rear['pts']
+        edges = list(zip(pts, pts[1:] + pts[:1]))
+        xs = [a[0] + (b[0] - a[0]) * (0 - a[1]) / (b[1] - a[1]) for a, b in edges if (a[1] - 0) * (b[1] - 0) < 0]
+        floor = max(a[1] + (b[1] - a[1]) * (0 - a[0]) / (b[0] - a[0]) for a, b in edges if a[0] * b[0] < 0 and
+                    a[1] + (b[1] - a[1]) * (0 - a[0]) / (b[0] - a[0]) < 0)
+        notch_w, floor_u, top_u = 2 * min(abs(x) for x in xs), floor, max(q[1] for q in pts)
+    else:                               # K1 „Klammer“: Blatt als Seitenprofil mit Kerbe als Schnitt
+        fr = min(q[0] for q in rear['pts'])
+        notch = rear['cuts'][0]
+        notch_w, floor_u, top_u = notch['w'], notch['u0'] - cu, max(q[1] for q in rear['pts']) - cu
     post = front['items'][0]
     ff = max(q[0] for q in post['pts'] if q[1] == max(v[1] for v in post['pts']))
     dr, df = fr - eye_f, (dot['a0'] + dot['a1']) / 2 - eye_f
     deg = math.degrees
-    notch_half, post_half = deg(math.atan(notch['w'] / 2 / dr)), deg(math.atan(post['w'] / 2 / (ff - eye_f)))
+    notch_half, post_half = deg(math.atan(notch_w / 2 / dr)), deg(math.atan(post['w'] / 2 / (ff - eye_f)))
     return dict(eye_rear=dr, eye_front=df, notch_half=notch_half, post_half=post_half, gap=notch_half - post_half,
-                dot=deg(math.atan((dot['c'][0] - cu) / df)), notch_floor=deg(math.atan((notch['u0'] - cu) / dr)),
-                blade_top=deg(math.atan((max(q[1] for q in rear['pts']) - cu) / dr)))
+                dot=deg(math.atan((dot['c'][0] - cu) / df)), notch_floor=deg(math.atan(floor_u / dr)),
+                blade_top=deg(math.atan(top_u / dr)))
 
 
 def check_iron(W):
@@ -127,6 +144,34 @@ def check_iron(W):
         bad.append(f"Lichtspalt {g['gap']:.2f}° je Seite < {IRON_GAP_MIN_DEG}° (Korn füllt die Kerbe)")
     if not g['notch_floor'] < g['dot'] < g['blade_top']:
         bad.append(f"Kornpunkt bei {g['dot']:.2f}° nicht in der Kerbe ({g['notch_floor']:.2f}° … {g['blade_top']:.2f}°)")
+    return bad
+
+
+def check_fullscreen(W):
+    """Scharfschützen-Zielfernrohr Z3 (Visier-Standard 3 Typ `fullscreen`, 0.25): Klasse passt, Visierhöhe 66 ± 4 mm, Augenpunkt 90 mm
+    hinter dem Objektivring (Sitz wie Z1), Ring ohne Wulst, gezeichnetes Hüft-Absehen auf der Linse; Vollbild-Zielbild: Linse und
+    Augenpunkt auf der Visierlinie, Kreis im Destiny-Band, Duplex mit Lücke um die Mitte. Fehlerliste."""
+    from basic.pilot.optics.sight_kit import FULLSCREEN
+    bad, e, t = [], W.ANCHORS['Socket_Eye'], W.META['type']
+    if RT.SIGHT_KIND.get(t) != 'fullscreen' or RT.SIGHT['types']['fullscreen']['ads_view'] != 'overlay':
+        bad.append(f'Vollbild passt nicht zur Klasse {t} (Visier-Standard 3: {RT.SIGHT_KIND.get(t)})')
+    h = e['at'][1] - W.BORE
+    if abs(h - RT.SIGHT['height_mm']) > RT.SIGHT['height_tol_mm']:
+        bad.append(f"Visierhöhe {h:.1f} mm außerhalb {RT.SIGHT['height_mm']:.0f} ± {RT.SIGHT['height_tol_mm']:.0f} mm")
+    rel = W.ANCHORS['Socket_Objective']['at'][0] - e['at'][0]
+    if abs(rel - RT.SIGHT['types']['scope']['eye_relief_mm']) > 0.5:
+        bad.append(f"Augenpunkt {rel:.1f} mm statt {RT.SIGHT['types']['scope']['eye_relief_mm']:.0f} mm hinter dem Objektivring")
+    if abs(ring_ratio(W.PARTS) - C.RING_RATIO) > 0.02:
+        bad.append(f'Ring außen/innen {ring_ratio(W.PARTS):.3f} statt ≈ {C.RING_RATIO} (Wulst)')
+    P = {p['id']: p for p in W.PARTS}
+    g = P['scope_glass']
+    if abs(g['c'][0] - e['at'][1]) > 1e-6 or abs(g['c'][1]) > 1e-6 or abs(e['at'][2] if len(e['at']) > 2 else 0) > 1e-6:
+        bad.append('Vollbild: Objektivlinse und Augenpunkt nicht auf derselben Visierlinie (Bildmitte ≠ Zielpunkt)')
+    lo, hi = FULLSCREEN['band']
+    D = FULLSCREEN['duplex']
+    if not lo <= FULLSCREEN['circle_h'] <= hi or not D['line_h'] < D['bar_h'] < D['gap_h'] < FULLSCREEN['circle_h'] / 2:
+        bad.append(f"Vollbild: Kreis {FULLSCREEN['circle_h']:.2f} H außerhalb {lo:.2f}–{hi:.2f} oder Duplex ohne freie Mitte")
+    bad += check_reticle(W.PARTS, W.ANCHORS, t)
     return bad
 
 
@@ -161,6 +206,14 @@ def main():
             print(f"[test_sights] {wid}: Kimme/Korn, Linie Träger + {e['at'][1] - e['deck']:g} mm, Auge {g['eye_rear']:.0f} mm hinter der "
                   f"Kimme, Kerbe ±{g['notch_half']:.2f}°, Korn ±{g['post_half']:.2f}°, Lichtspalt {g['gap']:.2f}°, Kornpunkt {g['dot']:.2f}°")
             bad += [f'{wid}: {b}' for b in check_iron(W)]
+            continue
+        if e.get('sight_type') == 'fullscreen':
+            from basic.pilot.optics.sight_kit import FULLSCREEN
+            n += 1
+            print(f"[test_sights] {wid}: Vollbild (Z3), Visierhöhe {e['at'][1] - W.BORE:g} mm, Auge "
+                  f"{W.ANCHORS['Socket_Objective']['at'][0] - e['at'][0]:g} mm hinter dem Ring, Ring {ring_ratio(W.PARTS):.3f}, "
+                  f"Kreis {FULLSCREEN['circle_h'] * 100:.0f} % H")
+            bad += [f'{wid}: {b}' for b in check_fullscreen(W)]
             continue
         if e.get('sight_type') not in ('reflex', 'scope'):
             continue

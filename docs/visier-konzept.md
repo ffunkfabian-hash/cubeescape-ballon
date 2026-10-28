@@ -158,6 +158,10 @@ Die Fragen waren:
 Blender flach; BASIC-01 H0, BASIC-02 H4, BASIC-03 Z1 nach Konzept A, BASIC-06 H2; Unity-Export mit Backen für 01/03/06. Die bisher
 visierlosen Waffen sind **nicht** Teil von 0.21 (Auftrag: zwei Hauptziele) – Zuordnung nach § 6a bleibt offen für eine eigene Version.
 **Erledigt (28.10.2026, [Bericht](versions/0.24-holster.md)):** K1 „Klammer“ an BASIC-04/05 v2.1 gebaut (`sight_kit.klammer`, Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme, `test_sights` prüft Lichtspalt und Kornpunkt); M1 „Mini“ (04/05) und H8 „Halbmond“ (05) bleiben Varianten im Katalog.
+**Erledigt (28.10.2026, [Bericht](versions/0.25-longshot.md)):** K2 „Hörner“ an BASIC-08 v2.1 (`sight_kit.hoerner`, Kimme auf der Schiene,
+Korn auf der Lüftungsschiene, Linie Träger + 11 mm, Kerbe als Lücke des Hörner-Querprofils) und Z3 „Lang“ an BASIC-09 v2.1
+(`sight_kit.lang`, Sitz nach Konzept A wie Z1, Ring ohne Wulst, Vollbild-Typ `fullscreen` mit `FULLSCREEN`); `test_sights` und
+`test_sight_seat` prüfen beide. K3 „Lochkimme“ bleibt Variante im Katalog.
 
 
 Baukasten in `basic/common.py` (Form `xprof` in `kit.py`), gewählte Visiere an BASIC-01/02/03/06 und den bisher visierlosen Waffen,

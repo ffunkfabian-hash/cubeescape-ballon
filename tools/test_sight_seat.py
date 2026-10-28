@@ -3,7 +3,7 @@ Auge, Fuß unter dem Objektiv): läuft in Blender, ohne Szene und ohne Render.
 
   blender -b --factory-startup -P tools/test_sight_seat.py [-- --json <datei>]
 
-Für jede Familienwaffe mit Zielfernrohr (`Socket_Eye.sight_type == 'scope'`) wird das Modell mit Fasen und Durchbrüchen gebaut und
+Für jede Familienwaffe mit Zielfernrohr (`Socket_Eye.sight_type` `scope` oder – seit 0.25, Z3 – `fullscreen`) wird das Modell mit Fasen und Durchbrüchen gebaut und
 mit senkrechten Strahlen in der Mittelebene (x = 0, alle 0,5 mm entlang des Mittelrohrs) vermessen – keine Hülle, sondern die
 tatsächliche Kontur:
 - Spalt = Unterkante des Zielfernrohrs (`scope_tube`, `scope_eyepiece`) − Oberkante des Trägers darunter (Baugruppe `receiver` und
@@ -12,12 +12,13 @@ tatsächliche Kontur:
   Auge (30 mm), dort trägt eine 26 mm lange Wiege auf dem Buckel. Gehäuse allein: das Zielfernrohr dringt nirgends ein.
 - Visierhöhe = `Socket_Eye` über der Laufachse (`Socket_Muzzle`): 66 ± 4 mm (Visier-Standard).
 - Visier über Gehäuse = höchster Punkt der Baugruppe `sight` − Gehäuseoberkante unter dem Rohr, geteilt durch die Modelllänge L:
-  0,02–0,04 L (Destiny-Scouts).
+  0,02–0,04 L (Destiny-Scouts); Scharfschütze (Vollbild, 0.25) 0,05–0,11 L (Destiny-Sniper, Motiongen proportionen › 2), gemessen
+  über dem Gehäuse ohne Visierträger (Schienen, Sattelblock) wie das Destiny-Maß; über dem Träger steht in `sight_over_mount_L`.
 - Kollision: die Optikteile (alle `sight`-Teile außer Sattel, Klemmfuß, Spannband und Klemmhebel) überschneiden kein Gehäuseteil
   (BVH-Überlappung).
 - Sattel hinter dem Auge (Konzept A, 0.21): der Rohrsattel endet vorn spätestens am Augenpunkt (`Socket_Eye`).
 - Zielbild frei (0.21, ersetzt „höchstens 1,5 mm über der Rohrunterkante“ von 0.19): Strahlen vom Augenpunkt (75°, 16:9) durch das
-  untere Bilddrittel treffen kein Teil ohne `ads_hide` zwischen Auge und Objektivbeginn – dort stand 0.19 der Sattel mit Schiene.
+  untere Bilddrittel treffen kein Teil ohne `ads_hide` zwischen Auge und Objektivbeginn (je 0,5 mm Abstand zu Auge und Objektivkante) – dort stand 0.19 der Sattel mit Schiene.
   Bewusst geändertes Verhalten: 0.19 erlaubte einen flachen Sattel vor dem Auge.
 """
 import glob
@@ -36,10 +37,12 @@ sys.path.insert(0, ROOT)
 from basic import kit  # noqa: E402
 from basic.reticles import SIGHT  # noqa: E402
 
+MOUNTS = ('rail', 'rail_front', 'saddle_block')     # Visierträger auf dem Gehäuse (für „Visier über Gehäuse“ beim Vollbild)
 CLAMP = ('scope_mount_r', 'scope_mount_f', 'sight_clamp', 'scope_strap')      # dürfen das Gehäuse berühren (Klemmung)
 HFOV, ASPECT, GRID = 75.0, 9 / 16, (48, 16)
 GAP_MAX, GAP_MIN, CONTACT_MM = 1.0, -0.2, 25.0
 BAND = (0.02, 0.04)
+BAND_TYPE = {'scope': BAND, 'fullscreen': (0.05, 0.11)}   # Scharfschütze (0.25): Destiny 0,05–0,11 L (Motiongen proportionen › 2)
 
 
 def tree(obs):
@@ -77,6 +80,7 @@ def measure(W):
     tube, _ = tree([objs['scope_tube'], objs['scope_eyepiece']])
     _, sight_v = tree(by_asm['sight'])
     _, all_v = tree(list(objs.values()))
+    fs = W.ANCHORS['Socket_Eye']['sight_type'] == 'fullscreen'
     a0, a1 = min(eye_p['a0'], tube_p['a0']) + 0.5, max(tube_p['a0'], tube_p['a1'])
     rows = []
     f = a0
@@ -89,6 +93,10 @@ def measure(W):
     contact = 0.5 * sum(1 for g in gaps if GAP_MIN <= g <= GAP_MAX)
     gap_house = min(r[4] for r in rows)
     house_top = max(r[2] for r in rows)
+    # Vollbild (0.25): Destiny misst die Optik über dem Gehäuse, nicht über dem Visierträger – Schienen und Sattelblock zählen dort nicht
+    body = [objs[p['id']] for p in W.PARTS if p['asm'] == 'receiver' and p['id'] not in MOUNTS]
+    bt, _ = tree(body)
+    body_top = max(z for z in (hit_z(bt, r[0], down=True) for r in rows) if z is not None)
     sight_top = max(v.z for v in sight_v) * 1000
     L = (max(v.y for v in all_v) - min(v.y for v in all_v)) * 1000
     eye = anc['Socket_Eye'].matrix_world.translation.z * 1000
@@ -108,12 +116,14 @@ def measure(W):
             tx = th * (-1 + (2 * i + 1) / GRID[0])
             ty = -th * ASPECT * (1 / 3 + (2 / 3) * (j + 0.5) / GRID[1])
             loc = vis.ray_cast(e, Vector((tx, -1.0, ty)).normalized())[0]
-            if loc is not None and eye_f + 0.5 < -loc.y * 1000 < obj_f:
+            if loc is not None and eye_f + 0.5 < -loc.y * 1000 < obj_f - 0.5:     # 0.25: Objektivhinterkante selbst zählt nicht
                 hits.append(round(-loc.y * 1000, 1))
-    return dict(weapon=f"{W.META['id']}-{W.META['variant']}", tube_f=[a0, a1], tube_bottom_mm=round(min(r[1] for r in rows), 2),
+    return dict(weapon=f"{W.META['id']}-{W.META['variant']}", sight_type=W.ANCHORS['Socket_Eye']['sight_type'], tube_f=[a0, a1], tube_bottom_mm=round(min(r[1] for r in rows), 2),
                 gap_min_mm=round(min(gaps), 2), gap_max_mm=round(max(gaps), 2), contact_mm=contact, gap_house_min_mm=round(gap_house, 2),
                 house_top_mm=round(house_top, 2), sight_top_mm=round(sight_top, 2), length_mm=round(L, 1),
-                sight_over_house_mm=round(sight_top - house_top, 2), sight_over_house_L=round((sight_top - house_top) / L, 4),
+                sight_over_house_mm=round(sight_top - (body_top if fs else house_top), 2),
+                sight_over_house_L=round((sight_top - (body_top if fs else house_top)) / L, 4),
+                sight_over_mount_L=round((sight_top - house_top) / L, 4),
                 sight_height_mm=round(eye - bore, 2), optic_overlaps=len(overlaps), eye_f=eye_f, objective_f=round(obj_f, 2),
                 saddle_front_f=round(saddle_front, 2), ads_lower_third_hits=len(hits), ads_hit_f=[min(hits), max(hits)] if hits else None)
 
@@ -128,9 +138,10 @@ def check(m):
     h, tol = SIGHT['height_mm'], SIGHT['height_tol_mm']
     if abs(m['sight_height_mm'] - h) > tol:
         bad.append(f"Visierhöhe {m['sight_height_mm']} mm außerhalb {h:g} ± {tol:g} mm")
-    if not BAND[0] <= m['sight_over_house_L'] <= BAND[1]:
+    b = BAND_TYPE[m['sight_type']]
+    if not b[0] <= m['sight_over_house_L'] <= b[1]:
         bad.append(f"Visier über Gehäuse {m['sight_over_house_L']:.3f} L ({m['sight_over_house_mm']} mm) außerhalb "
-                   f"{BAND[0]:.2f}–{BAND[1]:.2f} L")
+                   f"{b[0]:.2f}–{b[1]:.2f} L")
     if m['saddle_front_f'] > m['eye_f'] + 1e-6:
         bad.append(f"Rohrsattel reicht bis f {m['saddle_front_f']} vor den Augenpunkt f {m['eye_f']} (Konzept A: hinter dem Auge)")
     if m['ads_lower_third_hits']:
@@ -146,7 +157,7 @@ def main():
     res, bad = [], []
     for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         W = importlib.import_module(os.path.relpath(f, ROOT)[:-3].replace(os.sep, '.'))
-        if W.ANCHORS.get('Socket_Eye', {}).get('sight_type') != 'scope':
+        if W.ANCHORS.get('Socket_Eye', {}).get('sight_type') not in BAND_TYPE:
             continue
         m = measure(W)
         res.append(m)

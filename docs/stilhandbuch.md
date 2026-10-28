@@ -28,6 +28,7 @@ Arm-Rig. Ein Waffenstil v3 existiert nicht.
 | 25.10.2026 | Visier-Standard 3 (anfangs „Visier-Designsprache v3“) nach Motiongen REF 0.14 „Eyebox“: „Mach alles so wie du empfiehlst“ (Augenpunkt bleibt 90 mm, kleinere Öffnungen; Impuls bleibt Holo) |
 | 25.10.2026 | Kein Waffenstil v3: Familie bleibt im Stil v2.1, nur die Namen werden geklärt (Wahl (a) auf „Warum wird nicht erst v3 gemacht?“); weiter mit der Maschinenpistole |
 | 28.10.2026 | Handfeuerwaffe BASIC-04 und Seitenwaffe BASIC-05 v2.1 (0.24 „Holster“): Grundform nach Zwischenstopp mit Wahl „a“ übernommen (04 lange gerade Haube über freistehender Trommel, Kastenunterlauf; 05 hoher Schlitten auf kurzem Rahmen); Feinschliff nur in der Form: 05 dunkle Schlittenkappe hinten statt leerer Griffmulde, Magazinboden bündig; 04 Hahngehäuse runder und kleiner. Visier K1 „Klammer“ gebaut, M1 „Mini“ nur dokumentiert |
+| 28.10.2026 | Schrotflinte BASIC-08 und Scharfschützengewehr BASIC-09 v2.1 (0.25 „Longshot“): Grundform nach Zwischenstopp mit Wahl „a“ übernommen (08 gerade Oberkante Schiene → Lüftungsschiene über dickem Lauf und Röhre, große Graphit-Pumpe; 09 Creme-Gehäuse und schmalerer Laufmantel mit Längsschlitz, freier Lauf, Z3 „Lang“ groß); Feinschliff nur in der Form. Kammerstängel des Scharfschützen **links** („mit links wird doch quasi nachgeladen“): die Stützhand repetiert, Hülse fliegt weiter nach rechts aus einem Auswurffenster rechts. Visiere K2 „Hörner“ und Z3 „Lang“ gebaut, K3 „Lochkimme“ nur dokumentiert |
 | 26.10.2026 | Portalkanone BASIC-T01 (0.17 „Gateway“): Werkzeug mit eigener Silhouette statt Familienkörper; nur Hüfte mit Kerbe als Leitkante, kein Visier; zwei Portalfarben (vorn Cyan = Portal A, hinten Orange = Portal B), Bedienelemente neutral; nach Skizze A „Ring“ der Wunsch „mehr an der Portal-2-Portalgun orientieren, nur im BALLON-Stil“ → Skizze P2 „Ei und Ring“ (facettierte Eischale, offener Zweifarbkern, Ring fest auf Speichen, dreht je Schuss 120°); „am Abzug sind die Teile in der Luft“ → Spalte gemessen und geschlossen |
 
 ## 2 Gestaltungsregeln v2
@@ -153,6 +154,8 @@ Startpunkt nehmen.
 | `holo_pille(f, u, size, weapon_type)` | **H2 „Pille“** (MP): ohne Haube, Emitterblock mit Statuspunkten, Pillenkontur gezeichnet (Rolle `sight_line`) | `size` S/M/L | 06 |
 | `scope_tropfen(f_obj, u, cu, size, weapon_type, seat_u, saddle_f)` | **Z1 „Tropfen“** (Scout), Sitz nach Konzept A: Wiege hinter dem Auge (`scope_saddle`), H0-Klemmfuß unter dem Objektiv (`scope_foot`), Ring ohne Wulst (`scope_ring`, außen/innen 1,29), Tropfensockel, zweistufiges Objektiv | `f_obj` Ringstirn, `cu` Visierlinie, `seat_u` Schiene unter dem Sattel, `size` S/M/L (`SCOPE_SIZES`, S Variante) | 03 |
 | `klammer(fr, ff, deck, size, parent)` (in `basic/pilot/optics/sight_kit.py`) | **K1 „Klammer“** (Kimme/Korn, 0.24): Kimmenblatt mit Kerbe und bündigen Leuchtklammern auf flachem Fuß, Korn mit Leuchtpunkt; Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme; gibt `(Teile, Anker)` mit `Socket_Sight` zurück. Liegt nicht in `common.py`, weil dieses im Unity-Quellenhash steht (Umzug mit dem Ego-Übertrag) | `fr` Kimmenrückseite, `ff` Kornspitze, `deck` Oberkante des Trägers, `parent` Schlitten | 04, 05 |
+| `hoerner(fr, ff, deck, size, parent, front_w)` (in `basic/pilot/optics/sight_kit.py`) | **K2 „Hörner“** (Schrot, 0.25): zweistufiger Fuß mit orangem Hebel, Kimmenblatt als U-Querprofil (zwei Flachblatt-Hörner 20° nach außen, Spitzen Linie + 4, Steg 2 mm unter der Linie), schlankes Korn mit orangem Kornkopf Ø 3,6 (kein Leuchten); Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme wie K1 | `deck` Schiene/Lüftungsschiene (Kimme und Korn auf gleicher Höhe), `front_w` Kornfuß auf schmaler Laufschiene | 08 |
+| `lang(f_obj, u, cu, size, weapon_type, seat_u, length, saddle_f)` (in `sight_kit.py`) | **Z3 „Lang“** (Scharfschütze, 0.25): Sitz nach Konzept A wie Z1 (Rohrsattel hinter dem Auge, H0-Klemmfuß unter dem Objektiv, Trapezsockel), Rohr Ø 24 × 200 mm, Ring ohne Wulst (M: Linse Ø 38, Ring Ø 52), blanke Sonnenblende 16 mm nach vorn; `Socket_Eye` 90 mm hinter dem Ring mit `sight_type 'fullscreen'`; Vollbild-Werte `FULLSCREEN` (Kreis 82 % H, Duplex) | wie `scope_tropfen`; `length` Standard 200 | 09 |
 | `sight_platform`, `sight_hood`, `sight_glass_x`, `xprof`, `scope_body` | Bausteine der übrigen Visiere: H0-Plattform (Klemmfuß 46 × 23/18, oranger Hebel, Gehäuse, Trapezsockel), Flachprofil-Haube (Stirn 1,6 mm) mit blanker Stirnkante, flache Scheibe | Katalog und Entwürfe: `basic/pilot/optics/sight_kit.py`, Blatt `tools/sight_catalog.py` | über Visiere |
 | `drawn_reticle(f, cu, weapon_type, dist)` | gezeichnetes Absehen: Hüftform der Klasse in Hüftgröße, flach in der Glasebene, Linien ≥ 1,6 px, reine Emission | `dist` Abstand zum Augenpunkt | über Visiere |
 | `box_scope_v21(f, u, style)` | Kastenoptik (`prism`/`flat`) – nur als Entwurf | `style` | – |
@@ -200,7 +203,7 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
      Zielfernrohr außen, im Zielen Vollbild; Fusion → Ring/Doppelring; Werfer → runde Linse mit Winkel; Kastenoptiken nur als Variante.
      **Baukasten v3** (0.21 „Ironsight“, Nutzerwahl „v3 bauen“, [visier-konzept.md](visier-konzept.md) › 4/6a): alle Visiere auf der
      H0-Plattform, je Visier nur Rahmenkontur und höchstens ein Funktionsdetail; Standard je Typ nach § 6a (Automatik H0, Impuls H4,
-     Scout Z1, MP H2 gebaut; die übrigen als Entwurf in `sight_kit.py`).
+     Scout Z1, MP H2 gebaut; K1 seit 0.24, K2 und Z3 seit 0.25 in `sight_kit.py`; die übrigen als Entwurf).
   2. **Rahmen:** Holo ≤ 0,10 × Öffnung (Bügel 1,6 mm, Dach 1,2 mm), Ring ≤ 0,15 × Öffnung. „Klobig“ kommt von großen, hohen
      Gehäusen und Block-Sockeln.
   3. **Öffnung im Zielen** bei 90 mm Augenabstand (Standard; Spieleroption `ads_eye_relief` 70/90/110 mm, Nutzerwunsch: 70 mm
@@ -288,6 +291,11 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 - Leuchtende Flächen (Kammerkerne) mit beleuchteter Grundfarbe wirken pastellig wie dünne Linien: `emit_only`, Stärke 1,2 für Orange, 0,7 für Cyan (helles Cyan bleicht unter AgX sonst zu Weiß; BASIC-T01).
 - Dünne Stege mit großer Fase: 5 mm Rahmen unter der Trommel mit `R_MID` fiel auf der Seitenfläche zusammen (dunkler Keil im Render)
   → Stege ≥ 3 × Fase, Fenster ins Profil legen statt per Boolean (BASIC-04 v2.1).
+- Kammerstängel, der sich hebt, läuft durch alles, was über der Kammerbahn breiter ist als das Gehäuse innen: Bahn oben offen,
+  Visierbuckel als schmaler Sattelblock (26 mm) statt in voller Gehäusebreite; Endlagen am Netz prüfen (BVH je Pose), nicht schätzen
+  (BASIC-09 v2.1).
+- Pumpe als volles Profil um das Röhrenmagazin: Loch für das Rohr schneiden, Führungsstangen brauchen Bahnen im Gehäuse – sonst meldet
+  die Posenprüfung Durchdringungen in Endlage (BASIC-08 v2.1).
 - Magazin im Griff neben die Griffachse gesetzt steht hinten aus dem Griff und versteckt sein Sichtfenster → Magazinmitte auf
   der Griffachse von `grip_v21` (f ≈ u·tan 15°), Fenster in den Teil unter dem Griffboden (BASIC-06 v2.1).
 
@@ -351,5 +359,5 @@ Dicke); Standbilder müssen die Handbelegung der Aktion übernehmen (inspect_r o
 
 Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hintergrund); v2 als Vorstufe erhalten.
 Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Familie Stil v2.1 mit Visier-Standard 3: BASIC-01, 02, 03,
-04 und 05 (Handfeuerwaffe und Seitenwaffe mit Kimme/Korn K1, 0.24 „Holster“; ohne Ego-Übertrag und Unity) und 06 (Maschinenpistole, 0.11 „Compact“); als erstes Werkzeug die Portalkanone BASIC-T01 (0.17 „Gateway“). Die 11 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
+04 und 05 (Handfeuerwaffe und Seitenwaffe mit Kimme/Korn K1, 0.24 „Holster“; ohne Ego-Übertrag und Unity), 06 (Maschinenpistole, 0.11 „Compact“), 08 und 09 (Schrotflinte mit Kimme/Korn K2, Scharfschützengewehr mit Z3 „Lang“ im Vollbild, 0.25 „Longshot“; ohne Ego-Übertrag und Unity); als erstes Werkzeug die Portalkanone BASIC-T01 (0.17 „Gateway“). Die 9 übrigen Waffen sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
 nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.
