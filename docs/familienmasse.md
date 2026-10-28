@@ -8,7 +8,7 @@ neue Waffen der Familie: ähnliche Klasse suchen, Lagen übernehmen, Abweichunge
 ## Lagen
 
 mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der Mündung, Heck f = hinterste Kante
-(negativ = hinter dem Griff). Visierhöhe = Visierlinie über der Laufachse (Soll 66 ± 4 mm; Kimme/Korn mit eigener Linie Träger + 11 mm, dort gilt sie nicht), Augenabstand = Augenpunkt bis Glas, Objektiv bzw. Kimme.
+(negativ = hinter dem Griff). Visierhöhe = Abstand der Visierlinie zur Laufachse, bei mittigem Visier die Höhe darüber (Soll 66 ± 4 mm; Kimme/Korn mit eigener Linie Träger + 11 mm, dort gilt sie nicht), Augenabstand = Augenpunkt bis Glas, Objektiv bzw. Kimme.
 
 | Waffe | L × H × B | Laufachse u | Mündung f | Heck f | Visierlinie u | Visierhöhe | Augenabstand | Stützhand f / u | Magazinschacht f / u | Schwerpunkt f / u | Teile / Dreiecke |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -23,6 +23,8 @@ mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der
 | BASIC-10-v2.1 Fusionsgewehr | 701 × 254 × 47 | 96 | 420 | -280 | 162 | 66.0 | 90 (Reflex-/Holovisier) | 265 / 56 | – | 49 / 72 | 45 / 25456 |
 | BASIC-11-v2.1 Lineares Fusionsgewehr | 1098 × 256 × 50 | 92 | 729 | -328 | 158 | 66.0 | 90 (Zielfernrohr) | 350 / 42 | – | 126 / 75 | 53 / 29610 |
 | BASIC-12-v2.1 Spurgewehr | 777 × 253 × 49 | 96 | 496 | -277 | 162 | 66.0 | 90 (Reflex-/Holovisier) | 259 / 79 | – | 55 / 75 | 50 / 26096 |
+| BASIC-13-v2.1 Granatwerfer (Trommel) | 670 × 269 × 142 | 112 | 390 | -280 | 178 | 66.0 | 90 (Reflex-/Holovisier) | 291 / 78 | 84 / 89 (Ladeklappe) | 71 / 79 | 48 / 43364 |
+| BASIC-14-v2.1 Raketenwerfer | 910 × 241 × 131 | 112 | 478 | -433 | 112 (x 66) | 66.0 | 90 (Reflex-/Holovisier) | 262 / 24 | – | 51 / 102 | 45 / 31236 |
 | BASIC-15-v2.1 Maschinengewehr | 983 × 266 × 129 | 106 | 654 | -329 | 172 | 66.0 | 90 (Reflex-/Holovisier) | 335 / 60 | – | 101 / 77 | 62 / 32020 |
 
 ## Größen der Hauptteile
@@ -43,6 +45,8 @@ als einzelne Teile.
 | BASIC-10-v2.1 | 260 × 119 × 45 | 233 × 24 × 42 | 172 × 103 × 38 | 47 × 39 × 32 | 72 × 116 × 30 | – |
 | BASIC-11-v2.1 | 322 × 124 × 41 | 559 × 38 × 30 | 207 × 128 × 40 | 192 × 46 × 50 | 72 × 116 × 30 | – |
 | BASIC-12-v2.1 | 286 × 119 × 49 | 276 × 41 × 41 | 166 × 109 × 43 | 47 × 38 × 31 | 72 × 116 × 30 | – |
+| BASIC-13-v2.1 | 334 × 157 × 142 | 90 × 40 × 68 | 172 × 103 × 38 | 47 × 38 × 31 | 72 × 116 × 30 | – |
+| BASIC-14-v2.1 | 502 × 117 × 122 | 278 × 173 × 126 | 165 × 29 × 50 | 52 × 39 × 31 | 72 × 116 × 30 | – |
 | BASIC-15-v2.1 | 360 × 106 × 53 | 309 × 64 × 55 | 180 × 118 × 40 | 47 × 40 × 37 | 72 × 116 × 30 | – |
 
 ## Werkzeuge

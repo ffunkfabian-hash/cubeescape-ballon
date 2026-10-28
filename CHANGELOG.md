@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.28.0 „Breech“ – Granatwerfer BASIC-13 und Raketenwerfer BASIC-14 im Stil v2.1 (Branch `claude/ballon-0.28-breech`)
+
+- BASIC-13 v2.1 als Trommelwerfer (Nutzerwahl „Trommel statt Kipplauf“, EXT-02 vorgezogen, Leitmerkmal 13 im Designvertrag): sechs
+  Kammern im offenen Rahmen mit Kammerfenstern, Trommel dreht je Schuss eine Kammer weiter (`cycle='shot'`), Ladeschale und Ladeklappe
+  links (Nutzerwunsch), Hülsen nur beim Nachladen (`EJECT.on = 'reload'`); BASIC-14 v2.1: dickes Startrohr mit Sichtfenster auf den
+  Gefechtskopf, schlankes Heckrohr, Heckklappe, hülsenlose Rakete (`caseless`, `EJECT = None`), Visier seitlich links auf Visierschelle
+  und Visierarm (Nutzerwahl). Nutzerhinweise am Bild: Ladeklappe schwebte, Schriftzug in der Luft – behoben, am Netz geprüft.
+- Visiere W1 „D-Linse“ (`sight_kit.d_linse`) und W2 „Entfernung“ (`sight_kit.entfernung`, `side_mount`) gebaut; `test_sights` prüft ihre
+  Merkmale, den Sitz auf der Schiene und das Absehen auf der Visierlinie; `check` misst die Visierhöhe als Abstand zur Achse und prüft
+  den Auswurfzeitpunkt (`eject_problems`). Rolle `ring_anod` (eloxiert ohne feine Kratzer) in `basic/pilot/metal_roles.py`.
+- Quellen Q-D2-IMG (8 Vertreter über das Bungie-Manifest); Bericht [docs/versions/0.28-breech.md](docs/versions/0.28-breech.md).
+
 ## 0.27.0 „Tracer“ – Spurgewehr BASIC-12 und Maschinengewehr BASIC-15 im Stil v2.1 (Branch `claude/ballon-0.27-tracer`)
 
 - BASIC-12 v2.1: Creme-Haube in Linie mit der Schiene über dem freien runden Fokusrohr (drei Ringe, Griffband), umgreift Rohransatz und

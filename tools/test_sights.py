@@ -9,6 +9,7 @@
 - Absehen gezeichnet: `sight_reticle` flach (Querprofile ≤ 0,1 mm) in der Glasebene (± 0,5 mm), reine Emission, Hüftform der
   Klasse in Hüftgröße (± 3 %, dazu der Zuwachs, wenn die Linie auf die Mindestbreite geklemmt ist – 0.25, Caret 1 % H), Linien
   mindestens 1,6 px bei 1280 px Bildbreite.
+- Holo an Familienwaffen (0.28): Klemmfuß liegt auf einer Schiene BRI-22 und innerhalb ihrer Länge (Sitz).
 - Kimme/Korn-Linie und Mini-Reflex, wo verwendet (Baukasten-Katalog): Augenpunkt auf Schiene + 11 bzw. + 15 mm.
 - Kimme/Korn K1 an Familienwaffen (0.24, BASIC-04/05): Klasse passt, Linie Träger + 11 mm, Augenpunkt 70 mm hinter der Kimme,
   Lichtspalt zwischen Korn und Kerbe je Seite ≥ 0,25° (≈ 4 px bei 1280 px), Kornpunkt in der Kerbe, Kimmen- und Kornfuß liegen
@@ -76,6 +77,9 @@ def check_reticle(parts, anchors, wtype):
         bad.append(f'Absehen bei f {f:.2f} nicht in der Glasebene {g0:.2f}–{g1:.2f} (± {tol} mm)')
     h = RT.hip(wtype)
     d = f - anchors['Socket_Eye']['at'][0]
+    ex = anchors['Socket_Eye']['at'][2] if len(anchors['Socket_Eye']['at']) > 2 else 0
+    if any(abs(i.get('cx', 0) - ex) > 0.1 for i in items):     # 0.28: auch beim seitlichen Visier mittig auf der Visierlinie
+        bad.append(f'Absehen nicht auf der Visierlinie (x {items[0].get("cx", 0):.1f} statt Auge x {ex:.1f})')
     us = [pt[1] for i in items for pt in i['pts']]
     xs = [pt[0] for i in items for pt in i['pts']]
     ext = max(max(us) - min(us), max(xs) - min(xs))
@@ -175,6 +179,22 @@ def check_fullscreen(W):
     return bad
 
 
+def check_reflex_seat(W):
+    """Sitz eines Holo/Reflex-Visiers an der Waffe (0.28): der Klemmfuß der H0-Plattform liegt auf einer Schiene BRI-22 (Unterkante
+    0,5 mm über der Schienenoberkante wie common.sight_platform, ± 0,1), ganz innerhalb ihrer Länge und mittig auf ihr (± 0,5 mm,
+    auch seitlich versetzt). Fehlerliste."""
+    P = {p['id']: p for p in W.PARTS}
+    m = P.get('sight_mount')
+    if not m or m.get('shape') != 'multi':
+        return ['Holo ohne Klemmfuß der H0-Plattform (sight_mount)']
+    foot = m['items'][0]
+    for r in (p for p in W.PARTS if p.get('iface') == 'BRI-22' and p['id'] != 'sight_mount' and 'u1' in p):
+        if abs(foot['u0'] - 0.5 - r['u1']) <= 0.1 and r['f0'] - 1e-6 <= foot['f0'] and foot['f1'] <= r['f1'] + 1e-6 \
+                and abs(foot.get('x', 0) - r.get('x', 0)) <= 0.5:
+            return []
+    return [f"Klemmfuß (f {foot['f0']:g}–{foot['f1']:g}, u {foot['u0']:g}) liegt auf keiner Schiene BRI-22"]
+
+
 BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffentyp der Hüftform, Größen)
     'H0 Referenz': (lambda s: C.reflex_sight_v21(-6, 143), 'reflex', 'auto_rifle', ('M',)),
     'H2 Pille': (lambda s: C.holo_pille(-6, 143, s), 'reflex', 'submachine_gun', ('S', 'M', 'L')),
@@ -186,6 +206,9 @@ BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffe
     # 0.27 „Tracer“: H3 an BASIC-12, H6 an BASIC-15 in Größe L (M läge mit 21,8 % über dem Holo-Band und ist keine zugelassene Größe)
     'H3 Zinken': (lambda s: _kit().zinken(-6, 143, s), 'reflex', 'trace_rifle', ('S', 'M', 'L')),
     'H6 Achteck': (lambda s: _kit().achteck(-6, 143, s), 'reflex', 'machine_gun', ('S', 'L')),
+    # 0.28 „Breech“: W1 an BASIC-13, W2 an BASIC-14 (Größe M; L ist die Holo-L-Variante der Werfer)
+    'W1 D-Linse': (lambda s: _kit().d_linse(-6, 143, s), 'reflex', 'grenade_launcher', ('S', 'M', 'L')),
+    'W2 Entfernung': (lambda s: _kit().entfernung(-6, 143, s), 'reflex', 'rocket_launcher', ('S', 'M', 'L')),
 }
 
 
@@ -205,10 +228,13 @@ KIT_PARTS = {   # Pflichtteile der Merkmale je Visier-ID (0.26): F1 Bögen, Z2 G
     'H3': ('sight_frame', 'sight_frame_r', 'sight_status', 'sight_glass', 'sight_base'),
     'H6': ('sight_frame', 'sight_frame_trim', 'sight_facet_0', 'sight_facet_1', 'sight_facet_2', 'sight_facet_3', 'sight_glass',
            'sight_base'),
+    'W1': ('sight_frame', 'sight_frame_trim', 'sight_notch', 'sight_marks', 'sight_glass', 'sight_base'),     # 0.28
+    'W2': ('sight_frame', 'sight_frame_trim', 'sight_roof', 'sight_range', 'sight_glass', 'sight_base'),
 }
 # Teile, an denen ein Visier ohne ausdrückliche ID erkannt wird (nur Merkmalsteile, die kein anderes Visier der Familie trägt)
 KIT_MARKERS = {'F1': ('sight_frame_b', 'sight_web', 'sight_web_r'), 'Z2': ('scope_fork', 'scope_tabs', 'scope_tabs_r'),
-               'H3': ('sight_frame_r',), 'H6': ('sight_facet_0', 'sight_facet_1', 'sight_facet_2', 'sight_facet_3')}
+               'H3': ('sight_frame_r',), 'H6': ('sight_facet_0', 'sight_facet_1', 'sight_facet_2', 'sight_facet_3'),
+               'W1': ('sight_notch', 'sight_marks'), 'W2': ('sight_roof', 'sight_range')}
 ZINKEN_TOL_DEG = 0.5      # Neigung der Zinken 15° ± 0,5°
 DIAG_TOL_DEG = 0.5        # Achteck: Fasen 45° ± 0,5°
 
@@ -258,6 +284,10 @@ def check_kit_form(parts, anchors, sight_id=None):
         bad += _check_zinken(P)
     if 'H6' in ids:
         bad += _check_achteck(P)
+    if 'W1' in ids:
+        bad += _check_dlinse(P)
+    if 'W2' in ids:
+        bad += _check_entfernung(P)
     return bad
 
 
@@ -367,6 +397,110 @@ def _check_achteck(P):
     return bad
 
 
+def _hood_seat(P, tag):
+    """Haube sitzt im Sockel der H0-Plattform: Sockeloberkante zwischen Außen- und Innenunterkante der Haube (nichts schwebt)."""
+    hood = P['sight_frame']
+    outer, inner = hood['pts'], hood['cuts'][0]['pts']
+    bt, _ = _base_top(P)
+    cu = hood['cu']
+    if not cu + min(u for _, u in outer) - 1e-6 <= bt <= cu + min(u for _, u in inner) + 1e-6:
+        return [f'{tag}: Haube sitzt nicht im Sockel (Sockel u {bt:.2f}, Haube unten u {cu + min(u for _, u in outer):.2f})']
+    return []
+
+
+def _glass_inside(P, inside, tag):
+    if any(not inside(x, u) for x, u in P['sight_glass']['pts']):
+        return [f'{tag}: Glas steht über die Innenkontur der Haube']
+    return []
+
+
+def _check_dlinse(P):
+    """W1 „D-Linse“ (0.28): Haube innen und außen ein D (Kreisbogen um die Visierlinie, oben gerade), Stirn 2,4 mm (Werfer) am Bogen und
+    an der Geraden; orange Kerbmarke mittig auf der Geraden (sitzt auf); drei blanke Fallmarken links innen unter der Visierlinie,
+    nach unten kürzer, jede an der Innenwand (weder schwebend noch in der Wand); Glas in der Innenkontur; Haube im Sockel, Sockel so breit
+    wie die D-Unterseite in Sockelhöhe."""
+    K = _kit()
+    bad = []
+    hood = P['sight_frame']
+    cu = hood['cu']
+    outer, inner = hood['pts'], hood['cuts'][0]['pts']
+
+    def dfit(pts):                       # (Radius des Bogens, Höhe der Geraden) oder None, wenn kein D
+        top = max(u for _, u in pts)
+        arc = [math.hypot(x, u) for x, u in pts if u < top - 1e-6]
+        flat = [x for x, u in pts if abs(u - top) < 1e-6]
+        if len(flat) < 2 or max(flat) - min(flat) < 1.0 or not arc or max(arc) - min(arc) > 0.05 or top >= min(arc) - 1e-6:
+            return None
+        return sum(arc) / len(arc), top
+    fo, fi = dfit(outer), dfit(inner)
+    if fo is None or fi is None:
+        return ['W1: Haube ist kein D (Bogen um die Visierlinie, oben gerade)']
+    if abs(fo[0] - fi[0] - K.WERFER_T) > 0.05 or abs(fo[1] - fi[1] - K.WERFER_T) > 0.05:
+        bad.append(f'W1: Stirn {fo[0] - fi[0]:.2f} (Bogen) / {fo[1] - fi[1]:.2f} mm (Gerade) statt {K.WERFER_T}')
+    r, top = fi
+    n = P['sight_notch']
+    if n['mat'] != 'accent' or abs(n.get('x', 0.0)) > 0.1 or not n['u0'] <= cu + fo[1] + 1e-6 <= n['u0'] + 0.3:
+        bad.append(f"W1: Kerbmarke nicht orange mittig auf der Geraden (u0 {n['u0']:.2f}, Gerade u {cu + fo[1]:.2f})")
+    m = P['sight_marks']
+    items = m['items']
+    us = [(i['u0'] + i['u1']) / 2 - cu for i in items]
+    ws = [i['w'] for i in items]
+    if m['mat'] != 'trim' or len(items) != 3 or not all(du < 0 for du in us) or us != sorted(us, reverse=True) \
+            or ws != sorted(ws, reverse=True) or len(set(ws)) != 3:
+        bad.append('W1: Fallmarken nicht drei blanke Marken unter der Visierlinie, nach unten kürzer')
+    for i, du in zip(items, us):
+        xw = K.dlinse_wall_x(r, du)
+        xi, xo = i.get('x', 0) - i['w'] / 2, i.get('x', 0) + i['w'] / 2
+        if xi <= 0 or not xi < xw <= xo or xo - xw > 0.6:
+            bad.append(f'W1: Fallmarke u {du:+.1f} sitzt nicht links innen an der Wand (x {xi:.2f}–{xo:.2f}, Wand {xw:.2f})')
+    bad += _glass_inside(P, lambda x, u: u <= top + 1e-6 and (u >= 0 or math.hypot(x, u) <= r + 1e-6), 'W1')
+    bad += _hood_seat(P, 'W1')
+    bt, bw = _base_top(P)
+    chord = 2 * math.sqrt(max(fo[0] ** 2 - (bt - cu) ** 2, 0))
+    if abs(bw - chord) > 0.5:
+        bad.append(f'W1: Sockel {bw:.1f} mm breit statt der D-Unterseite in Sockelhöhe {chord:.1f} mm')
+    return bad
+
+
+def _check_entfernung(P):
+    """W2 „Entfernung“ (0.28): Haube als Rundrechteck mit Stirn 2,4 mm an den Seiten und unten, oben 4 mm (Schutzdach); das Dach liegt
+    auf der Haube, steht mindestens 4 mm vor ihre Stirn und nicht über ihre Breite; Entfernungsfeld leuchtend aus drei Ziffern und
+    Einheit, mittig in der Sockelrückseite unter dem Fenster; Glas in der Innenkontur; Haube im Sockel."""
+    K = _kit()
+    bad = []
+    hood = P['sight_frame']
+    cu = hood['cu']
+    outer, inner = hood['pts'], hood['cuts'][0]['pts']
+    side = max(x for x, _ in outer) - max(x for x, _ in inner)
+    low = min(u for _, u in inner) - min(u for _, u in outer)
+    roof_t = max(u for _, u in outer) - max(u for _, u in inner)
+    if abs(side - K.WERFER_T) > 0.05 or abs(low - K.WERFER_T) > 0.05 or abs(roof_t - K.ENTF_ROOF) > 0.05:
+        bad.append(f'W2: Stirn Seite {side:.2f} / unten {low:.2f} / oben {roof_t:.2f} mm statt {K.WERFER_T} / {K.WERFER_T} / {K.ENTF_ROOF}')
+    rf = P['sight_roof']
+    hf1 = hood['f1']
+    ru0, ru1 = min(u for _, u in rf['pts']), max(u for _, u in rf['pts'])
+    if abs(ru1 - max(u for _, u in outer)) > 0.05 or ru0 < max(u for _, u in inner) - 1e-6 or rf['f1'] - hf1 < 4.0 - 1e-6 \
+            or rf['f0'] > hf1 + 0.6 or max(abs(x) for x, _ in rf['pts']) > max(x for x, _ in outer) + 1e-6:
+        bad.append(f"W2: Schutzdach liegt nicht auf der Haube oder steht nicht ≥ 4 mm vor (vor der Stirn {rf['f1'] - hf1:.1f} mm)")
+    fld = P['sight_range']
+    it = fld['items']
+    b = P['sight_base']['pts']
+    bt, bw = _base_top(P)
+    xs = [i.get('x', 0) for i in it]
+    off = []
+    for i in it:
+        uc = (i['u0'] + i['u1']) / 2
+        fr = b[0][0] + (b[3][0] - b[0][0]) * (uc - b[0][1]) / (b[3][1] - b[0][1])
+        off.append(abs((i['f0'] + i['f1']) / 2 - fr))
+    if fld['mat'] != 'energy' or len(it) != 4 or max(off) > 0.6 or abs(sum(xs) / len(xs)) > 1.5 \
+            or max(i['u1'] for i in it) > bt - 1e-6 or max(abs(x) + i['w'] / 2 for x, i in zip(xs, it)) > bw / 2:
+        bad.append('W2: Entfernungsfeld nicht leuchtend aus drei Ziffern und Einheit mittig in der Sockelrückseite unter dem Fenster')
+    xi, ui = max(x for x, _ in inner), max(u for _, u in inner)
+    bad += _glass_inside(P, lambda x, u: abs(x) <= xi + 1e-6 and abs(u) <= ui + 1e-6, 'W2')
+    bad += _hood_seat(P, 'W2')
+    return bad
+
+
 def main():
     bad, n = [], 0
     for name, (build, typ, wtype, sizes) in BUILT.items():
@@ -412,7 +546,11 @@ def main():
         if e['sight_type'] == 'scope' and abs(ring_ratio(W.PARTS) - C.RING_RATIO) > 0.02:
             bad.append(f'{wid}: Ring außen/innen {ring_ratio(W.PARTS):.3f} statt ≈ {C.RING_RATIO} (Wulst)')
         bad += [f'{wid}: {b}' for b in check_reticle(W.PARTS, W.ANCHORS, W.META['type'])]
-        bad += [f'{wid}: {b}' for b in check_kit_form(W.PARTS, W.ANCHORS, getattr(W, 'SIGHT_ID', None))]
+        dx = e['at'][2] if len(e['at']) > 2 else 0     # 0.28: seitliches Visier (Werfer) für die Formprüfung wieder mittig
+        Pk, Ak = _kit().side_mount(W.PARTS, W.ANCHORS, -dx) if dx else (W.PARTS, W.ANCHORS)
+        bad += [f'{wid}: {b}' for b in check_kit_form(Pk, Ak, getattr(W, 'SIGHT_ID', None))]
+        if e['sight_type'] == 'reflex':
+            bad += [f'{wid}: {b}' for b in check_reflex_seat(W)]
     # Mündungsfeuer im Zielen (5.3 A) bei Querprofil-Glas: nur innerhalb der Kontur gezählt (0.21, Richter) – die Pille misst weniger
     # als ihr umschließendes Rechteck und bleibt unter 20 %
     import types

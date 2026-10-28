@@ -3,6 +3,7 @@
 import glob
 import importlib
 import json
+import math
 import os
 import subprocess
 import sys
@@ -25,6 +26,37 @@ def _key_value(keys, fr):
 
 def fail(msg):
     err.append(msg)
+
+
+def eject_problems(W):
+    """Auswurf aus den Daten (0.28 „Breech“, keine Sonderlogik nach Waffen-ID): Zeitpunkt `EJECT.on` – 'shot' (Standard, je Schuss)
+    oder 'reload' (nur beim Nachladen, Ereignis `EJECT.event` in ACTIONS['reload']); Kammerwaffe (ein Munitionsteil hängt an einem
+    drehenden Teil: Trommel, Kipplauf, Revolvertrommel) → kein Auswurf je Schuss (die Hülse bleibt in der Kammer); hülsenlose Munition
+    (Teil mit `caseless`) → ausdrücklich `EJECT = None`."""
+    bad = []
+    E = getattr(W, 'EJECT', None)
+    byid = {p['id']: p for p in W.PARTS}
+    if E is not None:
+        on = E.get('on', 'shot')
+        if on not in ('shot', 'reload'):
+            bad.append(f'EJECT.on {on!r} unbekannt (shot oder reload)')
+        elif on == 'reload' and (E.get('event') in (None, 'shot')
+                                 or E['event'] not in [ev for _, ev in W.ACTIONS.get('reload', {}).get('events', ())]):
+            bad.append(f"EJECT beim Nachladen braucht ein Ereignis der Aktion reload (event {E.get('event')!r})")
+
+    def rotating_parent(pid):
+        seen = set()
+        while pid in byid and pid not in seen:
+            seen.add(pid)
+            pid = byid[pid].get('parent_part')
+            if pid in byid and byid[pid].get('move', {}).get('kind') == 'rotate':
+                return True
+        return False
+    if any(p['asm'] == 'ammo' and rotating_parent(p['id']) for p in W.PARTS) and E is not None and E.get('on', 'shot') != 'reload':
+        bad.append('Kammerwaffe (Munition in einem drehenden Teil) wirft nicht je Schuss aus: EJECT mit on = reload oder EJECT = None')
+    if any(p.get('caseless') for p in W.PARTS) and (not hasattr(W, 'EJECT') or E is not None):
+        bad.append('hülsenlose Munition (Teil mit caseless) braucht ausdrücklich EJECT = None (kein Auswurf)')
+    return bad
 
 
 for f in glob.glob(os.path.join(ROOT, '**', '*.py'), recursive=True) + [os.path.join(ROOT, 'check')]:
@@ -155,7 +187,7 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
     elif not e.get('std') or e.get('sight_type') not in SIGHT['types']:
         fail(f'{wid}: Socket_Eye nicht nach Visier-Standard (std, sight_type)')
     else:
-        h = e['at'][1] - W.BORE
+        h = math.hypot(e['at'][1] - W.BORE, e['at'][2] if len(e['at']) > 2 else 0)   # 0.28: seitliches Visier = Abstand zur Achse
         if abs(h - SIGHT['height_mm']) > SIGHT['height_tol_mm']:
             fail(f'{wid}: Visierhöhe {h:.1f} mm außerhalb {SIGHT["height_mm"]:.0f} ± {SIGHT["height_tol_mm"]:.0f} mm')
         T = SIGHT['types'][e['sight_type']]
@@ -170,7 +202,8 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         lo, hi, band = share_band(e['sight_type'], W.META['type'], getattr(W, 'SIGHT_SIZE', 'M'))
         if not lo <= share <= hi:
             fail(f'{wid}: Öffnung im Zielen {share * 100:.1f} % außerhalb {band} {lo * 100:.0f}–{hi * 100:.0f} %')
-        want = {'holo': 'reflex', 'ring_scope': 'scope', 'irons_brackets': 'iron'}.get(SIGHT_KIND.get(W.META['type']))
+        want = {'holo': 'reflex', 'ring_scope': 'scope', 'irons_brackets': 'iron',
+                'lens_chevron': 'reflex'}.get(SIGHT_KIND.get(W.META['type']))     # 0.28: Werfer (runde Linse mit Winkel) als Reflex
         if want and want != e['sight_type']:
             fail(f'{wid}: Visiertyp {e["sight_type"]} passt nicht zur Klasse (Visier-Standard 3: {SIGHT_KIND[W.META["type"]]})')
     E = getattr(W, 'EJECT', None)   # Hülsenauswurf (0.16, 5.4 A): Datenfeld je Waffe, Startlage und Hülsenform müssen bestehen
@@ -189,6 +222,8 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         fail(f'{wid}: Gurtwaffe (Munitionskasten BAB-1) braucht EJECT mit Hülse und links (Gurtglied)')
     if any(p.get('iface') == 'BEC-1' for p in W.PARTS) and (not hasattr(W, 'EJECT') or E is not None):   # 0.26: Energiezelle → keine Hülse
         fail(f'{wid}: Waffe mit Energiezelle (BEC-1) braucht ausdrücklich EJECT = None (kein Hülsenauswurf)')
+    for b in eject_problems(W):     # 0.28: Zeitpunkt des Auswurfs (Kammerwaffe beim Nachladen) und hülsenlose Munition
+        fail(f'{wid}: {b}')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})
