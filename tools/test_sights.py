@@ -227,6 +227,12 @@ def check_kit_form(parts, anchors, sight_id=None):
             bad.append(f'F1: Glasrand r {gx:.2f} nicht zwischen den Bögen ({ti:.2f}–{bi:.2f})')
         if P['sight_base']['pts'][2][1] < cu - bo - 1e-6 or P['sight_base']['pts'][2][1] > cu - bi:
             bad.append('F1: unterer Bogen sitzt nicht auf dem Sockel (schwebt oder steht darüber)')
+        for wid, mid in (('sight_web', 0.0), ('sight_web_r', 180.0)):   # Stege in den Lücken auf 3 bzw. 9 Uhr (± 12,5°), zwischen den Bögen
+            for x, u in P[wid]['pts']:
+                a = (math.degrees(math.atan2(u, x)) - mid + 180) % 360 - 180
+                if abs(a) > 12.5 + 1e-6 or not ti - 1e-6 <= math.hypot(x, u) <= bo + 1e-6:
+                    bad.append(f'F1: Steg {wid} liegt nicht in der Lücke ({a:+.1f}° neben {mid:.0f}°, r {math.hypot(x, u):.2f})')
+                    break
     if 'Z2' in ids:
         rim = P['scope_rim']
         ro = rim.get('r1', rim['r'])
