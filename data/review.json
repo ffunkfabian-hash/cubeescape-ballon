@@ -1387,5 +1387,55 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-05-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/holster/"
     ]
+  },
+  "BASIC-08-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.25 „Longshot“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette – Erstentwurf: Pumpe zu schmächtig für das Leitmerkmal → 160 mm lang, 50 mm breit, vordere Fingerlippe; Nutzerwahl a (Grundform übernommen); (2) Schichten/Negativraum an exploded, top, front, hero_p-Ausschnitt: Lüftungsschiene mit sechs Fenstern quer durch, Lauf und Röhre mit offenem Spalt, Führungsstangen zwischen Gehäuse und Pumpe, Verschluss im Auswurffenster rechts; Posenprüfung (BVH je Endlage): Pumpe hatte kein Loch für das Rohr, Führungsstangen keine Bahnen → geschnitten, danach ohne Überschneidung; (3) Material/Budget an 8 Skins (longshot/runde3_08.jpg): Creme/Graphit in allen Skins lesbar; Budget 1 Leuchtfunktion, 1 Band, 1 Schrift, 3 Orange (Pumpenriegel, Klemmhebel, Kornkopf). Zielbild K2: Kornkopf mittig zwischen den Hörnern (test_sights: Lichtspalt 3,55° je Seite)"
+    },
+    "actions": {
+      "fire_pump": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire_pump, Bilder 0/8/14/22 (longshot/bewegung_08.jpg): Abzug, Pumpe 72 mm zurück bis vor das Gehäuse mit Verschluss und Führungsstangen, wieder vor"
+      },
+      "load_shell": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/load_shell, Bilder 0/8/16/22 (longshot/bewegung_08.jpg): Patrone (orange Hülse, Messingboden) unter der Ladeklappe, schiebt sich von unten in den Ladeschacht, danach verdeckt"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-08-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/longshot/"
+    ]
+  },
+  "BASIC-09-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.25 „Longshot“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette – Erstentwurf: Zielfernrohr für 1,1 m zu klein (→ Z3 Rohr Ø 24 × 200 mm, Ring Ø 52), Haube eine glatte Planke (→ Gehäuse und 4 mm schmalerer Laufmantel mit Fuge), Kammerstängel im Profil unsichtbar (→ schräg nach unten, Knopf dunkel auf Creme); Nutzerwahl a; Nutzerwunsch Stängel links; (2) Schichten/Negativraum an exploded, top, front, hero_p-Ausschnitt: Längsschlitz zeigt den Lauf, Kammerbahn links offen, Auswurffenster rechts, freier kannelierter Lauf; Posenprüfung: gehobener Stängel lief durch einen vollbreiten Visierbuckel und in Endlage in den Schaft → schmaler Sattelblock, Bahn tiefer, Weg 66 mm; Restüberschneidungen nur innerhalb des Verschlusses (unsichtbar); (3) Material/Budget an 8 Skins (longshot/runde3_09.jpg): alle lesbar; Budget 1 Leuchtfunktion (Absehen), 1 Band, 1 Schrift, 3 Orange (Höhenturm, Klemmhebel, Magazinhalter). Sitz Z3: test_sight_seat (Auflage 40,5 mm, Sattel hinter dem Auge, 0,061 L über dem Gehäuse)"
+    },
+    "actions": {
+      "fire_cycle": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire_cycle von links, Bilder 0/15/20/27 (longshot/bewegung_09_nah.jpg): Stängel hebt 60°, Verschluss 66 mm zurück und vor, Stängel senkt sich"
+      },
+      "reload_empty": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload_empty von links, Bilder 0/16/60/66 (longshot/bewegung_09.jpg): Magazin senkrecht heraus und wieder ein, dann Stängel gehoben und Verschluss zurück"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-09-v2.1/ (views/ mit 8 Skins und sightline.png, motion/ von links, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/longshot/"
+    ]
   }
 }

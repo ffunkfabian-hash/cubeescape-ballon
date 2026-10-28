@@ -253,31 +253,49 @@ def scope_gabel(size='M'):
 
 
 def sniper_lang(size='M'):
-    """Z3 „Lang“ (Scharfschütze): kräftigeres Rohr Ø 21, Objektiv Ø 40 mit blanker Sonnenblende (Merkmal 1); zwei Ringe auf
-    H0-Klemmfüßen mit orangem Hebel; im Zielen Vollbild mit Duplex-Absehen (Merkmal 2, gezeichnet)."""
-    r_obj = {'S': 17, 'M': 20, 'L': 23}[size]
-    fe, fo, tr = -110, 150, 10.5
-    P = [cyl('scope_tube', 'Mittelrohr', 'Scope tube', 'sight', MET, 'Langes Rohr Ø 21', 'in zwei Ringen', 'f', (CU, 0), fe + 26, fo - 50,
-             tr, segs=40),
-         cyl('scope_eyepiece', 'Okular', 'Eyepiece', 'sight', MET, 'Okular', 'am Rohr', 'f', (CU, 0), fe, fe + 28, 13, r1=11, segs=40),
-         cyl('scope_objective', 'Objektiv', 'Objective bell', 'sight', MET, 'Objektivglocke', 'am Rohr', 'f', (CU, 0), fo - 52, fo,
-             11, r1=r_obj, r_in=r_obj - 2.6, segs=48, bevel=0.5),
-         part('scope_shade', 'Sonnenblende', 'Sun shade', 'sight', 'prof', 'trim', 'Flache blanke Blende über dem Objektiv',
-              'oben am Objektiv', bevel=0.4, pts=[(fo - 12, CU + r_obj - 0.5), (fo + 16, CU + r_obj - 0.5), (fo + 16, CU + r_obj + 0.9),
-                                                   (fo - 8, CU + r_obj + 1.6)], w=r_obj * 1.2),
-         cyl('scope_glass', 'Objektivlinse', 'Objective lens', 'sight', 'glass_scope', 'Linse', 'im Objektiv', 'f', (CU, 0), fo - 3,
-             fo - 2, r_obj - 2.6, segs=48, bevel=0),
-         cyl('scope_turret', 'Höhenturm', 'Elevation turret', 'sight', 'accent', 'Höhenverstellung', 'oben', 'u', (10, 0), CU + 8,
-             CU + 16, 5.5, segs=32),
-         part('scope_rings', 'Montageringe', 'Scope rings', 'sight', 'multi', MET, 'Zwei Ringe mit Steg', 'auf den Klemmfüßen', bevel=0.6,
-              items=[dict(shape='cyl', axis='f', c=(CU, 0), a0=f0, a1=f0 + 9, r=tr + 2.4, r_in=tr, segs=40) for f0 in (-70, 60)]
-              + [dict(shape='box', f0=f0, f1=f0 + 9, u0=DECK + 5, u1=CU - tr, w=10) for f0 in (-70, 60)])]
-    for i, f0 in enumerate((-74, 56)):
-        for q in _scope_foot(f0, f0 + 17, DECK + 6):
-            P.append({k: v for k, v in dict(q, id=f"{q['id']}_{i}").items() if k != 'parent_part'})
-    return P, {'Socket_Reticle': dict(at=(fo, CU, 0), part='scope_glass'),
-               'Socket_Eye': dict(at=(fe - 60, CU, 0), part='scope_eyepiece', sight_type='fullscreen', std=False,
-                                  note='Vollbild (Art A): Duplex gezeichnet, Waffe ausgeblendet')}
+    """Z3 „Lang“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `lang` (seit 0.25 an BASIC-09 v2.1)."""
+    return lang(100, DECK, CU, size)
+
+
+LANG_SIZES = {'S': 16.0, 'M': 19.0, 'L': 22.0}     # Radius der Objektivlinse (Vollbild: kein Öffnungsband, Größe nur für die Form)
+LANG_TUBE_R = 12.0                                 # Mittelrohr Ø 24 (Z1: Ø 19)
+# Vollbild im Zielen (Visier-Standard 3 Typ `fullscreen`, Art A): Waffe aus, Kreis 82 % der Bildhöhe (Destiny 80–83 %, Motiongen
+# visiere.md › 7), außen schwarz; Duplex gezeichnet: außen Balken 1,2 % H bis zur Lücke 12 % H um die Mitte, innen Linien 0,15 % H.
+FULLSCREEN = dict(circle_h=0.82, band=(0.80, 0.83), duplex=dict(bar_h=0.012, gap_h=0.12, line_h=0.0015))
+
+
+def lang(f_obj, u, cu, size='M', weapon_type='sniper_rifle', seat_u=None, length=200, saddle_f=None, mat=MET):
+    """Z3 „Lang“ (Scharfschütze; seit 0.25 an BASIC-09 v2.1), Sitz nach Konzept A wie Z1: Rohrsattel hinter dem Auge (Wiege unter dem
+    Okular, Klemmblock um die Schiene mit Oberkante seat_u, Standard u; saddle_f = Längslage, Standard Okularende + 2 bis + 42),
+    H0-Klemmfuß unter dem Objektiv auf der Schiene u, gestufter Trapezsockel bis in den Ring. Flacher Ring ohne Wulst
+    (außen/innen 1,29, M: Linse Ø 38, Ring Ø 52), langes Rohr Ø 24 (200 mm), Objektiv als ein Kegel zum Auge; blanke Sonnenblende über dem Ring, 16 mm nach vorn (Merkmal 1); im Zielen
+    Vollbild mit Duplex (Merkmal 2, gezeichnet zur Laufzeit, `FULLSCREEN`), auf der Linse das gezeichnete Hüft-Absehen (flach, 0.21).
+    f_obj = Ringstirn, cu = Visierlinie. Liefert (Teile, Anker); Socket_Eye 90 mm hinter der Ringstirn mit sight_type 'fullscreen'.
+    Liegt hier statt in common.py, weil common.py im Unity-Quellenhash steht (Umzug mit dem Ego-Übertrag)."""
+    from basic.reticles import SIGHT
+    rel = SIGHT['types']['scope']['eye_relief_mm']
+    r_lens = LANG_SIZES[size]
+    ring, r_out = C.scope_ring(f_obj, cu, r_lens, mat=mat)
+    eye, fe = f_obj - rel, f_obj - length
+    k = r_out / rel                          # Kegel des Objektivs: Radius k·(f − Auge)
+    bt = u + 6                               # Oberkante des Klemmfußes
+    rs = k * (rel - 14) - 0.3                # Kegelradius an der Sockelhinterkante
+    keel = [(-9, bt - cu - 0.5), (9, bt - cu - 0.5), (6.5, -rs + 1.2), (-6.5, -rs + 1.2)]
+    shade = [(f_obj - 6, cu + r_out - 0.6), (f_obj + 16, cu + r_out - 0.6), (f_obj + 16, cu + r_out + 0.6), (f_obj + 13, cu + r_out + 1.4),
+             (f_obj - 6, cu + r_out + 1.4)]
+    sf = saddle_f or (fe + 2, fe + 42)
+    P = C.scope_saddle(sf[0], sf[1], u if seat_u is None else seat_u, cu, fe, tube_r=LANG_TUBE_R, mat=mat) \
+        + C.scope_body(f_obj, cu, r_lens, r_out, length=length, tube_r=LANG_TUBE_R, mat=mat) + ring \
+        + C.scope_foot(f_obj - 30, f_obj, u, bt, mat=mat) + [
+            xprof('scope_keel', 'Sockel', mat, f_obj - 14, f_obj - 1, keel, cu, func='Gestufter Trapezsockel vom Klemmfuß in den Ring',
+                  attach='auf dem Klemmfuß unter dem Ring (fest)', en='Scope base', parent_part='scope_mount_r'),
+            part('scope_shade', 'Sonnenblende', 'Sun shade', 'sight', 'prof', 'trim', 'Flache blanke Blende über dem Objektiv (Merkmal)',
+                 'oben auf dem Objektivring (fest)', bevel=0.4, pts=shade, w=round(r_out * 1.1, 2), parent_part='scope_mount_r'),
+            C.drawn_reticle(f_obj - 4.5, cu, weapon_type, rel - 4.5, parent='scope_mount_r')]
+    A = C.scope_anchors(f_obj, fe, cu)
+    A['Socket_Eye'] = dict(A['Socket_Eye'], sight_type='fullscreen',
+                           note=f'Augenpunkt {rel:.0f} mm hinter dem Objektivring (Sitz wie Z1); im Zielen Vollbild mit Duplex, Waffe aus')
+    return P, A
 
 
 # ------------------------------------------------------------------------------------------------ Kimme/Korn
@@ -334,26 +352,44 @@ def klammer(fr, ff, deck, size='M', parent=None):
 
 
 def iron_hoerner(size='M'):
-    """K2 „Hörner“ (Schrot): Kimmenblock 22 × 8 mit zwei Flachblatt-Hörnern 3 mm, 20° nach außen, Spitzen auf Linie + 4 (Merkmal 1);
-    oranger Kornkopf Ø 3,6 mit flacher Stirn zum Auge (Merkmal 2)."""
-    s = {'S': 0.85, 'M': 1.0, 'L': 1.2}[size]
-    fr, ff, cu = 20, 330, CU_IRON
-    b0 = DECK + 8
-    h = cu + 4 * s - b0
-    tn = math.tan(math.radians(20)) * h
-    horns = [[(x * 3.2 * s, b0 - CU_IRON - 0.5), (x * 6.4 * s, b0 - CU_IRON - 0.5), (x * (6.4 * s + tn), 4 * s - 1.2), (x * (3.2 * s + tn), 4 * s)]
-             for x in (1, -1)]
-    P = [part('sight_rear', 'Kimmenblock', 'Rear block', 'sight', 'prof', MET, 'Block 22 × 8 mm', 'hinten auf der Schiene', bevel=0.6,
-              pts=[(fr - 2, DECK - 0.5), (fr + 14, DECK - 0.5), (fr + 12, b0), (fr, b0)], w=22 * s),
-         part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Block', 'links am Block', bevel=0.4,
-              pts=[(fr, DECK + 0.8), (fr + 10, DECK + 0.8), (fr + 12, DECK + 3.2), (fr, DECK + 3.6)], w=1.8, x=11.4 * s)]
-    P += [_x(f'sight_horn{"" if x > 0 else "_r"}', 'Horn', MET, fr + 2, fr + 5, hp, cu=cu, func='Flachblatt-Horn 3 mm')
-          for x, hp in zip((1, -1), horns)]
-    P += [part('sight_front', 'Korn', 'Front sight', 'sight', 'prof', MET, 'Schlankes Korn', 'vorn auf der Schiene', bevel=0.4,
-               pts=[(ff - 7, DECK - 0.5), (ff + 6, DECK - 0.5), (ff + 2, cu - 1.6), (ff, cu - 1.6)], w=2.6),
-          part('sight_glass', 'Kornkopf', 'Front bead', 'sight', 'cyl', 'accent', 'Oranger Kornkopf, Stirn flach zum Auge', 'oben am Korn',
-               bevel=0.2, axis='f', c=(cu, 0), a0=ff - 1.2, a1=ff + 1.6, r=1.8 * s, segs=20)]
-    return P, _irons_anchor(fr, ff)
+    """K2 „Hörner“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `hoerner` (seit 0.25 an BASIC-08 v2.1)."""
+    return hoerner(20, 330, DECK, size)
+
+
+HOERNER_SIZES = {'S': 0.85, 'M': 1.0, 'L': 1.2}
+
+
+def hoerner(fr, ff, deck, size='M', parent=None, front_w=12):
+    """K2 „Hörner“ (Schrot; seit 0.25 an BASIC-08 v2.1): zweistufiger flacher Fuß (H0-Profilsprache) mit orangem Klemmhebel; darauf
+    ein Kimmenblatt 3 mm als U-Querprofil – zwei Flachblatt-Hörner, 20° nach außen, Spitzen auf Linie + 4 mm, dazwischen die offene
+    Kerbe mit Steg 2 mm unter der Linie (Merkmal 1); Korn schlank mit orangem Kornkopf Ø 3,6, Stirn flach zum Auge (Merkmal 2).
+    Kein Leuchten: der Kornkopf ist der Zielpunkt. fr = Rückseite des Kimmenblatts, ff = Kornspitze, deck = Oberkante des Trägers
+    (Schiene, Laufschiene); Visierlinie Träger + 11 mm (Visier-Standard 3, wie K1); front_w = Breite des Kornfußes (schmale
+    Laufschiene). Gibt (Teile, Anker) zurück. Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
+    s = HOERNER_SIZES[size]
+    cu = C.sight_line(deck, 'iron')
+    b0 = cu - 3                                  # Oberkante des Fußes
+    ub, ut, fl = b0 - cu - 0.5, 4 * s, -2.0      # Blattfuß (0,5 mm im Fuß), Hornspitzen, Steg zwischen den Hörnern
+    tn = math.tan(math.radians(20)) * (ut - ub)
+    gi, go = 3.2 * s, 6.4 * s                    # Hornkante innen / außen am Fuß
+    xi = gi + tn * (fl - ub) / (ut - ub)         # Innenkante auf Steghöhe
+    blade = [(-go, ub), (go, ub), (go + tn, ut - 1.2 * s), (gi + tn, ut), (xi, fl), (-xi, fl), (-(gi + tn), ut), (-(go + tn), ut - 1.2 * s)]
+    P = [part('sight_mount', 'Kimmenfuß', 'Rear base', 'sight', 'multi', MET, 'Flacher Fuß, gestuft', 'hinten auf dem Träger',
+              bevel=0.8, items=[dict(shape='box', f0=fr - 3, f1=fr + 17, u0=deck - 0.5, u1=deck + 3.5, w=24 * s),
+                                dict(shape='prof', pts=[(fr - 1, deck + 3), (fr + 15, deck + 3), (fr + 13, b0), (fr - 1, b0)], w=18 * s)]),
+         part('sight_clamp', 'Klemmhebel', 'Clamp lever', 'sight', 'prof', 'accent', 'Spannt den Fuß', 'links am Fuß', bevel=0.4,
+              pts=[(fr, deck + 0.8), (fr + 12, deck + 0.8), (fr + 14, deck + 3.2), (fr, deck + 3.6)], w=1.8, x=12 * s + 0.9),
+         xprof('sight_rear', 'Kimmenblatt', MET, fr, fr + 3, blade, cu, func='Zwei Flachblatt-Hörner 20° nach außen, offene Kerbe',
+               attach='auf dem Kimmenfuß', en='Rear horns', bevel=0.3),
+         part('sight_front', 'Korn', 'Front sight', 'sight', 'multi', MET, 'Schlankes Korn auf flachem Fuß', 'vorn auf dem Träger',
+              bevel=0.4, items=[dict(shape='prof', pts=[(ff - 7, deck - 0.5), (ff + 5, deck - 0.5), (ff + 1.5, cu - 1.6), (ff, cu - 1.6)], w=2.6),
+                                dict(shape='box', f0=ff - 8, f1=ff + 6, u0=deck - 0.5, u1=deck + 2.5, w=front_w)]),
+         part('sight_glass', 'Kornkopf', 'Front bead', 'sight', 'cyl', 'accent', 'Oranger Kornkopf, Stirn flach zum Auge (Zielpunkt)',
+              'oben am Korn', bevel=0.2, axis='f', c=(cu, 0), a0=ff - 1.2, a1=ff + 1.6, r=1.8 * s, segs=20)]
+    if parent:
+        for p in P:
+            p['parent_part'] = parent
+    return P, _irons_anchor(fr, ff, cu, deck)
 
 
 # ------------------------------------------------------------------------------------------------ Katalog

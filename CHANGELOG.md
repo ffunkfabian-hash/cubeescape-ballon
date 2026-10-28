@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.25.0 „Longshot“ – Schrotflinte BASIC-08 und Scharfschützengewehr BASIC-09 im Stil v2.1 (Branch `claude/ballon-0.25-longshot`)
+
+- BASIC-08 v2.1: gerade Oberkante aus Schiene und Lüftungsschiene über dickem Lauf und Röhrenmagazin, große Graphit-Pumpe, Ladeschacht mit
+  Ladeklappe, eigene Hülsenform `shotshell`; BASIC-09 v2.1: Creme-Gehäuse und Laufmantel mit Längsschlitz, freier Lauf mit Bremse,
+  Kammerstängel links (Nutzerwunsch), Zielfernrohr mittig über dem Gehäuse (Nutzerhinweis). Grundform nach Zwischenstopp, Nutzerwahl „a“.
+- Visiere K2 „Hörner“ (`sight_kit.hoerner`) und Z3 „Lang“ (`sight_kit.lang`, Vollbild, Sitz nach Konzept A) gebaut; `check`,
+  `test_sights`, `test_sight_seat`, `make_docs` kennen den Vollbild-Typ und Hülsenformen im Modul (`EJECT_CASES`).
+- Quellen Q-D2-IMG (6 Vertreter über das Bungie-Manifest); Bericht [docs/versions/0.25-longshot.md](docs/versions/0.25-longshot.md).
+
 ## 0.24.0 „Holster“ – Handfeuerwaffe BASIC-04 und Seitenwaffe BASIC-05 im Stil v2.1 (Branch `claude/ballon-0.24-holster`)
 
 - BASIC-04 v2.1: lange gerade Creme-Haube über freistehender, kannelierter Trommel auf Kran, Kastenunterlauf mit Fenster zum Lauf;

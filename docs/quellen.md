@@ -116,6 +116,12 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Minimum Distance | Sidearm | `…/screenshots/1911843789.jpg` | klassischer Schlitten mit Auswurffenster und Farbzonen, dunkler Rahmen mit Schiene, Führungsstange vorn sichtbar, eckiger Abzugsbügel |
 | Drang | Sidearm | `…/screenshots/2362471600.jpg` | flacher, kantiger Schlitten auf kurzem Kastenrahmen, Kimme am Schlittenende; langer Dämpfer und Medaillon nicht übernommen |
 | Brass Attacks | Sidearm | `…/screenshots/2121785039.jpg` | Zweiton Schlitten/Rahmen; Nieten und Lüftungsfenster zu verziert (nicht übernommen) |
+| Matador 64 | Shotgun | `…/screenshots/2563012876.jpg` | lange gerade Linie; dicker Lauf über dem Röhrenmagazin, langer glatter Vorderschaft; hohes kurzes Gehäuse hinten |
+| Ragnhild-D | Shotgun | `…/screenshots/4225322581.jpg` | Lüftungsschiene über die ganze Länge, helles kastiges Gehäuse, gerippte Pumpe; der Mantel über dem Lauf bis vorn nicht übernommen (Nutzerwahl a: Lauf und Röhre sichtbar) |
+| Quitclaim Shotgun III | Shotgun | `…/screenshots/2478247171.jpg` | Lauf und Röhre vorn frei übereinander, Schelle; Doppelrohr-Stirn und Rippen zu verziert (nicht übernommen) |
+| Elegy-49 | Sniper Rifle | `…/screenshots/3666954563.jpg` | hohes helles Gehäuse, Laufmantel mit Längsschlitz, freier Lauf mit großer Mündung, großes Kastenmagazin; gelochter Mündungsmantel nicht übernommen |
+| Maxim XI | Sniper Rifle | `…/screenshots/3239754990.jpg` | lange durchgehende Haube vom Schaft bis vor die Hälfte, darunter dunkler Vorderschaft, Kastenmagazin vor dem Griff |
+| Far Future | Sniper Rifle | `…/screenshots/893527433.jpg` | Längsstaffelung: dünner, sehr langer freier Lauf (vermessen in Motiongen proportionen › 3); Zellen und Goldplatten nicht übernommen |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
@@ -128,7 +134,11 @@ Typ und Bild-ID aus dem öffentlichen Bungie-Manifest `bungie.net/Platform/Desti
 Handfeuerwaffe die lange gerade Oberkante, der Kastenlauf mit Fenster und der Kastenunterlauf, hell oben/dunkel unten; bei der
 Seitenwaffe der Schlitten mit Auswurffenster, die sichtbare Führungsstange und der kurze dunkle Rahmen. Nicht übernommen: Zierfenster,
 Fächerrippen, Lampen, Dämpfer, Medaillons, Nieten und Rautengriffe (Schlichtheitsbudget); Midnight Coup (Keil wie ein Gewehr) und
-Traveler's Judgment 5 (Schläuche, Kapsel) gesichtet und verworfen.
+Traveler's Judgment 5 (Schläuche, Kapsel) gesichtet und verworfen. Für BASIC-08 und BASIC-09 v2.1 (0.25 „Longshot“, gesichtet
+28.10.2026, Bungie-Manifest wie 0.24; Bilder nur im Cache `refs/q-d2-img/sg_*`, `sr_*`): übernommen bei der Schrotflinte die gerade
+Oberkante mit Lüftungsschiene, dicker Lauf über der Röhre und die große Pumpe; beim Scharfschützen die lange Creme-Haube (geteilt in
+Gehäuse und Laufmantel) mit Längsschlitz, freier Lauf mit großer Bremse und Kastenmagazin vor dem Griff. Gesichtet und verworfen:
+Badlander und Retold Tale (organisch, Verzierungen), Beloved (Leuchtzellen), Twilight Oath (geschwungene Klinge), Uzume RR4 (Kastenoptik).
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).

@@ -263,15 +263,18 @@ def family_dims():
         D = S['dimensions']
         e = W.ANCHORS['Socket_Eye']
         iron = e['sight_type'] == 'iron'     # Kimme/Korn (0.24): Augenabstand zur Kimme, eigene Linie (Visierhöhe gilt nicht)
-        ref = 'Socket_Sight' if iron else SIGHT['types'][e['sight_type']]['ref']
-        de = 'Kimme/Korn' if iron else SIGHT['types'][e['sight_type']]['de']
+        full = e['sight_type'] == 'fullscreen'   # Scharfschütze (0.25): Augenabstand zum Objektivring wie das Zielfernrohr
+        ref = 'Socket_Sight' if iron else SIGHT['types']['scope' if full else e['sight_type']]['ref']
+        de = 'Kimme/Korn' if iron else 'Zielfernrohr, Vollbild' if full else SIGHT['types'][e['sight_type']]['de']
+        mw = A.get('Socket_MagWell') or A.get('Socket_LoadingGate')     # Schrot (0.25): Röhrenmagazin, Ladeklappe statt Schacht
+        mw = '–' if mw is None else f"{mw[0]:.0f} / {mw[1]:.0f}" + ('' if 'Socket_MagWell' in A else ' (Ladeklappe)')
         mf, mu = A['Socket_Muzzle']
         rear = -D['bounds_m']['max'][1] * 1000
         rows.append(f"| {wid} {W.META['type_de']} | {D['length_m'] * 1000:.0f} × {D['height_m'] * 1000:.0f} × {D['width_m'] * 1000:.0f} | "
                     f"{mu:.0f} | {mf:.0f} | {rear:.0f} | {A['Socket_Eye'][1]:.0f} | {A['Socket_Eye'][1] - mu:.1f} | "
                     f"{A[ref][0] - A['Socket_Eye'][0]:.0f} ({de}) | "
                     f"{A['Socket_SupportHand'][0]:.0f} / {A['Socket_SupportHand'][1]:.0f} | "
-                    f"{A['Socket_MagWell'][0]:.0f} / {A['Socket_MagWell'][1]:.0f} | "
+                    f"{mw} | "
                     f"{A['Socket_CenterOfMass'][0]:.0f} / {A['Socket_CenterOfMass'][1]:.0f} | "
                     f"{S['counts']['parts']} / {S['counts']['triangles']} |")
         box = {}

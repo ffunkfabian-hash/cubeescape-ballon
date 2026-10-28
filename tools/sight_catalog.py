@@ -3,6 +3,8 @@
   blender -b --factory-startup -P tools/sight_catalog.py -- [--gpu] [--samples N] [--only holo_rr,scope_ring]
                                                                       → <OUT>/sight_catalog/<id>_<größe>_{ziel,nah}.png
   python3 tools/sight_catalog.py --sheet                              → <EVIDENCE>/sight_catalog.png, sight_catalog_sizes.png
+  blender … -P tools/sight_catalog.py -- --weapon pilot.w09_sniper_rifle_v21 [--gpu]   → <OUT>/sight_catalog/<Waffe>_W_ziel.png
+                                       (Zielbild einer Familienwaffe auf demselben Weg, 0.25)
 
 Baukasten seit 0.21 Produktionsform (basic/common.py, Form `xprof` und Rolle `sight_anod` in kit.py).
 Zielbild wie tools/sight_options.py (Augenpunkt, 75°, `ads_hide` aus, gezeichnetes Absehen in Hüftform der Klasse). Kimme/Korn
@@ -21,13 +23,14 @@ from tools.paths import OUT, EVIDENCE  # noqa: E402
 from tools.sight_options import HFOV, RES, FONT, drawn_reticle, ground  # noqa: E402
 
 DST = os.path.join(OUT, 'sight_catalog')
-FULLSCREEN = 0.82          # Kreis im Vollbild als Anteil der Bildhöhe (Destiny 80–83 %, Motiongen visiere.md › 7)
+from basic.pilot.optics.sight_kit import FULLSCREEN as FS  # noqa: E402
+FULLSCREEN = FS['circle_h']     # Kreis im Vollbild als Anteil der Bildhöhe (Destiny 80–83 %, Motiongen visiere.md › 7)
 
 
 def duplex(cx, cy, r):
     """Duplex-Absehen (Kritik Z3): außen kräftige Balken 1,2 % Bildhöhe bis zur Lücke 12 % H um die Mitte, innen feine Linien 0,15 % H."""
-    H = RES[1]
-    g, wo, wi = 0.12 * H, max(2, 0.012 * H), max(1, 0.0015 * H * 2)
+    H, D = RES[1], FS['duplex']
+    g, wo, wi = D['gap_h'] * H, max(2, D['bar_h'] * H), max(1, D['line_h'] * H * 2)
     a = ['-stroke', 'none', '-fill', '#121417']
     for x0, y0, x1, y1 in ((cx - r, cy - wo / 2, cx - g, cy + wo / 2), (cx + g, cy - wo / 2, cx + r, cy + wo / 2),
                            (cx - wo / 2, cy + g, cx + wo / 2, cy + r), (cx - wo / 2, cy - r, cx + wo / 2, cy - g)):
@@ -58,16 +61,19 @@ def jobs():
     return out
 
 
-def render(o, only=None):
+def render(o, only=None, weapon=None):
     import bpy
     from mathutils import Vector, Matrix
     from basic import kit
     import tools.blender_build as BB
     os.makedirs(DST, exist_ok=True)
-    for kid, size in jobs():
+    import importlib
+    for kid, size in ([(weapon, 'W')] if weapon else jobs()):
         if only and kid not in only:
             continue
-        W = kits()[kid][0].weapon(kid, size)
+        W = importlib.import_module(f'basic.{weapon}') if weapon else kits()[kid][0].weapon(kid, size)
+        if weapon:      # Familienwaffe (0.25): nur das Zielbild, Datei nach der Waffen-ID
+            kid, size = f"{W.META['id']}-{W.META['variant']}", 'W'
         kit.reset_scene()
         root, objs, anc = kit.build(W)
         BB.setup_render(RES[0], o['samples'], gpu=o['gpu'], aaa=True, bloom=False, bg='mid')
@@ -82,7 +88,7 @@ def render(o, only=None):
         eye = anc['Socket_Eye'].matrix_world.translation.copy()
         ret = anc['Socket_Reticle'].matrix_world.translation.copy()
         ground(eye.z - 1.55)
-        if size == 'M':      # Nahansicht schräg von links vorn oben auf das Visier
+        if size == 'M' and not weapon:      # Nahansicht schräg von links vorn oben auf das Visier
             iron = W.ANCHORS['Socket_Eye']['sight_type'] == 'iron'     # Kimme/Korn: Nahansicht nur auf die Kimme
             sight = [ob for p, ob in ((p, objs[p['id']]) for p in W.PARTS) if p['asm'] == 'sight' and not p.get('ads_hide')
                      and not (iron and p['id'].startswith(('sight_front', 'sight_glass')))]
@@ -152,4 +158,5 @@ if __name__ == '__main__':
         sheet()
     else:
         render(dict(gpu='--gpu' in a, samples=int(a[a.index('--samples') + 1]) if '--samples' in a else 48),
-               only=a[a.index('--only') + 1].split(',') if '--only' in a else None)
+               only=a[a.index('--only') + 1].split(',') if '--only' in a else None,
+               weapon=a[a.index('--weapon') + 1] if '--weapon' in a else None)

@@ -117,6 +117,10 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         from tools.test_sights import check_iron
         for b in check_iron(W):
             fail(f'{wid}: {b}')
+    elif e.get('sight_type') == 'fullscreen':   # Scharfschütze (0.25): Zielfernrohr außen, im Zielen Vollbild; Sitz wie Z1
+        from tools.test_sights import check_fullscreen
+        for b in check_fullscreen(W):
+            fail(f'{wid}: {b}')
     elif not e.get('std') or e.get('sight_type') not in SIGHT['types']:
         fail(f'{wid}: Socket_Eye nicht nach Visier-Standard (std, sight_type)')
     else:
@@ -141,8 +145,10 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
     E = getattr(W, 'EJECT', None)   # Hülsenauswurf (0.16, 5.4 A): Datenfeld je Waffe, Startlage und Hülsenform müssen bestehen
     if E is not None:
         from basic.arms import ego as EG
-        if len(E.get('at', ())) != 3 or E.get('case') not in EG.EJECT['cases'] or len(E.get('dir', ())) != 3:
-            fail(f'{wid}: EJECT unvollständig (Startlage f/u/x, Hülsenform aus ego.EJECT.cases, Richtung f/u/x)')
+        cases = dict(EG.EJECT['cases'], **getattr(W, 'EJECT_CASES', {}))   # 0.25: eigene Hülsenform im Modul (ego.py im Unity-Quellenhash)
+        if len(E.get('at', ())) != 3 or E.get('case') not in cases or len(E.get('dir', ())) != 3 \
+                or any(k not in cases[E['case']] for k in ('len_mm', 'r_mm', 'segs')):
+            fail(f'{wid}: EJECT unvollständig (Startlage f/u/x, Hülsenform aus ego.EJECT.cases oder EJECT_CASES, Richtung f/u/x)')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})
