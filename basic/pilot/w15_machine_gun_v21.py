@@ -47,9 +47,9 @@ COVER = (-60, 150, TOP, 138)  # Zuführdeckel f0, f1, u0, u1
 COVER_PIV = (150, 130)       # Scharnier vorn
 REC0, REC1 = -150, 210       # Gehäuse hinten / vorn
 W_REC = 52
-BOX = (92, 228, 0, 60)       # Munitionskasten f0, f1, u0, u1: seitlich links am Unteren Gehäuse eingehängt, flach und lang
-                             # (Nutzer 28.10.2026: „Kasten seitlich“, dann „eher in die Breite … als in die Höhe“: 136 × 60 statt 104 × 96)
-_bw = 46                     # Kastenbreite x
+BOX = (92, 196, 0, 60)       # Munitionskasten f0, f1, u0, u1: seitlich links am Unteren Gehäuse eingehängt, flach und breit
+_bw = 76                     # Kastenbreite x (Nutzer 28.10.2026: „Kasten seitlich“, dann „eher in die breite … anstelle in die länge“:
+                             # 104 lang × 60 hoch × 76 breit statt 104 × 96 × 46; ungefähr gleicher Inhalt)
 BOX_X = 24.6 + _bw / 2       # Kastenmitte x: Innenseite an der linken Seite des Unteren Gehäuses (x 24)
 BELT_X = 31.8                # Mitte der Gurtsäule (außen an der linken Wand x 26; Glieder r 5,4 frei)
 FEED = (98, 152, 96, 118)    # Zuführfenster links f0, f1, u0, u1
@@ -75,7 +75,7 @@ P += [
          [(REC0, 62), (-70, 40), (204, 40), (REC1, 62), (REC1, 79),
           (REC0, 79)], W_REC - 4),
     box('box_lip', 'Einhängeleiste', 'Box hanger', 'receiver', 'trim', 'Blanke Leiste, an der der Kasten links eingehängt wird',
-        'links am Unteren Gehäuse über dem Kasten', BOX[0] - 2, REC1 - 2, BOX[3], BOX[3] + 4, 2.4, bevel=0.6, x=24.6 + 1.2 - 0.6,
+        'links am Unteren Gehäuse über dem Kasten', BOX[0] - 2, BOX[1] + 2, BOX[3], BOX[3] + 4, 2.4, bevel=0.6, x=24.6 + 1.2 - 0.6,
         iface='BAB-1'),
     box('side_panel_l', 'Seitenpaneel links', 'Side panel left', 'receiver', 'anodized', 'Wartungsdeckel über dem Puffer',
         'in die Mulde geschraubt (4 Schrauben)', -130, -42, 88, 100, 1.2, bevel=R_FINE, x=W_REC / 2 - 0.8),

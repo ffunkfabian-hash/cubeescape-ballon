@@ -257,7 +257,7 @@
    "bounds_m": {
     "min": [
      0.024,
-     -0.208,
+     -0.198,
      0.06
     ],
     "max": [
@@ -268,11 +268,11 @@
    },
    "size_mm": [
     2.4,
-    118.0,
+    108.0,
     4.0
    ],
    "triangles": 108,
-   "volume_cm3": 1.08,
+   "volume_cm3": 0.99,
    "moving": null,
    "removable": false
   },
@@ -1473,36 +1473,36 @@
    "bevel_mm": 3.0,
    "blender_object": "ammo_box",
    "origin_m": [
-    0.0476,
-    -0.16,
+    0.0626,
+    -0.144,
     0.03
    ],
    "bounds_m": {
     "min": [
      0.0246,
-     -0.228,
+     -0.196,
      0.0
     ],
     "max": [
-     0.0706,
+     0.1006,
      -0.092,
      0.06
     ]
    },
    "size_mm": [
-    46.0,
-    136.0,
+    76.0,
+    104.0,
     60.0
    ],
    "triangles": 332,
-   "volume_cm3": 362.24,
+   "volume_cm3": 464.58,
    "moving": {
     "kind": "translate",
     "event": "reload",
     "note": null,
     "pivot_m": [
-     0.0476,
-     -0.16,
+     0.0626,
+     -0.144,
      0.03
     ],
     "vector_m": [
@@ -1536,22 +1536,22 @@
    "bounds_m": {
     "min": [
      0.024,
-     -0.2286,
+     -0.1966,
      0.006
     ],
     "max": [
-     0.0712,
+     0.1012,
      -0.0914,
      0.01
     ]
    },
    "size_mm": [
-    47.2,
-    137.2,
+    77.2,
+    105.2,
     4.0
    ],
    "triangles": 108,
-   "volume_cm3": 25.87,
+   "volume_cm3": 32.45,
    "moving": null,
    "removable": false
   },
@@ -1576,13 +1576,13 @@
    ],
    "bounds_m": {
     "min": [
-     0.0691,
-     -0.214,
+     0.0991,
+     -0.182,
      0.018
     ],
     "max": [
-     0.0701,
-     -0.194,
+     0.1001,
+     -0.162,
      0.024
     ]
    },
@@ -1617,13 +1617,13 @@
    ],
    "bounds_m": {
     "min": [
-     0.0366,
-     -0.233,
+     0.0516,
+     -0.201,
      0.01259
     ],
     "max": [
-     0.0586,
-     -0.227,
+     0.0736,
+     -0.195,
      0.04741
     ]
    },
@@ -2859,8 +2859,8 @@
   },
   "Socket_AmmoBox": {
    "position_m": [
-    0.0476,
-    -0.16,
+    0.0626,
+    -0.144,
     0.0
    ],
    "part": "ammo_box",
@@ -2899,9 +2899,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    0.0063,
-    -0.10103,
-    0.07847
+    0.00998,
+    -0.10052,
+    0.07685
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
@@ -2916,14 +2916,14 @@
     -0.079
    ],
    "max": [
-    0.0712,
+    0.1012,
     0.329,
     0.1866
    ]
   },
   "length_m": 0.983,
   "height_m": 0.2656,
-  "width_m": 0.0986,
+  "width_m": 0.1286,
   "reference_length_m": 1.15,
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
