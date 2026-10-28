@@ -202,14 +202,15 @@ def check_kit_form(parts, anchors):
     Klemmfuß (nichts schwebt). Fehlerliste (leer ohne F1/Z2)."""
     P = {p['id']: p for p in parts}
     bad = []
-    if 'sight_frame_b' in P and 'sight_web' in P:
+    if 'sight_frame_b' in P:                      # F1 am unteren Bogen erkannt; Stege und oberer Bogen sind Pflichtteile
+        missing = [k for k in ('sight_frame', 'sight_web', 'sight_web_r') if k not in P]
+        if missing:
+            return bad + [f'F1: Pflichtteile fehlen: {", ".join(missing)} (beide Stege, oberer Bogen)']
         (ti, _), (bi, bo) = _radii(P['sight_frame']), _radii(P['sight_frame_b'])
         gx = max(q[0] for q in P['sight_glass']['pts'])
         cu = P['sight_frame']['cu']
         if abs(bi - ti - 3.0) > 0.05:
             bad.append(f'F1: Radiusversatz der Bögen {bi - ti:.2f} mm statt 3 (S-Öffnung)')
-        if 'sight_web_r' not in P:
-            bad.append('F1: Steg in der rechten Lücke fehlt')
         if not ti < gx < bi:
             bad.append(f'F1: Glasrand r {gx:.2f} nicht zwischen den Bögen ({ti:.2f}–{bi:.2f})')
         if P['sight_base']['pts'][2][1] < cu - bo - 1e-6 or P['sight_base']['pts'][2][1] > cu - bi:

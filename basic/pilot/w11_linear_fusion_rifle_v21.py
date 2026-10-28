@@ -20,7 +20,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 
 Visier: Z2 „Gabel“ (Baukasten v3, visier-konzept › 6a; `sight_kit.gabel`), Sitz nach Konzept A wie Z1/Z3: Rohrsattel auf dem Buckel
 hinter dem Augenpunkt, H0-Klemmfuß unter dem Objektiv; Ring ohne Wulst (außen/innen 1,29), U-Gabel mit 3 mm Abstand und Laschen;
-gezeichnetes Absehen (Hüftform `cross`) flach auf der Linse. Größe M (20,3 %, Standard 20–26 %). Z1 Tropfen nur als Variante.
+gezeichnetes Absehen (Hüftform `cross`) flach auf der Linse. Größe M (21,3 % bei 85,5 mm Linsenabstand, Standard 20–26 %). Z1 Tropfen nur als Variante.
 Schlichtheitsbudget: Leuchten 3 Funktionen (Ladung: Linearkern · Munition: Ladefenster der Zelle · Visier: Absehen) · Grafik 1 Band ·
 Schrift 1 · Orange 3 (Höhenturm, Klemmhebel des Visiers, Zellenhalter) · Schrauben nur an Paneelen, Brücke und Schaft.
 Bewegung (Daten): Abzug, Linearkern leuchtet beim Aufladen auf (`charge_fire`), Zelle senkrecht nach unten heraus (`reload`),
