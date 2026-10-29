@@ -116,8 +116,10 @@ P += [
 # ---------------------------------------------------------------- Visierträger mit Schiene BRI-22, Visier B1 „Pins“
 P += [
     part('sight_arm', 'Visierträger', 'Sight arm', 'riser', 'multi', 'anodized', 'Trägt die Visierschiene links neben dem Fensterbogen',
-         'außen am Fensterbogen verschraubt', bevel=R_FINE,
-         items=[dict(shape='box', f0=26, f1=62, u0=DECK - 14, u1=DECK - 6, w=SIGHT_X - 11 - WIN['x_out'] + 8,
+         'außen an der Kröpfung des Mittelstücks verschraubt (6 mm eingelassen)', bevel=R_FINE,
+         # Richter 0.29 Runde 2: begann bei f 26 und schwebte 14 mm vor dem Mittelstück (Vorderkante dort f 12) → ab f 6;
+         # quer vom Fensterbogen (x bis 32,25, Kröpfung u 18–38) bis unter die Schiene (x 49–71)
+         items=[dict(shape='box', f0=6, f1=62, u0=DECK - 14, u1=DECK - 6, w=SIGHT_X - 11 - WIN['x_out'] + 8,
                      x=(SIGHT_X - 11 + WIN['x_out'] - 4) / 2 + 2)]),
 ]
 P += [dict(p, asm='riser', iface='BRI-22', x=SIGHT_X) for p in rail(30, 104, DECK - 8)]

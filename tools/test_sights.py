@@ -268,8 +268,8 @@ def check_pins(W):
         xs = [q[0] for q in P[f'sight_pin_blade_{i}']['pts']]
         if max(xs) > 0 or min(xs) > -(g['cap'] + PINS_T):
             bad.append(f'Pin {i + 1} nicht von der Pinschiene rechts zur Mitte (linke Ringhälfte muss frei bleiben)')
-    if (PINS_T / g['r']) > T['frame_max'] + 1e-9:
-        bad.append(f"Ringstirn {PINS_T:g} mm = {PINS_T / g['r']:.3f} × Öffnung > {T['frame_max']} (Rahmen zu dick)")
+    if PINS_T / (2 * g['r']) > T['frame_max'] + 1e-9:     # Öffnung = lichter Durchmesser wie bei Holo/Ring (Richter 0.29)
+        bad.append(f"Ringstirn {PINS_T:g} mm = {PINS_T / (2 * g['r']):.3f} × Öffnung > {T['frame_max']} (Rahmen zu dick)")
     win = getattr(W, 'WIN', None)
     if win:     # Fensterbogen: der Ring samt Stirn (r + T) muss im Sichtkegel frei bleiben – geprüft an der Vorderseite des
         # Fensterbogens (dort ist der Kegel am weitesten, Richter 0.29) mit den Kanten aus dem gebauten Profil
@@ -278,12 +278,55 @@ def check_pins(W):
         d_front = max(q[0] for q in rp) - e['at'][0]
         need = (g['r'] + PINS_T) * d_front / g['dist']
         x_out = rs.get('x', 0.0) + rs['w'] / 2                                       # Außenkante des Fensterbogens
-        cut = next(c for c in rs['cuts'] if c.get('u0') == win['u0'] and c.get('u1') == win['u1'])
+        cut = next((c for c in rs['cuts'] if c.get('u0') == win['u0'] and c.get('u1') == win['u1']), None)
+        if cut is None:
+            return bad + [f"Fensterschnitt u {win['u0']:g}–{win['u1']:g} im Mittelstück nicht gefunden (WIN passt nicht zum Profil)"]
         x_in = cut.get('x', 0.0) + cut['w'] / 2                                       # Innenkante = Rand des Fensterschnitts
         if ex >= x_out and x_out > ex - need - 1.0:      # Seitenvisier links vom Fensterbogen
             bad.append(f"Fensterbogen bis x {x_out:g} verdeckt den Ring (frei nur bis x {ex - need - 1.0:.2f})")
         elif ex < x_out and x_in < ex + need + 1.0:      # Ring über dem Pfeil, Fensterbogen links
             bad.append(f"Fensterbogen ab x {x_in:g} verdeckt den Ring (frei erst ab x {ex + need + 1.0:.2f})")
+    bad += carrier_seat(P)
+    return bad
+
+
+def _prof_f_at(pts, u):
+    """f-Bereich eines geschlossenen Seitenprofils (f, u) in Höhe u (Schnitt aller Kanten)."""
+    fs = [a[0] + (b[0] - a[0]) * (u - a[1]) / (b[1] - a[1]) for a, b in zip(pts, pts[1:] + pts[:1])
+          if (a[1] - u) * (b[1] - u) <= 0 and a[1] != b[1]]
+    return (min(fs), max(fs)) if fs else None
+
+
+def _box(i, p):
+    """Quader eines `box`-Items bzw. Teils: (f0, f1, u0, u1, x0, x1)."""
+    x, w = i.get('x', p.get('x', 0.0)), i['w']
+    return i['f0'], i['f1'], i['u0'], i['u1'], x - w / 2, x + w / 2
+
+
+def carrier_seat(P, need=1.0):
+    """Visierträger am Bogen (0.29, Richter Runde 2: schwebte 14 mm vor dem Mittelstück): der Träger `sight_arm` greift mindestens
+    `need` mm in das Mittelstück (Profil in seiner Höhe, Breite des Profils) und die Schiene `rail` liegt mindestens `need` mm auf dem
+    Träger. Ohne Träger (Visier auf einer Gehäuseschiene) leer."""
+    if 'sight_arm' not in P or 'riser' not in P or 'rail' not in P:
+        return []
+    bad, rs = [], P['riser']
+    for i in P['sight_arm']['items']:
+        f0, f1, u0, u1, x0, x1 = _box(i, P['sight_arm'])
+        rx0, rx1 = rs.get('x', 0.0) - rs['w'] / 2, rs.get('x', 0.0) + rs['w'] / 2
+        depth = 0.0
+        for u in (u0 + 0.5, (u0 + u1) / 2, u1 - 0.5):
+            fr = _prof_f_at(rs['pts'], u)
+            if fr:
+                depth = max(depth, min(f1, fr[1]) - max(f0, fr[0]))
+        side = min(x1, rx1) - max(x0, rx0)
+        if depth < need or side < need:
+            bad.append(f'Visierträger greift nicht ins Mittelstück (Überdeckung f {depth:.1f} mm, x {side:.1f} mm; schwebt)')
+    a = _box(P['sight_arm']['items'][0], P['sight_arm'])
+    r = P['rail']
+    rb = (r['f0'], r['f1'], r['u0'], r['u1'], r.get('x', 0.0) - r['w'] / 2, r.get('x', 0.0) + r['w'] / 2)
+    ov = [min(a[k + 1], rb[k + 1]) - max(a[k], rb[k]) for k in (0, 2, 4)]
+    if min(ov) < 0 or sorted(ov)[1] < need:
+        bad.append(f'Schiene liegt nicht auf dem Visierträger (Überdeckung f/u/x {ov[0]:.1f}/{ov[1]:.1f}/{ov[2]:.1f} mm)')
     return bad
 
 

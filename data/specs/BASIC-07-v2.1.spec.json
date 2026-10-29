@@ -501,7 +501,7 @@
    "name_en": "Sight arm",
    "assembly": "riser",
    "function_de": "Trägt die Visierschiene links neben dem Fensterbogen",
-   "attachment_de": "außen am Fensterbogen verschraubt",
+   "attachment_de": "außen an der Kröpfung des Mittelstücks verschraubt (6 mm eingelassen)",
    "material_role": "anodized",
    "material_de": "Schwarz eloxiert",
    "interface": null,
@@ -522,17 +522,17 @@
     ],
     "max": [
      0.053,
-     -0.026,
+     -0.006,
      0.0295
     ]
    },
    "size_mm": [
     25.0,
-    36.0,
+    56.0,
     8.0
    ],
    "triangles": 108,
-   "volume_cm3": 7.15,
+   "volume_cm3": 11.13,
    "moving": null,
    "removable": false
   },
@@ -2011,9 +2011,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    0.00425,
-    0.01795,
-    0.00055
+    0.00437,
+    0.01784,
+    0.00064
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",

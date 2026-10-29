@@ -6,10 +6,10 @@
   Fensterbogen und Durchbruch, Griffstück statt BGM-1, dunkle gespaltene Wurfarme schwingen nach hinten zu Rollen, Sehne (zwei Hälften)
   und Pfeil als eigene Teile, Spannlicht als Blickfang; kein Magazin, kein Auswurf (`EJECT = None`). Bewegung als Daten: Auszug 420 mm
   in 0,60 s (Draw Time der Imperial Needle, cubeescape-reference), Rollen 90°, Rücklauf beim Lösen; `check` prüft Spannweg, Rücklauf und
-  „kein Auswurf“ (`bow_rules`, Gegenprobe 11 von 11 rot), `test_motion` die Richtungen.
+  „kein Auswurf“ (`bow_rules`, Gegenprobe 14 von 14 rot), `test_motion` die Richtungen.
 - Visier B1 „Pins“ gebaut (`sight_kit.pins`): drei Leuchtpins sind das Absehen, Ring Ø 52, Augenpunkt am Ankerpunkt bei vollem Auszug;
   am Bogen seitlich links (`side_mount`, Nutzer „das visier muss nach links“), 66 mm vom Pfeil. Neuer Visiertyp `pins`, `SIGHT_KIND`
-  des Bogens `arrow_tip` → `pins`; `test_sights` (`check_pins`, Gegenprobe 18 von 18 rot) und `test_sight_seat` (freie Sicht durch den
+  des Bogens `arrow_tip` → `pins`; `test_sights` (`check_pins` mit Sitz des Visierträgers, Gegenprobe 22 von 22 rot) und `test_sight_seat` (freie Sicht durch den
   Ring am Netz) prüfen ihn. Bogen-Regel und Bogen-Tabelle in den Familienmaßen; Designvertrag 07 v2.1 Compound mit Pinvisier.
 - Quellen Q-D2-IMG (4 Bögen über das Bungie-Manifest); Bericht [docs/versions/0.29-bowstring.md](docs/versions/0.29-bowstring.md).
 
