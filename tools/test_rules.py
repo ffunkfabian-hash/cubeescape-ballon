@@ -50,7 +50,7 @@ del d4['weapons']['BASIC-T01-v2.1']
 expect(any('BASIC-T01-v2.1: Silhouette fehlt' in x for x in rules.silhouette_problems(d4, fam, specs)), 'fehlende Silhouette nicht gemeldet')
 
 # A2 Dreiecksbudget
-n = rules.budget_notes({'X': dict(counts=dict(triangles=35000)), 'Y': dict(counts=dict(triangles=25000)),
+n = rules.budget_notes({'X': dict(counts=dict(triangles=55000)), 'Y': dict(counts=dict(triangles=25000)),
                         'Z': dict(counts=dict(triangles=15000))})
 expect(len(n) == 2 and n[0].startswith('Warnung Budget X') and n[1].startswith('Hinweis Budget Y'), f'Budget falsch: {n}')
 
@@ -62,9 +62,14 @@ m = importlib.import_module(f'basic.{WEAPONS[0]}')
 sha = rules.sha_files(rules.clear_sources(m))
 ok = dict(zone_px=0, zone_share=0, top_y=0.7, cols=None, sources_sha256=sha)
 expect(rules.clear_zone_notes(dict(weapons={'W': ok}), [('W', m)]) == [], 'freie Zone meldet etwas')
-hit = dict(ok, zone_px=12, zone_share=0.0001, top_y=0.6, cols=[0.55, 0.6])
+hit = dict(ok, zone_px=12, zone_share=0.0001, top_y=0.5, cols=[0.55, 0.6])
 n = rules.clear_zone_notes(dict(weapons={'W': hit}), [('W', m)])
 expect(len(n) == 1 and n[0].startswith('Warnung Freihaltezone W: 12 px'), f'belegte Zone nicht gemeldet: {n}')
+# A4 gelockert: nur das vordere Ende in der unteren äußeren Ecke → keine Meldung; links davon oder höher → Warnung
+front = dict(ok, zone_px=1500, zone_share=0.008, top_y=0.61, cols=[0.57, 0.6])
+expect(rules.clear_zone_notes(dict(weapons={'W': front}), [('W', m)]) == [], 'Mündung in der erlaubten Ecke gemeldet')
+n = rules.clear_zone_notes(dict(weapons={'W': dict(front, cols=[0.50, 0.6])}), [('W', m)])
+expect(len(n) == 1 and n[0].startswith('Warnung Freihaltezone'), f'Teil links der Ecke nicht gemeldet: {n}')
 n = rules.clear_zone_notes(dict(weapons={'W': dict(ok, sources_sha256='0')}), [('W', m)])
 expect(len(n) == 1 and 'veraltet' in n[0], f'veraltete Zonenmessung nicht gemeldet: {n}')
 n = rules.clear_zone_notes(dict(weapons={'W': dict(hit, sources_sha256='0')}), [('W', m)])
