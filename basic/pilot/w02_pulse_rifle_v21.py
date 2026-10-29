@@ -112,7 +112,7 @@ P += [
          'lackiert', bevel=0, items=[dict(shape='prof', pts=[(392, 99.5), (406, 99.5), (398, 125.2), (384, 126.8)], w=0.3,
                                            x=sx * 22.15) for sx in (1, -1)]),
     part('text_l', 'Schriftzug', 'Lettering', 'barrel', 'text', 'decal', 'Kennung „BASIC PR-02“ (einzige Schrift)',
-         'aufgedruckt', bevel=0, text='BASIC  PR-02', size=5.0, f=360, u=104.5, x=22.05, side=1, depth=0.12),
+         'aufgedruckt', bevel=0, text='BASIC  PR-02', size=5.0, f=378, u=104.5, x=22.05, side=1, depth=0.12),
     cyl('barrel', 'Lauf', 'Barrel', 'barrel', 'metal', 'Führt das Geschoss; kanneliert', 'im Oberen Gehäuse verschraubt',
         'f', (BORE, 0), 150, 470, 8, segs=24,
         cuts=[cut_box(236, 344, BORE - 1.4, BORE + 1.4, 4, x=sx * 8) for sx in (1, -1)]),
