@@ -1,0 +1,2225 @@
+{
+ "format": "cubeescape-ballon/basic-spec",
+ "format_version": 1,
+ "generator": {
+  "repo": "cubeescape-ballon",
+  "tool": "tools/blender_build.py",
+  "blender": "5.2.2 LTS"
+ },
+ "weapon": {
+  "id": "BASIC-14",
+  "num": "14",
+  "type": "rocket_launcher",
+  "type_de": "Raketenwerfer",
+  "type_en": "Rocket Launcher",
+  "name": "Schulterrohr v2.1",
+  "nick": "Familie v2.1",
+  "ammo": "heavy",
+  "fire": "single_shot",
+  "reference_length_m": 0.725,
+  "reference_length_source": "Toolgen rocket_launcher (Formgen KG09 spec units); BASIC bewusst länger, siehe Bericht",
+  "reference_note": "Toolgens Raketenwerfer ist mit 0,725 m ein verdichtetes Spielmodell; BASIC zeigt das Schulterrohr in Gebrauchslänge (entworfen)",
+  "summary": "Raketenwerfer mit dickem Startrohr, schlankem Heckrohr, Sichtfenster, Heckklappe und Visier W2 „Entfernung“ (Stil v2.1).",
+  "variant": "v2.1"
+ },
+ "units": {
+  "length": "m",
+  "author_unit": "mm"
+ },
+ "axes": {
+  "forward": "-Y",
+  "up": "+Z",
+  "left": "+X",
+  "origin": "Socket_Hand",
+  "handedness": "rechtshändig (Blender)"
+ },
+ "assemblies": [
+  {
+   "id": "receiver",
+   "de": "Hauptgehäuse",
+   "en": "Receiver",
+   "parts": [
+    "rear_tube",
+    "tube_cone",
+    "lower",
+    "ready_light",
+    "text_l",
+    "rail"
+   ]
+  },
+  {
+   "id": "barrel",
+   "de": "Lauf / Emitter",
+   "en": "Barrel / emitter",
+   "parts": [
+    "tube",
+    "window_rim",
+    "muzzle",
+    "muzzle_crown",
+    "band_ring"
+   ]
+  },
+  {
+   "id": "ammo",
+   "de": "Munitionsversorgung",
+   "en": "Ammunition feed",
+   "parts": [
+    "rocket",
+    "rocket_head"
+   ]
+  },
+  {
+   "id": "sight",
+   "de": "Visier",
+   "en": "Sight",
+   "parts": [
+    "sight_mount",
+    "sight_clamp",
+    "sight_body",
+    "sight_base",
+    "sight_knob_w",
+    "sight_battery",
+    "sight_emitter",
+    "sight_frame",
+    "sight_frame_trim",
+    "sight_roof",
+    "sight_range",
+    "sight_glass",
+    "sight_reticle"
+   ]
+  },
+  {
+   "id": "grip_controls",
+   "de": "Griff und Bedienung",
+   "en": "Grip and controls",
+   "parts": [
+    "cap_release",
+    "grip",
+    "trigger",
+    "trigger_guard",
+    "grip_cap"
+   ]
+  },
+  {
+   "id": "support",
+   "de": "Stützbereich",
+   "en": "Support",
+   "parts": [
+    "clamp_1",
+    "clamp_2",
+    "clamp_rims",
+    "clamp_screws",
+    "grip_mount",
+    "foregrip",
+    "foregrip_pad",
+    "sight_collar",
+    "sight_arm"
+   ]
+  },
+  {
+   "id": "stock",
+   "de": "Schaft",
+   "en": "Stock",
+   "parts": [
+    "shoulder_rest"
+   ]
+  },
+  {
+   "id": "mechanism",
+   "de": "Bewegliche Mechanik",
+   "en": "Moving mechanism",
+   "parts": [
+    "rear_ring",
+    "hinge_block",
+    "breech_cap",
+    "cap_rim"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "id": "rear_tube",
+   "name_de": "Heckrohr",
+   "name_en": "Rear tube",
+   "assembly": "receiver",
+   "function_de": "Schlankes Rohr über der Schulter; führt die Rakete beim Laden",
+   "attachment_de": "Grundkörper; im Startrohr verschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "rear_tube",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03293,
+     0.012,
+     0.07907
+    ],
+    "max": [
+     0.03293,
+     0.392,
+     0.14493
+    ]
+   },
+   "size_mm": [
+    65.9,
+    380.0,
+    65.9
+   ],
+   "triangles": 1152,
+   "volume_cm3": 362.57,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "tube_cone",
+   "name_de": "Rohrkegel",
+   "name_en": "Tube cone",
+   "assembly": "receiver",
+   "function_de": "Übergang Heckrohr → Startrohr",
+   "attachment_de": "hinten am Startrohr angeformt",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "tube_cone",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04523,
+     -0.006,
+     0.06677
+    ],
+    "max": [
+     0.04523,
+     0.014,
+     0.15723
+    ]
+   },
+   "size_mm": [
+    90.5,
+    20.0,
+    90.5
+   ],
+   "triangles": 1152,
+   "volume_cm3": 30.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "tube",
+   "name_de": "Startrohr",
+   "name_en": "Launch tube",
+   "assembly": "barrel",
+   "function_de": "Dickes Rohr; führt die Rakete; Sichtfenster links",
+   "attachment_de": "am Heckrohr verschraubt, Fuge 1 mm",
+   "material_role": "shell",
+   "material_de": "Lackiertes Gehäuse (Creme)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "tube",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0459,
+     -0.444,
+     0.0661
+    ],
+    "max": [
+     0.0459,
+     -0.006,
+     0.1579
+    ]
+   },
+   "size_mm": [
+    91.8,
+    438.0,
+    91.8
+   ],
+   "triangles": 1388,
+   "volume_cm3": 1797.99,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "window_rim",
+   "name_de": "Fensterrahmen",
+   "name_en": "Window rim",
+   "assembly": "barrel",
+   "function_de": "Dunkler Rahmen in der Fensterlaibung",
+   "attachment_de": "in das Startrohr eingesetzt",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "window_rim",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03193,
+     -0.376,
+     0.08007
+    ],
+    "max": [
+     0.03193,
+     -0.296,
+     0.14393
+    ]
+   },
+   "size_mm": [
+    63.9,
+    80.0,
+    63.9
+   ],
+   "triangles": 1364,
+   "volume_cm3": 55.67,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "muzzle",
+   "name_de": "Mündungsring",
+   "name_en": "Muzzle ring",
+   "assembly": "barrel",
+   "function_de": "Mündung mit Trichter; Socket_Muzzle",
+   "attachment_de": "auf das Startrohr gepresst",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "muzzle",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04989,
+     -0.476,
+     0.06211
+    ],
+    "max": [
+     0.04989,
+     -0.44,
+     0.16189
+    ]
+   },
+   "size_mm": [
+    99.8,
+    36.0,
+    99.8
+   ],
+   "triangles": 2016,
+   "volume_cm3": 176.42,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "muzzle_crown",
+   "name_de": "Mündungskrone",
+   "name_en": "Muzzle crown",
+   "assembly": "barrel",
+   "function_de": "Blanke Stirnkante der Mündung",
+   "attachment_de": "vorn am Mündungsring",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.5,
+   "blender_object": "muzzle_crown",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0489,
+     -0.4775,
+     0.0631
+    ],
+    "max": [
+     0.0489,
+     -0.474,
+     0.1609
+    ]
+   },
+   "size_mm": [
+    97.8,
+    3.5,
+    97.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 5.97,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "band_ring",
+   "name_de": "Ringband",
+   "name_en": "Ring band",
+   "assembly": "barrel",
+   "function_de": "Lackiertes Band (einziges Grafikelement)",
+   "attachment_de": "lackiert",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0,
+   "blender_object": "band_ring",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04605,
+     -0.418,
+     0.06595
+    ],
+    "max": [
+     0.04605,
+     -0.404,
+     0.15805
+    ]
+   },
+   "size_mm": [
+    92.1,
+    14.0,
+    92.1
+   ],
+   "triangles": 384,
+   "volume_cm3": 4.6,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "clamp_1",
+   "name_de": "Schelle 1",
+   "name_en": "Clamp 1",
+   "assembly": "support",
+   "function_de": "Trägt das Griffmodul am Startrohr",
+   "attachment_de": "um das Startrohr geschraubt",
+   "material_role": "ring_anod",
+   "material_de": "Eloxiert, rund (ohne feine Kratzer)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "clamp_1",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0489,
+     -0.06,
+     0.0631
+    ],
+    "max": [
+     0.0489,
+     -0.04,
+     0.1609
+    ]
+   },
+   "size_mm": [
+    97.8,
+    20.0,
+    97.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 20.5,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "clamp_2",
+   "name_de": "Schelle 2",
+   "name_en": "Clamp 2",
+   "assembly": "support",
+   "function_de": "Trägt den Vordergriff am Startrohr",
+   "attachment_de": "um das Startrohr geschraubt",
+   "material_role": "ring_anod",
+   "material_de": "Eloxiert, rund (ohne feine Kratzer)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "clamp_2",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0489,
+     -0.268,
+     0.0631
+    ],
+    "max": [
+     0.0489,
+     -0.248,
+     0.1609
+    ]
+   },
+   "size_mm": [
+    97.8,
+    20.0,
+    97.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 20.5,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "clamp_rims",
+   "name_de": "Schellenkanten",
+   "name_en": "Clamp rims",
+   "assembly": "support",
+   "function_de": "Blanke Stirnkanten der Schellen",
+   "attachment_de": "an den Schellen",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.3,
+   "blender_object": "clamp_rims",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.04929,
+     -0.2684,
+     0.06271
+    ],
+    "max": [
+     0.04929,
+     -0.0396,
+     0.16129
+    ]
+   },
+   "size_mm": [
+    98.6,
+    228.8,
+    98.6
+   ],
+   "triangles": 4608,
+   "volume_cm3": 3.35,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "clamp_screws",
+   "name_de": "Schellenschrauben",
+   "name_en": "Clamp screws",
+   "assembly": "support",
+   "function_de": "Spannen die Schellen",
+   "attachment_de": "oben an den Schellen",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 0.2,
+   "blender_object": "clamp_screws",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0484,
+     -0.25974,
+     0.13626
+    ],
+    "max": [
+     0.0484,
+     -0.04826,
+     0.13974
+    ]
+   },
+   "size_mm": [
+    96.8,
+    211.5,
+    3.5
+   ],
+   "triangles": 976,
+   "volume_cm3": 0.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "rear_ring",
+   "name_de": "Heckring",
+   "name_en": "Rear ring",
+   "assembly": "mechanism",
+   "function_de": "Trägt das Scharnier der Heckklappe",
+   "attachment_de": "auf das Heckrohr gepresst",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "rear_ring",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03692,
+     0.382,
+     0.07508
+    ],
+    "max": [
+     0.03692,
+     0.404,
+     0.14892
+    ]
+   },
+   "size_mm": [
+    73.8,
+    22.0,
+    73.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 39.78,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "hinge_block",
+   "name_de": "Klappenscharnier",
+   "name_en": "Breech hinge",
+   "assembly": "mechanism",
+   "function_de": "Lagert die Heckklappe rechts",
+   "attachment_de": "rechts am Heckring angeformt",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "hinge_block",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.045,
+     0.398,
+     0.103
+    ],
+    "max": [
+     -0.035,
+     0.416,
+     0.121
+    ]
+   },
+   "size_mm": [
+    10.0,
+    18.0,
+    18.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 3.13,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "breech_cap",
+   "name_de": "Heckklappe",
+   "name_en": "Breech cap",
+   "assembly": "mechanism",
+   "function_de": "Verschließt das Heck mit offener Düse; schwenkt zum Laden auf",
+   "attachment_de": "Scharnier rechts am Heckring",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "breech_cap",
+   "origin_m": [
+    -0.042,
+    0.41,
+    0.112
+   ],
+   "bounds_m": {
+    "min": [
+     -0.037,
+     0.404,
+     0.07608
+    ],
+    "max": [
+     0.03592,
+     0.432,
+     0.14792
+    ]
+   },
+   "size_mm": [
+    72.9,
+    28.0,
+    71.8
+   ],
+   "triangles": 2412,
+   "volume_cm3": 51.81,
+   "moving": {
+    "kind": "rotate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     -0.042,
+     0.41,
+     0.112
+    ],
+    "axis_blender": "Z",
+    "axis_sign": 1.0,
+    "range_deg": [
+     0,
+     110
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "cap_rim",
+   "name_de": "Düsenkante",
+   "name_en": "Nozzle rim",
+   "assembly": "mechanism",
+   "function_de": "Blanke Kante der Heckdüse",
+   "attachment_de": "hinten an der Klappe",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "breech_cap",
+   "shape": "cyl",
+   "bevel_mm": 0.3,
+   "blender_object": "cap_rim",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03193,
+     0.431,
+     0.08007
+    ],
+    "max": [
+     0.03193,
+     0.433,
+     0.14393
+    ]
+   },
+   "size_mm": [
+    63.9,
+    2.0,
+    63.9
+   ],
+   "triangles": 1152,
+   "volume_cm3": 1.13,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "cap_release",
+   "name_de": "Klappenknopf",
+   "name_en": "Breech release",
+   "assembly": "grip_controls",
+   "function_de": "Entriegelt die Heckklappe",
+   "attachment_de": "Druckknopf links am Heckring",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "cap_release",
+   "origin_m": [
+    0.037,
+    0.393,
+    0.122
+   ],
+   "bounds_m": {
+    "min": [
+     0.035,
+     0.38856,
+     0.11756
+    ],
+    "max": [
+     0.04,
+     0.39744,
+     0.12644
+    ]
+   },
+   "size_mm": [
+    5.0,
+    8.9,
+    8.9
+   ],
+   "triangles": 236,
+   "volume_cm3": 0.3,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     0.037,
+     0.393,
+     0.122
+    ],
+    "vector_m": [
+     -0.0025,
+     0.0,
+     0.0
+    ],
+    "travel_mm": 2.5
+   },
+   "removable": false
+  },
+  {
+   "id": "lower",
+   "name_de": "Abzugsgehäuse",
+   "name_en": "Trigger housing",
+   "assembly": "receiver",
+   "function_de": "Griffmodul und Abzugsgruppe unter dem Rohrübergang",
+   "attachment_de": "an der hinteren Schelle und am Heckrohr verschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "lower",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02,
+     -0.11,
+     0.04
+    ],
+    "max": [
+     0.02,
+     0.048,
+     0.081
+    ]
+   },
+   "size_mm": [
+    40.0,
+    158.0,
+    41.0
+   ],
+   "triangles": 220,
+   "volume_cm3": 187.79,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "ready_light",
+   "name_de": "Bereitschaftsanzeige",
+   "name_en": "Ready light",
+   "assembly": "receiver",
+   "function_de": "Leuchtet, wenn eine Rakete geladen ist",
+   "attachment_de": "links in das Abzugsgehäuse eingelassen",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "ready_light",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0197,
+     -0.054,
+     0.052
+    ],
+    "max": [
+     0.0207,
+     -0.03,
+     0.058
+    ]
+   },
+   "size_mm": [
+    1.0,
+    24.0,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.14,
+   "moving": {
+    "kind": "glow",
+    "event": "ready",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "text_l",
+   "name_de": "Schriftzug",
+   "name_en": "Lettering",
+   "assembly": "receiver",
+   "function_de": "Kennung „BASIC RL-14“ (einzige Schrift)",
+   "attachment_de": "aufgedruckt",
+   "material_role": "decal",
+   "material_de": "Markierung hell",
+   "interface": null,
+   "parent_part": null,
+   "shape": "text",
+   "bevel_mm": 0,
+   "blender_object": "text_l",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.01993,
+     -0.06763,
+     0.04545
+    ],
+    "max": [
+     0.02017,
+     -0.04005,
+     0.04896
+    ]
+   },
+   "size_mm": [
+    0.2,
+    27.6,
+    3.5
+   ],
+   "triangles": 1836,
+   "volume_cm3": 0.01,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip_mount",
+   "name_de": "Griffträger",
+   "name_en": "Foregrip mount",
+   "assembly": "support",
+   "function_de": "Verbindet den Vordergriff mit der Schelle",
+   "attachment_de": "unter der vorderen Schelle verschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "grip_mount",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.012,
+     -0.28,
+     0.058
+    ],
+    "max": [
+     0.012,
+     -0.242,
+     0.068
+    ]
+   },
+   "size_mm": [
+    24.0,
+    38.0,
+    10.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 8.94,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "foregrip",
+   "name_de": "Vordergriff",
+   "name_en": "Foregrip",
+   "assembly": "support",
+   "function_de": "Senkrechter Griff der Stützhand (Form wie BASIC-06)",
+   "attachment_de": "unter den Griffträger geschraubt",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "foregrip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.013,
+     -0.27899,
+     -0.012
+    ],
+    "max": [
+     0.013,
+     -0.244,
+     0.059
+    ]
+   },
+   "size_mm": [
+    26.0,
+    35.0,
+    71.0
+   ],
+   "triangles": 200,
+   "volume_cm3": 55.21,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "foregrip_pad",
+   "name_de": "Griffpolster",
+   "name_en": "Grip pad",
+   "assembly": "support",
+   "function_de": "Rutschfeste Front des Vordergriffs",
+   "attachment_de": "vorn aufgeklebt",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "foregrip_pad",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.011,
+     -0.27897,
+     -0.004
+    ],
+    "max": [
+     0.011,
+     -0.27203,
+     0.05
+    ]
+   },
+   "size_mm": [
+    22.0,
+    6.9,
+    54.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 5.88,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "shoulder_rest",
+   "name_de": "Schulterauflage",
+   "name_en": "Shoulder rest",
+   "assembly": "stock",
+   "function_de": "Liegt auf der Schulter",
+   "attachment_de": "unter das Heckrohr geschraubt",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "shoulder_rest",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.025,
+     0.17777,
+     0.053
+    ],
+    "max": [
+     0.025,
+     0.343,
+     0.082
+    ]
+   },
+   "size_mm": [
+    50.0,
+    165.2,
+    29.0
+   ],
+   "triangles": 156,
+   "volume_cm3": 192.6,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip",
+   "name_de": "Pistolengriff",
+   "name_en": "Pistol grip",
+   "assembly": "grip_controls",
+   "function_de": "Haupthand hält die Waffe; trägt Socket_Hand",
+   "attachment_de": "mit Unterem Gehäuse verschraubt (fest)",
+   "material_role": "rubber",
+   "material_de": "Gummi mit Stippling",
+   "interface": "BGM-1",
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 5.0,
+   "blender_object": "grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.015,
+     -0.03024,
+     -0.076
+    ],
+    "max": [
+     0.015,
+     0.04215,
+     0.04
+    ]
+   },
+   "size_mm": [
+    30.0,
+    72.4,
+    116.0
+   ],
+   "triangles": 360,
+   "volume_cm3": 144.82,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "trigger",
+   "name_de": "Abzug",
+   "name_en": "Trigger",
+   "assembly": "grip_controls",
+   "function_de": "Feuer auslösen (Zeigefinger)",
+   "attachment_de": "Drehpunkt im Unteren Gehäuse",
+   "material_role": "metal",
+   "material_de": "Funktionsmetall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "trigger",
+   "origin_m": [
+    0.0,
+    -0.04472,
+    0.037
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0035,
+     -0.05072,
+     0.01319
+    ],
+    "max": [
+     0.0035,
+     -0.04289,
+     0.039
+    ]
+   },
+   "size_mm": [
+    7.0,
+    7.8,
+    25.8
+   ],
+   "triangles": 132,
+   "volume_cm3": 0.89,
+   "moving": {
+    "kind": "rotate",
+    "event": "fire",
+    "note": null,
+    "pivot_m": [
+     0.0,
+     -0.04472,
+     0.037
+    ],
+    "axis_blender": "X",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     -12
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "trigger_guard",
+   "name_de": "Abzugsbügel",
+   "name_en": "Trigger guard",
+   "assembly": "grip_controls",
+   "function_de": "Schützt den Abzug, Fingerfreiraum ≥ 22 mm",
+   "attachment_de": "Griff vorn und Unteres Gehäuse (fest)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "trigger_guard",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.006,
+     -0.08272,
+     0.006
+    ],
+    "max": [
+     0.006,
+     -0.02513,
+     0.041
+    ]
+   },
+   "size_mm": [
+    12.0,
+    57.6,
+    35.0
+   ],
+   "triangles": 164,
+   "volume_cm3": 6.87,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grip_cap",
+   "name_de": "Griffboden",
+   "name_en": "Grip cap",
+   "assembly": "grip_controls",
+   "function_de": "Ausgestellter Abschluss; schützt den Griff",
+   "attachment_de": "unten auf den Griff geschraubt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "grip_cap",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.016,
+     -0.00385,
+     -0.079
+    ],
+    "max": [
+     0.016,
+     0.04246,
+     -0.073
+    ]
+   },
+   "size_mm": [
+    32.0,
+    46.3,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 8.43,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_collar",
+   "name_de": "Visierschelle",
+   "name_en": "Sight collar",
+   "assembly": "support",
+   "function_de": "Trägt den Visierarm am Startrohr",
+   "attachment_de": "um das Startrohr geschraubt",
+   "material_role": "ring_anod",
+   "material_de": "Eloxiert, rund (ohne feine Kratzer)",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_collar",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0489,
+     -0.032,
+     0.0631
+    ],
+    "max": [
+     0.0489,
+     -0.008,
+     0.1609
+    ]
+   },
+   "size_mm": [
+    97.8,
+    24.0,
+    97.8
+   ],
+   "triangles": 1152,
+   "volume_cm3": 24.64,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_arm",
+   "name_de": "Visierarm",
+   "name_en": "Sight arm",
+   "assembly": "support",
+   "function_de": "Hält die Schiene 66 mm links neben der Rohrachse",
+   "attachment_de": "an der Visierschelle angeformt",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": null,
+   "parent_part": null,
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_arm",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.028,
+     -0.038,
+     0.07
+    ],
+    "max": [
+     0.077,
+     -0.002,
+     0.078
+    ]
+   },
+   "size_mm": [
+    49.0,
+    36.0,
+    8.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 13.87,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "rail",
+   "name_de": "Schiene",
+   "name_en": "Top rail",
+   "assembly": "receiver",
+   "function_de": "Aufnahme für Visiere (BRI-22)",
+   "attachment_de": "auf dem Visierarm (fest)",
+   "material_role": "anodized",
+   "material_de": "Schwarz eloxiert",
+   "interface": "BRI-22",
+   "parent_part": null,
+   "shape": "box",
+   "bevel_mm": 1.5,
+   "blender_object": "rail",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.055,
+     -0.05,
+     0.0775
+    ],
+    "max": [
+     0.077,
+     0.0,
+     0.086
+    ]
+   },
+   "size_mm": [
+    22.0,
+    50.0,
+    8.5
+   ],
+   "triangles": 556,
+   "volume_cm3": 7.34,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_mount",
+   "name_de": "Visier-Klemmfuß",
+   "name_en": "Sight mount",
+   "assembly": "sight",
+   "function_de": "Klemmt das Visier auf die Schiene BRI-22; gestuftes Trapez",
+   "attachment_de": "Klemmung auf Schiene (lösbar)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": "BRI-22",
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_mount",
+   "origin_m": [
+    0.066,
+    -0.025,
+    0.086
+   ],
+   "bounds_m": {
+    "min": [
+     0.0545,
+     -0.048,
+     0.0865
+    ],
+    "max": [
+     0.0775,
+     -0.002,
+     0.092
+    ]
+   },
+   "size_mm": [
+    23.0,
+    46.0,
+    5.5
+   ],
+   "triangles": 216,
+   "volume_cm3": 5.1,
+   "moving": {
+    "kind": "translate",
+    "event": "swap_sight",
+    "note": null,
+    "pivot_m": [
+     0.066,
+     -0.025,
+     0.086
+    ],
+    "vector_m": [
+     0.0,
+     0.0,
+     0.07
+    ],
+    "travel_mm": 70.0
+   },
+   "removable": true
+  },
+  {
+   "id": "sight_clamp",
+   "name_de": "Klemmhebel",
+   "name_en": "Clamp lever",
+   "assembly": "sight",
+   "function_de": "Spannt den Klemmfuß werkzeuglos",
+   "attachment_de": "Drehachse links am Klemmfuß",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_clamp",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0775,
+     -0.03569,
+     0.0868
+    ],
+    "max": [
+     0.0793,
+     -0.014,
+     0.08959
+    ]
+   },
+   "size_mm": [
+    1.8,
+    21.7,
+    2.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.08,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_body",
+   "name_de": "Visiergehäuse",
+   "name_en": "Sight housing",
+   "assembly": "sight",
+   "function_de": "Trägt Emitter und Batterie; flach, hinten",
+   "attachment_de": "auf Klemmfuß (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 1.5,
+   "blender_object": "sight_body",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.058,
+     -0.032,
+     0.0915
+    ],
+    "max": [
+     0.074,
+     -0.003,
+     0.098
+    ]
+   },
+   "size_mm": [
+    16.0,
+    29.0,
+    6.5
+   ],
+   "triangles": 164,
+   "volume_cm3": 2.33,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_base",
+   "name_de": "Haubensockel",
+   "name_en": "Hood base",
+   "assembly": "sight",
+   "function_de": "Trägt Haube und Glas bis zur Fensterunterkante; trapezförmig verjüngt, Anzeigen unter der Visierlinie",
+   "attachment_de": "auf Klemmfuß (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "prof",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_base",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0506,
+     -0.0486,
+     0.0915
+    ],
+    "max": [
+     0.0814,
+     -0.03127,
+     0.1026
+    ]
+   },
+   "size_mm": [
+    30.8,
+    17.3,
+    11.1
+   ],
+   "triangles": 108,
+   "volume_cm3": 5.29,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_knob_w",
+   "name_de": "Seitenverstellung",
+   "name_en": "Windage knob",
+   "assembly": "sight",
+   "function_de": "Verstellt das Absehen seitlich",
+   "attachment_de": "rechts am Gehäuse",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_knob_w",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.056,
+     -0.02835,
+     0.09145
+    ],
+    "max": [
+     0.0585,
+     -0.02365,
+     0.09615
+    ]
+   },
+   "size_mm": [
+    2.5,
+    4.7,
+    4.7
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_battery",
+   "name_de": "Batteriedeckel",
+   "name_en": "Battery cap",
+   "assembly": "sight",
+   "function_de": "Batteriefach links",
+   "attachment_de": "links am Gehäuse (schraubbar)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "sight_battery",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0735,
+     -0.02914,
+     0.09066
+    ],
+    "max": [
+     0.076,
+     -0.02286,
+     0.09694
+    ]
+   },
+   "size_mm": [
+    2.5,
+    6.3,
+    6.3
+   ],
+   "triangles": 188,
+   "volume_cm3": 0.07,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_emitter",
+   "name_de": "Emitter",
+   "name_en": "Reticle emitter",
+   "assembly": "sight",
+   "function_de": "Leuchtfenster des Absehen-Projektors (unter der Visierlinie)",
+   "attachment_de": "vorn im Emitterblock",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "box",
+   "bevel_mm": 0.3,
+   "blender_object": "sight_emitter",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.063,
+     -0.0195,
+     0.0956
+    ],
+    "max": [
+     0.069,
+     -0.0175,
+     0.0974
+    ]
+   },
+   "size_mm": [
+    6.0,
+    2.0,
+    1.8
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.02,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame",
+   "name_de": "Haube",
+   "name_en": "Sight hood",
+   "assembly": "sight",
+   "function_de": "Haube aus Flachprofil",
+   "attachment_de": "auf dem Haubensockel (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_frame",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0506,
+     -0.048,
+     0.1006
+    ],
+    "max": [
+     0.0814,
+     -0.036,
+     0.125
+    ]
+   },
+   "size_mm": [
+    30.8,
+    12.0,
+    24.4
+   ],
+   "triangles": 672,
+   "volume_cm3": 3.19,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_frame_trim",
+   "name_de": "Stirnkante",
+   "name_en": "Hood trim",
+   "assembly": "sight",
+   "function_de": "Blanke Stirnkante der Haube (dünn)",
+   "attachment_de": "vorn an der Haube",
+   "material_role": "trim",
+   "material_de": "Blanke Zierkante",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.2,
+   "blender_object": "sight_frame_trim",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0506,
+     -0.0486,
+     0.1006
+    ],
+    "max": [
+     0.0814,
+     -0.0476,
+     0.125
+    ]
+   },
+   "size_mm": [
+    30.8,
+    1.0,
+    24.4
+   ],
+   "triangles": 672,
+   "volume_cm3": 0.26,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_roof",
+   "name_de": "Schutzdach",
+   "name_en": "Sun roof",
+   "assembly": "sight",
+   "function_de": "Dach 4 mm, steht 6 mm vor die Haube",
+   "attachment_de": "vorn an der Haubenkante (fest)",
+   "material_role": "sight_anod",
+   "material_de": "Visier eloxiert (Abrieb für dünne Teile)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0.4,
+   "blender_object": "sight_roof",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0555,
+     -0.054,
+     0.1214
+    ],
+    "max": [
+     0.0765,
+     -0.0484,
+     0.125
+    ]
+   },
+   "size_mm": [
+    21.0,
+    5.6,
+    3.6
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.42,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_range",
+   "name_de": "Entfernungsfeld",
+   "name_en": "Range field",
+   "assembly": "sight",
+   "function_de": "Entfernung zum Ziel (drei Ziffern + Einheit)",
+   "attachment_de": "in der Sockelrückseite unter dem Fenster",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "sight_range",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0594,
+     -0.03388,
+     0.0961
+    ],
+    "max": [
+     0.0726,
+     -0.03288,
+     0.1001
+    ]
+   },
+   "size_mm": [
+    13.2,
+    1.0,
+    4.0
+   ],
+   "triangles": 48,
+   "volume_cm3": 0.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_glass",
+   "name_de": "Visierglas",
+   "name_en": "Sight glass",
+   "assembly": "sight",
+   "function_de": "Reflexscheibe ohne Spiegelung; das Absehen liegt flach darauf",
+   "attachment_de": "in der Haube (fest)",
+   "material_role": "glass_scope",
+   "material_de": "Linse im Zielfernrohr (ohne Klarlack-Spiegelung)",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "xprof",
+   "bevel_mm": 0,
+   "blender_object": "sight_glass",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.053,
+     -0.0428,
+     0.103
+    ],
+    "max": [
+     0.079,
+     -0.042,
+     0.121
+    ]
+   },
+   "size_mm": [
+    26.0,
+    0.8,
+    18.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.37,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "sight_reticle",
+   "name_de": "Absehen Kreis mit Kreuzmarken",
+   "name_en": "Reticle Circle with ticks",
+   "assembly": "sight",
+   "function_de": "Zielpunkt im Glas: Kreis mit Kreuzmarken gezeichnet (Hüftform der Klasse, Cyan, vom Emitter projiziert)",
+   "attachment_de": "flach auf der Glasebene",
+   "material_role": "reticle_cyan",
+   "material_de": "Absehen Cyan",
+   "interface": null,
+   "parent_part": "sight_mount",
+   "shape": "multi",
+   "bevel_mm": 0,
+   "blender_object": "sight_reticle",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0643,
+     -0.042,
+     0.1103
+    ],
+    "max": [
+     0.0677,
+     -0.04195,
+     0.1137
+    ]
+   },
+   "size_mm": [
+    3.4,
+    0.1,
+    3.4
+   ],
+   "triangles": 700,
+   "volume_cm3": 0.0,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "rocket",
+   "name_de": "Rakete",
+   "name_en": "Rocket",
+   "assembly": "ammo",
+   "function_de": "Eine Rakete im Rohr; verlässt das Rohr ganz (keine Hülse)",
+   "attachment_de": "im Rohr (Gefechtskopf im Sichtfenster)",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "rocket",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.112
+   ],
+   "bounds_m": {
+    "min": [
+     -0.027,
+     -0.3,
+     0.085
+    ],
+    "max": [
+     0.027,
+     0.36,
+     0.139
+    ]
+   },
+   "size_mm": [
+    54.0,
+    660.0,
+    54.0
+   ],
+   "triangles": 596,
+   "volume_cm3": 1399.37,
+   "moving": {
+    "kind": "translate",
+    "event": "reload",
+    "note": "Ruhelage = geladen; die Ladeaktion schiebt sie von hinten durch das Heckrohr ein",
+    "pivot_m": [
+     0.0,
+     0.0,
+     0.112
+    ],
+    "vector_m": [
+     0.0,
+     0.92,
+     0.0
+    ],
+    "travel_mm": 920.0
+   },
+   "removable": true
+  },
+  {
+   "id": "rocket_head",
+   "name_de": "Gefechtskopf",
+   "name_en": "Warhead",
+   "assembly": "ammo",
+   "function_de": "Gefechtskopf (Munitionskennung), im Sichtfenster zu sehen",
+   "attachment_de": "vorn an der Rakete",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "rocket",
+   "shape": "cyl",
+   "bevel_mm": 1.5,
+   "blender_object": "rocket_head",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.0256,
+     -0.39,
+     0.0864
+    ],
+    "max": [
+     0.0256,
+     -0.3,
+     0.1376
+    ]
+   },
+   "size_mm": [
+    51.2,
+    90.0,
+    51.2
+   ],
+   "triangles": 380,
+   "volume_cm3": 92.66,
+   "moving": null,
+   "removable": false
+  }
+ ],
+ "anchors": {
+  "Socket_Hand": {
+   "position_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "part": "grip",
+   "note": "Haupthand, auf der Griffachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_SupportHand": {
+   "position_m": [
+    0.0,
+    -0.262,
+    0.024
+   ],
+   "part": "foregrip",
+   "note": "Mitte des Vordergriffs",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Muzzle": {
+   "position_m": [
+    0.0,
+    -0.4775,
+    0.112
+   ],
+   "part": "muzzle_crown",
+   "note": "Stirn der Mündungskrone auf der Rohrachse",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Breech": {
+   "position_m": [
+    0.0,
+    0.404,
+    0.112
+   ],
+   "part": "rear_ring",
+   "note": "Ladeöffnung hinten (Heckklappe offen)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Sight": {
+   "position_m": [
+    0.066,
+    -0.003,
+    0.112
+   ],
+   "part": "sight_body",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Reticle": {
+   "position_m": [
+    0.066,
+    -0.0424,
+    0.112
+   ],
+   "part": "sight_glass",
+   "note": null,
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_Eye": {
+   "position_m": [
+    0.066,
+    0.0476,
+    0.112
+   ],
+   "part": "sight_frame",
+   "note": "Augenpunkt beim Zielen (Visier-Standard: 90 mm hinter dem Glas)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
+  "Socket_CenterOfMass": {
+   "position_m": [
+    0.00273,
+    -0.05095,
+    0.10192
+   ],
+   "part": null,
+   "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
+   "source": "abgeleitet aus dem Modellvolumen"
+  }
+ },
+ "dimensions": {
+  "bounds_m": {
+   "min": [
+    -0.04989,
+    -0.4775,
+    -0.079
+   ],
+   "max": [
+    0.0814,
+    0.433,
+    0.16189
+   ]
+  },
+  "length_m": 0.9105,
+  "height_m": 0.2409,
+  "width_m": 0.1313,
+  "reference_length_m": 0.725,
+  "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
+ },
+ "counts": {
+  "parts": 45,
+  "triangles": 31236,
+  "assemblies": 8
+ },
+ "actions": {
+  "fire": {
+   "de": "Abschuss",
+   "frames": 12,
+   "fps": 30,
+   "parts": [
+    "trigger",
+    "ready_light"
+   ],
+   "events": [
+    [
+     2,
+     "launch"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  },
+  "reload": {
+   "de": "Klappe öffnen, Rakete von hinten einschieben, schließen",
+   "frames": 100,
+   "fps": 30,
+   "parts": [
+    "cap_release",
+    "breech_cap",
+    "rocket",
+    "ready_light"
+   ],
+   "events": [
+    [
+     20,
+     "breech_open"
+    ],
+    [
+     64,
+     "rocket_in"
+    ],
+    [
+     86,
+     "breech_closed"
+    ],
+    [
+     90,
+     "ready"
+    ]
+   ],
+   "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
+  }
+ },
+ "interfaces": [
+  "BGM-1",
+  "BRI-22"
+ ]
+}

@@ -70,7 +70,7 @@ Ausgangsrichtung. Ein Abgleich mit dem Formgen-Texturkatalog `docs/textures/cata
 01 langes Gehäuse + Graphit-Handschutz · 02 zweigeteilte Impulskammer, Salvenanzeigen, Schaft S2 · 03 schlankes Einteilgehäuse, kurzes Zielfernrohr, S2 ·
 04 Trommel auf Kran, Unterlauf · 05 Schlitten · 06 Magazin im Griff, Vordergriff · 07 Recurve-Bogen, Pfeilfenster ·
 08 dicker Lauf über Röhrenmagazin, Pumpe · 09 Kammerstängel, großes Zielfernrohr · 10 Spulenringe, Schlitz-Emitter ·
-11 offene Doppelschiene mit Leuchtkern · 12 rundes Fokusrohr mit Kegel, Einteilkörper · 13 kurzer dicker Kipplauf · 14 Schulterrohr ·
+11 offene Doppelschiene mit Leuchtkern · 12 rundes Fokusrohr mit Kegel, Einteilkörper · 13 Drehtrommel im offenen Rahmen (v2.1, Nutzer 28.10.2026; v1 kurzer dicker Kipplauf) · 14 Schulterrohr ·
 15 Zuführdeckel, Munitionskasten, Tragegriff · 16 Einschneider mit Parierblock · 17 Stange mit Klingenkopf und Schildflügeln.
 
 ## Nicht erlaubt

@@ -7,7 +7,7 @@ folgt nur auf ausdrücklichen Folgeauftrag. Vorhandene Formgen-Entwürfe bleiben
 | ID | Erweiterung | Grundtyp | Besonderheit | vorhandene IDs (Formgen) | Quelle | spätere Abhängigkeiten |
 |---|---|---|---|---|---|---|
 | EXT-01 | Exotische Einzelwaffen | je Typ | einzigartige Mechaniken | – | bei Fund eintragen | keine Nachbauten |
-| EXT-02 | Schwerer Trommel-Granatwerfer | Grenade Launcher | Drehtrommel, schwere Munition | KG15 und C/D/F/H/J15 | Formgen `waffentypen.md` › 14 | Trommelmechanik, Ladeklappe |
+| EXT-02 | Schwerer Trommel-Granatwerfer | Grenade Launcher | Drehtrommel, schwere Munition | KG15 und C/D/F/H/J15 | Formgen `waffentypen.md` › 14 | Trommelmechanik, Ladeklappe – **vorgezogen** als BASIC-13 v2.1 (0.28 „Breech“, Nutzerwahl „Trommel statt Kipplauf“ 28.10.2026); Ego-Animation der Trommel offen |
 | EXT-03 | Armbrust (schwer, Spezial) | eigener Typ | Spannmechanik, Bolzen | KG19 und C/D/F/H/J19, KC10 (konstruktiv Armbrust) | Edge of Fate 15.07.2025; TWID 06.11.2025 (Auftrag) | Sehnenblock `string` (Formgen v1) |
 | EXT-04 | Raketen-Pistole | Sidearm | Raketenmunition | KG20 … | light.gg „Rocket-Assisted Frame“ (über Formgen) | Projektil, Magazin |
 | EXT-05 | Raketen-Impulsgewehr | Pulse Rifle | Raketensalven | KG21 … | Formgen `waffentypen.md` | — |

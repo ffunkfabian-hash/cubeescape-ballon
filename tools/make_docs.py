@@ -8,6 +8,7 @@ Die erzeugten Dateien nicht von Hand ändern; Quelle sind basic/weapons/*.py, ba
 import glob
 import importlib
 import json
+import math
 import os
 import sys
 
@@ -269,9 +270,11 @@ def family_dims():
         mw = A.get('Socket_MagWell') or A.get('Socket_LoadingGate')     # Schrot (0.25): Röhrenmagazin, Ladeklappe statt Schacht
         mw = '–' if mw is None else f"{mw[0]:.0f} / {mw[1]:.0f}" + ('' if 'Socket_MagWell' in A else ' (Ladeklappe)')
         mf, mu = A['Socket_Muzzle']
+        ex = S['anchors']['Socket_Eye']['position_m'][0] * 1000     # 0.28: seitliches Visier (Werfer) – Visierhöhe als Abstand zur Achse
+        side = f' (x {ex:.0f})' if abs(ex) > 0.5 else ''
         rear = -D['bounds_m']['max'][1] * 1000
         rows.append(f"| {wid} {W.META['type_de']} | {D['length_m'] * 1000:.0f} × {D['height_m'] * 1000:.0f} × {D['width_m'] * 1000:.0f} | "
-                    f"{mu:.0f} | {mf:.0f} | {rear:.0f} | {A['Socket_Eye'][1]:.0f} | {A['Socket_Eye'][1] - mu:.1f} | "
+                    f"{mu:.0f} | {mf:.0f} | {rear:.0f} | {A['Socket_Eye'][1]:.0f}{side} | {math.hypot(A['Socket_Eye'][1] - mu, ex):.1f} | "
                     f"{A[ref][0] - A['Socket_Eye'][0]:.0f} ({de}) | "
                     f"{A['Socket_SupportHand'][0]:.0f} / {A['Socket_SupportHand'][1]:.0f} | "
                     f"{mw} | "
@@ -292,7 +295,7 @@ def family_dims():
          '([stilhandbuch.md](stilhandbuch.md) §6/§7). Nach jedem Vollrendering `tools/sync_specs.py` und `tools/make_docs.py`.', '',
          '## Lagen', '',
          'mm relativ zu `Socket_Hand` (Griffachse), f vorn, u oben. Mündung f = Stirn der Mündung, Heck f = hinterste Kante',
-         '(negativ = hinter dem Griff). Visierhöhe = Visierlinie über der Laufachse (Soll '
+         '(negativ = hinter dem Griff). Visierhöhe = Abstand der Visierlinie zur Laufachse, bei mittigem Visier die Höhe darüber (Soll '
          f"{SIGHT['height_mm']:.0f} ± {SIGHT['height_tol_mm']:.0f} mm; Kimme/Korn mit eigener Linie Träger + "
          f"{SIGHT['rail_line_mm']['iron']:g} mm, dort gilt sie nicht), Augenabstand = Augenpunkt bis Glas, Objektiv bzw. Kimme.", '',
          '| Waffe | L × H × B | Laufachse u | Mündung f | Heck f | Visierlinie u | Visierhöhe | Augenabstand | Stützhand f / u | '

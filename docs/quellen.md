@@ -135,6 +135,14 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Avalanche | Machine Gun | `…/screenshots/1845978721.jpg` | kurzer Kastenkörper, Gurt sichtbar links, Behälter unten, gefensterter Mantel; Lochmuster nicht übernommen |
 | Retrofit Escapade | Machine Gun | `…/screenshots/3103325054.jpg` | lange gerade Oberkante, offener Laufmantel, Gurtsäule links in den Einlauf; Leuchtpunktvisier nicht übernommen (H6 nach Baukasten) |
 | Shattered Cipher | Machine Gun | `…/screenshots/2434225986.jpg` | Zweibein unter dem Lauf (vermessen in Motiongen proportionen › 2: H/L 0,30 mit Zweibein); Zweibein nicht übernommen (Spec verlangt keines) |
+| Flash and Thunder | Grenade Launcher | `…/screenshots/1983332560.jpg` | Kipplauf: langer gerader Lauf über die halbe Länge, kurzes Gehäuse mit Klappvisier, senkrechter Stützgriff unter dem Lauf, Pistolengriff, kein Schaft (H/L grob 0,45–0,6 mit Visier, 3/4-Bild); Stoffwicklung nicht übernommen |
+| Wilderflight | Grenade Launcher | `…/screenshots/1206729100.jpg` | dicker dunkler Lauf mit Creme-Rücken, Laufschellen, Stützgriff auf einer Schiene unter dem Lauf, Klappvisier, leuchtende Munitionsanzeige am Gehäuse, Skelettschaft |
+| Festival Flight | Grenade Launcher | `…/screenshots/3622281554.jpg` | runder Körper mit großer Mündungsglocke und Bügelgriff – zu verspielt, nicht übernommen |
+| Wendigo GL3 | Grenade Launcher | `…/screenshots/1854753404.jpg` | große Drehtrommel vor dem Griff unter einem kastigen Rahmen, kurzer Lauf darüber, offener Schaft (Grundform von BASIC-13 v2.1 nach der Nutzerwahl „Trommel“) |
+| Bitter/Sweet | Grenade Launcher | `…/screenshots/2599338625.jpg` | Trommel unter dem Gehäuse vor dem Griff, Lauf obenauf, Klappschaft; Zacken auf dem Rücken nicht übernommen |
+| Palmyra-B | Rocket Launcher | `…/screenshots/3489657138.jpg` | dickes Startrohr vorn mit Ringpaaren, schlankeres Heckrohr (andere Farbe), Griffmodul unter dem Übergang, Klappgriff vorn, Visiermodul seitlich links (H/L grob 0,38, 3/4-Bild) |
+| Morrigan-D | Rocket Launcher | `…/screenshots/3748713779.jpg` | wie Palmyra (gleiche Grundform): Creme-Startrohr mit Fenster auf die Rakete, schlankes Heckrohr, senkrechter Vordergriff, Visierkasten seitlich (H/L grob 0,40); Skelettrahmen an der Seite nicht übernommen |
+| Code Duello | Rocket Launcher | `…/screenshots/2496242052.jpg` | langes Rohr mit Seitenvisier und Griffmodul darunter; gerippte Hülle und Zierschienen nicht übernommen |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
@@ -165,6 +173,13 @@ verworfen: Hollow Denial und Unsworn (Rippen-/Zahnreihen, organisch), Path of Le
 Fusionsgewehr), Bane of Sorrow, Corrective Measure und Fixed Odds (Verzierungen, Leuchtfenster als Schmuck). Die Spurgewehr-Werte H/L
 sind eigene grobe Messungen an 3/4-Menübildern (Sightline 28.10.2026: „(a) passt … im Bericht als ‚beobachtet (BALLON 0.27)‘ mit
 Unsicherheit führen, nicht in Motiongen schreiben“).
+Für BASIC-13 und BASIC-14 v2.1 (0.28 „Breech“, gesichtet 28.10.2026, Bungie-Manifest wie 0.24, Bild über die Item-ID; Bilder nur im
+Cache `refs/q-d2-img/gl_*`, `rl_*`): übernommen beim Granatwerfer zuerst (Kipplauf-Entwurf) der dicke gerade Lauf vor einem kurzen Gehäuse und der Griff der
+Stützhand unter dem Lauf, nach der Nutzerwahl „Trommel statt Kipplauf“ die große Drehtrommel vor dem Griff unter dem Rahmen mit dem
+kurzen Lauf darüber (Wendigo GL3, Bitter/Sweet); beim Raketenwerfer das dicke Startrohr mit schlankerem Heckrohr, Griffmodul unter dem
+Übergang, senkrechter Vordergriff, das Fenster auf die Rakete und das Visier seitlich links. Gesichtet und verworfen: Lingering Dread,
+Bump in the Night und Sleepless (organisch, Stacheln, Zahnreihen), Festival Flight (verspielt).
+Die H/L-Werte sind wie 0.27 eigene grobe Messungen an 3/4-Menübildern (beobachtet, Unsicherheit mindestens ± 25 %).
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).

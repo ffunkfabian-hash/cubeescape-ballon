@@ -1543,5 +1543,55 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-15-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/tracer/"
     ]
+  },
+  "BASIC-13-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.28 „Breech“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette (breech/runde1_13.jpg) – Kipplauf-Erstentwurf (Lauf zu lang und dünn, Vorderschaft wie ein Brett → Lauf Ø 64 kürzer, Halbschale; breech/zwischenstopp_entwurf1.jpg), dann Nutzerwahl „Trommel statt Kipplauf“: Drehtrommel Ø 140 im offenen Rahmen (Gehäuse, Oberbrücke, Joch, Stoßplatte), kurzer Lauf auf der oberen Kammer; Nutzerhinweis am Bild „schwebender Ring“ (Ladeklappe im Spalt) → Spalt zu, Klappe auf der Stoßplatte in einer Ladeschale; Nutzerwunsch „nachladen … auf die linke seite“ → Ladeschale, Klappe und Knopf links; (2) Schichten/Negativraum an exploded, top, front, sightline (breech/runde2_13.jpg): Trommel seitlich frei, sechs Kammerfenster mit Granaten, Kammermündungen vorn, Daumenloch; W1 im Zielbild, Lauf unten im Fenster; Posenprüfung (BVH in Weltkoordinaten je Endlage und Bild für Bild in fire/reload): Ladeklappe lief beim Schwenk nach hinten durch das Gehäuse → Schwenk in ihrer Ebene, Granate in der Ladeschale gegen Klappenknopf, Querbolzen und Band → verlegt (Band jetzt rechts); danach nur Sitzkontakte; (3) Material/Budget an 8 Skins (breech/runde3_13.jpg): lesbar; weiße Sprenkel auf der Trommel (feine Kratzer) → Rolle ring_anod; Budget 1 Leuchtfunktion (Visier), 1 Band (rechts), 1 Schrift (links), 3 Orange (Klappenknopf links, Klemmhebel, Kerbmarke)"
+    },
+    "actions": {
+      "fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire, Bilder 0/6 (breech/bewegung_13.jpg): Abzug, Trommel dreht eine Kammer weiter (Fenster wandern), danach durch die Teilung wieder gleich; ein Hub je Schuss per check"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/18/26/32 (breech/bewegung_13.jpg): Klappenknopf, Ladeklappe links schwenkt nach links, Granate zieht aus der Ladekammer nach hinten und wieder ein, Trommel weiter; Hülsen beim Nachladen als EJECT-Daten (case_out), nicht im Bild"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-13-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/breech/"
+    ]
+  },
+  "BASIC-14-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-28",
+      "method": "Drei Runden (0.28 „Breech“): (1) Silhouette/Zweiton an side, side_left, hero_p, silhouette (breech/runde1_14.jpg) – Erstentwurf mit Visier auf dem Heckrohr, Vordergriff zu klein → Vordergriff in Form von BASIC-06, Schulterauflage gewölbt; Nutzerwahl „Seitlich links, 66 mm“: Visierschelle und Visierarm links am Startrohr; Nutzerhinweis am Bild „Schrift rechts in der Luft“ → Schriftzug nach vorn auf das Abzugsgehäuse, am Netz geprüft (jede Buchstabenecke liegt auf); (2) Schichten/Negativraum an exploded, top, front, sightline (breech/runde2_14.jpg): Sichtfenster mit orangem Gefechtskopf, Raum zwischen Griff und Vordergriff, offene Heckdüse; W2 seitlich im Zielbild, Startrohr rechts im Fenster, Zielpunkt frei; Posenprüfung (BVH je Endlage und Bild für Bild): Visierarm stand in der Schelle des Griffmoduls → kürzer; Heckklappe streifte die wartende Rakete → Ladeweg länger; danach nur Sitzkontakte; (3) Material/Budget an 8 Skins (breech/runde3_14.jpg): lesbar; Sprenkel auf den Schellen → ring_anod; Budget 2 Leuchtfunktionen (Bereitschaftsanzeige, Visier: Emitter, Entfernungsfeld, Absehen), 1 Band, 1 Schrift, 2 Orange (Klappenknopf, Klemmhebel)"
+    },
+    "actions": {
+      "fire": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/fire, Bilder 0/4 (breech/bewegung_14.jpg): Abzug, Bereitschaftsanzeige erlischt beim Abschuss; kein Auswurf (EJECT None, caseless)"
+      },
+      "reload": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-28",
+        "method": "Bildfolge motion/reload, Bilder 0/20/44/94 (breech/bewegung_14.jpg): Klappenknopf, Heckklappe schwenkt nach hinten rechts auf, Rakete von hinten durch das Heckrohr eingeschoben, Klappe zu, Anzeige an"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-14-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/breech/"
+    ]
   }
 }

@@ -259,40 +259,139 @@ def mini_reflex(size='M'):
 
 
 def launcher_d(size='M'):
-    """W1 „D-Linse“ (Granatwerfer): H0-Plattform, Haube als D aus Flachprofil 2,4 × 12, oben gerade (Merkmal 1) mit oranger Kerbe;
-    drei blanke Fallmarken 4/3/2 mm links innen (Merkmal 2)."""
-    r = {'S': 13, 'M': 15.5, 'L': 20}[size]
-    t = 2.4
-    top = r * 0.62
+    """W1 „D-Linse“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `d_linse` (seit 0.28 an BASIC-13 v2.1)."""
+    return d_linse(F, DECK, size)
 
-    def d(rr, cap):
-        return [(x, min(u, cap)) for x, u in _arc(rr, -90, 270, 60)][:-1]
-    inner, outer = d(r, top), d(r + t, top + t)
-    gb = CU - r - 0.4
-    fr = F + 34
-    marks = part('sight_marks', 'Fallmarken', 'Drop marks', 'sight', 'multi', 'trim', 'Drei Fallmarken 4/3/2 mm', 'innen links',
-                 bevel=0.1, items=[dict(shape='box', f0=fr + 11, f1=fr + 12, u0=CU - 4 * i - 0.4, u1=CU - 4 * i + 0.4, w=wd,
-                                        x=r - 0.2 - wd / 2) for i, wd in ((1, 4), (2, 3), (3, 2))])
-    notch = part('sight_notch', 'Kerbe', 'Notch', 'sight', 'box', 'accent', 'Orange Kerbe oben', 'oben an der Haube', bevel=0.2,
-                 f0=fr + 2, f1=fr + 12, u0=CU + top + t - 0.2, u1=CU + top + t + 1.6, w=2.4)
-    return platform(2 * (r + t), gb) + _hood(inner, outer) + [marks, notch, _glass(F + 40, inner)], _eye(F + 40.4)
+
+WERFER_T = 2.4                                      # Stirn des Flachprofils an Werfern (visier-konzept › 4: Holo 1,6, Werfer 2,4)
+DLINSE_SIZES = {'S': 11.0, 'M': 13.0, 'L': 17.0}    # Innenradius der D-Haube; Glas 2r breit: M 26 mm = 18,9 %, L 34 mm = 24,7 % (Holo L)
+DLINSE_TOP = 0.62                                   # gerade Oberkante innen 0,62 r über der Visierlinie
+
+
+def _dshape(rr, cap, n=48):
+    """D-Kontur um die Visierlinie: Kreisbogen rr unten und an den Seiten, oben gerade auf Höhe cap (x links, u oben)."""
+    a = math.degrees(math.asin(cap / rr))
+    return [(rr * math.cos(math.radians(b)), rr * math.sin(math.radians(b)))
+            for b in (180 - a + (180 + 2 * a) * i / n for i in range(n + 1))]
+
+
+def dlinse_wall_x(r, du):
+    """x der Innenwand der D-Haube in Höhe du unter/über der Visierlinie (Kreis r)."""
+    return math.sqrt(max(r * r - du * du, 0.0))
+
+
+def d_linse(f, u, size='M', weapon_type='grenade_launcher', mat=MET):
+    """W1 „D-Linse“ (Granatwerfer; seit 0.28 an BASIC-13 v2.1): H0-Plattform, Haube als D aus Flachprofil 2,4 × 12 – unten und seitlich
+    rund, oben gerade (Merkmal 1) mit oranger Kerbmarke mittig auf der Geraden; drei blanke Fallmarken links innen an der Haubenwand
+    unter der Visierlinie, Abstand 0,3 r, Längen 4/3/2 mm bei M (Merkmal 2: Haltepunkte für den Bogenschuss). Glas als D (Innenkontur),
+    Sockel so breit wie die D-Unterseite in Sockelhöhe (die runde Haube liegt in der Sockeloberkante). Größe M: Glas 26 mm = 18,9 %,
+    L (Holo-L-Variante, nur MG/Werfer) 34 mm = 24,7 %. f = Hinterkante Klemmfuß, u = Schienenoberkante; Visierlinie Schiene + 26 (Holo).
+    Gezeichnetes Absehen flach im Glas. Liefert (Teile, Anker). Der Katalog-Entwurf 0.21 (r 15,5 = 22,5 %, Marken außen neben der
+    Wand) baut seit 0.28 hiermit. Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
+    r, t = DLINSE_SIZES[size], WERFER_T
+    k = r / DLINSE_SIZES['M']
+    cu = C.sight_line(u)
+    top = r * DLINSE_TOP
+    inner, outer = _dshape(r, top), _dshape(r + t, top + t)
+    gb = cu - r - 0.4
+    fr, fg = f + 34, f + 40
+    base_w = 2 * math.sqrt((r + t) ** 2 - (r + 0.4) ** 2)       # Breite der D-Unterseite in Sockelhöhe
+    marks = []
+    for i, wd in ((1, 4.0), (2, 3.0), (3, 2.0)):
+        du = -0.3 * r * i
+        xw = dlinse_wall_x(r, du)
+        marks.append(dict(shape='box', f0=fr + 10.6, f1=fr + 11.6, u0=cu + du - 0.4 * k, u1=cu + du + 0.4 * k, w=wd * k,
+                          x=xw + 0.3 - wd * k / 2))
+    P = C.sight_platform(f, u, base_w, gb, mat=mat) + C.sight_hood(inner, outer, fr, cu, depth=12, mat=mat) + [
+        part('sight_marks', 'Fallmarken', 'Drop marks', 'sight', 'multi', 'trim', 'Drei Haltepunkte für den Bogenschuss (4/3/2 mm)',
+             'innen links an der Haubenwand', bevel=0.1, items=marks, parent_part='sight_mount'),
+        part('sight_notch', 'Kerbmarke', 'Notch mark', 'sight', 'box', 'accent', 'Orange Marke mittig auf der Geraden (Schnellanschlag)',
+             'oben auf der Haube', bevel=0.2, f0=fr + 2, f1=fr + 12, u0=cu + top + t - 0.2, u1=cu + top + t + 1.6, w=2.4 * k,
+             parent_part='sight_mount'),
+        C.sight_glass_x(fg, inner, cu), C.drawn_reticle(fg, cu, weapon_type, REL - 0.4)]
+    return P, C._reflex_anchors(f, fg, cu)
 
 
 def rocket_kasten(size='M'):
-    """W2 „Entfernung“ (Raketenwerfer): breite H0-Haube 34 × 22 mit kräftiger Stirn oben 4 mm (Merkmal 1, Schutzdach) und
-    Entfernungsfeld im Sockel zum Auge (Merkmal 2)."""
-    w, h = {'S': (30, 19), 'M': (34, 22), 'L': (42, 27)}[size]
-    gb = CU - h / 2 - 0.4
+    """W2 „Entfernung“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `entfernung` (seit 0.28 an BASIC-14 v2.1)."""
+    return entfernung(F, DECK, size)
+
+
+ENTF_SIZES = {'S': (22, 15), 'M': (26, 18), 'L': (34, 22)}   # Fenster B × H: M 18,9 %, L 24,7 % (Holo L); Entwurf 0.21 M 34 × 22 = 24,7 %
+ENTF_ROOF = 4.0                                             # Stirn oben (Schutzdach), Seiten und unten WERFER_T
+ENTF_OVERHANG = 6.0                                         # Dach steht vorn über die Haube
+
+
+def entfernung(f, u, size='M', weapon_type='rocket_launcher', mat=MET):
+    """W2 „Entfernung“ (Raketenwerfer; seit 0.28 an BASIC-14 v2.1): H0-Plattform, Haube als Rundrechteck aus Flachprofil 2,4 × 12 mit
+    kräftiger Stirn oben 4 mm, deren Dach 6 mm nach vorn über die Haube steht (Merkmal 1, Schutzdach gegen Mündungsrauch und Blendung);
+    Entfernungsfeld aus drei Ziffern und Einheit leuchtend in der Sockelrückseite unter dem Fenster, zum Auge (Merkmal 2). Größe M:
+    26 × 18 = 18,9 %; L (Holo-L-Variante) 34 × 22 = 24,7 % (der Katalog-Entwurf 0.21 hatte schon als M 34 × 22). f = Hinterkante
+    Klemmfuß, u = Schienenoberkante; Visierlinie Schiene + 26 (Holo). Gezeichnetes Absehen flach im Glas. Liefert (Teile, Anker).
+    Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
+    w, h = ENTF_SIZES[size]
+    t, rf = WERFER_T, ENTF_ROOF
+    cu = C.sight_line(u)
+    gb = cu - h / 2 - 0.4
+    fr, fg = f + 34, f + 40
     inner = _rr(w, h, 2.5)
-    outer = _rr(w + 2 * 2.4, h + 2.4 + 4, 2.5 + 2.4)
-    outer = [(x, u + 0.8) for x, u in outer]
+    outer = [(x, q + (rf - t) / 2) for x, q in _rr(w + 2 * t, h + t + rf, 2.5 + t)]
+    ut = h / 2 + rf                                 # Dachoberkante über der Visierlinie
+    xr = w / 2 + t - (2.5 + t)                      # Dach bis zum Beginn der Eckrundung
+    roof = [(xr, h / 2 + 0.4), (-xr, h / 2 + 0.4), (-xr, ut), (xr, ut)]
     ud = gb - 6.5
-    fd = _base_rear_f(gb, u_at=ud + 2)
-    field = part('sight_status', 'Entfernungsfeld', 'Range field', 'sight', 'multi', 'energy', 'Entfernung (drei Ziffern + Einheit)',
-                 'in der Sockelrückseite', bevel=0, items=[dict(shape='box', f0=fd - 0.5, f1=fd + 0.5, u0=ud, u1=ud + 4, w=3.0, x=x)
-                                                          for x in (6, 2.4, -1.2)]
-                 + [dict(shape='box', f0=fd - 0.5, f1=fd + 0.5, u0=ud, u1=ud + 2, w=2.4, x=-5.2)])
-    return platform(w + 4.8, gb) + _hood(inner, outer, depth=12) + [field, _glass(F + 40, inner)], _eye(F + 40.4)
+    fd = C.sight_base_rear_f(f, u, gb, ud + 2)
+    dg = (3.0, 3.0, 3.0, 2.4)                       # drei Ziffern und Einheit (Breite mm), Abstand 0,6
+    x0 = (sum(dg) + 0.6 * 3) / 2
+    xs = []
+    for wd in dg:
+        xs.append(x0 - wd / 2)
+        x0 -= wd + 0.6
+    P = C.sight_platform(f, u, w + 2 * t, gb, mat=mat) + C.sight_hood(inner, outer, fr, cu, depth=12, mat=mat) + [
+        xprof('sight_roof', 'Schutzdach', mat, fr + 12.4, fr + 12 + ENTF_OVERHANG, roof, cu, func='Dach 4 mm, steht 6 mm vor die Haube',
+              attach='vorn an der Haubenkante (fest)', en='Sun roof', bevel=0.4, parent_part='sight_mount'),
+        part('sight_range', 'Entfernungsfeld', 'Range field', 'sight', 'multi', 'energy', 'Entfernung zum Ziel (drei Ziffern + Einheit)',
+             'in der Sockelrückseite unter dem Fenster', bevel=0, parent_part='sight_mount',
+             items=[dict(shape='box', f0=fd - 0.5, f1=fd + 0.5, u0=ud, u1=ud + (4 if i < 3 else 2), w=wd, x=x)
+                    for i, (wd, x) in enumerate(zip(dg, xs))]),
+        C.sight_glass_x(fg, inner, cu), C.drawn_reticle(fg, cu, weapon_type, REL - 0.4)]
+    return P, C._reflex_anchors(f, fg, cu)
+
+
+def side_mount(P, A, dx):
+    """Visier quer zur Laufachse versetzt (0.28, Raketenwerfer: Nutzer 28.10.2026 „Seitlich links, 66 mm notfalls Bauteil dazu passend
+    erfinden“): verschiebt alle Teile, Schneidkörper, Bewegungen und Anker eines gebauten Visiers um dx nach links (x). Liefert neue
+    (Teile, Anker); dx < 0 nach rechts. Mit −dx wieder mittig (Formprüfung in test_sights)."""
+    import copy
+
+    def sh(q):
+        k = q.get('shape', 'box')
+        if k in ('prof', 'box', 'text'):
+            q['x'] = q.get('x', 0) + dx
+        elif k in ('xprof', 'xbox', 'frame'):
+            q['cx'] = q.get('cx', 0) + dx
+        elif k == 'cyl':
+            if q['axis'] == 'x':
+                q['a0'], q['a1'] = q['a0'] + dx, q['a1'] + dx
+            else:
+                q['c'] = (q['c'][0], q['c'][1] + dx)
+        elif k != 'multi':                       # Richter 0.28: unbekannte Form nicht stillschweigend liegen lassen
+            raise ValueError(f'side_mount: Form {k} wird nicht verschoben')
+        for i in q.get('items', ()):
+            sh(i)
+        for c in q.get('cuts', ()):
+            sh(c)
+        mv = q.get('move')
+        if mv and mv.get('pivot') is not None:
+            mv['pivot'] = (mv['pivot'][0], mv['pivot'][1], mv['pivot'][2] + dx)
+        if mv and 'expect' in mv:
+            pt, d = mv['expect']
+            mv['expect'] = ((pt[0], pt[1], pt[2] + dx), d)
+    P = copy.deepcopy(P)
+    for q in P:
+        sh(q)
+    A = {k: dict(v, at=(v['at'][0], v['at'][1], (v['at'][2] if len(v['at']) > 2 else 0) + dx)) for k, v in A.items()}
+    return P, A
 
 
 # ------------------------------------------------------------------------------------------------ Zielfernrohr
