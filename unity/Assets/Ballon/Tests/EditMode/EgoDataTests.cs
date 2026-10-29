@@ -194,11 +194,18 @@ namespace Ballon.Ego.Tests
             CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
             CollectionAssert.AreEqual(o.actions.Select(J), D.actions.Select(J), "Aktionen");
             CollectionAssert.AreEqual(o.textures.skins.Select(s => s.name + s.kind), D.textures.skins.Select(s => s.name + s.kind), "Skins");
-            // 0.21: das Absehen ändert seine Netzgrenzen (Röhren → flach in der Glasebene); 0.32: der Griff mit R_SOFT (A5, −0,013 mm);
-            // alle übrigen Teile bleiben gleich
+            // 0.21: das Absehen ändert seine Netzgrenzen (Röhren → flach in der Glasebene); 0.32: der Griff mit R_SOFT (A5, −0,013 mm,
+            // mit 0,05 mm Toleranz); alle übrigen Teile bleiben gleich
             CollectionAssert.AreEquivalent(o.mesh_bounds.objects.Where(b => b.name != "sight_reticle" && b.name != "grip").Select(J),
                                            D.mesh_bounds.objects.Where(b => b.name != "sight_reticle" && b.name != "grip").Select(J),
                                            "Netzgrenzen (ohne Absehen 0.21 und Griff 0.32)");
+            var g0 = o.mesh_bounds.objects.First(b => b.name == "grip");
+            var g1 = D.mesh_bounds.objects.First(b => b.name == "grip");
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.AreEqual(g0.min[i], g1.min[i], 5e-5f, $"Griff min[{i}] (0.32: R_SOFT)");
+                Assert.AreEqual(g0.max[i], g1.max[i], 5e-5f, $"Griff max[{i}] (0.32: R_SOFT)");
+            }
             var S7 = new EgoSolver(o);
             var S8 = new EgoSolver(D);
             var A = D.Action("fire_hip");
@@ -1057,7 +1064,8 @@ namespace Ballon.Ego.Tests
         /// <summary>A6 (A-R13, 0.32): die gewichteten Normalen der Fase (kit.add_bevel, harden_normals) kommen im FBX an und Unity nutzt sie
         /// (Normals „Import“). Am Griff jeder Waffe: Fasen weich (Ecknormale ≠ Flächennormale), Originalflächen flach, und die Normalen
         /// weichen von lageweise geglätteten ab („Calculate“ glättet über die Fase in die Großflächen). Rot mit dem Export vor 0.32
-        /// (der Weighted-Normal-Modifikator machte die Griff-Fasen flach: 1 % weich) und mit Calculate.</summary>
+        /// (der Weighted-Normal-Modifikator machte die Griff-Fasen flach: 36 % der Dreiecke weich) und mit Calculate (0 % flach).
+        /// Gemessen am Griff (alle Waffen dasselbe Netz BGM-1); harte Teile und Arme nutzen dieselbe Fase (kit.add_bevel).</summary>
         [Test]
         public void FBX_Normalen_gewichtet_an_gefasten_Teilen()
         {

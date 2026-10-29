@@ -28,7 +28,7 @@ sauberen Anschlüssen und klaren Baugruppen – nicht aus Detail- oder Polygonza
 | R_MID | 3,0 mm | Magazine, Zellen, Visierkörper |
 | R_SMALL | 1,5 mm | Ringe, Schienen, Klemmfüße |
 | R_FINE | 0,8 mm | Abzug, Hebel, Kimme/Korn |
-| R_SOFT | 6,5 mm | nur Griffpolster (`rubber`), eine Stufe über dem harten Träger (Fase als Materialsignal, A5, Nutzer 29.10.2026); im Code seit 0.32 (`common.R_SOFT`) an jedem Griff in Gummi; dünne Polsterstreifen (Dicke < 3 × R_SOFT) behalten ihre Stufe |
+| R_SOFT | 6,5 mm | nur Griffpolster (`rubber`), eine Stufe über dem harten Träger (Fase als Materialsignal, A5, Nutzer 29.10.2026); im Code seit 0.32 (`common.R_SOFT`) nur am Griff der Haupthand (`grip`); die übrigen Gummiteile behalten ihre Stufe – Polsterstreifen, Tragegriff und Rippen zu dünn (4,5–7 mm, Steg < 3 × R_SOFT), Griffband BASIC-12 eine Hülse mit 1 mm Wand, Wangen- und Schulterauflagen (8–29 mm) keine Griffpolster |
 | Fuge | 1,0 mm Abstand zwischen getrennten Schalen | Gehäuse/Handschutz, Ober-/Unterteil |
 
 Toolgen setzt eigene Fasen (0,5–2 mm) auf importierte Netze (Formgen-Entscheidung 19.10.2026); die BASIC-Fasen sind Gestaltung

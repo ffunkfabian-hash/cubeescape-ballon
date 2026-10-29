@@ -96,6 +96,7 @@ namespace Ballon.Ego
         /// <summary>Bildwinkel der Welt waagrecht (Spieleinstellung, -ballonFov; Vorgabe der Bezugsbildwinkel): nur die Weltkamera folgt
         /// ihm, im Zielen geteilt durch den Weltzoom der Klasse. Waffe und Arme bleiben bei ViewmodelHFovDeg (A9).</summary>
         public float worldHFovDeg;
+        public const float WorldFovMinDeg = 50f, WorldFovMaxDeg = 120f;   // erlaubter Welt-Bildwinkel waagrecht (-ballonFov)
         /// <summary>A9 (A-R11, 0.32): Waffe und Arme immer mit dem Bezugsbildwinkel von Visier-Standard 3 (ego.json › camera.h_fov_deg,
         /// 75° waagrecht wie die Blender-Stills), unabhängig vom Welt-Bildwinkel und vom Weltzoom.</summary>
         public float ViewmodelHFovDeg => C.S.D.camera.h_fov_deg;

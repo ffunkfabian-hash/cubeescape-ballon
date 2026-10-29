@@ -2128,9 +2128,10 @@ namespace Ballon.Ego.Tests
             Assert.GreaterOrEqual(n, 3, "Waffen mit Absehen geprüft");
         }
 
-        /// <summary>A9: Abdeckung der Öffnung durch das Mündungsfeuer im Zielen bleibt bei Welt-Bildwinkel 60° und 100° wie bei 75°
-        /// (Blitzbild aus fire_ads, Netz des Blitzes in der Viewmodel-Kamera gerastert über dem Glasrechteck), ebenso Lage und Größe des
-        /// Blitzes im Bild. Pilot-Automatik (Holo, 5.3 A). Rot mit dem Viewmodel am Weltwinkel.</summary>
+        /// <summary>A9: das Mündungsfeuer liegt auf der Ebene „Viewmodel“ (nur die Viewmodel-Kamera zeichnet es); Lage und Größe des
+        /// Blitzes im Bild bleiben bei Welt-Bildwinkel 60° und 100° wie bei 75° – das ist der Prüfpunkt, der mit dem Viewmodel am
+        /// Weltwinkel rot wird. Die Abdeckung des Glasrechtecks (Blitzbild aus fire_ads, gerastert) bleibt ebenso gleich; sie allein
+        /// hinge nicht vom Winkel ab, solange Blitz und Glas in derselben Kamera liegen. Pilot-Automatik (Holo, 5.3 A).</summary>
         [UnityTest]
         public IEnumerator Muendungsfeuer_Abdeckung_im_Zielen_unabhaengig_vom_Welt_FOV()
         {
@@ -2148,6 +2149,8 @@ namespace Ballon.Ego.Tests
             for (int f = 0; f <= A.frames && (o == null || !o.flashOn); f++) o = S.Evaluate(A, f, st);
             Assert.IsTrue(o.flashOn, "Blitzbild in fire_ads");
             var glass = p.rig.Part("sight_glass").GetComponentInChildren<Renderer>();
+            int fl = 1 << p.rig.FlashTransform.gameObject.layer;
+            Assert.IsTrue((p.viewCam.cullingMask & fl) != 0 && (p.worldCam.cullingMask & fl) == 0, "Blitz nur in der Viewmodel-Kamera");
             var mesh = p.rig.FlashTransform.GetComponent<MeshFilter>().sharedMesh;
             var mv = mesh.vertices;
             var tris = mesh.triangles;
@@ -2261,6 +2264,7 @@ namespace Ballon.Ego.Tests
                 Object.Destroy(wall);
                 Object.Destroy(m);
                 rt.Release();
+                Object.Destroy(rt);
                 p.deltaOverride = null;
                 p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
             }

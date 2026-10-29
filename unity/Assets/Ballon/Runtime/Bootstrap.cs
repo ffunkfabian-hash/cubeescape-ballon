@@ -90,7 +90,7 @@ namespace Ballon.Ego
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
             if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
             if (float.TryParse(Arg(args, "-ballonFov") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var fov))
-                Player.worldHFovDeg = Mathf.Clamp(fov, 50f, 120f);     // Welt-Bildwinkel waagrecht (A9); Waffe und Arme bleiben bei 75°
+                Player.worldHFovDeg = Mathf.Clamp(fov, EgoPlayer.WorldFovMinDeg, EgoPlayer.WorldFovMaxDeg);   // Welt-Bildwinkel (A9); Viewmodel bleibt 75°
             string shotDir = Arg(args, "-ballonSceneShots");
             if (shotDir != null) { StartCoroutine(SceneShots(shotDir)); return; }
             string fovDir = Arg(args, "-ballonFovShots");

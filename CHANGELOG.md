@@ -2,7 +2,7 @@
 
 ## 0.32.0 „Softgrip“ – Blueprint-Regeln Teil 2: A5, A6, A9 und Patch ego_build (Branch `claude/ballon-0.32-softgrip`)
 
-- A5: Fasenstufe `common.R_SOFT` 6,5 mm an jedem Griff in Gummi (16 Waffen, Specs neu; dünne Polsterstreifen behalten ihre Stufe),
+- A5: Fasenstufe `common.R_SOFT` 6,5 mm am Griff der Haupthand in Gummi (16 Waffen, Specs neu; übrige Gummiteile bewusst ausgenommen, Begründung im Bericht),
   `./check` prüft sie (`rules.soft_bevel_problems`). A6: der `Weighted Normal`-Modifikator in `kit.add_bevel` machte die weichen
   Fasen-Normalen von `harden_normals` wieder flach – entfernt; Normalen kommen im FBX an und Unity nutzt sie (EditMode-Test).
 - A9 in Unity: Viewmodel immer 75° waagrecht, eigener Welt-Bildwinkel (`-ballonFov`), Weltzoom nur auf der Welt, eigene Tiefe;

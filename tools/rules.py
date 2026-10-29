@@ -124,8 +124,9 @@ def budget_notes(specs):
 
 # ------------------------------------------------------------------ A5 Fasen als Materialsignal
 def soft_bevel_problems(fam):
-    """Fehler A5 (A-R12; Quellen A06, A09, A10, A11, A13, YA09): der Griff in Gummi (`grip`, Rolle `rubber`) trägt R_SOFT, und R_SOFT
-    steht nur an Gummi. Dünne Polsterstreifen (Dicke < 3 × R_SOFT) behalten ihre Stufe (common.R_SOFT)."""
+    """Fehler A5 (A-R12; Quellen A06, A09, A10, A11, A13, YA09): der Griff der Haupthand in Gummi (`grip`, Rolle `rubber`) trägt R_SOFT,
+    und R_SOFT steht nur an Gummi. Die übrigen Gummiteile behalten ihre Stufe (Auslegung 0.32, docs/versions/0.32-softgrip.md › A5):
+    Polsterstreifen, Tragegriff und Rippen zu dünn, Griffband BASIC-12 eine Hülse mit 1 mm Wand, Wangen-/Schulterauflagen keine Griffe."""
     from basic.common import R_SOFT
     out = []
     for wid, W in fam:
