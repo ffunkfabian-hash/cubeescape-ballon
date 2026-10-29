@@ -372,8 +372,12 @@ if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
     r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_figure.py')], capture_output=True, text=True)
     if r.returncode or 'Figuren geprüft' not in r.stdout:
         fail('Figuren: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln or 'Traceback' in ln) + r.stderr[-300:])
+    # Leuchtteile in der Ego-Szene an der Waffe (0.32, Patch 0.30 Vorschlag 6; Gegenprobe im Test, ~1 s)
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_ego_glow.py')], capture_output=True, text=True)
+    if r.returncode or 'Leuchtteil-Lagen geprüft' not in r.stdout:
+        fail('Leuchtteile: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln or 'Traceback' in ln) + r.stderr[-300:])
 elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux: Blender-Stufen bleiben auf dem Mac (check.yml)
-    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test, Visiersitz und Posensatz (Figuren) nur auf dem Mac')
+    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test, Visiersitz, Posensatz (Figuren) und Leuchtteile nur auf dem Mac')
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_sights.py')], capture_output=True, text=True)   # 0.21 Baukasten v3

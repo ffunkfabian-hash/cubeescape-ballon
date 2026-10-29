@@ -89,8 +89,12 @@ namespace Ballon.Ego
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
             if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
+            if (float.TryParse(Arg(args, "-ballonFov") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var fov))
+                Player.worldHFovDeg = Mathf.Clamp(fov, EgoPlayer.WorldFovMinDeg, EgoPlayer.WorldFovMaxDeg);   // Welt-Bildwinkel (A9); Viewmodel bleibt 75°
             string shotDir = Arg(args, "-ballonSceneShots");
             if (shotDir != null) { StartCoroutine(SceneShots(shotDir)); return; }
+            string fovDir = Arg(args, "-ballonFovShots");
+            if (fovDir != null) { StartCoroutine(FovShots(fovDir)); return; }
             string skinsDir = Arg(args, "-ballonSkins");
             if (skinsDir != null) { StartCoroutine(SkinSheet(skinsDir)); return; }
             string courseDir = Arg(args, "-ballonCourse");
@@ -622,6 +626,59 @@ namespace Ballon.Ego
                 }
             }
             Debug.Log($"[Ballon] Szenenbilder in {dir}");
+            Application.Quit();
+        }
+
+        /// <summary>Beleg A9 (0.32): Parcours mit Waffe 1, Hüfte und Zielen bei Welt-Bildwinkel 60°, 75° und 100° (Viewmodel bleibt 75°),
+        /// dazu eine Wand 12 cm vor dem Auge (ohne Kollider) in der Hüfte. 1280 × 720, Haltung je Zustand eingefroren.</summary>
+        IEnumerator FovShots(string dir)
+        {
+            Directory.CreateDirectory(dir);
+            Player.hud = false;
+            var cam = Player.worldCam;
+            var rt = HdrTarget(1280, 720, 8);
+            cam.targetTexture = rt;
+            var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
+            foreach (var aim in new[] { false, true })
+            {
+                Player.C.ReadyNow();
+                Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+                Player.input = aim ? new ScriptedInput().Add(0, 1000, hold: "aim") : new ScriptedInput().Add(0, 1000);
+                Player.deltaOverride = () => 1f / 30f;
+                for (int k = 0; k < 60; k++) yield return null;
+                Player.deltaOverride = () => 1e-5f;
+                foreach (var w in new[] { 60f, 75f, 100f })
+                {
+                    Player.worldHFovDeg = w;
+                    yield return null;
+                    yield return new WaitForEndOfFrame();
+                    ReadBack(rt, tex);
+                    File.WriteAllBytes(Path.Combine(dir, $"{(aim ? "ads" : "hip")}_welt{w:0}.png"), tex.EncodeToPNG());
+                }
+            }
+            Player.worldHFovDeg = D.camera.h_fov_deg;
+            Player.input = new ScriptedInput().Add(0, 1000);
+            Player.C.ReadyNow();
+            Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            Player.deltaOverride = () => 1f / 30f;
+            for (int k = 0; k < 60; k++) yield return null;
+            Player.deltaOverride = () => 1e-5f;
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(wall.GetComponent<Collider>());
+            wall.GetComponent<Renderer>().sharedMaterial = this.wall;
+            wall.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            wall.transform.SetParent(cam.transform, false);
+            wall.transform.localPosition = new Vector3(0, 0, 0.12f);
+            wall.transform.localScale = new Vector3(2f, 2f, 0.01f);
+            foreach (var on in new[] { false, true })
+            {
+                wall.SetActive(on);
+                yield return null;
+                yield return new WaitForEndOfFrame();
+                ReadBack(rt, tex);
+                File.WriteAllBytes(Path.Combine(dir, on ? "wand_12cm.png" : "wand_ohne.png"), tex.EncodeToPNG());
+            }
+            Debug.Log($"[Ballon] Bildwinkel-Belege in {dir}");
             Application.Quit();
         }
 

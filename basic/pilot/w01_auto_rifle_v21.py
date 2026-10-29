@@ -13,7 +13,7 @@ Ausgabe getrennt (`BASIC-01-v2`), damit die Reihe unverändert bleibt, bis der N
 """
 import math
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, grip_rifle, selector, charging_handle, reflex_sight_v21,
-                          R_BODY, R_MID, R_SMALL, R_FINE)
+                          R_BODY, R_MID, R_SMALL, R_FINE, R_SOFT)
 from basic.weapons import w01_auto_rifle as V1
 
 META = dict(V1.META, variant='v2.1', name='Formstudie 01 v2.1', nick='Pilot AAA',
@@ -137,7 +137,7 @@ def _A(u, d):   # Punkt auf der Griffachse (Neigung 15°) in Höhe u, um d nach 
 
 for p in grip_rifle(top=42):
     if p['id'] == 'grip':
-        p.update(mat='rubber', pts=[_A(42, -20), _A(12, -23), _A(-22, -26), _A(-52, -22), _A(-64, -25), _A(-74, -22),
+        p.update(mat='rubber', bevel=R_SOFT, pts=[_A(42, -20), _A(12, -23), _A(-22, -26), _A(-52, -22), _A(-64, -25), _A(-74, -22),
                                     _A(-76, -12), _A(-76, 16), _A(-70, 23), _A(-60, 18), _A(-50, 21), _A(-40, 17), _A(-30, 21),
                                     _A(-20, 17), _A(-8, 21), _A(16, 20), _A(42, 21)])
     if p['id'] == 'trigger_guard':

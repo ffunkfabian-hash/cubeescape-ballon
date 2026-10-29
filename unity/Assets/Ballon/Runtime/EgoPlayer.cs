@@ -1,4 +1,4 @@
-// Spielfigur: Bewegung (CharacterController), Blick, zwei Kameras (Welt mit Zoom, Viewmodel mit festen 75° horizontal),
+// Spielfigur: Bewegung (CharacterController), Blick, zwei Kameras (Welt mit eigenem Bildwinkel und Zoom, Viewmodel mit festen 75° horizontal),
 // Treffer per Strahl, Hüft-Fadenkreuz (HipReticle), Rückmeldung im Zielen und Munitionszähler. Die Ego-Bewegung selbst kommt aus EgoController.
 using System;
 using System.Collections.Generic;
@@ -93,6 +93,13 @@ namespace Ballon.Ego
         public IEgoInput input = new DeviceInput();
         public MoveTuning move = new MoveTuning();
         public Camera worldCam, viewCam;
+        /// <summary>Bildwinkel der Welt waagrecht (Spieleinstellung, -ballonFov; Vorgabe der Bezugsbildwinkel): nur die Weltkamera folgt
+        /// ihm, im Zielen geteilt durch den Weltzoom der Klasse. Waffe und Arme bleiben bei ViewmodelHFovDeg (A9).</summary>
+        public float worldHFovDeg;
+        public const float WorldFovMinDeg = 50f, WorldFovMaxDeg = 120f;   // erlaubter Welt-Bildwinkel waagrecht (-ballonFov)
+        /// <summary>A9 (A-R11, 0.32): Waffe und Arme immer mit dem Bezugsbildwinkel von Visier-Standard 3 (ego.json › camera.h_fov_deg,
+        /// 75° waagrecht wie die Blender-Stills), unabhängig vom Welt-Bildwinkel und vom Weltzoom.</summary>
+        public float ViewmodelHFovDeg => C.S.D.camera.h_fov_deg;
         public Transform head;
         public string lastMarker = "";
         public float lastMarkerTime;
@@ -177,6 +184,7 @@ namespace Ballon.Ego
             p._cc.stepOffset = 0.35f;
             p._cc.skinWidth = 0.03f;
             p._eye = p.move.eye;
+            p.worldHFovDeg = S.D.camera.h_fov_deg;
             p.head = new GameObject("Head").transform;
             p.head.SetParent(go.transform, false);
             p.head.localPosition = new Vector3(0, p._eye, 0);
@@ -190,6 +198,8 @@ namespace Ballon.Ego
             wd.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
             var vd = p.viewCam.GetUniversalAdditionalCameraData();
             vd.renderType = CameraRenderType.Overlay;
+            // eigener Tiefenbereich (A9): die Overlay-Kamera leert die Tiefe (URP-Vorgabe, clearDepth nur lesbar) und zeichnet von near_m bis
+            // 6 m – eine nahe Wand schneidet Waffe und Arme nicht (PlayMode-Test Nahe_Wand_schneidet_die_Waffe_nicht)
             vd.SetRenderer(Bootstrap.OutRenderer);          // letzte Kamera im Stapel: AgX-Abbildung wie Blender
             vd.renderPostProcessing = false;
             wd.cameraStack.Add(p.viewCam);
@@ -313,11 +323,10 @@ namespace Ballon.Ego
             // Welt: Grundbahn und Kamera-Ruck; Viewmodel: nur der Ruck in der Hüfte (im Zielen steht das Visier, 5.1 A)
             worldCam.transform.localRotation = rig.WorldKick(o.worldPitch, o.worldYaw);
             viewCam.transform.localRotation = rig.CameraKick(o.camPitch);
-            float h = C.S.D.camera.h_fov_deg;
             float aspect = worldCam.aspect > 0 ? worldCam.aspect : 16f / 9f;
-            float v = Camera.HorizontalToVerticalFieldOfView(h, aspect);
-            viewCam.fieldOfView = v;
-            worldCam.fieldOfView = 2 * Mathf.Atan(Mathf.Tan(v * Mathf.Deg2Rad / 2) / Zoom) * Mathf.Rad2Deg;
+            viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(ViewmodelHFovDeg, aspect);
+            float wv = Camera.HorizontalToVerticalFieldOfView(worldHFovDeg, aspect);
+            worldCam.fieldOfView = 2 * Mathf.Atan(Mathf.Tan(wv * Mathf.Deg2Rad / 2) / Zoom) * Mathf.Rad2Deg;
             course?.Tick(transform.position + Vector3.up * CourseRun.BodyCenter, dt);
         }
 

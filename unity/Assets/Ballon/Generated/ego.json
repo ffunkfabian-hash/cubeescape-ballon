@@ -6,11 +6,11 @@
   "files": [
    {
     "path": "basic/common.py",
-    "sha256": "c58d166599d4756a2575e2b509aae7159125b473f47276321d427119f2ec7856"
+    "sha256": "f968cc5b65ee35be2680629f2ea2c09d23b89b06e2dd34042960aa2f0a2f26e9"
    },
    {
     "path": "basic/kit.py",
-    "sha256": "04ad458b4082ae247c81969d8254575054304f5e56f3bee942394e18d43590b6"
+    "sha256": "7432407a70f88a720811c1a997ec917b398fb027ee0ab17f81492fc925228bf4"
    },
    {
     "path": "basic/arms/robot_arm.py",
@@ -22,7 +22,7 @@
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "e46d59130f66a5fbf666898aee333f0cd412c3db2f44fa02b0d5d1b800fece25"
+    "sha256": "69a9dd2742019cd7a9b05a0ab277a3b5041a402e7d7c45a616f188a0182b8f30"
    },
    {
     "path": "tools/blender_build.py",
@@ -7299,14 +7299,14 @@
     "files": [
      {
       "path": "basic/pilot/w01_auto_rifle_v21.py",
-      "sha256": "d801ddabf708e96aa02f5d157ad536cb3d877142817d57585ca5b0805b51abd8"
+      "sha256": "af536a8c30a23b41bb934c1656fd3260013b6e70e2b6adf4ceac1874e77787a4"
      },
      {
       "path": "basic/weapons/w01_auto_rifle.py",
       "sha256": "e8fff7faa7e8377e00e1973467dc542aa47b0dd38cbd2fa5e53bcdc2519acd3d"
      }
     ],
-    "parts_sha256": "37ae03c7c0da647b5e3002d90062d02d85e2c05ed62a86fb20f7a40a08b5db15"
+    "parts_sha256": "12507294e103cc2b4be9780a40403a35d73dc1b520ff8e4154aa5d0b0c8ae335"
    },
    "textures": {
     "weapon": {
@@ -8009,7 +8009,7 @@
       "name": "grip",
       "min": [
        -0.015,
-       -0.030789,
+       -0.030776,
        -0.076
       ],
       "max": [
@@ -13903,7 +13903,7 @@
       "sha256": "494ad26432c6519a0b5cf3a98c40b8454e2c5fd56eafd1b7b10e8c14253ff531"
      }
     ],
-    "parts_sha256": "b525ec206f134002e6ca2e612845ea82866513ed4168adcea0815d6b41ba415f"
+    "parts_sha256": "3e9ec8db48bb4a4d63743aa30d0061c33721af8fe146d4ca902e97cfdb6008df"
    },
    "textures": {
     "weapon": {
@@ -14485,7 +14485,7 @@
       "name": "grip",
       "min": [
        -0.015,
-       -0.030239,
+       -0.030226,
        -0.076
       ],
       "max": [
@@ -20381,7 +20381,7 @@
       "sha256": "9bdacceafd30058a1b55c04139a8b30fec4f05fec5bdb873b05716108b3d8b85"
      }
     ],
-    "parts_sha256": "0cefa29672cde8e57564638e400cd72ef604e321035a2d325592f9f82998a9a8"
+    "parts_sha256": "f816c4934fa06bd6a2592d895989e361c8455015e3b4d2b11aae22680d534df2"
    },
    "textures": {
     "weapon": {
@@ -21128,7 +21128,7 @@
       "name": "grip",
       "min": [
        -0.015,
-       -0.030239,
+       -0.030226,
        -0.076
       ],
       "max": [
@@ -26914,7 +26914,7 @@
       "sha256": "a8fdd2f1c65150800773e8815c67bf640eb757eef92fb682a49365f1242af4d3"
      }
     ],
-    "parts_sha256": "e0ce15686bb5549b946d38b1db7d69d253ab10917089cb2dc13f8fde7cd98800"
+    "parts_sha256": "ed3f8dca0764c7220bc08c9a13d2a3ff941c0d5047694eee6dbb68fff5e50a37"
    },
    "textures": {
     "weapon": {
@@ -27643,7 +27643,7 @@
       "name": "grip",
       "min": [
        -0.015,
-       -0.030239,
+       -0.030226,
        -0.076
       ],
       "max": [
@@ -30668,7 +30668,7 @@
       "sha256": "0afac70a959ff542c12ad38d76596482287957d912a387f3570d5336871a8583"
      }
     ],
-    "parts_sha256": "3bbbe45edade14b1c7bd2fa94e7d156de08274691036745d83256bb9a83ced7a"
+    "parts_sha256": "003cd8ac37a0aa43c6673c9fb9ccf3eed36d6c336753cceb0615955806668c13"
    },
    "textures": {
     "weapon": {
@@ -31104,7 +31104,7 @@
       "name": "grip",
       "min": [
        -0.015,
-       -0.030239,
+       -0.030226,
        -0.076
       ],
       "max": [

@@ -2017,5 +2017,274 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(p.log.Any(l => l.Contains("inspect Start")), "Betrachten");
             Assert.Greater(p.C.ammo, 0);
         }
+
+        // ---------------------------------------------------------------- A9 Viewmodel mit eigenem Bildwinkel (0.32 „Softgrip“)
+        static float HFov(Camera c) => Camera.VerticalToHorizontalFieldOfView(c.fieldOfView, c.aspect > 0 ? c.aspect : 16f / 9f);
+        const float Still = 1e-5f;                          // Bildschritt fast null: Haltung und Atmen stehen, nur die Kameras folgen
+
+        /// <summary>Rechteck (Anteile des Bildes) der Weltgrenzen eines Renderers in der Viewmodel-Kamera.</summary>
+        static Rect ViewRect(Camera cam, Renderer r)
+        {
+            var b = r.bounds;
+            float x0 = 1e9f, y0 = 1e9f, x1 = -1e9f, y1 = -1e9f;
+            for (int i = 0; i < 8; i++)
+            {
+                var v = cam.WorldToViewportPoint(new Vector3((i & 1) == 0 ? b.min.x : b.max.x, (i & 2) == 0 ? b.min.y : b.max.y,
+                                                             (i & 4) == 0 ? b.min.z : b.max.z));
+                x0 = Mathf.Min(x0, v.x); x1 = Mathf.Max(x1, v.x); y0 = Mathf.Min(y0, v.y); y1 = Mathf.Max(y1, v.y);
+            }
+            return Rect.MinMaxRect(x0, y0, x1, y1);
+        }
+
+        /// <summary>A9 (A-R11): Waffe und Arme immer mit 75° waagrecht (Visier-Standard 3), unabhängig vom Welt-Bildwinkel 60° und 100°;
+        /// die Welt folgt dem eingestellten Winkel, das Viewmodel behält seinen Tiefenbereich; kein Speicher je Bild. Rot, solange die
+        /// Viewmodel-Kamera den Weltwinkel übernimmt (vor 0.32 gab es nur einen Winkel für beide).</summary>
+        [UnityTest]
+        public IEnumerator Viewmodel_bleibt_75_Grad_bei_Welt_FOV_60_und_100()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.input = new ScriptedInput().Add(0, 1000);
+            p.deltaOverride = () => 1f / 30f;
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            Assert.AreEqual(75f, p.ViewmodelHFovDeg, 1e-4f, "Bezugsbildwinkel Visier-Standard 3");
+            try
+            {
+                foreach (var w in new[] { 60f, 100f })
+                {
+                    p.worldHFovDeg = w;
+                    yield return null;
+                    yield return null;
+                    Assert.AreEqual(75f, HFov(p.viewCam), 0.01f, $"Viewmodel bei Welt {w}°");
+                    Assert.AreEqual(w, HFov(p.worldCam), 0.01f, $"Welt {w}° in der Hüfte");
+                    Assert.AreEqual(D.camera.near_m, p.viewCam.nearClipPlane, 1e-6f, "eigener Tiefenbereich: near wie Blender");
+                    p.Step(1f / 30f);                          // erster Aufruf übersetzt; gemessen wird der zweite
+                    NUnit.Framework.Assert.That(() => p.Step(1f / 30f), Is.Not.AllocatingGCMemory(), $"Bild bei Welt {w}°");
+                    TestContext.WriteLine($"Welt {w}°: Weltkamera {HFov(p.worldCam):0.00}°, Viewmodel {HFov(p.viewCam):0.00}° waagrecht");
+                }
+            }
+            finally
+            {
+                p.worldHFovDeg = 75f;
+                p.deltaOverride = null;
+            }
+        }
+
+        /// <summary>A9: der Weltzoom jeder Klasse im Zielen wirkt nur auf die Welt (tan(Welt/2) = tan(eingestellt/2) / Zoom); Zielbild
+        /// (Bildlage von Socket_Reticle) und Öffnung (Glas im Bild) bleiben bei Welt-Bildwinkel 60° und 100° wie bei 75°. Jede spielbare
+        /// Waffe mit Absehen, in derselben eingefrorenen Haltung. Rot mit dem Viewmodel am Weltwinkel.</summary>
+        [UnityTest]
+        public IEnumerator Weltzoom_nur_auf_die_Welt_Zielbild_unveraendert()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            int n = 0;
+            try
+            {
+                for (int k = 0; k < p.loadouts.Length; k++)
+                {
+                    var L = p.loadouts[k];
+                    if (!L.rig.S.D.weapon.anchors.Any(a => a.id == "Socket_Reticle")) continue;
+                    p.UseWeapon(k);
+                    p.worldHFovDeg = 75f;
+                    p.C.ReadyNow();
+                    p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+                    p.input = new ScriptedInput().Add(0, 1000, hold: "aim");
+                    p.deltaOverride = () => 1f / 30f;
+                    for (int i = 0; i < 60; i++) yield return null;
+                    Assert.AreEqual(1f, p.C.adsWeight, 1e-3f, $"{L.rig.S.D.weapon.id} im Zielen");
+                    p.deltaOverride = () => Still;
+                    float z = p.C.Zoom;
+                    var glass = L.rig.S.D.weapon.parts.Any(q => q.id == "sight_glass") ? L.rig.Part("sight_glass").GetComponentInChildren<Renderer>() : null;
+                    Vector2 r75 = Vector2.zero;
+                    Rect g75 = default;
+                    foreach (var w in new[] { 75f, 60f, 100f })
+                    {
+                        p.worldHFovDeg = w;
+                        yield return null;
+                        yield return null;
+                        float want = 2 * Mathf.Atan(Mathf.Tan(w * Mathf.Deg2Rad / 2) / z) * Mathf.Rad2Deg;
+                        Assert.AreEqual(want, HFov(p.worldCam), 0.02f, $"{L.rig.S.D.weapon.id}: Welt {w}° / Zoom {z:0.00}");
+                        Assert.AreEqual(75f, HFov(p.viewCam), 0.01f, $"{L.rig.S.D.weapon.id}: Viewmodel bei Welt {w}°");
+                        var r = p.SightScreen() / p.viewCam.pixelHeight;
+                        var g = glass != null ? ViewRect(p.viewCam, glass) : default;
+                        if (w == 75f) { r75 = r; g75 = g; continue; }
+                        Assert.Less(Vector2.Distance(r, r75), 1e-3f, $"{L.rig.S.D.weapon.id}: Absehen bei Welt {w}° {r} statt {r75}");
+                        if (glass != null)
+                            Assert.Less(Mathf.Abs(g.width - g75.width) + Mathf.Abs(g.height - g75.height) + Vector2.Distance(g.center, g75.center), 1e-3f,
+                                        $"{L.rig.S.D.weapon.id}: Öffnung bei Welt {w}° {g} statt {g75}");
+                    }
+                    TestContext.WriteLine($"{L.rig.S.D.weapon.id}: Zoom {z:0.00}, Welt 60/75/100° → {2 * Mathf.Atan(Mathf.Tan(30 * Mathf.Deg2Rad) / z) * Mathf.Rad2Deg:0.0}/" +
+                                          $"{2 * Mathf.Atan(Mathf.Tan(37.5f * Mathf.Deg2Rad) / z) * Mathf.Rad2Deg:0.0}/{2 * Mathf.Atan(Mathf.Tan(50 * Mathf.Deg2Rad) / z) * Mathf.Rad2Deg:0.0}°, " +
+                                          $"Absehen {r75.x:0.000}/{r75.y:0.000} H, Öffnung {g75.width:0.000} × {g75.height:0.000}");
+                    n++;
+                }
+            }
+            finally
+            {
+                p.worldHFovDeg = 75f;
+                p.deltaOverride = null;
+                p.UseWeapon(0);
+            }
+            Assert.GreaterOrEqual(n, 3, "Waffen mit Absehen geprüft");
+        }
+
+        /// <summary>A9: das Mündungsfeuer liegt auf der Ebene „Viewmodel“ (nur die Viewmodel-Kamera zeichnet es); Lage und Größe des
+        /// Blitzes im Bild bleiben bei Welt-Bildwinkel 60° und 100° wie bei 75° – das ist der Prüfpunkt, der mit dem Viewmodel am
+        /// Weltwinkel rot wird. Die Abdeckung des Glasrechtecks (Blitzbild aus fire_ads, gerastert) bleibt ebenso gleich; sie allein
+        /// hinge nicht vom Winkel ab, solange Blitz und Glas in derselben Kamera liegen. Pilot-Automatik (Holo, 5.3 A).</summary>
+        [UnityTest]
+        public IEnumerator Muendungsfeuer_Abdeckung_im_Zielen_unabhaengig_vom_Welt_FOV()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 1000, hold: "aim");
+            p.deltaOverride = () => 1f / 30f;
+            for (int i = 0; i < 60; i++) yield return null;
+            p.deltaOverride = () => Still;
+            var S = p.rig.S;
+            var A = S.D.Action("fire_ads");
+            var st = new EgoState();
+            EgoOutput o = null;
+            for (int f = 0; f <= A.frames && (o == null || !o.flashOn); f++) o = S.Evaluate(A, f, st);
+            Assert.IsTrue(o.flashOn, "Blitzbild in fire_ads");
+            var glass = p.rig.Part("sight_glass").GetComponentInChildren<Renderer>();
+            int fl = 1 << p.rig.FlashTransform.gameObject.layer;
+            Assert.IsTrue((p.viewCam.cullingMask & fl) != 0 && (p.worldCam.cullingMask & fl) == 0, "Blitz nur in der Viewmodel-Kamera");
+            var mesh = p.rig.FlashTransform.GetComponent<MeshFilter>().sharedMesh;
+            var mv = mesh.vertices;
+            var tris = mesh.triangles;
+            var q = new Vector3[mv.Length];
+            var got = new Dictionary<float, (float cover, Rect flash)>();
+            try
+            {
+                foreach (var w in new[] { 75f, 60f, 100f })
+                {
+                    p.worldHFovDeg = w;
+                    yield return null;
+                    p.rig.Apply(o);                             // Haltung und Blitz aus dem Blitzbild, Kameras wie im Spiel gesetzt
+                    var g = ViewRect(p.viewCam, glass);
+                    float x0 = 1e9f, y0 = 1e9f, x1 = -1e9f, y1 = -1e9f;
+                    for (int i = 0; i < mv.Length; i++)
+                    {
+                        q[i] = p.viewCam.WorldToViewportPoint(p.rig.FlashTransform.TransformPoint(mv[i]));
+                        x0 = Mathf.Min(x0, q[i].x); x1 = Mathf.Max(x1, q[i].x); y0 = Mathf.Min(y0, q[i].y); y1 = Mathf.Max(y1, q[i].y);
+                    }
+                    const int N = 100;
+                    int hit = 0;
+                    for (int i = 0; i < N; i++)
+                        for (int j = 0; j < N; j++)
+                        {
+                            float px = g.xMin + (i + 0.5f) / N * g.width, py = g.yMin + (j + 0.5f) / N * g.height;
+                            for (int t = 0; t < tris.Length; t += 3)
+                                if (InTri2(px, py, q[tris[t]], q[tris[t + 1]], q[tris[t + 2]])) { hit++; break; }
+                        }
+                    got[w] = (hit / (float)(N * N), Rect.MinMaxRect(x0, y0, x1, y1));
+                    TestContext.WriteLine($"Welt {w}°: Blitz bedeckt {got[w].cover * 100:0.0} % des Glasrechtecks, Blitz {got[w].flash}");
+                }
+            }
+            finally
+            {
+                p.worldHFovDeg = 75f;
+                p.deltaOverride = null;
+            }
+            Assert.Greater(got[75f].cover, 0.02f, "Blitz im Visier sichtbar");
+            foreach (var w in new[] { 60f, 100f })
+            {
+                Assert.AreEqual(got[75f].cover, got[w].cover, 0.002f, $"Abdeckung bei Welt {w}°");
+                var a = got[w].flash;
+                var b = got[75f].flash;
+                Assert.Less(Mathf.Abs(a.width - b.width) + Mathf.Abs(a.height - b.height) + Vector2.Distance(a.center, b.center), 1e-3f,
+                            $"Blitz im Bild bei Welt {w}° {a} statt {b}");
+            }
+        }
+
+        static bool InTri2(float x, float y, Vector3 a, Vector3 b, Vector3 c)
+        {
+            float S(Vector3 u, Vector3 v) => (x - v.x) * (u.y - v.y) - (u.x - v.x) * (y - v.y);
+            float d1 = S(a, b), d2 = S(b, c), d3 = S(c, a);
+            return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0));
+        }
+
+        /// <summary>A9: eigener Tiefenbereich des Viewmodels – eine Wand 12 cm vor dem Auge (ohne Kollider, damit die Wandnähe die Waffe
+        /// nicht senkt, ohne Schattenwurf) verdeckt Waffe und Arme nicht. Drei Bilder in derselben Haltung: mit Viewmodel, ohne Viewmodel (ergibt die
+        /// Maske), mit Wand; in der Maske bleibt das Bild gleich (durchsichtiges Visierglas aus: es zeigt die Wand zu Recht). Rot, wenn die Viewmodel-Kamera die Tiefe der Welt übernimmt.</summary>
+        [UnityTest]
+        public IEnumerator Nahe_Wand_schneidet_die_Waffe_nicht()
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            var p = b.Player;
+            Assert.IsTrue(UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(p.viewCam).clearDepth,
+                          "Viewmodel-Kamera leert die Tiefe");
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, -40f);    // Blick 40° hoch: hinter dem Viewmodel nur Himmel (kein Schatten der Waffe)
+            p.input = new ScriptedInput().Add(0, 1000);
+            p.deltaOverride = () => 1f / 30f;
+            for (int i = 0; i < 30; i++) yield return null;
+            p.deltaOverride = () => Still;
+            const int W = 320, H = 180;
+            var rt = Bootstrap.HdrTarget(W, H, 1);
+            var cam = p.worldCam;
+            var old = cam.targetTexture;
+            int vmMask = p.viewCam.cullingMask;
+            cam.targetTexture = rt;
+            var shots = new Color[3][];
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.Destroy(wall.GetComponent<Collider>());
+            var m = new Material(b.backdrop);
+            m.SetColor("_BaseColor", new Color(0.1f, 0.9f, 0.2f));
+            wall.GetComponent<Renderer>().sharedMaterial = m;
+            wall.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;   // Schatten der Wand auf die Waffe ist Licht, kein Schnitt
+            wall.transform.SetParent(cam.transform, false);
+            wall.transform.localPosition = new Vector3(0, 0, 0.12f);
+            wall.transform.localScale = new Vector3(2f, 2f, 0.01f);
+            wall.SetActive(false);
+            // durchsichtige Teile (Visierglas) zeigen die Wand zu Recht durch: für die Aufnahmen aus
+            var clear = p.rig.weaponRoot.GetComponentsInChildren<Renderer>().Where(r => r.enabled && r.sharedMaterial != null && r.sharedMaterial.renderQueue >= 3000).ToList();
+            foreach (var r in clear) r.enabled = false;
+            try
+            {
+                for (int s = 0; s < 3; s++)
+                {
+                    p.viewCam.cullingMask = s == 1 ? 0 : vmMask;   // Kamera bleibt im Stapel (AgX-Durchgang)
+                    wall.SetActive(s == 2);
+                    yield return null;
+                    yield return null;
+                    var tex = new Texture2D(W, H, TextureFormat.RGB24, false);
+                    Bootstrap.ReadBack(rt, tex);
+                    shots[s] = tex.GetPixels();
+                    Object.Destroy(tex);
+                }
+            }
+            finally
+            {
+                p.viewCam.cullingMask = vmMask;
+                foreach (var r in clear) r.enabled = true;
+                cam.targetTexture = old;
+                Object.Destroy(wall);
+                Object.Destroy(m);
+                rt.Release();
+                Object.Destroy(rt);
+                p.deltaOverride = null;
+                p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            }
+            float D3(Color a, Color c) => Mathf.Abs(a.r - c.r) + Mathf.Abs(a.g - c.g) + Mathf.Abs(a.b - c.b);
+            var vm = new bool[shots[0].Length];
+            for (int i = 0; i < vm.Length; i++) vm[i] = D3(shots[0][i], shots[1][i]) >= 0.06f;    // Viewmodel an diesem Pixel
+            int mask = 0, cut = 0, edge = 0;
+            for (int y = 1; y < H - 1; y++)
+                for (int x = 1; x < W - 1; x++)
+                {
+                    int i = y * W + x;
+                    if (!vm[i]) continue;
+                    if (!(vm[i - 1] && vm[i + 1] && vm[i - W] && vm[i + W])) { edge++; continue; }   // Kante: Kantenglättung mischt den Hintergrund
+                    mask++;
+                    if (D3(shots[2][i], shots[0][i]) > 0.06f) cut++;
+                }
+            TestContext.WriteLine($"Viewmodel {mask * 100f / shots[0].Length:0.0} % des Bildes (innen, dazu {edge} Kantenpixel), davon mit Wand verändert " +
+                                  $"{cut * 100f / Mathf.Max(mask, 1):0.00} %");
+            Assert.Greater(mask, shots[0].Length / 50, "Waffe und Arme im Bild");
+            Assert.Less(cut, mask / 200 + 1, "nahe Wand verdeckt das Viewmodel");
+        }
     }
 }

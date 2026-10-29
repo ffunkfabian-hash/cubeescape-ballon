@@ -545,10 +545,10 @@ def add_bevel(ob, r_mm, segs=2):
     m.segments = segs
     m.limit_method = 'ANGLE'
     m.angle_limit = math.radians(30)
-    m.harden_normals = True
+    m.harden_normals = True        # gewichtete Normalen (A6): Originalflächen flach, Fasenflächen weich; kommen so im FBX an
     m.use_clamp_overlap = True
-    wn = ob.modifiers.new('BASIC_Normals', 'WEIGHTED_NORMAL')
-    wn.keep_sharp = True
+    # Kein Weighted-Normal-Modifikator mehr (0.32): auf den flach schattierten Teilen behandelte er mit keep_sharp jede Kante als hart
+    # und machte die weichen Fasen-Normalen wieder flach (BASIC-01: 45 % statt 99 % der Fasenflächen weich, Griff 1 %, Magazin facettiert)
 
 
 def set_origin(ob, world_pt):

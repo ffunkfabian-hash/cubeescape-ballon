@@ -1626,7 +1626,7 @@
    "interface": "BGM-1",
    "parent_part": null,
    "shape": "prof",
-   "bevel_mm": 5.0,
+   "bevel_mm": 6.5,
    "blender_object": "grip",
    "origin_m": [
     0.0,
@@ -1636,7 +1636,7 @@
    "bounds_m": {
     "min": [
      -0.015,
-     -0.03024,
+     -0.03023,
      -0.076
     ],
     "max": [
@@ -1651,7 +1651,7 @@
     116.0
    ],
    "triangles": 360,
-   "volume_cm3": 144.82,
+   "volume_cm3": 144.73,
    "moving": null,
    "removable": false
   },
@@ -2130,7 +2130,7 @@
    "position_m": [
     0.0,
     -0.04941,
-    0.07167
+    0.07168
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",

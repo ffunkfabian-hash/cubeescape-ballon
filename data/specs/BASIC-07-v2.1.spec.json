@@ -173,7 +173,7 @@
    "interface": null,
    "parent_part": null,
    "shape": "prof",
-   "bevel_mm": 5.0,
+   "bevel_mm": 6.5,
    "blender_object": "grip",
    "origin_m": [
     0.0,
@@ -189,16 +189,16 @@
     "max": [
      0.016,
      0.036,
-     0.03727
+     0.03705
     ]
    },
    "size_mm": [
     32.0,
     51.0,
-    89.3
+    89.0
    ],
    "triangles": 236,
-   "volume_cm3": 120.05,
+   "volume_cm3": 117.2,
    "moving": null,
    "removable": false
   },
@@ -2011,9 +2011,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    0.00437,
-    0.01784,
-    0.00064
+    0.00438,
+    0.01788,
+    0.00066
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
