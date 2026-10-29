@@ -33,6 +33,7 @@ expect(abs(rules.best_iou(a, a)[0] - 1) < 1e-12, 'IoU gleicher Masken ≠ 1')
 b = mask([(0, 0), (0, 8), (2, 6)])                  # dieselbe Form eine Zeile tiefer: Verschiebung muss sie finden
 expect(rules.best_iou(a, b) == (1.0, -1), f'IoU über Verschiebung nicht gefunden: {rules.best_iou(a, b)}')
 expect(rules.best_iou(mask([(0, 4)]), mask([(4, 8)]))[0] == 0, 'IoU getrennter Masken ≠ 0')
+expect(abs(rules.best_iou(mask([(0, 4)]), mask([(2, 6)]))[0] - 2 / 6) < 1e-12, 'IoU Teilüberdeckung ≠ 2/6 (Nenner)')   # Richter 0.30
 fam = rules.family()
 specs = {w: json.load(open(os.path.join(ROOT, 'data', 'specs', f'{w}.spec.json'), encoding='utf-8')) for w, _ in fam}
 data = json.load(open(os.path.join(ROOT, 'data', 'silhouettes.json'), encoding='utf-8'))
@@ -66,6 +67,8 @@ n = rules.clear_zone_notes(dict(weapons={'W': hit}), [('W', m)])
 expect(len(n) == 1 and n[0].startswith('Warnung Freihaltezone W: 12 px'), f'belegte Zone nicht gemeldet: {n}')
 n = rules.clear_zone_notes(dict(weapons={'W': dict(ok, sources_sha256='0')}), [('W', m)])
 expect(len(n) == 1 and 'veraltet' in n[0], f'veraltete Zonenmessung nicht gemeldet: {n}')
+n = rules.clear_zone_notes(dict(weapons={'W': dict(hit, sources_sha256='0')}), [('W', m)])
+expect(len(n) == 2 and n[1].startswith('Hinweis Freihaltezone (Stand vorher) W'), f'alte Verletzung nicht als Stand vorher: {n}')
 expect('nicht gemessen' in rules.clear_zone_notes({}, [('W', m)])[0], 'fehlende Zonenmessung nicht gemeldet')
 
 # F5 Handmaß (ein Maß für Ego und Figur), Bezug Griffbreite der Familie

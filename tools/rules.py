@@ -16,6 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # A1 (A-R1, A-R7; Quellen A01, A02, A20, A08, YA02, YA03): schwarze Seitensilhouetten auf gleiche Länge normiert, paarweise IoU
 IOU_LIMIT = 0.85
+SIL_SHARED = ['basic/common.py', 'basic/kit.py']      # Formbausteine aller Waffen: Teil des Aktualitätsschlüssels (Richter 0.30)
 # A2 (A-R24; Quellen A05, YB09, A21): Dreiecke je Ego-Waffe, Ziel und Obergrenze (Warnung)
 TRI_TARGET, TRI_LIMIT = 20000, 30000
 # A4 (A-R9; Quelle YA01): Freihaltezone im Hüftbild – ±10 % der Bildbreite um die Absehen-Spalte, obere zwei Drittel
@@ -87,7 +88,7 @@ def iou_matrix(data, view='side'):
 
 def silhouette_problems(data, fam, specs):
     """Fehlerliste A1: jede Waffe der Familie gemessen und aktuell (parts_sha256 und Dreieckszahl des Specs), jedes Paar der
-    Seitensilhouetten unter IOU_LIMIT. fam: [(ID, Modul)], specs: {ID: Spec}."""
+    Seitensilhouetten unter IOU_LIMIT. Aktuell = gleicher parts_sha256, gleiche Dreieckszahl und gleicher SHA von SIL_SHARED. fam: [(ID, Modul)], specs: {ID: Spec}."""
     from tools.export_unity import parts_sha
     bad = []
     W = data.get('weapons', {})
@@ -95,7 +96,8 @@ def silhouette_problems(data, fam, specs):
         e = W.get(wid)
         if e is None:
             bad.append(f'{wid}: Silhouette fehlt in data/silhouettes.json (ce lock blender -- Blender -b -P tools/silhouettes.py)')
-        elif e.get('parts_sha256') != parts_sha(mod) or e.get('triangles') != specs.get(wid, {}).get('counts', {}).get('triangles'):
+        elif e.get('parts_sha256') != parts_sha(mod) or e.get('triangles') != specs.get(wid, {}).get('counts', {}).get('triangles') \
+                or e.get('shared_sha256') != sha_files(SIL_SHARED):
             bad.append(f'{wid}: Silhouette veraltet (Entwurf oder Netz geändert; tools/silhouettes.py neu laufen lassen)')
     if bad:
         return bad
@@ -128,7 +130,8 @@ def zone_px(w, h):
 def clear_sources(mod):
     """Quellen der Hüftbild-Maske einer spielbaren Waffe: Waffenmodul(e), Haltungen, Arm, Ego-Szene."""
     from tools.export_unity import weapon_files
-    return weapon_files(mod) + ['basic/arms/ego.py', 'basic/arms/robot_arm.py', 'tools/ego_build.py']
+    return weapon_files(mod) + ['basic/arms/ego.py', 'basic/arms/robot_arm.py', 'basic/common.py', 'basic/kit.py', 'tools/ego_build.py',
+                                'tools/blender_build.py', 'tools/ego_clear.py']
 
 
 def clear_zone_notes(data, playable):
@@ -140,10 +143,12 @@ def clear_zone_notes(data, playable):
         if e is None:
             out.append(f'Hinweis Freihaltezone {wid}: nicht gemessen (ce lock gpu -- Blender -b -P tools/ego_clear.py)')
             continue
-        if e.get('sources_sha256') != sha_files(clear_sources(mod)):
+        stale = e.get('sources_sha256') != sha_files(clear_sources(mod))
+        if stale:
             out.append(f'Hinweis Freihaltezone {wid}: Messung veraltet (Waffe, Haltung oder Arm geändert; tools/ego_clear.py)')
         if e['zone_px'] > 0:
-            out.append(f"Warnung Freihaltezone {wid}: {e['zone_px']} px ({e['zone_share'] * 100:.2f} % der Zone) belegt, "
+            pre = 'Hinweis Freihaltezone (Stand vorher)' if stale else 'Warnung Freihaltezone'
+            out.append(f"{pre} {wid}: {e['zone_px']} px ({e['zone_share'] * 100:.2f} % der Zone) belegt, "
                        f"oberster Punkt in den Zonenspalten {e['top_y'] * 100:.1f} % H, Spalten {e['cols'][0] * 100:.1f}–{e['cols'][1] * 100:.1f} % B (A4)")
     return out
 

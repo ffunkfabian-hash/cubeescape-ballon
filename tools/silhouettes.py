@@ -124,7 +124,7 @@ def main():
         side, s_mm = raster(T, (0, -1, 0), (0, 0, 1))              # f = −Y nach rechts, u = Z nach oben
         ex, ey = basis('ego')
         ego, e_mm = raster(T, tuple(ex), tuple(ey))
-        W_[wid] = dict(parts_sha256=parts_sha(W), triangles=int(len(T)), mm_per_px=dict(side=round(s_mm, 3), ego=round(e_mm, 3)),
+        W_[wid] = dict(parts_sha256=parts_sha(W), shared_sha256=rules.sha_files(rules.SIL_SHARED), triangles=int(len(T)), mm_per_px=dict(side=round(s_mm, 3), ego=round(e_mm, 3)),
                        side=rle(close(side)), ego=rle(close(ego)))
         print(f'[silhouettes] {wid}: {len(T)} Dreiecke, Seite {side.shape[1]}×{side.shape[0]} ({s_mm:.2f} mm/px), '
               f'Ego {ego.shape[1]}×{ego.shape[0]}')
