@@ -26907,14 +26907,14 @@
     "files": [
      {
       "path": "basic/pilot/w02_pulse_rifle_v21.py",
-      "sha256": "15ca27f8009ce3c95b6bf8c584571ed0f650502d7bbb37d5171d978cadef2044"
+      "sha256": "20511c19f2a6fec6c372dd9aa459c0ffe1e02bc0d11f2ac4b2914d6702d3b94b"
      },
      {
       "path": "basic/weapons/w02_pulse_rifle.py",
       "sha256": "a8fdd2f1c65150800773e8815c67bf640eb757eef92fb682a49365f1242af4d3"
      }
     ],
-    "parts_sha256": "3c4148841d56723250ec80913cb1519c9f9d6d4fedb05ed4430e054edc1bb70c"
+    "parts_sha256": "e0ce15686bb5549b946d38b1db7d69d253ab10917089cb2dc13f8fde7cd98800"
    },
    "textures": {
     "weapon": {
@@ -27573,12 +27573,12 @@
       "name": "text_l",
       "min": [
        0.02193,
-       -0.359625,
+       -0.377625,
        0.104455
       ],
       "max": [
        0.02217,
-       -0.331975,
+       -0.349975,
        0.107955
       ],
       "tris": 2704
