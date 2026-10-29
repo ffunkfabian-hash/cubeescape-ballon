@@ -245,11 +245,23 @@ def robot_spec_notes(path):
     return out
 
 
+def arm_rigs():
+    """Wählbare Ego-Armsätze neben Arm v3 (Formstudien basic/arms/studies/, 0.31 „Gauntlet“): F5 gilt auch für sie."""
+    out = []
+    for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'arms', 'studies', '*.py'))):
+        if not os.path.basename(f).startswith('_'):
+            out.append(importlib.import_module('basic.arms.studies.' + os.path.basename(f)[:-3]))
+    return out
+
+
 def figure_report():
-    """(Fehler, Hinweise) aller Figuren im Repo: Module in basic/figures/ (Vertrag, Handmaß) und Roboter-Specs in data/."""
+    """(Fehler, Hinweise) aller Figuren im Repo: Module in basic/figures/ (Vertrag, Handmaß), Ego-Armsätze (Handmaß) und
+    Roboter-Specs in data/."""
     from basic.arms import robot_arm
     err, notes = [], []
     ego = hand_measure(robot_arm)
+    for A in arm_rigs():
+        err += [f"Armsatz {A.__name__.split('.')[-1]}: {b}" for b in hand_problems(hand_measure(A), ego)]
     for F in figure_modules():
         err += figure_meta_problems(F)
         if hasattr(F, 'HAND'):

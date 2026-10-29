@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.31.0 „Gauntlet“ – Formstudien Ego-Arme (Branch `claude/ballon-0.31-gauntlet`)
+
+- Arm-Teil aus 0.23 „Gauntlet“ (3c50133) auf `main` gebracht, ohne Roboter und Helm (die bleiben auf ihrem Branch bis zur Wahl des
+  Nutzers): Formen `basic/arms/forms.py` (`loft`, `wrap` mit Pfeilschnitt und Ring, `tube`; Querschnitt Superellipse oder gefast) in
+  `tools/ego_build.form_mesh`, `--rig`/`--poses` für Studien in eigenem Ordner; drei Formstudien A „Konzept“, B „Panzer“, C „Mechanik“
+  auf dem Skelett von Arm v3 (`basic/arms/studies/`). Arm v3 bleibt Standard („V3 … gerne auch behalten“), Ego-Daten unverändert.
+- F5 (ein Handmaß) abgeglichen: Arm v3 unverändert, die Armsätze A/B/C haben dieselbe Hand; `rules.arm_rigs` prüft sie in `./check`.
+  Bericht [docs/versions/0.31-gauntlet.md](docs/versions/0.31-gauntlet.md).
+
 ## Patch regeln-lockern – Dreiecksgrenze 50 000, Freihaltezone gelockert (Branch `claude/tender-goldberg-kijbub`)
 
 - Nutzer 29.10.2026 (Sightline): „B Zone lockern, dreiecksbudget erhöhen auf 50 k“. A2: Grenze 30 000 → 50 000 (Ziel 20 000 bleibt

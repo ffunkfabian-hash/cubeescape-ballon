@@ -87,6 +87,11 @@ big = types.SimpleNamespace(**{k: getattr(robot_arm, k) for k in ('PALM_W', 'PAL
 big.PALM_W *= 1.12                                       # Valorant-Ansatz (F5 B, verworfen): Außenhand 12 % größer
 p = rules.hand_problems(rules.hand_measure(big), ego)
 expect(any(x.startswith('Handmaß palm_w') for x in p), f'vergrößerte Hand nicht gemeldet: {p}')
+rigs = rules.arm_rigs()                                  # Formstudien A/B/C (0.31): ein Handmaß mit Arm v3
+expect(len(rigs) >= 3, f'Armsätze nicht gefunden: {[r.__name__ for r in rigs]}')
+for r in rigs:
+    expect(rules.hand_problems(rules.hand_measure(r), ego) == [], f'Armsatz {r.__name__}: Handmaß weicht von Arm v3 ab')
+expect(not any(x.startswith('Armsatz') for x in rules.figure_report()[0]), 'figure_report meldet Armsatz-Handmaß')
 
 # F6 Budget, F1 Proportion
 n = rules.figure_budget_notes('F', 40000, 120)

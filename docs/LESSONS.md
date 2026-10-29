@@ -14,7 +14,7 @@
 - Eine Workbench-Maske zeigt, was Cycles verschluckt: die Salvenanzeigen von BASIC-02 schwebten oben im Ego-Bild, weil `ego_build.set_weapon` Leuchtteile über `apply_move` in die Ruhelage ohne Waffenmatrix zurücksetzt ([ego_clear.py](../tools/ego_clear.py)); 1-Bit-Masken nie mit `montage` skalieren (zeigt Löcher, die es nicht gibt) – erst die Maske selbst prüfen.
 - Ego-Kamera in Blender: 90° um X schaut nach +Y; für Blick −Y zusätzlich 180° um Z ([ego_build.py](../tools/ego_build.py)).
 - Viewmodel-Arme: Unterarm an der Hand ausrichten und den Knick begrenzen, statt die Schulter festzuhalten; Hände greifen von unten hinten ([stilhandbuch](stilhandbuch.md#10-arme-und-animation)).
-- Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst.
+- Arme: Querschnitt skalieren macht ein Rohr nicht kräftig – Form (Wölbung, Schale, zweite Lage) trägt die Masse; Vorschau ohne Waffe mit [arm_preview.py](../tools/arm_preview.py) zuerst. Drei Formstudien zur Wahl trafen sofort, wo Einzelkorrekturen je Kritik scheiterten ([0.31](versions/0.31-gauntlet.md)).
 - `ce lock` wechselt in das Nexogen-Verzeichnis: Skriptpfade für Blender/Unity absolut übergeben ([unity.md](unity.md)).
 - Blender-FBX mit „Apply Transform“: Netze kommen richtig an, Kindknoten nicht (90°/218 mm) – Knotenlagen beim Import aus `ego.json` setzen ([BallonSetup.cs](../unity/Assets/Ballon/Editor/BallonSetup.cs)).
 - `Quaternion.Angle` meldet unter ≈ 0,16° null: Drehabweichungen in Tests über atan2 der Achsen messen ([EgoDataTests.cs](../unity/Assets/Ballon/Tests/EditMode/EgoDataTests.cs)).
