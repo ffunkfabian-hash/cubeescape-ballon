@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Patch regeln-lockern – Dreiecksgrenze 50 000, Freihaltezone gelockert (Branch `claude/tender-goldberg-kijbub`)
+
+- Nutzer 29.10.2026 (Sightline): „B Zone lockern, dreiecksbudget erhöhen auf 50 k“. A2: Grenze 30 000 → 50 000 (Ziel 20 000 bleibt
+  Hinweis); A4: das vordere Ende darf in die untere äußere Ecke der Freihaltezone ragen (`rules.ZONE_FRONT`, aus den gespeicherten
+  Messungen, kein neuer Lauf). Damit keine Budget-Warnung mehr (höchste Waffe BASIC-13 mit 43 364) und keine Zonen-Warnung an den
+  fünf spielbaren Waffen. Tests angepasst und ergänzt (bewusst geändertes Verhalten).
+
 ## 0.30.0 „Rulebook“ – Blueprint-Regeln Teil 1: Regelwerk und Prüfungen (Branch `claude/ballon-0.30-rulebook`)
 
 - Regeln A1–A9 (Ausrüstung) und F1–F9 (Figuren) aus Motiongen REF 0.30 „Blueprint“ mit Quellen-IDs im Stilhandbuch (§2, §3, §7, §8,

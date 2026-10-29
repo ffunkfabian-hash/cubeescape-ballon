@@ -17,10 +17,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # A1 (A-R1, A-R7; Quellen A01, A02, A20, A08, YA02, YA03): schwarze Seitensilhouetten auf gleiche Länge normiert, paarweise IoU
 IOU_LIMIT = 0.85
 SIL_SHARED = ['basic/common.py', 'basic/kit.py']      # Formbausteine aller Waffen: Teil des Aktualitätsschlüssels (Richter 0.30)
-# A2 (A-R24; Quellen A05, YB09, A21): Dreiecke je Ego-Waffe, Ziel und Obergrenze (Warnung)
-TRI_TARGET, TRI_LIMIT = 20000, 30000
+# A2 (A-R24; Quellen A05, YB09, A21): Dreiecke je Ego-Waffe, Ziel und Obergrenze (Warnung); Grenze 50 000 (Nutzer 29.10.2026)
+TRI_TARGET, TRI_LIMIT = 20000, 50000
 # A4 (A-R9; Quelle YA01): Freihaltezone im Hüftbild – ±10 % der Bildbreite um die Absehen-Spalte, obere zwei Drittel
 ZONE = dict(half_w=0.10, top=0.0, bottom=2 / 3)
+# A4 gelockert (Nutzer 29.10.2026, „B Zone lockern“): das vordere Ende (Mündung) darf in die untere äußere Ecke der Zone ragen – alles
+# Belegte liegt dann rechts von x0 und unterhalb von y0 (Anteile von B/H); die Destiny-Hüftlage (Mündung x 54–59 / y 60–71 %) hat Vorrang
+ZONE_FRONT = dict(x0=0.53, y0=0.55)
 # F1 (F-R8; F28, F05, F07): ≈ 7,5 Kopfhöhen, Helm gemessen, Kopf nicht vergrößert
 HEADS_TARGET, HEADS_BAND = 7.5, (7.0, 8.0)
 # F5 (F-R11; F11, YB06, A24): ein Handmaß für Ego und Figur; Bezug Griffbreite der Familie (BGM-1, common.grip_rifle w)
@@ -146,6 +149,8 @@ def clear_zone_notes(data, playable):
         stale = e.get('sources_sha256') != sha_files(clear_sources(mod))
         if stale:
             out.append(f'Hinweis Freihaltezone {wid}: Messung veraltet (Waffe, Haltung oder Arm geändert; tools/ego_clear.py)')
+        if e['zone_px'] > 0 and e['cols'] and e['cols'][0] >= ZONE_FRONT['x0'] and e['top_y'] >= ZONE_FRONT['y0']:
+            continue                                    # nur das vordere Ende in der erlaubten Ecke (A4 gelockert)
         if e['zone_px'] > 0:
             pre = 'Hinweis Freihaltezone (Stand vorher)' if stale else 'Warnung Freihaltezone'
             out.append(f"{pre} {wid}: {e['zone_px']} px ({e['zone_share'] * 100:.2f} % der Zone) belegt, "
