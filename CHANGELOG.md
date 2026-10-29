@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Patch schriftzug-02 – Schriftzug BASIC-02 v2.1 liegt auf (Branch `claude/ballon-patch-schriftzug-02`)
+
+- Nutzer-Ja auf den Nebenbefund aus 0.28 (Netzprüfung: nur 1664/2720 Buchstabenecken lagen auf, der Schriftzug stand über dem
+  Kammerfenster): Schriftzug „BASIC PR-02“ f 360 → 378, zwischen Kammerfenster und Schrägband; jetzt 2720/2720 Ecken auf der Kammer.
+- Spec, Unity-Export (FBX, Atlanten, ego.json) und Unity-Vergleich für BASIC-02 neu; Belege `~/Library/Caches/CubeEscapeBallon/schriftzug-02/`.
+
 ## 0.28.0 „Breech“ – Granatwerfer BASIC-13 und Raketenwerfer BASIC-14 im Stil v2.1 (Branch `claude/ballon-0.28-breech`)
 
 - BASIC-13 v2.1 als Trommelwerfer (Nutzerwahl „Trommel statt Kipplauf“, EXT-02 vorgezogen, Leitmerkmal 13 im Designvertrag): sechs
