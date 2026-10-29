@@ -1,6 +1,6 @@
 """Arm-Vorschau ohne Waffe: rechter BASIC-Roboterarm in einer Schauhaltung, Seitenansicht und Hand-Nahansichten.
 
-  blender -b --factory-startup -P tools/arm_preview.py -- [--rig v1|v2] [--k 1.0] [--tag aktuell] [--gpu] [--samples N]
+  blender -b --factory-startup -P tools/arm_preview.py -- [--rig v1|v2|studies.<name>] [--k 1.0] [--tag aktuell] [--gpu] [--samples N]
 
 --k skaliert den Querschnitt von Ober- und Unterarm (nur Vorschau, ändert basic/arms nicht). Ausgabe:
 <OUT>/arms/preview/<tag>_{seite,hand_offen,hand_faust,schraeg}.png
@@ -47,6 +47,8 @@ def main():
     if o['rig'] == 'v1':
         from basic.arms import robot_arm_v1
         EB.RA = robot_arm_v1
+    elif o['rig'] != 'v2':                 # Formstudie (0.23): basic.arms.<rig>
+        EB.use_rig(o['rig'])
     kit.reset_scene()
     segs, pieces = EB.build_arm('R')
     if o['k'] != 1.0:               # Querschnitt (Segment-X/Y) von Ober- und Unterarm skalieren

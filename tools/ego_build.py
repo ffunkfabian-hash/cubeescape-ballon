@@ -20,6 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic import kit  # noqa: E402
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
+from basic.arms import forms as FM  # noqa: E402
 import tools.blender_build as BB  # noqa: E402
 from tools.paths import OUT  # noqa: E402
 
@@ -37,6 +38,8 @@ def args():
     if '--weapon' in a:
         o['weapon'] = a[a.index('--weapon') + 1]
     o['frames'] = tuple(int(x) for x in a[a.index('--frames') + 1].split('-')) if '--frames' in a else None   # Vorschau: nur Bilder a–b schreiben
+    o['rig'] = a[a.index('--rig') + 1] if '--rig' in a else None          # Formstudie statt Arm v3 (0.23): basic.arms.<rig>
+    o['poses'] = a[a.index('--poses') + 1].split(',') if '--poses' in a else None
     return o
 
 
@@ -99,6 +102,58 @@ def hull_verts(bm, pts):
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
 
 
+FORMS = {'loft': lambda p: FM.loft(p['secs'], p.get('ring', 56), p.get('sub', 6)),
+         'wrap': lambda p: FM.wrap(p['secs'], p['a0'], p['a1'], p['t'], p.get('steps'), p.get('sub', 6)),
+         'tube': lambda p: FM.tube(p['path'], p['r'], p.get('segs', 14))}
+
+
+def form_mesh(name, kind, p, sx):
+    """Formen aus basic/arms/forms.py (0.23): weich schattiert, Kanten ab 35° scharf, Fugen per cuts (Quader im Segmentrahmen),
+    linke Seite an X gespiegelt."""
+    V, F = FORMS[kind](p)
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([(MM * x, MM * y, MM * z) for x, y, z in V], [], F)
+    me.update()
+    ob = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(ob)
+    if p.get('cuts'):
+        _cut_boxes(ob, p['cuts'])
+    if sx < 0:
+        ob.data.transform(Matrix.Scale(-1, 4, (1, 0, 0)))
+        ob.data.flip_normals()
+    ob.data.shade_smooth()
+    ob.data.set_sharp_from_angle(angle=math.radians(p.get('sharp', 35)))
+    return ob
+
+
+def _cut_boxes(ob, cuts):
+    """Fugen und Durchbrüche: Quader dict(c=(x, y, z), d=(dx, dy, dz), rz=Grad um Z, rx=Grad um X) in mm, Exact-Boolean."""
+    bm = bmesh.new()
+    for c in cuts:
+        geo = bmesh.ops.create_cube(bm, size=1.0)['verts']
+        bmesh.ops.scale(bm, vec=Vector(c['d']) * MM, verts=geo)
+        R = Matrix.Rotation(math.radians(c.get('rz', 0)), 3, 'Z') @ Matrix.Rotation(math.radians(c.get('rx', 0)), 3, 'X')
+        bmesh.ops.rotate(bm, verts=geo, cent=(0, 0, 0), matrix=R)
+        bmesh.ops.translate(bm, vec=Vector(c['c']) * MM, verts=geo)
+    me = bpy.data.meshes.new(ob.name + '_cut')
+    bm.to_mesh(me)
+    bm.free()
+    cut = bpy.data.objects.new(ob.name + '_cut', me)
+    bpy.context.scene.collection.objects.link(cut)
+    mod = ob.modifiers.new('BASIC_Cut', 'BOOLEAN')
+    mod.operation, mod.solver, mod.use_self, mod.object = 'DIFFERENCE', 'EXACT', True, cut
+    bpy.context.view_layer.update()
+    res = bpy.data.meshes.new_from_object(ob.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+    ob.modifiers.remove(mod)
+    if len(res.vertices) < 8:
+        raise RuntimeError(f'Fuge an {ob.name} ergibt ein leeres Netz')
+    res.materials.clear()                  # leerer Platz vom Schneidkörper; die Rolle hängt build_arm danach an
+    old = ob.data
+    ob.data = res
+    bpy.data.meshes.remove(old)
+    bpy.data.objects.remove(cut)
+
+
 def piece_mesh(name, kind, p):
     bm = bmesh.new()
     if kind == 'box':
@@ -150,12 +205,12 @@ def build_arm(side):
         if kind == 'plate':        # Spiegeln an X: Winkel und Seitenversatz umkehren
             p['phi'] = sx * p.get('phi', 0.0)
             p['u'] = sx * p.get('u', 0.0)
-        ob = piece_mesh(f'{side}_{pid}', kind, p)
+        ob = form_mesh(f'{side}_{pid}', kind, p, sx) if kind in FORMS else piece_mesh(f'{side}_{pid}', kind, p)
         ob.data.materials.append(kit.material(role))
-        if p.get('bevel'):
+        if p.get('bevel') is not None:
             kit.add_bevel(ob, p['bevel'])
-        elif kind in ('cyl', 'prism', 'plate', 'hull'):
-            kit.add_bevel(ob, {'cyl': 0.8, 'prism': 1.6, 'plate': 1.0, 'hull': 1.6}[kind])
+        elif kind in ('cyl', 'prism', 'plate', 'hull', 'loft', 'wrap'):
+            kit.add_bevel(ob, {'cyl': 0.8, 'prism': 1.6, 'plate': 1.0, 'hull': 1.6, 'loft': 1.2, 'wrap': 0.9}[kind])
         ob.parent = segs[seg]
         pieces[f'{side}_{pid}'] = ob
     return segs, pieces
@@ -280,6 +335,13 @@ def secondary(R, pos, f, state, aim=False):
 
 # ------------------------------------------------------------------ Hände
 PALM_CENTER = Vector((0, -RA.PALM_T / 2, RA.PALM_START + RA.PALM_LEN / 2)) * MM
+
+
+def use_rig(name):
+    """Anderes Arm-Rig laden (Formstudien 0.23, basic.arms.<name>); Skelett und Handfläche bestimmen die Griffe."""
+    global RA, PALM_CENTER
+    RA = importlib.import_module(f'basic.arms.{name}')
+    PALM_CENTER = Vector((0, -RA.PALM_T / 2, RA.PALM_START + RA.PALM_LEN / 2)) * MM
 
 
 GRIPS = EG.GRIPS          # Griffe der Waffe in der Szene (Scene setzt sie aus ego.profile, 0.18); ohne Szene die der Pilotwaffe
@@ -629,6 +691,9 @@ def main():
     W = importlib.import_module(f'basic.{o["weapon"]}')
     wid = W.META['id'] + (f"-{W.META['variant']}" if W.META.get('variant') else '')
     out = os.path.join(OUT, wid, 'ego')
+    if o['rig']:                                   # Formstudie (0.23): eigenes Rig, eigener Ordner, Ego-Daten bleiben unberührt
+        use_rig(o['rig'])
+        out = os.path.join(OUT, 'arms', 'studies', o['rig'].split('.')[-1], wid)
     os.makedirs(os.path.join(out, 'stills'), exist_ok=True)
     sc = Scene(W, o)
     if o['actions'] == list(EG.ACTIONS):          # 'all': Aktionen der Klasse (Werkzeug ohne Zielen/Nachladen, mit fire_a/fire_b; 0.22)
@@ -638,7 +703,8 @@ def main():
     if o['stills']:
         scn.render.resolution_x, scn.render.resolution_y = 1600, 900
         scn.cycles.samples = max(96, o['samples'])
-        for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch') if k in sc.P['poses']]:
+        for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch')
+                     if k in sc.P['poses'] and (not o['poses'] or k in o['poses'])]:
             rep = {}
             A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else 'support')], R=[(0, 'grip')])   # wie Aktion inspect
             if name == 'reload':
@@ -669,6 +735,9 @@ def main():
                                      src=A['src'], wrist_bend_max_deg=round(rep.get('wrist_max_deg', 0), 1),
                                      overreach_frames=rep.get('overreach', 0))
         print(f"[ego] {name}: {A['frames']} Bilder, Handgelenk max {rep.get('wrist_max_deg', 0):.0f}°")
+    if o['rig']:
+        json.dump(meta, open(os.path.join(out, 'study.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+        return
     mp = os.path.join(out, 'ego.json')
     if os.path.exists(mp):
         old = json.load(open(mp, encoding='utf-8'))
