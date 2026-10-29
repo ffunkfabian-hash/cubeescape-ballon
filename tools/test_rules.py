@@ -92,6 +92,19 @@ expect(len(rigs) >= 3, f'Armsätze nicht gefunden: {[r.__name__ for r in rigs]}'
 for r in rigs:
     expect(rules.hand_problems(rules.hand_measure(r), ego) == [], f'Armsatz {r.__name__}: Handmaß weicht von Arm v3 ab')
 expect(not any(x.startswith('Armsatz') for x in rules.figure_report()[0]), 'figure_report meldet Armsatz-Handmaß')
+from basic.arms import forms as FM  # noqa: E402
+BUILD = {'loft': lambda q: FM.loft(q['secs'], q.get('ring', 56), q.get('sub', 6)),          # wie tools/ego_build.FORMS
+         'wrap': lambda q: FM.wrap(q['secs'], q['a0'], q['a1'], q['t'], q.get('steps'), q.get('sub', 6)),
+         'tube': lambda q: FM.tube(q['path'], q['r'], q.get('segs', 14))}
+nform = 0
+for r in rigs:                                           # Formen der Armsätze: gültige Indizes, geschlossen, nach außen orientiert
+    for pid, _de, _seg, kind, _role, q in r.parts():
+        if kind in BUILD:
+            V, F = BUILD[kind](q)
+            nform += 1
+            expect(V and F and all(0 <= i < len(V) for f in F for i in f), f'{r.__name__} {pid}: ungültiges Netz')
+            expect(FM._volume(V, F) > 0, f'{r.__name__} {pid}: Volumen ≤ 0')
+expect(nform > 30, f'zu wenige Formen in den Armsätzen geprüft: {nform}')
 
 # F6 Budget, F1 Proportion
 n = rules.figure_budget_notes('F', 40000, 120)
