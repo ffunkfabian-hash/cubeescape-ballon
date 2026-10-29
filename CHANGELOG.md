@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.30.0 „Rulebook“ – Blueprint-Regeln Teil 1: Regelwerk und Prüfungen (Branch `claude/ballon-0.30-rulebook`)
+
+- Regeln A1–A9 (Ausrüstung) und F1–F9 (Figuren) aus Motiongen REF 0.30 „Blueprint“ mit Quellen-IDs im Stilhandbuch (§2, §3, §7, §8,
+  neuer §12 Figuren); Nutzer 29.10.2026 „Alle wie empfohlen“ (A8 B). R_SOFT 6,5 mm als Regel im Designvertrag (Code mit Teil 2).
+- `./check`: Seitensilhouetten der 16 Familienwaffen paarweise (IoU < 0,85, Fehler; `tools/silhouettes.py` → `data/silhouettes.json`,
+  kein Paar verletzt, höchstes 02 ↔ 12 0,710), Dreiecksbudget 20 000/30 000 und Freihaltezone im Hüftbild (`tools/ego_clear.py` →
+  `data/ego_clear.json`, alle fünf spielbaren Waffen leicht verletzt) als Warnungen; Figurenprüfungen (Vertrag `basic/figures`, Handmaß,
+  Budget, Proportion, Posensatz am Netz `tools/test_figure.py`) mit Tests (`tools/test_rules.py`).
+- Neue Ansicht `far` (3 m / 5 m, 75° waagrecht, `tools/far_views.py`) im Sichtbogen und in Runde 1; Belege mit `tools/rules_evidence.py`.
+- Keine Waffe verändert, Unity unberührt. Bericht: [docs/versions/0.30-rulebook.md](docs/versions/0.30-rulebook.md).
+
 ## 0.29.0 „Bowstring“ – Kampfbogen BASIC-07 im Stil v2.1 (Branch `claude/ballon-0.29-bowstring`)
 
 - BASIC-07 v2.1 als Compound-Sichel (Zwischenstopp, Nutzerwahl „(a) so übernehmen“): Creme-Mittelstück mit Sichtfenster, gekröpftem

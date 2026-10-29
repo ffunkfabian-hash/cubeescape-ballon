@@ -1,0 +1,138 @@
+{
+ "format": "cubeescape-ballon/ego-clear",
+ "format_version": 1,
+ "generated_by": "tools/ego_clear.py",
+ "de": "Freihaltezone im Hüftbild (A4): belegte Pixel von Waffe und Armen in der Zone (±10 % B um die Bildmitte, obere zwei Drittel) bei 1600 × 900; top_y = oberster belegter Punkt in den Zonenspalten (Anteil H von oben), cols = belegte Spalten in der Zone (Anteil B). Aktuell, solange sources_sha256 (tools/rules.clear_sources) stimmt.",
+ "weapons": {
+  "BASIC-01-v2.1": {
+   "zone_px": 1595,
+   "zone_share": 0.00831,
+   "top_y": 0.6133,
+   "cols": [
+    0.5719,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "d8b3f4edee967bae9bdb07cb444f058c5af7e627aff250f98e2717a17f06a9da",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-01-v2.1.png"
+  },
+  "BASIC-02-v2.1": {
+   "zone_px": 1994,
+   "zone_share": 0.01039,
+   "top_y": 0.6156,
+   "cols": [
+    0.5706,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "0ca06d9989450152bea431f0eef8088a2fef44bb7c908db797fea55c6baae3f6",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-02-v2.1.png"
+  },
+  "BASIC-03-v2.1": {
+   "zone_px": 1480,
+   "zone_share": 0.00771,
+   "top_y": 0.6156,
+   "cols": [
+    0.5631,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "d06e69cf04ab158677816cd1a7c144303a414101c16769d349f12ef2d2cf06ab",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-03-v2.1.png"
+  },
+  "BASIC-06-v2.1": {
+   "zone_px": 3117,
+   "zone_share": 0.01623,
+   "top_y": 0.5956,
+   "cols": [
+    0.5669,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "05f605754152edf949cc271fcf14d7774aff94f2181284f217ffbfabedf7076a",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-06-v2.1.png"
+  },
+  "BASIC-T01-v2.1": {
+   "zone_px": 3384,
+   "zone_share": 0.01762,
+   "top_y": 0.6056,
+   "cols": [
+    0.535,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "73a8acc0f7d8af67b6cf6de90a12fccb2f4d1269a2f2ae7ef1a51cade68504e2",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-T01-v2.1.png"
+  }
+ }
+}

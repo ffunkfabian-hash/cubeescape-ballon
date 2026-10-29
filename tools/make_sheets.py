@@ -74,7 +74,8 @@ LABEL_ASM = {'receiver': 'Gehäuse', 'barrel': 'Laufmodul', 'ammo': 'Munition', 
 VIEW_DE = {'hero': 'Dreiviertelansicht rechts vorn', 'side': 'Seite rechts (orthografisch)', 'side_left': 'Seite links, Ego-Seite',
            'top': 'Draufsicht', 'front': 'Vorderansicht', 'rear': 'Rückansicht', 'ego': 'Blick von links hinten oben (Ego-nah)',
            'clay': 'Neutrale Materialansicht', 'silhouette': 'Silhouette rechts', 'exploded': 'Explosionsansicht (grafisch)',
-           'sightline': 'Durchblick aus Socket_Eye', 'part_sight': 'Visier einzeln', 'part_ammo': 'Munitionsteil einzeln'}
+           'sightline': 'Durchblick aus Socket_Eye', 'part_sight': 'Visier einzeln', 'part_ammo': 'Munitionsteil einzeln',
+           'far_3m': 'Hauptansicht in 3 m (75° waagrecht)', 'far_5m': 'Hauptansicht in 5 m (75° waagrecht)'}
 
 
 def webp(png, width, q=80):
@@ -237,7 +238,9 @@ def sheet(wid, full=True):
     check = ''.join(view_img(d, V, v, 800, f"<b>{VIEW_DE[v]}.</b> {txt}") for v, txt in (
         ('silhouette', 'Form muss ohne Farbe tragen.'), ('clay', 'Ohne Material; Flächen und Fugen.'),
         ('ego', 'Sichtbare Seite im Ego-Bild (ohne Hände).'),
-        ('sightline', 'Freie Durchsicht entlang der Visierlinie, Mündung unten im Feld.')))
+        ('sightline', 'Freie Durchsicht entlang der Visierlinie, Mündung unten im Feld.'),
+        ('far_3m', 'Ansicht far (A7, 0.30): Klasse auf Distanz erkennbar? Ausschnitt in echten Pixeln eines 1080p-Bildes.'),
+        ('far_5m', 'Ansicht far (A7, 0.30): wie 3 m, Großformen und Leitmerkmal müssen tragen.')))
     expl = asm_points(W, V, 'exploded')
     exploded = view_img(d, V, 'exploded', 1400, '<b>Explosionsansicht aus dem Modell.</b> Grafische Auseinanderziehung je Baugruppe; '
                         'der tatsächliche Demontageweg steht in der Bauteilliste (Bewegung/Entnahme).', expl)

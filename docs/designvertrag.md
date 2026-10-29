@@ -28,6 +28,7 @@ sauberen Anschlüssen und klaren Baugruppen – nicht aus Detail- oder Polygonza
 | R_MID | 3,0 mm | Magazine, Zellen, Visierkörper |
 | R_SMALL | 1,5 mm | Ringe, Schienen, Klemmfüße |
 | R_FINE | 0,8 mm | Abzug, Hebel, Kimme/Korn |
+| R_SOFT | 6,5 mm | nur Griffpolster (`rubber`), eine Stufe über dem harten Träger (Fase als Materialsignal, A5, Nutzer 29.10.2026); Regel ab 0.30, im Code (`basic/common.py`) erst mit Teil 2 der Blueprint-Regeln, bis dahin tragen die Griffe R_BODY |
 | Fuge | 1,0 mm Abstand zwischen getrennten Schalen | Gehäuse/Handschutz, Ober-/Unterteil |
 
 Toolgen setzt eigene Fasen (0,5–2 mm) auf importierte Netze (Formgen-Entscheidung 19.10.2026); die BASIC-Fasen sind Gestaltung

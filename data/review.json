@@ -701,7 +701,14 @@
     },
     "notes": [
       "Bullpup-Aufbau (Ogma PR6, Yesteryear) bewusst nicht übernommen: Designvertrag 02 ist konventionell; Entscheidung beim Nutzer."
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: auf 5 m nah an 01/10/12; Ego-Silhouette höchstes Paar der Familie mit 10 (IoU 0,839 < 0,85), Seite mit 12 0,710. A3: Anzeigen links ✓. A8: Gehäuse ≈ 1 : 1 (geschätzt)."
+    }
   },
   "BASIC-01-v2.1": {
     "static": {
@@ -726,7 +733,14 @@
     },
     "notes": [
       "Mechanik-Bildfolgen des Piloten wurden erst mit der Familienprüfung (0.6) gerendert und gesichtet."
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: Haube mit Auskragung, Magazin, Schaft lesbar; auf 5 m nah an 02/12 (helle Gewehre mit Schaft) – Seiten-IoU zu 15 0,686. A3: Kern, Anzeige, Wahlhebel links ✓; Kompensator mit feinen Schlitzen → Abstand ≥ 4 px im Hüftbild bei der nächsten Überarbeitung prüfen. A8: Gehäuse Lack/Polymer ≈ 1 : 1 (geschätzt)."
+    }
   },
   "BASIC-03-v2.1": {
     "static": {
@@ -817,6 +831,13 @@
         "befund": "gleich wie vorher (Ring nicht geändert, Kontrollrender von main ebenfalls 322/246/207 px). Die äußere Kante im Bild ist die Fasenwulst des Objektivtrichters (gerechnet r ≈ 21 mm bei 84,5 mm Abstand), nicht scope_rim (16,5 mm)",
         "beleg": "~/Library/Caches/CubeEscapeBallon/saddle/nachher/sight_options/rohr_ziel.png"
       }
+    },
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: 3 m klar (langer Lauf, Zielfernrohr); 5 m nah an 09 (Ego-IoU 0,788). A3: links nur der Bedienknopf, Mündung fein gestuft. A8: Creme-Gehäuse dominiert (≈ 70 : 30) ✓."
     }
   },
   "BASIC-06-v2.1": {
@@ -842,7 +863,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-06-v2.1/ (views/, motion/, .blend, .glb, Spec)"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: kurzer Körper, Vordergriff und Schaft klar. A3: Anzeige und Band links ✓. A8: Gehäuse ≈ 1 : 1 (geschätzt)."
+    }
   },
   "BASIC-T01-v2.1": {
     "static": {
@@ -867,7 +895,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-T01-v2.1/ (views/, views_e1, views_e2, motion/, .blend, .glb, Spec) und ~/Library/Caches/CubeEscapeBallon/gateway/ (Kontaktbögen, Turntable, Skizzen); views_r1–r3 gehören zum verworfenen Entwurf A"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: Eischale und Ring einzig in der Familie. A3: Kern links/oben ✓. A8: Schale/Unterbau ungleich ✓."
+    }
   },
   "BASIC-06-v2.1-ego": {
     "static": {
@@ -1361,7 +1396,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-04-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/holster/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: Haube und Trommel klar; auf 5 m von 05 vor allem über Länge/Größe zu trennen (Seiten-IoU 0,61). A3: Fenster und Band links ✓. A8: Haube/Rahmen ≈ 60 : 40 (Grenzfall, geschätzt)."
+    }
   },
   "BASIC-05-v2.1": {
     "static": {
@@ -1386,7 +1428,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-05-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/holster/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: 5 m kleiner heller Block, nah an 04. A3: Anzeige links ✓. A8: Schlitten/Rahmen ≈ 55 : 45 (im Band 0,4–0,6, geschätzt; funktional vorgegeben)."
+    }
   },
   "BASIC-08-v2.1": {
     "static": {
@@ -1411,7 +1460,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-08-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/longshot/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: dunkle Lüftungsschiene und Pumpe klar. A3: Band und Anzeige links ✓. A8: kurzes Creme-Gehäuse, Teilung ungleich ✓."
+    }
   },
   "BASIC-09-v2.1": {
     "static": {
@@ -1436,7 +1492,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-09-v2.1/ (views/ mit 8 Skins und sightline.png, motion/ von links, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/longshot/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: auf 5 m nah an 03 (Ego-IoU 0,788, Seite 0,654). A3: Kammerstängel links ✓; Mündung fein. A8: ✓ (Creme-Gehäuse lang, Unterteil schmal)."
+    }
   },
   "BASIC-11-v2.1": {
     "static": {
@@ -1461,7 +1524,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-11-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kindle/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: lange Doppelschiene klar. A3: Leuchtkern links ✓. A8: ✓ (Schiene oben Creme / unten Graphit, funktional)."
+    }
   },
   "BASIC-10-v2.1": {
     "static": {
@@ -1492,7 +1562,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-10-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kindle/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: auf 5 m nah an 02/12 (Ego-IoU 0,839 mit 02). A3: Zellenfenster und Spulen links ✓. A8: Gehäuse ≈ 1 : 1 (geschätzt)."
+    }
   },
   "BASIC-12-v2.1": {
     "static": {
@@ -1517,7 +1594,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-12-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/tracer/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: auf 5 m nah an 02 (Seiten-IoU 0,710, höchstes Paar der Familie). A3: Fokusscheibe links ✓. A8: ✓ (Haube lang über dem Gehäuse)."
+    }
   },
   "BASIC-15-v2.1": {
     "static": {
@@ -1542,7 +1626,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-15-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/tracer/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: Kasten und Gurt auf 3 m klar; auf 5 m nah an 01 (Seiten-IoU 0,686). A3: Gurt und Kasten links ✓; Mündung fein. A8: ≈ 1 : 1 am Gehäuse (geschätzt)."
+    }
   },
   "BASIC-13-v2.1": {
     "static": {
@@ -1567,7 +1658,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-13-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/breech/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: Trommel klar. A3: Kammerfenster links ✓. A8: ✓. Budget 43 364 Dreiecke (> 30 000)."
+    }
   },
   "BASIC-14-v2.1": {
     "static": {
@@ -1592,7 +1690,14 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-14-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/breech/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: Startrohr klar. A3: oranges Fenster vorn am Rohr – Akzent an der Front statt kameranah (Befund, kein Umbau). A8: Rohr Creme/Schwarz der Länge nach ≈ 1 : 1 (geschätzt)."
+    }
   },
   "BASIC-07-v2.1": {
     "static": {
@@ -1617,6 +1722,13 @@
     },
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-07-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kampfbogen/"
-    ]
+    ],
+    "rules_0_30": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "0.30 „Rulebook“ Runde 1 nach den neuen Punkten: Seitensilhouette (./check, IoU), Ego-Silhouette (Mosaik silhouettes_ego.png), far 3 m / 5 m (far_contact.png), A3/A8 an side_left (Renderstand 25.–29.10.2026); Teilungen am Bild geschätzt, nicht gemessen",
+      "finding": "far: einzige Bogenform, klar; in 3 m oben/unten angeschnitten (640 × 360 in echten Pixeln). A3: Pinvisier links ✓. A8: nicht anwendbar (kein Zweitonblock)."
+    }
   }
 }
