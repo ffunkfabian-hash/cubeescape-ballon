@@ -368,8 +368,12 @@ if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
     r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_sight_seat.py')], capture_output=True, text=True)
     if r.returncode or 'Zielfernrohre geprüft' not in r.stdout:
         fail('Visiersitz: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln or 'Traceback' in ln) + r.stderr[-300:])
+    # Posensatz am Netz (0.30, F3): Selbsttest am Prüfkörper und jede Figur in basic/figures (BVH je Teilpaar und Pose, ~2 s)
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_figure.py')], capture_output=True, text=True)
+    if r.returncode or 'Figuren geprüft' not in r.stdout:
+        fail('Figuren: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln or 'Traceback' in ln) + r.stderr[-300:])
 elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux: Blender-Stufen bleiben auf dem Mac (check.yml)
-    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test nur auf dem Mac')
+    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test, Visiersitz und Posensatz (Figuren) nur auf dem Mac')
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_sights.py')], capture_output=True, text=True)   # 0.21 Baukasten v3
@@ -417,6 +421,17 @@ elif 'Hinweis' in r.stdout:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'scene_build.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Szenen: ' + r.stdout.strip())
+# Regeln aus Motiongen REF 0.30 „Blueprint“ (0.30 „Rulebook“, Nutzer 29.10.2026: „Alle wie empfohlen“; stilhandbuch › 2, › 12):
+# A1 Seitensilhouetten paarweise IoU < 0,85 (Fehler), A2 Dreiecksbudget, A4 Freihaltezone im Hüftbild, F Figuren (Warnungen)
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_rules.py')], capture_output=True, text=True)
+if r.returncode or 'Regeln geprüft' not in r.stdout:
+    fail('Regeltests: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln) + r.stderr[-300:])
+from tools import rules as RU   # noqa: E402
+_err, _notes = RU.report()
+for b in _err:
+    fail(b)
+for ln in RU.summarize(_notes):
+    print(ln)
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_docs.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Erzeugte Doku veraltet: python3 tools/make_docs.py (' + r.stdout.strip() + ')')

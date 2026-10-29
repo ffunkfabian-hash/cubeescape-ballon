@@ -34,12 +34,16 @@ Arm-Rig. Ein Waffenstil v3 existiert nicht.
 | 28.10.2026 | Granatwerfer BASIC-13 und Raketenwerfer BASIC-14 v2.1 (0.28 „Breech“): am Zwischenstopp nach dem Kipplauf-Erstentwurf „Warum hat der granatwerfer keine Trommel? Im besten Fall für später animiert.“ → Wahl „Trommel statt Kipplauf“: 13 v2.1 ist der Trommelwerfer (Erweiterung EXT-02 vorgezogen, Leitmerkmal 13 im Designvertrag „Drehtrommel im offenen Rahmen“; v1 bleibt Kipplauf), sechs Kammern, Trommel dreht je Schuss eine Kammer weiter (Daten `move.cycle = 'shot'`), Ladeklappe, Hülsen nur beim Nachladen (`EJECT.on = 'reload'`); am Bild „schwebender Ring“ → Ladeklappe auf der Stoßplatte in einer Ladeschale; „Müsste das Granatwerfer nachladen nicht auf die linke seite anstelle der rechten seite?“ → Ladeschale, Ladeklappe und Klappenknopf links (Stützhand-Seite, wie Kammerstängel 09 und MG-Kasten 15). 14: „Müsste das Visier vom raketenwerfer nicht eher an der Seite sitzen?“ → nach der Korrektur, dass bei 66 mm Abstand das Rohr in jeder Richtung ins Fenster ragt, „Seitlich links, 66 mm notfalls Bauteil dazu passend erfinden“: Visier auf einem Visierarm an einer Visierschelle links neben dem Startrohr, Visierlinie auf Achshöhe; die Visierhöhe zählt seitdem als Abstand der Visierlinie zur Laufachse (66 ± 4). Raketenwerfer hülsenlos (`caseless`, `EJECT = None`); er bleibt mit dem seitlichen Visier flacher als die beobachteten Destiny-Raketenwerfer (H/L 0,26 statt ≈ 0,38–0,40). Visiere W1 „D-Linse“ und W2 „Entfernung“ gebaut, W3 Leiter und W1 L nur dokumentiert |
 | 29.10.2026 | Kampfbogen BASIC-07 v2.1 (0.29 „Bowstring“): beim ersten Entwurf „das visier muss nach links, nicht nach rechts“ (Wahl „ganz zur linken Seite“) → Pinvisier B1 seitlich links neben dem Fensterbogen, 66 mm vom Pfeil (60 links, 27,5 darüber; Regel „seitlich nur links“ aus 0.28), Augenpunkt in Linie; dazu „achte hier besonders auf cubeescape reference zum thema bogen“ → Spannzeit 0,60 s (Draw Time 612 ms), Riser im Zielbild rechts der Mitte, H/L 0,72 gegen Destiny 0,73. Zwischenstopp „(a) so übernehmen“: Compound-Sichel (Creme-Mittelstück mit Sichtfenster und Durchbruch, dunkle gespaltene Wurfarme schwingen nach hinten zu Rollen, Sehne und Pfeil als eigene Teile); Feinschliff nur in der Form (Griffstück mit Handballenwölbung statt Kasten, Nocke schlanker). Bogen-Regel in [familienmasse.md](familienmasse.md): Griffstück statt BGM-1, kein Magazin, kein Auswurf; Weltzoom der Referenz (2,2×) erst mit dem Ego-Übertrag |
 | 26.10.2026 | Portalkanone BASIC-T01 (0.17 „Gateway“): Werkzeug mit eigener Silhouette statt Familienkörper; nur Hüfte mit Kerbe als Leitkante, kein Visier; zwei Portalfarben (vorn Cyan = Portal A, hinten Orange = Portal B), Bedienelemente neutral; nach Skizze A „Ring“ der Wunsch „mehr an der Portal-2-Portalgun orientieren, nur im BALLON-Stil“ → Skizze P2 „Ei und Ring“ (facettierte Eischale, offener Zweifarbkern, Ring fest auf Speichen, dreht je Schuss 120°); „am Abzug sind die Teile in der Luft“ → Spalte gemessen und geschlossen |
+| 29.10.2026 | Regeln aus Motiongen REF 0.30 „Blueprint“ ([design-ausruestung.md › 5](https://github.com/ffunkfabian-hash/cubeescape-reference/blob/main/docs/design-ausruestung.md#5-entscheidungsliste), [design-figuren.md › 5](https://github.com/ffunkfabian-hash/cubeescape-reference/blob/main/docs/design-figuren.md#5-entscheidungsliste), Quellen-IDs aus `data/design_quellen.json`): „Alle wie empfohlen“ – A1–A7 A, **A8 B**, A9 A; F1–F9 A. Übernommen in 0.30 „Rulebook“ als Regeln in §2 (Ausrüstung) und §12 (Figuren) und als Prüfungen in `./check`; A6 (gewichtete Normalen) und A9 (eigener Bildwinkel in Unity) folgen als eigene Version mit Export und Backen |
 
 ## 2 Gestaltungsregeln v2
 
 1. **Schlicht zuerst.** Qualität kommt aus Silhouette, Schichtung und Material, nicht aus Kleinteilen. Im Zweifel weglassen.
 2. **Drei Detailebenen.** Große ruhige Schalen (≈ 60 % der Fläche) · mittlere Gliederung: Fugen, Stufen, Einsätze (≈ 30 %) ·
    feine Akzente gebündelt an Mechanik, Visier und Mündung (≈ 10 %). Keine gleichmäßig verteilten Kleinteile.
+   **Akzente kameranah (A3, 0.30):** die feinen Akzente vorrangig an den Teilen, die im Ego-Bild nah und wenig verzerrt liegen –
+   Visier, Verschluss, linke Bedienseite; die Mündung bleibt mehrstufig, aber mit Abständen ≥ 4 px im Ego-Hüftbild (lieber zwei
+   Schlitze als vier, breitere Rändel). Die Front verzerrt in der Ego-Sicht am stärksten, feines Detail verschmilzt dort.
 3. **Negativraum.** Mindestens eine offene Zone, die Funktion zeigt: skelettierter Schaft, offener Laufraum unter einer Haube,
    Fenster mit sichtbarem Lauf oder Verschluss, Magazin-Sichtfenster.
 4. **Schichtung.** Haube, Panzer oder Deckplatte liegen mit 2–3 mm Stufe auf dem Grundkörper; blanke Zierkante (`trim`) nur an
@@ -61,6 +65,25 @@ Arm-Rig. Ein Waffenstil v3 existiert nicht.
 Nicht erlaubt: Zähne/Stacheln, sichtbare Federn als Dekor, mehrere Schriften, Seriennummern-Felder, Leuchtstreifen als Schmuck,
 gefüllte Rillenmuster, Destiny-Formen/-Namen/-Logos.
 
+### Ausrüstungsregeln aus REF 0.30 „Blueprint“ (0.30 „Rulebook“)
+
+Beschlossen vom Nutzer am 29.10.2026 („Alle wie empfohlen“, §1). Regeltexte und Belege in Motiongen
+[design-ausruestung.md › 3](https://github.com/ffunkfabian-hash/cubeescape-reference/blob/main/docs/design-ausruestung.md#3-gestaltungsregeln);
+Quelle = ID in `data/design_quellen.json` (Motiongen `main` 7949582). Gilt für alle Waffen und Werkzeuge der Familie v2.1
+(BASIC-01–15, T01); Fehler lassen `./check` scheitern, Warnungen werden gemeldet und nur nach Rückfrage umgebaut.
+
+| Frage | Regel | Prüfung | Quellen |
+|---|---|---|---|
+| A1 | **Silhouette je Klasse eindeutig** (A-R1, A-R7): schwarze Seitensilhouetten aller Klassen auf gleiche Länge normiert, paarweise IoU < 0,85 (beste senkrechte Verschiebung, also streng); die Sichtung wertet zusätzlich das Ego-Bild (Ansicht `ego`, schwarz) | `tools/silhouettes.py` rastert die Netze ohne Rendern → `data/silhouettes.json`; `./check` rechnet die Matrix (**Fehler**, mit Liste der Paare; veraltet, wenn Entwurf oder Dreieckszahl sich ändern) | A01, A02, A20, A08, YA02, YA03; A07, A15, YA04 |
+| A2 | **Dreiecksbudget je Ego-Waffe** (A-R24): Ziel 20 000, Grenze 30 000 | Zahlen aus `data/specs` (Blender-Netze); `./check` meldet **Warnung** (> 30 000) bzw. Hinweis (> 20 000), kein Umbau ohne Auftrag | A05, YB09, A21, A09, A10, A12, A06, A08 |
+| A3 | **Akzente kameranah** (A-R8): siehe Regel 2 oben | Sichtungspunkt (§3, §7) | YA02, A05, A06, A08, A12 |
+| A4 | **Freihaltezone im Hüftbild** (A-R9): ±10 % der Bildbreite um die Absehen-Spalte (Bildmitte), obere zwei Drittel frei von Waffe und Händen | `tools/ego_clear.py` (GPU): Ego-Still `hip` und Maske aus derselben Szene → `data/ego_clear.json`; `./check` meldet **Warnung** je spielbarer Waffe (Umbau erst nach Rückfrage) | YA01 (einziger Beleg, Bungie-Vortrag) |
+| A5 | **Fasen als Materialsignal** (A-R12): Griffpolster (`rubber`) eine Stufe breiter als der harte Träger – neue Stufe **R_SOFT 6,5 mm** nur für Griffpolster ([designvertrag](designvertrag.md#radien-fasen-fugen)) | Regel; Umsetzung in Teil 2 (die Stufen liegen in `basic/common.py`, das im Unity-Quellenhash liegt, und die bestehenden Griffe sind fertige, exportierte Waffen) | A06, A09, A10, A11, A13, YA09 |
+| A6 | **Ruhiges Shading über gewichtete Normalen** (A-R13) | Stand 0.30: `kit.add_bevel` setzt schon `harden_normals` und `Weighted Normal` je gefastem Teil; Prüfung von Export und Wirkung in Unity in Teil 2 | A26, A25, A13, A16 |
+| A7 | **Distanzansicht `far`** (A-R10, A-R1): Hauptansicht in 3 m und 5 m bei gleicher Brennweite (Bezugsbildwinkel 75° waagrecht), Ausschnitt in echten Pixeln eines 1080p-Bildes | `tools/far_views.py` (GPU) → `views/far_3m.png`, `far_5m.png`, im Sichtbogen (`make_sheets.py`) und in Runde 1 (§7) | A02, A23; A01, A20 |
+| A8 | **Teilungen ungleich** (A-R4, Wahl B): Hauptblöcke (Schale/Unterbau, Haube/Gehäuse, Zweiton) möglichst nicht im Verhältnis 0,4–0,6 teilen, eher ≈ 70:30 | nur Sichtungspunkt in §3 (viele Klassen haben funktional vorgegebene Teilungen) | YA07, A13 |
+| A9 | **Viewmodel mit eigenem Bildwinkel** (A-R11): Waffe und Arme immer mit dem Bezugsbildwinkel von Visier-Standard 3 (75° h), unabhängig vom Welt-FOV, eigener Tiefenbereich gegen Wandclipping | Laufzeit (Unity/Cube Escape), Teil 2 | A22, A28, A21, YB09 |
+
 ## 3 Formsprache-Checkliste je Waffe
 
 Vor dem Bau im Modulkopf festhalten (Docstring), nach dem Bau am Bild prüfen:
@@ -76,6 +99,12 @@ Vor dem Bau im Modulkopf festhalten (Docstring), nach dem Bau am Bild prüfen:
 | Front | gerändelter Kompensator mit Schlitzen, kannelierter Lauf |
 | Übergänge (v2.1) | Magazintrichter im Unterteil angeformt; Handschutz schmiegt sich unter die Haube (1,5 mm Fuge) |
 | Ergonomie (v2.1) | Griff mit Fingerauflagen, Handballenwölbung, ausgestelltem Boden; Magazin leicht gekrümmt |
+| Akzente kameranah (0.30, A3) | Kern, Anzeige und Wahlhebel links; Kompensator mit zwei breiten Schlitzen statt vieler feiner |
+| Teilungen (0.30, A8, nur Sichtung) | Hauptblöcke nicht 0,4–0,6 teilen (Pilot-Gehäuse Lack/Polymer ≈ 1 : 1 – funktional, zur Kenntnis) |
+| Lesbarkeit (0.30, A1/A7) | Seitensilhouette eindeutig (`./check`), Ego-Silhouette und `far` 3 m / 5 m gesichtet |
+
+Ab 0.30 gehören die drei letzten Zeilen in jede neue Checkliste; fertige Waffen werden nicht nachgetragen (ihre Module liegen zum Teil
+im Unity-Quellenhash), ihr Stand steht im Bericht [0.30 „Rulebook“](versions/0.30-rulebook.md).
 
 ### Formtechniken (v2.1)
 
@@ -257,7 +286,12 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
    (Schnelldurchlauf: `--only hero,hero_p,side_left,ego --samples 64`).
 5. **Sichten in Runden** (meist drei): Silhouette und Zweiton → Schichten und Negativraum → Material und Schlichtheitsbudget.
    Je Runde Hauptansicht, linke Seite, Ego-nah, Explosion; zusätzlich Visierlinie (`sightline.png`) und bei Hohlformen eine
-   Volumenprüfung (Blender, `bmesh.calc_volume`).
+   Volumenprüfung (Blender, `bmesh.calc_volume`). **Runde 1 ab 0.30 (A1, A7):** Silhouetten neu rastern
+   (`ce lock blender -- Blender -b --factory-startup -P <repo>/tools/silhouettes.py -- <ID>`; `./check` meldet Paare mit IoU ≥ 0,85),
+   Ego-Silhouette im Mosaik (`python3 tools/rules_evidence.py`) und `far` 3 m / 5 m
+   (`ce lock gpu -- Blender -b --factory-startup -P <repo>/tools/far_views.py -- --gpu <ID>`) sichten: Klasse auf Distanz erkennbar,
+   Leitmerkmal trägt. **Runde 3:** Akzente kameranah (A3), Teilungen (A8), Dreiecke gegen Ziel 20 000 / Grenze 30 000 (A2); für
+   spielbare Waffen die Freihaltezone im Hüftbild (A4, `tools/ego_clear.py`, GPU).
 6. **Mechanik:** `move.expect` für jede Drehung, `./check` (enthält den Drehsinn-Test), Bildfolgen mit `--motion`, Sichtung in
    `data/review.json` eintragen (nur „geprüft“, was im Bild stimmt).
 7. **Doku und Blätter:** `tools/sync_specs.py`, `tools/make_docs.py`, `tools/make_sheets.py` (Pilotvergleich: `--pilot <datei>`,
@@ -280,6 +314,7 @@ Katalog in `basic/reticles.py` (eine Quelle), Übersicht [absehen.md](absehen.md
 | Illustration (Standard) | Konstruktionsblätter, Kontaktbögen | Cycles, Freestyle-Kontur, flache Farben, transparenter Grund |
 | AAA (`--aaa`) | Produkt- und Stilprüfung, Skins | Cycles GPU, AgX „Medium High Contrast“, Key 170 W / Fill 40 W / Rim 320 W / Top 60 W, Hintergrund siehe `--bg` (Standard mittelgrau), Umgebungslicht 0,35–0,55, ohne Kontur, **ohne Bloom** |
 | Produktansicht `hero_p` | Hauptbild | Perspektive 70 mm aus der Hauptrichtung |
+| Distanzansicht `far` (0.30, A7) | Erkennbarkeit auf Distanz, Sichtung Runde 1 | `tools/far_views.py`: Hauptrichtung, 3 m und 5 m, gleiche Brennweite 23,5 mm KB (75° waagrecht wie die Ego-Kamera), 1920 × 1080, gespeichert nur der mittlere Ausschnitt 640 × 360 in echten Pixeln; lange oder hohe Waffen (Bogen in 3 m) werden angeschnitten |
 | Hintergrund `--bg` | Sichtprüfung | `dark` (Inspektionsbild), `mid` (**Standard**, Grau `#4C525A → #9EA4AC`, Creme und Schwarz gleich gut lesbar), `light`; Vergleichsläufe mit `--tag` in eigenen Ordner `views_<tag>` |
 
 ## 9 Typische Fehler
@@ -388,3 +423,24 @@ Pilot Formstudie 01 v2.1 fertig (70 Teile, 32 694 Dreiecke, 8 Skins, grauer Hint
 Eigenes Arm-Rig v3 (vier Finger) und 19 Ego-Aktionen am Pilot; andere Waffenklassen offen. Familie Stil v2.1 mit Visier-Standard 3: BASIC-01, 02, 03,
 04 und 05 (Handfeuerwaffe und Seitenwaffe mit Kimme/Korn K1, 0.24 „Holster“; ohne Ego-Übertrag und Unity), 06 (Maschinenpistole, 0.11 „Compact“), 08 und 09 (Schrotflinte mit Kimme/Korn K2, Scharfschützengewehr mit Z3 „Lang“ im Vollbild, 0.25 „Longshot“; ohne Ego-Übertrag und Unity), 10 und 11 (Fusionsgewehr mit F1 „Bögen“, Lineares Fusionsgewehr mit Z2 „Gabel“, Energiewaffen ohne Hülsenauswurf, 0.26 „Kindle“; ohne Ego-Übertrag und Unity), 12 und 15 (Spurgewehr mit H3 „Zinken“ ohne Hülsenauswurf, Maschinengewehr mit H6 „Achteck“ L, Gurteinlauf, Hülsen- und Gliederauswurf als Daten und Gurtvorschub je Schuss, 0.27 „Tracer“; ohne Ego-Übertrag und Unity), 13 und 14 (Granatwerfer als Trommelwerfer mit W1 „D-Linse“, Trommel je Schuss eine Kammer weiter und Hülsen nur beim Nachladen; Raketenwerfer mit W2 „Entfernung“ seitlich links und hülsenloser Rakete, 0.28 „Breech“; ohne Ego-Übertrag und Unity), 07 (Kampfbogen als Compound-Sichel mit Pinvisier B1 seitlich links, Sehne, Pfeil und Rollen als Bewegungsdaten, kein Magazin und kein Auswurf, Bogen-Regel in den Familienmaßen, 0.29 „Bowstring“; ohne Ego-Übertrag und Unity); als erstes Werkzeug die Portalkanone BASIC-T01 (0.17 „Gateway“). Die 2 übrigen Waffen (Schwert, Gleve) sind im Stil v1; Übertragung in der Reihenfolge des Designvertrags
 nach diesem Handbuch. Toolgen-Anbindung des v2-Stils (Budgets, Fasen, Texturen) ist offen und bewusst zurückgestellt.
+
+## 12 Figuren (Roboter-Spielfigur, M-4, NPCs)
+
+Regeln aus Motiongen REF 0.30 „Blueprint“ ([design-figuren.md › 3](https://github.com/ffunkfabian-hash/cubeescape-reference/blob/main/docs/design-figuren.md#3-gestaltungsregeln)),
+vom Nutzer am 29.10.2026 beschlossen (F1–F9 A, §1); Quelle = ID in `data/design_quellen.json` (Motiongen `main` 7949582). **Noch keine
+Figur gebaut** (0.30 „Rulebook“). Der Vertrag eines Figurenmoduls steht in [basic/figures/__init__.py](../basic/figures/__init__.py):
+sobald dort ein Modul liegt, prüfen `./check` (`tools/rules.py`) und `tools/test_figure.py` (Blender, BVH) es ohne weiteren Auftrag. Der
+Roboter aus 0.23 „Gauntlet“ (Außenansicht, `data/robot.spec.json`) bekommt bis dahin nur Budget- und Proportionshinweise aus seinem Spec.
+Die Formregeln von Arm v3 und Roboter stehen in §10; dieser Abschnitt ergänzt, was eine Spielfigur oder ein NPC zusätzlich braucht.
+
+| Frage | Regel | Prüfung | Quellen |
+|---|---|---|---|
+| F1 | **Proportion schlank nach dem Zielbild:** ≈ 7,5 Kopfhöhen (Helm gemessen), lange Beine, Kopf **nicht** vergrößern (der Vorschlag „Kopf + 10 %“ der Roboter-Übergabe entfällt) | Kennzahl im Modul/Spec (`HEIGHT_MM`, `HEAD_MM`); `./check` meldet einen Hinweis außerhalb 7,0–8,0 | F28, F05, F07, F19, F12 |
+| F2 | **Formsprache je Rolle:** Spielerfigur Quadrat mit Kreis-Akzenten (stabil, verlässlich; Medaillons), M-4 und freundliche NPCs kreisdominiert, Gegner mit Dreiecken und Schrägen; Grundform im Modulkopf | `META role`/`form` (`player`→`square_circle`, `friendly`→`circle`, `enemy`→`triangle`), **Fehler** bei fehlender oder falscher Grundform | F06, F29, YB01, YA02 |
+| F3 | **Posensatz mit Durchdringungsprüfung:** Arm oben, Arm vor der Brust, tiefe Hocke, Ausfallschritt, Rumpfdrehung ±45°; Plattenabstand ≥ 1 mm in der Grundhaltung | `tools/test_figure.py` (in `./check`, Mac): je Teilpaar verschiedener Knochen BVH-Überlappung und „Teil im Teil“ in jeder Pose, Abstand in Grundhaltung; Selbsttest an einem Prüfkörper (richtig grün, drei falsche Fassungen rot) | F31, F32, F22, F33, YB11; F20, F15, YB04 |
+| F4 | **Panzer starr je Segment;** Schulterpanzer an einem Hilfsknochen mit Einfluss nach Armhöhe, Brustpanzer endet an der Taille, Bauch zweigeteilt | Regel; der Posensatz (Arm oben, Rumpfdrehung) zeigt Verstöße als Durchdringung | YB13, YB14, YB04, F21, F22, F33 |
+| F5 | **Ein Handmaß** für Ego und Figur (Ego-Arm v3); Änderungen am Ego-Arm wirken auf die Figur; Griffbreite 30 mm der Familie (BGM-1) bleibt Bezug | `HAND` im Modul; `./check` vergleicht Handflächenbreite und -länge, Fingerteilung und -längen, Daumen mit `basic/arms/robot_arm.py` (±1 %, **Fehler**). Stand 0.30 (Arm v3 vor „Gauntlet“): Handfläche 93,9 × 74,6 mm, Fingerteilung 20,3 mm, Finger 75,5/80,1/75,5/63,4 mm, Daumen 78,3 mm, Handfläche ÷ Griffbreite 3,1 – nach 0.23 „Gauntlet“ mit dessen Arm neu abgleichen | F11, YB06, A24 |
+| F6 | **Budget:** Figur höchstens 30 000 Dreiecke (Ausrüstung getrennt gezählt), höchstens 100 Knochen (ohne Simulation) | **Warnung** in `./check` (Figurenmodule und Roboter-Specs) | YB09, F27 |
+| F7 | **Größenklassen** für NPCs und Gegner als Vielfaches der Spielerfigur: klein ≈ 0,6, mittel ≈ 1,0, groß ≥ 1,6; Schwachstellen hell auf dunklem Körper | `META size_class`/`scale` (klein 0,5–0,7, mittel 0,9–1,1, groß ≥ 1,6), **Fehler** außerhalb; Abnehmer Cube Escape | F18, F04, F13, F14, YB02, YB01 |
+| F8 | **Kantenlicht statt Umrisslinie:** Fresnel-Kantenlicht für Figuren in Unity, oben betont, Gegner farbig; keine Umrisslinie | Laufzeitregel (Unity/Cube Escape); in Blender nur das Rim-Licht der Renderings – Umsetzung mit dem Unity-Teil | F01, F03, YB05, YB08 |
+| F9 | **Vorn/Hinten im Umriss:** ein Rückenmodul (Kühl- oder Energieblock) gibt der Rückseite einen eigenen Umriss; vorn Visier und Brustsensor | Sichtung: Silhouette von vorn, hinten und seitlich je Runde | F04, YB05 |
