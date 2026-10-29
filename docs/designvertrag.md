@@ -54,7 +54,7 @@ Ausgangsrichtung. Ein Abgleich mit dem Formgen-Texturkatalog `docs/textures/cata
 |---|---|---|---|
 | BGM-1 | Griffmodul Gewehr (Griff 15°, Abzug, Bügel) | 01 02 03 06 08 09 10 11 12 13 14 15 17 | gleiche Funktion `grip_rifle`; Neigung je Waffe im Spec |
 | BGM-P | Pistolengriff | 04 05 | eigene Form je Waffe |
-| BRI-22 | Schiene 22 mm | alle Visierträger außer 04 05 07 16 17 | Visiere austauschbar, soweit Klemmfuß 50 mm auf die Schienenlänge passt (im Spec geprüft: `interfaces`) |
+| BRI-22 | Schiene 22 mm | alle Visierträger außer 04 05 07 16 17 (07 v2.1: kurze Schiene am Visierträger für B1, 0.29) | Visiere austauschbar, soweit Klemmfuß 50 mm auf die Schienenlänge passt (im Spec geprüft: `interfaces`) |
 | Reflexvisier | Klemmfuß, Gehäuse, Haubenrahmen, Glas, Emitter | 01 02 06 08 10 12 13 14 15 | Fenster je Waffe (26 × 20 bis 44 × 30 mm) |
 | Zielfernrohr | zwei Ringe, Okular, Mittelrohr, Objektiv, Turm | 03 09 11 | nur Präzisionswaffen (Formgen-Typregel 22.10.2026) |
 | BST-1 Schaft S1 | Schaftrohr + Schulterstütze | 01 06 09 11 15 | Länge über Faktor `s` |
@@ -68,7 +68,7 @@ Ausgangsrichtung. Ein Abgleich mit dem Formgen-Texturkatalog `docs/textures/cata
 ## Leitmerkmal je Klasse
 
 01 langes Gehäuse + Graphit-Handschutz · 02 zweigeteilte Impulskammer, Salvenanzeigen, Schaft S2 · 03 schlankes Einteilgehäuse, kurzes Zielfernrohr, S2 ·
-04 Trommel auf Kran, Unterlauf · 05 Schlitten · 06 Magazin im Griff, Vordergriff · 07 Recurve-Bogen, Pfeilfenster ·
+04 Trommel auf Kran, Unterlauf · 05 Schlitten · 06 Magazin im Griff, Vordergriff · 07 Compound-Bogen mit Rollen, Sichtfenster, Pinvisier links (v2.1, Nutzer 29.10.2026 „(a) so übernehmen“; v1 Recurve-Bogen, Pfeilfenster) ·
 08 dicker Lauf über Röhrenmagazin, Pumpe · 09 Kammerstängel, großes Zielfernrohr · 10 Spulenringe, Schlitz-Emitter ·
 11 offene Doppelschiene mit Leuchtkern · 12 rundes Fokusrohr mit Kegel, Einteilkörper · 13 Drehtrommel im offenen Rahmen (v2.1, Nutzer 28.10.2026; v1 kurzer dicker Kipplauf) · 14 Schulterrohr ·
 15 Zuführdeckel, Munitionskasten, Tragegriff · 16 Einschneider mit Parierblock · 17 Stange mit Klingenkopf und Schildflügeln.

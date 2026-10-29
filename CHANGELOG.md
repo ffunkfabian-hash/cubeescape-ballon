@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 0.29.0 „Bowstring“ – Kampfbogen BASIC-07 im Stil v2.1 (Branch `claude/ballon-0.29-bowstring`)
+
+- BASIC-07 v2.1 als Compound-Sichel (Zwischenstopp, Nutzerwahl „(a) so übernehmen“): Creme-Mittelstück mit Sichtfenster, gekröpftem
+  Fensterbogen und Durchbruch, Griffstück statt BGM-1, dunkle gespaltene Wurfarme schwingen nach hinten zu Rollen, Sehne (zwei Hälften)
+  und Pfeil als eigene Teile, Spannlicht als Blickfang; kein Magazin, kein Auswurf (`EJECT = None`). Bewegung als Daten: Auszug 420 mm
+  in 0,60 s (Draw Time der Imperial Needle, cubeescape-reference), Rollen 90°, Rücklauf beim Lösen; `check` prüft Spannweg, Rücklauf und
+  „kein Auswurf“ (`bow_rules`, Gegenprobe 14 von 14 rot), `test_motion` die Richtungen.
+- Visier B1 „Pins“ gebaut (`sight_kit.pins`): drei Leuchtpins sind das Absehen, Ring Ø 52, Augenpunkt am Ankerpunkt bei vollem Auszug;
+  am Bogen seitlich links (`side_mount`, Nutzer „das visier muss nach links“), 66 mm vom Pfeil. Neuer Visiertyp `pins`, `SIGHT_KIND`
+  des Bogens `arrow_tip` → `pins`; `test_sights` (`check_pins` mit Sitz des Visierträgers, Gegenprobe 22 von 22 rot) und `test_sight_seat` (freie Sicht durch den
+  Ring am Netz) prüfen ihn. Bogen-Regel und Bogen-Tabelle in den Familienmaßen; Designvertrag 07 v2.1 Compound mit Pinvisier.
+- Quellen Q-D2-IMG (4 Bögen über das Bungie-Manifest); Bericht [docs/versions/0.29-bowstring.md](docs/versions/0.29-bowstring.md).
+
 ## Patch schriftzug-02 – Schriftzug BASIC-02 v2.1 liegt auf (Branch `claude/ballon-patch-schriftzug-02`)
 
 - Nutzer-Ja auf den Nebenbefund aus 0.28 (Netzprüfung: nur 1664/2720 Buchstabenecken lagen auf, der Schriftzug stand über dem

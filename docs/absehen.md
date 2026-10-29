@@ -122,6 +122,7 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 | `reflex` | Reflex-/Holovisier | 90 mm | `Socket_Reticle` | +0.3 | 12–20 % | 0.1 × Öffnung | glass |
 | `scope` | Zielfernrohr | 90 mm | `Socket_Objective` | +0.8 | 20–26 % | 0.15 × Öffnung | glass |
 | `fullscreen` | Vollbild (Scharfschütze) | – | – | – | – | – | overlay: eigene Kontur je Waffe, außen schwarz |
+| `pins` | Pinvisier (Bogen) | Ankerpunkt bei vollem Auszug | `Socket_Reticle` | +0.0 | 4–7 % (lichter Ring, entworfen) | 0.1 × Öffnung | Pins ≥ 3 px, Abstand ≥ 0.6° |
 
 **Erweiterung 0.21 „Ironsight“** (Nutzerwahl 26.10.2026, `docs/visier-konzept.md` › 7): Visierlinie über der Schienenoberkante (BRI-22) – Holo auf der H0-Plattform + 26 mm (Visierhöhe gilt; Zielfernrohre nach Konzept A mit zwei Schienen auf eigener Höhe richten sich nur nach der Visierhöhe), Mini-Reflex + 15 mm (hand_cannon, sidearm), Kimme/Korn + 11 mm (hand_cannon, sidearm, shotgun); für die beiden letzten gilt die Visierhöhe 66 ± 4 mm nicht. Zielfernrohre sitzen nach Konzept A: Sattel hinter dem Auge, Klemmfuß unter dem Objektiv, Ring ohne Wulst (außen/innen 1,29). Öffnung im Zielen = lichte Öffnung (Scheibe bzw. Objektivlinse) im echten Abstand zum Augenpunkt.
 
@@ -132,7 +133,7 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 
 Absehen gezeichnet: Hüftform der Klasse, flach in der Glasebene, reine Emission; Linien mindestens 1.6 px bei 1280 px Bildbreite (75°), Ebene höchstens 0.5 mm neben der Scheibe (`common.drawn_reticle`; Unity zeichnet es selbst). Geprüft in `tools/test_sights.py` und `tools/test_sight_seat.py`.
 
-Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach Glidepath.
+Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach Glidepath. Der Bogen (Visiertyp `pins`) nutzt bis zum Ego-Übertrag den Reflexbonus (`reticles.sight_type`), weil die Zoomtabelle in Unitys ego.json steht; Referenz Imperial Needle ≈ 2,2× (cubeescape-reference, REF 0.17).
 
 | Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |
 |---|---|---|---|---|---|
@@ -150,7 +151,7 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |
-| `combat_bow` | Pfeilspitze, kein Visier | ×1.5 | entworfen | **×1.8** | ×2.3 |
+| `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `sword` | kein Visier | ×1.0 | entworfen | **×1.3** | ×1.8 |
 | `glaive` | kein Visier | ×1.25 | entworfen | **×1.55** | ×2.05 |
 

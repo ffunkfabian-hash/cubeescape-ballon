@@ -88,6 +88,14 @@ SIGHT['types']['reflex']['variants'] = {'L': dict(de='Holo L', share=(0.20, 0.25
                                                   weapon_types=('machine_gun', 'grenade_launcher', 'rocket_launcher'))}
 SIGHT['types']['scope']['variants'] = {'S': dict(de='Zielfernrohr S', share=(0.17, 0.20),
                                                  weapon_types=('scout_rifle', 'linear_fusion_rifle', 'pulse_rifle'))}
+# Bogen (0.29 „Bowstring“, BASIC-07 v2.1): Pinvisier B1 nach der Nutzerwahl v3 (visier-konzept › 6a/7, 26.10.2026) statt der
+# Pfeilspitze als Visier (REF 0.14). Die Pins sind das Absehen (Bauteile, kein gezeichnetes Absehen, kein Glas); Augenpunkt am
+# Ankerpunkt bei vollem Auszug (Bogen-Regel, docs/familienmasse.md). Öffnung = lichter Ring im echten Abstand, entworfen (keine
+# Destiny-Messung): klein wie ein echtes Pinvisier, das Ziel bleibt um die Pins frei; die Visierhöhe 66 ± 4 mm über dem Pfeil gilt.
+# zoom_bonus ungenutzt bis zum Ego-Übertrag (sight_type() gibt dem Bogen bis dahin den Reflexbonus, Zoomtabelle in Unitys ego.json)
+SIGHT['types']['pins'] = dict(de='Pinvisier (Bogen)', ref='Socket_Reticle', zoom_bonus=0.0, target_share=(0.04, 0.07),
+                              ads_view='pins', frame_max=0.10, eye='Ankerpunkt bei vollem Auszug', status='entworfen',
+                              pin_gap_min_deg=0.6, pin_head_min_px=3.0)
 SIGHT['drawn'] = dict(ref_w_px=1280, min_line_px=1.6, plane_tol_mm=0.5, de='Hüftform der Klasse, flach in der Glasebene, reine Emission')
 
 
@@ -104,11 +112,11 @@ def share_band(sight_type, weapon_type=None, size='M'):
 SIGHT_KIND = {'auto_rifle': 'holo', 'submachine_gun': 'holo', 'trace_rifle': 'holo', 'machine_gun': 'holo', 'pulse_rifle': 'holo',
               'scout_rifle': 'ring_scope', 'linear_fusion_rifle': 'ring_scope', 'hand_cannon': 'irons_brackets',
               'sidearm': 'irons_brackets', 'shotgun': 'irons_brackets', 'sniper_rifle': 'fullscreen', 'fusion_rifle': 'ring',
-              'grenade_launcher': 'lens_chevron', 'rocket_launcher': 'lens_chevron', 'combat_bow': 'arrow_tip', 'sword': None,
+              'grenade_launcher': 'lens_chevron', 'rocket_launcher': 'lens_chevron', 'combat_bow': 'pins', 'sword': None,
               'glaive': None, 'portal_cannon': None}
 SIGHT_KIND_DE = {'holo': 'offenes Holo (abgerundetes Rechteck)', 'ring_scope': 'kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv',
                  'irons_brackets': 'Kimme und Korn mit leuchtenden Klammern', 'fullscreen': 'Zielfernrohr außen, im Zielen Vollbild',
-                 'ring': 'Ring oder Doppelring', 'lens_chevron': 'runde Linse mit Winkel', 'arrow_tip': 'Pfeilspitze, kein Visier',
+                 'ring': 'Ring oder Doppelring', 'lens_chevron': 'runde Linse mit Winkel', 'pins': 'Pinvisier: drei Leuchtpins im Ring (B1)',
                  None: 'kein Visier'}
 # Im Zielen (Destiny, REF 0.14 › 7): Leuchtpunkt am Zielpunkt getrennt vom Glas, kein Aufgehen, Schuss = kurzer Ring, Treffer = X
 ADS_FEEDBACK = dict(hud_dot=dict(share_h=0.011, color='cyan'), shot_ring=dict(share_h=0.02, frames=1),
@@ -122,6 +130,9 @@ CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 1.2, 'hand_c
 CLASS_ZOOM_STATUS = {k: 'beobachtet' for k in ('auto_rifle', 'pulse_rifle', 'scout_rifle', 'hand_cannon', 'sidearm', 'submachine_gun',
                                                'shotgun', 'grenade_launcher', 'sniper_rifle')}
 CLASS_ZOOM_STATUS.update({k: 'gemessen (Glidepath)' for k in ('scout_rifle', 'hand_cannon', 'submachine_gun')})
+# Bogen (0.29): cubeescape-reference misst den Endmaßstab Hüfte → ADS der Imperial Needle ≈ 2,2× [M] (destiny2 ›
+# z-zb-imperial-needle-zoom, REF 0.17); hier bleibt 1,5 + Reflexbonus 0,3 = 1,8, weil die Zoomtabelle aller Klassen in Unitys ego.json
+# steht (export_unity.gameplay) – Angleichen mit dem Ego-Übertrag des Bogens.
 
 
 def world_zoom(weapon_type, sight_type):

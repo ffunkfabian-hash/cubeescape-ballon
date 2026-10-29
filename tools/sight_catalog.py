@@ -113,7 +113,7 @@ def render(o, only=None, weapon=None):
                 ob.hide_render = True
             d = 200.0
             px = 2 * d * math.tan(math.radians(HFOV / 2)) / RES[0]
-        elif typ != 'iron':
+        elif typ not in ('iron', 'pins'):     # Kimme/Korn und Pins (B1, 0.29) sind selbst das Absehen
             drawn_reticle(W.META['type'], ret + Vector((0, 0.0004, 0)), d - 0.4, px)
         cam.data.lens = 18 / math.tan(math.radians(HFOV / 2))
         cam.matrix_world = Matrix.Translation(eye) @ Vector((0, -1, 0)).to_track_quat('-Z', 'Y').to_matrix().to_4x4()

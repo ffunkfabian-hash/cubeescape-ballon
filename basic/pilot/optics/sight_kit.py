@@ -627,3 +627,59 @@ def weapon(kid, size='M'):
                                  ASSEMBLIES=[dict(id='receiver'), dict(id='barrel'), dict(id='sight')],
                                  PARTS=stub(front_deck=irons, **rail) + P, ANCHORS=A, ACTIONS={}, EXPLODE={}, BORE=BORE,
                                  __doc__=build.__doc__)
+
+
+# ------------------------------------------------------------------------------------------------ Bogen
+PINS_SIZES = {'S': 22.0, 'M': 26.0, 'L': 30.0}   # lichter Ringradius; M: Ø 52 = 5,0 % der Bildbreite im Augenpunkt am Ankerpunkt (680 mm)
+PINS_LINE = 12.0                                  # Visierlinie = Schiene + r + 12 (Sockel 5,6 mm; bei + 10 ragte das flache Visiergehäuse 0,3 mm in den unteren Ringrand, test_sight_seat 0.29)
+PINS_STEP = 0.36                                  # Pinabstand als Anteil von r (M: 9,4 mm = 0,79° bei 680 mm)
+PINS_HEAD = (2.0, 1.75, 1.5)                      # Radius der Pinköpfe bei M (oben → unten kleiner), skaliert mit r / 26
+PINS_EYE_MM = 680.0                               # Katalog/Prüfkörper: Augenpunkt am Ankerpunkt (Bogen: f der Pins − Auge)
+PINS_T, PINS_DEPTH, PINS_CAP = 1.8, 8.0, 0.72     # Flachprofil 1,8 × 8; rechte Seite bei x = −0,72 r abgeflacht (Pinschiene)
+
+
+def pins(f, u, size='M', eye_f=None, mat=MET):
+    """B1 „Pins“ (Bogen; seit 0.29 an BASIC-07 v2.1, dort seitlich links): kurze H0-Plattform ohne Emitter und ohne Glas; Ring aus
+    Flachprofil 1,8 × 8, rechts abgeflacht, außen dort die Pinschiene mit Klemmschrauben (Merkmal 2); drei waagerechte Pins von rechts
+    mit Leuchtköpfen auf der Mittelsenkrechten, Abstand 0,36 r, Köpfe nach unten kleiner (Merkmal 1). Die Pins sind das Absehen (kein
+    gezeichnetes, kein Glas); der oberste Kopf liegt auf der Visierlinie. f = Hinterkante Klemmfuß, u = Schienenoberkante; Visierlinie
+    Schiene + r + 12 (eigene Linie wie Kimme/Korn); am Bogen seitlich links mit `side_mount` (Nutzer 28.10.2026: „das visier muss
+    nach links“). eye_f: Augenpunkt (Bogen: am Ankerpunkt bei vollem Auszug, vom Modul); ohne Angabe 680 mm hinter den Pins.
+    Liefert (Teile, Anker). Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
+    r = PINS_SIZES[size]
+    s = r / PINS_SIZES['M']
+    t, k = PINS_T, 0.85
+    cap = PINS_CAP * r
+    cu = u + r + PINS_LINE
+    gb = cu - r - 0.4
+
+    def d_ring(rr, cp):
+        return [(max(x, -cp), uu) for x, uu in _arc(rr, 0, 360, 72)[:-1]]
+    inner, outer = d_ring(r, cap), d_ring(r + t, cap + t)
+    fr = f + 46 * k - 9.4
+    fp = fr + PINS_DEPTH / 2
+    P = C.sight_platform(f, u, 0.6 * r, gb, k=k, emitter=False, mat=mat)
+    P += C.sight_hood(inner, outer, fr, cu, depth=PINS_DEPTH, mat=mat)
+    xr = -(cap + t)                               # Außenseite der Abflachung
+    P += [xprof('sight_pin_rail', 'Pinschiene', mat, fr + 1, fr + PINS_DEPTH - 1,
+                [(xr + 0.2, -0.62 * r), (xr - 3.2, -0.62 * r), (xr - 3.2, 0.62 * r), (xr + 0.2, 0.62 * r)], cu,
+                func='Senkrechte Schiene; klemmt die drei Pins (Höhe je Pin verstellbar)', attach='rechts außen am Ring (fest)',
+                en='Pin rail', bevel=0.4, parent_part='sight_mount'),
+          part('sight_pin_screws', 'Pinklemmen', 'Pin clamps', 'sight', 'multi', 'trim', 'Klemmen die Pins in der Schiene',
+               'rechts in der Pinschiene', bevel=0.2, parent_part='sight_mount',
+               items=[dict(shape='cyl', axis='x', c=(fp, cu - i * PINS_STEP * r), a0=xr - 3.0, a1=xr - 4.0, r=1.1 * s, segs=12)
+                      for i in range(3)])]
+    for i, rd in enumerate(PINS_HEAD):
+        du = -i * PINS_STEP * r
+        P += [xprof(f'sight_pin_blade_{i}', f'Pin {i + 1}', mat, fp - 0.9, fp + 0.9,
+                    [(xr - 2.0, du - 0.45 * s), (-0.4, du - 0.45 * s), (-0.4, du + 0.45 * s), (xr - 2.0, du + 0.45 * s)], cu,
+                    func='Waagerechter Pin von der Schiene zur Mitte', attach='in der Pinschiene geklemmt', en=f'Pin {i + 1}',
+                    bevel=0.15, parent_part='sight_mount'),
+              cyl('sight_pin' if i == 0 else f'sight_pin_{i}', f'Pinkopf {i + 1}', f'Pin head {i + 1}', 'sight', 'pin_glow',
+                  'Leuchtkopf; Zielpunkt ' + ('(Visierlinie)' if i == 0 else f'für größere Entfernung ({i + 1}.)'),
+                  'an der Pinspitze', 'f', (cu + du, 0), fp - 1.0, fp + 1.0, rd * s, segs=20, bevel=0.1, parent_part='sight_mount')]
+    eye = fp - PINS_EYE_MM if eye_f is None else eye_f
+    return P, {'Socket_Reticle': dict(at=(fp, cu, 0), part='sight_pin', note='Oberster Pinkopf auf der Visierlinie'),
+               'Socket_Sight': dict(at=(fr, cu, 0), part='sight_frame', note='Ringrückseite (Pinvisier B1)'),
+               'Socket_Eye': dict(at=(eye, cu, 0), part='sight_pin', sight_type='pins', std=True, deck=u,
+                                  note=f'Augenpunkt {fp - eye:.0f} mm hinter den Pins; die Pins sind das Absehen')}

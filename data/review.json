@@ -1593,5 +1593,30 @@
     "notes": [
       "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-14-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/breech/"
     ]
+  },
+  "BASIC-07-v2.1": {
+    "static": {
+      "status": "geprüft",
+      "by": "Claude",
+      "date": "2026-10-29",
+      "method": "Drei Runden (0.29 „Bowstring“): (1) Silhouette/Zweiton an hero, hero_p, side_left, ego (kampfbogen/runde1_07.jpg) – Erstentwurf (zwischenstopp_entwurf1.jpg): Visier zuerst mittig über dem Pfeil, Nutzer „das visier muss nach links, nicht nach rechts“ → B1 seitlich links neben dem Fensterbogen, 66 mm vom Pfeil (nach dem Richter 60 links / 27,5 darüber, Ring Schiene + r + 12: der Ringrand streifte vorn den Fensterbogen, das Visiergehäuse ragte 0,3 mm in den unteren Ringrand; Runde 2: Visierträger schwebte 14 mm vor dem Mittelstück → ab f 6 eingelassen, traeger.jpg); Zwischenstopp Nutzerwahl „(a) so übernehmen“; Griffstück las sich als Kasten → Handballenwölbung, Fingermulde, Kanten R_BODY; (2) Schichten/Negativraum an exploded, front, top, sightline (runde2_07.jpg): Sichtfenster mit gekröpftem Fensterbogen, Durchbruch im unteren Mittelstück, gespaltene Wurfarme mit Rollen dazwischen, Rollen mit drei Durchbrüchen; Zielbild: Ring mit drei Pins in der Bildmitte, Fensterbogen mit Spannlicht rechts daneben, Pfeil rechts unten; Posenprüfung (BVH in Weltkoordinaten: Ruhe, halber und voller Auszug, Pfeilflug −0,1 … −1,0): nur Sitzkontakte; die Nocke (r 4,2) streifte beim Flug die Auflage → r 3,4, Auflage 0,4 mm unter dem Schaft; Schriftzug hing 21 mm hinter dem Mittelstück (Lehre 0.28, f = Vorderkante) → f 25, jetzt f −0,7 … 24,7 auf dem Mittelstück (Spec); (3) Material/Budget an 8 Skins (runde3_07.jpg): alle lesbar, Polar mit dem kleinsten Abstand Wurfarm/Mittelstück; Budget 2 Leuchtfunktionen (Visier: Pinköpfe, Auszug: Spannlicht), 1 Band, 1 Schrift, 2 Orange (Klemmhebel, Leitfeder)"
+    },
+    "actions": {
+      "draw_hold_release": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-29",
+        "method": "Bildfolge motion/draw_hold_release, Bilder 0/10/18/40/42/46 (kampfbogen/bewegung_07.jpg): Sehne und Pfeil nach hinten bis Nockpunkt f −570 (Bild 18 = 0,60 s), Rollen drehen, Halten, Rücklauf der Sehne in 2 Bildern, Pfeil fliegt nach vorn und ist bei 46 aus dem Bild; kein Auswurf"
+      },
+      "let_down": {
+        "status": "geprüft",
+        "by": "Claude",
+        "date": "2026-10-29",
+        "method": "Bildfolge motion/let_down, Bilder 0/16/24/40 (kampfbogen/bewegung_07.jpg): voll gespannt bei 16, langsam zurück in Ruhe bei 40, Pfeil bleibt auf der Auflage"
+      }
+    },
+    "notes": [
+      "Belege: ~/Library/Caches/CubeEscapeBallon/out/BASIC-07-v2.1/ (views/ mit 8 Skins und sightline.png, motion/, .blend, .glb, Spec); Bögen ~/Library/Caches/CubeEscapeBallon/kampfbogen/"
+    ]
   }
 }

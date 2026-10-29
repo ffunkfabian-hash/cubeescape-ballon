@@ -86,6 +86,10 @@ def doc():
         if 'eye_relief_mm' in T:
             L.append(f"| `{k}` | {T['de']} | {T['eye_relief_mm']:.0f} mm | `{T['ref']}` | +{T['zoom_bonus']} | "
                      f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['frame_max']} × Öffnung | {T['ads_view']} |")
+        elif 'eye' in T:       # Pinvisier (Bogen, 0.29): Augenpunkt am Ankerpunkt, Öffnung = lichter Ring, Pins sind das Absehen
+            L.append(f"| `{k}` | {T['de']} | {T['eye']} | `{T['ref']}` | +{T['zoom_bonus']} | "
+                     f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % (lichter Ring, {T['status']}) | "
+                     f"{T['frame_max']} × Öffnung | Pins ≥ {T['pin_head_min_px']:g} px, Abstand ≥ {T['pin_gap_min_deg']:g}° |")
         else:
             L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
     R = S['rail_line_mm']
@@ -106,7 +110,8 @@ def doc():
           f"({S['fov_ref_deg']:.0f}°), Ebene höchstens {D['plane_tol_mm']:g} mm neben der Scheibe (`common.drawn_reticle`; Unity zeichnet es selbst). "
           'Geprüft in `tools/test_sights.py` und `tools/test_sight_seat.py`.']
     L += ['', 'Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach '
-          'Glidepath.', '',
+          'Glidepath. Der Bogen (Visiertyp `pins`) nutzt bis zum Ego-Übertrag den Reflexbonus (`reticles.sight_type`), weil die '
+          'Zoomtabelle in Unitys ego.json steht; Referenz Imperial Needle ≈ 2,2× (cubeescape-reference, REF 0.17).', '',
           '| Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |', '|---|---|---|---|---|---|']
     L += [f"| `{k}` | {RT.SIGHT_KIND_DE[RT.SIGHT_KIND[k]]} | ×{z} | {RT.CLASS_ZOOM_STATUS.get(k, 'entworfen')} | "
           + ' | '.join((f"**×{RT.world_zoom(k, s)}**" if RT.sight_type(k) == s or (s == 'reflex' and RT.sight_type(k) == 'fullscreen')

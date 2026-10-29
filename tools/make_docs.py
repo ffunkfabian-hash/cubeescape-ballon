@@ -252,7 +252,7 @@ def family_dims():
     from basic.reticles import SIGHT
     def fu(p):
         return -p[1] * 1000, p[2] * 1000
-    rows, sizes = [], []
+    rows, sizes, bows = [], [], []
     for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
         wid = f"{W.META['id']}-{W.META['variant']}"
@@ -263,6 +263,16 @@ def family_dims():
         A = {k: fu(v['position_m']) for k, v in S['anchors'].items()}
         D = S['dimensions']
         e = W.ANCHORS['Socket_Eye']
+        if W.META.get('fire') == 'draw_release':      # Bogen (0.29): eigene Tabelle, Lagen nach der Bogen-Regel
+            span, depth = D['height_m'] * 1000, D['length_m'] * 1000
+            nf, nu = A['Socket_Nock']
+            ex = e['at'][2] if len(e['at']) > 2 else 0
+            bows.append(f"| {wid} {W.META['type_de']} | {span:.0f} × {depth:.0f} × {D['width_m'] * 1000:.0f} | {depth / span:.2f} | "
+                        f"{nu:.0f} | {nf:.0f} | {nf - A['Socket_DrawFull'][0]:.0f} | {A['Socket_DrawFull'][0]:.0f} | "
+                        f"{A['Socket_Eye'][1]:.0f} | {math.hypot(A['Socket_Eye'][1] - nu, ex):.1f} | {A['Socket_Reticle'][0] - A['Socket_Eye'][0]:.0f} | "
+                        f"{ex:g} | {A['Socket_CenterOfMass'][0]:.0f} / {A['Socket_CenterOfMass'][1]:.0f} | "
+                        f"{S['counts']['parts']} / {S['counts']['triangles']} |")
+            continue
         iron = e['sight_type'] == 'iron'     # Kimme/Korn (0.24): Augenabstand zur Kimme, eigene Linie (Visierhöhe gilt nicht)
         full = e['sight_type'] == 'fullscreen'   # Scharfschütze (0.25): Augenabstand zum Objektivring wie das Zielfernrohr
         ref = 'Socket_Sight' if iron else SIGHT['types']['scope' if full else e['sight_type']]['ref']
@@ -306,6 +316,21 @@ def family_dims():
          'als einzelne Teile.', '',
          '| Waffe | Gehäuse `receiver` | Vorderbau `support` | Schaft `stock` | Visier `sight` | Griff `grip` | Magazin `magazine` |',
          '|---|---|---|---|---|---|---|'] + sizes
+    if bows:
+        L += ['', '## Bogen', '',
+              '**Bogen-Regel** (0.29 „Bowstring“, BASIC-07): Der Bogen steht senkrecht und hat keinen Lauf, kein Magazin, keinen Auswurf',
+              '(`EJECT = None`). `Socket_Hand` liegt wie bei allen Waffen in der Griffachse, die Hand umschließt aber ein **Griffstück** statt',
+              'des Griffs BGM-1; die Schussachse ist der Pfeil auf der Auflage direkt über der Hand. Statt der Stützhand greift die Zughand',
+              'am Nockpunkt (`Socket_SupportHand` = `Socket_Nock`), `Socket_DrawFull` ist der Nockpunkt bei vollem Auszug. Maße nach',
+              'Motiongen (cubeescape-reference `proportionen` › 1): **L = Spanne** (Rolle oben bis Rolle unten), **H = Tiefe in',
+              'Pfeilrichtung** einschließlich Pfeil; nicht mit Gewehr-H/L vergleichen (Destiny-Bogen 0,73). Der Augenpunkt liegt am',
+              'Ankerpunkt bei vollem Auszug, die Visierlinie 66 ± 4 mm vom Pfeil wie in der Familie (Visierhöhe = Abstand; seitlich nur',
+              'links, Regel aus 0.28); das Pinvisier B1 hat eine eigene Linie Schiene + r + 12 mm und sitzt links neben dem Fensterbogen',
+              '(Nutzer: „das visier muss nach links“). Kollision am Modell: Teil für Teil (Spec `parts[].bounds_m`), nie eine Gesamtbox über',
+              'den offenen Raum zwischen Sehne und Bogen.', '',
+              '| Bogen | Spanne × Tiefe × B | H/L | Pfeilachse u | Sehne f | Auszug | Nockpunkt voll f | Visierlinie u | Visierhöhe | '
+              'Auge–Pins | Visier x | Schwerpunkt f / u | Teile / Dreiecke |',
+              '|---|---|---|---|---|---|---|---|---|---|---|---|---|'] + bows
     tools = []
     for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 't*_v21.py'))):    # Werkzeuge: ohne Visier und Magazin
         W = importlib.import_module('basic.pilot.' + os.path.basename(f)[:-3])
