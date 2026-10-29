@@ -122,6 +122,22 @@ def budget_notes(specs):
     return out
 
 
+# ------------------------------------------------------------------ A5 Fasen als Materialsignal
+def soft_bevel_problems(fam):
+    """Fehler A5 (A-R12; Quellen A06, A09, A10, A11, A13, YA09): der Griff in Gummi (`grip`, Rolle `rubber`) trägt R_SOFT, und R_SOFT
+    steht nur an Gummi. Dünne Polsterstreifen (Dicke < 3 × R_SOFT) behalten ihre Stufe (common.R_SOFT)."""
+    from basic.common import R_SOFT
+    out = []
+    for wid, W in fam:
+        for p in W.PARTS:
+            b = p.get('bevel')
+            if p['id'] == 'grip' and p['mat'] == 'rubber' and b != R_SOFT:
+                out.append(f'{wid}: Griff in Gummi mit Fase {b} mm statt R_SOFT {R_SOFT} mm (A5)')
+            elif b == R_SOFT and p['mat'] != 'rubber':
+                out.append(f'{wid}: {p["id"]} ({p["mat"]}) mit R_SOFT – nur für Griffpolster in Gummi (A5)')
+    return out
+
+
 # ------------------------------------------------------------------ A4 Freihaltezone im Hüftbild
 def zone_px(w, h):
     """Freihaltezone in Pixeln (x0, x1, y0, y1; y von oben), Absehen-Spalte = Bildmitte (Unity EgoPlayer zeichnet das
@@ -293,6 +309,7 @@ def report():
     err, notes = [], []
     sp = os.path.join(ROOT, 'data', 'silhouettes.json')
     err += silhouette_problems(json.load(open(sp, encoding='utf-8')) if os.path.exists(sp) else {}, fam, specs)
+    err += soft_bevel_problems(fam)
     notes += budget_notes(specs)
     cp = os.path.join(ROOT, 'data', 'ego_clear.json')
     mods = {f"{m.META['id']}-{m.META['variant']}": m for m in (importlib.import_module(f'basic.{w}') for w in WEAPONS)}

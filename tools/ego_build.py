@@ -579,8 +579,10 @@ class Scene:
                 ob.matrix_world = par.matrix_world @ Matrix(par['rest']).inverted() @ Ml
             else:
                 ob.matrix_world = self.WM @ Ml
-            if p['move']['kind'] == 'glow':
+            if p['move']['kind'] == 'glow':        # nur das Leuchten: apply_move setzt die Lage ohne Waffenmatrix (0.30 Vorschlag 6)
+                M = ob.matrix_world.copy()
                 BB.apply_move(ob, p['move'], t)
+                ob.matrix_world = M
         mag = self.objs.get('magazine')
         if mag is not None and carry is not None:
             mag.matrix_world = carry

@@ -27,6 +27,8 @@ python3 tools/unity_run.py sprint|wechsel|rueckstoss   # MP4 (0.15): Sprint-Hub 
 python3 tools/unity_run.py feuer            # MP4 (0.16): Mündungsfeuer und Hülsen aus der Hüfte und im Zielen
 python3 tools/unity_run.py volley           # MP4 (0.22): Wechsel durch alle fünf Waffen, Impuls-Salven Hüfte/Zielen, Portal A und B
 BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1" python3 tools/unity_run.py feel   # Messlauf: 60/s, Waffe und Arme auf Magenta, ohne Fadenkreuz (…_mess)
+BALLON_TEST_FILTER="Name1|Name2" python3 tools/unity_run.py test   # nur diese Tests (Gegenproben, 0.32)
+open unity/Build/BallonFirstfeel.app --args -ballonFov 100   # Welt-Bildwinkel 100° waagrecht (50–120); Waffe und Arme bleiben bei 75° (A9, 0.32)
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
@@ -225,6 +227,11 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Hueft_Fadenkreuz_je_Zustand`, `Weltzoom_im_Spiel_aus_der_Klasse` (PlayMode, 0.13) | Spieler in der Szene bei 30/s: in der Hüfte sichtbar, geht beim Hüftfeuer auf und ab, im ersten Bild des Zielens weg, im Sprint nur „^“, beim Nachladen, Wegstecken und Ziehen aus, danach wieder da; Welt-FOV im Zielen = Zoom 1,9 |
 | `Kein_GC_Muell_im_laufenden_Bild` | Gehen, Zielen mit Dauerfeuer, Sprintschleife, Hüft-Fadenkreuz (Aufgehen, Sichtbarkeit, Rastern): kein Speicher im laufenden Bild |
 | `Wandnaehe_im_Parcours_senkt_die_Waffe` | vor Säule 1 senkt sich die Waffe (`lowered`), im Freien zurück zur Hüfte |
+| `FBX_Normalen_gewichtet_an_gefasten_Teilen` (EditMode, 0.32, A6) | Normals „Import“; am Griff jeder Waffe > 50 % der Dreiecke weich (Fase), > 8 % flach (Originalflächen), > 25 % der Ecken > 2° neben lageweise geglätteten Normalen; rot mit dem Export vor 0.32 und mit „Calculate“ |
+| `Viewmodel_bleibt_75_Grad_bei_Welt_FOV_60_und_100` (PlayMode, 0.32, A9) | Welt 60° und 100° waagrecht: Weltkamera folgt, Viewmodel bleibt 75°, near 0,03 m, kein Speicher je Bild |
+| `Weltzoom_nur_auf_die_Welt_Zielbild_unveraendert` (PlayMode, 0.32, A9) | jede Waffe mit Absehen im Zielen, Haltung eingefroren: Welt = 2·atan(tan(eingestellt/2)/Zoom), Absehen und Glas im Bild bei 60°/100° wie bei 75° (≤ 0,1 %) |
+| `Muendungsfeuer_Abdeckung_im_Zielen_unabhaengig_vom_Welt_FOV` (PlayMode, 0.32, A9) | Blitzbild aus `fire_ads` in der Viewmodel-Kamera über dem Glasrechteck gerastert: Abdeckung (± 0,2 pp), Lage und Größe des Blitzes bei 60°/100° wie bei 75° |
+| `Nahe_Wand_schneidet_die_Waffe_nicht` (PlayMode, 0.32, A9) | Wand 12 cm vor dem Auge (ohne Kollider): in der Viewmodel-Maske ändert sich höchstens 0,5 % des Bildes; Viewmodel-Kamera leert die Tiefe |
 | `Szene_startet_und_spielt_den_Ablauf` | Szene lädt, Viewmodel-Ebene, Vorführablauf feuert, lädt leer nach, betrachtet |
 | Szenen, EditMode (11) | `SceneDataTests` mit Fixture `Tests/EditMode/scene_fixture_v2.json` (2 Zonen, 2 Lichtszenen, Kurs mit 2 Kontrollpunkten und 3 Zielen): Format und Umfang, Atlas je Zone und Lichtszene, `ballon-scene/1` und `/0` mit Hinweis „neu bauen (tools/scene_build.py)“ abgelehnt (Fixture `scene_fixture_v1.json`), 19 Lücken und Widersprüche abgelehnt, Szene ohne Parcours gültig, Umrechnung gleich `ego.json › axes.to_unity`, Collider, Startpunkt und Gier, Auslösequader, Zielscheiben und Strecke, Lichtmaßstab und Atlas-Helligkeit, `MiniJson` |
 | Parcours, EditMode (10) | `CourseTests`: gültiger Lauf mit Zeit, Kontrollpunkten und Treffern; falsche Reihenfolge und fehlende Kontrollpunkte ergeben keine Zeit; Neustart über den Start; Start nach dem Ziel; Spawn im Quader und Reset (T); Treffer vor dem Start; Bestzeit nur wenn besser und in `PlayerPrefs`; Anzeigetexte ohne Speicher je Bild; Wegmarken (Anzahl, flach, nach oben) |
@@ -370,6 +377,22 @@ Eloxal.
   Abschattung der Spiegelung).
 
 Zeiten des Exports mit Backen: Waffe 3 min, Arme 0,5 min, 7 Skins 15 min, gesamt ≈ 20 min ohne Wartezeit an der GPU-Sperre.
+
+## Viewmodel-Bildwinkel (A9, 0.32)
+
+Regel A9 (A-R11, Nutzer 29.10.2026 „Alle wie empfohlen“, [stilhandbuch](stilhandbuch.md#2-gestaltungsregeln-v2)):
+Waffe und Arme immer mit dem Bezugsbildwinkel von Visier-Standard 3, unabhängig vom Welt-Bildwinkel, mit eigenem Tiefenbereich.
+
+- **Zwei Kameras wie bisher, nichts dupliziert:** `ViewCam` (Overlay im Stapel der `WorldCam`) zeichnet nur die Ebene „Viewmodel“ mit
+  `EgoPlayer.ViewmodelHFovDeg` = `ego.json › camera.h_fov_deg` = 75° waagrecht (dieselbe Kamera wie die Blender-Stills). `WorldCam`
+  folgt `worldHFovDeg` (Vorgabe 75°, Build-Option `-ballonFov 50–120`), im Zielen geteilt durch den Weltzoom der Klasse:
+  tan(Welt/2) = tan(eingestellt/2) / Zoom. Vorher teilten sich beide Kameras einen Winkel.
+- **Unverändert bei anderem Welt-Bildwinkel:** Zielbild (Absehen, Glas, Okular), Abdeckung durch das Mündungsfeuer, Hüftlage im Bild;
+  Rückstoß-Grundbahn und Mausempfindlichkeit rechnen in Winkeln vom Bezugsbildwinkel (kein Unterschied zu vorher).
+- **Tiefe:** die Overlay-Kamera leert die Tiefe (URP-Vorgabe, `clearDepth`) und zeichnet von `near_m` 0,03 m bis 6 m; eine Wand vor
+  dem Gesicht verdeckt Waffe und Arme nicht. Die Wandnähe senkt die Waffe weiterhin (`lowered`, eigener Test).
+- **Grenze:** Das Hüft-Fadenkreuz und die Rückmeldung bleiben Anteile der Bildhöhe; bei einem anderen Welt-Bildwinkel als 75° deckt
+  sich der gezeichnete Streukreis nicht mehr genau mit dem Streuwinkel der Welt (Destiny skaliert ihn mit; nicht Teil dieses Auftrags).
 
 ## Texturen (0.20)
 

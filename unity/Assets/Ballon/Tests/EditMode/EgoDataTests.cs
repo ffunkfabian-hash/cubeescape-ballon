@@ -194,9 +194,11 @@ namespace Ballon.Ego.Tests
             CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
             CollectionAssert.AreEqual(o.actions.Select(J), D.actions.Select(J), "Aktionen");
             CollectionAssert.AreEqual(o.textures.skins.Select(s => s.name + s.kind), D.textures.skins.Select(s => s.name + s.kind), "Skins");
-            // 0.21: nur das Absehen ändert seine Netzgrenzen (Röhren → flach in der Glasebene); alle übrigen Teile bleiben gleich
-            CollectionAssert.AreEquivalent(o.mesh_bounds.objects.Where(b => b.name != "sight_reticle").Select(J),
-                                           D.mesh_bounds.objects.Where(b => b.name != "sight_reticle").Select(J), "Netzgrenzen (ohne Absehen, 0.21)");
+            // 0.21: das Absehen ändert seine Netzgrenzen (Röhren → flach in der Glasebene); 0.32: der Griff mit R_SOFT (A5, −0,013 mm);
+            // alle übrigen Teile bleiben gleich
+            CollectionAssert.AreEquivalent(o.mesh_bounds.objects.Where(b => b.name != "sight_reticle" && b.name != "grip").Select(J),
+                                           D.mesh_bounds.objects.Where(b => b.name != "sight_reticle" && b.name != "grip").Select(J),
+                                           "Netzgrenzen (ohne Absehen 0.21 und Griff 0.32)");
             var S7 = new EgoSolver(o);
             var S8 = new EgoSolver(D);
             var A = D.Action("fire_hip");
@@ -1050,6 +1052,55 @@ namespace Ballon.Ego.Tests
                 }
             }
             Assert.AreEqual(D.weapon.parts.Length + D.arm.pieces.Length * 2, n, "Netzobjekte");
+        }
+
+        /// <summary>A6 (A-R13, 0.32): die gewichteten Normalen der Fase (kit.add_bevel, harden_normals) kommen im FBX an und Unity nutzt sie
+        /// (Normals „Import“). Am Griff jeder Waffe: Fasen weich (Ecknormale ≠ Flächennormale), Originalflächen flach, und die Normalen
+        /// weichen von lageweise geglätteten ab („Calculate“ glättet über die Fase in die Großflächen). Rot mit dem Export vor 0.32
+        /// (der Weighted-Normal-Modifikator machte die Griff-Fasen flach: 1 % weich) und mit Calculate.</summary>
+        [Test]
+        public void FBX_Normalen_gewichtet_an_gefasten_Teilen()
+        {
+            foreach (var d in All)
+            {
+                var mi = (ModelImporter)AssetImporter.GetAtPath($"{Gen}/{d.weapon.fbx}");
+                Assert.AreEqual(ModelImporterNormals.Import, mi.importNormals, d.weapon.fbx);
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.weapon.fbx}");
+                var mf = go.GetComponentsInChildren<MeshFilter>(true).First(m => m.name == "grip");
+                var (soft, flat, dev) = NormalShares(mf.sharedMesh);
+                TestContext.WriteLine($"{d.weapon.id} Griff: weich {soft:P0}, flach {flat:P0}, neben geglättet {dev:P0}");
+                Assert.That(soft, Is.GreaterThan(0.5f), $"{d.weapon.id} Griff: nur {soft:P0} der Dreiecke weich (Fasen flach)");
+                Assert.That(flat, Is.GreaterThan(0.08f), $"{d.weapon.id} Griff: nur {flat:P0} der Dreiecke flach (Großflächen verbogen)");
+                Assert.That(dev, Is.GreaterThan(0.25f), $"{d.weapon.id} Griff: nur {dev:P0} der Ecken neben geglätteten Normalen");
+            }
+        }
+
+        /// <summary>(Anteil der Dreiecke mit einer Ecknormale > 1° neben der Flächennormale, Anteil der Dreiecke mit allen Ecknormalen
+        /// ≤ 0,5° daneben, Anteil der Ecken > 2° neben der flächengewichtet je Lage geglätteten Normale).</summary>
+        public static (float soft, float flat, float dev) NormalShares(Mesh m)
+        {
+            var v = m.vertices;
+            var n = m.normals;
+            var t = m.triangles;
+            var acc = new Dictionary<Vector3Int, Vector3>();
+            Vector3Int K(Vector3 p) => Vector3Int.RoundToInt(p * 1e5f);          // Lage auf 0,01 mm
+            int soft = 0, flat = 0, dev = 0;
+            for (int i = 0; i < t.Length; i += 3)
+            {
+                var c = Vector3.Cross(v[t[i + 1]] - v[t[i]], v[t[i + 2]] - v[t[i]]);   // Länge = doppelte Fläche
+                float worst = 0;
+                for (int k = 0; k < 3; k++)
+                {
+                    worst = Mathf.Max(worst, Vector3.Angle(c, n[t[i + k]]));
+                    var key = K(v[t[i + k]]);
+                    acc[key] = (acc.TryGetValue(key, out var a) ? a : Vector3.zero) + c;
+                }
+                if (worst > 1f) soft++;
+                if (worst <= 0.5f) flat++;
+            }
+            for (int i = 0; i < t.Length; i++)
+                if (Vector3.Angle(n[t[i]], acc[K(v[t[i]])]) > 2f) dev++;
+            return (soft / (t.Length / 3f), flat / (t.Length / 3f), dev / (float)t.Length);
         }
 
         [Test]

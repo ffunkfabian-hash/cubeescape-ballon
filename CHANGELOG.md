@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.32.0 „Softgrip“ – Blueprint-Regeln Teil 2: A5, A6, A9 und Patch ego_build (Branch `claude/ballon-0.32-softgrip`)
+
+- A5: Fasenstufe `common.R_SOFT` 6,5 mm an jedem Griff in Gummi (16 Waffen, Specs neu; dünne Polsterstreifen behalten ihre Stufe),
+  `./check` prüft sie (`rules.soft_bevel_problems`). A6: der `Weighted Normal`-Modifikator in `kit.add_bevel` machte die weichen
+  Fasen-Normalen von `harden_normals` wieder flach – entfernt; Normalen kommen im FBX an und Unity nutzt sie (EditMode-Test).
+- A9 in Unity: Viewmodel immer 75° waagrecht, eigener Welt-Bildwinkel (`-ballonFov`), Weltzoom nur auf der Welt, eigene Tiefe;
+  vier PlayMode-Tests. Patch ego_build: Leuchtteile in Blender-Ego-Bildern an der Waffe (`tools/test_ego_glow.py`). Export mit
+  Backen für alle fünf spielbaren Waffen. Bericht [docs/versions/0.32-softgrip.md](docs/versions/0.32-softgrip.md).
+
 ## 0.31.0 „Gauntlet“ – Formstudien Ego-Arme (Branch `claude/ballon-0.31-gauntlet`)
 
 - Arm-Teil aus 0.23 „Gauntlet“ (3c50133) auf `main` gebracht, ohne Roboter und Helm (die bleiben auf ihrem Branch bis zur Wahl des

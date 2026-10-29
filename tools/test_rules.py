@@ -14,6 +14,7 @@ import types
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from tools import rules  # noqa: E402
+from basic import common  # noqa: E402
 
 bad = []
 
@@ -54,6 +55,13 @@ n = rules.budget_notes({'X': dict(counts=dict(triangles=55000)), 'Y': dict(count
                         'Z': dict(counts=dict(triangles=15000))})
 expect(len(n) == 2 and n[0].startswith('Warnung Budget X') and n[1].startswith('Hinweis Budget Y'), f'Budget falsch: {n}')
 
+# A5 Fasen als Materialsignal (0.32): Repo grün, Griff mit R_BODY und harte Rolle mit R_SOFT rot
+expect(rules.soft_bevel_problems(fam) == [], f'Repo-Stand: A5 meldet {rules.soft_bevel_problems(fam)}')
+_g = dict(id='grip', mat='rubber', bevel=common.R_BODY)
+_s = dict(id='upper', mat='shell', bevel=common.R_SOFT)
+p = rules.soft_bevel_problems([('W', types.SimpleNamespace(PARTS=[_g, _s, dict(_g, id='butt_pad')]))])
+expect(len(p) == 2 and 'statt R_SOFT' in p[0] and 'upper (shell)' in p[1], f'A5 falsch: {p}')
+
 # A4 Freihaltezone
 expect(rules.zone_px(1600, 900) == (640, 960, 0, 600), f'Zone 1600 × 900: {rules.zone_px(1600, 900)}')
 from tools.export_unity import WEAPONS  # noqa: E402
@@ -77,7 +85,6 @@ expect(len(n) == 2 and n[1].startswith('Hinweis Freihaltezone (Stand vorher) W')
 expect('nicht gemessen' in rules.clear_zone_notes({}, [('W', m)])[0], 'fehlende Zonenmessung nicht gemeldet')
 
 # F5 Handmaß (ein Maß für Ego und Figur), Bezug Griffbreite der Familie
-from basic import common  # noqa: E402
 from basic.arms import robot_arm  # noqa: E402
 expect(inspect.signature(common.grip_rifle).parameters['w'].default == rules.GRIP_W_MM, 'GRIP_W_MM ≠ common.grip_rifle w')
 ego = rules.hand_measure(robot_arm)
@@ -132,5 +139,5 @@ expect(len(p) == 4 and any('Grundform' in x for x in p) and any('Maßstab 1.2' i
 
 for x in bad:
     print(f'FEHLER {x}')
-print(f'test_rules: {"Fehler" if bad else "alles grün"} – Regeln geprüft (A1, A2, A4, F1, F2, F3, F5, F6, F7)')
+print(f'test_rules: {"Fehler" if bad else "alles grün"} – Regeln geprüft (A1, A2, A4, A5, F1, F2, F3, F5, F6, F7)')
 sys.exit(1 if bad else 0)

@@ -2,7 +2,7 @@
 ~/Library/Caches/CubeEscapeBallon/unity/.
 
   python3 tools/unity_run.py setup      → URP, Ebene, Eingabe, Materialien, Szene (nach jedem Export)
-  python3 tools/unity_run.py test       → EditMode- und PlayMode-Tests (JUnit-XML + Kurzfassung)
+  python3 tools/unity_run.py test       → EditMode- und PlayMode-Tests (JUnit-XML + Kurzfassung; BALLON_TEST_FILTER=Name|Name: nur diese)
   python3 tools/unity_run.py build      → macOS-Entwicklungsbuild unity/Build/BallonFirstfeel.app
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
   python3 tools/unity_run.py compare [n] → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR); n = Waffe
@@ -16,6 +16,7 @@
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
+  python3 tools/unity_run.py fov        → Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
 """
 import glob
 import json
@@ -60,8 +61,9 @@ def tests():
         log = os.path.join(EV, f'tests_{plat}.log')
         if os.path.exists(res):
             os.remove(res)
-        code = locked([UNITY, '-batchmode', '-projectPath', PROJ, '-runTests', '-testPlatform', plat, '-testResults', res, '-logFile', log],
-                      log)
+        filt = os.environ.get('BALLON_TEST_FILTER')     # Gegenproben: nur ausgewählte Tests (Unity -testFilter, Namen mit | getrennt)
+        code = locked([UNITY, '-batchmode', '-projectPath', PROJ, '-runTests', '-testPlatform', plat, '-testResults', res, '-logFile', log]
+                      + (['-testFilter', filt] if filt else []), log)
         if not os.path.exists(res):
             print(f'{plat}: keine Ergebnisse (Protokoll {log})')
             rc = 1
@@ -299,6 +301,10 @@ if __name__ == '__main__':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
     if a in DEMOS:            # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13); Sprint, Wechsel, Rückstoß (0.15); Feuer (0.16)
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
+    if a == 'fov':            # Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
+        d = os.path.join(EV, 'fov_shots')
+        shutil.rmtree(d, ignore_errors=True)
+        sys.exit(player(['-ballonFovShots', d], os.path.join(EV, 'fov_shots.log')))
     if a == 'scenes':
         d = os.path.join(EV, 'scene_shots')
         shutil.rmtree(d, ignore_errors=True)

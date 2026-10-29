@@ -1794,7 +1794,7 @@
    "interface": "BGM-1",
    "parent_part": null,
    "shape": "prof",
-   "bevel_mm": 5.0,
+   "bevel_mm": 6.5,
    "blender_object": "grip",
    "origin_m": [
     0.0,
@@ -1804,7 +1804,7 @@
    "bounds_m": {
     "min": [
      -0.015,
-     -0.03079,
+     -0.03078,
      -0.076
     ],
     "max": [
@@ -1819,7 +1819,7 @@
     118.0
    ],
    "triangles": 360,
-   "volume_cm3": 147.28,
+   "volume_cm3": 147.18,
    "moving": null,
    "removable": false
   },
@@ -3336,7 +3336,7 @@
   "Socket_CenterOfMass": {
    "position_m": [
     0.0014,
-    -0.07875,
+    -0.07876,
     0.08392
    ],
    "part": null,

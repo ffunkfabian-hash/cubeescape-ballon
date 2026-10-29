@@ -47,7 +47,7 @@ Status: Maße entworfen (Spanne und Auszug an v1 angelehnt; gemessene Werte im S
 """
 import math
 
-from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, band, R_BODY, R_MID, R_SMALL, R_FINE)
+from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, band, R_BODY, R_MID, R_SMALL, R_FINE, R_SOFT)
 from basic.pilot import energy_roles  # noqa: F401  (Leuchtrollen pin_glow, draw_light)
 from basic.pilot.optics.sight_kit import pins, side_mount, PINS_SIZES, PINS_LINE
 from basic.reticles import SIGHT
@@ -86,9 +86,9 @@ P += [
                dict(shape='prof', pts=[(2, -190), (24, -190), (32, -160), (28, -112), (10, -104), (2, -130)], w=60)]),       # Durchbruch
     prof('grip', 'Griffstück', 'Bow grip', 'grip_controls', 'rubber', 'Bogenhand umschließt das Mittelstück; trägt Socket_Hand',
          'um das Mittelstück geschraubt',
-         # Runde 1: als Kasten gelesen → Handballenwölbung hinten (bis f −36), vorn schmaler mit Fingermulde, Kanten R_BODY
+         # Runde 1: als Kasten gelesen → Handballenwölbung hinten (bis f −36), vorn schmaler mit Fingermulde, Kanten R_SOFT (A5, 0.32)
          [(-22, -52), (6, -52), (14, -40), (15, -18), (11, -2), (15, 18), (13, 34), (-14, 38), (-28, 26), (-36, 2), (-34, -26),
-          (-28, -44)], W_RISER + 2, bevel=R_BODY),
+          (-28, -44)], W_RISER + 2, bevel=R_SOFT),
     part('arrow_rest', 'Pfeilauflage', 'Arrow rest', 'riser', 'multi', 'anodized', 'Führt den Pfeil im Sichtfenster',
          'am Fensterbogen verschraubt (quer ins Fenster)', bevel=0.4,
          items=[dict(shape='box', f0=-6, f1=18, u0=ARROW_U - 9, u1=ARROW_U - 5, w=WIN['x_in'] + 2, x=WIN['x_in'] / 2),

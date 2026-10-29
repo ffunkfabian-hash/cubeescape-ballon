@@ -8,6 +8,9 @@ import math
 
 # Radienstufen des Designvertrags (mm)
 R_BODY, R_MID, R_SMALL, R_FINE = 5.0, 3.0, 1.5, 0.8
+# Griffpolster (Rolle `rubber`) eine Stufe über dem harten Träger R_BODY: Fase als Materialsignal (A5, Nutzer 29.10.2026);
+# dünne Polsterstreifen (Dicke < 3 × R_SOFT) behalten ihre kleinere Stufe, sonst schließt die Fase den Steg (LESSONS)
+R_SOFT = 6.5
 SEAM = 1.0   # Fugenbreite zwischen getrennten Schalen
 
 INTERFACES = {
@@ -383,7 +386,7 @@ def grip_v21(top=42, mat='rubber'):
     P = []
     for p in grip_rifle(top=top):
         if p['id'] == 'grip':
-            p.update(mat=mat, pts=[A(top, -20), A(12, -23), A(-22, -26), A(-52, -22), A(-64, -25), A(-74, -22), A(-76, -12),
+            p.update(mat=mat, bevel=R_SOFT if mat == 'rubber' else p['bevel'], pts=[A(top, -20), A(12, -23), A(-22, -26), A(-52, -22), A(-64, -25), A(-74, -22), A(-76, -12),
                                    A(-76, 16), A(-70, 23), A(-60, 18), A(-50, 21), A(-40, 17), A(-30, 21), A(-20, 17), A(-8, 21),
                                    A(16, 20), A(top, 21)])
         if p['id'] == 'trigger_guard':

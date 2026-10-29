@@ -16,7 +16,6 @@ import sys
 
 import bpy
 import numpy as np
-from mathutils import Matrix
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -90,16 +89,8 @@ def main():
         wid = f"{W.META['id']}-{W.META['variant']}"
         sc = EB.Scene(W, dict(gpu=gpu, samples=samples, fx=False))
         EB.evaluate(sc, dict(weapon=[(0, 'hip')], L=[(0, 'support')], R=[(0, 'grip')]), 0, {}, {})
-        # Leuchtteile (move.kind glow): ego_build.set_weapon setzt sie an die Waffe und BB.apply_move danach zurück in die Ruhelage
-        # ohne Waffenmatrix – die Salvenanzeigen von BASIC-02 schwebten oben im Bild (aus, daher im Still unsichtbar, in der Maske
-        # deckend). Für die Messung hier an die Waffe gesetzt; der Fehler in ego_build.py ist als Patch-Vorschlag im Bericht 0.30.
-        for p in W.PARTS:
-            if p.get('move', {}).get('kind') == 'glow' and p['id'] in sc.objs:
-                ob = sc.objs[p['id']]
-                par = sc.objs.get(p.get('parent_part'))
-                base = par.matrix_world @ Matrix(par['rest']).inverted() if par is not None else sc.WM
-                ob.matrix_world = base @ Matrix(ob['rest'])
-        bpy.context.view_layer.update()
+        # Leuchtteile (move.kind glow) sitzen seit 0.32 in ego_build.set_weapon an der Waffe (vorher schwebten die Salvenanzeigen von
+        # BASIC-02 oben im Bild; Prüfung tools/test_ego_glow.py)
         scn = bpy.context.scene
         scn.camera = sc.cam
         scn.render.resolution_x, scn.render.resolution_y = RES
