@@ -631,19 +631,19 @@ def weapon(kid, size='M'):
 
 # ------------------------------------------------------------------------------------------------ Bogen
 PINS_SIZES = {'S': 22.0, 'M': 26.0, 'L': 30.0}   # lichter Ringradius; M: Ø 52 = 5,0 % der Bildbreite im Augenpunkt am Ankerpunkt (680 mm)
-PINS_LINE = 10.0                                  # Visierlinie = Schiene + r + 10 (Sockel 3,6 mm zwischen Gehäuse und Ring, nichts schwebt)
+PINS_LINE = 12.0                                  # Visierlinie = Schiene + r + 12 (Sockel 5,6 mm; bei + 10 ragte das flache Visiergehäuse 0,3 mm in den unteren Ringrand, test_sight_seat 0.29)
 PINS_STEP = 0.36                                  # Pinabstand als Anteil von r (M: 9,4 mm = 0,79° bei 680 mm)
 PINS_HEAD = (2.0, 1.75, 1.5)                      # Radius der Pinköpfe bei M (oben → unten kleiner), skaliert mit r / 26
 PINS_EYE_MM = 680.0                               # Katalog/Prüfkörper: Augenpunkt am Ankerpunkt (Bogen: f der Pins − Auge)
 PINS_T, PINS_DEPTH, PINS_CAP = 1.8, 8.0, 0.72     # Flachprofil 1,8 × 8; rechte Seite bei x = −0,72 r abgeflacht (Pinschiene)
 
 
-def pins(f, u, size='M', weapon_type='combat_bow', eye_f=None, mat=MET):
+def pins(f, u, size='M', eye_f=None, mat=MET):
     """B1 „Pins“ (Bogen; seit 0.29 an BASIC-07 v2.1, dort seitlich links): kurze H0-Plattform ohne Emitter und ohne Glas; Ring aus
     Flachprofil 1,8 × 8, rechts abgeflacht, außen dort die Pinschiene mit Klemmschrauben (Merkmal 2); drei waagerechte Pins von rechts
     mit Leuchtköpfen auf der Mittelsenkrechten, Abstand 0,36 r, Köpfe nach unten kleiner (Merkmal 1). Die Pins sind das Absehen (kein
     gezeichnetes, kein Glas); der oberste Kopf liegt auf der Visierlinie. f = Hinterkante Klemmfuß, u = Schienenoberkante; Visierlinie
-    Schiene + r + 10 (eigene Linie wie Kimme/Korn); am Bogen seitlich links mit `side_mount` (Nutzer 28.10.2026: „das visier muss
+    Schiene + r + 12 (eigene Linie wie Kimme/Korn); am Bogen seitlich links mit `side_mount` (Nutzer 28.10.2026: „das visier muss
     nach links“). eye_f: Augenpunkt (Bogen: am Ankerpunkt bei vollem Auszug, vom Modul); ohne Angabe 680 mm hinter den Pins.
     Liefert (Teile, Anker). Liegt hier statt in common.py (Unity-Quellenhash, Umzug mit dem Ego-Übertrag)."""
     r = PINS_SIZES[size]

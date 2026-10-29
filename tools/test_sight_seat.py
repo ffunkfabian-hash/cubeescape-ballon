@@ -168,23 +168,29 @@ def measure_pins(W):
     bpy.context.view_layer.update()
     e = anc['Socket_Eye'].matrix_world.translation
     fr = next(p for p in W.PARTS if p['id'] == 'sight_frame')
-    hole = fr['cuts'][0]['pts']
+    hole = next(c for c in fr['cuts'] if c.get('shape') == 'xprof')['pts']     # lichte Kontur (Durchbruch der Haube)
     r, cap = max(q[0] for q in hole), -min(q[0] for q in hole)       # links rund, rechts bei −cap abgeflacht (Pinschiene)
     fp = (fr['f0'] + fr['f1']) / 2
     cx, cu = fr.get('cx', 0.0), fr['cu']
     others, _ = tree([objs[p['id']] for p in W.PARTS if p['id'] not in PIN_OK])
-    hits, n = [], 0
+    hits, n, pts = [], 0, []
     for i in range(24):
         for j in range(24):
             dx, du = (r - 0.5) * (-1 + (2 * i + 1) / 24), (r - 0.5) * (-1 + (2 * j + 1) / 24)
             if dx * dx + du * du > (r - 0.5) ** 2 or dx < -cap + 0.5:
                 continue
-            n += 1
-            tgt = kit.to_xyz(fp, cu + du, cx + dx)
-            d = tgt - e
-            loc = others.ray_cast(e, d.normalized(), d.length)[0]
-            if loc is not None:
-                hits.append(round(-loc.y * 1000, 1))
+            pts.append((dx, du))
+    for k in range(72):                                  # Randstrahlen auf r − 0,5 (Richter 0.29: Raster allein ließ ≈ 1,6 mm Rand frei)
+        dx, du = (r - 0.5) * math.cos(math.radians(5 * k)), (r - 0.5) * math.sin(math.radians(5 * k))
+        if dx >= -cap + 0.5:
+            pts.append((dx, du))
+    for dx, du in pts:
+        n += 1
+        tgt = kit.to_xyz(fp, cu + du, cx + dx)
+        d = tgt - e
+        loc = others.ray_cast(e, d.normalized(), d.length)[0]
+        if loc is not None:
+            hits.append(round(-loc.y * 1000, 1))
     optic, _ = tree([objs[p['id']] for p in W.PARTS if p['asm'] == 'sight' and p['id'] not in PIN_MOUNT])
     rest, _ = tree([objs[p['id']] for p in W.PARTS if p['asm'] != 'sight' and p['id'] not in PIN_MOUNT])
     return dict(weapon=f"{W.META['id']}-{W.META['variant']}", sight_type='pins', rays=n, ring_hits=len(hits),

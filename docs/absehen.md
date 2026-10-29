@@ -133,7 +133,7 @@ Visierhöhe (Socket_Eye über der Laufachse) 66 ± 4 mm. Socket_Eye ist der Auge
 
 Absehen gezeichnet: Hüftform der Klasse, flach in der Glasebene, reine Emission; Linien mindestens 1.6 px bei 1280 px Bildbreite (75°), Ebene höchstens 0.5 mm neben der Scheibe (`common.drawn_reticle`; Unity zeichnet es selbst). Geprüft in `tools/test_sights.py` und `tools/test_sight_seat.py`.
 
-Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach Glidepath.
+Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 1.2 A: Scout, Handfeuerwaffe und MP nach Glidepath. Der Bogen (Visiertyp `pins`) nutzt bis zum Ego-Übertrag den Reflexbonus (`reticles.sight_type`), weil die Zoomtabelle in Unitys ego.json steht; Referenz Imperial Needle ≈ 2,2× (cubeescape-reference, REF 0.17).
 
 | Waffentyp | Visier (Visier-Standard 3) | Grundzoom | Status | Weltzoom Reflex | Weltzoom Zielfernrohr |
 |---|---|---|---|---|---|

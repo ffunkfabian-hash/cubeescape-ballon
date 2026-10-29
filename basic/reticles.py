@@ -92,6 +92,7 @@ SIGHT['types']['scope']['variants'] = {'S': dict(de='Zielfernrohr S', share=(0.1
 # Pfeilspitze als Visier (REF 0.14). Die Pins sind das Absehen (Bauteile, kein gezeichnetes Absehen, kein Glas); Augenpunkt am
 # Ankerpunkt bei vollem Auszug (Bogen-Regel, docs/familienmasse.md). Öffnung = lichter Ring im echten Abstand, entworfen (keine
 # Destiny-Messung): klein wie ein echtes Pinvisier, das Ziel bleibt um die Pins frei; die Visierhöhe 66 ± 4 mm über dem Pfeil gilt.
+# zoom_bonus ungenutzt bis zum Ego-Übertrag (sight_type() gibt dem Bogen bis dahin den Reflexbonus, Zoomtabelle in Unitys ego.json)
 SIGHT['types']['pins'] = dict(de='Pinvisier (Bogen)', ref='Socket_Reticle', zoom_bonus=0.0, target_share=(0.04, 0.07),
                               ads_view='pins', frame_max=0.10, eye='Ankerpunkt bei vollem Auszug', status='entworfen',
                               pin_gap_min_deg=0.6, pin_head_min_px=3.0)

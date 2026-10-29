@@ -50,8 +50,10 @@ def bow_rules(W):
         mv = p['move']
         if mv['kind'] in ('segment', 'translate'):
             v = mv['vector_mm']
-            if v[0] >= 0 or abs((v[0] ** 2 + v[1] ** 2 + v[2] ** 2) ** 0.5 - length) > 0.5:
-                bad.append(f"{p['id']}: Spannweg {tuple(v)} statt {length:.0f} mm nach hinten (−f)")
+            if v[0] >= 0 or abs(v[1]) > 0.5 or abs(v[2]) > 0.5 or abs((v[0] ** 2 + v[1] ** 2 + v[2] ** 2) ** 0.5 - length) > 0.5:
+                bad.append(f"{p['id']}: Spannweg {tuple(v)} statt {length:.0f} mm gerade nach hinten (−f)")
+            if mv['kind'] == 'segment' and max(abs(a - b) for a, b in zip(mv['nock'], list(nock) + [0] * (3 - len(nock)))) > 0.5:
+                bad.append(f"{p['id']}: Sehnenhälfte endet bei {tuple(mv['nock'])} statt am Nockpunkt {tuple(nock)}")
         elif mv['kind'] == 'rotate' and 'expect' not in mv:
             bad.append(f"{p['id']}: Drehung beim Auszug ohne move.expect (Richtung ungeprüft)")
     ids = {p['id'] for p in draw}
@@ -59,6 +61,8 @@ def bow_rules(W):
         ev = dict((e, fr) for fr, e in A.get('events', ()))
         if 'full_draw' not in ev:
             continue
+        for pid in sorted(ids - set(A['keys'])):     # Richter 0.29: fehlende Schlüssel nicht still überspringen
+            bad.append(f'{a}/{pid}: Auszugsteil ohne Schlüssel (bewegt sich in dieser Aktion nicht mit)')
         for pid in ids & set(A['keys']):
             ks = A['keys'][pid]
             if abs(_key_value(ks, ev['full_draw']) - 1) > 1e-9:

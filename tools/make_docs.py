@@ -325,7 +325,7 @@ def family_dims():
               'Motiongen (cubeescape-reference `proportionen` › 1): **L = Spanne** (Rolle oben bis Rolle unten), **H = Tiefe in',
               'Pfeilrichtung** einschließlich Pfeil; nicht mit Gewehr-H/L vergleichen (Destiny-Bogen 0,73). Der Augenpunkt liegt am',
               'Ankerpunkt bei vollem Auszug, die Visierlinie 66 ± 4 mm vom Pfeil wie in der Familie (Visierhöhe = Abstand; seitlich nur',
-              'links, Regel aus 0.28); das Pinvisier B1 hat eine eigene Linie Schiene + r + 10 mm und sitzt links neben dem Fensterbogen',
+              'links, Regel aus 0.28); das Pinvisier B1 hat eine eigene Linie Schiene + r + 12 mm und sitzt links neben dem Fensterbogen',
               '(Nutzer: „das visier muss nach links“). Kollision am Modell: Teil für Teil (Spec `parts[].bounds_m`), nie eine Gesamtbox über',
               'den offenen Raum zwischen Sehne und Bogen.', '',
               '| Bogen | Spanne × Tiefe × B | H/L | Pfeilachse u | Sehne f | Auszug | Nockpunkt voll f | Visierlinie u | Visierhöhe | '

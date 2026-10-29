@@ -25,8 +25,9 @@ Formsprache-Checkliste (stilhandbuch §3):
 
 Visier: B1 „Pins“ (Baukasten v3, visier-konzept › 6a; `sight_kit.pins`): drei Leuchtpins von der Pinschiene rechts sind das Absehen,
 Ring Ø 52 auf einer kurzen H0-Plattform; die Plattform klemmt auf einer Schiene BRI-22 am Visierträger **links neben** dem
-Fensterbogen (Seitenvisier, Ringmitte 58 mm links und 31,5 mm über dem Pfeil; Nutzer 28.10.2026: „das visier muss nach links,
-nicht nach rechts“ – Wahl „ganz zur linken Seite“). Augenpunkt am Ankerpunkt bei vollem Auszug (20 mm hinter dem Nockpunkt), in
+Fensterbogen (Seitenvisier, Ringmitte 60 mm links und 27,5 mm über dem Pfeil – der Ringrand bleibt auch vor der Vorderkante
+des Fensterbogens frei, Richter 0.29; Nutzer 28.10.2026: „das visier muss nach links, nicht nach rechts“ – Wahl „ganz zur linken
+Seite“). Augenpunkt am Ankerpunkt bei vollem Auszug (20 mm hinter dem Nockpunkt), in
 Linie mit dem Ring; Visierhöhe als Abstand zum Pfeil 66 mm (Familie; seitliche Visiere nur links, Regel aus 0.28). Im Zielbild
 steht der Fensterbogen damit rechts neben dem Ring wie der Riser bei Destiny („Riser knapp rechts der Mitte“, cubeescape-reference
 destiny2 › Imperial Needle ADS); die Pfeilspitze liegt rechts unten statt in der Mitte (Abweichung, Seitenvisier).
@@ -65,7 +66,7 @@ CAM_R = 30
 CAM_DEG = 90                 # Rollendrehung beim vollen Auszug (oben im, unten gegen den Uhrzeigersinn, Seitenansicht vorn rechts)
 ARROW = (-150, 505)          # Pfeilschaft Nocke bis Spitzenhülse
 WIN = dict(x_in=16.0, x_out=32.0, u0=38.0, u1=170.0)   # Sichtfenster: rechts davon frei für den Pfeil (Federn bis x 13), links der Fensterbogen
-SIGHT_X = 58                 # Seitenvisier links neben dem Fensterbogen (Nutzer 28.10.2026: „das visier muss nach links“); Auge ebenso
+SIGHT_X = 60                 # Seitenvisier links neben dem Fensterbogen (Nutzer 28.10.2026: „das visier muss nach links“); Auge ebenso
 SIGHT_U = ARROW_U + math.sqrt(SIGHT['height_mm'] ** 2 - SIGHT_X ** 2)   # Visierlinie 66 mm vom Pfeil (seitlich: Abstand, wie 0.28)
 DECK = SIGHT_U - PINS_SIZES['M'] - PINS_LINE                             # Schienenoberkante am Visierträger
 W_RISER = 30
@@ -121,7 +122,7 @@ P += [
 ]
 P += [dict(p, asm='riser', iface='BRI-22', x=SIGHT_X) for p in rail(30, 104, DECK - 8)]
 P[-1]['cuts'] = [cut_box(36 + 12 * i, 41 + 12 * i, DECK - 4, DECK + 1, 30, x=SIGHT_X) for i in range(6)]
-_sight, SIGHT_ANCHORS = side_mount(*pins(56, DECK, weapon_type=V1.META['type'], eye_f=STRING_F - DRAW - EYE_BEHIND), SIGHT_X)
+_sight, SIGHT_ANCHORS = side_mount(*pins(56, DECK, eye_f=STRING_F - DRAW - EYE_BEHIND), SIGHT_X)
 P += _sight
 # ---------------------------------------------------------------- Wurfarme (gespalten), Rollen mit Durchbrüchen
 _c = [(16, RISER_U), (14, 290), (0, 360), (-30, 418), (-80, 460), (AXLE[0], AXLE[1]), (AXLE[0] - 12, AXLE[1] + 1)]

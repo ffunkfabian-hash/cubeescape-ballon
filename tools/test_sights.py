@@ -219,7 +219,7 @@ def pins_picture(parts, anchors):
 
 
 def check_pins(W):
-    """Pinvisier B1 an einer Familienwaffe (Bogen, 0.29): Fehlerliste. Pflichtteile; Klasse; Visierlinie Schiene + r + 10 und
+    """Pinvisier B1 an einer Familienwaffe (Bogen, 0.29): Fehlerliste. Pflichtteile; Klasse; Visierlinie Schiene + r + 12 und
     Visierhöhe 66 ± 4 über dem Pfeil; Augenpunkt am Ankerpunkt (hinter dem Nockpunkt bei vollem Auszug, höchstens 40 mm); oberster
     Pinkopf in der Bildmitte; Pin-Abstände (gleiche Stufen, ≥ pin_gap_min_deg) und Köpfe (≥ pin_head_min_px, nach unten kleiner,
     ganz im Ring); Sichtfeld: lichter Ring im Band, Pins nur von rechts (linke Ringhälfte frei), Fensterbogen des Mittelstücks
@@ -268,15 +268,22 @@ def check_pins(W):
         xs = [q[0] for q in P[f'sight_pin_blade_{i}']['pts']]
         if max(xs) > 0 or min(xs) > -(g['cap'] + PINS_T):
             bad.append(f'Pin {i + 1} nicht von der Pinschiene rechts zur Mitte (linke Ringhälfte muss frei bleiben)')
+    if (PINS_T / g['r']) > T['frame_max'] + 1e-9:
+        bad.append(f"Ringstirn {PINS_T:g} mm = {PINS_T / g['r']:.3f} × Öffnung > {T['frame_max']} (Rahmen zu dick)")
     win = getattr(W, 'WIN', None)
-    if win:     # Fensterbogen: im Abstand seiner Rückseite muss er außerhalb des Sichtkegels durch den Ring liegen
-        rp = [q for q in P['riser']['pts'] if win['u0'] <= q[1] <= win['u1']]
-        d_back = min(q[0] for q in rp) - e['at'][0]
-        need = (g['r'] + PINS_T) * d_back / g['dist']
-        if ex >= win['x_out'] and win['x_out'] > ex - need - 1.0:      # Seitenvisier links vom Fensterbogen
-            bad.append(f"Fensterbogen bis x {win['x_out']:g} verdeckt den Ring (frei nur bis x {ex - need - 1.0:.1f})")
-        elif ex < win['x_out'] and win['x_in'] < ex + need + 1.0:      # Ring über dem Pfeil, Fensterbogen links
-            bad.append(f"Fensterbogen ab x {win['x_in']:g} verdeckt den Ring (frei erst ab x {ex + need + 1.0:.1f})")
+    if win:     # Fensterbogen: der Ring samt Stirn (r + T) muss im Sichtkegel frei bleiben – geprüft an der Vorderseite des
+        # Fensterbogens (dort ist der Kegel am weitesten, Richter 0.29) mit den Kanten aus dem gebauten Profil
+        rs = P['riser']
+        rp = [q for q in rs['pts'] if win['u0'] <= q[1] <= win['u1']]
+        d_front = max(q[0] for q in rp) - e['at'][0]
+        need = (g['r'] + PINS_T) * d_front / g['dist']
+        x_out = rs.get('x', 0.0) + rs['w'] / 2                                       # Außenkante des Fensterbogens
+        cut = next(c for c in rs['cuts'] if c.get('u0') == win['u0'] and c.get('u1') == win['u1'])
+        x_in = cut.get('x', 0.0) + cut['w'] / 2                                       # Innenkante = Rand des Fensterschnitts
+        if ex >= x_out and x_out > ex - need - 1.0:      # Seitenvisier links vom Fensterbogen
+            bad.append(f"Fensterbogen bis x {x_out:g} verdeckt den Ring (frei nur bis x {ex - need - 1.0:.2f})")
+        elif ex < x_out and x_in < ex + need + 1.0:      # Ring über dem Pfeil, Fensterbogen links
+            bad.append(f"Fensterbogen ab x {x_in:g} verdeckt den Ring (frei erst ab x {ex + need + 1.0:.2f})")
     return bad
 
 
