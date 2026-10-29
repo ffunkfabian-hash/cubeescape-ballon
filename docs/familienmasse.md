@@ -49,6 +49,23 @@ als einzelne Teile.
 | BASIC-14-v2.1 | 502 × 117 × 122 | 278 × 173 × 126 | 165 × 29 × 50 | 52 × 39 × 31 | 72 × 116 × 30 | – |
 | BASIC-15-v2.1 | 360 × 106 × 53 | 309 × 64 × 55 | 180 × 118 × 40 | 47 × 40 × 37 | 72 × 116 × 30 | – |
 
+## Bogen
+
+**Bogen-Regel** (0.29 „Bowstring“, BASIC-07): Der Bogen steht senkrecht und hat keinen Lauf, kein Magazin, keinen Auswurf
+(`EJECT = None`). `Socket_Hand` liegt wie bei allen Waffen in der Griffachse, die Hand umschließt aber ein **Griffstück** statt
+des Griffs BGM-1; die Schussachse ist der Pfeil auf der Auflage direkt über der Hand. Statt der Stützhand greift die Zughand
+am Nockpunkt (`Socket_SupportHand` = `Socket_Nock`), `Socket_DrawFull` ist der Nockpunkt bei vollem Auszug. Maße nach
+Motiongen (cubeescape-reference `proportionen` › 1): **L = Spanne** (Rolle oben bis Rolle unten), **H = Tiefe in
+Pfeilrichtung** einschließlich Pfeil; nicht mit Gewehr-H/L vergleichen (Destiny-Bogen 0,73). Der Augenpunkt liegt am
+Ankerpunkt bei vollem Auszug, die Visierlinie 66 ± 4 mm vom Pfeil wie in der Familie (Visierhöhe = Abstand; seitlich nur
+links, Regel aus 0.28); das Pinvisier B1 hat eine eigene Linie Schiene + r + 10 mm und sitzt links neben dem Fensterbogen
+(Nutzer: „das visier muss nach links“). Kollision am Modell: Teil für Teil (Spec `parts[].bounds_m`), nie eine Gesamtbox über
+den offenen Raum zwischen Sehne und Bogen.
+
+| Bogen | Spanne × Tiefe × B | H/L | Pfeilachse u | Sehne f | Auszug | Nockpunkt voll f | Visierlinie u | Visierhöhe | Auge–Pins | Visier x | Schwerpunkt f / u | Teile / Dreiecke |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| BASIC-07-v2.1 Bogen | 1016 × 733 × 105 | 0.72 | 46 | -150 | 420 | -570 | 78 | 66.0 | 680 | 58 | -18 / 1 | 41 / 16832 |
+
 ## Werkzeuge
 
 Werkzeuge der Familie (`basic/pilot/t*_v21.py`): gleicher Griff und gleiche Lagen um `Socket_Hand`, ohne Visier und

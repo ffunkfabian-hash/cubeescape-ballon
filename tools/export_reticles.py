@@ -86,6 +86,10 @@ def doc():
         if 'eye_relief_mm' in T:
             L.append(f"| `{k}` | {T['de']} | {T['eye_relief_mm']:.0f} mm | `{T['ref']}` | +{T['zoom_bonus']} | "
                      f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % | {T['frame_max']} × Öffnung | {T['ads_view']} |")
+        elif k == 'pins':      # Bogen (0.29): Augenpunkt am Ankerpunkt, Öffnung = lichter Ring, Pins sind das Absehen
+            L.append(f"| `{k}` | {T['de']} | {T['eye']} | `{T['ref']}` | +{T['zoom_bonus']} | "
+                     f"{T['target_share'][0] * 100:.0f}–{T['target_share'][1] * 100:.0f} % (lichter Ring, {T['status']}) | "
+                     f"{T['frame_max']} × Öffnung | Pins ≥ {T['pin_head_min_px']:g} px, Abstand ≥ {T['pin_gap_min_deg']:g}° |")
         else:
             L.append(f"| `{k}` | {T['de']} | – | – | – | – | – | {T['ads_view']}: {T['note']} |")
     R = S['rail_line_mm']

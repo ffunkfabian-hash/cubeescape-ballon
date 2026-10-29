@@ -20,6 +20,10 @@ tatsächliche Kontur:
 - Zielbild frei (0.21, ersetzt „höchstens 1,5 mm über der Rohrunterkante“ von 0.19): Strahlen vom Augenpunkt (75°, 16:9) durch das
   untere Bilddrittel treffen kein Teil ohne `ads_hide` zwischen Auge und Objektivbeginn (je 0,5 mm Abstand zu Auge und Objektivkante) – dort stand 0.19 der Sattel mit Schiene.
   Bewusst geändertes Verhalten: 0.19 erlaubte einen flachen Sattel vor dem Auge.
+
+Pinvisier B1 am Bogen (`sight_type` `pins`, 0.29): Strahlen vom Augenpunkt durch die lichte Ringöffnung (Raster 24 × 24, innerhalb r − 0,5)
+treffen bis zur Ringebene kein Teil außer Pins und Pinschiene (der Fensterbogen des Mittelstücks liegt neben dem Sichtkegel); die Optik
+(Ring, Pins, Sockel) überschneidet kein Teil des Bogens außer ihrem Träger (Schiene, Visierträger).
 """
 import glob
 import importlib
@@ -152,11 +156,62 @@ def check(m):
     return bad
 
 
+PIN_OK = ('sight_pin', 'sight_pin_1', 'sight_pin_2', 'sight_pin_blade_0', 'sight_pin_blade_1', 'sight_pin_blade_2', 'sight_pin_rail',
+          'sight_pin_screws')
+PIN_MOUNT = ('rail', 'sight_arm', 'sight_mount', 'sight_clamp')     # Träger: dürfen einander berühren (Klemmung)
+
+
+def measure_pins(W):
+    """Pinvisier B1 (0.29): freie Sicht durch den Ring am Netz und keine Überschneidung der Optik mit dem Bogen."""
+    kit.reset_scene()
+    _, objs, anc = kit.build(W)
+    bpy.context.view_layer.update()
+    e = anc['Socket_Eye'].matrix_world.translation
+    fr = next(p for p in W.PARTS if p['id'] == 'sight_frame')
+    hole = fr['cuts'][0]['pts']
+    r, cap = max(q[0] for q in hole), -min(q[0] for q in hole)       # links rund, rechts bei −cap abgeflacht (Pinschiene)
+    fp = (fr['f0'] + fr['f1']) / 2
+    cx, cu = fr.get('cx', 0.0), fr['cu']
+    others, _ = tree([objs[p['id']] for p in W.PARTS if p['id'] not in PIN_OK])
+    hits, n = [], 0
+    for i in range(24):
+        for j in range(24):
+            dx, du = (r - 0.5) * (-1 + (2 * i + 1) / 24), (r - 0.5) * (-1 + (2 * j + 1) / 24)
+            if dx * dx + du * du > (r - 0.5) ** 2 or dx < -cap + 0.5:
+                continue
+            n += 1
+            tgt = kit.to_xyz(fp, cu + du, cx + dx)
+            d = tgt - e
+            loc = others.ray_cast(e, d.normalized(), d.length)[0]
+            if loc is not None:
+                hits.append(round(-loc.y * 1000, 1))
+    optic, _ = tree([objs[p['id']] for p in W.PARTS if p['asm'] == 'sight' and p['id'] not in PIN_MOUNT])
+    rest, _ = tree([objs[p['id']] for p in W.PARTS if p['asm'] != 'sight' and p['id'] not in PIN_MOUNT])
+    return dict(weapon=f"{W.META['id']}-{W.META['variant']}", sight_type='pins', rays=n, ring_hits=len(hits),
+                ring_hit_f=[min(hits), max(hits)] if hits else None, optic_overlaps=len(optic.overlap(rest)))
+
+
+def check_pins_mesh(m):
+    bad = []
+    if m['ring_hits']:
+        bad.append(f"Zielbild durch den Ring: {m['ring_hits']} von {m['rays']} Strahlen treffen ein Teil (f {m['ring_hit_f'][0]}–"
+                   f"{m['ring_hit_f'][1]}; Fensterbogen im Sichtkegel?)")
+    if m['optic_overlaps']:
+        bad.append(f"Pinvisier überschneidet den Bogen ({m['optic_overlaps']} Dreieckspaare)")
+    return bad
+
+
 def main():
     a = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
     res, bad = [], []
     for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         W = importlib.import_module(os.path.relpath(f, ROOT)[:-3].replace(os.sep, '.'))
+        if W.ANCHORS.get('Socket_Eye', {}).get('sight_type') == 'pins':
+            m = measure_pins(W)
+            res.append(m)
+            print('[test_sight_seat]', json.dumps(m, ensure_ascii=False))
+            bad += [f"{m['weapon']}: {b}" for b in check_pins_mesh(m)]
+            continue
         if W.ANCHORS.get('Socket_Eye', {}).get('sight_type') not in BAND_TYPE:
             continue
         m = measure(W)
@@ -165,7 +220,7 @@ def main():
         bad += [f"{m['weapon']}: {b}" for b in check(m)]
     if '--json' in a:
         json.dump(res, open(a[a.index('--json') + 1], 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-    print(f'[test_sight_seat] {len(res)} Zielfernrohre geprüft')
+    print(f'[test_sight_seat] {len(res)} Zielfernrohre geprüft (mit Pinvisieren B1)')
     for b in bad:
         print('[test_sight_seat] FEHLER', b)
     sys.exit(1 if bad or not res else 0)

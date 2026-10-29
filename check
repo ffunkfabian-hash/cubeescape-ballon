@@ -28,6 +28,55 @@ def fail(msg):
     err.append(msg)
 
 
+def bow_rules(W):
+    """Bogen der Familie (META fire 'draw_release', 0.29): Fehlerliste. Kein Magazin und kein Auswurf (EJECT = None ausdrücklich);
+    Nockpunkt bei vollem Auszug (Socket_DrawFull) = Ruhe − Auszug; jedes Teil mit Ereignis 'draw' zieht nach hinten (Segment und
+    Verschiebung: Vektor nach −f, Länge = Auszug; Drehungen prüft test_motion über move.expect). In jeder Aktion mit 'full_draw' stehen
+    alle Auszugsteile dort bei 1; nach 'release' laufen Sehne und Rollen in höchstens 4 Bildern auf 0 zurück, ohne über die Ruhe
+    hinauszuschwingen, und der Pfeil fliegt nach vorn (Wert < 0) – ausgewertet Bild für Bild wie die Bildfolgen."""
+    bad = []
+    if not hasattr(W, 'EJECT') or W.EJECT is not None:
+        bad.append('Bogen braucht ausdrücklich EJECT = None (kein Auswurf)')
+    if any(p['asm'] == 'magazine' or p.get('iface') == 'BMW-R' for p in W.PARTS) or 'Socket_MagWell' in W.ANCHORS:
+        bad.append('Bogen mit Magazin oder Magazinschacht')
+    nock, full = W.ANCHORS.get('Socket_Nock', {}).get('at'), W.ANCHORS.get('Socket_DrawFull', {}).get('at')
+    draw = [p for p in W.PARTS if p.get('move', {}).get('event') == 'draw']
+    if not nock or not full or not draw:
+        return bad + ['Bogen ohne Socket_Nock, Socket_DrawFull oder Auszugsteile (move.event draw)']
+    length = nock[0] - full[0]
+    if length <= 0:
+        bad.append(f'Socket_DrawFull liegt nicht hinter dem Nockpunkt ({-length:.0f} mm nach vorn)')
+    for p in draw:
+        mv = p['move']
+        if mv['kind'] in ('segment', 'translate'):
+            v = mv['vector_mm']
+            if v[0] >= 0 or abs((v[0] ** 2 + v[1] ** 2 + v[2] ** 2) ** 0.5 - length) > 0.5:
+                bad.append(f"{p['id']}: Spannweg {tuple(v)} statt {length:.0f} mm nach hinten (−f)")
+        elif mv['kind'] == 'rotate' and 'expect' not in mv:
+            bad.append(f"{p['id']}: Drehung beim Auszug ohne move.expect (Richtung ungeprüft)")
+    ids = {p['id'] for p in draw}
+    for a, A in W.ACTIONS.items():
+        ev = dict((e, fr) for fr, e in A.get('events', ()))
+        if 'full_draw' not in ev:
+            continue
+        for pid in ids & set(A['keys']):
+            ks = A['keys'][pid]
+            if abs(_key_value(ks, ev['full_draw']) - 1) > 1e-9:
+                bad.append(f'{a}/{pid}: bei full_draw (Bild {ev["full_draw"]}) nicht voll gespannt')
+            if 'release' not in ev:
+                continue
+            r = ev['release']
+            after = [_key_value(ks, fr) for fr in range(r, A['frames'] + 1)]
+            rem = next(p for p in W.PARTS if p['id'] == pid).get('removable')
+            if rem:
+                if min(after) >= 0:
+                    bad.append(f'{a}/{pid}: Pfeil fliegt nach dem Lösen nicht nach vorn (Wert bleibt ≥ 0)')
+            elif after[0] < 1 - 1e-9 or max(abs(x) for x in after[4:] or [0]) > 1e-9 or min(after) < -1e-9 \
+                    or any(y > x + 1e-9 for x, y in zip(after, after[1:])):
+                bad.append(f'{a}/{pid}: Rücklauf nach release nicht in ≤ 4 Bildern stetig von 1 auf 0')
+    return bad
+
+
 def eject_problems(W):
     """Auswurf aus den Daten (0.28 „Breech“, keine Sonderlogik nach Waffen-ID): Zeitpunkt `EJECT.on` – 'shot' (Standard, je Schuss)
     oder 'reload' (nur beim Nachladen, Ereignis `EJECT.event` in ACTIONS['reload']); Kammerwaffe (ein Munitionsteil hängt an einem
@@ -184,6 +233,10 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         from tools.test_sights import check_fullscreen
         for b in check_fullscreen(W):
             fail(f'{wid}: {b}')
+    elif e.get('sight_type') == 'pins':   # Bogen (0.29): Pinvisier B1, Augenpunkt am Ankerpunkt, Pins sind das Absehen
+        from tools.test_sights import check_pins
+        for b in check_pins(W):
+            fail(f'{wid}: {b}')
     elif not e.get('std') or e.get('sight_type') not in SIGHT['types']:
         fail(f'{wid}: Socket_Eye nicht nach Visier-Standard (std, sight_type)')
     else:
@@ -227,6 +280,9 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'basic', 'pilot', 'w*_v21.py'))):
         fail(f'{wid}: Waffe mit Energiezelle (BEC-1) braucht ausdrücklich EJECT = None (kein Hülsenauswurf)')
     for b in eject_problems(W):     # 0.28: Zeitpunkt des Auswurfs (Kammerwaffe beim Nachladen) und hülsenlose Munition
         fail(f'{wid}: {b}')
+    if W.META.get('fire') == 'draw_release':   # Bogen (0.29): kein Magazin, kein Auswurf; Spannweg nach hinten, Rücklauf beim Schuss
+        for b in bow_rules(W):
+            fail(f'{wid}: {b}')
     if 'Formsprache-Checkliste' not in (W.__doc__ or '') and W.META['id'] != 'BASIC-01':
         fail(f'{wid}: Checkliste (stilhandbuch §3) fehlt im Docstring')
     R = rv.get(wid, {})

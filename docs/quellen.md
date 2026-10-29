@@ -143,6 +143,10 @@ Bungie-Inspektionsrenderings gewöhnlicher Legendary-Waffen, aufgerufen über di
 | Palmyra-B | Rocket Launcher | `…/screenshots/3489657138.jpg` | dickes Startrohr vorn mit Ringpaaren, schlankeres Heckrohr (andere Farbe), Griffmodul unter dem Übergang, Klappgriff vorn, Visiermodul seitlich links (H/L grob 0,38, 3/4-Bild) |
 | Morrigan-D | Rocket Launcher | `…/screenshots/3748713779.jpg` | wie Palmyra (gleiche Grundform): Creme-Startrohr mit Fenster auf die Rakete, schlankes Heckrohr, senkrechter Vordergriff, Visierkasten seitlich (H/L grob 0,40); Skelettrahmen an der Seite nicht übernommen |
 | Code Duello | Rocket Launcher | `…/screenshots/2496242052.jpg` | langes Rohr mit Seitenvisier und Griffmodul darunter; gerippte Hülle und Zierschienen nicht übernommen |
+| Hush | Combat Bow | `…/screenshots/1584643826.jpg` | Compound, sehr schlicht: Dreiteilung Wurfarm / Mittelstück / Wurfarm, die Arme laufen im Bogen nach hinten zu je einer Rolle; helles Griffstück unter dunklem Mittelstück mit offenem Fenster als Visier; viel Negativraum zwischen Sehne und Bogen (H/L mit Pfeil grob 0,7, 3/4-Bild) |
+| Biting Winds | Combat Bow | `…/screenshots/1621657423.jpg` | Compound: durchbrochener Mittelsteg (Lochung im Griffbereich), schmale gerade Wurfarmstreben, Rolle als Scheibe an der Spitze, Visierbügel am Mittelstück (H/L mit Pfeil grob 0,85) |
+| Arsenic Bite-4b | Combat Bow | `…/screenshots/720351795.jpg` | Recurve: schlanke gerade Arme mit Rückknick, kantiges Mittelstück mit seitlicher Schiene und Pfeilauflage, kleiner Griff (beschnitten, nicht messbar) |
+| Imperial Needle | Combat Bow | `…/screenshots/3460122497.jpg` | Recurve, klassisch: schlankes Oberteil, Ringvisier links vor dem Riser auf Pfeilhöhe, gewickelter Griff (beschnitten, nicht messbar); Zierrippen nicht übernommen |
 
 Gesichtet 24.10.2026 für BASIC-02 v2.1 (Bildersuche „destiny 2 legendary pulse rifle light.gg“): übernommen geschlossene
 Kammer mit abgeschrägter Stirn und Mündungsmulde, Keil-Oberseite, gestufte Mündung. Für BASIC-03 v2.1 (Bildersuche „destiny 2
@@ -180,6 +184,12 @@ kurzen Lauf darüber (Wendigo GL3, Bitter/Sweet); beim Raketenwerfer das dicke S
 Übergang, senkrechter Vordergriff, das Fenster auf die Rakete und das Visier seitlich links. Gesichtet und verworfen: Lingering Dread,
 Bump in the Night und Sleepless (organisch, Stacheln, Zahnreihen), Festival Flight (verspielt).
 Die H/L-Werte sind wie 0.27 eigene grobe Messungen an 3/4-Menübildern (beobachtet, Unsicherheit mindestens ± 25 %).
+Für BASIC-07 v2.1 (0.29 „Bowstring“, gesichtet 28.10.2026, Bungie-Manifest-Cache wie 0.24; Bilder nur im Cache `refs/q-d2-img/bow_*`,
+Übersicht `kampfbogen/ref_bow.jpg`): übernommen die Compound-Dreiteilung mit nach hinten schwingenden Wurfarmen und je einer Rolle an
+der Spitze (Hush, Biting Winds), ein Mittelstück mit Fenster und Durchbruch als einzige massive Fläche und das Seitenvisier links
+vor dem Riser (Imperial Needle; Nutzer „das visier muss nach links“). Gesichtet und verworfen: Point of the Stag (Zierknöpfe,
+Ornamentplatten), Under Your Skin (Hauben und Flügel um die Rollen). Proportion: Motiongen-Bogen H/L 0,73 (Trinity Ghoul) als
+Bezug; die Werte oben sind eigene grobe Schätzungen an 3/4-Menübildern (beobachtet, ± 20–25 %).
 
 Daraus die fünf Regeln des Piloten: drei Detailebenen, Negativraum, Schichtung, Materialbruch, lesbare Front
 ([versions/0.2-pilot.md](versions/0.2-pilot.md)).

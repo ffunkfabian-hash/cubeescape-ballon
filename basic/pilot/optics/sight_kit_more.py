@@ -13,7 +13,7 @@ import types
 from basic.common import part, cyl, prof
 from basic.pilot.optics.sight_kit import (CU, CU_IRON, CU_MINI, DECK, F, MET, REL, T, HOLO_SIZES, SCOPE_SIZES, stub, _arc,
                                           _rr, _sector, _x, _hood, _glass, _eye, platform, _scope_body, _scope_foot,
-                                          _scope_anchors, _irons_anchor, BORE, achteck)
+                                          _scope_anchors, _irons_anchor, BORE, achteck, pins)
 
 
 def _iron_foot(fr, top):
@@ -108,30 +108,9 @@ def holo_flipcap(size='M'):
 
 
 def bow_pins(size='M'):
-    """B1 „Pins“ (Bogen): kurze H0-Plattform ohne Glas; Ring aus Flachprofil 1,8 × 8, rechts abgeflacht als Pinschiene (Merkmal 2);
-    drei waagerechte Pins von rechts mit Leuchtköpfen in der Mitte, 0/−4,5/−9 mm, Köpfe kleiner werdend (Merkmal 1). Die Pins
-    sind das Absehen (kein gezeichnetes)."""
-    r = {'S': 10.0, 'M': 12.0, 'L': 14.0}[size]
-    t, k = 1.8, 0.85
-    cap = 0.72 * r
-    gb = CU - r - 0.4
-
-    def d_ring(rr, cp):
-        return [(max(x, -cp), u) for x, u in _arc(rr, 0, 360, 72)[:-1]]
-    inner, outer = d_ring(r, cap), d_ring(r + t, cap + t)
-    fr = F + 46 * k - 9.4
-    P = platform(14, gb, k=k, emitter=False) + _hood(inner, outer, fr=fr, depth=8)
-    fp = fr + 4
-    for i, (du, rd) in enumerate(((0.0, 1.15), (-4.5, 0.95), (-9.0, 0.8))):
-        du *= r / 12
-        xs = -min(cap, math.sqrt(max(r * r - du * du, 0)))
-        P += [_x(f'sight_pin_blade_{i}', 'Pin', MET, fp - 1.0, fp + 1.0, [(xs - 0.4, du - 0.45), (-0.6, du - 0.45), (-0.6, du + 0.45),
-                                                                         (xs - 0.4, du + 0.45)], func='Waagerechter Pin', bevel=0.15),
-              cyl('sight_pin' if i == 0 else f'sight_pin_{i}', 'Pinkopf', 'Pin head', 'sight', 'energy', 'Leuchtkopf (Zielpunkt)',
-                  'am Pin', 'f', (CU + du, 0), fp - 1.3, fp + 1.3, rd, segs=20, bevel=0.1)]
-    return P, {'Socket_Reticle': dict(at=(fp, CU, 0), part='sight_pin'),
-               'Socket_Eye': dict(at=(fp - REL, CU, 0), part='sight_pin', sight_type='iron', std=False,
-                                  note=f'Augenpunkt {REL} mm hinter den Pins; die Pins sind das Absehen')}
+    """B1 „Pins“ auf dem Prüfkörper (Katalogblatt, test_sights); gebaut von `sight_kit.pins` (seit 0.29 an BASIC-07 v2.1, dort links
+    neben dem Fensterbogen)."""
+    return pins(F, DECK, size)
 
 
 def fusion_rings(size='M'):

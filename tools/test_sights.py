@@ -198,6 +198,88 @@ def check_reflex_seat(W):
     return [f"Klemmfuß (f {foot['f0']:g}–{foot['f1']:g}, u {foot['u0']:g}) liegt auf keiner Schiene BRI-22"]
 
 
+PINS_PARTS = ('sight_mount', 'sight_base', 'sight_frame', 'sight_frame_trim', 'sight_pin_rail', 'sight_pin', 'sight_pin_1',
+              'sight_pin_2', 'sight_pin_blade_0', 'sight_pin_blade_1', 'sight_pin_blade_2')
+
+
+def pins_picture(parts, anchors):
+    """Zielbild durch das Pinvisier B1 (0.29) im Augenpunkt: Abstand Auge–Pins, lichter Ring (Anteil der Bildbreite), je Pin
+    Mittelpunkt (u relativ zur Visierlinie, Winkel unter der Bildmitte) und Kopfdurchmesser in px bei 1280 px Bildbreite."""
+    P = {p['id']: p for p in parts}
+    eye = anchors['Socket_Eye']['at']
+    fr = P['sight_frame']
+    d = (P['sight_pin']['a0'] + P['sight_pin']['a1']) / 2 - eye[0]
+    xs = [q[0] for q in fr['cuts'][0]['pts']]
+    r = max(xs)                                           # links runder Ring: lichter Radius (rechts die Abflachung)
+    px = 2 * d * TAN / RT.SIGHT['drawn']['ref_w_px']
+    heads = [P[k] for k in ('sight_pin', 'sight_pin_1', 'sight_pin_2')]
+    pins = [dict(du=h['c'][0] - fr['cu'], x=h['c'][1] - fr.get('cx', 0.0), rd=h['r'], deg=math.degrees(math.atan((fr['cu'] - h['c'][0]) / d)),
+                 px=2 * h['r'] / px) for h in heads]
+    return dict(dist=d, r=r, cap=-min(xs), share=2 * r / (2 * d * TAN), pins=pins, cx=fr.get('cx', 0.0))
+
+
+def check_pins(W):
+    """Pinvisier B1 an einer Familienwaffe (Bogen, 0.29): Fehlerliste. Pflichtteile; Klasse; Visierlinie Schiene + r + 10 und
+    Visierhöhe 66 ± 4 über dem Pfeil; Augenpunkt am Ankerpunkt (hinter dem Nockpunkt bei vollem Auszug, höchstens 40 mm); oberster
+    Pinkopf in der Bildmitte; Pin-Abstände (gleiche Stufen, ≥ pin_gap_min_deg) und Köpfe (≥ pin_head_min_px, nach unten kleiner,
+    ganz im Ring); Sichtfeld: lichter Ring im Band, Pins nur von rechts (linke Ringhälfte frei), Fensterbogen des Mittelstücks
+    verdeckt den Ring nicht."""
+    from basic.pilot.optics.sight_kit import PINS_LINE, PINS_T
+    T = RT.SIGHT['types']['pins']
+    bad, e, t = [], W.ANCHORS['Socket_Eye'], W.META['type']
+    P = {p['id']: p for p in W.PARTS}
+    miss = [k for k in PINS_PARTS if k not in P]
+    if miss:
+        return [f'B1: Pflichtteile fehlen: {", ".join(miss)}']
+    if RT.SIGHT_KIND.get(t) != 'pins':
+        bad.append(f'Pinvisier passt nicht zur Klasse {t} (Visier-Standard 3: {RT.SIGHT_KIND.get(t)})')
+    g = pins_picture(W.PARTS, W.ANCHORS)
+    cu = P['sight_frame']['cu']
+    if e.get('deck') is None or abs(cu - e['deck'] - g['r'] - PINS_LINE) > 1e-6:
+        bad.append(f"Visierlinie u {cu} statt Schiene {e.get('deck')} + r {g['r']:g} + {PINS_LINE:g} mm")
+    ex = e['at'][2] if len(e['at']) > 2 else 0
+    h = math.hypot(e['at'][1] - W.BORE, ex)          # seitliches Visier: Abstand zum Pfeil (wie 0.28), nur über dem Pfeil oder links
+    if abs(h - RT.SIGHT['height_mm']) > RT.SIGHT['height_tol_mm']:
+        bad.append(f"Visierhöhe {h:.1f} mm vom Pfeil außerhalb {RT.SIGHT['height_mm']:.0f} ± {RT.SIGHT['height_tol_mm']:.0f} mm")
+    if e['at'][1] < W.BORE - RT.SIGHT['height_tol_mm'] or ex < -0.5:
+        bad.append(f"Visierlinie unter dem Pfeil oder rechts daneben (u {e['at'][1]:.1f}, x {ex:.1f}; seitlich nur links)")
+    full = W.ANCHORS.get('Socket_DrawFull', {}).get('at')
+    if not full or not 0 <= full[0] - e['at'][0] <= 40:
+        bad.append('Augenpunkt nicht am Ankerpunkt (0–40 mm hinter dem Nockpunkt bei vollem Auszug, Socket_DrawFull)')
+    p0 = g['pins'][0]
+    if abs(e['at'][1] - cu) > 1e-6 or abs(p0['du']) > 1e-6 or abs(p0['x']) > 1e-6 or abs(ex - g['cx']) > 1e-6:
+        bad.append('oberster Pinkopf nicht in der Bildmitte (Augenpunkt, Ringmitte und Pin nicht auf einer Linie)')
+    steps = [a['du'] - b['du'] for a, b in zip(g['pins'], g['pins'][1:])]
+    if min(steps) <= 0 or max(steps) - min(steps) > 0.05:
+        bad.append(f'Pins nicht in gleichen Stufen nach unten ({", ".join(f"{x:.2f}" for x in steps)} mm)')
+    gaps = [b['deg'] - a['deg'] for a, b in zip(g['pins'], g['pins'][1:])]
+    if min(gaps) < T['pin_gap_min_deg']:
+        bad.append(f"Pinabstand {min(gaps):.2f}° < {T['pin_gap_min_deg']}° (Köpfe fließen zusammen)")
+    heads = [q['px'] for q in g['pins']]
+    if min(heads) < T['pin_head_min_px'] or any(a <= b for a, b in zip(heads, heads[1:])):
+        bad.append(f"Pinköpfe {', '.join(f'{x:.1f}' for x in heads)} px: nicht ≥ {T['pin_head_min_px']} px oder nicht nach unten kleiner")
+    for i, q in enumerate(g['pins']):
+        if abs(q['du']) + q['rd'] > g['r'] - 1.0:
+            bad.append(f'Pinkopf {i + 1} reicht an den Ring (Abstand < 1 mm)')
+    lo, hi = T['target_share']
+    if not lo <= g['share'] <= hi:
+        bad.append(f"Sichtfeld: lichter Ring {g['share'] * 100:.1f} % außerhalb {lo * 100:.0f}–{hi * 100:.0f} %")
+    for i in range(3):
+        xs = [q[0] for q in P[f'sight_pin_blade_{i}']['pts']]
+        if max(xs) > 0 or min(xs) > -(g['cap'] + PINS_T):
+            bad.append(f'Pin {i + 1} nicht von der Pinschiene rechts zur Mitte (linke Ringhälfte muss frei bleiben)')
+    win = getattr(W, 'WIN', None)
+    if win:     # Fensterbogen: im Abstand seiner Rückseite muss er außerhalb des Sichtkegels durch den Ring liegen
+        rp = [q for q in P['riser']['pts'] if win['u0'] <= q[1] <= win['u1']]
+        d_back = min(q[0] for q in rp) - e['at'][0]
+        need = (g['r'] + PINS_T) * d_back / g['dist']
+        if ex >= win['x_out'] and win['x_out'] > ex - need - 1.0:      # Seitenvisier links vom Fensterbogen
+            bad.append(f"Fensterbogen bis x {win['x_out']:g} verdeckt den Ring (frei nur bis x {ex - need - 1.0:.1f})")
+        elif ex < win['x_out'] and win['x_in'] < ex + need + 1.0:      # Ring über dem Pfeil, Fensterbogen links
+            bad.append(f"Fensterbogen ab x {win['x_in']:g} verdeckt den Ring (frei erst ab x {ex + need + 1.0:.1f})")
+    return bad
+
+
 BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffentyp der Hüftform, Größen)
     'H0 Referenz': (lambda s: C.reflex_sight_v21(-6, 143), 'reflex', 'auto_rifle', ('M',)),
     'H2 Pille': (lambda s: C.holo_pille(-6, 143, s), 'reflex', 'submachine_gun', ('S', 'M', 'L')),
@@ -212,6 +294,8 @@ BUILT = {   # gebaute Visiere des Baukastens: (Bau mit Größe, Visiertyp, Waffe
     # 0.28 „Breech“: W1 an BASIC-13, W2 an BASIC-14 (Größe M; L ist die Holo-L-Variante der Werfer)
     'W1 D-Linse': (lambda s: _kit().d_linse(-6, 143, s), 'reflex', 'grenade_launcher', ('S', 'M', 'L')),
     'W2 Entfernung': (lambda s: _kit().entfernung(-6, 143, s), 'reflex', 'rocket_launcher', ('S', 'M', 'L')),
+    # 0.29 „Bowstring“: B1 an BASIC-07 v2.1 (Pins sind das Absehen, kein Glas; Öffnung = lichter Ring, Augenpunkt 680 mm wie am Bogen)
+    'B1 Pins': (lambda s: _kit().pins(-6, 143, s), 'pins', 'combat_bow', ('S', 'M', 'L')),
 }
 
 
@@ -509,6 +593,16 @@ def main():
     for name, (build, typ, wtype, sizes) in BUILT.items():
         for s in sizes:
             P, A = build(s)
+            if typ == 'pins':           # B1: lichter Ring, Pinabstände und Köpfe auf dem Prüfkörper (Augenpunkt 680 mm)
+                import types as _t
+                g = pins_picture(P, A)
+                n += 1
+                print(f"[test_sights] {name} {s}: Ring {g['share'] * 100:.1f} %, Pins "
+                      + ' / '.join(f"{q['deg']:.2f}° {q['px']:.1f} px" for q in g['pins']))
+                Wk = _t.SimpleNamespace(PARTS=P, ANCHORS=dict(A, Socket_DrawFull=dict(at=(A['Socket_Eye']['at'][0] + 20, 0, 0))),
+                                        META=dict(type=wtype), BORE=A['Socket_Eye']['at'][1] - RT.SIGHT['height_mm'])
+                bad += [f'{name} {s}: {b}' for b in check_pins(Wk)]
+                continue
             sh = opening_share(P, A)
             lo, hi, band = RT.share_band(typ, None, s)
             n += 1
@@ -536,6 +630,13 @@ def main():
                   f"{W.ANCHORS['Socket_Objective']['at'][0] - e['at'][0]:g} mm hinter dem Ring, Ring {ring_ratio(W.PARTS):.3f}, "
                   f"Kreis {FULLSCREEN['circle_h'] * 100:.0f} % H")
             bad += [f'{wid}: {b}' for b in check_fullscreen(W)]
+            continue
+        if e.get('sight_type') == 'pins':
+            g = pins_picture(W.PARTS, W.ANCHORS)
+            n += 1
+            print(f"[test_sights] {wid}: Pinvisier (B1), Auge {g['dist']:.0f} mm hinter den Pins, Ring {g['share'] * 100:.1f} %, Pins "
+                  + ' / '.join(f"{q['deg']:.2f}° {q['px']:.1f} px" for q in g['pins']))
+            bad += [f'{wid}: {b}' for b in check_pins(W)]
             continue
         if e.get('sight_type') not in ('reflex', 'scope'):
             continue
