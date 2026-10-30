@@ -668,6 +668,11 @@ namespace Ballon.Ego.Tests
                     Assert.IsNull(L.sight, $"{p.C.S.D.weapon.id}: ohne Visier kein gezeichnetes Absehen");
                     continue;
                 }
+                if (!p.C.S.D.weapon.parts.Any(q => q.role.StartsWith("reticle")))   // Kimme/Korn (0.33): Zielpunkt ist der Kornpunkt
+                {
+                    Assert.IsNull(L.sight, $"{p.C.S.D.weapon.id}: Kimme/Korn ohne gezeichnetes Absehen");
+                    continue;
+                }
                 Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
                 Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
                 var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
@@ -1096,7 +1101,7 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
-            Assert.AreEqual(5, p.loadouts.Length, "fünf Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone)");
+            Assert.AreEqual(7, p.loadouts.Length, "sieben Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone, 0.33: Handfeuerwaffe, Seitenwaffe)");
             p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);

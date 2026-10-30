@@ -19,7 +19,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Kasten an einer blanken Einhängeleiste links am Unteren Gehäuse; Deckel liegt auf dem Gehäuse (Scharnier vorn, darunter die Zuführschale), Laufmantel stößt mit Fuge 1 mm an |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Kasten links vor dem Griff (Ego-Seite, Stützhand wechselt ihn), Handschutz unter dem Mantel mit Griffpolster; Tragegriff links am Mantel angeklappt (Laufwechsel), außerhalb des Zielbilds |
 
-Visier: H6 „Achteck“ (Baukasten v3, visier-konzept › 6a; `sight_kit.achteck`) in **Größe L**: Fenster 34 × 26, 24,7 % der
+Visier: H6 „Achteck“ (Baukasten v3, visier-konzept › 6a; `common.achteck`) in **Größe L**: Fenster 34 × 26, 24,7 % der
 Bildbreite – zugelassene Variante Holo L (bis 25 %, nur MG/Werfer, seit 0.21). Begründung: das MG zielt aus der Bewegung auf
 Gruppen und hält Dauerfeuer, das größere Fenster behält das Ziel trotz Rückstoß im Bild; Größe M (30 × 22) läge mit 21,8 % über
 dem Holo-Band und ist keine zugelassene Größe. H1 Fase (L) nur als Variante im Katalog. Absehen gezeichnet (`ring_dot` flach).
@@ -34,7 +34,7 @@ Status: Maße entworfen (Länge kürzer als v1, an Familie 01 angelehnt; gemesse
 """
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, stock_s1, charging_handle,
                           R_MID, R_SMALL, R_FINE)
-from basic.pilot.optics.sight_kit import achteck
+from basic.common import achteck
 from basic.weapons import w15_machine_gun as V1
 
 META = dict(V1.META, variant='v2.1', name='Dauerlauf v2.1', nick='Familie v2.1',

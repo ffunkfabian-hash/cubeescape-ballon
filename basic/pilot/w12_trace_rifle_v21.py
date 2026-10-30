@@ -18,7 +18,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Zellentrichter im Unteren Gehäuse angeformt; Einteilkörper geht ohne Schaftrohr aus dem Gehäuse hervor (Fuge 1 mm) |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Energiezelle vor dem Griff wie ein Magazin, Griffband auf dem Fokusrohr für die Stützhand |
 
-Visier: H3 „Zinken“ (Baukasten v3, visier-konzept › 6a; `sight_kit.zinken`): zwei Seitenplatten 15° nach außen, oben offen,
+Visier: H3 „Zinken“ (Baukasten v3, visier-konzept › 6a; `common.zinken`): zwei Seitenplatten 15° nach außen, oben offen,
 Emitterpunkt zum Auge; Absehen gezeichnet (Hüftform `circle_cross` flach im Glas). Größe M (Glas unten 15,6 / oben 25,8 mm, 18,7 %).
 H9 Klappe und H7 Schirm nur als Varianten im Katalog.
 Schlichtheitsbudget: Leuchten 3 Funktionen (Strahl: Fokuslinse und Scheibenmitte · Munition: Ladefenster der Zelle · Visier:
@@ -30,7 +30,7 @@ Zellenhalter. Energiewaffe: **kein Hülsenauswurf** (`EJECT = None`, Daten statt
 Status: Maße entworfen (Länge kürzer als v1, an Familie 10 angelehnt; gemessene Werte im Spec), Formprinzipien abgeleitet.
 """
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, R_MID, R_SMALL, R_FINE)
-from basic.pilot.optics.sight_kit import zinken
+from basic.common import zinken
 from basic.weapons import w12_trace_rifle as V1
 
 META = dict(V1.META, variant='v2.1', name='Leitstrahl v2.1', nick='Familie v2.1',

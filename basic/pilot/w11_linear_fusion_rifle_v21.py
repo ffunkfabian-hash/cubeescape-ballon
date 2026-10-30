@@ -18,7 +18,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | untere Schiene hinten als Handschutz tiefer, vorn schlank (Schräge); Zellentrichter im Unteren Gehäuse hinter dem Griff angeformt; Buckel hinter dem Auge im Gehäuseprofil |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Stützhand unter der tiefen Schienenzone mit Polster, Zelle hinter dem Griff, hohe Wangenauflage |
 
-Visier: Z2 „Gabel“ (Baukasten v3, visier-konzept › 6a; `sight_kit.gabel`), Sitz nach Konzept A wie Z1/Z3: Rohrsattel auf dem Buckel
+Visier: Z2 „Gabel“ (Baukasten v3, visier-konzept › 6a; `common.gabel`), Sitz nach Konzept A wie Z1/Z3: Rohrsattel auf dem Buckel
 hinter dem Augenpunkt, H0-Klemmfuß unter dem Objektiv; Ring ohne Wulst (außen/innen 1,29), U-Gabel mit 3 mm Abstand und Laschen;
 gezeichnetes Absehen (Hüftform `cross`) flach auf der Linse. Größe M (21,3 % bei 85,5 mm Linsenabstand, Standard 20–26 %). Z1 Tropfen nur als Variante.
 Schlichtheitsbudget: Leuchten 3 Funktionen (Ladung: Linearkern · Munition: Ladefenster der Zelle · Visier: Absehen) · Grafik 1 Band ·
@@ -28,7 +28,7 @@ Zellenhalter. Energiewaffe: **kein Hülsenauswurf** (`EJECT = None`, Daten statt
 Status: Maße entworfen (Länge an v1 1,22 m und Familie 09 angelehnt; gemessene Werte im Spec), Formprinzipien abgeleitet.
 """
 from basic.common import part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, stock_s1, R_BODY, R_MID, R_SMALL, R_FINE
-from basic.pilot.optics.sight_kit import gabel
+from basic.common import gabel
 from basic.pilot.energy_roles import CHARGE_ROLES  # noqa: F401  (registriert die Rolle charge_core in Blender)
 from basic.weapons import w11_linear_fusion_rifle as V1
 

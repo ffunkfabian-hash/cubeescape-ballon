@@ -30,7 +30,7 @@ Status: Maße entworfen (Länge an Toolgen 0,904 m angelehnt, Verhältnis H/L an
 Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import part, prof, box, cyl, cut_box, rail, grip_v21, stock_s1, R_MID, R_SMALL, R_FINE
-from basic.pilot.optics.sight_kit import hoerner
+from basic.common import hoerner
 from basic.weapons import w08_shotgun as V1
 
 META = dict(V1.META, variant='v2.1', name='Streuer v2.1', nick='Familie v2.1',

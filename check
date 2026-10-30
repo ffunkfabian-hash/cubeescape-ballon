@@ -410,6 +410,10 @@ for _m in _XU.WEAPONS:              # jede spielbare Waffe mit Visier (0.18; Wer
             fail(f'{_m}: ohne Visier weder Mündungsfeuer noch Zielen (Werkzeug, 0.22)')
         continue
     _cov = EG.flash_cover_ads(_W)
+    if _cov is None:                # Kimme/Korn (0.33): keine Öffnung, nur die Blitzdauer gilt
+        if abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
+            fail(f'Mündungsfeuer {_m}: nicht genau 1 Bild bei 30/s')
+        continue
     if _cov > 0.20 or abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
         fail(f'Mündungsfeuer {_m}: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
     elif _W.META['type'] == 'pulse_rifle':

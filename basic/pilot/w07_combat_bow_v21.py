@@ -23,7 +23,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Fensterbogen als Kröpfung aus einem Stück mit dem Mittelstück; Wurfarme stecken in den Aufnahmen (Fuge), Rollen zwischen den Zinken der gespaltenen Arme |
 | Ergonomie | Griffstück mit Handballenwölbung, Pfeilauflage direkt über der Hand, Zughand am Nockpunkt |
 
-Visier: B1 „Pins“ (Baukasten v3, visier-konzept › 6a; `sight_kit.pins`): drei Leuchtpins von der Pinschiene rechts sind das Absehen,
+Visier: B1 „Pins“ (Baukasten v3, visier-konzept › 6a; `common.pins`): drei Leuchtpins von der Pinschiene rechts sind das Absehen,
 Ring Ø 52 auf einer kurzen H0-Plattform; die Plattform klemmt auf einer Schiene BRI-22 am Visierträger **links neben** dem
 Fensterbogen (Seitenvisier, Ringmitte 60 mm links und 27,5 mm über dem Pfeil – der Ringrand bleibt auch vor der Vorderkante
 des Fensterbogens frei, Richter 0.29; Nutzer 28.10.2026: „das visier muss nach links, nicht nach rechts“ – Wahl „ganz zur linken
@@ -49,7 +49,7 @@ import math
 
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, band, R_BODY, R_MID, R_SMALL, R_FINE, R_SOFT)
 from basic.pilot import energy_roles  # noqa: F401  (Leuchtrollen pin_glow, draw_light)
-from basic.pilot.optics.sight_kit import pins, side_mount, PINS_SIZES, PINS_LINE
+from basic.common import pins, side_mount, PINS_SIZES, PINS_LINE
 from basic.reticles import SIGHT
 from basic.weapons import w07_combat_bow as V1
 

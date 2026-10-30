@@ -49,13 +49,51 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Format_und_Umfang()
         {
-            Assert.AreEqual(5, All.Length, "fünf spielbare Waffen (Automatik, MP, Scout, Impuls, Portalkanone)");
-            CollectionAssert.AreEqual(new[] { "BASIC-01-v2.1", "BASIC-06-v2.1", "BASIC-03-v2.1", "BASIC-02-v2.1", "BASIC-T01-v2.1" },
-                                      All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3, 4, 5");
-            CollectionAssert.AreEqual(new[] { "full_auto", "full_auto", "semi_auto", "burst", "single" }, All.Select(d => d.gameplay.fire_mode).ToArray(),
-                                      "Feuerart aus der Spec");
+            Assert.AreEqual(Playable.Length, All.Length, "spielbare Waffen (0.33 P1: Automatik, MP, Scout, Impuls, Portalkanone, "
+                                                         + "Handfeuerwaffe, Seitenwaffe)");
+            CollectionAssert.AreEqual(Playable.Select(p => p.id).ToArray(), All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3 …");
+            CollectionAssert.AreEqual(Playable.Select(p => p.fire).ToArray(), All.Select(d => d.gameplay.fire_mode).ToArray(),
+                                      "Feuerart aus der Spec (Spannabzug der Trommel als Einzelfeuer, ego.FIRE_ALIAS)");
             Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
             foreach (var d in All) Umfang(d);
+        }
+
+        /// <summary>Spielbare Waffen in Tastenreihenfolge mit Klasse und Feuerart (export_unity.WEAPONS, ego.CLASSES); 0.33 „Armory“ P1.</summary>
+        static readonly (string id, string type, string fire)[] Playable =
+        {
+            ("BASIC-01-v2.1", "auto_rifle", "full_auto"), ("BASIC-06-v2.1", "submachine_gun", "full_auto"),
+            ("BASIC-03-v2.1", "scout_rifle", "semi_auto"), ("BASIC-02-v2.1", "pulse_rifle", "burst"),
+            ("BASIC-T01-v2.1", "portal_cannon", "single"), ("BASIC-04-v2.1", "hand_cannon", "semi_auto"),
+            ("BASIC-05-v2.1", "sidearm", "semi_auto"),
+        };
+
+        /// <summary>0.33 „Armory“: jede übertragene Klasse steht vollständig in ego.json – Klasse, Herkunft je Haltung und Aktion, Spielwerte
+        /// (Kadenz, Magazin bzw. unbegrenzt, Weltzoom, Hüft-Fadenkreuz), vier Griffe (Werkzeug zwei), Live-Teile, Atlanten. Scheitert mit dem
+        /// Export vor 0.33 (ohne Handfeuerwaffe und Seitenwaffe).</summary>
+        [Test]
+        public void Klassen_vollstaendig_in_ego_json()
+        {
+            foreach (var (id, type, fire) in Playable)
+            {
+                var d = All.FirstOrDefault(x => x.weapon.id == id);
+                Assert.IsNotNull(d, $"{id} ({type}) fehlt in ego.json");
+                Assert.AreEqual(type, d.gameplay.weapon_type, $"{id}: Klasse");
+                Assert.AreEqual(type, d.profile.type, $"{id}: Profil der Klasse");
+                Assert.IsNotEmpty(d.profile.src, $"{id}: Herkunft der Klasse");
+                Assert.Greater(d.gameplay.rpm, 0, $"{id}: Kadenz");
+                Assert.GreaterOrEqual(d.gameplay.magazine, 0, $"{id}: Magazin");
+                Assert.IsNotEmpty(d.gameplay.src, $"{id}: Herkunft der Spielwerte");
+                Assert.GreaterOrEqual(d.gameplay.world_zoom, 1f, $"{id}: Weltzoom");
+                Assert.IsNotEmpty(d.gameplay.hip.kind, $"{id}: Hüft-Fadenkreuz");
+                foreach (var p in d.poses) Assert.IsNotEmpty(p.src, $"{id}: Herkunft der Haltung {p.name}");
+                foreach (var a in d.actions)
+                {
+                    Assert.Greater(a.frames, 0, $"{id}: {a.name} ohne Dauer");
+                    Assert.IsNotEmpty(a.src, $"{id}: Herkunft der Aktion {a.name}");
+                }
+                Assert.IsTrue(d.weaponTextures?.weapon != null, $"{id}: Atlanten gebacken");
+                Umfang(d);
+            }
         }
 
         static void Umfang(EgoFile D)
@@ -67,9 +105,12 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(tool ? 8 : 10, D.poses.Length, "Haltungen");
             Assert.AreEqual(tool ? 2 : 4, D.grips.Length, "Griffe");
             Assert.AreEqual(tool ? 12 : 19, D.actions.Length, "Aktionen");
-            Assert.GreaterOrEqual(D.weapon.parts.Length, tool ? 20 : 40, "Waffenteile");
-            foreach (var n in tool ? new[] { D.weapon.live.trigger, D.weapon.live.ring } : new[] { D.weapon.live.trigger, D.weapon.live.bolt, D.weapon.live.port })
+            bool shortArm = D.gameplay.weapon_type == "hand_cannon" || D.gameplay.weapon_type == "sidearm";   // Kurzwaffen (0.33): 20/25 Teile
+            Assert.GreaterOrEqual(D.weapon.parts.Length, tool || shortArm ? 20 : 40, "Waffenteile");
+            foreach (var n in tool ? new[] { D.weapon.live.trigger, D.weapon.live.ring } : new[] { D.weapon.live.trigger, D.weapon.live.bolt })
                 Assert.IsTrue(D.HasPart(n), $"{D.weapon.id}: Live-Teil {n}");
+            Assert.IsTrue(string.IsNullOrEmpty(D.weapon.live.port) || D.HasPart(D.weapon.live.port),           // Pistolen, Trommel: ohne
+                          $"{D.weapon.id}: Auswurfklappe {D.weapon.live.port}");                              // Auswurfklappe (0.33)
             var meshes = new HashSet<string>(D.mesh_bounds.objects.Select(o => o.name));
             Assert.IsTrue(D.weapon.parts.All(p => meshes.Contains(p.id)), "jedes Teil hat ein Netz im Export");
             Assert.AreEqual(3, D.arm.rig_version);
@@ -91,8 +132,10 @@ namespace Ballon.Ego.Tests
                 CollectionAssert.IsOrdered(A.events.Select(e => e.f).ToArray(), A.name + " Marker");
             }
             foreach (var n in tool ? new[] { "Socket_Hand", "Socket_SupportHand", "Socket_Muzzle" }
-                                   : new[] { "Socket_Hand", "Socket_SupportHand", "Socket_Sight", "Socket_Eye", "Socket_Charge" })
+                                   : new[] { "Socket_Hand", "Socket_SupportHand", "Socket_Sight", "Socket_Eye" })
                 Assert.DoesNotThrow(() => D.Anchor(n));
+            if (D.HasPart("charging_handle"))              // Ladehebel; Pistolen und Trommel laden am Schlitten bzw. ohne (0.33)
+                Assert.DoesNotThrow(() => D.Anchor("Socket_Charge"));
             Assert.AreEqual(tool, !D.CanAim && !D.CanReload, $"{D.weapon.id}: Zielen und Nachladen nur mit Visier und Magazin");
             Assert.Greater(D.gameplay.rpm, 0);
             if (tool) Assert.AreEqual(0, D.gameplay.magazine, "Werkzeug ohne Magazin (unbegrenzt)");

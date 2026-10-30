@@ -31,7 +31,7 @@ Status: Maße entworfen (Länge an Toolgen 1,134 m angelehnt, Verhältnis H/L an
 Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import part, prof, box, cyl, cut_box, rail, rifle_mag, grip_v21, stock_s1, R_MID, R_SMALL
-from basic.pilot.optics.sight_kit import lang
+from basic.common import lang
 from basic.weapons import w09_sniper_rifle as V1
 
 META = dict(V1.META, variant='v2.1', name='Weitschuss v2.1', nick='Familie v2.1',

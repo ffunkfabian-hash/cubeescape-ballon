@@ -28,7 +28,7 @@ Formprinzipien abgeleitet aus den Bildreferenzen.
 import math
 
 from basic.common import part, prof, box, cyl, cut_box, grip_v21, R_BODY, R_MID, R_SMALL, R_FINE
-from basic.pilot.optics.sight_kit import klammer
+from basic.common import klammer
 from basic.weapons import w05_sidearm as V1
 
 META = dict(V1.META, variant='v2.1', name='Seitenwaffe v2.1', nick='Familie v2.1',
@@ -120,6 +120,20 @@ ANCHORS.update(SIGHT_ANCHORS)
 # Hülsenauswurf (wie BASIC-06): Mitte des Auswurffensters rechts im Schlitten, Kurzpatrone, nach rechts, etwas hoch und vorn
 EJECT = dict(at=(73, 80, -12), dir=(0.2, 0.5, -1.0), case='pistol',
              src='E: Auswurffenster rechts im Schlitten, Hülse nach rechts, etwas hoch und vorn (wie BASIC-06)')
+# Ego-Griffe (0.33 „Armory“, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. Pistolengriff beidhändig
+# wie BASIC-04; 'mag' am Magazinboden (bündig mit dem Griffboden), 'charge' hinten links am Schlitten (Durchladen über den Schlitten).
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(-2, -34, 19), palm=(0.1, 0.0, -1.0), fingers=(0.75, -0.66, 0.0), fingers_pose='grip',
+                    src='E links an Griff und Griffhand (Socket_SupportHand), Finger schräg nach vorn unten um die Griffhand '
+                        '(beidhändiger Pistolengriff, wie BASIC-04)'),
+    'mag':     dict(part='magazine', contact=(round(-82 * T15, 1), -82, 17.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0), fingers_pose='mag_hold',
+                    src='E links am Magazinboden unter dem Griff, Hand greift von unten hinten (wie BASIC-06)'),
+    'charge':  dict(part='slide', contact=(-8, 75, SL_W / 2 + 0.5), palm=(0.0, 0.0, -1.0), fingers=(0.2, 0.98, 0.0),
+                    fingers_pose='pinch', src='E hinten links am Schlitten (Schlittenkappe), zieht den Schlitten zum Durchladen zurück'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='slide', port='')      # Abzug, Schlitten läuft je Schuss zurück; keine Auswurfklappe
 ACTIONS = {k: dict(A) for k, A in V1.ACTIONS.items()}
 EXPLODE = {'sight': (0, 90, 0), 'ammo': (0, -140, 0), 'barrel': (0, 0, -70), 'grip_controls': (-10, -80, 0), 'mechanism': (0, 60, 0),
            'receiver': (0, 0, 0)}

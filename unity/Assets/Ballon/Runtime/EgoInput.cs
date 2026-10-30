@@ -52,11 +52,19 @@ namespace Ballon.Ego
             r.jump = k.spaceKey.wasPressedThisFrame;
             r.reload = k.rKey.wasPressedThisFrame;
             r.inspect = k.fKey.wasPressedThisFrame;
-            r.select = k.digit1Key.wasPressedThisFrame ? 1 : k.digit2Key.wasPressedThisFrame ? 2 : k.digit3Key.wasPressedThisFrame ? 3
-                     : k.digit4Key.wasPressedThisFrame ? 4 : k.digit5Key.wasPressedThisFrame ? 5 : 0;   // 0.18: bis 0.17 1/2 Ziehen/Wegstecken; 0.20: 3 Scout; 0.22: 4 Impuls, 5 Portalkanone
+            r.select = 0;                       // 0.18: bis 0.17 1/2 Ziehen/Wegstecken; 0.20: 3 Scout; 0.22: 4/5; 0.33: Tasten 1–9 nach ego.json
+            for (int d = 0; d < Digits.Length; d++)
+                if (k[Digits[d]].wasPressedThisFrame) { r.select = d + 1; break; }
             r.swap = k.qKey.wasPressedThisFrame;
             return r;
         }
+
+        static readonly Key[] Digits =
+        {
+            Key.Digit1, Key.Digit2, Key.Digit3,
+            Key.Digit4, Key.Digit5, Key.Digit6,
+            Key.Digit7, Key.Digit8, Key.Digit9,
+        };
     }
 
     /// <summary>Zeitplan aus Abschnitten (Sekunden): gehaltene Tasten, einmalige Tasten, Blickbewegung je Sekunde.</summary>

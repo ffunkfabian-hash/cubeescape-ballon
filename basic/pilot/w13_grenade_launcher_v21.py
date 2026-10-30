@@ -21,7 +21,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Oberbrücke geht aus dem Gehäuse in das Joch über (ein Rahmen); Trommelachse in Stoßplatte und Joch gelagert; Lauf stößt mit Fuge 1 mm an das Joch |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Trommel vor dem Abzugsbügel (Nachladen links wie Kammerstängel 09 und MG-Kasten 15: die Stützhand öffnet die Ladeklappe hinten links, die Granate gleitet in der Ladeschale in die Kammer; Nutzer 28.10.2026 „Müsste das Granatwerfer nachladen nicht auf die linke seite“), Halbschale unter dem Lauf für die Stützhand |
 
-Visier: W1 „D-Linse“ (Baukasten v3, visier-konzept › 6a; `sight_kit.d_linse`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
+Visier: W1 „D-Linse“ (Baukasten v3, visier-konzept › 6a; `common.d_linse`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
 D-Haube aus Flachprofil 2,4 mm mit oranger Kerbmarke oben, drei Fallmarken links innen (Haltepunkte für den Bogenschuss);
 Größe M (Glas 26 mm, 18,9 % der Bildbreite); Absehen gezeichnet (Hüftform `circle_cross` flach im Glas); Weltzoom der Klasse
 1,4 (reticles.CLASS_ZOOM, ohne Visierbonus wie Destiny). W3 Leiter nur als Variante im Katalog (`sight_kit_more.launcher_ladder`).
@@ -40,7 +40,7 @@ import math
 
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, stock_s2, R_MID, R_SMALL, R_FINE)
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Trommel ohne feine Kratzer)
-from basic.pilot.optics.sight_kit import d_linse
+from basic.common import d_linse
 from basic.weapons import w13_grenade_launcher as V1
 
 META = dict(V1.META, variant='v2.1', name='Trommel v2.1', nick='Familie v2.1', type_de='Granatwerfer (Trommel)',

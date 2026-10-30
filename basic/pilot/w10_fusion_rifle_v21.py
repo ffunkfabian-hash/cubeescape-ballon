@@ -18,7 +18,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Zellentrichter im Unteren Gehäuse angeformt; Haube und Handschutz enden im Emitterblock (Fuge 1 mm) |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Energiezelle vor dem Griff wie ein Magazin, Griffpolster unter dem Handschutz |
 
-Visier: F1 „Bögen“ (Baukasten v3, visier-konzept › 6a; `sight_kit.boegen`): versetzte Bögen mit S-Öffnung und Stegen, Ladebalken auf
+Visier: F1 „Bögen“ (Baukasten v3, visier-konzept › 6a; `common.boegen`): versetzte Bögen mit S-Öffnung und Stegen, Ladebalken auf
 dem Gehäuse; Absehen gezeichnet (Hüftform `corners` flach im Glas). Größe M mit Glas Ø 26 (18,9 %, Standard 12–20 %). F2 Doppelring
 nur als Variante im Katalog.
 Schlichtheitsbudget: Leuchten 3 Funktionen (Ladung: Glutkern und Ladebalken im Visier · Munition: Ladefenster der Zelle · Visier:
@@ -29,7 +29,7 @@ unten heraus (`reload`), Zellenhalter. Energiewaffe: **kein Hülsenauswurf** (`E
 Status: Maße entworfen (Länge kürzer als v1, an Destiny H/L angelehnt; gemessene Werte im Spec), Formprinzipien abgeleitet.
 """
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, stock_s2, R_BODY, R_MID, R_SMALL, R_FINE)
-from basic.pilot.optics.sight_kit import boegen
+from basic.common import boegen
 from basic.pilot.energy_roles import CHARGE_ROLES  # noqa: F401  (registriert die Rolle charge_core in Blender)
 from basic.weapons import w10_fusion_rifle as V1
 

@@ -19,12 +19,12 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Startrohr läuft hinten als Kegel in das Heckrohr; Schellen tragen Griffmodul, Vordergriff und den Visierarm (keine aufgesetzten Kästen) |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie) unter dem Übergang, senkrechter Vordergriff vor dem Fenster, Schulterauflage unter dem Heckrohr; Heckklappe schwenkt nach rechts (vom Gesicht weg) |
 
-Visier: W2 „Entfernung“ (Baukasten v3, visier-konzept › 6a; `sight_kit.entfernung`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
+Visier: W2 „Entfernung“ (Baukasten v3, visier-konzept › 6a; `common.entfernung`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
 Haube 2,4 mm mit Schutzdach (oben 4 mm, 6 mm vorstehend) und leuchtendem Entfernungsfeld im Sockel; Größe M (26 × 18, 18,9 % der
 Bildbreite); Absehen gezeichnet (Hüftform `circle_cross` flach im Glas); Weltzoom der Klasse 2,5 + 0,3 Reflexbonus (reticles).
 Sitz **seitlich links** (Nutzer 28.10.2026: „Müsste das Visier vom raketenwerfer nicht eher an der Seite sitzen?“, dann „Seitlich links,
 66 mm notfalls Bauteil dazu passend erfinden“): Visierlinie auf Achshöhe 66 mm links neben der Rohrachse (Visierhöhe als Abstand zur
-Achse, 66 ± 4), Schiene BRI-22 auf einem Visierarm an einer Visierschelle um das Startrohr (`sight_kit.side_mount`). Wie bei Destiny
+Achse, 66 ± 4), Schiene BRI-22 auf einem Visierarm an einer Visierschelle um das Startrohr (`common.side_mount`). Wie bei Destiny
 ragt das Rohr im Zielen rechts ins Fenster (bei 66 mm Abstand liegt die Rohrwand ≈ 20 mm neben der Visierlinie; erst ≈ 140 mm wären
 frei); der Zielpunkt bleibt frei. W1 D-Linse in Größe L nur als Variante dokumentiert.
 Schlichtheitsbudget: Leuchten 2 Funktionen (Munition: Bereitschaftsanzeige · Visier: Emitter, Entfernungsfeld und Absehen) · Grafik
@@ -39,7 +39,7 @@ Status: Maße entworfen (an Familie 15 angelehnt, Länge kürzer als v1; gemesse
 """
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, sight_line, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Schellen ohne feine Kratzer)
-from basic.pilot.optics.sight_kit import entfernung, side_mount
+from basic.common import entfernung, side_mount
 from basic.weapons import w14_rocket_launcher as V1
 
 META = dict(V1.META, variant='v2.1', name='Schulterrohr v2.1', nick='Familie v2.1',

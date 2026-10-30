@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.33.0 „Armory“ – Ego-Übertrag der übrigen Grundtypen, Stand P1 (Branch `claude/ballon-0.33-armory`)
+
+- Visier-Umzug: alle Produktionsvisiere (K1, K2, Z2, Z3, F1, H3, H6, W1, W2, B1, `side_mount`) aus `basic/pilot/optics/sight_kit.py`
+  nach `basic/common.py`, bitgleich (Bauteil-Hash aller 16 Waffen und 75 Katalogvarianten unverändert); voller Export mit Backen.
+- Handfeuerwaffe BASIC-04 und Seitenwaffe BASIC-05 spielbar (Tasten 6, 7; Tasten 1–9 nach `ego.json`): Klassenwerte nach Motiongen
+  ([armory-klassenwerte.md](docs/armory-klassenwerte.md)), Trommel-Nachladen als Klassenaktion, Durchladen am Schlitten; EditMode-Test
+  `Klassen_vollstaendig_in_ego_json`. P2–P4 und HUD/Waffenmenü folgen ([uebergabe-armory.md](docs/uebergabe-armory.md)); Bericht
+  [docs/versions/0.33-armory.md](docs/versions/0.33-armory.md).
+
 ## 0.32.0 „Softgrip“ – Blueprint-Regeln Teil 2: A5, A6, A9 und Patch ego_build (Branch `claude/ballon-0.32-softgrip`)
 
 - A5: Fasenstufe `common.R_SOFT` 6,5 mm am Griff der Haupthand in Gummi (16 Waffen, Specs neu; übrige Gummiteile bewusst ausgenommen, Begründung im Bericht),
