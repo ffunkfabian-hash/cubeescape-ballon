@@ -52,7 +52,7 @@ namespace Ballon.Ego
             r.jump = k.spaceKey.wasPressedThisFrame;
             r.reload = k.rKey.wasPressedThisFrame;
             r.inspect = k.fKey.wasPressedThisFrame;
-            r.select = 0;                       // 0.18: bis 0.17 1/2 Ziehen/Wegstecken; 0.20: 3 Scout; 0.22: 4/5; 0.33: Tasten 1–9 nach ego.json
+            r.select = 0;                       // 0.18: bis 0.17 1/2 Ziehen/Wegstecken; 0.20: 3 Scout; 0.22: 4/5; 0.33: Tasten 1–9, 0 nach ego.json
             for (int d = 0; d < Digits.Length; d++)
                 if (k[Digits[d]].wasPressedThisFrame) { r.select = d + 1; break; }
             r.swap = k.qKey.wasPressedThisFrame;
@@ -64,6 +64,7 @@ namespace Ballon.Ego
             Key.Digit1, Key.Digit2, Key.Digit3,
             Key.Digit4, Key.Digit5, Key.Digit6,
             Key.Digit7, Key.Digit8, Key.Digit9,
+            Key.Digit0,                         // 0.33 P2: zehnte Waffe (MG); Menü (Tab/Mausrad) folgt mit Ziel 2
         };
     }
 

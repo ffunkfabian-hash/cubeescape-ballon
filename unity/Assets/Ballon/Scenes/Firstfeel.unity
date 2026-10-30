@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &1853655473
+--- !u!1 &1856072828
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,8 +127,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1853655475}
-  - component: {fileID: 1853655474}
+  - component: {fileID: 1856072830}
+  - component: {fileID: 1856072829}
   m_Layer: 0
   m_Name: Firstfeel
   m_TagString: Untagged
@@ -136,13 +136,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1853655474
+--- !u!114 &1856072829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853655473}
+  m_GameObject: {fileID: 1856072828}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20087572eab344f5aaf16962429f0fb2, type: 3}
@@ -227,6 +227,18 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 8ffa86cd6f4e04de0ad669f8f7067676, type: 2}
     - {fileID: 2100000, guid: b00e16e2effb644f9b40f41fee9daba9, type: 2}
     - {fileID: 2100000, guid: 095f53e17eef34ff484c2abf4d86bb35, type: 2}
+  - id: BASIC-09-v2.1
+    model: {fileID: 919132149155446097, guid: 53c11949e354049de8824170e2376e05, type: 3}
+    skins:
+    - {fileID: 2100000, guid: 4be79a3b739624391a0d34141ad407e1, type: 2}
+  - id: BASIC-12-v2.1
+    model: {fileID: 919132149155446097, guid: cc429cd2a42c24e95b8070a9b679acf4, type: 3}
+    skins:
+    - {fileID: 2100000, guid: 3620ee9ec07a841b8a5f72d241d0d645, type: 2}
+  - id: BASIC-15-v2.1
+    model: {fileID: 919132149155446097, guid: 11e85ebdad049408d9ff807804531ccd, type: 3}
+    skins:
+    - {fileID: 2100000, guid: de5391aab25cb4dd2bff77efe4f665a5, type: 2}
   armsModel: {fileID: 919132149155446097, guid: ed215fdff824f411ea141b6ed2ab98dc, type: 3}
   roleMaterials:
   - {fileID: 2100000, guid: a172a24196305411e9f5239c9b3f0201, type: 2}
@@ -256,6 +268,9 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 254ac3f0ffccf4c53a2a670081d3b185, type: 2}
   - {fileID: 2100000, guid: 634ad80eb2a444f2e8510fc04616dde1, type: 2}
   - {fileID: 2100000, guid: 063120b1cb2724981a831a5030d1fc03, type: 2}
+  - {fileID: 2100000, guid: 4be79a3b739624391a0d34141ad407e1, type: 2}
+  - {fileID: 2100000, guid: 3620ee9ec07a841b8a5f72d241d0d645, type: 2}
+  - {fileID: 2100000, guid: de5391aab25cb4dd2bff77efe4f665a5, type: 2}
   - {fileID: 2100000, guid: 3418d0ce8da304a5681757f5aaead8d0, type: 2}
   floor: {fileID: 2100000, guid: b44f720d190414eb3a6768efdb6a2adc, type: 2}
   wall: {fileID: 2100000, guid: d85ea14dc90504d5db37c6262004a0fb, type: 2}
@@ -290,13 +305,13 @@ MonoBehaviour:
     - {fileID: 2800000, guid: 4fc9c5c947a214967811e8dad1f1ae77, type: 3}
     - {fileID: 2800000, guid: d9de11eaaf87e42fd8ffe8827696a1e6, type: 3}
     - {fileID: 2800000, guid: 4701c9673dd3f4bae917834a1c9c2c21, type: 3}
---- !u!4 &1853655475
+--- !u!4 &1856072830
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853655473}
+  m_GameObject: {fileID: 1856072828}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -309,4 +324,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1853655475}
+  - {fileID: 1856072830}

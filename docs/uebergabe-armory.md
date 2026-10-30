@@ -1,4 +1,4 @@
-# Übergabe 0.33 „Armory“ – nach P1
+# Übergabe 0.33 „Armory“ – nach P2
 
 Stand: Branch `claude/ballon-0.33-armory` (Basis `main` d0c7b8c, 0.32 „Softgrip“). Die erste Sitzung (Opus 5.5, high) hat P1
 erledigt und übergibt hier an eine **frische Sitzung ohne Verlauf** (globale Regel: Übergabe am Etappenende, keine Fork-Übergabe).
@@ -20,6 +20,14 @@ Auftrag unverändert wie in der Zielsitzung 0.33 „Armory“ (Sightline, 30.10.
   `Umfang` erlaubt Waffen ohne Auswurfklappe.
 - Voller Export mit Backen (common.py liegt im Quellenhash), Silhouetten und Freihaltezone neu, Stilhandbuch § 6.
 
+## Erledigt (P2)
+
+- **Klassen 09 Scharfschütze, 12 Spurgewehr, 15 MG** spielbar (Tasten 8, 9, 0). Neue Feuerarten: `bolt_action` (Repetierer, Klassenaktionen
+  `fire_cycle`/`fire_cycle_ads`, Hülse beim Marker `Eject`) und `continuous_beam` (Dauerstrahl, Leuchtteile `EGO_LIVE glow`, Unity
+  `EgoRig.SetGlow`); `full_auto_belt` als `FIRE_ALIAS`. MG-Nachladen als Klassenaktion mit eigenem Griff `cover`.
+- Bauteil des Nachladens aus dem Griff `mag` (`ego.profile › mag`, Unity `EgoFile.MagPart`) statt fest `magazine`.
+- **Skins nur bei Bedarf** (`export_unity.SKIN_WEAPONS`, Hebel 1 unten): P2-Waffen haben nur den Standard-Atlas.
+
 Ergebnisse, Messungen und Repo-Größe stehen im Versionsbericht [versions/0.33-armory.md](versions/0.33-armory.md).
 
 ## Rest des Auftrags
@@ -29,7 +37,7 @@ Bericht nennen.
 
 Reihenfolge mit Stopp und Postfach-Meldung (Nexogen #16) nach jedem Paket:
 
-- **P2 09 Scharfschütze, 12 Spur, 15 MG**
+- ~~P2 09 Scharfschütze, 12 Spur, 15 MG~~ erledigt
 - **P3 08 Schrotflinte, 10 Fusion, 11 lineare Fusion**
 - **P4 07 Bogen, 13 Granatwerfer, 14 Raketenwerfer**
 - **Ziel 2 HUD und Waffenmenü** (Symbole per ImageMagick aus `data/silhouettes.json`, HUD ohne Speicher je Bild, Menü Tab/Mausrad,
@@ -67,8 +75,10 @@ Spielart haben:
 | 07 Bogen | `draw_release` | Spannen (Feuer halten), Halten, Lösen; kein Magazin (Vorrat), kein Blitz; `let_down` beim Abbrechen |
 | 13/14 Werfer | `single_shot` | Einzelschuss, Magazin 1, Nachladen nach jedem Schuss als Klassenaktion |
 
-Unity-Stellen: `EgoData.Semi`, `EgoController` (Feuerlogik, `MagIn` füllt das Magazin, `CanReload`), `EgoSolver.Layers`
-(Live-Teile binär je Schuss). Neue Feuerarten brauchen eigene PlayMode-Tests (Gegenprobe rot mit dem alten Code).
+Unity-Stellen: `EgoData.Semi`/`BoltAction`/`Beam`, `EgoController` (Feuerlogik, `MagIn` füllt das Magazin, `CanReload`, `Cycle()` nach dem
+Schuss), `EgoSolver.Layers` (Live-Teile je Schuss, `glow`), `EgoRig.SetGlow`. Neue Feuerarten brauchen eigene PlayMode-Tests (Gegenprobe rot
+mit dem alten Code). Muster für P3: Pumpe (08) wie `fire_cycle` des Repetierers (Klassenaktion nach dem Schuss, sperrt per Busy); Aufladen
+(10/11) braucht einen Zustand „Feuer gehalten“ vor dem Schuss – neu im Controller; die Leuchtteile `charge` gehen über `EGO_LIVE glow`.
 
 ### GPU auf anderen Rechnern (RTX 4060)
 
@@ -88,7 +98,7 @@ Grundlast (Normale ohne Rechenarbeit: 41 s – Szene an Cycles, BVH, 4096² zur�
 nur ≈ 10–30 s sind GPU. Darum bringt eine schnellere GPU beim Backen wenig: RTX 4060 + i7-9700K (halbe Einzelkernleistung des M5)
 geschätzt ≈ 30–40 min je Waffe, eher langsamer; bei Renderings (Stills, Clips, Lightmaps) ≈ 2× schneller. Hebel, vor P2 prüfen:
 
-1. **Skins nur bei Bedarf** (Empfehlung): neue Waffen backen zuerst nur den Atlas (5 Aufrufe ≈ 7 min statt 28), Skins mit einem eigenen
+1. **Skins nur bei Bedarf** – umgesetzt in P2 (`SKIN_WEAPONS`, `BALLON_BAKE_SKINS=all`). Ursprünglicher Vorschlag: neue Waffen backen zuerst nur den Atlas (5 Aufrufe ≈ 7 min statt 28), Skins mit einem eigenen
    Schalter bzw. Lauf. P2–P4 (9 Waffen) sparen ≈ 3 h. Klären: Unity-Tests und `textures.skins` mit 0 Skins je Waffe (Taste K schaltet
    dann nur vorhandene), Bericht nennt, welche Waffen Skins haben. Änderung in `export_unity.py` (Bewegungsquelle, kein Neubacken);
    wenn `bake_unity.py` geändert werden muss: gemeinsam mit dem nächsten vollen Export (Quellenhash).

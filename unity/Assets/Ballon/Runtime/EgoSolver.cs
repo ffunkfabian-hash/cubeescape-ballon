@@ -18,8 +18,9 @@ namespace Ballon.Ego
         public float camPitch;
         public float trigger, bolt, port;   // Mechanik beim Feuern, < 0 = aus der Aktion
         public float ring;                  // 0.22: Ringdrehung des Werkzeugs in Dritteln (live), NaN = aus der Aktion
+        public float glow;                  // 0.33: Leuchtteile weapon.live.glow (Dauerstrahl) 0 … 1, < 0 = aus der Aktion
 
-        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN };
+        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN, glow = -1 };
     }
 
     public sealed class EgoOutput
@@ -99,11 +100,14 @@ namespace Ballon.Ego
                 _ejVel = V(d.weapon.eject.dir).normalized * d.motion.eject.speed_mps;
                 _spin = V(d.motion.eject.spin_axis).normalized;
             }
-            if (d.HasPart("magazine"))   // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
-                _magRelLocal = GripHand("mag", _ => Matrix4x4.identity, Vector3.zero).inverse * Rest("magazine");
+            MagPart = d.MagPart;         // 0.33: Bauteil des Griffs 'mag' (Magazin, Energiezelle)
+            if (d.HasPart(MagPart))      // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
+                _magRelLocal = GripHand("mag", _ => Matrix4x4.identity, Vector3.zero).inverse * Rest(MagPart);
         }
 
         public List<EgoPart> Movers => _movers;
+        /// <summary>Bauteil, das das Nachladen trägt (EgoFile.MagPart).</summary>
+        public readonly string MagPart;
 
         /// <summary>Zielfernrohr (ego.ADS_HIDE, 0.20): Teile mit ads_hide aus, solange Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf,
         /// ohne Live-Ebenen) näher als motion.ads_hide.eye_m an der Kamera liegt – wie ego_build.evaluate.</summary>
@@ -308,6 +312,7 @@ namespace Ballon.Ego
                 float a = av.magnitude * h;
                 if (a > 1e-12f) q = Quaternion.AngleAxis(a * Mathf.Rad2Deg, av.normalized) * q;
             }
+            q = Quaternion.Normalize(q);   // 0.33: ohne Normieren wächst |q| über lange Abläufe (MG-Nachladen 6 s: 1,00001 → Unity-Assert in TRS)
         }
 
         /// <summary>ego_build.secondary: Waffe folgt ihrer Kurve über Federn (ganze Bilder, wie die Blender-Auswertung).</summary>
@@ -382,6 +387,7 @@ namespace Ballon.Ego
                 L.pos += R.MultiplyVector(new Vector3(0, st.recX.x, 0));
                 L.rot = L.rot * RotX(Rad(-(st.recX.y + climb)));          // Mündung steigt
                 L.trigger = TriggerOn(A.fire, f, D.gameplay.Semi) ? 1 : 0;
+                if (D.gameplay.Beam) L.glow = L.trigger;                   // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
                 L.bolt = (n > 0 && f - last < 1.5f) ? 1 : 0;
                 L.port = n > 0 ? 1 : 0;
             }
@@ -414,6 +420,7 @@ namespace Ballon.Ego
             if (L.bolt >= 0 && !string.IsNullOrEmpty(live.bolt)) mech[live.bolt] = L.bolt;      // Werkzeug (0.22): ohne Verschluss
             if (L.port >= 0 && !string.IsNullOrEmpty(live.port)) mech[live.port] = L.port;      // und ohne Auswurfklappe
             if (!float.IsNaN(L.ring) && !string.IsNullOrEmpty(live.ring)) mech[live.ring] = L.ring;
+            if (L.glow >= 0 && live.glow != null) foreach (var g in live.glow) mech[g] = L.glow;   // Dauerstrahl (0.33)
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));
@@ -455,7 +462,7 @@ namespace Ballon.Ego
         /// <summary>Aktuelle Weltmatrix eines Teils (bewegt oder der Hierarchie folgend).</summary>
         public Matrix4x4 World(EgoOutput o, string pid)
         {
-            if (pid == "magazine" && o.magOverride) return o.magWorld;
+            if (pid == MagPart && o.magOverride) return o.magWorld;
             if (o.movers.TryGetValue(pid, out var m)) return m;
             var p = D.Part(pid);
             if (!string.IsNullOrEmpty(p.parent)) return World(o, p.parent) * Rest(p.parent).inverse * Rest(pid);
@@ -575,7 +582,7 @@ namespace Ballon.Ego
             if (A.drop != null && A.drop.a >= 0 && hasCarry && A.drop.a <= f && f < A.carry[0].a)
             {
                 float t = (f - A.drop.a) / fps;
-                var mag0 = o.weapon * Rest("magazine");
+                var mag0 = o.weapon * Rest(MagPart);
                 o.magOverride = true;
                 if (f >= A.drop.b)
                 {

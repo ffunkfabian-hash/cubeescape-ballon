@@ -110,7 +110,8 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'quickdraw': 'BALLON 0.18 Quickdraw · Unity · Automatik → Taste 2 → MP: Hüfte, Zielen (Anflug 4d), Sprint (tief, nach links gerollt)',
          'spotter': 'BALLON 0.20 Spotter · Unity · Taste 3 → Scout: Hüfte, Zielfernrohr (Weltzoom 2,0), Einzelfeuer, Sprint',
          'volley': 'BALLON 0.22 Volley · Unity · 1 → 4 Impuls (Salve Hüfte/Zielen) → 5 Portalkanone (A links, B rechts) → 2 → 3 → 1'}
-WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1', 4: 'BASIC-02-v2.1', 5: 'BASIC-T01-v2.1'}   # Taste → Waffe (tools/export_unity.WEAPONS)
+WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1', 4: 'BASIC-02-v2.1', 5: 'BASIC-T01-v2.1', 6: 'BASIC-04-v2.1',
+           7: 'BASIC-05-v2.1', 8: 'BASIC-09-v2.1', 9: 'BASIC-12-v2.1', 10: 'BASIC-15-v2.1'}   # Waffe n → ID (tools/export_unity.WEAPONS; 10 = Taste 0)
 
 
 def capture(scene=None, demo=None):

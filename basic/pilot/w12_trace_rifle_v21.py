@@ -186,4 +186,18 @@ ACTIONS = {
 EXPLODE = {'sight': (0, 110, 0), 'ammo': (0, -140, 0), 'stock': (-110, 0, 0), 'barrel': (150, 40, 0), 'support': (60, -60, 0),
            'grip_controls': (-10, -80, 0), 'receiver': (0, 0, 0)}
 SIGHT_ID = 'H3'    # Visier des Baukastens v3 (visier-konzept › 6a); test_sights prüft dessen Pflichtteile und Merkmale
+# Ego-Griffe (0.33 „Armory“ P2, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe; 'mag' an der Energiezelle
+# (das Nachladen der Bezugsklasse trägt das Bauteil des Griffs 'mag'), 'charge' am Zellenhalter (kein Ladehebel; leer wie taktisch)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(259, BORE - TUBE_R - 1.5, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter dem Fokusrohr auf dem Griffband (tube_grip f 218–300, Socket_SupportHand), Lage wie die Pilotwaffe'),
+    'mag':     dict(part='energy_cell', contact=(100, -10, 12.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0), fingers_pose='mag_hold',
+                    src='E links an der Energiezelle (Breite 24, f 86–126), Hand greift von unten hinten (wie die Pilotwaffe)'),
+    'charge':  dict(part='cell_release', contact=(CELL[0] - 10, 54, 24), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Zellenhalter links (kein Ladehebel; vom Nachladen nicht genutzt, leer wie taktisch)'),
+}
+# Abzug je Schuss; Fokuslinse und Scheibenmitte leuchten, solange der Strahl läuft (Feuerart continuous_beam, Bewegung glow 0 → 1)
+EGO_LIVE = dict(trigger='trigger', bolt='', port='', glow=('focus_lens', 'disc_lens'))
 EJECT = None    # Energiewaffe: keine Hülse (Daten statt Sonderlogik; check: Energiezelle BEC-1 → EJECT None)

@@ -155,6 +155,20 @@ ANCHORS.update(SIGHT_ANCHORS)
 EJECT = dict(at=(-40, BORE + 2, -W_HOOD / 2), dir=(0.15, 0.6, -1.0), case='rifle',
              src='E: Auswurffenster rechts beim Zurückziehen des Verschlusses (Stängel links), Hülse nach rechts, etwas hoch und vorn '
                  '(wie Destiny, Motiongen muendung › 6)')
+# Ego-Griffe (0.33 „Armory“ P2, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. 'charge' am Kammerknopf
+# links (folgt Stängel und Verschluss): die Stützhand repetiert nach jedem Schuss (ego.CLASSES sniper_rifle › fire_cycle)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(330, 50.4, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter dem Vorderschaft auf dem Griffpolster (handguard_grip f 270–400, Unterkante u 49,5–51,4), Lage wie die '
+                        'Pilotwaffe (Toolgen: underhand)'),
+    'mag':     dict(part='magazine', contact=(100, -10, 12.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0), fingers_pose='mag_hold',
+                    src='E links am Kastenmagazin (Breite 24, f 93–130), Hand greift von unten hinten (wie die Pilotwaffe)'),
+    'charge':  dict(part='bolt_knob', contact=(KNOB[0], KNOB[1], 47), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Kammerknopf links (Socket_Bolt), die Stützhand hebt, zieht und schiebt den Stängel'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss; Verschluss und Stängel bewegt fire_cycle
 ACTIONS = {k: dict(A, view=(0.85, -0.2, 0.5)) for k, A in V1.ACTIONS.items()}     # von links: Stängel links (stilhandbuch § 9)
 EXPLODE = {'sight': (0, 130, 0), 'ammo': (30, -140, 0), 'stock': (-120, 0, 0), 'barrel': (200, 0, 0), 'support': (60, -60, 0),
            'grip_controls': (-10, -80, 0), 'mechanism': (0, 0, -90), 'receiver': (0, 0, 0)}

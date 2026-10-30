@@ -41,7 +41,7 @@ namespace Ballon.Ego
             foreach (var t in a.GetComponentsInChildren<Transform>(true)) all[t.name] = t;
             weaponRoot = Find(all, s.D.weapon.root);
             foreach (var p in s.D.weapon.parts) _parts[p.id] = Find(all, p.id);
-            _mag = _parts.TryGetValue("magazine", out var m) ? m : null;
+            _mag = _parts.TryGetValue(s.MagPart, out var m) ? m : null;     // Magazin bzw. Energiezelle (0.33, Griff 'mag')
             int n = s.D.arm.segments.Length;
             _segL = new Transform[n];
             _segR = new Transform[n];
@@ -74,6 +74,23 @@ namespace Ballon.Ego
                     rr.enabled = false;
                     ReticleRole = p.role;
                 }
+            var glow = s.D.weapon.live?.glow ?? new string[0];      // Leuchtteile beim Feuern (0.33, Dauerstrahl): aus wie Graphit
+            var off = roles.TryGetValue("graphite", out var gm) && gm != null ? gm.GetColor("_BaseColor") : Color.black;
+            _glowR = new Renderer[glow.Length];
+            _glowId = glow;
+            _glowOn = new Color[glow.Length];
+            _glowEmit = new Color[glow.Length];
+            _glowK = new float[glow.Length];
+            _glowOff = off;
+            for (int k = 0; k < glow.Length; k++)
+            {
+                _glowR[k] = _parts[glow[k]].GetComponent<Renderer>();
+                var mat = _glowR[k].sharedMaterial;
+                _glowOn[k] = mat.GetColor("_BaseColor");
+                _glowEmit[k] = mat.GetColor("_EmissionColor");
+                _glowK[k] = -1;
+                SetGlow(k, 0);
+            }
             foreach (var t in w.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             foreach (var t in a.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
             var fx = new GameObject("Fx").transform;
@@ -160,6 +177,34 @@ namespace Ballon.Ego
             r.reflectionProbeUsage = ReflectionProbeUsage.BlendProbes;
         }
 
+        // Leuchtteile (0.33, weapon.live.glow) wie tools/blender_build.apply_move › glow: Grundfarbe von Graphit zur Leuchtfarbe, Leuchten
+        // mit dem Anteil; ein Eigenschaftsblock je Teil, nur bei Änderung gesetzt (kein Speicher je Bild)
+        readonly Renderer[] _glowR;
+        readonly string[] _glowId;
+        readonly Color[] _glowOn, _glowEmit;
+        readonly float[] _glowK;
+        readonly Color _glowOff;
+        MaterialPropertyBlock _mpb;
+
+        void SetGlow(int k, float t)
+        {
+            t = Mathf.Clamp01(t);
+            if (Mathf.Abs(_glowK[k] - t) < 1e-4f) return;
+            _glowK[k] = t;
+            var b = _mpb ?? (_mpb = new MaterialPropertyBlock());
+            _glowR[k].GetPropertyBlock(b);
+            b.SetColor("_BaseColor", Color.Lerp(_glowOff, _glowOn[k], t));
+            b.SetColor("_EmissionColor", _glowEmit[k] * t);
+            _glowR[k].SetPropertyBlock(b);
+        }
+
+        /// <summary>Leuchtanteil eines Leuchtteils (weapon.live.glow) nach dem letzten Apply, −1 ohne dieses Teil (Tests).</summary>
+        public float GlowLevel(string id)
+        {
+            for (int k = 0; k < _glowId.Length; k++) if (_glowId[k] == id) return _glowK[k];
+            return -1;
+        }
+
         readonly List<Renderer> _atlasWeapon = new List<Renderer>();
         readonly List<Renderer> _adsHide = new List<Renderer>();
         bool _adsHidden;
@@ -201,7 +246,7 @@ namespace Ballon.Ego
             foreach (var p in S.Movers)
             {
                 var parent = string.IsNullOrEmpty(p.parent) ? inv : S.World(o, p.parent).inverse;
-                var world = (p.id == "magazine" && o.magOverride) ? o.magWorld : o.movers[p.id];
+                var world = (p.id == S.MagPart && o.magOverride) ? o.magWorld : o.movers[p.id];
                 Set(_parts[p.id], parent * world);
             }
             if (_mag != null && _mag.gameObject.activeSelf == o.magHidden) _mag.gameObject.SetActive(!o.magHidden);
@@ -214,6 +259,11 @@ namespace Ballon.Ego
             {
                 Set(_segR[i], o.segR[i]);
                 Set(_segL[i], o.segL[i]);
+            }
+            for (int k = 0; k < _glowR.Length; k++)
+            {
+                o.mech.TryGetValue(_glowId[k], out float g);
+                SetGlow(k, g);
             }
             if (_flashR.enabled != o.flashOn) _flashR.enabled = o.flashOn;
             if (o.flashOn) Set(_flash, o.flash);

@@ -19,13 +19,13 @@ Umrechnung wie die bisherigen Klassen: ADS-Anflug „erste Bewegung → Ruhe“ 
 | sidearm | `semi_auto` | Einzelfeuer — **P1 erledigt** |
 | combat_bow | `draw_release` | offen: Spannen, Halten, Lösen (eigene Feuerart in Unity) |
 | shotgun | `pump_action` | offen: Einzelschuss + Pumpen, Einzelladen je Patrone |
-| sniper_rifle | `bolt_action` | offen: Einzelschuss + Kammerstängel |
+| sniper_rifle | `bolt_action` | Einzelschuss, danach Repetieren als Klassenaktion `fire_cycle`/`fire_cycle_ads` (Stützhand am Kammerknopf links, Hülse beim Zurückziehen) — **P2 erledigt** |
 | fusion_rifle | `charge_burst` | offen: Aufladen, dann Salve 5–6 Strahlen |
 | linear_fusion_rifle | `charge_single` | offen: Aufladen, ein Schuss |
-| trace_rifle | `continuous_beam` | offen: Dauerstrahl |
+| trace_rifle | `continuous_beam` | Dauerfeuer 1000/min ohne Blitz, Hülse und Rückstoß; Fokuslinse und Scheibenmitte leuchten (`EGO_LIVE glow`) — **P2 erledigt** |
 | grenade_launcher | `single_shot` | offen: Einzelschuss, Nachladen nach jedem Schuss (Kipplauf) |
 | rocket_launcher | `single_shot` | offen: Einzelschuss, Nachladen nach jedem Schuss |
-| machine_gun | `full_auto_belt` | offen: Dauerfeuer (Alias `full_auto` möglich), Gurtkasten-Nachladen |
+| machine_gun | `full_auto_belt` | Dauerfeuer (`ego.FIRE_ALIAS`), Gurtkasten-Nachladen als Klassenaktion — **P2 erledigt** |
 
 ## Werte je Klasse
 

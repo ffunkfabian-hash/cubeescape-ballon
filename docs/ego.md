@@ -4,7 +4,7 @@
 
 Eigenes Roboterarm-Rig (`basic/arms/robot_arm.py`) und Ego-Daten (`basic/arms/ego.py`), getrennt von Toolgen und Cube Escape. Kamera 75° horizontal (16:9), 30 fps, Kameraraum: rechts −X, vorn −Y, oben +Z. Herkunft: **T** Toolgen-Startwert, **M** gemessen an Destiny 2, **E** entworfen, **S** Sekundärquelle (Menü, Datenbank). Handgelenk-Ziel 45°, Grenze 55° (Toolgen).
 
-Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1, 4 = BASIC-02-v2.1, 5 = BASIC-T01-v2.1, 6 = BASIC-04-v2.1, 7 = BASIC-05-v2.1). Haltungen, Dauer und Spielwerte je Klasse aus `ego.CLASSES` (Entscheidungsliste Schritt 6); was eine Klasse nicht nennt, gilt wie bei der Automatik.
+Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1, 4 = BASIC-02-v2.1, 5 = BASIC-T01-v2.1, 6 = BASIC-04-v2.1, 7 = BASIC-05-v2.1, 8 = BASIC-09-v2.1, 9 = BASIC-12-v2.1, 0 = BASIC-15-v2.1). Haltungen, Dauer und Spielwerte je Klasse aus `ego.CLASSES` (Entscheidungsliste Schritt 6); was eine Klasse nicht nennt, gilt wie bei der Automatik.
 
 ## BASIC-01-v2.1 – Formstudie 01 v2.1 (auto_rifle)
 
@@ -548,16 +548,16 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
 |---|---|---|---|---|---|---|---|
 | `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
-| `draw` | Ziehen | 18 (0.60 s) | Ready (13) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse hand_cannon: 25 → 18 Bilder (M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) → wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News 16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25)) |
+| `draw` | Ziehen | 18 (0.60 s) | Ready (13) | offen° | ego_BASIC-04-v2.1_draw.mp4 | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse hand_cannon: 25 → 18 Bilder (M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) → wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News 16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25)) |
 | `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
 | `aim_in` | Hüfte → Zielen | 3 (0.10 s) | Aimed (3) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse hand_cannon: 10 → 3 Bilder (M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) → wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News 16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25)) |
 | `aim_out` | Zielen → Hüfte | 3 (0.10 s) | Ready (2) | offen° | offen | offen | E; Klasse hand_cannon: 8 → 2.4 Bilder (M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) → wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News 16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25)) |
 | `fire_hip` | Dauerfeuer aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse hand_cannon: 140/min, Einzelfeuer (ein Schuss je Zug) (Schussbilder [2, 14]) |
 | `fire_ads` | Dauerfeuer im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse hand_cannon: 140/min, Einzelfeuer (ein Schuss je Zug) (Schussbilder [2, 14]) |
-| `reload_tactical` | Nachladen (Trommel: ausschwenken, auswerfen, laden, zuklappen) | 45 (1.50 s) | HandOff (2), MagOut (9), Eject (10), MagIn (26), Chamber (30), HandOn (36), Ready (41) | offen° | offen | offen | M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste) |
+| `reload_tactical` | Nachladen (Trommel: ausschwenken, auswerfen, laden, zuklappen) | 45 (1.50 s) | HandOff (2), MagOut (9), Eject (10), MagIn (26), Chamber (30), HandOn (36), Ready (41) | offen° | ego_BASIC-04-v2.1_reload_tactical.mp4 | offen | M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste) |
 | `reload_empty` | Nachladen (Trommel: ausschwenken, auswerfen, laden, zuklappen), auch leer | 45 (1.50 s) | HandOff (2), MagOut (9), Eject (10), MagIn (26), Chamber (30), HandOn (36), Ready (41) | offen° | offen | offen | M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste) |
 | `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
-| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante); Klasse hand_cannon: Hub (0.0068, 0.0234) (M Destiny-Handfeuerwaffe Sprint-Hub ≈ 13 % H / 4 % B bei 3,16 Hz (Motiongen destiny2:467): Automatik 0.022/0.018 m ergab 13 % B / 10 % H → seitlich × 4/13, senkrecht × 13/10) |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | ego_BASIC-04-v2.1_sprint.mp4 | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante); Klasse hand_cannon: Hub (0.0068, 0.0234) (M Destiny-Handfeuerwaffe Sprint-Hub ≈ 13 % H / 4 % B bei 3,16 Hz (Motiongen destiny2:467): Automatik 0.022/0.018 m ergab 13 % B / 10 % H → seitlich × 4/13, senkrecht × 13/10) |
 | `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
 | `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
 | `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
@@ -673,6 +673,321 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
 | `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
 | `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse sidearm: 360/min, Einzelfeuer (ein Schuss je Zug) (Schussbilder [7, 12, 17]) |
+| `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
+| `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
+
+### Abdeckung der Matrixzeilen
+
+| Zeile | durch Aktion | Status |
+|---|---|---|
+| `pose_rest` | `idle_hip` | offen (nicht gesichtet) |
+| `pose_hip` | `idle_hip` | offen (nicht gesichtet) |
+| `draw` | `draw` | offen (nicht gesichtet) |
+| `ready` | `draw` | offen (nicht gesichtet) |
+| `holster` | `holster` | offen (nicht gesichtet) |
+| `pose_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_hip_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_aim_hip` | `aim_out` | offen (nicht gesichtet) |
+| `fire_auto` | `fire_ads` | offen (nicht gesichtet) |
+| `recoil_mech` | `fire_hip` | offen (nicht gesichtet) |
+| `recoil_camera` | `fire_hip` | offen (nicht gesichtet) |
+| `reload_partial` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_feed` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_empty` | `reload_empty` | offen (nicht gesichtet) |
+| `cycle` | `reload_empty` | offen (nicht gesichtet) |
+| `inspect` | `inspect` | offen (nicht gesichtet) |
+| `inspect_return` | `inspect` | offen (nicht gesichtet) |
+| `sprint_in` | `sprint` | offen (nicht gesichtet) |
+| `sprint_loop` | `sprint` | offen (nicht gesichtet) |
+| `sprint_out` | `sprint` | offen (nicht gesichtet) |
+| `pose_lowered` | `lowered` | offen (nicht gesichtet) |
+| `tr_lowered_return` | `lowered` | offen (nicht gesichtet) |
+| `move_walk` | `walk` | offen (nicht gesichtet) |
+| `sway` | `walk` | offen (nicht gesichtet) |
+| `crouch` | `crouch` | offen (nicht gesichtet) |
+| `jump_start` | `jump_land` | offen (nicht gesichtet) |
+| `air` | `jump_land` | offen (nicht gesichtet) |
+| `land` | `jump_land` | offen (nicht gesichtet) |
+| `tr_sprint_aim` | `sprint_to_aim` | offen (nicht gesichtet) |
+| `tr_sprint_fire` | `sprint_to_fire` | offen (nicht gesichtet) |
+| `tr_draw_aimheld` | `draw_aim` | offen (nicht gesichtet) |
+| `tr_reload_switch` | `reload_to_switch` | offen (nicht gesichtet) |
+| `switch` | `reload_to_switch` | offen (nicht gesichtet) |
+
+## BASIC-09-v2.1 – Weitschuss v2.1 (sniper_rifle)
+
+### Klassen- und Spielwerte
+
+| Wert | Stand | Herkunft |
+|---|---|---|
+| Klasse | sniper_rifle | Ego-Übertrag 0.33 „Armory“ P2: Hüfte, Anflug und Nachladen nach Motiongen (Scharfschütze Far Future), Sprint der Automatik, Repetieren nach jedem Schuss E |
+| Kadenz | 90/min | S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec (Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, 1,5 Hz); Kick 3,0 E (schwerer Einzelschuss) |
+| Magazin | 4 | S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec (Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, 1,5 Hz); Kick 3,0 E (schwerer Einzelschuss) |
+| Feuerart | `bolt_action` – Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads) | Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20) |
+| Weltzoom im Zielen | 5.5 | M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM) |
+| Hüft-Fadenkreuz | caret 1.0 % H | gemessen (Glidepath, ≈ 1 % H) (4.1 A / 4.2 A, basic/reticles.py › HIP) |
+| Sprint-Fadenkreuz | aus | basic/reticles.py › HIP.sprint (4.1 A) |
+| Bahnstufe je Schuss | 12.00 % H | S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec (Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, 1,5 Hz); Kick 3,0 E (schwerer Einzelschuss) |
+| Haltung `hip` | Socket_Hand [-0.19, -0.42, -0.23], Ziel [0.02, -3.0, -0.32], Rollen 6° | M Destiny-Scharfschütze Hüfte: Mündung 56/68 (Motiongen huefte:51), 56/66 (huefte:61), Far Future 56/64 (destiny2:496); Lage E wie die Automatik, Lauf 1,8° tiefer (langer Lauf: Automatik-Hüfte trifft 56,1/61,9), gerechnet Mündung 56,1/65,7 % |
+| Haltung `sprint` | Socket_Hand [-0.1, -0.34, -0.23], Ziel [1.2, -1.6, -0.55], Rollen -35° | O Destiny-Scharfschütze „tief rechts“ nur beobachtet (Motiongen destiny2:567); E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik (Entscheidungsliste) (Haltung POSES['sprint'] unverändert) |
+| Haltung `crouch` | Socket_Hand [-0.18, -0.41, -0.245], Rollen 9° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `air` | Socket_Hand [-0.19, -0.42, -0.215], Rollen 4° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `lowered` | Socket_Hand [-0.17, -0.38, -0.25], Rollen 10° | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| Dauer `aim_in` | 6 Bilder bei 30/s (0.200 s) | M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) |
+| Dauer `aim_out` | 6 Bilder bei 30/s (0.200 s) | M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) |
+| Zielfernrohr im Zielen | aus: scope_strap, scope_tube, scope_eyepiece, scope_eye_trim, scope_ocular_glass, scope_turret, scope_turret_w (Socket_Eye < 60 mm) | E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, Entscheidungsliste 1d) |
+| Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
+| Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts beim Zurückziehen des Verschlusses (Stängel links), Hülse nach rechts, etwas hoch und vorn (wie Destiny, Motiongen muendung › 6); Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
+| Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
+| Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
+| Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |
+
+### Haltungen
+
+| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |
+|---|---|---|---|
+| `hip` | [-0.19, -0.42, -0.23] | nur in Aktionen geprüft | M Destiny-Scharfschütze Hüfte: Mündung 56/68 (Motiongen huefte:51), 56/66 (huefte:61), Far Future 56/64 (destiny2:496); Lage E wie die Automatik, Lauf 1,8° tiefer (langer Lauf: Automatik-Hüfte trifft 56,1/61,9), gerechnet Mündung 56,1/65,7 % |
+| `ads` | [0.0, 0.0, 0.0] | nur in Aktionen geprüft | Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse |
+| `sprint` | [-0.1, -0.34, -0.23] | nur in Aktionen geprüft | O Destiny-Scharfschütze „tief rechts“ nur beobachtet (Motiongen destiny2:567); E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik (Entscheidungsliste) (Haltung POSES['sprint'] unverändert) |
+| `lowered` | [-0.17, -0.38, -0.25] | nur in Aktionen geprüft | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| `crouch` | [-0.18, -0.41, -0.245] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `air` | [-0.19, -0.42, -0.215] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `holstered` | [-0.24, -0.25, -0.62] | nur in Aktionen geprüft | E (unter dem Bild) |
+| `reload` | [-0.07, -0.34, -0.135] | nur in Aktionen geprüft | T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E) |
+| `inspect_l` | [-0.06, -0.36, -0.16] | nur in Aktionen geprüft | E (Ego-Seite zeigt zur Kamera) |
+| `inspect_r` | [-0.1, -0.36, -0.12] | nur in Aktionen geprüft | E (Oberseite und rechte Seite) |
+
+### Aktionen
+
+| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
+|---|---|---|---|---|---|---|---|
+| `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
+| `draw` | Ziehen | 25 (0.83 s) | Ready (18) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E |
+| `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
+| `aim_in` | Hüfte → Zielen | 6 (0.20 s) | Aimed (5) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse sniper_rifle: 10 → 6 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s)) |
+| `aim_out` | Zielen → Hüfte | 6 (0.20 s) | Ready (6) | offen° | offen | offen | E; Klasse sniper_rifle: 8 → 6 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s)) |
+| `fire_hip` | Dauerfeuer aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse sniper_rifle: 90/min, Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads) (Schussbilder [2, 22]) |
+| `fire_ads` | Dauerfeuer im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse sniper_rifle: 90/min, Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads) (Schussbilder [2, 22]) |
+| `reload_tactical` | Nachladen (Kastenmagazin tauschen, am Ende repetieren) | 82 (2.73 s) | HandOff (4), MagOut (10), MagIn (26), Eject (44), Chamber (48), HandOn (60), Ready (78) | offen° | ego_BASIC-09-v2.1_reload_tactical.mp4 | offen | M Destiny-Scharfschütze Far Future: MagOut +0,28, MagIn +0,70, Kammerstängel +1,2, Hüfte 2,07, ruhig 2,18 s (Motiongen nachladen:58) → Marker bei 8/21/36/62 von 65 Bildern, × TIME_SCALE; Ablauf E wie das Nachladen der Automatik, Repetieren am Kammerknopf links (Nutzer 28.10.2026) aus der Hüfte wie fire_cycle (aus der Nachladehaltung lag der Oberarm groß vor der Kamera); taktisch gegen leer nicht gemessen (Entscheidungsliste) |
+| `reload_empty` | Nachladen (Kastenmagazin tauschen, am Ende repetieren), auch leer | 82 (2.73 s) | HandOff (4), MagOut (10), MagIn (26), Eject (44), Chamber (48), HandOn (60), Ready (78) | offen° | offen | offen | M Destiny-Scharfschütze Far Future: MagOut +0,28, MagIn +0,70, Kammerstängel +1,2, Hüfte 2,07, ruhig 2,18 s (Motiongen nachladen:58) → Marker bei 8/21/36/62 von 65 Bildern, × TIME_SCALE; Ablauf E wie das Nachladen der Automatik, Repetieren am Kammerknopf links (Nutzer 28.10.2026) aus der Hüfte wie fire_cycle (aus der Nachladehaltung lag der Oberarm groß vor der Kamera); taktisch gegen leer nicht gemessen (Entscheidungsliste) |
+| `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante) |
+| `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
+| `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
+| `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
+| `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
+| `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
+| `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse sniper_rifle: 90/min, Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads) (Schussbilder [7]) |
+| `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
+| `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
+| `fire_cycle` | Repetieren nach dem Schuss aus der Hüfte (Kammerstängel links: heben, zurück, vor, senken) | 18 (0.60 s) | HandOff (2), Eject (10), Chamber (12), HandOn (17) | offen° | ego_BASIC-09-v2.1_fire_cycle.mp4 | offen | E: Repetieren in 0,6 s nach dem Schuss (Kadenz 90/min = 0,67 s je Schuss, Far Future [S]); Stängel links, die Stützhand repetiert (Nutzer 28.10.2026), Hülse beim Zurückziehen (Marker Eject); Destiny zeigt beim Scharfschützen kein eigenes Repetieren (Entscheidungsliste) |
+| `fire_cycle_ads` | Repetieren nach dem Schuss im Zielen (Waffe bleibt im Anschlag) | 18 (0.60 s) | HandOff (2), Eject (10), Chamber (12), HandOn (17) | offen° | ego_BASIC-09-v2.1_fire_cycle_ads.mp4 | offen | E wie fire_cycle, im Zielen ohne Kippen (Zielfernrohr bleibt vor dem Auge) |
+
+### Abdeckung der Matrixzeilen
+
+| Zeile | durch Aktion | Status |
+|---|---|---|
+| `pose_rest` | `idle_hip` | offen (nicht gesichtet) |
+| `pose_hip` | `idle_hip` | offen (nicht gesichtet) |
+| `draw` | `draw` | offen (nicht gesichtet) |
+| `ready` | `draw` | offen (nicht gesichtet) |
+| `holster` | `holster` | offen (nicht gesichtet) |
+| `pose_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_hip_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_aim_hip` | `aim_out` | offen (nicht gesichtet) |
+| `fire_auto` | `fire_ads` | offen (nicht gesichtet) |
+| `recoil_mech` | `fire_hip` | offen (nicht gesichtet) |
+| `recoil_camera` | `fire_hip` | offen (nicht gesichtet) |
+| `reload_partial` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_feed` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_empty` | `reload_empty` | offen (nicht gesichtet) |
+| `cycle` | `reload_empty` | offen (nicht gesichtet) |
+| `inspect` | `inspect` | offen (nicht gesichtet) |
+| `inspect_return` | `inspect` | offen (nicht gesichtet) |
+| `sprint_in` | `sprint` | offen (nicht gesichtet) |
+| `sprint_loop` | `sprint` | offen (nicht gesichtet) |
+| `sprint_out` | `sprint` | offen (nicht gesichtet) |
+| `pose_lowered` | `lowered` | offen (nicht gesichtet) |
+| `tr_lowered_return` | `lowered` | offen (nicht gesichtet) |
+| `move_walk` | `walk` | offen (nicht gesichtet) |
+| `sway` | `walk` | offen (nicht gesichtet) |
+| `crouch` | `crouch` | offen (nicht gesichtet) |
+| `jump_start` | `jump_land` | offen (nicht gesichtet) |
+| `air` | `jump_land` | offen (nicht gesichtet) |
+| `land` | `jump_land` | offen (nicht gesichtet) |
+| `tr_sprint_aim` | `sprint_to_aim` | offen (nicht gesichtet) |
+| `tr_sprint_fire` | `sprint_to_fire` | offen (nicht gesichtet) |
+| `tr_draw_aimheld` | `draw_aim` | offen (nicht gesichtet) |
+| `tr_reload_switch` | `reload_to_switch` | offen (nicht gesichtet) |
+| `switch` | `reload_to_switch` | offen (nicht gesichtet) |
+
+## BASIC-12-v2.1 – Leitstrahl v2.1 (trace_rifle)
+
+### Klassen- und Spielwerte
+
+| Wert | Stand | Herkunft |
+|---|---|---|
+| Klasse | trace_rifle | Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Anflug nach Motiongen (Spurgewehr), Sprint der Automatik, Nachladen der Bezugsklasse mit der Energiezelle (leer wie taktisch, kein Ladehebel) |
+| Kadenz | 1000/min | S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse (Energiezelle, EJECT None) |
+| Magazin | 94 | S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse (Energiezelle, EJECT None) |
+| Feuerart | `continuous_beam` – Dauerstrahl (Dauerfeuer ohne Mündungsfeuer, Leuchtteile EGO_LIVE glow an, solange der Abzug zieht) | Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20) |
+| Weltzoom im Zielen | 1.8 | M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM) |
+| Hüft-Fadenkreuz | circle_cross 4.5 % H | entworfen (4.1 A / 4.2 A, basic/reticles.py › HIP) |
+| Sprint-Fadenkreuz | aus | basic/reticles.py › HIP.sprint (4.1 A) |
+| Bahnstufe je Schuss | 0.00 % H | S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse (Energiezelle, EJECT None) |
+| Haltung `hip` | Socket_Hand [-0.165, -0.42, -0.205], Ziel [0.1, -3.0, -0.12], Rollen 6° | M Destiny-Spurgewehr Hüfte: Mündung 57/60 (Motiongen destiny2:512), 57,7/59,6 (huefte:78); Lage E, gerechnet auf Mündung 57,5/61,9 % (Automatik-Hüfte am Spurgewehr: 60,0/66,4 – kürzere Waffe), 2,5 cm weiter zur Mitte, 2,5 cm höher; mit Mündung 59,2 % lag die Haubennase bei 53,7 % H in der Freihaltezone (A4, Ecke ab 55 %) |
+| Haltung `sprint` | Socket_Hand [-0.1, -0.34, -0.23], Ziel [1.2, -1.6, -0.55], Rollen -35° | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen (Motiongen destiny2:570) (Haltung POSES['sprint'] unverändert) |
+| Haltung `crouch` | Socket_Hand [-0.155, -0.41, -0.22], Rollen 9° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `air` | Socket_Hand [-0.165, -0.42, -0.19], Rollen 4° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `lowered` | Socket_Hand [-0.145, -0.38, -0.225], Rollen 10° | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| Dauer `aim_in` | 4 Bilder bei 30/s (0.133 s) | M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt |
+| Dauer `aim_out` | 3 Bilder bei 30/s (0.100 s) | M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt |
+| Dauer `reload_tactical` | 67 Bilder bei 30/s (2.233 s) | M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt |
+| Mündungsfeuer | keins (Werkzeug) | S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse (Energiezelle, EJECT None) |
+| Hülsen | keine | Waffe ohne Feld EJECT |
+| Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
+| Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
+| Live-Teile | trigger = trigger, bolt = , port = , glow = ('focus_lens', 'disc_lens') | Modul-Feld EGO_LIVE |
+
+### Haltungen
+
+| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |
+|---|---|---|---|
+| `hip` | [-0.165, -0.42, -0.205] | nur in Aktionen geprüft | M Destiny-Spurgewehr Hüfte: Mündung 57/60 (Motiongen destiny2:512), 57,7/59,6 (huefte:78); Lage E, gerechnet auf Mündung 57,5/61,9 % (Automatik-Hüfte am Spurgewehr: 60,0/66,4 – kürzere Waffe), 2,5 cm weiter zur Mitte, 2,5 cm höher; mit Mündung 59,2 % lag die Haubennase bei 53,7 % H in der Freihaltezone (A4, Ecke ab 55 %) |
+| `ads` | [0.0, 0.0, 0.0] | nur in Aktionen geprüft | Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse |
+| `sprint` | [-0.1, -0.34, -0.23] | nur in Aktionen geprüft | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen (Motiongen destiny2:570) (Haltung POSES['sprint'] unverändert) |
+| `lowered` | [-0.145, -0.38, -0.225] | nur in Aktionen geprüft | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| `crouch` | [-0.155, -0.41, -0.22] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `air` | [-0.165, -0.42, -0.19] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `holstered` | [-0.24, -0.25, -0.62] | nur in Aktionen geprüft | E (unter dem Bild) |
+| `reload` | [-0.07, -0.34, -0.135] | nur in Aktionen geprüft | T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E) |
+| `inspect_l` | [-0.06, -0.36, -0.16] | nur in Aktionen geprüft | E (Ego-Seite zeigt zur Kamera) |
+| `inspect_r` | [-0.1, -0.36, -0.12] | nur in Aktionen geprüft | E (Oberseite und rechte Seite) |
+
+### Aktionen
+
+| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
+|---|---|---|---|---|---|---|---|
+| `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
+| `draw` | Ziehen | 25 (0.83 s) | Ready (18) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E |
+| `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
+| `aim_in` | Hüfte → Zielen | 4 (0.13 s) | Aimed (4) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse trace_rifle: 10 → 4 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt) |
+| `aim_out` | Zielen → Hüfte | 3 (0.10 s) | Ready (3) | offen° | offen | offen | E; Klasse trace_rifle: 8 → 3 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt) |
+| `fire_hip` | Dauerfeuer aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | ego_BASIC-12-v2.1_fire_hip.mp4 | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse trace_rifle: 1000/min, Dauerstrahl (Dauerfeuer ohne Mündungsfeuer, Leuchtteile EGO_LIVE glow an, solange der Abzug zieht) (Schussbilder [2, 3, 5, 7, 9, 11, 12, 14, 16, 18, 20, 21, 23]) |
+| `fire_ads` | Dauerfeuer im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse trace_rifle: 1000/min, Dauerstrahl (Dauerfeuer ohne Mündungsfeuer, Leuchtteile EGO_LIVE glow an, solange der Abzug zieht) (Schussbilder [2, 3, 5, 7, 9, 11, 12, 14, 16, 18, 20, 21, 23]) |
+| `reload_tactical` | Nachladen mit Restmunition | 67 (2.23 s) | HandOff (5), MagOut (13), MagIn (38), HandOn (51), Ready (62) | offen° | ego_BASIC-12-v2.1_reload_tactical.mp4 | offen | M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse trace_rifle: 63 → 67 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt) |
+| `reload_empty` | Nachladen mit Restmunition, auch leer | 67 (2.23 s) | HandOff (5), MagOut (13), MagIn (38), HandOn (51), Ready (62) | offen° | offen | offen | M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse trace_rifle: 63 → 67 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt) |
+| `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante) |
+| `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
+| `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
+| `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
+| `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
+| `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
+| `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse trace_rifle: 1000/min, Dauerstrahl (Dauerfeuer ohne Mündungsfeuer, Leuchtteile EGO_LIVE glow an, solange der Abzug zieht) (Schussbilder [7, 8, 10, 12, 14, 16, 17, 19]) |
+| `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
+| `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
+
+### Abdeckung der Matrixzeilen
+
+| Zeile | durch Aktion | Status |
+|---|---|---|
+| `pose_rest` | `idle_hip` | offen (nicht gesichtet) |
+| `pose_hip` | `idle_hip` | offen (nicht gesichtet) |
+| `draw` | `draw` | offen (nicht gesichtet) |
+| `ready` | `draw` | offen (nicht gesichtet) |
+| `holster` | `holster` | offen (nicht gesichtet) |
+| `pose_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_hip_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_aim_hip` | `aim_out` | offen (nicht gesichtet) |
+| `fire_auto` | `fire_ads` | offen (nicht gesichtet) |
+| `recoil_mech` | `fire_hip` | offen (nicht gesichtet) |
+| `recoil_camera` | `fire_hip` | offen (nicht gesichtet) |
+| `reload_partial` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_feed` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_empty` | `reload_empty` | offen (nicht gesichtet) |
+| `cycle` | `reload_empty` | offen (nicht gesichtet) |
+| `inspect` | `inspect` | offen (nicht gesichtet) |
+| `inspect_return` | `inspect` | offen (nicht gesichtet) |
+| `sprint_in` | `sprint` | offen (nicht gesichtet) |
+| `sprint_loop` | `sprint` | offen (nicht gesichtet) |
+| `sprint_out` | `sprint` | offen (nicht gesichtet) |
+| `pose_lowered` | `lowered` | offen (nicht gesichtet) |
+| `tr_lowered_return` | `lowered` | offen (nicht gesichtet) |
+| `move_walk` | `walk` | offen (nicht gesichtet) |
+| `sway` | `walk` | offen (nicht gesichtet) |
+| `crouch` | `crouch` | offen (nicht gesichtet) |
+| `jump_start` | `jump_land` | offen (nicht gesichtet) |
+| `air` | `jump_land` | offen (nicht gesichtet) |
+| `land` | `jump_land` | offen (nicht gesichtet) |
+| `tr_sprint_aim` | `sprint_to_aim` | offen (nicht gesichtet) |
+| `tr_sprint_fire` | `sprint_to_fire` | offen (nicht gesichtet) |
+| `tr_draw_aimheld` | `draw_aim` | offen (nicht gesichtet) |
+| `tr_reload_switch` | `reload_to_switch` | offen (nicht gesichtet) |
+| `switch` | `reload_to_switch` | offen (nicht gesichtet) |
+
+## BASIC-15-v2.1 – Dauerlauf v2.1 (machine_gun)
+
+### Klassen- und Spielwerte
+
+| Wert | Stand | Herkunft |
+|---|---|---|
+| Klasse | machine_gun | Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Sprint der Automatik, Ziehen und Nachladen nach Motiongen (Gurtkasten), Ablauf E |
+| Kadenz | 900/min | M/S Shattered Cipher 900/min, 75 (Motiongen destiny2:273); Feuerart aus der Spec (Gurt → Dauerfeuer, FIRE_ALIAS); Bahnstufe wie die Automatik: Destiny-MG Hüfte 2,8 pp H, im Zielen bis 12,4 pp H über mehrere Stöße (rueckstoss:110), kein Wert je Schuss; Kick 1,3 E (schwere Waffe) |
+| Magazin | 75 | M/S Shattered Cipher 900/min, 75 (Motiongen destiny2:273); Feuerart aus der Spec (Gurt → Dauerfeuer, FIRE_ALIAS); Bahnstufe wie die Automatik: Destiny-MG Hüfte 2,8 pp H, im Zielen bis 12,4 pp H über mehrere Stöße (rueckstoss:110), kein Wert je Schuss; Kick 1,3 E (schwere Waffe) |
+| Feuerart | `full_auto` – Dauerfeuer | Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20) |
+| Weltzoom im Zielen | 1.9 | M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM) |
+| Hüft-Fadenkreuz | ring_dot 3.2 % H | übertragen (Automatik) (4.1 A / 4.2 A, basic/reticles.py › HIP) |
+| Sprint-Fadenkreuz | aus | basic/reticles.py › HIP.sprint (4.1 A) |
+| Bahnstufe je Schuss | 1.00 % H | ego.RECOIL (gemeinsam, Automatik ≈ 1 % H je Schuss, 5.2 A) |
+| Haltung `hip` | Socket_Hand [-0.19, -0.42, -0.23], Ziel [0.02, -3.0, -0.2], Rollen 6° | M Destiny-MG Hüfte: Mündung 56,2/64 (Motiongen huefte:72), ≈ 56/54 (destiny2:510); Lage E wie die Automatik: am MG gerechnet Mündung 57,7/62,7 % (Band lange Waffen 54–59 / 60–71) (Haltung POSES['hip'] unverändert) |
+| Haltung `sprint` | Socket_Hand [-0.1, -0.34, -0.23], Ziel [1.2, -1.6, -0.55], Rollen -35° | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen destiny2:561) (Haltung POSES['sprint'] unverändert) |
+| Dauer `draw` | 28 Bilder bei 30/s (0.933 s) | M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25) |
+| Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
+| Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts unter der Klappe port_cover, Hülse nach rechts und etwas nach unten; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
+| Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
+| Griffe | grip, support, mag, charge, cover | Modul-Feld EGO_GRIPS |
+| Live-Teile | trigger = trigger, bolt = bolt, port = port_cover | Modul-Feld EGO_LIVE |
+
+### Haltungen
+
+| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |
+|---|---|---|---|
+| `hip` | [-0.19, -0.42, -0.23] | nur in Aktionen geprüft | M Destiny-MG Hüfte: Mündung 56,2/64 (Motiongen huefte:72), ≈ 56/54 (destiny2:510); Lage E wie die Automatik: am MG gerechnet Mündung 57,7/62,7 % (Band lange Waffen 54–59 / 60–71) (Haltung POSES['hip'] unverändert) |
+| `ads` | [0.0, 0.0, 0.0] | nur in Aktionen geprüft | Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse |
+| `sprint` | [-0.1, -0.34, -0.23] | nur in Aktionen geprüft | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen destiny2:561) (Haltung POSES['sprint'] unverändert) |
+| `lowered` | [-0.17, -0.38, -0.25] | nur in Aktionen geprüft | E |
+| `crouch` | [-0.18, -0.41, -0.245] | nur in Aktionen geprüft | E (wie hip versetzt, 0.15 mit hip gesenkt) |
+| `air` | [-0.19, -0.42, -0.215] | nur in Aktionen geprüft | E (wie hip versetzt, 0.15 mit hip gesenkt) |
+| `holstered` | [-0.24, -0.25, -0.62] | nur in Aktionen geprüft | E (unter dem Bild) |
+| `reload` | [-0.07, -0.34, -0.135] | nur in Aktionen geprüft | T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E) |
+| `inspect_l` | [-0.06, -0.36, -0.16] | nur in Aktionen geprüft | E (Ego-Seite zeigt zur Kamera) |
+| `inspect_r` | [-0.1, -0.36, -0.12] | nur in Aktionen geprüft | E (Oberseite und rechte Seite) |
+
+### Aktionen
+
+| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
+|---|---|---|---|---|---|---|---|
+| `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
+| `draw` | Ziehen | 28 (0.93 s) | Ready (20) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse machine_gun: 25 → 28 Bilder (M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25)) |
+| `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
+| `aim_in` | Hüfte → Zielen | 10 (0.33 s) | Aimed (9) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s) |
+| `aim_out` | Zielen → Hüfte | 8 (0.27 s) | Ready (8) | offen° | offen | offen | E |
+| `fire_hip` | Dauerfeuer aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse machine_gun: 900/min, Dauerfeuer (Schussbilder [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) |
+| `fire_ads` | Dauerfeuer im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse machine_gun: 900/min, Dauerfeuer (Schussbilder [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) |
+| `reload_tactical` | Nachladen (Deckel auf, Kasten tauschen, Gurt einlegen, Deckel zu, durchladen) | 183 (6.10 s) | HandOff (4), CoverOpen (24), MagOut (40), BoxIn (50), MagIn (64), CoverClosed (104), Chamber (125), HandOn (140), Ready (175) | offen° | ego_BASIC-15-v2.1_reload_tactical.mp4 | offen | M Destiny-MG Gurtkasten 4,40 s bis Hüfte, 4,87 ruhig: Deckel +0,63, Kasten +1,32, Gurt +1,70, Deckel zu +2,78 s (Motiongen nachladen:60) → Marker bei 19/40/51/83/132 von 146 Bildern, × TIME_SCALE; Ablauf E (Deckel hinten anheben, Kasten nach links unten aus dem Bild und zurück, Gurt in die Zuführschale, Deckel zuschlagen, Ladehebel aus der Hüfte wie der Scharfschütze; der Deckel springt nach dem Entriegeln allein auf, beim Kasten 3–6 cm weiter weg – sonst lag der Arm groß vor der Kamera); Munition voll beim Gurt |
+| `reload_empty` | Nachladen (Deckel auf, Kasten tauschen, Gurt einlegen, Deckel zu, durchladen), auch leer | 183 (6.10 s) | HandOff (4), CoverOpen (24), MagOut (40), BoxIn (50), MagIn (64), CoverClosed (104), Chamber (125), HandOn (140), Ready (175) | offen° | offen | offen | M Destiny-MG Gurtkasten 4,40 s bis Hüfte, 4,87 ruhig: Deckel +0,63, Kasten +1,32, Gurt +1,70, Deckel zu +2,78 s (Motiongen nachladen:60) → Marker bei 19/40/51/83/132 von 146 Bildern, × TIME_SCALE; Ablauf E (Deckel hinten anheben, Kasten nach links unten aus dem Bild und zurück, Gurt in die Zuführschale, Deckel zuschlagen, Ladehebel aus der Hüfte wie der Scharfschütze; der Deckel springt nach dem Entriegeln allein auf, beim Kasten 3–6 cm weiter weg – sonst lag der Arm groß vor der Kamera); Munition voll beim Gurt |
+| `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante) |
+| `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
+| `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
+| `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
+| `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
+| `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
+| `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse machine_gun: 900/min, Dauerfeuer (Schussbilder [7, 9, 11, 13, 15, 17, 19]) |
 | `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
 | `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
 

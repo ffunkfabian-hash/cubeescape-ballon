@@ -2867,6 +2867,16 @@
    "note": "Griffpunkt am Kastenboden (Schnittstelle BAB-1)",
    "source": "Modell (gesetzt im Entwurf)"
   },
+  "Socket_Charge": {
+   "position_m": [
+    0.035,
+    0.111,
+    0.112
+   ],
+   "part": "charging_handle",
+   "note": "Griffpunkt Ladehebel links (Stützhand, 0.33)",
+   "source": "Modell (gesetzt im Entwurf)"
+  },
   "Socket_Sight": {
    "position_m": [
     0.0,

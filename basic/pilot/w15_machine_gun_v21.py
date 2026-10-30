@@ -234,6 +234,7 @@ ANCHORS = {
     'Socket_Muzzle': dict(at=(MUZ[1] + 4, BORE, 0), part='muzzle_crown', note='Stirn der Mündungskrone auf der Laufachse'),
     'Socket_FeedCover': dict(at=(COVER[0] + 8, COVER[3], 0), part='feed_cover', note='Griffpunkt zum Öffnen'),
     'Socket_AmmoBox': dict(at=(_bc[0], BOX[2], BOX_X), part='ammo_box', note='Griffpunkt am Kastenboden (Schnittstelle BAB-1)'),
+    'Socket_Charge': dict(at=(-111, 112, W_REC / 2 + 9), part='charging_handle', note='Griffpunkt Ladehebel links (Stützhand, 0.33)'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
 # Auswurf (Daten, kein Anker): Hülse aus dem Auswurffenster rechts unten, Glied aus dem Gliederauswurf darüber; beide nach rechts
@@ -243,6 +244,21 @@ EJECT = dict(at=((PORT[0] + PORT[1]) / 2, (PORT[2] + PORT[3]) / 2, -W_REC / 2), 
              src='E: Auswurffenster rechts unter der Klappe port_cover, Hülse nach rechts und etwas nach unten',
              links=dict(at=((LINK_PORT[0] + LINK_PORT[1]) / 2, (LINK_PORT[2] + LINK_PORT[3]) / 2, -W_REC / 2), dir=(0.1, 0.35, -1.0),
                         case='belt_link', src='E: Gliederauswurf rechts über dem Auswurffenster, Glied nach rechts und etwas hoch'))
+# Ego-Griffe (0.33 „Armory“ P2, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe; dazu 'cover' am Zuführdeckel
+# (Nachladen der Klasse: Deckel auf, Gurt einlegen, Deckel zu); 'mag' am Munitionskasten, der Kasten fährt mit der Hand aus dem Bild
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(320, 60.5, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter dem Handschutz auf dem Griffpolster (handguard_grip f 270–400, Unterkante u 60,5), Lage wie die Pilotwaffe'),
+    'mag':     dict(part='ammo_box', contact=(_bc[0], 32, BOX_X + _bw / 2 - 2.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0),
+                    fingers_pose='mag_hold', src='E links außen am Munitionskasten in der Seitenmulde (3 mm tief), Hand greift von hinten'),
+    'charge':  dict(part='charging_handle', contact=(-111, 112, W_REC / 2 + 9.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Ladehebel links (wie die Pilotwaffe)'),
+    'cover':   dict(part='feed_cover', contact=(COVER[0] + 12, COVER[3] + 0.5, 12), palm=(0.0, -1.0, 0.0), fingers=(1.0, 0.0, -0.2),
+                    fingers_pose='pinch', src='E hinten auf dem Zuführdeckel am Deckelriegel (Socket_FeedCover), hebt den Deckel an'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer
 _shots = [3, 7, 11, 15, 19]
 ACTIONS = {
     'fire_auto': dict(de='Dauerfeuer (Verschluss sichtbar)', frames=30, step=1, keys={

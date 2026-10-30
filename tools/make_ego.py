@@ -166,7 +166,7 @@ def docs(_wid=None):
          'Eigenes Roboterarm-Rig (`basic/arms/robot_arm.py`) und Ego-Daten (`basic/arms/ego.py`), getrennt von Toolgen und Cube Escape. '
          'Kamera 75° horizontal (16:9), 30 fps, Kameraraum: rechts −X, vorn −Y, oben +Z. Herkunft: **T** Toolgen-Startwert, '
          '**M** gemessen an Destiny 2, **E** entworfen, **S** Sekundärquelle (Menü, Datenbank). Handgelenk-Ziel 45°, Grenze 55° (Toolgen).', '',
-         'Spielbare Waffen (Taste ' + ', '.join(f'{i + 1} = {EG.weapon_id(W)}' for i, W in enumerate(Ws)) + '). Haltungen, Dauer und '
+         'Spielbare Waffen (Taste ' + ', '.join(f'{(i + 1) % 10} = {EG.weapon_id(W)}' for i, W in enumerate(Ws)) + '). Haltungen, Dauer und '
          'Spielwerte je Klasse aus `ego.CLASSES` (Entscheidungsliste Schritt 6); was eine Klasse nicht nennt, gilt wie bei der Automatik.', '']
     for W in Ws:
         wid = EG.weapon_id(W)
@@ -287,11 +287,19 @@ def check():
             if G.get('part') and G['part'] not in ids:
                 err.append(f"{wid} Griff {g}: Bauteil {G['part']} fehlt")
         want = set(EG.GRIPS) if not P['drop'] else {'grip', 'support'}   # Werkzeug ohne Nachladen (0.22): ohne Magazin- und Ladegriff
-        if set(P['grips']) != want:
+        if not want <= set(P['grips']) or (P['drop'] and set(P['grips']) != want):   # 0.33: Klassen dürfen weitere Griffe haben (MG: Deckel)
             err.append(f'{wid}: Griffe {sorted(P["grips"])} statt {sorted(want)}')
         for k, v in P['live'].items():
-            if v and v not in ids:
-                err.append(f'{wid}: Live-Teil {k} = {v} fehlt')
+            for q in (v if k == 'glow' else [v]):       # glow (0.33): Leuchtteile mit Bewegung glow
+                if q and q not in ids:
+                    err.append(f'{wid}: Live-Teil {k} = {q} fehlt')
+                elif k == 'glow' and q and next(p for p in W.PARTS if p['id'] == q).get('move', {}).get('kind') != 'glow':
+                    err.append(f'{wid}: Leuchtteil {q} ohne Bewegung glow')
+        used = {k for A in P['actions'].values() for ch in ('L', 'R') for _, k in A.get(ch, [])}
+        for g in used:
+            g = g[0] if isinstance(g, tuple) else g
+            if g != 'cam' and g not in P['grips']:
+                err.append(f'{wid}: Griff {g} in einer Aktion fehlt')
         n.append(f'{wid} {len(P["actions"])} Aktionen/{len(P["poses"])} Haltungen/{len(P["grips"])} Griffe')
     for nm, fp in EG.FINGER_POSES.items():
         if len(fp['f']) != len(RA.FINGER_X) or any(len(x) != len(RA.FINGER_LINKS) for x in fp['f']):

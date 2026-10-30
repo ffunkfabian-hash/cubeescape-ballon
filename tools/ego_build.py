@@ -583,7 +583,7 @@ class Scene:
                 M = ob.matrix_world.copy()
                 BB.apply_move(ob, p['move'], t)
                 ob.matrix_world = M
-        mag = self.objs.get('magazine')
+        mag = self.objs.get(self.P['mag'])        # Bauteil des Griffs 'mag' (Magazin, Energiezelle; 0.33)
         if mag is not None and carry is not None:
             mag.matrix_world = carry
         if mag is not None and drop is not None:
@@ -646,7 +646,9 @@ def evaluate(sc, A, f, report, state):
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
-        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in ('semi_auto', 'single')) else 0.0   # je Schuss
+        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in EG.SEMI_MODES) else 0.0   # je Schuss
+        for g in live.get('glow', ()):       # Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
+            mech[g] = mech[live['trigger']]
         if live.get('bolt'):                 # Werkzeug (0.22): ohne Verschluss und Auswurfklappe
             mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         if live.get('port'):
@@ -663,7 +665,7 @@ def evaluate(sc, A, f, report, state):
     HR = blend_hand(Rkeys, f, pw)
     if A.get('drop') and A['drop'][0] <= f < A['carry'][0][0]:
         t = (f - A['drop'][0]) / FPS_F
-        mag0 = sc.WM @ Matrix(sc.objs['magazine']['rest'])
+        mag0 = sc.WM @ Matrix(sc.objs[sc.P['mag']]['rest'])
         drop = Matrix.Translation(Vector((0.02 * t, -0.05 * t, -0.5 * 9.81 * t * t - 0.3 * t))) @ mag0 @ \
             Matrix.Rotation(math.radians(-140 * t), 4, 'X')
         if f >= A['drop'][1]:
@@ -672,7 +674,7 @@ def evaluate(sc, A, f, report, state):
         if c0 <= f <= c1:
             if 'rel' not in state:
                 Hm, _ = grip_hand('mag', lambda pid: sc.WM if pid is None else sc.WM)
-                state['rel'] = Hm.inverted() @ (sc.WM @ Matrix(sc.objs['magazine']['rest']))
+                state['rel'] = Hm.inverted() @ (sc.WM @ Matrix(sc.objs[sc.P['mag']]['rest']))
             carry = HL @ state['rel']
     if carry is not None or drop is not None:
         sc.set_weapon(R2, pos2, mech, report, carry=carry, drop=drop)

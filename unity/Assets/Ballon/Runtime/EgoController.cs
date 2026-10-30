@@ -294,6 +294,7 @@ namespace Ballon.Ego
                 {
                     if (m.name == "MagIn") ammo = magSize;
                     if (m.name == "Fire") _fireArmed = true;
+                    if (m.name == "Eject" && S.Ejects && S.D.gameplay.BoltAction) _pendingShells++;   // Repetierer: Hülse beim Zurückziehen
                     Marker?.Invoke(_t.A.name, m.name);
                 }
         }
@@ -654,8 +655,18 @@ namespace Ballon.Ego
                 _ringTgt += S.D.gameplay.portals[LastPortal].ring;
                 _ringT = 0;
             }
-            if (S.Ejects) _pendingShells++;               // Hülse startet in Compose mit der Waffe dieses Bilds
+            if (S.Ejects && !S.D.gameplay.BoltAction) _pendingShells++;   // Hülse startet in Compose mit der Waffe dieses Bilds (Repetierer: Marker Eject)
             Shot?.Invoke();
+            if (S.D.gameplay.BoltAction && HasAmmo) Cycle();
+        }
+
+        /// <summary>Repetierer (0.33, bolt_action): nach dem Schuss die Klassenaktion fire_cycle (im Zielen fire_cycle_ads) – sie sperrt den
+        /// nächsten Schuss (Busy) und endet in der Haltung, aus der geschossen wurde; der letzte Schuss repetiert nicht (das Nachladen tut es).</summary>
+        void Cycle()
+        {
+            bool ads = _stance == Stance.Ads;
+            _stance = ads ? Stance.Ads : Stance.Hip;
+            Play(ads ? "fire_cycle_ads" : "fire_cycle", busy: true, stance: _stance, fade: 2, onEnd: _onReady);
         }
 
         Layers LiveLayers(Matrix4x4 R)
@@ -683,6 +694,7 @@ namespace Ballon.Ego
             L.rot = L.rot * RotX(Rad(-(_recX.y + _rClimb)));
             L.camPitch = _recCx.x * (1 - adsWeight);           // Viewmodel-Kamera: Ruck nur in der Hüfte (im Zielen nur die Welt)
             L.trigger = _triggerHeld ? 1 : 0;
+            if (S.D.gameplay.Beam) L.glow = L.trigger;         // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
             L.bolt = _boltT > 0 ? 1 : 0;
             L.port = _portOpen ? 1 : 0;
             if (S.D.gameplay.HasPortals) L.ring = _ring;

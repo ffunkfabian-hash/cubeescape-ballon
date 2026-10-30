@@ -26,12 +26,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/10'   # 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/10'   # 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 # Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 … (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
 # 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“, Impuls BASIC-02 und Portalkanone BASIC-T01 seit 0.22 „Volley“, Handfeuerwaffe BASIC-04
-# und Seitenwaffe BASIC-05 seit 0.33 „Armory“ P1)
+# und Seitenwaffe BASIC-05 seit 0.33 „Armory“ P1, Scharfschütze BASIC-09, Spurgewehr BASIC-12 und MG BASIC-15 seit P2: Tasten 8, 9, 0)
 WEAPONS = ['pilot.w01_auto_rifle_v21', 'pilot.w06_submachine_gun_v21', 'pilot.w03_scout_rifle_v21', 'pilot.w02_pulse_rifle_v21',
-           'pilot.t01_portal_cannon_v21', 'pilot.w04_hand_cannon_v21', 'pilot.w05_sidearm_v21']
+           'pilot.t01_portal_cannon_v21', 'pilot.w04_hand_cannon_v21', 'pilot.w05_sidearm_v21', 'pilot.w09_sniper_rifle_v21',
+           'pilot.w12_trace_rifle_v21', 'pilot.w15_machine_gun_v21']
 WEAPON = WEAPONS[0]                 # Pilotwaffe (./check: Mündungsfeuer im Zielen, Bezug der Automatik)
 SHARED_SRC = ['basic/common.py', 'basic/kit.py', 'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py',
               'tools/blender_build.py', 'tools/export_unity.py', 'tools/bake_unity.py']
@@ -51,6 +52,16 @@ TEXTURE_STORE = dict(
     ao=dict(size=2048, ext='png', de='AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)'),
     limit_mb=50.0,
     de='Grenze je Waffe ≈ ¼ von BASIC-06 vorher (191 MB); Unity-Test Texturen_je_Waffe_unter_der_Grenze und export_unity.py --check')
+# Skins nur bei Bedarf (0.33 „Armory“ P2, Nutzer 30.10.2026: „wenn wir Zeit sparen können und es sinnvoll ist auf jedenfall aufnehmen“): neue
+# Waffen backen zuerst nur den Atlas (5 Backaufrufe ≈ 7 min statt 26 ≈ 28 min auf dem M5); Skins (kit.SKINS, je 3 Aufrufe) nur für die
+# Waffen in SKIN_WEAPONS oder mit BALLON_BAKE_SKINS=all. Ohne Skins enthält textures.skins nur 'standard' (Taste K schaltet nichts um).
+SKIN_WEAPONS = {'BASIC-01-v2.1', 'BASIC-06-v2.1', 'BASIC-03-v2.1', 'BASIC-02-v2.1', 'BASIC-T01-v2.1', 'BASIC-04-v2.1', 'BASIC-05-v2.1'}
+
+
+def wants_skins(wid):
+    return wid in SKIN_WEAPONS or os.environ.get('BALLON_BAKE_SKINS') == 'all'
+
+
 MM = 0.001
 AXES = dict(to_unity=[[-1, 0, 0], [0, 0, 1], [0, -1, 0]],
             de='Unity = M · Blender; Blender-Kameraraum rechts −X, vorn −Y, oben +Z → Unity rechts +X, oben +Y, vorn +Z')
@@ -172,11 +183,15 @@ def weapon_data(W, live):
     anchors = [dict(id=k, part=v.get('part', ''), pos=xyz(*v['at'])) for k, v in W.ANCHORS.items()]
     wid = EG.weapon_id(W)
     ids = {p['id'] for p in parts}
-    missing = [v for v in live.values() if v and v not in ids]
+    glow = list(live.get('glow', ()))              # 0.33: Leuchtteile, die beim Feuern angehen (Dauerstrahl), Bewegung glow
+    missing = [v for k, v in live.items() if k != 'glow' and v and v not in ids] + [g for g in glow if g not in ids]
     if missing:
         raise KeyError(f'{wid}: Live-Teile {missing} fehlen (ego.LIVE bzw. Modul-Feld EGO_LIVE)')
+    moves = {p['id']: p['move']['kind'] for p in parts}
+    if any(moves[g] != 'glow' for g in glow):
+        raise KeyError(f'{wid}: EGO_LIVE glow nennt Teile ohne Bewegung glow')
     return dict(id=wid, root=W.META['id'], name=W.META['name'], fbx=f'{wid}.fbx', parts=parts, anchors=anchors,
-                eject=eject_data(W), live={k: live.get(k, '') for k in ('trigger', 'bolt', 'port', 'ring')})
+                eject=eject_data(W), live=dict({k: live.get(k, '') for k in ('trigger', 'bolt', 'port', 'ring')}, glow=glow))
 
 
 def mesh(V, tris):
@@ -343,6 +358,9 @@ def export_plan(D, old):
             continue
         was = {f['path']: f['sha256'] for f in o['sources']['files']}
         diff = [f['path'] for f in e['sources']['files'] if was.get(f['path']) != f['sha256']]
+        if wants_skins(e['id']) and len(o['textures'].get('skins', [])) < 2:
+            plan[e['id']], why[e['id']] = 'full', 'Skins verlangt (SKIN_WEAPONS oder BALLON_BAKE_SKINS=all), bisher nur Atlas'
+            continue
         if not diff:
             plan[e['id']] = 'reuse'
             continue
@@ -600,7 +618,9 @@ REF_SEGMENTS = ['upper', 'fore', 'hand', 'f0_0', 'f0_2', 'f3_1', 't_0', 't_2']
 def reference(sc, e):
     """Blender-Auswertung (tools/ego_build.evaluate) einer Waffe als Testreferenz: Standbilder und Stichproben aller Aktionen."""
     from tools import ego_build as EB
-    objs_ref = [k for k in REF_OBJECTS + list(e['weapon']['live'].values()) if k in sc.objs]
+    live = [v for k, v in e['weapon']['live'].items() if k != 'glow']
+    acts = [pid for A in EG.CLASSES[sc.P['type']].get('actions', {}).values() for pid in A.get('mech', {})]   # 0.33: Teile der Klassenaktionen
+    objs_ref = list(dict.fromkeys(k for k in REF_OBJECTS + [sc.P['mag']] + live + acts if k in sc.objs))
 
     def flat(M):
         return r6([M[i][j] for i in range(4) for j in range(4)])
@@ -668,7 +688,8 @@ def export_fbx(path, obs):
 
 
 def bake_weapon(sc, e, tex_dir, gpu):
-    """Atlas der Waffe (kit.aaa_nodes) und Skins (kit.SKINS: Farbe und Glanz je Skin neu, Normale und AO wie Standard), FBX."""
+    """Atlas der Waffe (kit.aaa_nodes) und Skins (kit.SKINS: Farbe und Glanz je Skin neu, Normale und AO wie Standard; nur bei Bedarf,
+    wants_skins), FBX."""
     from tools import bake_unity as BK
     from basic import kit
     wobs = [sc.root] + list(sc.root.children_recursive)
@@ -686,7 +707,7 @@ def bake_weapon(sc, e, tex_dir, gpu):
     skins = [dict(name='standard', de=kit.SKINS['standard']['de'], kind=kit.SKINS['standard']['kind'],
                   albedo=atlas['albedo'], spec=atlas['spec'])]
     for skin, S in kit.SKINS.items():
-        if skin == 'standard':
+        if skin == 'standard' or not wants_skins(e['id']):
             continue
         kit.SKIN['name'] = skin
         kit.set_mode(sc.objs, 'aaa')

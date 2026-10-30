@@ -28,8 +28,12 @@ namespace Ballon.Ego
         public EgoPortal[] portals;                     // 10: Portale des Werkzeugs (Taste, Rolle, Farbe, Ringrichtung); leer = Waffe
         public float range_m;                           // 10: Reichweite der Portalschüsse (Werkzeug); 0 = Waffe
 
-        /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto, Werkzeug single).</summary>
-        public bool Semi => fire_mode == "semi_auto" || fire_mode == "single";
+        /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto, Werkzeug single, Repetierer bolt_action; ego.SEMI_MODES).</summary>
+        public bool Semi => fire_mode == "semi_auto" || fire_mode == "single" || BoltAction;
+        /// <summary>Repetierer (0.33, bolt_action): nach jedem Schuss mit Restmunition die Klassenaktion fire_cycle (im Zielen fire_cycle_ads).</summary>
+        public bool BoltAction => fire_mode == "bolt_action";
+        /// <summary>Dauerstrahl (0.33, continuous_beam): Dauerfeuer, Leuchtteile weapon.live.glow an, solange der Abzug zieht.</summary>
+        public bool Beam => fire_mode == "continuous_beam";
         /// <summary>Salvenwaffe: burst_shots Schuss je Zug, gehalten Salve um Salve (Feuerart burst).</summary>
         public bool Burst => burst_shots > 0;
         /// <summary>Ohne Magazin (Werkzeug): unbegrenzt, kein Nachladen.</summary>
@@ -84,7 +88,7 @@ namespace Ballon.Ego
     public class WeaponEject { public bool enabled; public string @case, src; public float[] pos, dir, verts; public int[] tris; }
 
     /// <summary>Live-Teile im laufenden Feuer (8, 0.18; ego.LIVE bzw. Modul-Feld EGO_LIVE): Abzug, Verschluss, Auswurfklappe.</summary>
-    [Serializable] public class WeaponLive { public string trigger, bolt, port, ring; }    // 10: ring (Werkzeug); leer = Teil fehlt
+    [Serializable] public class WeaponLive { public string trigger, bolt, port, ring; public string[] glow; }    // 10: ring (Werkzeug); leer = Teil fehlt; glow (0.33): Leuchtteile beim Feuern
 
     [Serializable]
     public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject;
@@ -304,7 +308,7 @@ namespace Ballon.Ego
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");
                 if (fmt != Format8 && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({fmt})");
-                if (fmt == Format && (f.gameplay.kick <= 0 || f.gameplay.recover_hz <= 0))
+                if (fmt == Format && ((f.gameplay.kick <= 0 && !f.gameplay.Beam) || f.gameplay.recover_hz <= 0))   // Dauerstrahl (0.33): Kick 0
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.kick oder recover_hz ({Format})");
                 if (fmt == Format && f.gameplay.Burst != (f.gameplay.fire_mode == "burst"))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu burst_shots {f.gameplay.burst_shots}");
@@ -418,6 +422,9 @@ namespace Ballon.Ego
         public bool HasPose(string n) => _poses.ContainsKey(n);
         /// <summary>Waffe mit Zielen (Visier, Aktion aim_in); das Werkzeug ohne Visier hat keine (0.22).</summary>
         public bool CanAim => _actions.ContainsKey("aim_in");
+        /// <summary>Bauteil, das das Nachladen trägt oder fallen lässt (carry/drop): das Teil des Griffs 'mag' (Magazin, Energiezelle; 0.33),
+        /// ohne Griff 'magazine' – wie ego.profile › mag.</summary>
+        public string MagPart => _grips.TryGetValue("mag", out var g) && !string.IsNullOrEmpty(g.part) ? g.part : "magazine";
         /// <summary>Waffe mit Nachladen (Magazin); das Werkzeug hat keins (0.22).</summary>
         public bool CanReload => _actions.ContainsKey("reload_tactical") && !gameplay.Unlimited;
         public EgoRole Role(string n) => Array.Find(roles, r => r.role == n) ?? throw new KeyError("Materialrolle", n);

@@ -9,7 +9,8 @@ bleibt die Referenz.** Unity rechnet die Bewegung live in C# aus denselben Daten
 
 ```bash
 BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
-    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + 8 Skins + AgX-LUT + ego.json + Referenz (≈ 20 min; absoluter Pfad: ce lock wechselt das Verzeichnis)
+    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + Skins (nur SKIN_WEAPONS, 0.33) + AgX-LUT + ego.json + Referenz (≈ 7 min je neue Waffe ohne Skins, 28 mit; absoluter Pfad: ce lock wechselt das Verzeichnis)
+# Skins einer Waffe nachbacken: ID in export_unity.SKIN_WEAPONS eintragen (der Plan backt sie dann neu) oder einmalig BALLON_BAKE_SKINS=all
 BASIC_OUT=~/Library/Caches/CubeEscapeBallon/unity/blender_out ~/Claude/cubeescape-nexogen/ce lock gpu -- \
     /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P "$PWD/tools/ego_build.py" -- --stills --gpu   # frische Blender-Stills
 BALLON_EXPORT_DATA_ONLY=1 ~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b \
