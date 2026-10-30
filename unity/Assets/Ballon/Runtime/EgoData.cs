@@ -430,9 +430,10 @@ namespace Ballon.Ego
             foreach (var p in weapon.parts) _parts[p.id] = p;
             _anchors = new Dictionary<string, EgoAnchor>();
             foreach (var a in weapon.anchors) _anchors[a.id] = a;
-            gameplay.cycle = _actions.ContainsKey("fire_cycle");
+            gameplay.cycle = _actions.ContainsKey("fire_cycle");          // 0.33 P4: Trommel dreht nach dem Schuss wie Repetierer und Pumpe
             if (gameplay.flash_scale <= 0) gameplay.flash_scale = 1;      // vor 0.33 P4: Blitz in Familiengröße
-            if (weapon.eject != null && weapon.eject.enabled && string.IsNullOrEmpty(weapon.eject.on)) weapon.eject.on = "shot";   // vor 0.33 P4: je Schuss    // 0.33 P4: Trommel dreht nach dem Schuss wie Repetierer und Pumpe
+            if (weapon.eject != null && weapon.eject.enabled && string.IsNullOrEmpty(weapon.eject.on))
+                weapon.eject.on = "shot";                                  // vor 0.33 P4: Hülse je Schuss
         }
 
         public EgoPose Pose(string n) => _poses.TryGetValue(n, out var p) ? p : throw new KeyError("Haltung", n);

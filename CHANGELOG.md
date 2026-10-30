@@ -1,13 +1,15 @@
 # CHANGELOG
 
-## 0.33.0 „Armory“ – Ego-Übertrag der übrigen Grundtypen, Stand P1 (Branch `claude/ballon-0.33-armory`)
+## 0.33.0 „Armory“ – Ego-Übertrag der übrigen Grundtypen, HUD und Waffenmenü (Branch `claude/ballon-0.33-armory`)
 
-- Visier-Umzug: alle Produktionsvisiere (K1, K2, Z2, Z3, F1, H3, H6, W1, W2, B1, `side_mount`) aus `basic/pilot/optics/sight_kit.py`
-  nach `basic/common.py`, bitgleich (Bauteil-Hash aller 16 Waffen und 75 Katalogvarianten unverändert); voller Export mit Backen.
-- Handfeuerwaffe BASIC-04 und Seitenwaffe BASIC-05 spielbar (Tasten 6, 7; Tasten 1–9 nach `ego.json`): Klassenwerte nach Motiongen
-  ([armory-klassenwerte.md](docs/armory-klassenwerte.md)), Trommel-Nachladen als Klassenaktion, Durchladen am Schlitten; EditMode-Test
-  `Klassen_vollstaendig_in_ego_json`. P2–P4 und HUD/Waffenmenü folgen ([uebergabe-armory.md](docs/uebergabe-armory.md)); Bericht
-  [docs/versions/0.33-armory.md](docs/versions/0.33-armory.md).
+- Visier-Umzug nach `basic/common.py`, bitgleich; Skins nur bei Bedarf (`export_unity.SKIN_WEAPONS`).
+- Alle 16 Waffen spielbar: P1 Handfeuerwaffe, Seitenwaffe; P2 Scharfschütze (Repetierer), Spurgewehr (Dauerstrahl), MG (Gurtkasten); P3
+  Schrotflinte (Pumpe, Einzelladen), Fusion und lineare Fusion (Aufladen); P4 Bogen wie Destiny (linke Bogenhand, Spannen/Halten/Lösen,
+  gespannt zielen, Zielen durch den Ring, R entspannt), Granatwerfer (Trommel, Nachladen je Kammer), Raketenwerfer (Magazin 1, sofort
+  nachladen). Werte nach cubeescape-reference ([armory-klassenwerte.md](docs/armory-klassenwerte.md)), Abgleich aller Hüftlagen mit
+  `huefte.json` im Bericht.
+- HUD (Symbol, Klasse, Munition) und Waffenmenü (Tab/Mausrad, Pfeile, Enter/Klick, Esc); Symbole aus den Silhouetten (`tools/make_icons.py`).
+- Bericht [docs/versions/0.33-armory.md](docs/versions/0.33-armory.md).
 
 ## 0.32.0 „Softgrip“ – Blueprint-Regeln Teil 2: A5, A6, A9 und Patch ego_build (Branch `claude/ballon-0.32-softgrip`)
 

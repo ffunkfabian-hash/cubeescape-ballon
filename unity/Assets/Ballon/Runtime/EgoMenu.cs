@@ -68,6 +68,16 @@ namespace Ballon.Ego
 
         void Move(int d) => Index = ((Index + d) % count + count) % count;
 
+        /// <summary>Eingaben eines Bilds, solange das Menü offen ist (oder im Bild des Schließens): die Maus bedient das Menü – kein Feuer,
+        /// kein Zielen, kein Blick. Beim gespannten Bogen hieße „kein Feuer“ Loslassen und damit einen Schuss (Richter 0.33, 4a): das Menü
+        /// entspannt ihn stattdessen wie die Nachladen-Taste.</summary>
+        public static void Filter(ref RawInput r, bool drawing)
+        {
+            if (drawing && r.fire) r.reload = true;
+            r.fire = r.aim = false;
+            r.lookDeg = Vector2.zero;
+        }
+
         /// <summary>Menü öffnen bei Waffe active (Sichtprüfung -ballonMenu, Tests).</summary>
         public void Open(int active)
         {

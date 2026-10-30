@@ -551,8 +551,11 @@ namespace Ballon.Ego
         /// <summary>Spannen läuft oder der volle Auszug hält (fire_draw, im Zielen fire_draw_ads; am Ende bleibt die Spur stehen).</summary>
         bool Drawing => _t.A.name == "fire_draw" || _t.A.name == "fire_draw_ads" || _t.A.name == "draw_aim_in" || _t.A.name == "draw_aim_out";
 
+        /// <summary>Bogen spannt oder hält gespannt (EgoMenu.Filter: das Menü entspannt statt zu lösen, Richter 0.33).</summary>
+        public bool IsDrawing => S.D.gameplay.Draw && Drawing;
+
         /// <summary>Voller Auszug: Spannaktion zu Ende oder gespannt ins Zielen bzw. zurück.</summary>
-        bool DrawFull => Drawing && (_t.A.name.StartsWith("draw_aim") || _t.ended);
+        bool DrawFull => Drawing && (_t.A.name == "draw_aim_in" || _t.A.name == "draw_aim_out" || _t.ended);
 
         /// <summary>Auszug des Bogens 0 … 1 (Messwert für Tests): Wert der ersten Bewegung der Spannaktion, 0 außerhalb.</summary>
         public float DrawLevel => Drawing && _t.A.mech != null && _t.A.mech.Length > 0 ? ValueAt(_t.A.mech[0].keys, _t.frame) : 0;

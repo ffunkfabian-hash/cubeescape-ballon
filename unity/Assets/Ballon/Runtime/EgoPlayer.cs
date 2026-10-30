@@ -315,10 +315,7 @@ namespace Ballon.Ego
             int pick = menu.Step(r.menu, arsenal.Active);       // Waffenmenü (0.33 Ziel 2): Wahl wie eine Zifferntaste
             if (pick > 0) r.select = pick;
             if (menuWasOpen || menu.IsOpen)                       // offen (und im Bild des Schließens): die Maus bedient das Menü
-            {
-                r.fire = r.aim = false;
-                r.lookDeg = Vector2.zero;
-            }
+                EgoMenu.Filter(ref r, C.IsDrawing);
             Look(r);
             Move(r, dt);
             var it = new EgoIntent

@@ -2693,6 +2693,67 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0, A.C[15].ammo, "Rakete nicht geladen (Abbruch vor MagIn)");
         }
 
+        /// <summary>Abbruchpfade (Richter 0.33, 4a/4b): (1) Waffenwechsel beim gespannten Bogen steckt ohne Schuss weg, Sehne und Pfeil
+        /// danach in Ruhe; (2) das Waffenmenü bei gespanntem Bogen entspannt (EgoMenu.Filter: let_down) statt zu lösen; (3) Wechsel im
+        /// Einzelladen (reload_shell) der Schrotflinte und des Granatwerfers bricht mit reload_to_switch ab, geladene Patronen bzw. Granaten
+        /// bleiben, die angefangene verfällt.</summary>
+        [Test]
+        public void Abbruch_beim_Spannen_und_Einzelladen()
+        {
+            var BW = Class("combat_bow");
+            var fire = new EgoIntent { grounded = true, fire = true };
+            // (1) Wechsel beim Spannen
+            var A = new EgoArsenal(new EgoController(new EgoSolver(BW)), new EgoController(new EgoSolver(D)));
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            for (int t = 0; t < 50; t++) A.Tick(Dt, fire);
+            Assert.IsTrue(A.C[0].IsDrawing, "gespannt");
+            A.Tick(Dt, fire, 2);
+            for (int t = 0; t < 90 && A.Switching; t++) A.Tick(Dt, fire);
+            Assert.AreEqual(1, A.Active, "gewechselt");
+            Assert.AreEqual(0, A.C[0].shots, "Wechsel beim Spannen: kein Schuss");
+            Assert.IsTrue(A.C[0].Holstered);
+            A.Tick(Dt, Idle, 1);
+            for (int t = 0; t < 120 && (A.Switching || A.Current.Busy); t++) A.Tick(Dt, Idle);
+            Assert.AreEqual(0, A.Active);
+            Assert.AreEqual(0f, A.C[0].output.mech.TryGetValue("string_top", out float st) ? st : 0f, 1e-3f, "Sehne nach dem Ziehen in Ruhe");
+            Assert.AreEqual(0, A.C[0].shots);
+            // (2) Menü beim gespannten Bogen
+            var c = new EgoController(new EgoSolver(BW));
+            c.ReadyNow();
+            c.Tick(Dt, Idle);
+            for (int t = 0; t < 50; t++) c.Tick(Dt, fire);
+            var r = new RawInput { fire = true };
+            EgoMenu.Filter(ref r, c.IsDrawing);
+            Assert.IsFalse(r.fire, "die Maus bedient das Menü");
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = r.fire, reload = r.reload });
+            Assert.AreEqual("let_down", c.ActionName, "Menü beim Spannen: entspannen");
+            Run(c, Idle, 0.5f);
+            Assert.AreEqual(0, c.shots, "Menü beim Spannen: kein Schuss");
+            // (3) Wechsel im Einzelladen
+            foreach (var type in new[] { "shotgun", "grenade_launcher" })
+            {
+                var X = new EgoArsenal(new EgoController(new EgoSolver(Class(type))), new EgoController(new EgoSolver(D)));
+                X.C[0].ReadyNow();
+                X.Tick(Dt, Idle);
+                X.C[0].ammo = 1;
+                X.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+                for (int t = 0; t < 400 && X.C[0].ActionName != "reload_shell"; t++) X.Tick(Dt, Idle);
+                Assert.AreEqual("reload_shell", X.C[0].ActionName, $"{type}: Einzelladen läuft");
+                int loaded = X.C[0].ammo;
+                Assert.AreEqual(2, loaded, $"{type}: Einstieg hat eine geladen");
+                X.Tick(Dt, Idle, 2);
+                Assert.AreEqual("reload_to_switch", X.C[0].ActionName, $"{type}: Wechsel bricht das Einzelladen ab");
+                for (int t = 0; t < 120 && X.Switching; t++) X.Tick(Dt, Idle);
+                Assert.AreEqual(1, X.Active, $"{type}: gewechselt");
+                Assert.AreEqual(loaded, X.C[0].ammo, $"{type}: geladene bleiben, die angefangene verfällt");
+                X.Tick(Dt, Idle, 1);
+                for (int t = 0; t < 120 && (X.Switching || X.Current.Busy); t++) X.Tick(Dt, Idle);
+                Assert.AreEqual(0, X.Active);
+                Assert.AreEqual("idle_hip", X.Current.ActionName, $"{type}: wieder bereit, nicht im Nachladen");
+            }
+        }
+
         static void Run(EgoArsenal A, float s)
         {
             for (float t = 0; t < s; t += Dt) A.Tick(Dt, Idle);
