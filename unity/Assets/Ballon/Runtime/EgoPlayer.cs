@@ -520,7 +520,7 @@ namespace Ballon.Ego
         }
 
         // -------------------------------------------------------------- HUD und Waffenmenü (0.33 „Armory“, Ziel 2)
-        // Maße als Anteil der Bildhöhe (gleich bei jeder Auflösung, Sichtprüfung 1470 × 956). Texte und Stile werden einmal gebaut (kein
+        // Maße als Anteil der Bildhöhe (gleich bei jeder Auflösung, Sichtprüfung 1470 × 956); beschriftet mit der Waffenklasse (Spec type_de). Texte und Stile werden einmal gebaut (kein
         // Speicher je Bild); die Symbole sind weiß und werden über GUI.color eingefärbt.
         public const float HudIconH = 0.055f, HudIconMaxW = 0.17f, MenuCellW = 0.25f, MenuCellH = 0.13f;
         static readonly Color HudWhite = new Color(1, 1, 1, 0.92f), MenuPanel = new Color(0.03f, 0.05f, 0.07f, 0.78f),
@@ -551,7 +551,7 @@ namespace Ballon.Ego
                 for (int k = 0; k < n; k++)
                 {
                     var D = arsenal.C[k].S.D;
-                    _menuLabels[k] = D.weapon.name;
+                    _menuLabels[k] = string.IsNullOrEmpty(D.weapon.type_de) ? D.weapon.name : D.weapon.type_de;   // Klasse statt Modellname
                     _menuKeys[k] = k < 10 ? ((k + 1) % 10).ToString() : "";          // Taste 1 … 9, 0; weitere nur im Menü
                 }
             }
@@ -569,7 +569,8 @@ namespace Ballon.Ego
             var ic = Current.icon;
             if (ic != null && Event.current.type == EventType.Repaint)
             {
-                float ih = HudIconH * H, iw = Mathf.Min(HudIconMaxW * H, ih * ic.width / ic.height);
+                float ih = HudIconH * H * (ic.height > ic.width ? 1.8f : 1f);      // hohe Symbole (Bogen) größer, sonst kaum lesbar
+                float iw = Mathf.Min(HudIconMaxW * H, ih * ic.width / ic.height);
                 ih = iw * ic.height / ic.width;
                 var old = GUI.color;
                 GUI.color = HudWhite;

@@ -53,7 +53,9 @@ def render(side, dst, magick):
         src = os.path.join(tmp, 'sil.pbm')
         open(src, 'w').write(pbm(side))
         # belegt (schwarz) → weiß und deckend, frei → durchsichtig; beschneiden, Rand
-        subprocess.run([magick, src, '-negate', '-alpha', 'copy', '-fill', 'white', '-colorize', '100', '-trim', '+repage',
+        # Dünne Formen (Bogensehne, Wurfarme) um 1 px verdicken, damit das Symbol klein im HUD lesbar bleibt
+        subprocess.run([magick, src, '-negate', '-morphology', 'Dilate', 'Disk:1', '-alpha', 'copy', '-fill', 'white', '-colorize', '100',
+                        '-trim', '+repage',
                         '-bordercolor', 'none', '-border', str(BORDER), '-define', 'png:color-type=6', dst], check=True)
 
 

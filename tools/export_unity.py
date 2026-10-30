@@ -196,7 +196,8 @@ def weapon_data(W, live):
     moves = {p['id']: p['move']['kind'] for p in parts}
     if any(moves[g] != 'glow' for g in glow):
         raise KeyError(f'{wid}: EGO_LIVE glow nennt Teile ohne Bewegung glow')
-    return dict(id=wid, root=W.META['id'], name=W.META['name'], fbx=f'{wid}.fbx', parts=parts, anchors=anchors,
+    return dict(id=wid, root=W.META['id'], name=W.META['name'], type_de=W.META.get('type_de', ''),   # 0.33 Ziel 2: Klasse für HUD und Menü
+                fbx=f'{wid}.fbx', parts=parts, anchors=anchors,
                 eject=eject_data(W), live=dict({k: live.get(k, '') for k in ('trigger', 'bolt', 'port', 'ring')}, glow=glow))
 
 

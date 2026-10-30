@@ -110,7 +110,8 @@ namespace Ballon.Ego
     [Serializable] public class WeaponLive { public string trigger, bolt, port, ring; public string[] glow; }    // 10: ring (Werkzeug); leer = Teil fehlt; glow (0.33): Leuchtteile beim Feuern
 
     [Serializable]
-    public class EgoWeapon { public string id, root, name, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject;
+    // type_de (0.33 Ziel 2): Klasse auf Deutsch für HUD und Menü
+    public class EgoWeapon { public string id, root, name, type_de, fbx; public EgoPart[] parts; public EgoAnchor[] anchors; public WeaponEject eject;
                              public WeaponLive live; }
 
     /// <summary>Ego-Profil der Klasse (8, 0.18, ego.CLASSES): Waffentyp, Haltungen und gestreckte Aktionen der Klasse, Herkunft.</summary>

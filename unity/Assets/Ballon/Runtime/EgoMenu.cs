@@ -68,6 +68,13 @@ namespace Ballon.Ego
 
         void Move(int d) => Index = ((Index + d) % count + count) % count;
 
+        /// <summary>Menü öffnen bei Waffe active (Sichtprüfung -ballonMenu, Tests).</summary>
+        public void Open(int active)
+        {
+            IsOpen = true;
+            Index = Mathf.Clamp(active, 0, count - 1);
+        }
+
         /// <summary>Menü schließen ohne Wahl (Tod, Szenenwechsel, Tests).</summary>
         public void Close() => IsOpen = false;
     }

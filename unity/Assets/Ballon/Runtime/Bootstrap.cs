@@ -89,6 +89,7 @@ namespace Ballon.Ego
             LoadScenes();
             var args = Environment.GetCommandLineArgs();
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
+            if (Array.IndexOf(args, "-ballonMenu") >= 0) Player.menu.Open(Player.arsenal.Active);   // Sichtprüfung Waffenmenü (0.33 Ziel 2)
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
             if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
             if (float.TryParse(Arg(args, "-ballonFov") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var fov))

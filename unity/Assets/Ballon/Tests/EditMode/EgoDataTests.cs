@@ -262,6 +262,7 @@ namespace Ballon.Ego.Tests
             foreach (var (a, b) in new[] { (o.textures.weapon.albedo, D.textures.weapon.albedo), (o.textures.weapon.spec, D.textures.weapon.spec),
                                            (o.textures.weapon.normal, D.textures.weapon.normal), (o.textures.weapon.ao, D.textures.weapon.ao) })
                 Assert.AreEqual(Path.GetFileNameWithoutExtension(a), Path.GetFileNameWithoutExtension(b), "gleicher Dateiname ohne Endung");
+            o.weapon.type_de = D.weapon.type_de;                   // neu in 0.33 (Klasse für HUD und Menü)
             Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(D.weapon, false), "weapon (Teile, Anker, Hülsen, Live-Teile; Visierrolle 0.21)");
             Visier_v3(D.weapon);
             CollectionAssert.AreEqual(o.poses.Select(J), D.poses.Select(J), "Haltungen");
@@ -305,6 +306,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(0f, o.motion.ads_hide.eye_m, "/8: keine Teile im Zielen aus");
                 BowZoom(o, n);
                 Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
+                o.weapon.type_de = n.weapon.type_de;               // neu in 0.33 (Klasse für HUD und Menü)
                 Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
                 Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide), $"{o.weapon.id}: kein Teil mit ads_hide");
@@ -418,6 +420,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(o.motion.recoil.path_up_h, o.gameplay.path_up_h, "/9: Bahnstufe aus motion.recoil");
                 BowZoom(o, n);
                 Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
+                o.weapon.type_de = n.weapon.type_de;               // neu in 0.33 (Klasse für HUD und Menü)
                 Assert.AreEqual(J(o.weapon), J(n.weapon), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile");
                 Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
                 CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");

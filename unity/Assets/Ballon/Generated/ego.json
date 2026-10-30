@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "7f77a75371bfb176a0ff53bc962fc1bcac8d379ae1cc6c484e6419fd44cefc66"
+    "sha256": "eac7257b8797f3290d817518e100e78667150f28a5b86739794fe13aea34d8d1"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1546,6 +1546,7 @@
     "id": "BASIC-01-v2.1",
     "root": "BASIC-01",
     "name": "Formstudie 01 v2.1",
+    "type_de": "Automatikgewehr",
     "fbx": "BASIC-01-v2.1.fbx",
     "parts": [
      {
@@ -8769,6 +8770,7 @@
     "id": "BASIC-06-v2.1",
     "root": "BASIC-06",
     "name": "Kurzläufer v2.1",
+    "type_de": "Maschinenpistole",
     "fbx": "BASIC-06-v2.1.fbx",
     "parts": [
      {
@@ -15018,6 +15020,7 @@
     "id": "BASIC-03-v2.1",
     "root": "BASIC-03",
     "name": "Fernblick v2.1",
+    "type_de": "Scout-Gewehr",
     "fbx": "BASIC-03-v2.1.fbx",
     "parts": [
      {
@@ -21576,6 +21579,7 @@
     "id": "BASIC-02-v2.1",
     "root": "BASIC-02",
     "name": "Impuls v2.1",
+    "type_de": "Impulsgewehr",
     "fbx": "BASIC-02-v2.1.fbx",
     "parts": [
      {
@@ -28112,6 +28116,7 @@
     "id": "BASIC-T01-v2.1",
     "root": "BASIC-T01",
     "name": "Portalkanone v2.1",
+    "type_de": "Portalkanone",
     "fbx": "BASIC-T01-v2.1.fbx",
     "parts": [
      {
@@ -31493,6 +31498,7 @@
     "id": "BASIC-04-v2.1",
     "root": "BASIC-04",
     "name": "Trommel v2.1",
+    "type_de": "Handfeuerwaffe",
     "fbx": "BASIC-04-v2.1.fbx",
     "parts": [
      {
@@ -36373,6 +36379,7 @@
     "id": "BASIC-05-v2.1",
     "root": "BASIC-05",
     "name": "Seitenwaffe v2.1",
+    "type_de": "Pistole",
     "fbx": "BASIC-05-v2.1.fbx",
     "parts": [
      {
@@ -41562,6 +41569,7 @@
     "id": "BASIC-09-v2.1",
     "root": "BASIC-09",
     "name": "Weitschuss v2.1",
+    "type_de": "Scharfschützengewehr",
     "fbx": "BASIC-09-v2.1.fbx",
     "parts": [
      {
@@ -48387,6 +48395,7 @@
     "id": "BASIC-12-v2.1",
     "root": "BASIC-12",
     "name": "Leitstrahl v2.1",
+    "type_de": "Spurgewehr",
     "fbx": "BASIC-12-v2.1.fbx",
     "parts": [
      {
@@ -54246,6 +54255,7 @@
     "id": "BASIC-15-v2.1",
     "root": "BASIC-15",
     "name": "Dauerlauf v2.1",
+    "type_de": "Maschinengewehr",
     "fbx": "BASIC-15-v2.1.fbx",
     "parts": [
      {
@@ -61625,6 +61635,7 @@
     "id": "BASIC-08-v2.1",
     "root": "BASIC-08",
     "name": "Streuer v2.1",
+    "type_de": "Schrotflinte",
     "fbx": "BASIC-08-v2.1.fbx",
     "parts": [
      {
@@ -68075,6 +68086,7 @@
     "id": "BASIC-10-v2.1",
     "root": "BASIC-10",
     "name": "Glutkern v2.1",
+    "type_de": "Fusionsgewehr",
     "fbx": "BASIC-10-v2.1.fbx",
     "parts": [
      {
@@ -73775,6 +73787,7 @@
     "id": "BASIC-11-v2.1",
     "root": "BASIC-11",
     "name": "Schienenlicht v2.1",
+    "type_de": "Lineares Fusionsgewehr",
     "fbx": "BASIC-11-v2.1.fbx",
     "parts": [
      {
@@ -79774,6 +79787,7 @@
     "id": "BASIC-07-v2.1",
     "root": "BASIC-07",
     "name": "Sehnenzug v2.1",
+    "type_de": "Bogen",
     "fbx": "BASIC-07-v2.1.fbx",
     "parts": [
      {
@@ -86046,6 +86060,7 @@
     "id": "BASIC-13-v2.1",
     "root": "BASIC-13",
     "name": "Trommel v2.1",
+    "type_de": "Granatwerfer (Trommel)",
     "fbx": "BASIC-13-v2.1.fbx",
     "parts": [
      {
@@ -92904,6 +92919,7 @@
     "id": "BASIC-14-v2.1",
     "root": "BASIC-14",
     "name": "Schulterrohr v2.1",
+    "type_de": "Raketenwerfer",
     "fbx": "BASIC-14-v2.1.fbx",
     "parts": [
      {
