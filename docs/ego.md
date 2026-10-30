@@ -4,7 +4,7 @@
 
 Eigenes Roboterarm-Rig (`basic/arms/robot_arm.py`) und Ego-Daten (`basic/arms/ego.py`), getrennt von Toolgen und Cube Escape. Kamera 75° horizontal (16:9), 30 fps, Kameraraum: rechts −X, vorn −Y, oben +Z. Herkunft: **T** Toolgen-Startwert, **M** gemessen an Destiny 2, **E** entworfen, **S** Sekundärquelle (Menü, Datenbank). Handgelenk-Ziel 45°, Grenze 55° (Toolgen).
 
-Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1, 4 = BASIC-02-v2.1, 5 = BASIC-T01-v2.1, 6 = BASIC-04-v2.1, 7 = BASIC-05-v2.1, 8 = BASIC-09-v2.1, 9 = BASIC-12-v2.1, 0 = BASIC-15-v2.1). Haltungen, Dauer und Spielwerte je Klasse aus `ego.CLASSES` (Entscheidungsliste Schritt 6); was eine Klasse nicht nennt, gilt wie bei der Automatik.
+Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1, 4 = BASIC-02-v2.1, 5 = BASIC-T01-v2.1, 6 = BASIC-04-v2.1, 7 = BASIC-05-v2.1, 8 = BASIC-09-v2.1, 9 = BASIC-12-v2.1, 0 = BASIC-15-v2.1, 1 = BASIC-08-v2.1, 2 = BASIC-10-v2.1, 3 = BASIC-11-v2.1). Haltungen, Dauer und Spielwerte je Klasse aus `ego.CLASSES` (Entscheidungsliste Schritt 6); was eine Klasse nicht nennt, gilt wie bei der Automatik.
 
 ## BASIC-01-v2.1 – Formstudie 01 v2.1 (auto_rifle)
 
@@ -988,6 +988,330 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
 | `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
 | `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse machine_gun: 900/min, Dauerfeuer (Schussbilder [7, 9, 11, 13, 15, 17, 19]) |
+| `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
+| `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
+
+### Abdeckung der Matrixzeilen
+
+| Zeile | durch Aktion | Status |
+|---|---|---|
+| `pose_rest` | `idle_hip` | offen (nicht gesichtet) |
+| `pose_hip` | `idle_hip` | offen (nicht gesichtet) |
+| `draw` | `draw` | offen (nicht gesichtet) |
+| `ready` | `draw` | offen (nicht gesichtet) |
+| `holster` | `holster` | offen (nicht gesichtet) |
+| `pose_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_hip_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_aim_hip` | `aim_out` | offen (nicht gesichtet) |
+| `fire_auto` | `fire_ads` | offen (nicht gesichtet) |
+| `recoil_mech` | `fire_hip` | offen (nicht gesichtet) |
+| `recoil_camera` | `fire_hip` | offen (nicht gesichtet) |
+| `reload_partial` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_feed` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_empty` | `reload_empty` | offen (nicht gesichtet) |
+| `cycle` | `reload_empty` | offen (nicht gesichtet) |
+| `inspect` | `inspect` | offen (nicht gesichtet) |
+| `inspect_return` | `inspect` | offen (nicht gesichtet) |
+| `sprint_in` | `sprint` | offen (nicht gesichtet) |
+| `sprint_loop` | `sprint` | offen (nicht gesichtet) |
+| `sprint_out` | `sprint` | offen (nicht gesichtet) |
+| `pose_lowered` | `lowered` | offen (nicht gesichtet) |
+| `tr_lowered_return` | `lowered` | offen (nicht gesichtet) |
+| `move_walk` | `walk` | offen (nicht gesichtet) |
+| `sway` | `walk` | offen (nicht gesichtet) |
+| `crouch` | `crouch` | offen (nicht gesichtet) |
+| `jump_start` | `jump_land` | offen (nicht gesichtet) |
+| `air` | `jump_land` | offen (nicht gesichtet) |
+| `land` | `jump_land` | offen (nicht gesichtet) |
+| `tr_sprint_aim` | `sprint_to_aim` | offen (nicht gesichtet) |
+| `tr_sprint_fire` | `sprint_to_fire` | offen (nicht gesichtet) |
+| `tr_draw_aimheld` | `draw_aim` | offen (nicht gesichtet) |
+| `tr_reload_switch` | `reload_to_switch` | offen (nicht gesichtet) |
+| `switch` | `reload_to_switch` | offen (nicht gesichtet) |
+
+## BASIC-08-v2.1 – Streuer v2.1 (shotgun)
+
+### Klassen- und Spielwerte
+
+| Wert | Stand | Herkunft |
+|---|---|---|
+| Klasse | shotgun | Ego-Übertrag 0.33 „Armory“ P3: Hüfte und Sprint der Automatik, Anflug und Ziehen nach Motiongen (Schrotflinte), Pumpen nach jedem Schuss und Einzelladen E nach den Destiny-Zeiten |
+| Kadenz | 80/min | S Hawthorne 80/min, Magazin 7 (Menü, Motiongen destiny2:258; Baligant 55/min, 5) → 80/min, Magazin 6 E (Röhrenmagazin des Modells „hält sechs Patronen“); Feuerart aus der Spec (Pumpe: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,03 M: Ring 1–2 Bilder ≈ 3 % H hoch, nach 0,10 s zurück (destiny2:495) → Erholung E ab 0,2 s mit 3 Hz; Kick 3,0 E (schwerer Einzelschuss wie der Scharfschütze) |
+| Magazin | 6 | S Hawthorne 80/min, Magazin 7 (Menü, Motiongen destiny2:258; Baligant 55/min, 5) → 80/min, Magazin 6 E (Röhrenmagazin des Modells „hält sechs Patronen“); Feuerart aus der Spec (Pumpe: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,03 M: Ring 1–2 Bilder ≈ 3 % H hoch, nach 0,10 s zurück (destiny2:495) → Erholung E ab 0,2 s mit 3 Hz; Kick 3,0 E (schwerer Einzelschuss wie der Scharfschütze) |
+| Feuerart | `pump_action` – Vorderschaftrepetierer (ein Schuss je Zug, danach Pumpe als Klassenaktion fire_cycle/fire_cycle_ads; Nachladen je Patrone reload_shell, ein Zug am Abzug bricht ab) | Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20) |
+| Weltzoom im Zielen | 1.25 | M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM) |
+| Hüft-Fadenkreuz | corners 4.5 % H | entworfen (4.1 A / 4.2 A, basic/reticles.py › HIP) |
+| Sprint-Fadenkreuz | aus | basic/reticles.py › HIP.sprint (4.1 A) |
+| Bahnstufe je Schuss | 3.00 % H | S Hawthorne 80/min, Magazin 7 (Menü, Motiongen destiny2:258; Baligant 55/min, 5) → 80/min, Magazin 6 E (Röhrenmagazin des Modells „hält sechs Patronen“); Feuerart aus der Spec (Pumpe: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,03 M: Ring 1–2 Bilder ≈ 3 % H hoch, nach 0,10 s zurück (destiny2:495) → Erholung E ab 0,2 s mit 3 Hz; Kick 3,0 E (schwerer Einzelschuss wie der Scharfschütze) |
+| Haltung `reload` | Socket_Hand [-0.09, -0.36, -0.16], Ziel [0.55, -2.4, 0.25], Rollen -60° | E nach Destiny-Schrotflinte (Einzelladen, Motiongen nachladen:52/53): Waffe vor dem Körper nach rechts gerollt, Ladeklappe zeigt nach links unten zur Stützhand |
+| Haltung `hip` | Socket_Hand [-0.19, -0.42, -0.23], Ziel [0.02, -3.0, -0.2], Rollen 6° | M Destiny-Schrotflinte Hüfte: Mündung FILO 57/63 (Motiongen huefte:54), ≈ 58/66 (destiny2:495); Lage E wie die Automatik: an der Schrotflinte gerechnet Mündung 58,4/64,1 % (Haltung POSES['hip'] unverändert) |
+| Haltung `sprint` | Socket_Hand [-0.1, -0.34, -0.23], Ziel [1.2, -1.6, -0.55], Rollen -35° | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Schrotflinten-Sprint nicht gemessen (Motiongen destiny2:566) (Haltung POSES['sprint'] unverändert) |
+| Dauer `aim_in` | 5 Bilder bei 30/s (0.167 s) | M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25) |
+| Dauer `aim_out` | 3 Bilder bei 30/s (0.100 s) | M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25) |
+| Dauer `draw` | 17 Bilder bei 30/s (0.567 s) | M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25) |
+| Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
+| Hülsen | shotshell (50 × 19 mm) | E: Auswurffenster rechts im Oberen Gehäuse beim Zurückziehen der Pumpe, Hülse nach rechts, etwas hoch und vorn; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
+| Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
+| Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
+| Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |
+
+### Haltungen
+
+| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |
+|---|---|---|---|
+| `hip` | [-0.19, -0.42, -0.23] | nur in Aktionen geprüft | M Destiny-Schrotflinte Hüfte: Mündung FILO 57/63 (Motiongen huefte:54), ≈ 58/66 (destiny2:495); Lage E wie die Automatik: an der Schrotflinte gerechnet Mündung 58,4/64,1 % (Haltung POSES['hip'] unverändert) |
+| `ads` | [0.0, 0.0, 0.0] | nur in Aktionen geprüft | Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse |
+| `sprint` | [-0.1, -0.34, -0.23] | nur in Aktionen geprüft | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Schrotflinten-Sprint nicht gemessen (Motiongen destiny2:566) (Haltung POSES['sprint'] unverändert) |
+| `lowered` | [-0.17, -0.38, -0.25] | nur in Aktionen geprüft | E |
+| `crouch` | [-0.18, -0.41, -0.245] | nur in Aktionen geprüft | E (wie hip versetzt, 0.15 mit hip gesenkt) |
+| `air` | [-0.19, -0.42, -0.215] | nur in Aktionen geprüft | E (wie hip versetzt, 0.15 mit hip gesenkt) |
+| `holstered` | [-0.24, -0.25, -0.62] | nur in Aktionen geprüft | E (unter dem Bild) |
+| `reload` | [-0.09, -0.36, -0.16] | nur in Aktionen geprüft | E nach Destiny-Schrotflinte (Einzelladen, Motiongen nachladen:52/53): Waffe vor dem Körper nach rechts gerollt, Ladeklappe zeigt nach links unten zur Stützhand |
+| `inspect_l` | [-0.06, -0.36, -0.16] | nur in Aktionen geprüft | E (Ego-Seite zeigt zur Kamera) |
+| `inspect_r` | [-0.1, -0.36, -0.12] | nur in Aktionen geprüft | E (Oberseite und rechte Seite) |
+
+### Aktionen
+
+| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
+|---|---|---|---|---|---|---|---|
+| `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
+| `draw` | Ziehen | 17 (0.57 s) | Ready (12) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse shotgun: 25 → 17 Bilder (M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25)) |
+| `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
+| `aim_in` | Hüfte → Zielen | 5 (0.17 s) | Aimed (4) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse shotgun: 10 → 5 Bilder (M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25)) |
+| `aim_out` | Zielen → Hüfte | 3 (0.10 s) | Ready (3) | offen° | offen | offen | E; Klasse shotgun: 8 → 3 Bilder (M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25)) |
+| `fire_hip` | Dauerfeuer aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse shotgun: 80/min, Vorderschaftrepetierer (ein Schuss je Zug, danach Pumpe als Klassenaktion fire_cycle/fire_cycle_ads; Nachladen je Patrone reload_shell, ein Zug am Abzug bricht ab) (Schussbilder [2, 24]) |
+| `fire_ads` | Dauerfeuer im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse shotgun: 80/min, Vorderschaftrepetierer (ein Schuss je Zug, danach Pumpe als Klassenaktion fire_cycle/fire_cycle_ads; Nachladen je Patrone reload_shell, ein Zug am Abzug bricht ab) (Schussbilder [2, 24]) |
+| `reload_tactical` | Nachladen: Einstieg mit der ersten Patrone (Waffe kippen, Patrone holen, durch die Ladeklappe schieben) | 23 (0.77 s) | HandOff (2), ShellIn (19) | offen° | offen | offen | M Destiny-Schrotflinte Einzelladen: erste Patrone 0,57–0,60 s nach Beginn (Motiongen nachladen:109) → ShellIn bei 15 von 18 Bildern (× TIME_SCALE: 0,63 s); Ablauf E (Stützhand verlässt die Pumpe, holt die Patrone unter dem Bild, schiebt sie von unten durch die Ladeklappe); taktisch gegen leer nicht gemessen: ein Einstieg, nach leerem Beginn Pumpen am Ende |
+| `reload_empty` | Nachladen: Einstieg mit der ersten Patrone (Waffe kippen, Patrone holen, durch die Ladeklappe schieben), auch leer | 23 (0.77 s) | HandOff (2), ShellIn (19) | offen° | offen | offen | M Destiny-Schrotflinte Einzelladen: erste Patrone 0,57–0,60 s nach Beginn (Motiongen nachladen:109) → ShellIn bei 15 von 18 Bildern (× TIME_SCALE: 0,63 s); Ablauf E (Stützhand verlässt die Pumpe, holt die Patrone unter dem Bild, schiebt sie von unten durch die Ladeklappe); taktisch gegen leer nicht gemessen: ein Einstieg, nach leerem Beginn Pumpen am Ende |
+| `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante) |
+| `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
+| `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
+| `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
+| `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
+| `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
+| `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse shotgun: 80/min, Vorderschaftrepetierer (ein Schuss je Zug, danach Pumpe als Klassenaktion fire_cycle/fire_cycle_ads; Nachladen je Patrone reload_shell, ein Zug am Abzug bricht ab) (Schussbilder [7]) |
+| `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
+| `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
+| `fire_cycle` | Pumpen nach dem Schuss aus der Hüfte (Pumpe zurück, Hülse, vor) | 21 (0.70 s) | Eject (16), Chamber (20) | offen° | offen | offen | M Destiny-Schrotflinte: Pumpen vor dem zweiten Schuss, Hülse rechts 0,63 s nach dem Schuss (Motiongen destiny2:495) → Pumpe hinten bei Bild 16–17 (0,55 s), vorn bei 20, Ende 21 (0,70 s) vor dem nächsten Schuss (80/min = 0,75 s); Ablauf E (Stützhand auf der Pumpe, Waffe ruckt beim Zurückziehen leicht zurück) |
+| `fire_cycle_ads` | Pumpen nach dem Schuss im Zielen (Waffe bleibt im Anschlag) | 21 (0.70 s) | Eject (16), Chamber (20) | offen° | offen | offen | E wie fire_cycle, im Zielen ohne Kippen (Kimme und Korn bleiben vor dem Auge, nur ein kleiner Ruck zurück) |
+| `reload_shell` | Nachladen: eine weitere Patrone (Unity wiederholt bis voll) | 24 (0.80 s) | ShellIn (20) | offen° | offen | offen | M Destiny-Schrotflinte Einzelladen 0,617–0,633 s je Patrone (Hawthorne, Motiongen nachladen:52; Baligant 0,85–0,87, :53) → 19 Bilder (× TIME_SCALE 0,79 s); Ablauf E wie der Einstieg |
+| `reload_end` | Nachladen: zurück zur Hüfte (voll oder durch Feuer abgebrochen) | 10 (0.33 s) | HandOn (8), Ready (10) | offen° | offen | offen | E: Rückweg kurz (0,33 s), damit ein Zug am Abzug während des Nachladens bald schießt (Destiny bricht das Einzelladen mit Feuer ab, nicht gemessen) |
+| `reload_end_pump` | Nachladen nach leerem Beginn: zurück zur Hüfte und pumpen | 20 (0.67 s) | HandOn (8), Chamber (16), Ready (20) | offen° | offen | offen | M Destiny-Schrotflinte: einmal Repetieren am Ende des Einzelladens (Motiongen nachladen:109); Ablauf E wie fire_cycle |
+
+### Abdeckung der Matrixzeilen
+
+| Zeile | durch Aktion | Status |
+|---|---|---|
+| `pose_rest` | `idle_hip` | offen (nicht gesichtet) |
+| `pose_hip` | `idle_hip` | offen (nicht gesichtet) |
+| `draw` | `draw` | offen (nicht gesichtet) |
+| `ready` | `draw` | offen (nicht gesichtet) |
+| `holster` | `holster` | offen (nicht gesichtet) |
+| `pose_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_hip_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_aim_hip` | `aim_out` | offen (nicht gesichtet) |
+| `fire_auto` | `fire_ads` | offen (nicht gesichtet) |
+| `recoil_mech` | `fire_hip` | offen (nicht gesichtet) |
+| `recoil_camera` | `fire_hip` | offen (nicht gesichtet) |
+| `reload_partial` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_feed` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_empty` | `reload_empty` | offen (nicht gesichtet) |
+| `cycle` | `reload_empty` | offen (nicht gesichtet) |
+| `inspect` | `inspect` | offen (nicht gesichtet) |
+| `inspect_return` | `inspect` | offen (nicht gesichtet) |
+| `sprint_in` | `sprint` | offen (nicht gesichtet) |
+| `sprint_loop` | `sprint` | offen (nicht gesichtet) |
+| `sprint_out` | `sprint` | offen (nicht gesichtet) |
+| `pose_lowered` | `lowered` | offen (nicht gesichtet) |
+| `tr_lowered_return` | `lowered` | offen (nicht gesichtet) |
+| `move_walk` | `walk` | offen (nicht gesichtet) |
+| `sway` | `walk` | offen (nicht gesichtet) |
+| `crouch` | `crouch` | offen (nicht gesichtet) |
+| `jump_start` | `jump_land` | offen (nicht gesichtet) |
+| `air` | `jump_land` | offen (nicht gesichtet) |
+| `land` | `jump_land` | offen (nicht gesichtet) |
+| `tr_sprint_aim` | `sprint_to_aim` | offen (nicht gesichtet) |
+| `tr_sprint_fire` | `sprint_to_fire` | offen (nicht gesichtet) |
+| `tr_draw_aimheld` | `draw_aim` | offen (nicht gesichtet) |
+| `tr_reload_switch` | `reload_to_switch` | offen (nicht gesichtet) |
+| `switch` | `reload_to_switch` | offen (nicht gesichtet) |
+
+## BASIC-10-v2.1 – Glutkern v2.1 (fusion_rifle)
+
+### Klassen- und Spielwerte
+
+| Wert | Stand | Herkunft |
+|---|---|---|
+| Klasse | fusion_rifle | Ego-Übertrag 0.33 „Armory“ P3: Hüfte, Anflug, Aufladen und Nachladen nach Motiongen (Fusion), Sprint der Automatik, Nachladen der Bezugsklasse mit der Energiezelle (leer wie taktisch, kein Ladehebel) |
+| Kadenz | 60/min | S Cartesian Coordinate Laden 500 ms, Magazin 7 (Menü, Motiongen destiny2:254), gemessen 0,517 s (destiny2:499); Salve 5–6 Strahlen in 0,25 s → 6 Schuss im Abstand 0,05 s (1200/min); Takt gehalten 60/min E (Aufladen 0,5 + Salve 0,25 + Pause); Feuerart aus der Spec (Aufladen → Salve); Leuchten fällt in 0,3 s (Modul charge_fire: 9 Bilder); Bahnstufe 0,004 je Strahl E (Waffe ruhig, Mündung steigt über die Salve, destiny2:254/499), Kick 0,6 je Strahl E |
+| Magazin | 7 | S Cartesian Coordinate Laden 500 ms, Magazin 7 (Menü, Motiongen destiny2:254), gemessen 0,517 s (destiny2:499); Salve 5–6 Strahlen in 0,25 s → 6 Schuss im Abstand 0,05 s (1200/min); Takt gehalten 60/min E (Aufladen 0,5 + Salve 0,25 + Pause); Feuerart aus der Spec (Aufladen → Salve); Leuchten fällt in 0,3 s (Modul charge_fire: 9 Bilder); Bahnstufe 0,004 je Strahl E (Waffe ruhig, Mündung steigt über die Salve, destiny2:254/499), Kick 0,6 je Strahl E |
+| Feuerart | `charge_burst` – Aufladen → Salve (Abzug halten lädt in charge_s, bei voller Ladung burst_shots Schuss; Loslassen bricht ab; gehalten Zyklus um Zyklus im Takt rpm) | Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20) |
+| Weltzoom im Zielen | 1.8 | M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM) |
+| Hüft-Fadenkreuz | corners 4.5 % H | entworfen (4.1 A / 4.2 A, basic/reticles.py › HIP) |
+| Sprint-Fadenkreuz | aus | basic/reticles.py › HIP.sprint (4.1 A) |
+| Salve | 6 Schuss je Zug, 1200/min in der Salve (0.050 s), Salvenbeginn alle 6.000 s; gehalten Salve um Salve | Länge aus der Spec (META fire), Takt und Folge: S Cartesian Coordinate Laden 500 ms, Magazin 7 (Menü, Motiongen destiny2:254), gemessen 0,517 s (destiny2:499); Salve 5–6 Strahlen in 0,25 s → 6 Schuss im Abstand 0,05 s (1200/min); Takt gehalten 60/min E (Aufladen 0,5 + Salve 0,25 + Pause); Feuerart aus der Spec (Aufladen → Salve); Leuchten fällt in 0,3 s (Modul charge_fire: 9 Bilder); Bahnstufe 0,004 je Strahl E (Waffe ruhig, Mündung steigt über die Salve, destiny2:254/499), Kick 0,6 je Strahl E |
+| Bahnstufe je Schuss | 0.40 % H | S Cartesian Coordinate Laden 500 ms, Magazin 7 (Menü, Motiongen destiny2:254), gemessen 0,517 s (destiny2:499); Salve 5–6 Strahlen in 0,25 s → 6 Schuss im Abstand 0,05 s (1200/min); Takt gehalten 60/min E (Aufladen 0,5 + Salve 0,25 + Pause); Feuerart aus der Spec (Aufladen → Salve); Leuchten fällt in 0,3 s (Modul charge_fire: 9 Bilder); Bahnstufe 0,004 je Strahl E (Waffe ruhig, Mündung steigt über die Salve, destiny2:254/499), Kick 0,6 je Strahl E |
+| Haltung `hip` | Socket_Hand [-0.17, -0.42, -0.215], Ziel [0.1, -3.0, -0.25], Rollen 6° | M Destiny-Fusion Hüfte: Mündung 59/68 (Motiongen huefte:57), 58/66 (destiny2:499); Lage E, gerechnet Mündung 59,0/67,3 % (Automatik-Hüfte an der kurzen Fusion: 61,4/68,0), 2 cm weiter zur Mitte, 1,5 cm höher |
+| Haltung `sprint` | Socket_Hand [-0.1, -0.34, -0.23], Ziel [1.2, -1.6, -0.55], Rollen -35° | O Destiny-Fusion-Sprint „groß und tief“ nur beobachtet (Motiongen destiny2:568); E Trageform der Automatik nach 3.2 A (Entscheidungsliste) (Haltung POSES['sprint'] unverändert) |
+| Haltung `crouch` | Socket_Hand [-0.16, -0.41, -0.23], Rollen 9° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `air` | Socket_Hand [-0.17, -0.42, -0.2], Rollen 4° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `lowered` | Socket_Hand [-0.15, -0.38, -0.235], Rollen 10° | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| Dauer `aim_in` | 3 Bilder bei 30/s (0.100 s) | M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt |
+| Dauer `aim_out` | 2.4 Bilder bei 30/s (0.080 s) | M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt |
+| Dauer `reload_tactical` | 73 Bilder bei 30/s (2.433 s) | M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt |
+| Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
+| Hülsen | keine | Waffe ohne Feld EJECT |
+| Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
+| Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
+| Live-Teile | trigger = trigger, bolt = , port = , glow = ('ember_core', 'sight_emitter') | Modul-Feld EGO_LIVE |
+
+### Haltungen
+
+| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |
+|---|---|---|---|
+| `hip` | [-0.17, -0.42, -0.215] | nur in Aktionen geprüft | M Destiny-Fusion Hüfte: Mündung 59/68 (Motiongen huefte:57), 58/66 (destiny2:499); Lage E, gerechnet Mündung 59,0/67,3 % (Automatik-Hüfte an der kurzen Fusion: 61,4/68,0), 2 cm weiter zur Mitte, 1,5 cm höher |
+| `ads` | [0.0, 0.0, 0.0] | nur in Aktionen geprüft | Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse |
+| `sprint` | [-0.1, -0.34, -0.23] | nur in Aktionen geprüft | O Destiny-Fusion-Sprint „groß und tief“ nur beobachtet (Motiongen destiny2:568); E Trageform der Automatik nach 3.2 A (Entscheidungsliste) (Haltung POSES['sprint'] unverändert) |
+| `lowered` | [-0.15, -0.38, -0.235] | nur in Aktionen geprüft | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| `crouch` | [-0.16, -0.41, -0.23] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `air` | [-0.17, -0.42, -0.2] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `holstered` | [-0.24, -0.25, -0.62] | nur in Aktionen geprüft | E (unter dem Bild) |
+| `reload` | [-0.07, -0.34, -0.135] | nur in Aktionen geprüft | T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E) |
+| `inspect_l` | [-0.06, -0.36, -0.16] | nur in Aktionen geprüft | E (Ego-Seite zeigt zur Kamera) |
+| `inspect_r` | [-0.1, -0.36, -0.12] | nur in Aktionen geprüft | E (Oberseite und rechte Seite) |
+
+### Aktionen
+
+| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
+|---|---|---|---|---|---|---|---|
+| `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
+| `draw` | Ziehen | 25 (0.83 s) | Ready (18) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E |
+| `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
+| `aim_in` | Hüfte → Zielen | 3 (0.10 s) | Aimed (3) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse fusion_rifle: 10 → 3 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt) |
+| `aim_out` | Zielen → Hüfte | 3 (0.10 s) | Ready (2) | offen° | offen | offen | E; Klasse fusion_rifle: 8 → 2.4 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt) |
+| `fire_hip` | Aufladen und Salve aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse fusion_rifle: 60/min, Aufladen → Salve (Abzug halten lädt in charge_s, bei voller Ladung burst_shots Schuss; Loslassen bricht ab; gehalten Zyklus um Zyklus im Takt rpm) (Schussbilder [17, 18, 20, 21, 23, 24]) |
+| `fire_ads` | Aufladen und Salve im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse fusion_rifle: 60/min, Aufladen → Salve (Abzug halten lädt in charge_s, bei voller Ladung burst_shots Schuss; Loslassen bricht ab; gehalten Zyklus um Zyklus im Takt rpm) (Schussbilder [17, 18, 20, 21, 23, 24]) |
+| `reload_tactical` | Nachladen mit Restmunition | 73 (2.43 s) | HandOff (6), MagOut (14), MagIn (42), HandOn (56), Ready (67) | offen° | offen | offen | M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse fusion_rifle: 63 → 73 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt) |
+| `reload_empty` | Nachladen mit Restmunition, auch leer | 73 (2.43 s) | HandOff (6), MagOut (14), MagIn (42), HandOn (56), Ready (67) | offen° | offen | offen | M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse fusion_rifle: 63 → 73 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt) |
+| `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante) |
+| `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
+| `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
+| `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
+| `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
+| `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
+| `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse fusion_rifle: 60/min, Aufladen → Salve (Abzug halten lädt in charge_s, bei voller Ladung burst_shots Schuss; Loslassen bricht ab; gehalten Zyklus um Zyklus im Takt rpm) (Schussbilder [22, 23, 25]) |
+| `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
+| `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
+
+### Abdeckung der Matrixzeilen
+
+| Zeile | durch Aktion | Status |
+|---|---|---|
+| `pose_rest` | `idle_hip` | offen (nicht gesichtet) |
+| `pose_hip` | `idle_hip` | offen (nicht gesichtet) |
+| `draw` | `draw` | offen (nicht gesichtet) |
+| `ready` | `draw` | offen (nicht gesichtet) |
+| `holster` | `holster` | offen (nicht gesichtet) |
+| `pose_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_hip_aim` | `aim_in` | offen (nicht gesichtet) |
+| `tr_aim_hip` | `aim_out` | offen (nicht gesichtet) |
+| `fire_auto` | `fire_ads` | offen (nicht gesichtet) |
+| `recoil_mech` | `fire_hip` | offen (nicht gesichtet) |
+| `recoil_camera` | `fire_hip` | offen (nicht gesichtet) |
+| `reload_partial` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_feed` | `reload_tactical` | offen (nicht gesichtet) |
+| `reload_empty` | `reload_empty` | offen (nicht gesichtet) |
+| `cycle` | `reload_empty` | offen (nicht gesichtet) |
+| `inspect` | `inspect` | offen (nicht gesichtet) |
+| `inspect_return` | `inspect` | offen (nicht gesichtet) |
+| `sprint_in` | `sprint` | offen (nicht gesichtet) |
+| `sprint_loop` | `sprint` | offen (nicht gesichtet) |
+| `sprint_out` | `sprint` | offen (nicht gesichtet) |
+| `pose_lowered` | `lowered` | offen (nicht gesichtet) |
+| `tr_lowered_return` | `lowered` | offen (nicht gesichtet) |
+| `move_walk` | `walk` | offen (nicht gesichtet) |
+| `sway` | `walk` | offen (nicht gesichtet) |
+| `crouch` | `crouch` | offen (nicht gesichtet) |
+| `jump_start` | `jump_land` | offen (nicht gesichtet) |
+| `air` | `jump_land` | offen (nicht gesichtet) |
+| `land` | `jump_land` | offen (nicht gesichtet) |
+| `tr_sprint_aim` | `sprint_to_aim` | offen (nicht gesichtet) |
+| `tr_sprint_fire` | `sprint_to_fire` | offen (nicht gesichtet) |
+| `tr_draw_aimheld` | `draw_aim` | offen (nicht gesichtet) |
+| `tr_reload_switch` | `reload_to_switch` | offen (nicht gesichtet) |
+| `switch` | `reload_to_switch` | offen (nicht gesichtet) |
+
+## BASIC-11-v2.1 – Schienenlicht v2.1 (linear_fusion_rifle)
+
+### Klassen- und Spielwerte
+
+| Wert | Stand | Herkunft |
+|---|---|---|
+| Klasse | linear_fusion_rifle | Ego-Übertrag 0.33 „Armory“ P3: Hüfte, Anflug, Ziehen, Aufladen und Nachladen nach Motiongen (lineare Fusion), Sprint der Automatik, Nachladen der Bezugsklasse mit der Energiezelle |
+| Kadenz | 60/min | S Laden 563 ms, Magazin 5 (Menü, Motiongen destiny2:274), sichtbar 20 Bilder bei 60/s [M]; Takt gehalten 60/min E; Feuerart aus der Spec (Aufladen → Einzelschuss); Leuchten fällt in 0,2 s (Modul charge_fire: 6 Bilder); Bahnstufe 0,065 M: 6,5 pp H je Schuss (rueckstoss:111), Erholung langsam wie der Scharfschütze E; Kick 3,0 E |
+| Magazin | 5 | S Laden 563 ms, Magazin 5 (Menü, Motiongen destiny2:274), sichtbar 20 Bilder bei 60/s [M]; Takt gehalten 60/min E; Feuerart aus der Spec (Aufladen → Einzelschuss); Leuchten fällt in 0,2 s (Modul charge_fire: 6 Bilder); Bahnstufe 0,065 M: 6,5 pp H je Schuss (rueckstoss:111), Erholung langsam wie der Scharfschütze E; Kick 3,0 E |
+| Feuerart | `charge_single` – Aufladen → Einzelschuss (wie charge_burst mit einem Schuss) | Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20) |
+| Weltzoom im Zielen | 3.8 | M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM) |
+| Hüft-Fadenkreuz | cross 4.5 % H | entworfen (4.1 A / 4.2 A, basic/reticles.py › HIP) |
+| Sprint-Fadenkreuz | aus | basic/reticles.py › HIP.sprint (4.1 A) |
+| Bahnstufe je Schuss | 6.50 % H | S Laden 563 ms, Magazin 5 (Menü, Motiongen destiny2:274), sichtbar 20 Bilder bei 60/s [M]; Takt gehalten 60/min E; Feuerart aus der Spec (Aufladen → Einzelschuss); Leuchten fällt in 0,2 s (Modul charge_fire: 6 Bilder); Bahnstufe 0,065 M: 6,5 pp H je Schuss (rueckstoss:111), Erholung langsam wie der Scharfschütze E; Kick 3,0 E |
+| Haltung `hip` | Socket_Hand [-0.19, -0.42, -0.23], Ziel [-0.02, -3.0, -0.36], Rollen 6° | M Destiny-lineare-Fusion Hüfte: Mündung 58/69 (Motiongen huefte:69), 58/68 (huefte:70), 59/56 (destiny2:511); Lage E wie die Automatik, Lauf 3° tiefer und leicht nach außen (lange Waffe: Automatik-Hüfte trifft 56,9/63,2), gerechnet Mündung 57,5/67,6 % |
+| Haltung `sprint` | Socket_Hand [-0.1, -0.34, -0.23], Ziel [1.2, -1.6, -0.55], Rollen -35° | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-lineare-Fusion-Sprint nicht gemessen (Motiongen destiny2:569) (Haltung POSES['sprint'] unverändert) |
+| Haltung `crouch` | Socket_Hand [-0.18, -0.41, -0.245], Rollen 9° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `air` | Socket_Hand [-0.19, -0.42, -0.215], Rollen 4° | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| Haltung `lowered` | Socket_Hand [-0.17, -0.38, -0.25], Rollen 10° | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| Dauer `aim_in` | 7 Bilder bei 30/s (0.233 s) | M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste) |
+| Dauer `aim_out` | 10 Bilder bei 30/s (0.333 s) | M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste) |
+| Dauer `draw` | 24 Bilder bei 30/s (0.800 s) | M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste) |
+| Dauer `reload_tactical` | 99 Bilder bei 30/s (3.300 s) | M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste) |
+| Zielfernrohr im Zielen | aus: scope_strap, scope_tube, scope_eyepiece, scope_eye_trim, scope_ocular_glass, scope_turret, scope_turret_w (Socket_Eye < 60 mm) | E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, Entscheidungsliste 1d) |
+| Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
+| Hülsen | keine | Waffe ohne Feld EJECT |
+| Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
+| Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
+| Live-Teile | trigger = trigger, bolt = , port = , glow = ('linear_core',) | Modul-Feld EGO_LIVE |
+
+### Haltungen
+
+| Haltung | Socket_Hand (m) | Handgelenk max | Herkunft |
+|---|---|---|---|
+| `hip` | [-0.19, -0.42, -0.23] | nur in Aktionen geprüft | M Destiny-lineare-Fusion Hüfte: Mündung 58/69 (Motiongen huefte:69), 58/68 (huefte:70), 59/56 (destiny2:511); Lage E wie die Automatik, Lauf 3° tiefer und leicht nach außen (lange Waffe: Automatik-Hüfte trifft 56,9/63,2), gerechnet Mündung 57,5/67,6 % |
+| `ads` | [0.0, 0.0, 0.0] | nur in Aktionen geprüft | Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse |
+| `sprint` | [-0.1, -0.34, -0.23] | nur in Aktionen geprüft | E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-lineare-Fusion-Sprint nicht gemessen (Motiongen destiny2:569) (Haltung POSES['sprint'] unverändert) |
+| `lowered` | [-0.17, -0.38, -0.25] | nur in Aktionen geprüft | wie E, an der Klassen-Hüfte (FOLLOW_HIP) |
+| `crouch` | [-0.18, -0.41, -0.245] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `air` | [-0.19, -0.42, -0.215] | nur in Aktionen geprüft | wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP) |
+| `holstered` | [-0.24, -0.25, -0.62] | nur in Aktionen geprüft | E (unter dem Bild) |
+| `reload` | [-0.07, -0.34, -0.135] | nur in Aktionen geprüft | T Reload roll −20/pitch 12, für Destiny-Anmutung verstärkt (E) |
+| `inspect_l` | [-0.06, -0.36, -0.16] | nur in Aktionen geprüft | E (Ego-Seite zeigt zur Kamera) |
+| `inspect_r` | [-0.1, -0.36, -0.12] | nur in Aktionen geprüft | E (Oberseite und rechte Seite) |
+
+### Aktionen
+
+| Aktion | Beschreibung | Bilder | Marker (Bild) | Handgelenk max | Clip | Sichtung | Herkunft |
+|---|---|---|---|---|---|---|---|
+| `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
+| `draw` | Ziehen | 24 (0.80 s) | Ready (17) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse linear_fusion_rifle: 25 → 24 Bilder (M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste)) |
+| `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
+| `aim_in` | Hüfte → Zielen | 7 (0.23 s) | Aimed (6) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse linear_fusion_rifle: 10 → 7 Bilder (M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste)) |
+| `aim_out` | Zielen → Hüfte | 10 (0.33 s) | Ready (10) | offen° | offen | offen | E; Klasse linear_fusion_rifle: 8 → 10 Bilder (M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste)) |
+| `fire_hip` | Aufladen und Schuss aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse linear_fusion_rifle: 60/min, Aufladen → Einzelschuss (wie charge_burst mit einem Schuss) (Schussbilder [18]) |
+| `fire_ads` | Aufladen und Schuss im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse linear_fusion_rifle: 60/min, Aufladen → Einzelschuss (wie charge_burst mit einem Schuss) (Schussbilder [18]) |
+| `reload_tactical` | Nachladen mit Restmunition | 99 (3.30 s) | HandOff (8), MagOut (19), MagIn (57), HandOn (75), Ready (91) | offen° | offen | offen | M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse linear_fusion_rifle: 63 → 99 Bilder (M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste)) |
+| `reload_empty` | Nachladen mit Restmunition, auch leer | 99 (3.30 s) | HandOff (8), MagOut (19), MagIn (57), HandOn (75), Ready (91) | offen° | offen | offen | M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse linear_fusion_rifle: 63 → 99 Bilder (M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s (destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig 3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach 2,4 statt 3,3 s (Entscheidungsliste)) |
+| `inspect` | Betrachten | 120 (4.00 s) | Start (20), End (118) | offen° | offen | offen | E nach Apex/CoD-Muster (Ego-Seite, dann Oberseite); Destiny hat keinen Ego-Inspect |
+| `sprint` | Sprint: Beginn, Schleife, Ende | 60 (2.00 s) | SprintLoop (10), Ready (60) | offen° | offen | offen | E (CE: Waffe senkt sich und rollt zur Mitte); period = Doppelschritt (seitlich), vertikal je Schritt: 19 Bilder = 0,633 s → 3,16 Schritte/s, seitlich 1,58 Hz, Rollen ±3,5°, U-Bogen (oben an den Seitenumkehren) nach Motiongen REF 0.23 (Destiny 2, Automatik/Handfeuerwaffe gemessen). 0.9: 10 Bilder = 6 Schritte/s („tapsig“). 0.15: Hub 12/10 → 22/18 mm (seitlich/vertikal) für ≈ 10 % H / 13 % B im Bild wie die Destiny-Automatik (Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante) |
+| `lowered` | Gesenkte Haltung / Wandnähe | 45 (1.50 s) | Lowered (10), Ready (45) | offen° | offen | offen | E |
+| `walk` | Gehen (liegende Acht) | 60 (2.00 s) | – | offen° | offen | offen | E (CE: liegende Acht) |
+| `crouch` | Ducken | 30 (1.00 s) | Crouched (10) | offen° | offen | offen | E |
+| `jump_land` | Sprung, Luftphase, Landung | 50 (1.67 s) | Air (10), Land (35) | offen° | offen | offen | E (CE: Anheben, Landefeder) |
+| `sprint_to_aim` | Sprint → Zielen | 18 (0.60 s) | SprintOut (0), Aimed (12) | offen° | offen | offen | E (CE: ADS > Sprint) |
+| `sprint_to_fire` | Sprint → Feuer | 26 (0.87 s) | SprintOut (0), Fire (7) | offen° | offen | offen | E (CE: Fire > Sprint); Klasse linear_fusion_rifle: 60/min, Aufladen → Einzelschuss (wie charge_burst mit einem Schuss) (Schussbilder [23]) |
 | `draw_aim` | Ziehen bei gehaltenem Zielen | 35 (1.17 s) | Ready (18), Aimed (30) | offen° | offen | offen | E (CE: Draw nicht unterbrechbar, ADS danach) |
 | `reload_to_switch` | Nachladen → Waffenwechsel (Abbruch) | 38 (1.27 s) | HandOff (5), Cancel (18), Holstered (35) | offen° | offen | offen | E (CE: Reload bricht bei Wechsel ab, Holster ab aktueller Stellung) |
 

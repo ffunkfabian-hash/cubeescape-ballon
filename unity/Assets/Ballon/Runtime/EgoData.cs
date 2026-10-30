@@ -27,14 +27,22 @@ namespace Ballon.Ego
         public float ring_turn_s;                       // 10: Dauer der Ringdrehung je Schuss (Werkzeug)
         public EgoPortal[] portals;                     // 10: Portale des Werkzeugs (Taste, Rolle, Farbe, Ringrichtung); leer = Waffe
         public float range_m;                           // 10: Reichweite der Portalschüsse (Werkzeug); 0 = Waffe
+        public float charge_s, charge_fade_s;           // 10 (0.33 P3): Aufladen bis zum Schuss und Abklingen der Ladung (Ladewaffe); 0 = ohne
 
         /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto, Werkzeug single, Repetierer bolt_action; ego.SEMI_MODES).</summary>
-        public bool Semi => fire_mode == "semi_auto" || fire_mode == "single" || BoltAction;
+        public bool Semi => fire_mode == "semi_auto" || fire_mode == "single" || Cycles;
         /// <summary>Repetierer (0.33, bolt_action): nach jedem Schuss mit Restmunition die Klassenaktion fire_cycle (im Zielen fire_cycle_ads).</summary>
         public bool BoltAction => fire_mode == "bolt_action";
+        /// <summary>Vorderschaftrepetierer (0.33 P3, pump_action): wie der Repetierer, die Klassenaktion fire_cycle pumpt.</summary>
+        public bool Pump => fire_mode == "pump_action";
+        /// <summary>Nach jedem Schuss mit Restmunition die Klassenaktion fire_cycle (Repetierer, Pumpe); die Hülse fliegt beim Marker Eject.</summary>
+        public bool Cycles => BoltAction || Pump;
+        /// <summary>Ladewaffe (0.33 P3, charge_burst/charge_single, ego.CHARGE_MODES): Abzug halten lädt in charge_s, bei voller Ladung
+        /// schießt sie (Salve oder ein Schuss); Loslassen vorher bricht ab. Leuchtteile weapon.live.glow folgen der Ladung.</summary>
+        public bool Charge => fire_mode == "charge_burst" || fire_mode == "charge_single";
         /// <summary>Dauerstrahl (0.33, continuous_beam): Dauerfeuer, Leuchtteile weapon.live.glow an, solange der Abzug zieht.</summary>
         public bool Beam => fire_mode == "continuous_beam";
-        /// <summary>Salvenwaffe: burst_shots Schuss je Zug, gehalten Salve um Salve (Feuerart burst).</summary>
+        /// <summary>Salvenwaffe: burst_shots Schuss je Zug, gehalten Salve um Salve (Feuerart burst; Ladewaffe charge_burst je Ladung).</summary>
         public bool Burst => burst_shots > 0;
         /// <summary>Ohne Magazin (Werkzeug): unbegrenzt, kein Nachladen.</summary>
         public bool Unlimited => magazine <= 0;
@@ -310,7 +318,9 @@ namespace Ballon.Ego
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({fmt})");
                 if (fmt == Format && ((f.gameplay.kick <= 0 && !f.gameplay.Beam) || f.gameplay.recover_hz <= 0))   // Dauerstrahl (0.33): Kick 0
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.kick oder recover_hz ({Format})");
-                if (fmt == Format && f.gameplay.Burst != (f.gameplay.fire_mode == "burst"))
+                if (fmt == Format && f.gameplay.Charge != (f.gameplay.charge_s > 0))
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu charge_s {f.gameplay.charge_s}");
+                if (fmt == Format && f.gameplay.Burst != (f.gameplay.fire_mode == "burst" || f.gameplay.fire_mode == "charge_burst"))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu burst_shots {f.gameplay.burst_shots}");
                 if (fmt == Format8) Migrate9(f);
                 if (fmt != Format) Migrate10(f);
@@ -425,6 +435,9 @@ namespace Ballon.Ego
         /// <summary>Bauteil, das das Nachladen trägt oder fallen lässt (carry/drop): das Teil des Griffs 'mag' (Magazin, Energiezelle; 0.33),
         /// ohne Griff 'magazine' – wie ego.profile › mag.</summary>
         public string MagPart => _grips.TryGetValue("mag", out var g) && !string.IsNullOrEmpty(g.part) ? g.part : "magazine";
+        /// <summary>Nachladen je Patrone (0.33 P3, Schrotflinte): reload_tactical/reload_empty laden die erste, reload_shell je eine weitere
+        /// (Marker ShellIn), reload_end bzw. reload_end_pump (nach leerem Beginn) führen zurück.</summary>
+        public bool ShellReload => _actions.ContainsKey("reload_shell");
         /// <summary>Waffe mit Nachladen (Magazin); das Werkzeug hat keins (0.22).</summary>
         public bool CanReload => _actions.ContainsKey("reload_tactical") && !gameplay.Unlimited;
         public EgoRole Role(string n) => Array.Find(roles, r => r.role == n) ?? throw new KeyError("Materialrolle", n);

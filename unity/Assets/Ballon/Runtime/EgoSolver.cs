@@ -18,7 +18,7 @@ namespace Ballon.Ego
         public float camPitch;
         public float trigger, bolt, port;   // Mechanik beim Feuern, < 0 = aus der Aktion
         public float ring;                  // 0.22: Ringdrehung des Werkzeugs in Dritteln (live), NaN = aus der Aktion
-        public float glow;                  // 0.33: Leuchtteile weapon.live.glow (Dauerstrahl) 0 … 1, < 0 = aus der Aktion
+        public float glow;                  // 0.33: Leuchtteile weapon.live.glow (Dauerstrahl, Ladung) 0 … 1, < 0 = aus der Aktion
 
         public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN, glow = -1 };
     }
@@ -386,8 +386,11 @@ namespace Ballon.Ego
                 L.camPitch = st.recCx.x;
                 L.pos += R.MultiplyVector(new Vector3(0, st.recX.x, 0));
                 L.rot = L.rot * RotX(Rad(-(st.recX.y + climb)));          // Mündung steigt
-                L.trigger = TriggerOn(A.fire, f, D.gameplay.Semi) ? 1 : 0;
-                if (D.gameplay.Beam) L.glow = L.trigger;                   // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
+                var G = D.gameplay;
+                float chargeF = G.Charge ? G.charge_s * fps : 0;           // Ladewaffe (0.33 P3): Abzug ab dem Aufladen
+                L.trigger = TriggerOn(A.fire, f, G.Semi, chargeF) ? 1 : 0;
+                if (G.Beam) L.glow = L.trigger;                            // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
+                if (G.Charge) L.glow = ChargeLevel(A.fire, f, chargeF, Mathf.Max(1, G.burst_shots), G.charge_fade_s * fps);
                 L.bolt = (n > 0 && f - last < 1.5f) ? 1 : 0;
                 L.port = n > 0 ? 1 : 0;
             }
@@ -395,13 +398,29 @@ namespace Ballon.Ego
         }
 
         /// <summary>ego.trigger_on: Dauerfeuer vom Bild vor dem ersten bis nach dem letzten Schuss gezogen; Einzelfeuer (0.20) je Schuss ein
-        /// Bild davor bis ein Bild danach.</summary>
-        public static bool TriggerOn(int[] fire, float f, bool semi)
+        /// Bild davor bis ein Bild danach; lead (0.33 P3, Ladewaffe): schon lead Bilder vor dem ersten Schuss (Aufladen).</summary>
+        public static bool TriggerOn(int[] fire, float f, bool semi, float lead = 0)
         {
             if (fire == null || fire.Length == 0) return false;
-            if (!semi) return fire[0] - 1 <= f && f <= fire[fire.Length - 1] + 1;
+            if (!semi) return fire[0] - 1 - lead <= f && f <= fire[fire.Length - 1] + 1;
             foreach (var s in fire) if (s - 1 <= f && f <= s + 1) return true;
             return false;
+        }
+
+        /// <summary>ego.charge_level (0.33 P3): Ladung 0 … 1 im Bild f einer Feueraktion – je Zyklus aus n Schuss linear in chargeF Bildern
+        /// vor dem ersten Schuss auf 1, bis zum letzten Schuss gehalten, danach in fadeF Bildern auf 0.</summary>
+        public static float ChargeLevel(int[] fire, float f, float chargeF, int n, float fadeF)
+        {
+            float lv = 0;
+            if (fire == null) return 0;
+            for (int g = 0; g < fire.Length; g += n)
+            {
+                float s0 = fire[g], s1 = fire[Mathf.Min(g + n, fire.Length) - 1];
+                if (s0 - chargeF <= f && f < s0) lv = Mathf.Max(lv, (f - (s0 - chargeF)) / chargeF);
+                else if (s0 <= f && f <= s1) lv = 1;
+                else if (f > s1) lv = Mathf.Max(lv, 1 - (f - s1) / fadeF);
+            }
+            return Mathf.Clamp01(lv);
         }
 
         public static Matrix4x4 Apply(Matrix4x4 baseW, Layers L)
@@ -420,7 +439,7 @@ namespace Ballon.Ego
             if (L.bolt >= 0 && !string.IsNullOrEmpty(live.bolt)) mech[live.bolt] = L.bolt;      // Werkzeug (0.22): ohne Verschluss
             if (L.port >= 0 && !string.IsNullOrEmpty(live.port)) mech[live.port] = L.port;      // und ohne Auswurfklappe
             if (!float.IsNaN(L.ring) && !string.IsNullOrEmpty(live.ring)) mech[live.ring] = L.ring;
-            if (L.glow >= 0 && live.glow != null) foreach (var g in live.glow) mech[g] = L.glow;   // Dauerstrahl (0.33)
+            if (L.glow >= 0 && live.glow != null) foreach (var g in live.glow) mech[g] = L.glow;   // Dauerstrahl, Ladewaffe (0.33)
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));

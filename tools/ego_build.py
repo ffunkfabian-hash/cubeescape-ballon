@@ -646,9 +646,12 @@ def evaluate(sc, A, f, report, state):
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
-        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in EG.SEMI_MODES) else 0.0   # je Schuss
-        for g in live.get('glow', ()):       # Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
-            mech[g] = mech[live['trigger']]
+        G = sc.P['gameplay']
+        charge_f = G['charge_s'] * EG.FPS if sc.P['fire_mode'] in EG.CHARGE_MODES else 0.0   # Ladewaffe (0.33): Abzug ab dem Aufladen
+        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in EG.SEMI_MODES, lead=charge_f) else 0.0   # je Schuss
+        for g in live.get('glow', ()):       # Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht; Ladewaffe: mit der Ladung
+            mech[g] = EG.charge_level(A['fire'], f, charge_f, G.get('burst_shots') or 1, G['charge_fade_s'] * EG.FPS) if charge_f \
+                else mech[live['trigger']]
         if live.get('bolt'):                 # Werkzeug (0.22): ohne Verschluss und Auswurfklappe
             mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         if live.get('port'):

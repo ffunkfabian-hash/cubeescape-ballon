@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &1856072828
+--- !u!1 &1220876880
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,8 +127,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1856072830}
-  - component: {fileID: 1856072829}
+  - component: {fileID: 1220876882}
+  - component: {fileID: 1220876881}
   m_Layer: 0
   m_Name: Firstfeel
   m_TagString: Untagged
@@ -136,13 +136,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1856072829
+--- !u!114 &1220876881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1856072828}
+  m_GameObject: {fileID: 1220876880}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20087572eab344f5aaf16962429f0fb2, type: 3}
@@ -239,11 +239,24 @@ MonoBehaviour:
     model: {fileID: 919132149155446097, guid: 11e85ebdad049408d9ff807804531ccd, type: 3}
     skins:
     - {fileID: 2100000, guid: de5391aab25cb4dd2bff77efe4f665a5, type: 2}
+  - id: BASIC-08-v2.1
+    model: {fileID: 919132149155446097, guid: a6e75bcafc0df4ed480cd2f3532c51dd, type: 3}
+    skins:
+    - {fileID: 2100000, guid: fc85b4d1fbb24499d9b883c1a2735951, type: 2}
+  - id: BASIC-10-v2.1
+    model: {fileID: 919132149155446097, guid: 2a4711f17143a4223961f5f7fa5c682f, type: 3}
+    skins:
+    - {fileID: 2100000, guid: 813f3e9860a834807baaf13e65e83780, type: 2}
+  - id: BASIC-11-v2.1
+    model: {fileID: 919132149155446097, guid: efc5eb8140c84431b891d5eefdaaca99, type: 3}
+    skins:
+    - {fileID: 2100000, guid: 743fbb16cf45944b1897fbb85eedf45c, type: 2}
   armsModel: {fileID: 919132149155446097, guid: ed215fdff824f411ea141b6ed2ab98dc, type: 3}
   roleMaterials:
   - {fileID: 2100000, guid: a172a24196305411e9f5239c9b3f0201, type: 2}
   - {fileID: 2100000, guid: 45a0c48e9919d4a228df4a82e5197e76, type: 2}
   - {fileID: 2100000, guid: 3a4b8b672978941b2a8ed324989b2101, type: 2}
+  - {fileID: 2100000, guid: 950f3e7ff5fd740369340edf793b7a86, type: 2}
   - {fileID: 2100000, guid: 5f6329ece4d434a9fa56fee798d6111b, type: 2}
   - {fileID: 2100000, guid: 37a060638dd034b9c8155b33d830804a, type: 2}
   - {fileID: 2100000, guid: 133b5e0d52067431ebab2f7623d6ed67, type: 2}
@@ -271,6 +284,9 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4be79a3b739624391a0d34141ad407e1, type: 2}
   - {fileID: 2100000, guid: 3620ee9ec07a841b8a5f72d241d0d645, type: 2}
   - {fileID: 2100000, guid: de5391aab25cb4dd2bff77efe4f665a5, type: 2}
+  - {fileID: 2100000, guid: fc85b4d1fbb24499d9b883c1a2735951, type: 2}
+  - {fileID: 2100000, guid: 813f3e9860a834807baaf13e65e83780, type: 2}
+  - {fileID: 2100000, guid: 743fbb16cf45944b1897fbb85eedf45c, type: 2}
   - {fileID: 2100000, guid: 3418d0ce8da304a5681757f5aaead8d0, type: 2}
   floor: {fileID: 2100000, guid: b44f720d190414eb3a6768efdb6a2adc, type: 2}
   wall: {fileID: 2100000, guid: d85ea14dc90504d5db37c6262004a0fb, type: 2}
@@ -305,13 +321,13 @@ MonoBehaviour:
     - {fileID: 2800000, guid: 4fc9c5c947a214967811e8dad1f1ae77, type: 3}
     - {fileID: 2800000, guid: d9de11eaaf87e42fd8ffe8827696a1e6, type: 3}
     - {fileID: 2800000, guid: 4701c9673dd3f4bae917834a1c9c2c21, type: 3}
---- !u!4 &1856072830
+--- !u!4 &1220876882
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1856072828}
+  m_GameObject: {fileID: 1220876880}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -324,4 +340,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1856072830}
+  - {fileID: 1220876882}

@@ -1,7 +1,10 @@
-# Übergabe 0.33 „Armory“ – nach P2
+# Übergabe 0.33 „Armory“ – nach P3
 
-Stand: Branch `claude/ballon-0.33-armory` (Basis `main` d0c7b8c, 0.32 „Softgrip“). Die erste Sitzung (Opus 5.5, high) hat P1
-erledigt und übergibt hier an eine **frische Sitzung ohne Verlauf** (globale Regel: Übergabe am Etappenende, keine Fork-Übergabe).
+Stand: Branch `claude/ballon-0.33-armory` (Basis `main` d0c7b8c, 0.32 „Softgrip“). P1 (erste Sitzung), P2 (zweite) und P3 (Sitzung
+„BALLON 0.33 „Armory“ · Teil 3“, Opus 5.5, high) sind erledigt; Übergabe an eine **frische Sitzung ohne Verlauf** (globale Regel: Übergabe
+am Etappenende, keine Fork-Übergabe). Der Branch ist in den Worktrees von Teil 2 (`unruffled-khayyam-b36461`) und Teil 3 ausgecheckt bzw.
+verfolgt: im eigenen Worktree einen lokalen Branch auf `origin/claude/ballon-0.33-armory` anlegen (`git switch -c <name> --track …`) und
+mit `git push origin HEAD:claude/ballon-0.33-armory` pushen. `unity/Library` per `cp -cR` aus dem Worktree von Teil 3 klonen.
 Auftrag unverändert wie in der Zielsitzung 0.33 „Armory“ (Sightline, 30.10.2026); diese Datei ersetzt den Verlauf.
 
 ## Erledigt (P1)
@@ -28,6 +31,15 @@ Auftrag unverändert wie in der Zielsitzung 0.33 „Armory“ (Sightline, 30.10.
 - Bauteil des Nachladens aus dem Griff `mag` (`ego.profile › mag`, Unity `EgoFile.MagPart`) statt fest `magazine`.
 - **Skins nur bei Bedarf** (`export_unity.SKIN_WEAPONS`, Hebel 1 unten): P2-Waffen haben nur den Standard-Atlas.
 
+## Erledigt (P3)
+
+- **Klassen 08 Schrotflinte, 10 Fusion, 11 lineare Fusion** spielbar (noch ohne Taste: Waffe 11–13, mit Q erreichbar; das Waffenmenü in
+  Ziel 2 wählt sie). Neue Feuerarten: `pump_action` (Pumpe als `fire_cycle` wie der Repetierer, Unity `EgoGameplay.Cycles`; Einzelladen
+  `reload_shell` mit Marker `ShellIn`, Abbruch durch einen Zug am Abzug, `reload_end`/`reload_end_pump`, Unity `EgoFile.ShellReload`),
+  `charge_burst`/`charge_single` (Unity `EgoGameplay.Charge`, `gameplay.charge_s`/`charge_fade_s`, Leuchtteile mit der Ladung,
+  `ego.charge_level` = `EgoSolver.ChargeLevel`).
+- Hülsenform `shotshell` in `ego.EJECT.cases`; `CHARGE_ROLES` im Export registriert (wie `PORTAL_ROLES`).
+
 Ergebnisse, Messungen und Repo-Größe stehen im Versionsbericht [versions/0.33-armory.md](versions/0.33-armory.md).
 
 ## Rest des Auftrags
@@ -38,7 +50,7 @@ Bericht nennen.
 Reihenfolge mit Stopp und Postfach-Meldung (Nexogen #16) nach jedem Paket:
 
 - ~~P2 09 Scharfschütze, 12 Spur, 15 MG~~ erledigt
-- **P3 08 Schrotflinte, 10 Fusion, 11 lineare Fusion**
+- ~~P3 08 Schrotflinte, 10 Fusion, 11 lineare Fusion~~ erledigt
 - **P4 07 Bogen, 13 Granatwerfer, 14 Raketenwerfer**
 - **Ziel 2 HUD und Waffenmenü** (Symbole per ImageMagick aus `data/silhouettes.json`, HUD ohne Speicher je Bild, Menü Tab/Mausrad,
   Pfeile/Enter/Esc, Auswahl löst holster → draw aus, Nachladen bricht ab wie `reload_to_switch`; Sichtprüfung 1470 × 956)
@@ -69,13 +81,20 @@ Spielart haben:
 | 15 MG | `full_auto_belt` | `FIRE_ALIAS` → `full_auto`; Nachladen als Klassenaktion (Deckel `feed_cover`, Kasten `ammo_box`, Gurt) |
 | 09 Scharfschütze | `bolt_action` | Einzelfeuer mit Repetieraktion nach jedem Schuss (`bolt_handle`/`bolt`), Kammerstängel links (LESSONS) |
 | 12 Spur | `continuous_beam` | Dauerfeuer mit 1000/min ohne Blitz/Hülse, Strahl als Leuchtteil (`disc_lens`, `focus_lens` glow) |
-| 08 Schrot | `pump_action` | Einzelfeuer + Pumpaktion; Nachladen je Patrone (`load_shell`, `shell_round`), abbrechbar durch Feuer |
-| 10 Fusion | `charge_burst` | Aufladen (Feuer halten, `charge` glow) → Salve 5–6 Strahlen in 0,25 s |
-| 11 lineare Fusion | `charge_single` | Aufladen → ein Schuss |
+| 08 Schrot | `pump_action` | erledigt (P3) |
+| 10 Fusion | `charge_burst` | erledigt (P3) |
+| 11 lineare Fusion | `charge_single` | erledigt (P3) |
 | 07 Bogen | `draw_release` | Spannen (Feuer halten), Halten, Lösen; kein Magazin (Vorrat), kein Blitz; `let_down` beim Abbrechen |
 | 13/14 Werfer | `single_shot` | Einzelschuss, Magazin 1, Nachladen nach jedem Schuss als Klassenaktion |
 
-Unity-Stellen: `EgoData.Semi`/`BoltAction`/`Beam`, `EgoController` (Feuerlogik, `MagIn` füllt das Magazin, `CanReload`, `Cycle()` nach dem
+Muster aus P3 für P4: der Bogen braucht einen Zustand „Feuer gehalten“ wie das Aufladen (`EgoController.UpdateCharge`: Spannen = Laden,
+Lösen beim Loslassen statt bei voller Ladung, `let_down` beim Abbrechen); die Werfer mit Magazin 1 können das Einzelladen nicht nutzen
+(nach jedem Schuss Nachladen als Klassenaktion `reload_tactical`, `same_reload`). `export_unity.GAMEPLAY_DEFAULTS` nimmt neue Spielwerte auf
+(Unity-Feld in `EgoGameplay`, `ParseAll` prüft die Feuerart dazu). Granatwerfer: `EJECT_CASES` `grenade_40` wie `shotshell` nach
+`ego.EJECT.cases` ziehen. Gegenprobe: Skript, das im Controller die neuen Zeilen ersetzt und danach zurückkopiert (Sicherung außerhalb von
+`Assets/`, sonst legt Unity eine `.meta` an).
+
+Unity-Stellen: `EgoData.Semi`/`BoltAction`/`Beam`/`Cycles`/`Charge`, `EgoController` (Feuerlogik, `MagIn` füllt das Magazin, `CanReload`, `Cycle()` nach dem
 Schuss), `EgoSolver.Layers` (Live-Teile je Schuss, `glow`), `EgoRig.SetGlow`. Neue Feuerarten brauchen eigene PlayMode-Tests (Gegenprobe rot
 mit dem alten Code). Muster für P3: Pumpe (08) wie `fire_cycle` des Repetierers (Klassenaktion nach dem Schuss, sperrt per Busy); Aufladen
 (10/11) braucht einen Zustand „Feuer gehalten“ vor dem Schuss – neu im Controller; die Leuchtteile `charge` gehen über `EGO_LIVE glow`.

@@ -49,8 +49,8 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Format_und_Umfang()
         {
-            Assert.AreEqual(Playable.Length, All.Length, "spielbare Waffen (0.33 P2: Automatik, MP, Scout, Impuls, Portalkanone, "
-                                                         + "Handfeuerwaffe, Seitenwaffe, Scharfschütze, Spurgewehr, MG)");
+            Assert.AreEqual(Playable.Length, All.Length, "spielbare Waffen (0.33 P3: Automatik, MP, Scout, Impuls, Portalkanone, "
+                                                         + "Handfeuerwaffe, Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion)");
             CollectionAssert.AreEqual(Playable.Select(p => p.id).ToArray(), All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3 …");
             CollectionAssert.AreEqual(Playable.Select(p => p.fire).ToArray(), All.Select(d => d.gameplay.fire_mode).ToArray(),
                                       "Feuerart aus der Spec (Spannabzug der Trommel als Einzelfeuer, Gurt als Dauerfeuer: ego.FIRE_ALIAS)");
@@ -58,7 +58,7 @@ namespace Ballon.Ego.Tests
             foreach (var d in All) Umfang(d);
         }
 
-        /// <summary>Spielbare Waffen in Tastenreihenfolge mit Klasse und Feuerart (export_unity.WEAPONS, ego.CLASSES); 0.33 „Armory“ P1, P2.</summary>
+        /// <summary>Spielbare Waffen in Tastenreihenfolge mit Klasse und Feuerart (export_unity.WEAPONS, ego.CLASSES); 0.33 „Armory“ P1–P3.</summary>
         static readonly (string id, string type, string fire)[] Playable =
         {
             ("BASIC-01-v2.1", "auto_rifle", "full_auto"), ("BASIC-06-v2.1", "submachine_gun", "full_auto"),
@@ -66,6 +66,8 @@ namespace Ballon.Ego.Tests
             ("BASIC-T01-v2.1", "portal_cannon", "single"), ("BASIC-04-v2.1", "hand_cannon", "semi_auto"),
             ("BASIC-05-v2.1", "sidearm", "semi_auto"), ("BASIC-09-v2.1", "sniper_rifle", "bolt_action"),
             ("BASIC-12-v2.1", "trace_rifle", "continuous_beam"), ("BASIC-15-v2.1", "machine_gun", "full_auto"),
+            ("BASIC-08-v2.1", "shotgun", "pump_action"), ("BASIC-10-v2.1", "fusion_rifle", "charge_burst"),
+            ("BASIC-11-v2.1", "linear_fusion_rifle", "charge_single"),
         };
 
         /// <summary>0.33 „Armory“: jede übertragene Klasse steht vollständig in ego.json – Klasse, Herkunft je Haltung und Aktion, Spielwerte
@@ -112,19 +114,22 @@ namespace Ballon.Ego.Tests
                                                               "crouch", "jump_land", "sprint_to_aim", "sprint_to_fire", "draw_aim",
                                                               "reload_to_switch" })
                 Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: Aktion {a}");
-            Assert.AreEqual(tool ? 12 : 19 + (D.gameplay.BoltAction ? 2 : 0), D.actions.Length,
-                            "Aktionen (Repetierer 0.33: dazu fire_cycle, fire_cycle_ads)");
-            if (D.gameplay.BoltAction)
+            Assert.AreEqual(tool ? 12 : 19 + (D.gameplay.Cycles ? 2 : 0) + (D.ShellReload ? 3 : 0), D.actions.Length,
+                            "Aktionen (Repetierer und Pumpe 0.33: dazu fire_cycle, fire_cycle_ads; Einzelladen: reload_shell, reload_end, reload_end_pump)");
+            if (D.gameplay.Cycles)
                 foreach (var a in new[] { "fire_cycle", "fire_cycle_ads" }) Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: {a}");
+            if (D.ShellReload)
+                foreach (var a in new[] { "reload_shell", "reload_end", "reload_end_pump" }) Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: {a}");
             bool shortArm = D.gameplay.weapon_type == "hand_cannon" || D.gameplay.weapon_type == "sidearm";   // Kurzwaffen (0.33): 20/25 Teile
-            Assert.GreaterOrEqual(D.weapon.parts.Length, tool || shortArm ? 20 : 40, "Waffenteile");
-            bool noBolt = D.gameplay.BoltAction || D.gameplay.Beam;          // 0.33: Repetierer (fire_cycle) und Strahl ohne Verschluss je Schuss
+            Assert.GreaterOrEqual(D.weapon.parts.Length, tool || shortArm ? 20 : 30, "Waffenteile (0.33 P3: Schrotflinte 36)");
+            bool noBolt = D.gameplay.Cycles || D.gameplay.Beam || D.gameplay.Charge;   // 0.33: Repetierer, Pumpe (fire_cycle), Strahl und Ladewaffe ohne Verschluss je Schuss
             foreach (var n in tool ? new[] { D.weapon.live.trigger, D.weapon.live.ring }
                                    : noBolt ? new[] { D.weapon.live.trigger } : new[] { D.weapon.live.trigger, D.weapon.live.bolt })
                 Assert.IsTrue(D.HasPart(n), $"{D.weapon.id}: Live-Teil {n}");
             foreach (var g in D.weapon.live.glow ?? new string[0])
                 Assert.AreEqual("glow", D.Part(g).move.kind, $"{D.weapon.id}: Leuchtteil {g}");
-            Assert.AreEqual(D.gameplay.Beam, (D.weapon.live.glow?.Length ?? 0) > 0, $"{D.weapon.id}: Leuchtteile genau beim Dauerstrahl");
+            Assert.AreEqual(D.gameplay.Beam || D.gameplay.Charge, (D.weapon.live.glow?.Length ?? 0) > 0,
+                            $"{D.weapon.id}: Leuchtteile genau beim Dauerstrahl und bei der Ladewaffe");
             Assert.IsTrue(string.IsNullOrEmpty(D.weapon.live.port) || D.HasPart(D.weapon.live.port),           // Pistolen, Trommel: ohne
                           $"{D.weapon.id}: Auswurfklappe {D.weapon.live.port}");                              // Auswurfklappe (0.33)
             var meshes = new HashSet<string>(D.mesh_bounds.objects.Select(o => o.name));
@@ -1369,9 +1374,9 @@ namespace Ballon.Ego.Tests
                         got = o.flash;
                         fx++;
                     }
-                    else if (ob.name.StartsWith("shell_"))
+                    else if (ob.name.StartsWith("shell_") && int.TryParse(ob.name.Substring(6), out int sid))   // Hülse; Bauteil shell_round (0.33 P3) nicht
                     {
-                        int j = Array.IndexOf(o.shellIds, int.Parse(ob.name.Substring(6)), 0, o.shellCount);
+                        int j = Array.IndexOf(o.shellIds, sid, 0, o.shellCount);
                         Assert.GreaterOrEqual(j, 0, $"{s.label}: {ob.name} fehlt");
                         got = o.shells[j];
                         fx++;

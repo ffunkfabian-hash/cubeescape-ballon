@@ -18,10 +18,10 @@ Umrechnung wie die bisherigen Klassen: ADS-Anflug „erste Bewegung → Ruhe“ 
 | hand_cannon | `semi_auto_double_action` | Einzelfeuer (`ego.FIRE_ALIAS`), Hahn als Live-Teil — **P1 erledigt** |
 | sidearm | `semi_auto` | Einzelfeuer — **P1 erledigt** |
 | combat_bow | `draw_release` | offen: Spannen, Halten, Lösen (eigene Feuerart in Unity) |
-| shotgun | `pump_action` | offen: Einzelschuss + Pumpen, Einzelladen je Patrone |
+| shotgun | `pump_action` | Einzelschuss, danach Pumpen als Klassenaktion `fire_cycle`/`fire_cycle_ads` (Hülse beim Zurückziehen); Einzelladen je Patrone (`reload_shell`, Marker `ShellIn`), ein Zug am Abzug bricht ab, nach leerem Beginn `reload_end_pump` — **P3 erledigt** |
 | sniper_rifle | `bolt_action` | Einzelschuss, danach Repetieren als Klassenaktion `fire_cycle`/`fire_cycle_ads` (Stützhand am Kammerknopf links, Hülse beim Zurückziehen) — **P2 erledigt** |
-| fusion_rifle | `charge_burst` | offen: Aufladen, dann Salve 5–6 Strahlen |
-| linear_fusion_rifle | `charge_single` | offen: Aufladen, ein Schuss |
+| fusion_rifle | `charge_burst` | Abzug halten lädt 0,5 s (`charge_s`), dann Salve 6 Strahlen in 0,25 s für eine Patrone; Loslassen bricht ab; Glutkern und Ladebalken leuchten mit der Ladung (`EGO_LIVE glow`) — **P3 erledigt** |
+| linear_fusion_rifle | `charge_single` | Abzug halten lädt 0,563 s, dann ein Schuss; Linearkern leuchtet mit der Ladung — **P3 erledigt** |
 | trace_rifle | `continuous_beam` | Dauerfeuer 1000/min ohne Blitz, Hülse und Rückstoß; Fokuslinse und Scheibenmitte leuchten (`EGO_LIVE glow`) — **P2 erledigt** |
 | grenade_launcher | `single_shot` | offen: Einzelschuss, Nachladen nach jedem Schuss (Kipplauf) |
 | rocket_launcher | `single_shot` | offen: Einzelschuss, Nachladen nach jedem Schuss |

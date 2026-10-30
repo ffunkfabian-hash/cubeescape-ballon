@@ -59,7 +59,7 @@ namespace Ballon.Ego
         // drei Spuren im Wechsel: die laufende, die vorige (Rückruf am Ende) und die nächste; Rückrufe einmal angelegt
         readonly Track[] _pool = { new Track(), new Track(), new Track() };
         int _poolNext;
-        readonly Action<Track> _onReady, _onHolster, _onHolsterSwap, _onSwitchedOut;
+        readonly Action<Track> _onReady, _onHolster, _onHolsterSwap, _onSwitchedOut, _onShell;
 
         Track NextTrack()
         {
@@ -128,6 +128,12 @@ namespace Ballon.Ego
         // Mündungsfeuer (5.3 A): sichtbar flash.dur_s ab dem Schuss; Hülsen (5.4 A): fester Pool (Ring) mit motion.eject.max_live Plätzen
         float _flashLeft;
         int _flashShot, _pendingShells;
+        // Einzelladen (0.33 P3, EgoFile.ShellReload): Beginn mit leerem Magazin (Ende mit Pumpen), Abbruch durch einen Zug am Abzug
+        bool _reloadEmpty, _reloadAbort;
+        // Ladewaffe (0.33 P3, gameplay.Charge): Ladung 0 … 1, Leuchten nach dem Schuss, Zeit seit dem letzten Ladungsschuss (Takt rpm)
+        float _charge, _chargePost, _sinceCharge = 99f;
+        /// <summary>Ladung der Ladewaffe 0 … 1 (Messwert für Tests); 0 bei anderen Waffen.</summary>
+        public float ChargeLevel => _charge;
         readonly Matrix4x4[] _shW;
         readonly float[] _shAge;
         readonly int[] _shId;
@@ -166,6 +172,7 @@ namespace Ballon.Ego
             _shId = new int[cap];
             _shOn = new bool[cap];
             _onReady = _ => Ready();
+            _onShell = _ => NextShell();
             _onHolster = _ => holstered = true;
             _onHolsterSwap = _ =>
             {
@@ -209,7 +216,7 @@ namespace Ballon.Ego
         {
             _swapPending = false;
             if (holstered && _t.ended) { _switchedOut = true; return; }
-            bool reloading = (_t.A.name == "reload_tactical" || _t.A.name == "reload_empty") && !_t.ended;
+            bool reloading = Reloading;
             if (_t.A.name == "holster" || _t.A.name == "reload_to_switch")    // läuft schon: nur das Ende umleiten
             {
                 _t.onEnd = _onSwitchedOut;
@@ -294,7 +301,8 @@ namespace Ballon.Ego
                 {
                     if (m.name == "MagIn") ammo = magSize;
                     if (m.name == "Fire") _fireArmed = true;
-                    if (m.name == "Eject" && S.Ejects && S.D.gameplay.BoltAction) _pendingShells++;   // Repetierer: Hülse beim Zurückziehen
+                    if (m.name == "ShellIn") ammo = Mathf.Min(magSize, ammo + 1);              // Einzelladen (0.33 P3): eine Patrone
+                    if (m.name == "Eject" && S.Ejects && S.D.gameplay.Cycles) _pendingShells++;  // Repetierer, Pumpe: Hülse beim Zurückziehen
                     Marker?.Invoke(_t.A.name, m.name);
                 }
         }
@@ -428,7 +436,7 @@ namespace Ballon.Ego
             _intent = i;
             float df = dt * S.fps;
             bool inspecting = _t.A.name == "inspect" && !_t.ended;
-            bool reloading = (_t.A.name == "reload_tactical" || _t.A.name == "reload_empty") && !_t.ended;
+            bool reloading = Reloading;
 
             // Eingaben, die Spuren starten
             if (holstered)
@@ -450,6 +458,11 @@ namespace Ballon.Ego
             {
                 Play(reloading ? "reload_to_switch" : "holster", busy: true, fade: reloading ? 3 : -1, onEnd: i.swap ? _onHolsterSwap : _onHolster);
                 holstered = false;
+            }
+            else if (reloading && S.D.ShellReload && i.fire && !_firePrev && ammo > 0 && !_reloadAbort)
+            {
+                _reloadAbort = true;                                    // Einzelladen (0.33 P3): ein Zug am Abzug bricht ab, der Schuss
+                NextShell();                                            // wartet bis zum Ende des Rückwegs (AbortWaits)
             }
             else if (inspecting && (i.fire || i.aim || i.reload || (i.sprint && i.move.y > 0.3f)))
             {
@@ -494,8 +507,29 @@ namespace Ballon.Ego
         void StartReload(EgoIntent i)
         {
             _stance = Stance.Hip;
-            Play(ammo == 0 ? "reload_empty" : "reload_tactical", busy: true, fade: 3, onEnd: _onReady);
+            _reloadEmpty = ammo == 0;
+            _reloadAbort = false;
+            Play(ammo == 0 ? "reload_empty" : "reload_tactical", busy: true, fade: 3, onEnd: S.D.ShellReload ? _onShell : _onReady);
         }
+
+        /// <summary>Nachladen läuft: Magazin, beim Einzelladen auch die weiteren Patronen (ein Wechsel bricht es mit reload_to_switch ab).</summary>
+        bool Reloading => !_t.ended && (_t.A.name == "reload_tactical" || _t.A.name == "reload_empty" || _t.A.name == "reload_shell");
+
+        /// <summary>Einzelladen (0.33 P3, Schrotflinte): nach jeder Patrone die nächste (reload_shell), bis das Magazin voll ist oder ein Zug am
+        /// Abzug abbricht; dann zurück zur Hüfte – nach leerem Beginn mit Pumpen (reload_end_pump), sonst reload_end. Die Schleife beginnt und
+        /// endet in derselben Haltung (ohne Überblendung); beim Abbruch blendet sie kurz über.</summary>
+        void NextShell()
+        {
+            if (ammo < magSize && !_reloadAbort)
+            {
+                Play("reload_shell", busy: true, fade: 0, onEnd: _onShell);
+                return;
+            }
+            Play(_reloadEmpty ? "reload_end_pump" : "reload_end", busy: true, fade: _reloadAbort ? 2 : 0, onEnd: _onReady);
+        }
+
+        /// <summary>Ein Zug, der das Einzelladen abgebrochen hat, wartet bis zum Ende des Rückwegs (länger als SemiQueueS beim Pumpen).</summary>
+        bool AbortWaits => _reloadAbort && !_t.ended && (_t.A.name == "reload_end" || _t.A.name == "reload_end_pump");
 
         bool CanFire => !holstered && !Busy && HasAmmo && (_t.A.name != "sprint_to_fire" || _fireArmed) && _stance != Stance.Sprint
                         && !(_t.A.name == "sprint" && _t.frame < K("sprint", 2)) && _t.A.name != "draw" && _t.A.name != "holster";
@@ -532,7 +566,9 @@ namespace Ballon.Ego
             _triggerHeld = i.fire && CanFire;
             _sinceShot += dt;
             float interval = ShotInterval();
-            if (S.D.gameplay.Semi)
+            _sinceCharge += dt;
+            if (S.D.gameplay.Charge) UpdateCharge(dt);
+            else if (S.D.gameplay.Semi)
             {
                 // Einzelfeuer (0.20, Feuerart semi_auto): ein Schuss je Zug. Ein Zug vor Ablauf des Schussabstands (oder im Übergang aus dem
                 // Sprint) wartet höchstens SemiQueueS und fällt dann, sobald geschossen werden darf; gehaltener Abzug schießt nicht nach.
@@ -551,7 +587,7 @@ namespace Ballon.Ego
                     _semiQueue = 0;
                     FireOne();
                 }
-                _semiQueue = Mathf.Max(0, _semiQueue - dt);
+                if (!AbortWaits) _semiQueue = Mathf.Max(0, _semiQueue - dt);
                 _shotClock = 0;
             }
             else if (_triggerHeld || (_burstLeft > 0 && CanFire))
@@ -609,6 +645,45 @@ namespace Ballon.Ego
             _dt = dt;
         }
 
+        /// <summary>Ladewaffe (0.33 P3, charge_burst/charge_single): der gehaltene Abzug lädt in charge_s – frühestens 60/rpm − charge_s nach
+        /// dem letzten Ladungsschuss (Takt gehalten); bei voller Ladung fällt der Schuss, bei der Salve folgen burst_shots − 1 im Abstand
+        /// 60/burst_rpm (eine Patrone je Ladung, die Salve läuft auch nach dem Loslassen zu Ende). Loslassen vorher, Nachladen oder Wegstecken
+        /// bricht ab: die Ladung fällt in charge_fade_s. Das Leuchten (weapon.live.glow) folgt der Ladung, nach dem Schuss bleibt es bis zum
+        /// Salvenende an und fällt dann in charge_fade_s – wie ego.charge_level.</summary>
+        void UpdateCharge(float dt)
+        {
+            var G = S.D.gameplay;
+            float fall = dt / Mathf.Max(1e-3f, G.charge_fade_s);
+            if (_burstLeft > 0 && (holstered || Busy)) _burstLeft = 0;           // Salve abgebrochen (Wegstecken, Nachladen)
+            if (_burstLeft > 0)
+            {
+                _shotClock += dt;
+                float step = 60f / G.burst_rpm;
+                while (_shotClock >= step && _burstLeft > 0)
+                {
+                    _shotClock -= step;
+                    FireOne(useAmmo: false);
+                }
+            }
+            else _chargePost = Mathf.Max(0, _chargePost - fall);
+            if (_triggerHeld && _burstLeft == 0 && _sinceCharge >= 60f / rpm - G.charge_s)
+            {
+                _charge += dt / G.charge_s;
+                if (_charge >= 1)
+                {
+                    _charge = 0;
+                    _chargePost = 1;
+                    _sinceCharge = 0;
+                    _shotClock = 0;
+                    FireOne();
+                }
+            }
+            else if (_burstLeft == 0) _charge = Mathf.Max(0, _charge - fall);
+        }
+
+        /// <summary>Leuchten der Ladewaffe: Ladung beim Aufladen, nach dem Schuss das Nachleuchten.</summary>
+        float ChargeGlow => Mathf.Max(_charge, _chargePost);
+
         /// <summary>Index des Portals für eine Eingabe (fire, aim), −1 ohne.</summary>
         int PortalIndex(string input)
         {
@@ -619,9 +694,9 @@ namespace Ballon.Ego
 
         static float Smooth(float t) => t * t * (3 - 2 * t);
 
-        void FireOne()
+        void FireOne(bool useAmmo = true)
         {
-            if (!S.D.gameplay.Unlimited) ammo--;
+            if (useAmmo && !S.D.gameplay.Unlimited) ammo--;     // Ladewaffe (0.33 P3): eine Patrone je Ladung, auch bei der Salve
             shots++;
             _sinceShot = 0;
             _boltT = tune.boltOpenS;
@@ -655,13 +730,14 @@ namespace Ballon.Ego
                 _ringTgt += S.D.gameplay.portals[LastPortal].ring;
                 _ringT = 0;
             }
-            if (S.Ejects && !S.D.gameplay.BoltAction) _pendingShells++;   // Hülse startet in Compose mit der Waffe dieses Bilds (Repetierer: Marker Eject)
+            if (S.Ejects && !S.D.gameplay.Cycles) _pendingShells++;   // Hülse startet in Compose mit der Waffe dieses Bilds (Repetierer, Pumpe: Marker Eject)
             Shot?.Invoke();
-            if (S.D.gameplay.BoltAction && HasAmmo) Cycle();
+            if (S.D.gameplay.Cycles && HasAmmo) Cycle();
         }
 
-        /// <summary>Repetierer (0.33, bolt_action): nach dem Schuss die Klassenaktion fire_cycle (im Zielen fire_cycle_ads) – sie sperrt den
-        /// nächsten Schuss (Busy) und endet in der Haltung, aus der geschossen wurde; der letzte Schuss repetiert nicht (das Nachladen tut es).</summary>
+        /// <summary>Repetierer (0.33, bolt_action) und Pumpe (P3, pump_action): nach dem Schuss die Klassenaktion fire_cycle (im Zielen
+        /// fire_cycle_ads) – sie sperrt den nächsten Schuss (Busy) und endet in der Haltung, aus der geschossen wurde; der letzte Schuss
+        /// repetiert nicht (das Nachladen tut es).</summary>
         void Cycle()
         {
             bool ads = _stance == Stance.Ads;
@@ -695,6 +771,7 @@ namespace Ballon.Ego
             L.camPitch = _recCx.x * (1 - adsWeight);           // Viewmodel-Kamera: Ruck nur in der Hüfte (im Zielen nur die Welt)
             L.trigger = _triggerHeld ? 1 : 0;
             if (S.D.gameplay.Beam) L.glow = L.trigger;         // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
+            if (S.D.gameplay.Charge) L.glow = ChargeGlow;      // Ladewaffe (0.33 P3): Leuchtteile mit der Ladung
             L.bolt = _boltT > 0 ? 1 : 0;
             L.port = _portOpen ? 1 : 0;
             if (S.D.gameplay.HasPortals) L.ring = _ring;
