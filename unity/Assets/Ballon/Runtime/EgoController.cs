@@ -104,7 +104,8 @@ namespace Ballon.Ego
         /// <summary>Seitenverhältnis des Bilds (EgoPlayer setzt es je Bild aus der Kamera): die Grundbahn rechnet in Anteilen der Bildhöhe.</summary>
         public float aspect;
         readonly Vector3 _eyeLocal;
-        readonly float _dHip;              // Abstand Augenpunkt → Kamera in der Hüfte
+        readonly float _dHip;              // Abstand Augenpunkt → Ziellage (ads › eye, sonst Kamera) in der Hüfte
+        readonly Vector3 _adsEye;          // Lage von Socket_Eye im Zielen (Kamera, beim Bogen daneben: Pfeilspitze mittig)
         float _d0 = 1, _leaveT;
         bool _aimPrev, _leaving;
         bool _swapPending;                 // Wechsel: nach dem Wegstecken leere Sicht, dann Ziehen
@@ -163,7 +164,8 @@ namespace Ballon.Ego
             _tanH = Mathf.Tan(Rad(s.D.camera.h_fov_deg) / 2);
             aspect = s.D.camera.aspect[0] / (float)s.D.camera.aspect[1];
             _eyeLocal = V(s.D.Anchor(s.D.HasAnchor("Socket_Eye") ? "Socket_Eye" : "Socket_Muzzle").pos);   // Werkzeug ohne Visier (0.22)
-            _dHip = s.PoseMatrix("hip").MultiplyPoint3x4(_eyeLocal).magnitude;
+            _adsEye = s.D.CanAim ? V(s.D.Pose("ads").eye) : Vector3.zero;   // 0.33 P4: Bogen zielt mit Augenpunkt neben der Kamera
+            _dHip = (s.PoseMatrix("hip").MultiplyPoint3x4(_eyeLocal) - _adsEye).magnitude;
             _walk = s.D.Action("walk");
             _sprintA = s.D.Action("sprint");
             int cap = s.D.motion.eject.max_live;
@@ -302,6 +304,7 @@ namespace Ballon.Ego
                     if (m.name == "MagIn") ammo = magSize;
                     if (m.name == "Fire") _fireArmed = true;
                     if (m.name == "ShellIn") ammo = Mathf.Min(magSize, ammo + 1);              // Einzelladen (0.33 P3): eine Patrone
+                    if (m.name == "Nocked" && S.D.gameplay.Draw) _t.busy = false;               // Bogen (0.33 P4): Pfeil liegt auf, neu spannen
                     if (m.name == "Eject" && S.Ejects && S.D.gameplay.Cycles) _pendingShells++;  // Repetierer, Pumpe: Hülse beim Zurückziehen
                     Marker?.Invoke(_t.A.name, m.name);
                 }
@@ -461,7 +464,16 @@ namespace Ballon.Ego
             }
             else if (S.D.gameplay.Draw && Drawing)
             {
-                if (!i.fire) Release();                                 // Bogen (0.33 P4): Loslassen löst (voll) oder entspannt (vorher)
+                // Bogen (0.33 P4, wie Destiny): Nachladen-Taste entspannt ohne Schuss, Loslassen löst (auch halb gespannt: schwacher Pfeil),
+                // gespannt ins Zielen und zurück, ohne das Spannen abzubrechen
+                if (i.reload) LetDown();
+                else if (!i.fire) Release();
+                else if (DrawFull && _t.ended)
+                {
+                    bool ads = i.aim && S.D.CanAim;
+                    if (ads && _stance != Stance.Ads) { Play("draw_aim_in", busy: true, stance: Stance.Ads, fade: 0); _stance = Stance.Ads; }
+                    else if (!ads && _stance == Stance.Ads) { Play("draw_aim_out", busy: true, stance: Stance.Hip, fade: 0); _stance = Stance.Hip; }
+                }
             }
             else if (reloading && S.D.ShellReload && i.fire && !_firePrev && ammo > 0 && !_reloadAbort)
             {
@@ -537,7 +549,10 @@ namespace Ballon.Ego
 
         // -------------------------------------------------------------- Bogen (0.33 P4, draw_release)
         /// <summary>Spannen läuft oder der volle Auszug hält (fire_draw, im Zielen fire_draw_ads; am Ende bleibt die Spur stehen).</summary>
-        bool Drawing => _t.A.name == "fire_draw" || _t.A.name == "fire_draw_ads";
+        bool Drawing => _t.A.name == "fire_draw" || _t.A.name == "fire_draw_ads" || _t.A.name == "draw_aim_in" || _t.A.name == "draw_aim_out";
+
+        /// <summary>Voller Auszug: Spannaktion zu Ende oder gespannt ins Zielen bzw. zurück.</summary>
+        bool DrawFull => Drawing && (_t.A.name.StartsWith("draw_aim") || _t.ended);
 
         /// <summary>Auszug des Bogens 0 … 1 (Messwert für Tests): Wert der ersten Bewegung der Spannaktion, 0 außerhalb.</summary>
         public float DrawLevel => Drawing && _t.A.mech != null && _t.A.mech.Length > 0 ? ValueAt(_t.A.mech[0].keys, _t.frame) : 0;
@@ -550,19 +565,26 @@ namespace Ballon.Ego
             _stance = ads ? Stance.Ads : Stance.Hip;
         }
 
-        /// <summary>Abzug gelöst: bei vollem Auszug (Spannaktion zu Ende) Schuss und fire_release (Pfeil fliegt, neuer Pfeil, zurück); vorher
-        /// let_down ab der Stelle, die dem erreichten Auszug entspricht (kurz übergeblendet).</summary>
+        /// <summary>Abzug gelöst: Schuss und fire_release (Pfeil fliegt, neuer Pfeil liegt auf, zurück zur Hüfte); im Zielen zugleich aus dem
+        /// Zielen (fire_release_ads, Destiny: Lösen = ADS-Ausstieg). Halb gespannt fliegt ein schwacher Pfeil (Destiny: minimal/teilweise
+        /// gespannt), die Überblendung beginnt beim erreichten Auszug. Nach dem Marker Nocked darf neu gespannt werden.</summary>
         void Release()
         {
-            bool ads = _t.A.name == "fire_draw_ads";
-            if (_t.ended)
-            {
-                FireOne();
-                Play(ads ? "fire_release_ads" : "fire_release", busy: true, stance: _stance, fade: 0, onEnd: _onReady);
-                return;
-            }
-            var L = S.D.Action(ads ? "let_down_ads" : "let_down");
-            Play(L.name, from: (1 - DrawLevel) * L.frames, busy: true, stance: _stance, fade: 2, onEnd: _onReady);
+            bool ads = _stance == Stance.Ads, full = DrawFull;
+            FireOne();
+            Play(ads ? "fire_release_ads" : "fire_release", busy: true, stance: Stance.Hip, fade: full ? 0 : 2, onEnd: _onReady);
+            _stance = Stance.Hip;
+        }
+
+        /// <summary>Nachladen-Taste beim Spannen (Destiny: „Use while drawn to cancel the shot“): entspannen ohne Schuss, ab der Stelle, die dem
+        /// erreichten Auszug entspricht (let_down, im Zielen let_down_ads).</summary>
+        void LetDown()
+        {
+            var L = S.D.Action(_stance == Stance.Ads ? "let_down_ads" : "let_down");
+            var k = L.mech[0].keys;
+            float lv = DrawLevel;
+            Play(L.name, from: (1 - lv) * k[k.Length - 1].f, busy: true, stance: Stance.Hip, fade: 2, onEnd: _onReady);
+            _stance = Stance.Hip;
         }
 
         /// <summary>Ein Zug, der das Einzelladen abgebrochen hat, wartet bis zum Ende des Rückwegs (länger als SemiQueueS beim Pumpen).</summary>
@@ -834,7 +856,7 @@ namespace Ballon.Ego
         /// Nachladen oder Betrachten liegt das Auge näher an der Kamera als in der Hüfte (Nachladen 0,37 statt 0,41 m), sonst bliebe Zoom.</summary>
         void FollowModel(Matrix4x4 baseW)
         {
-            float d = baseW.MultiplyPoint3x4(_eyeLocal).magnitude;
+            float d = (baseW.MultiplyPoint3x4(_eyeLocal) - _adsEye).magnitude;
             bool aiming = _stance == Stance.Ads || (_t.A.name == "draw_aim" && !_t.ended && _t.frame >= K("draw_aim", 1));
             if (aiming && !_aimPrev) _d0 = Mathf.Max(_dHip, d);
             if (!aiming && _aimPrev) { _leaving = true; _leaveT = 0; }

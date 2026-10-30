@@ -481,6 +481,18 @@ def _follow(hip, ref_hip, ref):
                 roll=hip['roll'] + ref['roll'] - ref_hip['roll'], src=f"wie {ref['src']}, an der Klassen-Hüfte (FOLLOW_HIP)")
 
 
+# Bogen (0.33 P4): Teile des Auszugs (Modul w07: Ereignis draw) mit denselben Schlüsseln, Spannlicht erst bei vollem Auszug
+
+
+def _bow_draw(*keys):
+    k = list(keys)
+    if k[0][1] < 1 <= k[-1][1]:                    # Spannen: Spannlicht 2 Bilder vor dem vollen Auszug an
+        light = [(0, 0), (k[-1][0] - 2, 0), (k[-1][0], 1)]
+    else:                                          # gespannt halten, entspannen: Licht aus, sobald der Auszug nachlässt
+        light = [(f, 1.0 if v >= 1 else 0.0) for f, v in k]
+    return {p: list(k) for p in ('arrow_shaft', 'string_top', 'string_bottom', 'cam_top', 'cam_bottom')} | {'draw_light': light}
+
+
 CLASSES = {
     'auto_rifle': dict(
         poses={}, frames={},
@@ -896,20 +908,28 @@ CLASSES = {
         # Bogen (0.33 „Armory“, P4): Spannen, Halten, Lösen (Feuerart draw_release). Abzug halten spielt die Klassenaktion fire_draw (aus der
         # Hüfte: Bogen kommt senkrecht hoch in die Haltung 'drawn', die Zughand zieht die Sehne zum Auge; im Zielen fire_draw_ads), am Ende
         # hält der volle Auszug, solange der Abzug zieht. Loslassen bei vollem Auszug löst (fire_release: Pfeil fliegt, Sehne schnellt vor,
-        # die Zughand holt unter dem Bild einen neuen Pfeil und legt ihn auf); vorher entspannt der Bogen ohne Schuss (let_down). Kein Magazin
-        # (Vorrat unbegrenzt), kein Nachladen, kein Mündungsfeuer, keine Hülse. Die Bogenhand ist wie bei allen Waffen die rechte (Rig:
-        # Haupthand rechts; Destiny: Bogenhand links), die Zughand (Griff 'support') hängt am Pfeil und folgt dem Auszug.
+        # der nächste Pfeil liegt gleich auf); halb gespannt fliegt ein schwacher Pfeil, die Nachladen-Taste entspannt ohne Schuss (let_down).
+        # Kein Magazin (Vorrat unbegrenzt), kein Nachladen, kein Mündungsfeuer, keine Hülse. Wie Destiny hält die linke Hand den Bogen
+        # (hands.swap: Griff grip links), die rechte Zughand (Griff 'support') hängt am Pfeil und folgt dem Auszug.
         poses=dict(
-            hip=dict(pos=(-0.095, -0.47, -0.16), aim=(0.15, -3.0, -0.02), roll=-25,
-                     src='M cubeescape-reference destiny2:271 (Imperial Needle): Hüfte quer gekantet links unten → rechts oben, Pfeil zur Mitte; '
-                         'destiny2:221/231: Riser rechts, ≈ 15° nach rechts geneigt, Griff ≈ 62/85–90 %; huefte:74 Visier 57,3/75,2, Griff '
-                         '46,6/84,8. Lage E, gerechnet Griff 63/89 %, Pfeilspitze 54/60 %, oberer Wurfarm rechts oben aus dem Bild; '
-                         'Ring 58/63 %; 2,5 cm weiter rechts als der erste Entwurf (Pfeilspitze 51/59 % lag in der Freihaltezone, A4) (das Seitenvisier B1 sitzt links vom Pfeil, Destiny zielt über die Pfeilspitze, visiere:87)'),
-            drawn=dict(pos=(-0.13, -0.46, 0.01), aim=(0.55, -3.0, -0.30), roll=-20,
-                       src='M cubeescape-reference destiny2:221 (Spannen ohne ADS): der Bogen bleibt rechts, Riser-Mitte ≈ 70/45 %, 20° nach '
-                           'rechts geneigt, Sehnenhand ≈ 85/95; destiny2:231: Pfeilspitze beim Halten exakt auf der Mitte. Lage E, gerechnet '
-                           'Griff 68/47 %, Pfeilspitze 50/51 %, Rollen −20°; der Nockpunkt bei vollem Auszug liegt rechts neben der Kamera '
-                           '(Sehnenhand aus dem Bild)'),
+            hip=dict(pos=(-0.01, -0.61, -0.18), aim=(-0.01, -3.61, -0.18), roll=-80,
+                     src='M cubeescape-reference huefte.json › hl-destiny-2-imperial-needle (Ultraclocked 0:47,000): linke Griffhand 46,6/84,8 %, '
+                         'Visier 57,3/75,2 %, Bogen breit im unteren Bild (Körper 7,6–100 × 68,6–100 %), rechte Hand an der Nocke 49–64 × '
+                         '91–100 %; destiny2:514 quer gekantet von links unten nach rechts oben, Pfeil zur Mitte. Lage E (Ausgleichsrechnung '
+                         'gegen diese Werte, dann 3 cm nach rechts für die Freihaltezone A4), gerechnet Griff 50/84 %, Nocke 57/93 %, '
+                         'Pfeilspitze 53/67 %, Ring 56/68 %, Wurfarme links unten und rechts oben aus dem Bild'),
+            ads=dict(eye=(0.0, 0.27, 0.0), aim_dir=(0, -1, 0), roll=0,
+                     src='M Destiny-Bogen Imperial Needle im Zielen (Bilder aus Ultraclocked dKNTDzi__Qo 47,75/48,3/67,7 s, Cache '
+                         'CubeEscape/reference/visiere; cubeescape-reference destiny2:105 Ring 50/57, zielbewegung: Zoom 2,2×): Blick durch den '
+                         'Ring, der Riser direkt rechts daneben, die Pfeilspitze unter dem Ring, Wurfarme über die volle Bildhöhe, linke Hand '
+                         'unten Mitte; der Ring ist ≈ 9 % B groß. Lage E: der Bogen steht 27 cm näher an der Kamera als der Ankerpunkt des vollen '
+                         'Auszugs (Socket_Eye 23 cm hinter dem Auge, Sehne und Zughand hinter der Kamera; Nutzer 30.10.2026: „beim Bogen ist das '
+                         'Visier näher am Bild“; mit 23 cm ≈ 6 % B im Bildvergleich), gerechnet Ring 50/50 % mit Ø 52 mm in 0,41 m ≈ 9,8 % B'),
+            drawn=dict(pos=(0.0, -0.49, -0.16), aim=(-0.776, -3.388, 0.101), roll=-65,
+                       src='M Destiny-Bogen Imperial Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer '
+                           'gekantet, etwas gehoben, Ring ≈ 57/64 %, linke Hand unten ≈ 47/89 %, oberer Wurfarm rechts aus dem Bild, Zughand '
+                           'nicht sichtbar (andere Bögen stehen dabei rechts senkrecht, destiny2:221). Lage E (Ausgleichsrechnung), gerechnet '
+                           'Griff 50/88 %, Ring 57/64 %, voller Auszug hinter der Kamera'),
             sprint=dict(pos=(-0.12, -0.40, -0.03), aim=(0.0, -2.6, -0.5), roll=-20,
                         src='O cubeescape-reference destiny2:221 (Sprint, wahrscheinlich): Riser größer und höher, Mitte ≈ 68/55 %, oberes '
                             'Wurfarmende aus dem Bild, ≈ 20° geneigt; destiny2:231 ohne Pfeil tief rechts. Lage E, gerechnet Griff 69/61 %'),
@@ -921,8 +941,16 @@ CLASSES = {
         ),
         drop=dict(poses=('reload',), actions=('fire_hip', 'fire_ads', 'reload_tactical', 'reload_empty', 'reload_to_switch'),
                   src='Bogen ohne Magazin (Vorrat): kein Nachladen; Feuer als Klassenaktionen fire_draw/fire_release/let_down statt fire_hip/fire_ads'),
-        support_rest=dict(at=OFF_L, src='E: in Ruhe hängt die Zughand unter dem Bild (an der Sehne lag der linke Unterarm in Hüfte und Zielen '
-                                         'groß vor der Kamera, Stills 0.33 P4); sie kommt beim Spannen an die Nocke'),
+        ads_hand=dict(off=OFF_L, src='E: im ungespannten Zielen hängt die Zughand unter dem Bild (an der Nocke, 0,42 m vor dem Auge, lag der rechte '
+                                      'Arm groß rechts im Bild); sie kommt beim Spannen an die Nocke (fire_draw_ads)'),
+        ads_hide=dict(parts=('arrow_shaft', 'arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r'),
+                      src='M Destiny-Bogen im Zielen (Bilder Ultraclocked dKNTDzi__Qo 48,3/67,7 s): vom Pfeil ist nur die Spitze unter dem Ring '
+                          'zu sehen; hier läuft der gespannte Schaft (Seitenvisier: Pfeil 60 mm rechts der Visierlinie) dicht an der Kamera '
+                          'vorbei – Schaft, Nocke und Federn sind im Zielen aus (Regel ADS_HIDE), Spitze und Hülse bleiben'),
+        hands=dict(swap=True, src='M Destiny: Bogenhand links, Zughand rechts (die Sehnenhand liegt beim Halten rechts unten ≈ 85/95 %, '
+                                  'cubeescape-reference destiny2:221/231); Daten: in allen Aktionen tauschen L und R (Griff grip = Bogengriff '
+                                  'links, support = Zughand rechts an der Nocke), Bildpunkte unter dem Bild gespiegelt (Nutzerhinweis 30.10.2026: '
+                                  '„Muss der Bogen nicht in der anderen Hand gehalten werden?“)'),
         frames=dict(aim_in=6, aim_out=5, draw=14),
         frames_src='M Destiny-Bogen: Zielen gespannt 0,25 s (Motiongen destiny2:270/508) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf '
                    'wie Scharfschütze 14 B60 → 6), aus E 5; Ziehen 6–8 Bilder bei 60/s bis hüftähnlich (wechsel:48/50) + Ausfedern E → 14 '
@@ -931,63 +959,63 @@ CLASSES = {
             fire_draw=dict(
                 de='Spannen aus der Hüfte (Bogen senkrecht, Sehne zum Auge)', frames=18,
                 weapon=[(0, 'hip'), (4, 'drawn'), (18, 'drawn')],
-                L=[(0, OFF_L), (4, 'support'), (18, 'support')], fL=[(0, 'relaxed'), (2, 'open'), (4, 'pinch')],
-                mech={'arrow_shaft': [(0, 0), (4, 0), (18, 1)], 'string_top': [(0, 0), (4, 0), (18, 1)], 'string_bottom': [(0, 0), (4, 0), (18, 1)],
-                      'cam_top': [(0, 0), (4, 0), (18, 1)], 'cam_bottom': [(0, 0), (4, 0), (18, 1)], 'draw_light': [(0, 0), (16, 0), (18, 1)]},
-                events=[(18, 'FullDraw')],
-                src='S/M Destiny-Bogen Imperial Needle Ziehzeit 612 ms, Anlegen → voll ≈ 0,60 s (Motiongen destiny2:270) → voll bei Bild 18 '
-                    '(wie das Modul: Spannzeit 0,60 s); senkrecht in 4 Bildern (destiny2:587 4 B60, hier mit Nachlauf 4 B30); Spannlicht '
-                    'bei vollem Auszug (Modul draw_hold_release)'),
+                L=[(0, 'support'), (18, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 0), (4, 0), (18, 1)), events=[(18, 'FullDraw')],
+                src='S/M Destiny-Bogen Imperial Needle Ziehzeit 612 ms, Anlegen → voll ≈ 0,60 s (cubeescape-reference destiny2:271) → voll bei '
+                    'Bild 18 (wie das Modul: Spannzeit 0,60 s); Heben 0,1 s, dann Ziehen (destiny2:231), senkrecht in 4 Bildern (destiny2:185); '
+                    'Spannlicht bei vollem Auszug (Modul draw_hold_release)'),
             fire_draw_ads=dict(
                 de='Spannen im Zielen (Bogen bleibt im Anschlag)', frames=18,
                 weapon=[(0, 'ads'), (18, 'ads')],
-                L=[(0, OFF_L), (4, 'support'), (18, 'support')], fL=[(0, 'relaxed'), (2, 'open'), (4, 'pinch')],
-                mech={'arrow_shaft': [(0, 0), (4, 0), (18, 1)], 'string_top': [(0, 0), (4, 0), (18, 1)], 'string_bottom': [(0, 0), (4, 0), (18, 1)],
-                      'cam_top': [(0, 0), (4, 0), (18, 1)], 'cam_bottom': [(0, 0), (4, 0), (18, 1)], 'draw_light': [(0, 0), (16, 0), (18, 1)]},
-                events=[(18, 'FullDraw')], src='E wie fire_draw, die Waffe bleibt im Zielen (Visier vor dem Auge)'),
+                L=[(0, OFF_L), (5, 'support'), (18, 'support')], fL=[(0, 'relaxed'), (3, 'open'), (5, 'pinch')],
+                mech=_bow_draw((0, 0), (4, 0), (18, 1)), events=[(18, 'FullDraw')],
+                src='E wie fire_draw, die Waffe bleibt im Zielen (Ringvisier vor dem Auge)'),
+            draw_aim_in=dict(
+                de='Gespannt ins Zielen (Bogen dreht senkrecht vor das Auge, bleibt gespannt)', frames=5,
+                weapon=[(0, 'drawn'), (5, 'ads')], L=[(0, 'support'), (5, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (5, 1)), events=[(5, 'Aimed')],
+                src='M cubeescape-reference destiny2:271: ADS mit gespanntem Bogen, Bogen dreht in ≈ 15 Bildern bei 60/s (0,25 s) senkrecht, '
+                    'Ring und Pfeilspitze mittig → 5 × TIME_SCALE = 7 Bilder bei 30/s'),
+            draw_aim_out=dict(
+                de='Gespannt aus dem Zielen (seitlich, bleibt gespannt)', frames=3,
+                weapon=[(0, 'ads'), (3, 'drawn')], L=[(0, 'support'), (3, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (3, 1)), events=[(3, 'Ready')],
+                src='M cubeescape-reference destiny2:252: ADS-Verlassen ist kein Spannabbruch, 5 Bilder bei 60/s (0,083 s) bis zur seitlichen '
+                    'gezogenen Form → 3 × TIME_SCALE = 4 Bilder'),
             fire_release=dict(
-                de='Lösen aus der Hüfte (Pfeil fliegt, neuen Pfeil auflegen, zurück zur Hüfte)', frames=26,
-                weapon=[(0, 'drawn'), (2, ('drawn', dict(back=0.012, pitch=-5, roll=-4, right=0.015, up=-0.02))), (7, ('drawn', dict(up=-0.03, right=0.02))),
-                        (17, 'hip'), (26, 'hip')], fire=[0],
-                L=[(0, 'support'), (1, 'nock'), (4, ('nock', (-40, -20, 30))), (9, OFF_L), (11, OFF_L), (18, 'mag'), (20, 'support'),
-                   (26, OFF_L)],
-                fL=[(0, 'pinch'), (1, 'open'), (9, 'relaxed'), (11, 'pinch'), (20, 'open'), (24, 'relaxed')],
-                mech={'arrow_shaft': [(0, 1), (1, -0.5), (3, -6), (11, -6), (11, 0)], 'string_top': [(0, 1), (2, 0)],
-                      'string_bottom': [(0, 1), (2, 0)], 'cam_top': [(0, 1), (2, 0)], 'cam_bottom': [(0, 1), (2, 0)], 'draw_light': [(0, 1), (2, 0)]},
-                drop=(3, 3), carry=[(11, 18)],
-                events=[(0, 'Release'), (18, 'Nocked'), (26, 'Ready')],
-                src='M Destiny-Bogen: Lösen → Lösen 1,45 s (cubeescape-reference destiny2:271), Lösen → gespannt 0,60 s (destiny2:231); '
-                    'beim Lösen kippt der Bogen ≈ 15 % H nach rechts unten und senkt sich 0,35 s (destiny2:231/271); Ablauf E: Pfeil fliegt in 3 Bildern aus dem Bild (danach verdeckt), Sehne und Rollen in 2 Bildern vor, '
-                    'Zughand folgt nach hinten, holt unter dem Bild den nächsten Pfeil (carry), legt ihn bei Bild 18 auf (0,6 s) und sinkt '
-                    'wieder unter das Bild (support_rest)'),
+                de='Lösen aus der Hüfte (Pfeil fliegt, Bogen ruckt nach rechts unten, neuer Pfeil liegt auf)', frames=10,
+                weapon=[(0, 'drawn'), (2, ('drawn', dict(back=0.012, pitch=-5, roll=-4, right=0.015, up=-0.03))),
+                        (5, ('drawn', dict(up=-0.04, right=0.02, roll=-6))), (10, 'hip')], fire=[0],
+                L=[(0, 'support'), (1, 'nock'), (4, ('nock', (-40, 20, -30))), (8, 'support'), (10, 'support')],
+                fL=[(0, 'pinch'), (1, 'open'), (7, 'pinch')],
+                mech=dict(_bow_draw((0, 1), (2, 0)), arrow_shaft=[(0, 1), (1, -0.5), (3, -6), (6, -6), (6, 0)], draw_light=[(0, 1), (1, 0)]),
+                events=[(0, 'Release'), (6, 'Nocked'), (10, 'Ready')],
+                src='M cubeescape-reference destiny2:231: Lösen → gespannt 0,60 s (0,23 s Fall/Schwingen, 0,10 s Heben, 0,25 s Ziehen), beim '
+                    'Lösen kippt der Bogen ≈ 15 % H nach rechts unten, der nächste Pfeil liegt gleich auf; destiny2:271 Bogen federt und senkt '
+                    'sich 0,35 s → 10 Bilder bis zur Hüfte; Pfeil fliegt in 3 Bildern aus dem Bild (danach weit vorn), Sehne in 2 Bildern vor'),
             fire_release_ads=dict(
-                de='Lösen im Zielen (neuen Pfeil auflegen, Bogen bleibt im Anschlag)', frames=26,
-                weapon=[(0, 'ads'), (2, ('ads', dict(back=0.008, pitch=2))), (6, 'ads'), (26, 'ads')], fire=[0],
-                L=[(0, 'support'), (1, 'nock'), (4, ('nock', (-40, -20, 30))), (9, OFF_L), (11, OFF_L), (18, 'mag'), (20, 'support'),
-                   (26, OFF_L)],
-                fL=[(0, 'pinch'), (1, 'open'), (9, 'relaxed'), (11, 'pinch'), (20, 'open'), (24, 'relaxed')],
-                mech={'arrow_shaft': [(0, 1), (1, -0.5), (3, -6), (11, -6), (11, 0)], 'string_top': [(0, 1), (2, 0)],
-                      'string_bottom': [(0, 1), (2, 0)], 'cam_top': [(0, 1), (2, 0)], 'cam_bottom': [(0, 1), (2, 0)], 'draw_light': [(0, 1), (2, 0)]},
-                drop=(3, 3), carry=[(11, 18)],
-                events=[(0, 'Release'), (18, 'Nocked'), (26, 'Ready')],
-                src='M Destiny-Bogen: im Zielen fällt der Ring nach dem Lösen ≈ 30 pp nach unten (Motiongen destiny2:508) – hier kleiner, '
-                    'das Visier bleibt lesbar; Ablauf E wie fire_release'),
+                de='Lösen im Zielen (zugleich aus dem Zielen, neuer Pfeil liegt auf)', frames=10,
+                weapon=[(0, 'ads'), (1, ('ads', dict(up=-0.05, pitch=-7, right=0.01))), (4, ('drawn', dict(up=-0.04, right=0.02, roll=-6))),
+                        (10, 'hip')], fire=[0],
+                L=[(0, 'support'), (1, 'nock'), (4, ('nock', (-40, 20, -30))), (8, 'support'), (10, 'support')],
+                fL=[(0, 'pinch'), (1, 'open'), (7, 'pinch')],
+                mech=dict(_bow_draw((0, 1), (2, 0)), arrow_shaft=[(0, 1), (1, -0.5), (3, -6), (6, -6), (6, 0)], draw_light=[(0, 1), (1, 0)]),
+                events=[(0, 'Release'), (6, 'Nocked'), (10, 'Ready')],
+                src='M cubeescape-reference destiny2:105: Lösen mit gleichzeitigem ADS-Ausstieg, Ringmitte ≈ 30 pp H nach unten im ersten '
+                    'Lösungsbild (50/57 → 53/87); Unity zielt danach wieder, wenn Rechtsklick gehalten bleibt; Ablauf sonst wie fire_release'),
             let_down=dict(
-                de='Entspannen ohne Schuss (Abzug vor dem vollen Auszug gelöst)', frames=5,
-                weapon=[(0, 'drawn'), (5, 'hip')],
-                L=[(0, 'support'), (5, OFF_L)], fL=[(0, 'pinch'), (2, 'open'), (5, 'relaxed')],
-                mech={'arrow_shaft': [(0, 1), (5, 0)], 'string_top': [(0, 1), (5, 0)], 'string_bottom': [(0, 1), (5, 0)],
-                      'cam_top': [(0, 1), (5, 0)], 'cam_bottom': [(0, 1), (5, 0)], 'draw_light': [(0, 1), (1, 0)]},
-                events=[(5, 'Ready')],
-                src='M Destiny-Bogen: Spann-Reset ohne Schuss 0,150 s (Motiongen destiny2:498) × TIME_SCALE → 6 Bilder; Unity blendet vom '
-                    'erreichten Auszug über (Modul let_down)'),
+                de='Entspannen ohne Schuss (Nachladen-Taste beim Spannen)', frames=4,
+                weapon=[(0, 'drawn'), (2, ('hip', dict(roll=-45, up=-0.05, right=0.02))), (4, 'hip')],
+                L=[(0, 'support'), (4, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (3, 0)), events=[(4, 'Ready')],
+                src='M cubeescape-reference destiny2:253: Spann-Reset ohne Schuss 9 Bilder bei 60/s (0,150 s), der Bogen rollt nach rechts in eine '
+                    'fast waagerechte tiefe Haltung, der Pfeil bleibt; „Use while drawn to cancel the shot“ (Nachladen-Taste) → 4 × TIME_SCALE = '
+                    '5 Bilder; Unity blendet vom erreichten Auszug über'),
             let_down_ads=dict(
-                de='Entspannen ohne Schuss im Zielen', frames=5,
-                weapon=[(0, 'ads'), (5, 'ads')],
-                L=[(0, 'support'), (5, OFF_L)], fL=[(0, 'pinch'), (2, 'open'), (5, 'relaxed')],
-                mech={'arrow_shaft': [(0, 1), (5, 0)], 'string_top': [(0, 1), (5, 0)], 'string_bottom': [(0, 1), (5, 0)],
-                      'cam_top': [(0, 1), (5, 0)], 'cam_bottom': [(0, 1), (5, 0)], 'draw_light': [(0, 1), (1, 0)]},
-                events=[(5, 'Ready')], src='E wie let_down, im Zielen'),
+                de='Entspannen ohne Schuss im Zielen', frames=4,
+                weapon=[(0, 'ads'), (2, ('hip', dict(roll=-45, up=-0.05, right=0.02))), (4, 'hip')],
+                L=[(0, 'support'), (4, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (3, 0)), events=[(4, 'Ready')], src='E wie let_down, aus dem Zielen'),
         ),
         gameplay=dict(rpm=60, magazine=0, path_up_h=0.0, kick=1.5, muzzle_flash=False,
                       src='Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen '
@@ -1071,10 +1099,12 @@ CLASSES = {
         # Körper, Heckklappe auf, die linke Hand holt die nächste Rakete unter dem Bild und schiebt sie von hinten ein (Griffe 'mag' an der
         # Rakete, 'push' an ihrem Heck), Klappe zu, Bereitschaftsanzeige an
         poses=dict(
-            hip=dict(pos=(-0.18, -0.353, -0.095), aim=(-0.25, -3.346, 0.06), roll=0,
-                     src='M Destiny-Raketenwerfer Hüfte ≈ 60/40 % (Motiongen destiny2:501), Visier 65/68, 68/57 (huefte:56/71): Rohr auf der '
-                         'Schulter; Lage E, gerechnet Mündung ≈ 66/44 %, Visier ≈ 74/44 %, Vordergriff ≈ 70/61 %, Heck rechts neben dem Auge – 4 cm '
-                         'weiter rechts als Destiny: mit Mündung 60/42 % lag das Rohr bis 35 % H in den Spalten der Freihaltezone (A4, 7,9 %)'),
+            hip=dict(pos=(-0.22, -0.50, -0.16), aim=(0.0, -3.489, 0.616), roll=0,
+                     src='M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × '
+                         '17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, '
+                         'das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). '
+                         'Lage E (Ausgleichsrechnung, dann 4 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
+                         'ab 60 % B), gerechnet Mündung 63/42 %, Visier 72/63 %, Vordergriff 68/61 %, Rohr 13° steigend, linke Kante 63 % B'),
             sprint=dict(pos=(-0.16, -0.36, -0.28), aim=(0.3, -2.4, -1.3), roll=-20,
                         src='E: Destiny-Raketenwerfer-Sprint nicht gemessen (Motiongen destiny2:572); Rohr von der Schulter gesenkt, Mündung '
                             'nach vorn unten'),
@@ -1230,22 +1260,38 @@ def profile(W):
     for k, A in C.get('actions', {}).items():        # Aktionen der Klasse (Werkzeug: fire_a/fire_b, Trommel: Nachladen); Feuer in
         actions[k] = copy.deepcopy(A)                 # Originalzeit wie fire_hip (KEEP_TIME), alles andere mit TIME_SCALE wie ACTIONS
         _retime(actions[k], 1.0 if k in KEEP_TIME or k.startswith('fire') else TIME_SCALE)
-    if 'support_rest' in C:                          # Stützhand in Ruhe nicht am Griff (Bogen, 0.33 P4): in den Bezugsaktionen statt 'support'
-        rest = C['support_rest']['at']
-        for k, A in actions.items():
-            if k in C.get('actions', {}):
-                continue
-            A['L'] = [(f, rest if g == 'support' else g) for f, g in A.get('L', [(0, 'support')])]
-            A['fL'] = [(f, 'relaxed' if p in ('underhand', 'open') else p) for f, p in A.get('fL', [(0, 'underhand')])]
     grips = getattr(W, 'EGO_GRIPS', None) or GRIPS
     # Stützhand: Fingerstellung des Griffs statt underhand (Pilotwaffe: underhand), dazu die Ersetzungen des Griffs (finger_map)
     fmap = dict(grips['support'].get('finger_map', {}), underhand=grips['support']['fingers_pose'])
     for A in actions.values():
         A['fL'] = [(f, fmap.get(p, p)) for f, p in A.get('fL', [(0, 'underhand')])]
+    if 'ads_hand' in C:                              # Stützhand im Zielen frei (Bogen, 0.33 P4): in den Bezugsaktionen, die ins Zielen führen
+        off = C['ads_hand']['off']
+        for k, A in actions.items():
+            if k in C.get('actions', {}) or 'ads' not in [w[1] if isinstance(w[1], str) else w[1][0] for w in A['weapon']]:
+                continue
+            ws = [(f, w if isinstance(w, str) else w[0]) for f, w in A['weapon']]
+            a_in = next(f for f, w in ws if w == 'ads')                          # erstes Bild im Zielen
+            a_out = max((f for f, w in ws if w != 'ads' and f > a_in), default=None)
+            L = A.get('L', [(0, 'support')])
+            if a_out is None:                                                    # endet im Zielen: Hand geht unter das Bild
+                A['L'] = [k_ for k_ in L if k_[0] < a_in * 0.6] + [(round(a_in * 0.6, 6), 'support'), (a_in, off)]
+            else:                                                                # beginnt im Zielen (aim_out): Hand kommt an die Nocke
+                A['L'] = [(0, off), (a_out, 'support')]
+            A['fL'] = [(f, p) for f, p in A['fL'] if f < a_in * 0.6] + [(a_in, 'relaxed')] if a_out is None else [(0, 'relaxed'), (a_out, A['fL'][-1][1])]
+    if C.get('hands', {}).get('swap'):               # Bogenhand links (Bogen, 0.33 P4): L und R tauschen, Bildpunkte gespiegelt (x links)
+        def mirror(keys, default):
+            return [(f, ('cam', (-k[1][0],) + tuple(k[1][1:])) if isinstance(k, tuple) and k[0] == 'cam' else k) for f, k in keys or default]
+        for A in actions.values():
+            L, R = A.get('L', [(0, 'support')]), A.get('R', [(0, 'grip')])
+            fL, fR = A['fL'], A.get('fR', [(0, 'trigger')])
+            A['L'], A['R'] = mirror(R, None), mirror(L, None)
+            A['fL'], A['fR'] = fR, fL
     gpose = grips['grip'].get('fingers_pose', 'trigger')
     if gpose != 'trigger':                           # Haupthand ohne Abzugsfinger (Bogen, 0.33 P4): Fingerstellung des Griffs statt trigger
+        ch = 'fL' if C.get('hands', {}).get('swap') else 'fR'
         for A in actions.values():
-            A['fR'] = [(f, gpose if p == 'trigger' else p) for f, p in A.get('fR', [(0, 'trigger')])]
+            A[ch] = [(f, gpose if p == 'trigger' else p) for f, p in A.get(ch, [(0, 'trigger')])]
     if 'bob' in C:                                  # Sprint-Hub der Klasse (Handfeuerwaffe: schmal und hoch)
         actions['sprint']['bob'] = dict(actions['sprint']['bob'], amp=C['bob']['amp'])
         actions['sprint']['src'] = f"{actions['sprint']['src']}; Klasse {t}: Hub {C['bob']['amp']} ({C['bob']['src']})"
@@ -1289,6 +1335,8 @@ def profile(W):
     live = getattr(W, 'EGO_LIVE', None) or LIVE
     P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=G, src=C['src'],
              frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop,
-             mag=grips.get('mag', {}).get('part', 'magazine'))   # Bauteil, das das Nachladen trägt (carry/drop): Magazin, Energiezelle (0.33)
+             mag=grips.get('mag', {}).get('part', 'magazine'),   # Bauteil, das das Nachladen trägt (carry/drop): Magazin, Energiezelle (0.33)
+             hands_swap=bool(C.get('hands', {}).get('swap')),     # Bogenhand links (0.33 P4)
+             ads_hide=tuple(C.get('ads_hide', {}).get('parts', ())))   # Teile, die im Zielen aus sind, je Klasse (0.33 P4, Bogen)
     _PROFILES[wid] = P
     return P

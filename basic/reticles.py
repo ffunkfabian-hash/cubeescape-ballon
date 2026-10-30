@@ -126,13 +126,13 @@ ADS_FEEDBACK = dict(hud_dot=dict(share_h=0.011, color='cyan'), shot_ring=dict(sh
 # Scout 2,9 → 2,0 (Grundzoom 1,2 + Zielfernrohr 0,8), Handfeuerwaffe 1,5 → 1,15, MP 1,25 → 1,45; übrige Klassen unverändert.
 CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 1.2, 'hand_cannon': 1.15, 'sidearm': 1.25, 'submachine_gun': 1.45,
               'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 5.5, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,
-              'trace_rifle': 1.5, 'rocket_launcher': 2.5, 'machine_gun': 1.6, 'combat_bow': 1.5, 'sword': 1.0, 'glaive': 1.25}
+              'trace_rifle': 1.5, 'rocket_launcher': 2.5, 'machine_gun': 1.6, 'combat_bow': 1.9, 'sword': 1.0, 'glaive': 1.25}
 CLASS_ZOOM_STATUS = {k: 'beobachtet' for k in ('auto_rifle', 'pulse_rifle', 'scout_rifle', 'hand_cannon', 'sidearm', 'submachine_gun',
                                                'shotgun', 'grenade_launcher', 'sniper_rifle')}
 CLASS_ZOOM_STATUS.update({k: 'gemessen (Glidepath)' for k in ('scout_rifle', 'hand_cannon', 'submachine_gun')})
 # Bogen (0.29): cubeescape-reference misst den Endmaßstab Hüfte → ADS der Imperial Needle ≈ 2,2× [M] (destiny2 ›
-# z-zb-imperial-needle-zoom, REF 0.17); hier bleibt 1,5 + Reflexbonus 0,3 = 1,8, weil die Zoomtabelle aller Klassen in Unitys ego.json
-# steht (export_unity.gameplay) – Angleichen mit dem Ego-Übertrag des Bogens.
+# z-zb-imperial-needle-zoom, REF 0.17); bis 0.32 1,5 + Reflexbonus 0,3 = 1,8, mit dem Ego-Übertrag des Bogens (0.33 „Armory“ P4)
+# angeglichen: 1,9 + 0,3 = 2,2.
 
 
 def world_zoom(weapon_type, sight_type):

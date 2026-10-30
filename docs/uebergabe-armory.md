@@ -50,8 +50,14 @@ Ergebnisse, Messungen und Repo-Größe stehen im Versionsbericht [versions/0.33-
   herum gekippt).
 - **Granatwerfer = Spec `semi_auto`** mit Trommel 6 (nicht `single_shot` wie in der alten Tabelle): `fire_cycle` dreht die Trommel, Nachladen je
   Kammer (ShellReload ohne `reload_end_pump`), Hülsen beim Marker Eject (`EJECT.on='reload'`).
-- **Bogen `draw_release`**: Klassenaktionen `fire_draw(_ads)`, `fire_release(_ads)`, `let_down(_ads)`, Haltung `drawn`, `support_rest` (Zughand
-  in Ruhe unter dem Bild); Sehnen als Bewegung `segment` in Export/Solver/Rig.
+- **Bogen `draw_release` wie Destiny** (nach Nutzerhinweisen gegen cubeescape-reference und die Bilder des Imperial-Needle-Videos
+  `~/Library/Caches/CubeEscape/reference/visiere/codex/destiny-spezial/dKNTDzi__Qo.mp4`): Bogenhand links (`hands.swap`), Hüfte quer im
+  unteren Bild, Zielen durch den Ring mit dem Bogen 27 cm näher (`ads › eye`, Ring ≈ 9,8 % B, Zoom 2,2×), gespannt ins Zielen und zurück
+  (`draw_aim_in/out`), Loslassen löst immer (halb gespannt schwach), Nachladen-Taste entspannt, Schaft im Zielen aus (`ads_hide` je Klasse),
+  Zughand im ungespannten Zielen unter dem Bild (`ads_hand`); Sehnen als Bewegung `segment` in Export/Solver/Rig. Bildvergleich
+  `~/Library/Caches/CubeEscapeBallon/0.33/sheet_07_vs_destiny_b.png`.
+- **Abgleich aller Waffen mit huefte.json** im Versionsbericht: hintere Visieröffnung bei 03, 02, 12, 15, 11 und Griffhand bei 04, 05 weichen
+  10–19 pp ab – Entscheidung des Nutzers offen, ob die Hüftlagen aus P1–P3 nachgezogen werden.
 - **Raketenwerfer `single_shot`**: nach dem Schuss sofort Nachladen; `gameplay.flash_scale` (neu, 13: 0,9, 14: 0,7) hält das Mündungsfeuer im
   Zielen ≤ 20 %.
 - **Ziel 2 Code**: `tools/make_icons.py` (Symbole aus `data/silhouettes.json` per ImageMagick nach `Generated/Icons`, `./check` prüft),

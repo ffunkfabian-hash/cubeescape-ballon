@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "97331ee8b436ed2a881d0f3a13de4970a1549a309512e2c3539a9a7d7589a234"
+    "sha256": "c5339eb8ce474ba484912d438b7d65da23728f7dcc6ffa7a4e6252db903cbc7a"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "de4a2e31137235a3910a05d2a8130614e73ff44f260b1962e12547543a31b4eb"
+    "sha256": "0558acf70d9910c94d709216fdaedbdd5d95ff48cb9e8f3530c3e036e85a3d66"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "9559717bd54fc8f1cb69dce1e4cb996a9943c988d83bfe3c7b55b230db43fd05"
+    "sha256": "7f77a75371bfb176a0ff53bc962fc1bcac8d379ae1cc6c484e6419fd44cefc66"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1460,7 +1460,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -8654,7 +8654,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -14909,7 +14909,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -21521,7 +21521,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -28057,7 +28057,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -31354,7 +31354,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -36264,7 +36264,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -41487,7 +41487,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -48272,7 +48272,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -54191,7 +54191,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -61456,7 +61456,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -67906,7 +67906,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -73666,7 +73666,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -79597,6 +79597,7 @@
     "type": "combat_bow",
     "src": "Ego-Übertrag 0.33 „Armory“ P4: Hüfte, Spannhaltung, Sprint und Zeiten nach Motiongen (Bogen Imperial Needle), Ablauf E",
     "poses": [
+     "ads",
      "drawn",
      "hip",
      "inspect_l",
@@ -79638,7 +79639,7 @@
     "recover_hz": 2.0,
     "weapon_type": "combat_bow",
     "sight": "reflex",
-    "world_zoom": 1.8,
+    "world_zoom": 2.2,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -79698,7 +79699,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -80718,7 +80719,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "arrow_ferrule",
@@ -80799,7 +80800,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "fletch_top",
@@ -80826,7 +80827,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "fletch_l",
@@ -80853,7 +80854,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "fletch_r",
@@ -80880,7 +80881,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -80996,17 +80997,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": -25.0,
-     "src": "M cubeescape-reference destiny2:271 (Imperial Needle): Hüfte quer gekantet links unten → rechts oben, Pfeil zur Mitte; destiny2:221/231: Riser rechts, ≈ 15° nach rechts geneigt, Griff ≈ 62/85–90 %; huefte:74 Visier 57,3/75,2, Griff 46,6/84,8. Lage E, gerechnet Griff 63/89 %, Pfeilspitze 54/60 %, oberer Wurfarm rechts oben aus dem Bild; Ring 58/63 %; 2,5 cm weiter rechts als der erste Entwurf (Pfeilspitze 51/59 % lag in der Freihaltezone, A4) (das Seitenvisier B1 sitzt links vom Pfeil, Destiny zielt über die Pfeilspitze, visiere:87)",
+     "roll": -80.0,
+     "src": "M cubeescape-reference huefte.json › hl-destiny-2-imperial-needle (Ultraclocked 0:47,000): linke Griffhand 46,6/84,8 %, Visier 57,3/75,2 %, Bogen breit im unteren Bild (Körper 7,6–100 × 68,6–100 %), rechte Hand an der Nocke 49–64 × 91–100 %; destiny2:514 quer gekantet von links unten nach rechts oben, Pfeil zur Mitte. Lage E (Ausgleichsrechnung gegen diese Werte, dann 3 cm nach rechts für die Freihaltezone A4), gerechnet Griff 50/84 %, Nocke 57/93 %, Pfeilspitze 53/67 %, Ring 56/68 %, Wurfarme links unten und rechts oben aus dem Bild",
      "pos": [
-      -0.095,
-      -0.47,
-      -0.16
+      -0.01,
+      -0.61,
+      -0.18
      ],
      "aim": [
-      0.15,
-      -3.0,
-      -0.02
+      -0.01,
+      -3.61,
+      -0.18
      ],
      "eye": [
       0.0,
@@ -81023,7 +81024,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "M Destiny-Bogen Imperial Needle im Zielen (Bilder aus Ultraclocked dKNTDzi__Qo 47,75/48,3/67,7 s, Cache CubeEscape/reference/visiere; cubeescape-reference destiny2:105 Ring 50/57, zielbewegung: Zoom 2,2×): Blick durch den Ring, der Riser direkt rechts daneben, die Pfeilspitze unter dem Ring, Wurfarme über die volle Bildhöhe, linke Hand unten Mitte; der Ring ist ≈ 9 % B groß. Lage E: der Bogen steht 27 cm näher an der Kamera als der Ankerpunkt des vollen Auszugs (Socket_Eye 23 cm hinter dem Auge, Sehne und Zughand hinter der Kamera; Nutzer 30.10.2026: „beim Bogen ist das Visier näher am Bild“; mit 23 cm ≈ 6 % B im Bildvergleich), gerechnet Ring 50/50 % mit Ø 52 mm in 0,41 m ≈ 9,8 % B",
      "pos": [
       0.0,
       0.0,
@@ -81036,7 +81037,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      0.27,
       0.0
      ],
      "aim_dir": [
@@ -81074,17 +81075,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": -21.0,
+     "roll": -76.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.075,
-      -0.43,
-      -0.18
+      0.01,
+      -0.57,
+      -0.2
      ],
      "aim": [
-      0.53,
-      -2.0,
-      -1.02
+      0.37,
+      -2.61,
+      -1.18
      ],
      "eye": [
       0.0,
@@ -81100,17 +81101,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": -22.0,
+     "roll": -77.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.085,
-      -0.46,
-      -0.175
+      0.0,
+      -0.6,
+      -0.195
      ],
      "aim": [
-      0.15,
-      -3.0,
-      -0.07
+      -0.01,
+      -3.61,
+      -0.23
      ],
      "eye": [
       0.0,
@@ -81126,17 +81127,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": -27.0,
+     "roll": -82.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.095,
-      -0.47,
-      -0.145
+      -0.01,
+      -0.61,
+      -0.165
      ],
      "aim": [
-      0.15,
-      -3.0,
-      0.05
+      -0.01,
+      -3.61,
+      -0.11
      ],
      "eye": [
       0.0,
@@ -81230,17 +81231,17 @@
     {
      "name": "drawn",
      "ads": false,
-     "roll": -20.0,
-     "src": "M cubeescape-reference destiny2:221 (Spannen ohne ADS): der Bogen bleibt rechts, Riser-Mitte ≈ 70/45 %, 20° nach rechts geneigt, Sehnenhand ≈ 85/95; destiny2:231: Pfeilspitze beim Halten exakt auf der Mitte. Lage E, gerechnet Griff 68/47 %, Pfeilspitze 50/51 %, Rollen −20°; der Nockpunkt bei vollem Auszug liegt rechts neben der Kamera (Sehnenhand aus dem Bild)",
+     "roll": -65.0,
+     "src": "M Destiny-Bogen Imperial Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer gekantet, etwas gehoben, Ring ≈ 57/64 %, linke Hand unten ≈ 47/89 %, oberer Wurfarm rechts aus dem Bild, Zughand nicht sichtbar (andere Bögen stehen dabei rechts senkrecht, destiny2:221). Lage E (Ausgleichsrechnung), gerechnet Griff 50/88 %, Ring 57/64 %, voller Auszug hinter der Kamera",
      "pos": [
-      -0.13,
-      -0.46,
-      0.01
+      0.0,
+      -0.49,
+      -0.16
      ],
      "aim": [
-      0.55,
-      -3.0,
-      -0.3
+      -0.776,
+      -3.388,
+      0.101
      ],
      "eye": [
       0.0,
@@ -81259,12 +81260,12 @@
      "name": "grip",
      "part": "",
      "contact": [
-      -0.017,
+      0.0175,
       0.008,
-      0.0
+      -0.026
      ],
      "palm": [
-      1.0,
+      -1.0,
       -0.15,
       0.0
      ],
@@ -81274,18 +81275,18 @@
       -0.06
      ],
      "fingers_pose": "foregrip",
-     "src": "E: Bogenhand rechts am Griffstück wie an einem Pistolengriff (Finger nach vorn um das Griffstück, Faust wie am Vordergriff); mit der Hand quer von hinten rechts knickte das Handgelenk an der Grenze 45° (Stills 0.33 P4)"
+     "src": "E: Bogenhand links (wie Destiny, ego.CLASSES › hands.swap) links am Griffstück, Finger nach vorn um das Griffstück, Faust wie am Vordergriff der MP (BASIC-06 support); Handmitte 26 mm unter der Griffachse, Zeigefinger und Daumen unter der Pfeilauflage (Nutzer 30.10.2026: „die linke Hand greift zu hoch am Bogen“)"
     },
     {
      "name": "support",
      "part": "arrow_shaft",
      "contact": [
-      0.008,
+      -0.008,
       0.158,
       0.04
      ],
      "palm": [
-      -1.0,
+      1.0,
       0.0,
       0.0
      ],
@@ -81295,39 +81296,18 @@
       -0.97
      ],
      "fingers_pose": "pinch",
-     "src": "E: Zughand links am Nockpunkt (Socket_Nock), Daumen und Zeigefinger fassen Nocke und Sehne; folgt dem Pfeil beim Auszug"
-    },
-    {
-     "name": "mag",
-     "part": "arrow_shaft",
-     "contact": [
-      0.008,
-      0.158,
-      0.04
-     ],
-     "palm": [
-      -1.0,
-      0.0,
-      0.0
-     ],
-     "fingers": [
-      0.0,
-      -0.25,
-      -0.97
-     ],
-     "fingers_pose": "pinch",
-     "src": "E: wie support – die Zughand trägt den nächsten Pfeil an der Nocke (carry) und legt ihn auf"
+     "src": "E: Zughand rechts am Nockpunkt (Socket_Nock), Daumen und Zeigefinger fassen Nocke und Sehne; folgt dem Pfeil beim Auszug"
     },
     {
      "name": "nock",
      "part": "",
      "contact": [
-      0.008,
+      -0.008,
       0.578,
       0.04
      ],
      "palm": [
-      -1.0,
+      1.0,
       0.0,
       0.0
      ],
@@ -81372,12 +81352,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -81390,7 +81370,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -81406,13 +81386,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -81478,10 +81458,27 @@
      "L": [
       {
        "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
+        -0.3,
         -0.25,
         -0.62
        ],
@@ -81496,7 +81493,7 @@
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
+        -0.3,
         -0.25,
         -0.62
        ],
@@ -81508,12 +81505,12 @@
       },
       {
        "f": 9.1,
-       "kind": "cam",
+       "kind": "grip",
        "grip": "support",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -81523,25 +81520,8 @@
       },
       {
        "f": 14.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -81557,21 +81537,21 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 7.7,
-       "pose": "relaxed"
-      },
-      {
-       "f": 9.8,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "relaxed"
+      },
+      {
+       "f": 7.7,
+       "pose": "open"
+      },
+      {
+       "f": 9.8,
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -81642,53 +81622,6 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 1.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 5.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
        "kind": "grip",
        "grip": "grip",
        "point": [
@@ -81703,24 +81636,71 @@
        ]
       }
      ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 1.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 2.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 6.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
+      },
+      {
+       "f": 2.0,
+       "pose": "open"
+      },
+      {
+       "f": 6.0,
+       "pose": "relaxed"
       }
      ],
      "mech": [],
@@ -81795,23 +81775,6 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
        "kind": "grip",
        "grip": "grip",
        "point": [
@@ -81826,16 +81789,67 @@
        ]
       }
      ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 3.24,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.4,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
+      },
+      {
+       "f": 5.4,
+       "pose": "relaxed"
       }
      ],
      "mech": [],
@@ -81896,12 +81910,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -81913,8 +81927,23 @@
      "R": [
       {
        "f": 0.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -81930,13 +81959,17 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "relaxed"
+      },
+      {
+       "f": 5.0,
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82047,12 +82080,29 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
        "grip": "support",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82062,12 +82112,12 @@
       },
       {
        "f": 50.0,
-       "kind": "cam",
+       "kind": "grip",
        "grip": "support",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82080,7 +82130,7 @@
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
+        -0.3,
         -0.25,
         -0.62
        ],
@@ -82095,7 +82145,7 @@
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
+        -0.3,
         -0.25,
         -0.62
        ],
@@ -82107,12 +82157,12 @@
       },
       {
        "f": 117.5,
-       "kind": "cam",
+       "kind": "grip",
        "grip": "support",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82122,25 +82172,8 @@
       },
       {
        "f": 120.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82156,11 +82189,17 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "pinch"
       },
       {
        "f": 52.5,
-       "pose": "relaxed"
+       "pose": "open"
       },
       {
        "f": 62.5,
@@ -82168,17 +82207,11 @@
       },
       {
        "f": 107.5,
-       "pose": "relaxed"
+       "pose": "open"
       },
       {
        "f": 117.5,
-       "pose": "relaxed"
-      }
-     ],
-     "fR": [
-      {
-       "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82263,12 +82296,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82281,7 +82314,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82297,13 +82330,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82389,12 +82422,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82407,7 +82440,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82423,13 +82456,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82494,12 +82527,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82512,7 +82545,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82528,13 +82561,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82601,12 +82634,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82619,7 +82652,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82635,13 +82668,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82732,12 +82765,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82750,7 +82783,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82766,13 +82799,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -82847,23 +82880,6 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
        "kind": "grip",
        "grip": "grip",
        "point": [
@@ -82878,16 +82894,67 @@
        ]
       }
      ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 7.2,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 12.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
+      },
+      {
+       "f": 12.0,
+       "pose": "relaxed"
       }
      ],
      "mech": [],
@@ -82962,12 +83029,12 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
@@ -82980,7 +83047,7 @@
       {
        "f": 0.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -82996,13 +83063,13 @@
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [],
@@ -83087,68 +83154,6 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 7.5,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 16.25,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 35.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
        "kind": "grip",
        "grip": "grip",
        "point": [
@@ -83163,24 +83168,105 @@
        ]
       }
      ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 7.5,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 16.25,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 18.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 30.0,
+       "kind": "cam",
+       "grip": "support",
+       "point": [
+        -0.3,
+        -0.25,
+        -0.62
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
      "fL": [
+      {
+       "f": 0.0,
+       "pose": "foregrip"
+      }
+     ],
+     "fR": [
       {
        "f": 0.0,
        "pose": "relaxed"
       },
       {
        "f": 13.75,
-       "pose": "relaxed"
+       "pose": "open"
       },
       {
        "f": 17.5,
-       "pose": "relaxed"
-      }
-     ],
-     "fR": [
+       "pose": "pinch"
+      },
       {
-       "f": 0.0,
-       "pose": "foregrip"
+       "f": 30.0,
+       "pose": "relaxed"
       }
      ],
      "mech": [],
@@ -83219,7 +83305,7 @@
      "de": "Spannen aus der Hüfte (Bogen senkrecht, Sehne zum Auge)",
      "frames": 18,
      "time_scale": 1.0,
-     "src": "S/M Destiny-Bogen Imperial Needle Ziehzeit 612 ms, Anlegen → voll ≈ 0,60 s (Motiongen destiny2:270) → voll bei Bild 18 (wie das Modul: Spannzeit 0,60 s); senkrecht in 4 Bildern (destiny2:587 4 B60, hier mit Nachlauf 4 B30); Spannlicht bei vollem Auszug (Modul draw_hold_release)",
+     "src": "S/M Destiny-Bogen Imperial Needle Ziehzeit 612 ms, Anlegen → voll ≈ 0,60 s (cubeescape-reference destiny2:271) → voll bei Bild 18 (wie das Modul: Spannzeit 0,60 s); Heben 0,1 s, dann Ziehen (destiny2:231), senkrecht in 4 Bildern (destiny2:185); Spannlicht bei vollem Auszug (Modul draw_hold_release)",
      "weapon": [
       {
        "f": 0.0,
@@ -83255,21 +83341,23 @@
      "L": [
       {
        "f": 0.0,
-       "kind": "cam",
-       "grip": "support",
+       "kind": "grip",
+       "grip": "grip",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
         0.0,
         0.0
        ]
-      },
+      }
+     ],
+     "R": [
       {
-       "f": 4.0,
+       "f": 0.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -83299,41 +83387,16 @@
        ]
       }
      ],
-     "R": [
-      {
-       "f": 0.0,
-       "kind": "grip",
-       "grip": "grip",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 2.0,
-       "pose": "open"
-      },
-      {
-       "f": 4.0,
-       "pose": "pinch"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [
@@ -83471,7 +83534,7 @@
      "de": "Spannen im Zielen (Bogen bleibt im Anschlag)",
      "frames": 18,
      "time_scale": 1.0,
-     "src": "E wie fire_draw, die Waffe bleibt im Zielen (Visier vor dem Auge)",
+     "src": "E wie fire_draw, die Waffe bleibt im Zielen (Ringvisier vor dem Auge)",
      "weapon": [
       {
        "f": 0.0,
@@ -83497,10 +83560,27 @@
      "L": [
       {
        "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
+        -0.3,
         -0.25,
         -0.62
        ],
@@ -83511,7 +83591,7 @@
        ]
       },
       {
-       "f": 4.0,
+       "f": 5.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -83541,41 +83621,24 @@
        ]
       }
      ],
-     "R": [
-      {
-       "f": 0.0,
-       "kind": "grip",
-       "grip": "grip",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 2.0,
-       "pose": "open"
-      },
-      {
-       "f": 4.0,
-       "pose": "pinch"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "relaxed"
+      },
+      {
+       "f": 3.0,
+       "pose": "open"
+      },
+      {
+       "f": 5.0,
+       "pose": "pinch"
       }
      ],
      "mech": [
@@ -83709,11 +83772,401 @@
      ]
     },
     {
+     "name": "draw_aim_in",
+     "de": "Gespannt ins Zielen (Bogen dreht senkrecht vor das Auge, bleibt gespannt)",
+     "frames": 7,
+     "time_scale": 1.25,
+     "src": "M cubeescape-reference destiny2:271: ADS mit gespanntem Bogen, Bogen dreht in ≈ 15 Bildern bei 60/s (0,25 s) senkrecht, Ring und Pfeilspitze mittig → 5 × TIME_SCALE = 7 Bilder bei 30/s",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "drawn",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 6.25,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 6.25,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "foregrip"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "pinch"
+      }
+     ],
+     "mech": [
+      {
+       "part": "arrow_shaft",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "string_top",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "string_bottom",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "cam_top",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "cam_bottom",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "draw_light",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 6.25,
+         "v": 1.0
+        }
+       ]
+      }
+     ],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 6,
+       "name": "Aimed"
+      }
+     ]
+    },
+    {
+     "name": "draw_aim_out",
+     "de": "Gespannt aus dem Zielen (seitlich, bleibt gespannt)",
+     "frames": 4,
+     "time_scale": 1.25,
+     "src": "M cubeescape-reference destiny2:252: ADS-Verlassen ist kein Spannabbruch, 5 Bilder bei 60/s (0,083 s) bis zur seitlichen gezogenen Form → 3 × TIME_SCALE = 4 Bilder",
+     "weapon": [
+      {
+       "f": 0.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 3.75,
+       "pose": "drawn",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      }
+     ],
+     "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 3.75,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "fL": [
+      {
+       "f": 0.0,
+       "pose": "foregrip"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
+       "pose": "pinch"
+      }
+     ],
+     "mech": [
+      {
+       "part": "arrow_shaft",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 3.75,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "string_top",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 3.75,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "string_bottom",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 3.75,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "cam_top",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 3.75,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "cam_bottom",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 3.75,
+         "v": 1.0
+        }
+       ]
+      },
+      {
+       "part": "draw_light",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 1.0
+        },
+        {
+         "f": 3.75,
+         "v": 1.0
+        }
+       ]
+      }
+     ],
+     "carry": [],
+     "drop": {
+      "a": -1.0,
+      "b": -1.0
+     },
+     "fire": [],
+     "kick": 1.0,
+     "breathe": false,
+     "bob": {
+      "enabled": false,
+      "start": 0.0,
+      "end": 0.0,
+      "period": 1.0,
+      "amp": [
+       0.0,
+       0.0
+      ],
+      "roll": 0.0
+     },
+     "events": [
+      {
+       "f": 4,
+       "name": "Ready"
+      }
+     ]
+    },
+    {
      "name": "fire_release",
-     "de": "Lösen aus der Hüfte (Pfeil fliegt, neuen Pfeil auflegen, zurück zur Hüfte)",
-     "frames": 26,
+     "de": "Lösen aus der Hüfte (Pfeil fliegt, Bogen ruckt nach rechts unten, neuer Pfeil liegt auf)",
+     "frames": 10,
      "time_scale": 1.0,
-     "src": "M Destiny-Bogen: Lösen → Lösen 1,45 s (cubeescape-reference destiny2:271), Lösen → gespannt 0,60 s (destiny2:231); beim Lösen kippt der Bogen ≈ 15 % H nach rechts unten und senkt sich 0,35 s (destiny2:231/271); Ablauf E: Pfeil fliegt in 3 Bildern aus dem Bild (danach verdeckt), Sehne und Rollen in 2 Bildern vor, Zughand folgt nach hinten, holt unter dem Bild den nächsten Pfeil (carry), legt ihn bei Bild 18 auf (0,6 s) und sinkt wieder unter das Bild (support_rest)",
+     "src": "M cubeescape-reference destiny2:231: Lösen → gespannt 0,60 s (0,23 s Fall/Schwingen, 0,10 s Heben, 0,25 s Ziehen), beim Lösen kippt der Bogen ≈ 15 % H nach rechts unten, der nächste Pfeil liegt gleich auf; destiny2:271 Bogen federt und senkt sich 0,35 s → 10 Bilder bis zur Hüfte; Pfeil fliegt in 3 Bildern aus dem Bild (danach weit vorn), Sehne in 2 Bildern vor",
      "weapon": [
       {
        "f": 0.0,
@@ -83731,32 +84184,22 @@
        "roll": -4.0,
        "yaw": 0.0,
        "pitch": -5.0,
-       "up": -0.02,
+       "up": -0.03,
        "right": 0.015,
        "back": 0.012
       },
       {
-       "f": 7.0,
+       "f": 5.0,
        "pose": "drawn",
-       "roll": 0.0,
+       "roll": -6.0,
        "yaw": 0.0,
        "pitch": 0.0,
-       "up": -0.03,
+       "up": -0.04,
        "right": 0.02,
        "back": 0.0
       },
       {
-       "f": 17.0,
-       "pose": "hip",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": 0.0,
-       "back": 0.0
-      },
-      {
-       "f": 26.0,
+       "f": 10.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -83767,6 +84210,23 @@
       }
      ],
      "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
       {
        "f": 0.0,
        "kind": "grip",
@@ -83807,58 +84267,13 @@
         0.0
        ],
        "offset": [
-        0.03,
+        -0.03,
         0.04,
-        -0.02
+        0.02
        ]
       },
       {
-       "f": 9.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 11.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 18.0,
-       "kind": "grip",
-       "grip": "mag",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 20.0,
+       "f": 8.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -83873,26 +84288,9 @@
        ]
       },
       {
-       "f": 26.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
+       "f": 10.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -83908,6 +84306,12 @@
      "fL": [
       {
        "f": 0.0,
+       "pose": "foregrip"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
        "pose": "pinch"
       },
       {
@@ -83915,26 +84319,8 @@
        "pose": "open"
       },
       {
-       "f": 9.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 11.0,
+       "f": 7.0,
        "pose": "pinch"
-      },
-      {
-       "f": 20.0,
-       "pose": "open"
-      },
-      {
-       "f": 24.0,
-       "pose": "relaxed"
-      }
-     ],
-     "fR": [
-      {
-       "f": 0.0,
-       "pose": "foregrip"
       }
      ],
      "mech": [
@@ -83954,11 +84340,11 @@
          "v": -6.0
         },
         {
-         "f": 11.0,
+         "f": 6.0,
          "v": -6.0
         },
         {
-         "f": 11.0,
+         "f": 6.0,
          "v": 0.0
         }
        ]
@@ -84023,21 +84409,16 @@
          "v": 1.0
         },
         {
-         "f": 2.0,
+         "f": 1.0,
          "v": 0.0
         }
        ]
       }
      ],
-     "carry": [
-      {
-       "a": 11.0,
-       "b": 18.0
-      }
-     ],
+     "carry": [],
      "drop": {
-      "a": 3.0,
-      "b": 3.0
+      "a": -1.0,
+      "b": -1.0
      },
      "fire": [
       0
@@ -84061,21 +84442,21 @@
        "name": "Release"
       },
       {
-       "f": 18,
+       "f": 6,
        "name": "Nocked"
       },
       {
-       "f": 26,
+       "f": 10,
        "name": "Ready"
       }
      ]
     },
     {
      "name": "fire_release_ads",
-     "de": "Lösen im Zielen (neuen Pfeil auflegen, Bogen bleibt im Anschlag)",
-     "frames": 26,
+     "de": "Lösen im Zielen (zugleich aus dem Zielen, neuer Pfeil liegt auf)",
+     "frames": 10,
      "time_scale": 1.0,
-     "src": "M Destiny-Bogen: im Zielen fällt der Ring nach dem Lösen ≈ 30 pp nach unten (Motiongen destiny2:508) – hier kleiner, das Visier bleibt lesbar; Ablauf E wie fire_release",
+     "src": "M cubeescape-reference destiny2:105: Lösen mit gleichzeitigem ADS-Ausstieg, Ringmitte ≈ 30 pp H nach unten im ersten Lösungsbild (50/57 → 53/87); Unity zielt danach wieder, wenn Rechtsklick gehalten bleibt; Ablauf sonst wie fire_release",
      "weapon": [
       {
        "f": 0.0,
@@ -84088,28 +84469,28 @@
        "back": 0.0
       },
       {
-       "f": 2.0,
+       "f": 1.0,
        "pose": "ads",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 2.0,
-       "up": 0.0,
-       "right": 0.0,
-       "back": 0.008
-      },
-      {
-       "f": 6.0,
-       "pose": "ads",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": 0.0,
+       "pitch": -7.0,
+       "up": -0.05,
+       "right": 0.01,
        "back": 0.0
       },
       {
-       "f": 26.0,
-       "pose": "ads",
+       "f": 4.0,
+       "pose": "drawn",
+       "roll": -6.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.04,
+       "right": 0.02,
+       "back": 0.0
+      },
+      {
+       "f": 10.0,
+       "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
        "pitch": 0.0,
@@ -84119,6 +84500,23 @@
       }
      ],
      "L": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "grip",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "R": [
       {
        "f": 0.0,
        "kind": "grip",
@@ -84159,58 +84557,13 @@
         0.0
        ],
        "offset": [
-        0.03,
+        -0.03,
         0.04,
-        -0.02
+        0.02
        ]
       },
       {
-       "f": 9.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 11.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 18.0,
-       "kind": "grip",
-       "grip": "mag",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 20.0,
+       "f": 8.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -84225,26 +84578,9 @@
        ]
       },
       {
-       "f": 26.0,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
-      {
-       "f": 0.0,
+       "f": 10.0,
        "kind": "grip",
-       "grip": "grip",
+       "grip": "support",
        "point": [
         0.0,
         0.0,
@@ -84260,6 +84596,12 @@
      "fL": [
       {
        "f": 0.0,
+       "pose": "foregrip"
+      }
+     ],
+     "fR": [
+      {
+       "f": 0.0,
        "pose": "pinch"
       },
       {
@@ -84267,26 +84609,8 @@
        "pose": "open"
       },
       {
-       "f": 9.0,
-       "pose": "relaxed"
-      },
-      {
-       "f": 11.0,
+       "f": 7.0,
        "pose": "pinch"
-      },
-      {
-       "f": 20.0,
-       "pose": "open"
-      },
-      {
-       "f": 24.0,
-       "pose": "relaxed"
-      }
-     ],
-     "fR": [
-      {
-       "f": 0.0,
-       "pose": "foregrip"
       }
      ],
      "mech": [
@@ -84306,11 +84630,11 @@
          "v": -6.0
         },
         {
-         "f": 11.0,
+         "f": 6.0,
          "v": -6.0
         },
         {
-         "f": 11.0,
+         "f": 6.0,
          "v": 0.0
         }
        ]
@@ -84375,21 +84699,16 @@
          "v": 1.0
         },
         {
-         "f": 2.0,
+         "f": 1.0,
          "v": 0.0
         }
        ]
       }
      ],
-     "carry": [
-      {
-       "a": 11.0,
-       "b": 18.0
-      }
-     ],
+     "carry": [],
      "drop": {
-      "a": 3.0,
-      "b": 3.0
+      "a": -1.0,
+      "b": -1.0
      },
      "fire": [
       0
@@ -84413,21 +84732,21 @@
        "name": "Release"
       },
       {
-       "f": 18,
+       "f": 6,
        "name": "Nocked"
       },
       {
-       "f": 26,
+       "f": 10,
        "name": "Ready"
       }
      ]
     },
     {
      "name": "let_down",
-     "de": "Entspannen ohne Schuss (Abzug vor dem vollen Auszug gelöst)",
-     "frames": 7,
+     "de": "Entspannen ohne Schuss (Nachladen-Taste beim Spannen)",
+     "frames": 5,
      "time_scale": 1.25,
-     "src": "M Destiny-Bogen: Spann-Reset ohne Schuss 0,150 s (Motiongen destiny2:498) × TIME_SCALE → 6 Bilder; Unity blendet vom erreichten Auszug über (Modul let_down)",
+     "src": "M cubeescape-reference destiny2:253: Spann-Reset ohne Schuss 9 Bilder bei 60/s (0,150 s), der Bogen rollt nach rechts in eine fast waagerechte tiefe Haltung, der Pfeil bleibt; „Use while drawn to cancel the shot“ (Nachladen-Taste) → 4 × TIME_SCALE = 5 Bilder; Unity blendet vom erreichten Auszug über",
      "weapon": [
       {
        "f": 0.0,
@@ -84440,7 +84759,17 @@
        "back": 0.0
       },
       {
-       "f": 6.25,
+       "f": 2.5,
+       "pose": "hip",
+       "roll": -45.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.05,
+       "right": 0.02,
+       "back": 0.0
+      },
+      {
+       "f": 5.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -84451,38 +84780,6 @@
       }
      ],
      "L": [
-      {
-       "f": 0.0,
-       "kind": "grip",
-       "grip": "support",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 6.25,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
       {
        "f": 0.0,
        "kind": "grip",
@@ -84499,24 +84796,48 @@
        ]
       }
      ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "pinch"
-      },
-      {
-       "f": 2.5,
-       "pose": "open"
-      },
-      {
-       "f": 6.25,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [
@@ -84528,7 +84849,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84541,7 +84862,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84554,7 +84875,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84567,7 +84888,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84580,7 +84901,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84593,7 +84914,7 @@
          "v": 1.0
         },
         {
-         "f": 1.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84620,7 +84941,7 @@
      },
      "events": [
       {
-       "f": 6,
+       "f": 5,
        "name": "Ready"
       }
      ]
@@ -84628,9 +84949,9 @@
     {
      "name": "let_down_ads",
      "de": "Entspannen ohne Schuss im Zielen",
-     "frames": 7,
+     "frames": 5,
      "time_scale": 1.25,
-     "src": "E wie let_down, im Zielen",
+     "src": "E wie let_down, aus dem Zielen",
      "weapon": [
       {
        "f": 0.0,
@@ -84643,8 +84964,18 @@
        "back": 0.0
       },
       {
-       "f": 6.25,
-       "pose": "ads",
+       "f": 2.5,
+       "pose": "hip",
+       "roll": -45.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.05,
+       "right": 0.02,
+       "back": 0.0
+      },
+      {
+       "f": 5.0,
+       "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
        "pitch": 0.0,
@@ -84654,38 +84985,6 @@
       }
      ],
      "L": [
-      {
-       "f": 0.0,
-       "kind": "grip",
-       "grip": "support",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 6.25,
-       "kind": "cam",
-       "grip": "support",
-       "point": [
-        0.3,
-        -0.25,
-        -0.62
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      }
-     ],
-     "R": [
       {
        "f": 0.0,
        "kind": "grip",
@@ -84702,24 +85001,48 @@
        ]
       }
      ],
+     "R": [
+      {
+       "f": 0.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 5.0,
+       "kind": "grip",
+       "grip": "support",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     ],
      "fL": [
       {
        "f": 0.0,
-       "pose": "pinch"
-      },
-      {
-       "f": 2.5,
-       "pose": "open"
-      },
-      {
-       "f": 6.25,
-       "pose": "relaxed"
+       "pose": "foregrip"
       }
      ],
      "fR": [
       {
        "f": 0.0,
-       "pose": "foregrip"
+       "pose": "pinch"
       }
      ],
      "mech": [
@@ -84731,7 +85054,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84744,7 +85067,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84757,7 +85080,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84770,7 +85093,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84783,7 +85106,7 @@
          "v": 1.0
         },
         {
-         "f": 6.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84796,7 +85119,7 @@
          "v": 1.0
         },
         {
-         "f": 1.25,
+         "f": 3.75,
          "v": 0.0
         }
        ]
@@ -84823,7 +85146,7 @@
      },
      "events": [
       {
-       "f": 6,
+       "f": 5,
        "name": "Ready"
       }
      ]
@@ -84835,7 +85158,7 @@
     "files": [
      {
       "path": "basic/pilot/w07_combat_bow_v21.py",
-      "sha256": "93aa6eb1c1889178a1f0ade3c89de4424b863be3bd189e43b5181aaf7fbdbb4f"
+      "sha256": "497c8d0267032258944a02c52c3a062e0f238f2a4236f6e8af6a8cbe9a75f671"
      },
      {
       "path": "basic/weapons/w07_combat_bow.py",
@@ -85608,7 +85931,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -92466,7 +92789,7 @@
      },
      {
       "type": "combat_bow",
-      "zoom": 1.8
+      "zoom": 2.2
      },
      {
       "type": "sword",
@@ -93895,16 +94218,16 @@
      "name": "hip",
      "ads": false,
      "roll": 0.0,
-     "src": "M Destiny-Raketenwerfer Hüfte ≈ 60/40 % (Motiongen destiny2:501), Visier 65/68, 68/57 (huefte:56/71): Rohr auf der Schulter; Lage E, gerechnet Mündung ≈ 66/44 %, Visier ≈ 74/44 %, Vordergriff ≈ 70/61 %, Heck rechts neben dem Auge – 4 cm weiter rechts als Destiny: mit Mündung 60/42 % lag das Rohr bis 35 % H in den Spalten der Freihaltezone (A4, 7,9 %)",
+     "src": "M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 4 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B), gerechnet Mündung 63/42 %, Visier 72/63 %, Vordergriff 68/61 %, Rohr 13° steigend, linke Kante 63 % B",
      "pos": [
-      -0.18,
-      -0.353,
-      -0.095
+      -0.22,
+      -0.5,
+      -0.16
      ],
      "aim": [
-      -0.25,
-      -3.346,
-      0.06
+      0.0,
+      -3.489,
+      0.616
      ],
      "eye": [
       0.0,
@@ -93975,14 +94298,14 @@
      "roll": 4.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.16,
-      -0.313,
-      -0.115
+      -0.2,
+      -0.46,
+      -0.18
      ],
      "aim": [
-      0.13,
-      -2.346,
-      -0.94
+      0.38,
+      -2.489,
+      -0.384
      ],
      "eye": [
       0.0,
@@ -94001,14 +94324,14 @@
      "roll": 3.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.17,
-      -0.343,
-      -0.11
+      -0.21,
+      -0.49,
+      -0.175
      ],
      "aim": [
-      -0.25,
-      -3.346,
-      0.01
+      0.0,
+      -3.489,
+      0.566
      ],
      "eye": [
       0.0,
@@ -94027,14 +94350,14 @@
      "roll": -2.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.18,
-      -0.353,
-      -0.08
+      -0.22,
+      -0.5,
+      -0.145
      ],
      "aim": [
-      -0.25,
-      -3.346,
-      0.13
+      0.0,
+      -3.489,
+      0.686
      ],
      "eye": [
       0.0,

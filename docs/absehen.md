@@ -151,7 +151,7 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |
-| `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.5 | entworfen | **×1.8** | ×2.3 |
+| `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.9 | entworfen | **×2.2** | ×2.7 |
 | `sword` | kein Visier | ×1.0 | entworfen | **×1.3** | ×1.8 |
 | `glaive` | kein Visier | ×1.25 | entworfen | **×1.55** | ×2.05 |
 

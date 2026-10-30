@@ -114,16 +114,16 @@ namespace Ballon.Ego.Tests
             foreach (var a in tool ? new string[0]
                      : D.gameplay.Draw ? new[] { "idle_hip", "draw", "holster", "aim_in", "aim_out", "fire_draw", "fire_draw_ads", "fire_release",
                                                  "fire_release_ads", "let_down", "let_down_ads", "inspect", "sprint", "lowered", "walk", "crouch",
-                                                 "jump_land", "sprint_to_aim", "sprint_to_fire", "draw_aim" }   // Bogen (0.33 P4): ohne Nachladen
+                                                 "jump_land", "sprint_to_aim", "sprint_to_fire", "draw_aim", "draw_aim_in", "draw_aim_out" }   // Bogen (0.33 P4): ohne Nachladen
                      : new[] { "idle_hip", "draw", "holster", "aim_in", "aim_out", "fire_hip", "fire_ads",
                                                               "reload_tactical", "reload_empty", "inspect", "sprint", "lowered", "walk",
                                                               "crouch", "jump_land", "sprint_to_aim", "sprint_to_fire", "draw_aim",
                                                               "reload_to_switch" })
                 Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: Aktion {a}");
             int shell = D.ShellReload ? (D.HasAction("reload_end_pump") ? 3 : 2) : 0;   // Trommel (0.33 P4): ohne reload_end_pump
-            Assert.AreEqual(tool ? 12 : D.gameplay.Draw ? 20 : 19 + (D.gameplay.Cycles ? 2 : 0) + shell, D.actions.Length,
+            Assert.AreEqual(tool ? 12 : D.gameplay.Draw ? 22 : 19 + (D.gameplay.Cycles ? 2 : 0) + shell, D.actions.Length,
                             "Aktionen (Repetierer, Pumpe, Trommel 0.33: dazu fire_cycle, fire_cycle_ads; Einzelladen: reload_shell, reload_end, "
-                            + "reload_end_pump; Bogen: 20 ohne Nachladen, mit Spannen, Lösen, Entspannen)");
+                            + "reload_end_pump; Bogen: 22 ohne Nachladen, mit Spannen, gespannt Zielen, Lösen, Entspannen)");
             if (D.gameplay.Cycles)
                 foreach (var a in new[] { "fire_cycle", "fire_cycle_ads" }) Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: {a}");
             if (D.ShellReload)
@@ -253,7 +253,7 @@ namespace Ballon.Ego.Tests
             string J(object x) => JsonUtility.ToJson(x);
             o.motion.ads_hide = D.motion.ads_hide;                // neu in /9; die Pilotwaffe hat keine Teile mit ads_hide
             foreach (var (name, a, b) in new (string, object, object)[] {
-                ("gameplay", o.gameplay, D.gameplay), ("motion", o.motion, D.motion), ("camera", o.camera, D.camera), ("arm", o.arm, D.arm),
+                ("gameplay", BowZoom(o, D).gameplay, D.gameplay), ("motion", o.motion, D.motion), ("camera", o.camera, D.camera), ("arm", o.arm, D.arm),
                 ("textures.arms", o.textures.arms, D.textures.arms) })
                 Assert.AreEqual(J(a), J(b), name);
             // Waffenatlas: gleiche Teile und Backgröße; die Dateien liegen seit 0.20 nach TEXTURE_STORE (97 A, albedo als JPG)
@@ -303,6 +303,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(EgoFile.Format8, o.format);
                 Assert.AreEqual("full_auto", o.gameplay.fire_mode, $"{o.weapon.id}: /8 ohne Feuerart → Dauerfeuer");
                 Assert.AreEqual(0f, o.motion.ads_hide.eye_m, "/8: keine Teile im Zielen aus");
+                BowZoom(o, n);
                 Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
                 Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
@@ -385,6 +386,19 @@ namespace Ballon.Ego.Tests
             Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
         }
 
+        /// <summary>0.33 P4: der Weltzoom des Bogens in der Zoomtabelle stieg von 1,8 auf 2,2 (Imperial Needle gemessen); sonst ist die Tabelle
+        /// gleich. Die alten Dateien tragen den alten Wert – für den Vergleich übernommen, die übrigen Einträge geprüft.</summary>
+        static EgoFile BowZoom(EgoFile o, EgoFile n)
+        {
+            var a = o.gameplay.zoom_table; var b = n.gameplay.zoom_table;
+            Assert.AreEqual(a.Length, b.Length, "Zoomtabelle");
+            for (int k = 0; k < a.Length; k++)
+                if (a[k].type == "combat_bow") Assert.AreEqual(2.2f, b[k].zoom, 1e-4f, "Bogen 2,2×");
+                else Assert.AreEqual(a[k].zoom, b[k].zoom, 1e-6f, a[k].type);
+            o.gameplay.zoom_table = b;
+            return o;
+        }
+
         // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 0.22 (Schritt 6)
         /// <summary>0.22 Formatwechsel /9 → /10: der Leser liest die Datei von main (0.21 „Ironsight“, Kopie Tests/EditMode/Data/ego_v9.json)
         /// weiter und setzt Salve, Bahnstufe, Mündungsfeuer und Portale wie bisher (keine Salve, gemeinsame Bahnstufe, mit Blitz, ohne Portale).
@@ -402,6 +416,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(0, o.gameplay.burst_shots, "/9: keine Salve");
                 Assert.IsTrue(o.gameplay.muzzle_flash, "/9: Mündungsfeuer");
                 Assert.AreEqual(o.motion.recoil.path_up_h, o.gameplay.path_up_h, "/9: Bahnstufe aus motion.recoil");
+                BowZoom(o, n);
                 Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
                 Assert.AreEqual(J(o.weapon), J(n.weapon), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile");
                 Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");

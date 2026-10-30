@@ -216,17 +216,17 @@ EXPLODE = {'arrow': (0, 0, -90), 'string': (-40, 0, 0), 'limbs': (0, 0, 0), 'sig
            'riser': (0, 0, 0)}
 HERO = V1.HERO
 SIGHT_ID = 'B1'    # Visier des Baukastens v3 (visier-konzept › 6a); test_sights prüft dessen Pflichtteile, Pinabstände und Sichtfeld
-# Ego-Griffe (0.33 „Armory“ P4, ego.profile): Bogenhand rechts im Griffstück, Zughand links am Pfeil (folgt dem Auszug), Griff 'nock' am
+# Ego-Griffe (0.33 „Armory“ P4, ego.profile): Bogenhand links im Griffstück, Zughand rechts am Pfeil (folgt dem Auszug; der nächste Pfeil
+# liegt nach dem Lösen gleich auf wie bei Destiny, ohne Griff 'mag'), Griff 'nock' am
 # Nockpunkt bei vollem Auszug (fest an der Waffe: dort lässt die Zughand beim Lösen los)
 EGO_GRIPS = {
-    'grip':    dict(contact=(-8, 0, -17), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='foregrip',
-                    src='E: Bogenhand rechts am Griffstück wie an einem Pistolengriff (Finger nach vorn um das Griffstück, Faust wie am '
-                        'Vordergriff); mit der Hand quer von hinten rechts knickte das Handgelenk an der Grenze 45° (Stills 0.33 P4)'),
-    'support': dict(part='arrow_shaft', contact=(-158, 40, 8), palm=(0.0, 0.0, -1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
-                    src='E: Zughand links am Nockpunkt (Socket_Nock), Daumen und Zeigefinger fassen Nocke und Sehne; folgt dem Pfeil beim Auszug'),
-    'mag':     dict(part='arrow_shaft', contact=(-158, 40, 8), palm=(0.0, 0.0, -1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
-                    src='E: wie support – die Zughand trägt den nächsten Pfeil an der Nocke (carry) und legt ihn auf'),
-    'nock':    dict(contact=(-578, 40, 8), palm=(0.0, 0.0, -1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
+    'grip':    dict(contact=(-8, -26, 17.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='foregrip',
+                    src='E: Bogenhand links (wie Destiny, ego.CLASSES › hands.swap) links am Griffstück, Finger nach vorn um das Griffstück, Faust '
+                        'wie am Vordergriff der MP (BASIC-06 support); Handmitte 26 mm unter der Griffachse, Zeigefinger und Daumen unter '
+                        'der Pfeilauflage (Nutzer 30.10.2026: „die linke Hand greift zu hoch am Bogen“)'),
+    'support': dict(part='arrow_shaft', contact=(-158, 40, -8), palm=(0.0, 0.0, 1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
+                    src='E: Zughand rechts am Nockpunkt (Socket_Nock), Daumen und Zeigefinger fassen Nocke und Sehne; folgt dem Pfeil beim Auszug'),
+    'nock':    dict(contact=(-578, 40, -8), palm=(0.0, 0.0, 1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
                     src='E: Nockpunkt bei vollem Auszug (Socket_DrawFull), fest an der Waffe – Ort des Lösens'),
 }
 EGO_LIVE = dict(trigger='', bolt='', port='')     # kein Abzug, kein Verschluss: Auszug und Lösen laufen als Klassenaktionen

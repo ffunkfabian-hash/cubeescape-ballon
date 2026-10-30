@@ -2699,71 +2699,98 @@ namespace Ballon.Ego.Tests
         }
 
         // ---------------------------------------------------------------- 0.33 „Armory“ P4: Bogen, Granatwerfer, Raketenwerfer
-        /// <summary>Feuerart draw_release (Bogen BASIC-07): gehaltener Abzug spannt (fire_draw: Sehne, Rollen und Pfeil laufen mit dem Auszug,
-        /// die Zughand folgt dem Pfeil), der volle Auszug hält ohne Schuss; Loslassen löst (ein Schuss, fire_release legt einen neuen Pfeil
-        /// auf), vor dem vollen Auszug entspannt der Bogen ohne Schuss (let_down). Kein Magazin. Im Zielen spannt fire_draw_ads. Bis 0.32
-        /// fehlte die Feuerart (ego.profile brach ab), der Controller kannte keine Spannaktion.</summary>
+        /// <summary>Feuerart draw_release (Bogen BASIC-07) wie Destiny (cubeescape-reference destiny2:82/231/252/253/271): gehaltener Abzug
+        /// spannt (fire_draw: Sehne, Rollen und Pfeil laufen mit dem Auszug), der volle Auszug hält ohne Schuss; gespannt ins Zielen und
+        /// zurück, ohne das Spannen abzubrechen; Loslassen löst – auch halb gespannt (schwacher Pfeil); im Zielen zugleich aus dem Zielen; die
+        /// Nachladen-Taste entspannt ohne Schuss; nach dem Lösen liegt der nächste Pfeil gleich auf (Lösen → gespannt ≈ 0,8 s). Kein Magazin.
+        /// Bis 0.32 fehlte die Feuerart (ego.profile brach ab), der Controller kannte keine Spannaktion.</summary>
         [Test]
         public void Bogen_spannt_haelt_und_loest()
         {
             var BW = Class("combat_bow");
             Assert.AreEqual("draw_release", BW.gameplay.fire_mode);
             Assert.IsTrue(BW.gameplay.Draw && BW.gameplay.Unlimited && !BW.CanReload, "Vorrat ohne Nachladen");
+            Assert.AreEqual(2.2f, BW.gameplay.world_zoom, 1e-3f, "Weltzoom Imperial Needle ≈ 2,2× (destiny2:104)");
             var c = new EgoController(new EgoSolver(BW));
             var marks = new List<(string, string)>();
             c.Marker += (a, m) => marks.Add((a, m));
             c.ReadyNow();
             Run(c, Idle, 0.3f);
             var fire = new EgoIntent { grounded = true, fire = true };
-            // halb gespannt loslassen: entspannen ohne Schuss
+            // halb gespannt: Nachladen-Taste entspannt ohne Schuss
             Run(c, fire, 0.3f);
             Assert.AreEqual("fire_draw", c.ActionName, "Abzug halten spannt");
             float half = c.DrawLevel;
             Assert.That(half, Is.InRange(0.2f, 0.6f), "Auszug nach 0,3 s (die Zughand kommt in 4 Bildern an die Nocke)");
             Assert.AreEqual(half, c.output.mech["string_top"], 0.02f, "Sehne folgt dem Auszug");
-            c.Tick(Dt, Idle);
-            Assert.AreEqual("let_down", c.ActionName, "vorher losgelassen: entspannen");
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true, reload = true });
+            Assert.AreEqual("let_down", c.ActionName, "Nachladen-Taste: entspannen");
             Run(c, Idle, 0.5f);
             Assert.AreEqual(0, c.shots, "kein Schuss beim Entspannen");
             Assert.AreEqual("idle_hip", c.ActionName);
-            Assert.AreEqual(0f, c.output.mech.TryGetValue("arrow_shaft", out float a0) ? a0 : 0f, 1e-3f, "Pfeil wieder aufgelegt");
+            // halb gespannt loslassen: schwacher Pfeil
+            Run(c, fire, 0.3f);
+            c.Tick(Dt, Idle);
+            Assert.AreEqual(1, c.shots, "halb gespannt losgelassen: ein Pfeil (Destiny: minimal/teilweise gespannt)");
+            Assert.AreEqual("fire_release", c.ActionName);
+            Run(c, Idle, 0.6f);
             // voll spannen und halten
+            long s0 = c.shots;
             float tFull = -1;
-            for (float t = 0; t < 1.4f; t += Dt)
+            for (float t = 0; t < 1.2f; t += Dt)
             {
                 c.Tick(Dt, fire);
                 if (tFull < 0 && c.DrawLevel >= 1) tFull = t + Dt;
             }
-            TestContext.WriteLine($"Bogen: voll nach {tFull:0.000} s, gehalten bis 1,4 s ohne Schuss ({c.shots})");
+            TestContext.WriteLine($"Bogen: voll nach {tFull:0.000} s, gehalten bis 1,2 s ohne Schuss");
             Assert.AreEqual(0.6f, tFull, 2 * Dt, "voller Auszug nach 0,6 s (Ziehzeit 612 ms)");
-            Assert.AreEqual(0, c.shots, "gehalten: kein Schuss");
+            Assert.AreEqual(s0, c.shots, "gehalten: kein Schuss");
             Assert.AreEqual(1f, c.output.mech["arrow_shaft"], 1e-3f, "Pfeil voll zurück");
             Assert.AreEqual(1f, c.output.mech["draw_light"], 1e-3f, "Spannlicht bei vollem Auszug");
             Assert.IsTrue(marks.Any(m => m.Item1 == "fire_draw" && m.Item2 == "FullDraw"));
-            // lösen
-            c.Tick(Dt, Idle);
-            Assert.AreEqual(1, c.shots, "Loslassen löst einen Pfeil");
-            Assert.AreEqual("fire_release", c.ActionName);
-            Assert.IsTrue(c.Busy, "Auflegen sperrt das nächste Spannen");
+            // gespannt ins Zielen und zurück, ohne Schuss
+            var fireAim = new EgoIntent { grounded = true, fire = true, aim = true };
+            c.Tick(Dt, fireAim);
+            Assert.AreEqual("draw_aim_in", c.ActionName, "gespannt ins Zielen");
+            Run(c, fireAim, 0.4f);
+            Assert.AreEqual(EgoController.Stance.Ads, c.CurrentStance);
+            Assert.Greater(c.adsWeight, 0.9f, "im Zielen (Zoom)");
+            Assert.AreEqual(1f, c.DrawLevel, 1e-3f, "bleibt gespannt");
+            c.Tick(Dt, fire);
+            Assert.AreEqual("draw_aim_out", c.ActionName, "Zielen verlassen bricht das Spannen nicht ab");
+            Run(c, fire, 0.3f);
+            Assert.AreEqual(1f, c.DrawLevel, 1e-3f);
+            Run(c, fireAim, 0.4f);
+            Assert.AreEqual(s0, c.shots, "kein Schuss beim Wechsel");
+            // im Zielen lösen: Schuss, zugleich aus dem Zielen, neuer Pfeil, wieder spannbar ab Nocked
+            c.Tick(Dt, new EgoIntent { grounded = true, aim = true });
+            Assert.AreEqual(s0 + 1, c.shots, "Loslassen löst");
+            Assert.AreEqual("fire_release_ads", c.ActionName, "Lösen im Zielen");
+            Assert.AreEqual(EgoController.Stance.Hip, c.CurrentStance, "Lösen = Ausstieg aus dem Zielen");
             float minArrow = 1;
-            bool hidden = false;
-            for (int j = 0; j < 60 && c.Busy; j++)
+            int tNock = -1;
+            var seqR = new List<string>();
+            for (int j = 0; j < 30; j++)
             {
                 c.Tick(Dt, Idle);
+                if (j < 14) seqR.Add($"{c.ActionName}:{c.Frame:0}");
                 if (c.output.mech.TryGetValue("arrow_shaft", out float av)) minArrow = Mathf.Min(minArrow, av);
-                hidden |= c.output.magHidden;
+                if (tNock < 0 && marks.Any(m => m.Item1 == "fire_release_ads" && m.Item2 == "Nocked")) tNock = j + 1;
             }
             Assert.Less(minArrow, -1f, "Pfeil fliegt nach vorn");
-            Assert.IsTrue(hidden, "Pfeil nach dem Flug verdeckt, bis die Zughand den nächsten bringt");
-            Assert.IsTrue(marks.Any(m => m.Item1 == "fire_release" && m.Item2 == "Nocked"), "neuer Pfeil aufgelegt");
-            Run(c, Idle, 0.3f);
-            Assert.AreEqual("idle_hip", c.ActionName);
+            Assert.That(tNock * Dt, Is.InRange(0.15f, 0.25f), $"neuer Pfeil liegt nach ≈ 0,2 s auf ({tNock} Takte; {string.Join(" ", seqR)})");
             Assert.AreEqual(BW.gameplay.magazine, c.ammo, "kein Magazin");
-            // im Zielen spannen
-            var aim = new EgoIntent { grounded = true, aim = true };
-            Run(c, aim, 0.6f);
-            c.Tick(Dt, new EgoIntent { grounded = true, aim = true, fire = true });
-            Assert.AreEqual("fire_draw_ads", c.ActionName, "im Zielen bleibt der Bogen im Anschlag");
+            // Lösen → gespannt: neu spannen gleich nach Nocked
+            Run(c, Idle, 0.3f);
+            c.Tick(Dt, fire);
+            Run(c, fire, 0.1f);
+            c.Tick(Dt, Idle);
+            long s1 = c.shots;
+            int k = 0;
+            while (k < 12) { c.Tick(Dt, Idle); k++; }                     // 0,2 s bis Nocked
+            c.Tick(Dt, fire);
+            Assert.AreEqual("fire_draw", c.ActionName, "nach dem Auflegen sofort wieder spannen (Destiny Lösen → gespannt 0,60 s)");
+            Assert.AreEqual(s1, c.shots);
         }
 
         /// <summary>Granatwerfer BASIC-13 (Spec v2.1 semi_auto, Trommel): nach jedem Schuss dreht die Trommel eine Kammer weiter (fire_cycle),

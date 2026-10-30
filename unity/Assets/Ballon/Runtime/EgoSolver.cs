@@ -111,7 +111,10 @@ namespace Ballon.Ego
 
         /// <summary>Zielfernrohr (ego.ADS_HIDE, 0.20): Teile mit ads_hide aus, solange Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf,
         /// ohne Live-Ebenen) näher als motion.ads_hide.eye_m an der Kamera liegt – wie ego_build.evaluate.</summary>
-        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && D.HasAnchor("Socket_Eye") && baseW.MultiplyPoint3x4(_eyeLocal).magnitude < D.motion.ads_hide.eye_m;
+        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && D.HasAnchor("Socket_Eye")
+                                                   && (baseW.MultiplyPoint3x4(_eyeLocal) - AdsEye).magnitude < D.motion.ads_hide.eye_m;
+        /// <summary>Lage von Socket_Eye im Zielen (Haltung ads › eye; Kamera bei den Gewehren, beim Bogen 0.33 P4 hinter der Kamera).</summary>
+        public Vector3 AdsEye => D.CanAim ? V(D.Pose("ads").eye) : Vector3.zero;
         public int SegmentIndex(string s) => _seg[s];
         public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length],
                                                         shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live] };
@@ -676,17 +679,26 @@ namespace Ballon.Ego
         public EgoAction StillAction(string pose)
         {
             HandKey Grip(string g) => new HandKey { f = 0, kind = "grip", grip = g, point = new float[3], offset = new float[3] };
+            var I = D.Action(pose == "ads" ? "aim_in" : "idle_hip");
+            HandKey At0(HandKey k) => new HandKey { f = 0, kind = k.kind, grip = k.grip, point = k.point, offset = k.offset };   // Zielen wie am Ende von aim_in (0.33 P4, Bogen)
             var A = new EgoAction
             {
                 name = "still:" + pose, frames = 0, time_scale = 1,
                 weapon = new[] { new WeaponKey { f = 0, pose = pose } },
-                L = new[] { Grip("support") }, R = new[] { Grip("grip") },
-                fL = new[] { new FingerKey { f = 0, pose = D.Grip("support").fingers_pose } }, fR = new[] { new FingerKey { f = 0, pose = "trigger" } },
+                L = new[] { At0(I.L[I.L.Length - 1]) }, R = new[] { At0(I.R[I.R.Length - 1]) },   // Hände wie in Ruhe (0.33 P4: beim Bogen
+                fL = new[] { new FingerKey { f = 0, pose = I.fL[I.fL.Length - 1].pose } },                 // Bogenhand links)
+                fR = new[] { new FingerKey { f = 0, pose = I.fR[I.fR.Length - 1].pose } },
                 mech = new MechTrack[0], carry = new FrameRange[0], drop = new FrameRange { a = -1, b = -1 }, fire = new int[0],
                 kick = 1, bob = new Bob { enabled = false, amp = new float[2] }, events = new Marker[0],
             };
-            if (pose == "inspect_r")      // linke Hand unter dem Bild wie in der Aktion inspect (ego.OFF_L)
-                A.L = new[] { Array.Find(D.Action("inspect").L, k => k.kind == "cam") };
+            if (pose == "inspect_r")      // Stützhand unter dem Bild wie in der Aktion inspect (ego.OFF_L; Bogen: Zughand rechts)
+            {
+                var In = D.Action("inspect");
+                var cl = Array.Find(In.L, k => k.kind == "cam");
+                var cr = Array.Find(In.R, k => k.kind == "cam");
+                if (cl != null) A.L = new[] { cl };
+                if (cr != null) A.R = new[] { cr };
+            }
             if (pose == "reload")
             {
                 A.L = new[] { Grip("mag") };

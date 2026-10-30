@@ -185,7 +185,7 @@ def weapon_data(W, live):
         elif mv:
             m['kind'] = mv['kind']          # glow: in der Pilotwaffe nicht vorhanden, Laufzeit meldet unbekannte Arten
         parts.append(dict(id=p['id'], asm=p['asm'], role=p['mat'], parent=p.get('parent_part') or '', rest=rest, move=m,
-                          ads_hide=bool(p.get('ads_hide'))))
+                          ads_hide=bool(p.get('ads_hide')) or p['id'] in EG.profile(W)['ads_hide']))   # 0.33 P4: auch je Klasse (Bogen)
     anchors = [dict(id=k, part=v.get('part', ''), pos=xyz(*v['at'])) for k, v in W.ANCHORS.items()]
     wid = EG.weapon_id(W)
     ids = {p['id'] for p in parts}
@@ -651,10 +651,7 @@ def reference(sc, e):
 
     samples = []
     for name in [k for k in ('hip', 'ads', 'reload', 'inspect_r') if k in sc.P['poses']]:   # Standbilder wie ego_build.main
-        A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else 'support')], R=[(0, 'grip')])
-        if name == 'reload':
-            A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
-        EB.evaluate(sc, A, 0, {}, {})
+        EB.evaluate(sc, EB.still_action(sc.P, name), 0, {}, {})   # 0.33 P4: wie ego_build.still_action (Bogen: Bogenhand links)
         samples.append(snap(f'still:{name}', '', 0))
     wrist = {}
     for name, A in sc.P['actions'].items():

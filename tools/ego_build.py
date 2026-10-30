@@ -597,15 +597,34 @@ class Scene:
         bpy.context.view_layer.update()
 
 
+def still_action(P, name):
+    """Standbild einer Haltung (Stills, Export-Referenz; Unity EgoSolver.StillAction): Hände wie in Ruhe (idle_hip), im Zielen wie am Ende
+    von aim_in (0.33 P4: Bogen mit Bogenhand links, Zughand im ungespannten Zielen unter dem Bild), inspect_r mit der Hand unter dem Bild
+    wie in der Aktion inspect, reload mit der Hand am Magazin."""
+    I = P['actions']['aim_in' if name == 'ads' else 'idle_hip']
+    A = dict(L=I.get('L', [(0, 'support')])[-1:], R=I.get('R', [(0, 'grip')])[-1:], fL=I['fL'][-1:], fR=I.get('fR', [(0, 'trigger')])[-1:])
+    A = {k: [(0, v[0][1])] for k, v in A.items()}
+    A['weapon'] = [(0, name)]
+    if name == 'inspect_r':
+        for ch in ('L', 'R'):
+            cam = [k for k in P['actions']['inspect'].get(ch, []) if isinstance(k[1], tuple) and k[1][0] == 'cam']
+            if cam:
+                A[ch] = [(0, cam[0][1])]
+    if name == 'reload':
+        A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
+    return A
+
+
 def evaluate(sc, A, f, report, state):
     W = sc.W
     R, pos = weapon_at(W, A['weapon'], f)
     R, pos = secondary(R, pos, f, state, EG.ends_in_ads(A))
     # Zielfernrohr (0.20, EG.ADS_HIDE): Teile mit ads_hide aus, solange der Augenpunkt der Grundhaltung nah an der Kamera liegt
     eye = pos + R @ kit.to_xyz(*W.ANCHORS['Socket_Eye']['at']) if 'Socket_Eye' in W.ANCHORS else None
-    hidden = eye is not None and eye.length < EG.ADS_HIDE['eye_m']
+    ads_eye = Vector(sc.P['poses'].get('ads', {}).get('eye', (0, 0, 0)))   # 0.33 P4: Ziellage des Augenpunkts (Bogen: hinter der Kamera)
+    hidden = eye is not None and (eye - ads_eye).length < EG.ADS_HIDE['eye_m']
     for p in W.PARTS:
-        if p.get('ads_hide') and p['id'] in sc.objs:
+        if (p.get('ads_hide') or p['id'] in sc.P['ads_hide']) and p['id'] in sc.objs:
             sc.objs[p['id']].hide_render = hidden
     report['ads_hidden'] = sc.ads_hidden = hidden
     off_pos, off_rot = Vector(), Matrix.Identity(3)
@@ -710,17 +729,13 @@ def main():
         o['actions'] = list(sc.P['actions'])
     meta = dict(weapon=wid, camera=EG.CAMERA, fps=EG.FPS, poses={}, actions={}, source=RA.SOURCE)
     scn = bpy.context.scene
-    CLS = EG.CLASSES
     if o['stills']:
         scn.render.resolution_x, scn.render.resolution_y = 1600, 900
         scn.cycles.samples = max(96, o['samples'])
         for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch')
                      if k in sc.P['poses'] and (not o['poses'] or k in o['poses'])]:
             rep = {}
-            rest = (CLS.get(sc.P['type'], {}).get('support_rest') or {}).get('at', 'support')   # Bogen (0.33 P4): Zughand unter dem Bild
-            A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else rest)], R=[(0, 'grip')])   # wie Aktion inspect
-            if name == 'reload':
-                A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
+            A = still_action(sc.P, name)
             evaluate(sc, A, 0, rep, {})
             for camname, cam in (('ego', sc.cam), ('out', sc.out_cam)):
                 scn.camera = cam

@@ -973,7 +973,7 @@
   "trace_rifle": 1.5,
   "rocket_launcher": 2.5,
   "machine_gun": 1.6,
-  "combat_bow": 1.5,
+  "combat_bow": 1.9,
   "sword": 1.0,
   "glaive": 1.25
  },
@@ -1035,8 +1035,8 @@
    "scope": 2.4
   },
   "combat_bow": {
-   "reflex": 1.8,
-   "scope": 2.3
+   "reflex": 2.2,
+   "scope": 2.7
   },
   "sword": {
    "reflex": 1.3,
@@ -1062,7 +1062,7 @@
   "trace_rifle": 1.8,
   "rocket_launcher": 2.8,
   "machine_gun": 1.9,
-  "combat_bow": 1.8,
+  "combat_bow": 2.2,
   "sword": 1.3,
   "glaive": 1.55
  },
