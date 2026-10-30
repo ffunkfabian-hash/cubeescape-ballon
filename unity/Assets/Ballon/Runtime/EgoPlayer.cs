@@ -82,10 +82,14 @@ namespace Ballon.Ego
             public Color sightColor;            // Farbe der Absehen-Rolle des Modells (Cyan)
             public Material[] skins;
             public string[] skinNames;
+            public Texture2D icon;              // 0.33 Ziel 2: Waffensymbol (Generated/Icons, tools/make_icons.py) für HUD und Waffenmenü
             public int skin;
         }
 
         public EgoArsenal arsenal;                  // Waffen (Tasten 1/2/3, Q), je Waffe ein Controller
+        EgoMenu _menu;
+        /// <summary>Waffenmenü über alle Waffen des Arsenals (0.33 Ziel 2).</summary>
+        public EgoMenu menu => _menu ?? (_menu = new EgoMenu(arsenal.C.Length));
         public Loadout[] loadouts;
         public EgoController C => arsenal.Current;  // aktive Waffe
         public EgoRig rig => loadouts[arsenal.Active].rig;
@@ -139,7 +143,7 @@ namespace Ballon.Ego
         public string lightLabel;        // gezeigte Lichtszene (null im Parcours)
         int _lightCount;
         const string HelpA = "Maus umsehen · WASD · Shift Sprint · Strg/C Ducken · Leertaste Springen · LMT Feuer · RMT Zielen · R Nachladen · " +
-                             "F Betrachten · 1–5 Waffe (Q wechseln; 5 Portalkanone: LMT Portal A, RMT Portal B) · K Skin · ";
+                             "F Betrachten · 1–0 Waffe, Tab/Mausrad Waffenmenü (Q wechseln; 5 Portalkanone: LMT Portal A, RMT Portal B) · K Skin · ";
         const string HelpB = "Esc Maus frei · H Anzeige";
         string _help = HelpA + HelpB;
 
@@ -305,7 +309,16 @@ namespace Ballon.Ego
         {
             if (_ringFrames > 0) _ringFrames--;           // vor dem Feuern: ein neuer Schuss setzt den Ring für dieses Bild
             _hitX = Mathf.Max(0, _hitX - dt);
+            if (input is DeviceInput di) di.menuOpen = menu.IsOpen;
             var r = input.Read(dt, Zoom);
+            bool menuWasOpen = menu.IsOpen;
+            int pick = menu.Step(r.menu, arsenal.Active);       // Waffenmenü (0.33 Ziel 2): Wahl wie eine Zifferntaste
+            if (pick > 0) r.select = pick;
+            if (menuWasOpen || menu.IsOpen)                       // offen (und im Bild des Schließens): die Maus bedient das Menü
+            {
+                r.fire = r.aim = false;
+                r.lookDeg = Vector2.zero;
+            }
             Look(r);
             Move(r, dt);
             var it = new EgoIntent
@@ -489,7 +502,7 @@ namespace Ballon.Ego
             var small = _small ?? (_small = new GUIStyle(GUI.skin.label) { fontSize = 14 });
             big.normal.textColor = C.ammo == 0 && !C.S.D.gameplay.Unlimited ? new Color(1f, 0.5f, 0.3f) : Color.white;
             UpdateHudText();
-            GUI.Label(new Rect(Screen.width - 260, Screen.height - 80, 230, 60), _ammoText, big);
+            WeaponHud(big);
             small.normal.textColor = new Color(1, 1, 1, 0.85f);
             GUI.Label(new Rect(16, 12, 900, 22), _stateText, small);
             GUI.Label(new Rect(16, 32, 900, 22), _hitText, small);
@@ -503,6 +516,125 @@ namespace Ballon.Ego
             }
             if (Time.time < 12f || Cursor.lockState != CursorLockMode.Locked)
                 GUI.Label(new Rect(16, Screen.height - 46, 1200, 40), _help, small);
+            if (menu.IsOpen) MenuGui();
+        }
+
+        // -------------------------------------------------------------- HUD und Waffenmenü (0.33 „Armory“, Ziel 2)
+        // Maße als Anteil der Bildhöhe (gleich bei jeder Auflösung, Sichtprüfung 1470 × 956). Texte und Stile werden einmal gebaut (kein
+        // Speicher je Bild); die Symbole sind weiß und werden über GUI.color eingefärbt.
+        public const float HudIconH = 0.055f, HudIconMaxW = 0.17f, MenuCellW = 0.25f, MenuCellH = 0.13f;
+        static readonly Color HudWhite = new Color(1, 1, 1, 0.92f), MenuPanel = new Color(0.03f, 0.05f, 0.07f, 0.78f),
+                              MenuCell = new Color(1, 1, 1, 0.06f), MenuSel = new Color(0.37f, 0.83f, 0.88f, 0.30f),
+                              MenuEdge = new Color(0.37f, 0.83f, 0.88f, 0.95f), MenuDim = new Color(1, 1, 1, 0.55f);
+        GUIStyle _name, _menuName, _menuKey, _menuTitle;
+        string[] _menuLabels, _menuKeys;
+        int _fontH = -1;
+
+        void Styles()
+        {
+            int h = Screen.height;
+            if (_fontH == h && _name != null) return;
+            _fontH = h;
+            _name = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.018f * h), alignment = TextAnchor.LowerRight };
+            _name.normal.textColor = MenuDim;
+            _menuName = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.017f * h), alignment = TextAnchor.LowerCenter, wordWrap = false };
+            _menuName.normal.textColor = Color.white;
+            _menuKey = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.018f * h), fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperLeft };
+            _menuKey.normal.textColor = MenuDim;
+            _menuTitle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.026f * h), fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperLeft };
+            _menuTitle.normal.textColor = Color.white;
+            if (_menuLabels == null)
+            {
+                int n = arsenal.C.Length;
+                _menuLabels = new string[n];
+                _menuKeys = new string[n];
+                for (int k = 0; k < n; k++)
+                {
+                    var D = arsenal.C[k].S.D;
+                    _menuLabels[k] = D.weapon.name;
+                    _menuKeys[k] = k < 10 ? ((k + 1) % 10).ToString() : "";          // Taste 1 … 9, 0; weitere nur im Menü
+                }
+            }
+        }
+
+        /// <summary>Unten rechts: Symbol der aktiven Waffe, darunter ihr Name und die Munition (unbegrenzt: ∞).</summary>
+        void WeaponHud(GUIStyle big)
+        {
+            Styles();
+            float H = Screen.height, W = Screen.width, m = 0.03f * H;
+            var ammo = new Rect(W - m - 0.25f * H, H - m - 0.06f * H, 0.25f * H, 0.06f * H);
+            GUI.Label(ammo, _ammoText, big);
+            var name = new Rect(W - m - 0.5f * H, ammo.y - 0.028f * H, 0.5f * H, 0.028f * H);
+            GUI.Label(name, _menuLabels[arsenal.Active], _name);
+            var ic = Current.icon;
+            if (ic != null && Event.current.type == EventType.Repaint)
+            {
+                float ih = HudIconH * H, iw = Mathf.Min(HudIconMaxW * H, ih * ic.width / ic.height);
+                ih = iw * ic.height / ic.width;
+                var old = GUI.color;
+                GUI.color = HudWhite;
+                GUI.DrawTexture(new Rect(W - m - iw, name.y - 0.008f * H - ih, iw, ih), ic, ScaleMode.ScaleToFit);
+                GUI.color = old;
+            }
+        }
+
+        /// <summary>Rechteck einer Zelle k im Waffenmenü (Bildpunkte, Ursprung oben links) – auch für die Sichtprüfung.</summary>
+        public Rect MenuCellRect(int k)
+        {
+            float H = Screen.height, W = Screen.width, cw = MenuCellW * H, ch = MenuCellH * H, gap = 0.012f * H;
+            int cols = menu.columns, rows = menu.Rows;
+            float tw = cols * cw + (cols - 1) * gap, th = rows * ch + (rows - 1) * gap;
+            float x0 = (W - tw) / 2, y0 = (H - th) / 2 + 0.03f * H;
+            return new Rect(x0 + (k % cols) * (cw + gap), y0 + (k / cols) * (ch + gap), cw, ch);
+        }
+
+        void Fill(Rect r, Color c)
+        {
+            var old = GUI.color;
+            GUI.color = c;
+            GUI.DrawTexture(r, Texture2D.whiteTexture);
+            GUI.color = old;
+        }
+
+        void MenuGui()
+        {
+            Styles();
+            float H = Screen.height;
+            var first = MenuCellRect(0);
+            var last = MenuCellRect(menu.Rows * menu.columns - 1);
+            var panel = new Rect(first.x - 0.02f * H, first.y - 0.07f * H, last.xMax - first.x + 0.04f * H, last.yMax - first.y + 0.09f * H);
+            if (Event.current.type == EventType.Repaint) Fill(panel, MenuPanel);
+            GUI.Label(new Rect(panel.x + 0.02f * H, panel.y + 0.012f * H, panel.width, 0.04f * H), "Waffe wählen", _menuTitle);
+            GUI.Label(new Rect(panel.x, panel.y + 0.016f * H, panel.width - 0.02f * H, 0.03f * H),
+                      "Mausrad/Pfeile · Enter oder Klick wählen · Esc schließen", _name);
+            for (int k = 0; k < arsenal.C.Length; k++)
+            {
+                var r = MenuCellRect(k);
+                bool sel = k == menu.Index;
+                if (Event.current.type == EventType.Repaint)
+                {
+                    Fill(r, sel ? MenuSel : MenuCell);
+                    if (sel)
+                    {
+                        float e = Mathf.Max(2, 0.003f * H);
+                        Fill(new Rect(r.x, r.y, r.width, e), MenuEdge);
+                        Fill(new Rect(r.x, r.yMax - e, r.width, e), MenuEdge);
+                        Fill(new Rect(r.x, r.y, e, r.height), MenuEdge);
+                        Fill(new Rect(r.xMax - e, r.y, e, r.height), MenuEdge);
+                    }
+                    if (k == arsenal.Active) Fill(new Rect(r.xMax - 0.018f * H, r.y + 0.01f * H, 0.008f * H, 0.008f * H), MenuEdge);   // aktive Waffe
+                    var ic = loadouts[k].icon;
+                    if (ic != null)
+                    {
+                        var old = GUI.color;
+                        GUI.color = sel ? Color.white : MenuDim;
+                        GUI.DrawTexture(new Rect(r.x + 0.1f * r.width, r.y + 0.14f * r.height, 0.8f * r.width, 0.56f * r.height), ic, ScaleMode.ScaleToFit);
+                        GUI.color = old;
+                    }
+                }
+                GUI.Label(new Rect(r.x + 0.06f * H * 0.2f + 4, r.y + 2, r.width, 0.03f * H), _menuKeys[k], _menuKey);
+                GUI.Label(new Rect(r.x, r.yMax - 0.034f * H, r.width, 0.03f * H), _menuLabels[k], _menuName);
+            }
         }
 
         // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild)

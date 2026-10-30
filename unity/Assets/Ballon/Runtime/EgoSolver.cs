@@ -85,7 +85,7 @@ namespace Ballon.Ego
             foreach (var p in d.weapon.parts)
                 if (p.move.kind != "none" && !string.IsNullOrEmpty(p.parent)) _movers.Add(p);
             foreach (var p in _movers)
-                if (p.move.kind != "translate" && p.move.kind != "rotate" && p.move.kind != "glow")
+                if (p.move.kind != "translate" && p.move.kind != "rotate" && p.move.kind != "glow" && p.move.kind != "segment")
                     throw new NotSupportedException($"Bewegungsart {p.move.kind} an {p.id}");
             for (int i = 0; i < d.arm.segments.Length; i++) _seg[d.arm.segments[i]] = i;
             _fingerSeg = new int[d.arm.finger_x.Length, d.arm.finger_links.Length];
@@ -154,7 +154,7 @@ namespace Ballon.Ego
             if (fire == null || fire.Length == 0) return;
             int i = D.gameplay.muzzle_flash ? FlashVisible(fire, f) : -1;     // Werkzeug (0.22): ohne Mündungsfeuer
             if (i >= 0) { o.flashOn = true; o.flashShot = i; o.flash = FlashMatrix(WM, i); }
-            if (!Ejects) return;
+            if (!Ejects || D.weapon.eject.on == "reload") return;     // Trommel (0.33 P4): Hülsen nur beim Nachladen (Marker Eject)
             if (st.shotWM == null || st.shotWM.Length != fire.Length) { st.shotWM = new Matrix4x4[fire.Length]; st.shotSet = new bool[fire.Length]; }
             for (int k = 0; k < fire.Length; k++)
                 if (fire[k] <= f && !st.shotSet[k]) { st.shotWM[k] = WM; st.shotSet[k] = true; }
@@ -435,7 +435,7 @@ namespace Ballon.Ego
             if (A.mech != null)
                 foreach (var tr in A.mech) mech[tr.part] = ValueAt(tr.keys, f);
             var live = D.weapon.live;                       // Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE, 0.18)
-            if (L.trigger >= 0) mech[live.trigger] = L.trigger;
+            if (L.trigger >= 0 && !string.IsNullOrEmpty(live.trigger)) mech[live.trigger] = L.trigger;   // Bogen (0.33 P4): ohne Abzug
             if (L.bolt >= 0 && !string.IsNullOrEmpty(live.bolt)) mech[live.bolt] = L.bolt;      // Werkzeug (0.22): ohne Verschluss
             if (L.port >= 0 && !string.IsNullOrEmpty(live.port)) mech[live.port] = L.port;      // und ohne Auswurfklappe
             if (!float.IsNaN(L.ring) && !string.IsNullOrEmpty(live.ring)) mech[live.ring] = L.ring;
@@ -443,6 +443,28 @@ namespace Ballon.Ego
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));
+
+        /// <summary>blender_build.move_matrix › segment: Drehung von d0 (festes Ende → Nockpunkt, move.axis) nach d1 = d0 + vec · t mal
+        /// Streckung um |d1|/|d0| längs d0 – um das feste Ende (rest).</summary>
+        public static Matrix4x4 SegmentRS(EgoPart p, float t)
+        {
+            var d0 = V(p.move.axis);
+            var d1 = d0 + V(p.move.vec) * t;
+            var n = d0.normalized;
+            float kf = d1.magnitude / d0.magnitude;
+            var S = Matrix4x4.identity;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++) S[i, j] += (kf - 1) * n[i] * n[j];
+            return Matrix4x4.Rotate(Quaternion.FromToRotation(d0, d1)) * S;
+        }
+
+        /// <summary>Streckung einer Sehnenhälfte bei Anteil t (|d1|/|d0|, 1 bei anderen Teilen) – EgoRig setzt sie als Skalierung längs d0.</summary>
+        public static float SegmentStretch(EgoPart p, float t)
+        {
+            if (p.move.kind != "segment") return 1;
+            var d0 = V(p.move.axis);
+            return (d0 + V(p.move.vec) * t).magnitude / d0.magnitude;
+        }
 
         /// <summary>tools/blender_build.move_matrix: Lage des Teils im Waffenrahmen bei Anteil t.</summary>
         public Matrix4x4 MoveMatrix(EgoPart p, float t)
@@ -455,6 +477,8 @@ namespace Ballon.Ego
                 case "rotate":
                     var piv = V(p.rest);
                     return T(piv) * Rot(Rad(m.a0 + (m.a1 - m.a0) * t), V(m.axis)) * T(-piv) * rest;
+                case "segment":                                  // Sehnenhälfte (0.33 P4): festes Ende rest, Nockpunkt folgt vec · t
+                    return T(V(p.rest)) * SegmentRS(p, t);
                 default: return rest;
             }
         }

@@ -11,6 +11,7 @@ namespace Ballon.Ego
         public Vector2 move;            // x rechts, y vorn
         public bool sprint, crouch, jump, fire, aim, reload, inspect, draw, holster, swap;   // swap: Waffe wechseln (6.1 A)
         public int select;              // Taste 1 … n: Waffe wählen (0.18, EgoArsenal; 0 = keine)
+        public MenuInput menu;          // 0.33 Ziel 2: Waffenmenü (Tab, Mausrad, Pfeile, Enter, Esc)
     }
 
     public interface IEgoInput
@@ -23,6 +24,8 @@ namespace Ballon.Ego
     {
         public float sensitivity = 0.08f;
         public bool invertY;
+        /// <summary>Waffenmenü offen (EgoPlayer setzt es je Bild): Esc schließt das Menü statt den Mauszeiger freizugeben, Linksklick wählt.</summary>
+        public bool menuOpen;
 
         public RawInput Read(float dt, float zoom)
         {
@@ -30,7 +33,14 @@ namespace Ballon.Ego
             var k = Keyboard.current;
             var m = Mouse.current;
             if (k == null || m == null) return r;
-            if (k.escapeKey.wasPressedThisFrame) Cursor.lockState = CursorLockMode.None;
+            r.menu.toggle = k.tabKey.wasPressedThisFrame;
+            r.menu.cancel = k.escapeKey.wasPressedThisFrame && menuOpen;
+            r.menu.confirm = menuOpen && (k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame || m.leftButton.wasPressedThisFrame);
+            float wheel = m.scroll.ReadValue().y;
+            r.menu.wheel = wheel < 0 ? 1 : wheel > 0 ? -1 : 0;           // Rad nach unten: nächste Waffe
+            r.menu.arrows = new Vector2Int((k.rightArrowKey.wasPressedThisFrame ? 1 : 0) - (k.leftArrowKey.wasPressedThisFrame ? 1 : 0),
+                                           (k.downArrowKey.wasPressedThisFrame ? 1 : 0) - (k.upArrowKey.wasPressedThisFrame ? 1 : 0));
+            if (k.escapeKey.wasPressedThisFrame && !menuOpen) Cursor.lockState = CursorLockMode.None;
             if (m.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
             {
                 Cursor.lockState = CursorLockMode.Locked;
@@ -64,7 +74,7 @@ namespace Ballon.Ego
             Key.Digit1, Key.Digit2, Key.Digit3,
             Key.Digit4, Key.Digit5, Key.Digit6,
             Key.Digit7, Key.Digit8, Key.Digit9,
-            Key.Digit0,                         // 0.33 P2: zehnte Waffe (MG); Menü (Tab/Mausrad) folgt mit Ziel 2
+            Key.Digit0,                         // 0.33 P2: zehnte Waffe (MG); weitere Waffen über das Waffenmenü (Tab/Mausrad, Ziel 2)
         };
     }
 
@@ -127,6 +137,12 @@ namespace Ballon.Ego
                 case "weapon3": r.select = 3; break;
                 case "weapon4": r.select = 4; break;
                 case "weapon5": r.select = 5; break;
+                case "menu": r.menu.toggle = true; break;          // 0.33 Ziel 2: Waffenmenü (Aufnahme, Tests)
+                case "menu_next": r.menu.wheel = 1; break;
+                case "menu_prev": r.menu.wheel = -1; break;
+                case "menu_down": r.menu.arrows.y = 1; break;
+                case "menu_ok": r.menu.confirm = true; break;
+                case "menu_esc": r.menu.cancel = true; break;
             }
         }
     }

@@ -175,6 +175,23 @@ ANCHORS = {
     'Socket_Breech': dict(at=(REAR0 - 12, BORE, 0), part='rear_ring', note='Ladeöffnung hinten (Heckklappe offen)'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
+# Ego-Griffe (0.33 „Armory“ P4, ego.profile)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(262, 22, 14.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.12, 0.0), fingers_pose='foregrip',
+                    finger_map=dict(open='foregrip_open'),
+                    src='E links am Vordergriff (Socket_SupportHand), Faust um den Griff wie BASIC-06 (ego.FINGER_POSES foregrip)'),
+    'mag':     dict(part='rocket', contact=(-20, BORE - R_IN + 1, 0), palm=(0.0, 1.0, 0.0), fingers=(1.0, 0.0, 0.0), fingers_pose='mag_hold',
+                    src='E unter der Mitte der Rakete (Ruhelage im Rohr), Hand von unten'),
+    'push':    dict(part='rocket', contact=(R0 - 4, BORE, 0), palm=(1.0, 0.0, 0.0), fingers=(0.0, 1.0, 0.0), fingers_pose='open',
+                    src='E: flache Hand am Heck der Rakete, schiebt sie das letzte Stück ins Rohr'),
+    'cap':     dict(contact=(REAR0 - 1, BORE + 10, RING_R + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
+                    src='E am Klappenknopf links am Heckring'),
+    'charge':  dict(contact=(REAR0 - 1, BORE + 10, RING_R + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
+                    src='E wie cap (vom Nachladen nicht genutzt)'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss
 EJECT = None    # hülsenlos: die Rakete verlässt das Rohr ganz (Daten statt Sonderlogik; check: Teil mit caseless → EJECT None)
 ACTIONS = {
     'fire': dict(de='Abschuss', frames=12, step=1, keys={'trigger': [(0, 0), (2, 1), (6, 0)],

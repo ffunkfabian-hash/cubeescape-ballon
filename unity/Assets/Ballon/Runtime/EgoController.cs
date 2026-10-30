@@ -459,6 +459,10 @@ namespace Ballon.Ego
                 Play(reloading ? "reload_to_switch" : "holster", busy: true, fade: reloading ? 3 : -1, onEnd: i.swap ? _onHolsterSwap : _onHolster);
                 holstered = false;
             }
+            else if (S.D.gameplay.Draw && Drawing)
+            {
+                if (!i.fire) Release();                                 // Bogen (0.33 P4): Loslassen löst (voll) oder entspannt (vorher)
+            }
             else if (reloading && S.D.ShellReload && i.fire && !_firePrev && ammo > 0 && !_reloadAbort)
             {
                 _reloadAbort = true;                                    // Einzelladen (0.33 P3): ein Zug am Abzug bricht ab, der Schuss
@@ -483,6 +487,8 @@ namespace Ballon.Ego
                     Play("sprint_to_fire", stance: Stance.Hip, onEnd: _onReady);
                     _stance = Stance.Hip;
                 }
+                else if (S.D.gameplay.Draw && i.fire && CanFire)
+                    StartDraw();
                 else if ((_t.stance.HasValue || _t.ended) && !SemiShotWaits)
                 {
                     var w = Wanted(i);
@@ -525,7 +531,38 @@ namespace Ballon.Ego
                 Play("reload_shell", busy: true, fade: 0, onEnd: _onShell);
                 return;
             }
-            Play(_reloadEmpty ? "reload_end_pump" : "reload_end", busy: true, fade: _reloadAbort ? 2 : 0, onEnd: _onReady);
+            bool pump = _reloadEmpty && S.D.HasAction("reload_end_pump");   // Granatwerfer (0.33 P4): Trommel ohne Pumpen am Ende
+            Play(pump ? "reload_end_pump" : "reload_end", busy: true, fade: _reloadAbort ? 2 : 0, onEnd: _onReady);
+        }
+
+        // -------------------------------------------------------------- Bogen (0.33 P4, draw_release)
+        /// <summary>Spannen läuft oder der volle Auszug hält (fire_draw, im Zielen fire_draw_ads; am Ende bleibt die Spur stehen).</summary>
+        bool Drawing => _t.A.name == "fire_draw" || _t.A.name == "fire_draw_ads";
+
+        /// <summary>Auszug des Bogens 0 … 1 (Messwert für Tests): Wert der ersten Bewegung der Spannaktion, 0 außerhalb.</summary>
+        public float DrawLevel => Drawing && _t.A.mech != null && _t.A.mech.Length > 0 ? ValueAt(_t.A.mech[0].keys, _t.frame) : 0;
+
+        /// <summary>Abzug gezogen: spannen aus der Haltung, in der die Waffe steht (Hüfte → drawn, Zielen bleibt im Anschlag).</summary>
+        void StartDraw()
+        {
+            bool ads = _stance == Stance.Ads;
+            Play(ads ? "fire_draw_ads" : "fire_draw", busy: true, stance: ads ? Stance.Ads : Stance.Hip, fade: 2);
+            _stance = ads ? Stance.Ads : Stance.Hip;
+        }
+
+        /// <summary>Abzug gelöst: bei vollem Auszug (Spannaktion zu Ende) Schuss und fire_release (Pfeil fliegt, neuer Pfeil, zurück); vorher
+        /// let_down ab der Stelle, die dem erreichten Auszug entspricht (kurz übergeblendet).</summary>
+        void Release()
+        {
+            bool ads = _t.A.name == "fire_draw_ads";
+            if (_t.ended)
+            {
+                FireOne();
+                Play(ads ? "fire_release_ads" : "fire_release", busy: true, stance: _stance, fade: 0, onEnd: _onReady);
+                return;
+            }
+            var L = S.D.Action(ads ? "let_down_ads" : "let_down");
+            Play(L.name, from: (1 - DrawLevel) * L.frames, busy: true, stance: _stance, fade: 2, onEnd: _onReady);
         }
 
         /// <summary>Ein Zug, der das Einzelladen abgebrochen hat, wartet bis zum Ende des Rückwegs (länger als SemiQueueS beim Pumpen).</summary>
@@ -568,6 +605,7 @@ namespace Ballon.Ego
             float interval = ShotInterval();
             _sinceCharge += dt;
             if (S.D.gameplay.Charge) UpdateCharge(dt);
+            else if (S.D.gameplay.Draw) _shotClock = 0;         // Bogen (0.33 P4): geschossen wird beim Lösen (Release)
             else if (S.D.gameplay.Semi)
             {
                 // Einzelfeuer (0.20, Feuerart semi_auto): ein Schuss je Zug. Ein Zug vor Ablauf des Schussabstands (oder im Übergang aus dem
@@ -733,6 +771,7 @@ namespace Ballon.Ego
             if (S.Ejects && !S.D.gameplay.Cycles) _pendingShells++;   // Hülse startet in Compose mit der Waffe dieses Bilds (Repetierer, Pumpe: Marker Eject)
             Shot?.Invoke();
             if (S.D.gameplay.Cycles && HasAmmo) Cycle();
+            else if (S.D.gameplay.SingleShot && ammo == 0 && CanReload) StartReload(_intent);   // Raketenwerfer (0.33 P4): sofort nachladen
         }
 
         /// <summary>Repetierer (0.33, bolt_action) und Pumpe (P3, pump_action): nach dem Schuss die Klassenaktion fire_cycle (im Zielen

@@ -34,7 +34,7 @@ FORMAT = 'ballon-ego/10'   # 10 (0.33 ergänzt, ohne neues Format: weapon.live.g
 WEAPONS = ['pilot.w01_auto_rifle_v21', 'pilot.w06_submachine_gun_v21', 'pilot.w03_scout_rifle_v21', 'pilot.w02_pulse_rifle_v21',
            'pilot.t01_portal_cannon_v21', 'pilot.w04_hand_cannon_v21', 'pilot.w05_sidearm_v21', 'pilot.w09_sniper_rifle_v21',
            'pilot.w12_trace_rifle_v21', 'pilot.w15_machine_gun_v21', 'pilot.w08_shotgun_v21', 'pilot.w10_fusion_rifle_v21',
-           'pilot.w11_linear_fusion_rifle_v21']
+           'pilot.w11_linear_fusion_rifle_v21', 'pilot.w07_combat_bow_v21', 'pilot.w13_grenade_launcher_v21', 'pilot.w14_rocket_launcher_v21']
 WEAPON = WEAPONS[0]                 # Pilotwaffe (./check: Mündungsfeuer im Zielen, Bezug der Automatik)
 SHARED_SRC = ['basic/common.py', 'basic/kit.py', 'basic/arms/robot_arm.py', 'basic/arms/ego.py', 'tools/ego_build.py',
               'tools/blender_build.py', 'tools/export_unity.py', 'tools/bake_unity.py']
@@ -83,7 +83,8 @@ def prim(q):
 
 
 # Felder von gameplay, die nicht jede Klasse nennt (0.22): ohne Salve, mit Mündungsfeuer, ohne Portale
-GAMEPLAY_DEFAULTS = dict(burst_shots=0, burst_rpm=0, muzzle_flash=True, ring_turn_s=0.0, portals=[], range_m=0.0, charge_s=0.0, charge_fade_s=0.0)
+GAMEPLAY_DEFAULTS = dict(burst_shots=0, burst_rpm=0, muzzle_flash=True, ring_turn_s=0.0, portals=[], range_m=0.0, charge_s=0.0, charge_fade_s=0.0,
+                         flash_scale=1.0)   # 0.33 P4: Maßstab des Mündungsfeuers je Klasse (Werfer: Öffnung ≤ 20 %)
 
 
 def gameplay(weapon_type, G=None):
@@ -178,8 +179,11 @@ def weapon_data(W, live):
             ax = [0.0, 0.0, 0.0]
             ax[i] = s
             m.update(kind='rotate', axis=ax, a0=r6(mv['range_deg'][0]), a1=r6(mv['range_deg'][1]))
+        elif mv and mv['kind'] == 'segment':   # Sehnenhälfte (0.33 P4, Bogen): rest = festes Ende (Wurfarmspitze), axis = Weg festes Ende →
+            tip, nock = mv['tip'], mv['nock']     # Nockpunkt in Ruhe (m, kein Einheitsvektor), vec = Weg des Nockpunkts bei Anteil 1
+            m.update(kind='segment', vec=xyz(*mv['vector_mm']), axis=xyz(*[b - a for a, b in zip(tip, nock)]))
         elif mv:
-            m['kind'] = mv['kind']          # glow/segment: in der Pilotwaffe nicht vorhanden, Laufzeit meldet unbekannte Arten
+            m['kind'] = mv['kind']          # glow: in der Pilotwaffe nicht vorhanden, Laufzeit meldet unbekannte Arten
         parts.append(dict(id=p['id'], asm=p['asm'], role=p['mat'], parent=p.get('parent_part') or '', rest=rest, move=m,
                           ads_hide=bool(p.get('ads_hide'))))
     anchors = [dict(id=k, part=v.get('part', ''), pos=xyz(*v['at'])) for k, v in W.ANCHORS.items()]
@@ -205,12 +209,12 @@ def eject_data(W):
     """Hülsenauswurf der Waffe (Modul-Feld EJECT, 5.4 A): Startlage im Auswurffenster, Richtung (Einheit) und Hülsennetz; enabled false ohne Feld."""
     E = getattr(W, 'EJECT', None)
     if not E:
-        return dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], src='kein Auswurf')
+        return dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], on='', src='kein Auswurf')
     d = vdir(E['dir'])
     n = sum(a * a for a in d) ** 0.5
     vs, ts = mesh(*EG.case_mesh(E['case']))
     return dict(enabled=True, pos=xyz(*E['at']), dir=r6([a / n for a in d]), case=E['case'],
-                verts=vs, tris=ts, src=E['src'])
+                verts=vs, tris=ts, on=E.get('on', 'shot'), src=E['src'])   # on (0.33 P4): 'shot' je Schuss, 'reload' beim Marker Eject
 
 
 def flash_data():
@@ -264,6 +268,9 @@ def data():
     for W in Ws:                                    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, 0.17: kit.py liegt im Quellenhash;
         for R in (getattr(W, 'PORTAL_ROLES', {}), getattr(W, 'CHARGE_ROLES', {})):   # Ladekern der Energiewaffen CHARGE_ROLES, 0.33 P3)
             roles.update({k: v for k, v in R.items() if k not in roles})
+        for M in (getattr(W, 'energy_roles', None), getattr(W, 'metal_roles', None)):   # 0.33 P4: Rollenmodule, die das Waffenmodul nur
+            for R in (getattr(M, 'CHARGE_ROLES', {}), getattr(M, 'RING_ROLES', {})):     # importiert (Bogen: Pinköpfe, Spannlicht; Werfer: ring_anod)
+                roles.update({k: v for k, v in R.items() if k not in roles})
     fingers = [dict(name=k, f=[float(a) for row in v['f'] for a in row], t=[float(a) for a in v['t']])
                for k, v in EG.FINGER_POSES.items()]
     arm = dict(rig_version=RA.RIG_VERSION, upper_m=r6(RA.UPPER_MM * MM), fore_m=r6(RA.FORE_MM * MM),

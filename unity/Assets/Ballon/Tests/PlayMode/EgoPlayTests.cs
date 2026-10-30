@@ -1106,8 +1106,8 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
-            Assert.AreEqual(13, p.loadouts.Length, "dreizehn Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone, 0.33: Handfeuerwaffe, "
-                                                  + "Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion)");
+            Assert.AreEqual(16, p.loadouts.Length, "sechzehn Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone, 0.33: Handfeuerwaffe, "
+                                                  + "Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion, Bogen, Granatwerfer, Raketenwerfer)");
             p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
@@ -2626,6 +2626,233 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(G.magazine - 1, c.ammo);
             Assert.AreEqual(1f, glowAtShot, 1e-4f, "Kern voll beim Schuss");
             Assert.AreEqual(0f, c.output.mech["linear_core"], 1e-4f, "Kern danach aus");
+        }
+
+        // ---------------------------------------------------------------- 0.33 „Armory“ Ziel 2: Waffenmenü
+        /// <summary>Waffenmenü über alle Waffen von ego.json: Mausrad öffnet mit der nächsten Waffe markiert, Pfeile laufen im Raster um,
+        /// Esc schließt ohne Wahl, Enter wählt – die Wahl wechselt wie eine Zifferntaste (holster, leere Sicht, draw); im Nachladen bricht
+        /// sie mit reload_to_switch ab. Waffen jenseits der Taste 0 (11 … 16) sind nur über das Menü erreichbar. Bis 0.32 gab es kein Menü.</summary>
+        [Test]
+        public void Waffenmenue_waehlt_und_wechselt()
+        {
+            var all = Object.FindAnyObjectByType<Bootstrap>().Solvers.Select(x => x.D).ToArray();
+            var A = new EgoArsenal(all.Select(d => new EgoController(new EgoSolver(d))).ToArray());
+            var M = new EgoMenu(A.C.Length);
+            Assert.AreEqual(16, M.count, "alle Waffen im Menü");
+            Assert.AreEqual(4, M.Rows, "Raster 4 × 4");
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            // Mausrad öffnet, nächste Waffe markiert; Esc schließt ohne Wahl
+            Assert.AreEqual(0, M.Step(new MenuInput { wheel = 1 }, A.Active));
+            Assert.IsTrue(M.IsOpen);
+            Assert.AreEqual(1, M.Index, "Rad: nächste Waffe");
+            Assert.AreEqual(0, M.Step(new MenuInput { wheel = -1 }, A.Active));
+            Assert.AreEqual(0, M.Index);
+            Assert.AreEqual(0, M.Step(new MenuInput { wheel = -1 }, A.Active));
+            Assert.AreEqual(15, M.Index, "läuft am Anfang um");
+            Assert.AreEqual(0, M.Step(new MenuInput { cancel = true }, A.Active));
+            Assert.IsFalse(M.IsOpen, "Esc schließt ohne Wahl");
+            // Tab öffnet bei der aktiven Waffe, Pfeil nach unten = eine Reihe weiter, Pfeil nach oben aus der ersten Reihe = letzte Reihe
+            M.Step(new MenuInput { toggle = true }, A.Active);
+            Assert.AreEqual(0, M.Index);
+            M.Step(new MenuInput { arrows = new Vector2Int(0, 1) }, A.Active);
+            Assert.AreEqual(4, M.Index);
+            M.Step(new MenuInput { arrows = new Vector2Int(0, -1) }, A.Active);
+            M.Step(new MenuInput { arrows = new Vector2Int(0, -1) }, A.Active);
+            Assert.AreEqual(12, M.Index, "oben aus der ersten Reihe: letzte Reihe");
+            M.Step(new MenuInput { arrows = new Vector2Int(3, 0) }, A.Active);
+            Assert.AreEqual(15, M.Index, "Raketenwerfer (Waffe 16, ohne Taste)");
+            int pick = M.Step(new MenuInput { confirm = true }, A.Active);
+            Assert.AreEqual(16, pick, "Enter wählt Taste 16");
+            Assert.IsFalse(M.IsOpen);
+            // Wahl wechselt wie eine Zifferntaste
+            var seq = new List<string>();
+            A.Tick(Dt, Idle, pick);
+            for (int t = 0; t < 90 && (A.Switching || A.Current.Busy); t++)
+            {
+                if (seq.Count == 0 || seq[seq.Count - 1] != $"{A.Active}:{A.Current.ActionName}") seq.Add($"{A.Active}:{A.Current.ActionName}");
+                A.Tick(Dt, Idle);
+            }
+            TestContext.WriteLine("Menü → 16: " + string.Join(" ", seq));
+            Assert.AreEqual(15, A.Active, "Raketenwerfer aktiv");
+            CollectionAssert.IsSubsetOf(new[] { "0:holster", "15:draw" }, seq.ToArray(), "wegstecken, ziehen");
+            // im Nachladen: Wahl bricht mit reload_to_switch ab
+            Run(A, 0.4f);
+            A.Tick(Dt, new EgoIntent { grounded = true, fire = true });                 // Schuss, sofort Nachladen
+            Assert.AreEqual("reload_empty", A.Current.ActionName);
+            for (int t = 0; t < 10; t++) A.Tick(Dt, Idle);
+            M.Step(new MenuInput { toggle = true }, A.Active);
+            Assert.AreEqual(15, M.Index, "Menü öffnet bei der aktiven Waffe");
+            M.Step(new MenuInput { wheel = 1 }, A.Active);
+            pick = M.Step(new MenuInput { confirm = true }, A.Active);
+            Assert.AreEqual(1, pick, "nach der letzten: wieder Waffe 1");
+            A.Tick(Dt, Idle, pick);
+            Assert.AreEqual("reload_to_switch", A.Current.ActionName, "Nachladen bricht ab wie beim Wechsel");
+            for (int t = 0; t < 90 && (A.Switching || A.Current.Busy); t++) A.Tick(Dt, Idle);
+            Assert.AreEqual(0, A.Active);
+            Assert.AreEqual(0, A.C[15].ammo, "Rakete nicht geladen (Abbruch vor MagIn)");
+        }
+
+        static void Run(EgoArsenal A, float s)
+        {
+            for (float t = 0; t < s; t += Dt) A.Tick(Dt, Idle);
+        }
+
+        // ---------------------------------------------------------------- 0.33 „Armory“ P4: Bogen, Granatwerfer, Raketenwerfer
+        /// <summary>Feuerart draw_release (Bogen BASIC-07): gehaltener Abzug spannt (fire_draw: Sehne, Rollen und Pfeil laufen mit dem Auszug,
+        /// die Zughand folgt dem Pfeil), der volle Auszug hält ohne Schuss; Loslassen löst (ein Schuss, fire_release legt einen neuen Pfeil
+        /// auf), vor dem vollen Auszug entspannt der Bogen ohne Schuss (let_down). Kein Magazin. Im Zielen spannt fire_draw_ads. Bis 0.32
+        /// fehlte die Feuerart (ego.profile brach ab), der Controller kannte keine Spannaktion.</summary>
+        [Test]
+        public void Bogen_spannt_haelt_und_loest()
+        {
+            var BW = Class("combat_bow");
+            Assert.AreEqual("draw_release", BW.gameplay.fire_mode);
+            Assert.IsTrue(BW.gameplay.Draw && BW.gameplay.Unlimited && !BW.CanReload, "Vorrat ohne Nachladen");
+            var c = new EgoController(new EgoSolver(BW));
+            var marks = new List<(string, string)>();
+            c.Marker += (a, m) => marks.Add((a, m));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            // halb gespannt loslassen: entspannen ohne Schuss
+            Run(c, fire, 0.3f);
+            Assert.AreEqual("fire_draw", c.ActionName, "Abzug halten spannt");
+            float half = c.DrawLevel;
+            Assert.That(half, Is.InRange(0.2f, 0.6f), "Auszug nach 0,3 s (die Zughand kommt in 4 Bildern an die Nocke)");
+            Assert.AreEqual(half, c.output.mech["string_top"], 0.02f, "Sehne folgt dem Auszug");
+            c.Tick(Dt, Idle);
+            Assert.AreEqual("let_down", c.ActionName, "vorher losgelassen: entspannen");
+            Run(c, Idle, 0.5f);
+            Assert.AreEqual(0, c.shots, "kein Schuss beim Entspannen");
+            Assert.AreEqual("idle_hip", c.ActionName);
+            Assert.AreEqual(0f, c.output.mech.TryGetValue("arrow_shaft", out float a0) ? a0 : 0f, 1e-3f, "Pfeil wieder aufgelegt");
+            // voll spannen und halten
+            float tFull = -1;
+            for (float t = 0; t < 1.4f; t += Dt)
+            {
+                c.Tick(Dt, fire);
+                if (tFull < 0 && c.DrawLevel >= 1) tFull = t + Dt;
+            }
+            TestContext.WriteLine($"Bogen: voll nach {tFull:0.000} s, gehalten bis 1,4 s ohne Schuss ({c.shots})");
+            Assert.AreEqual(0.6f, tFull, 2 * Dt, "voller Auszug nach 0,6 s (Ziehzeit 612 ms)");
+            Assert.AreEqual(0, c.shots, "gehalten: kein Schuss");
+            Assert.AreEqual(1f, c.output.mech["arrow_shaft"], 1e-3f, "Pfeil voll zurück");
+            Assert.AreEqual(1f, c.output.mech["draw_light"], 1e-3f, "Spannlicht bei vollem Auszug");
+            Assert.IsTrue(marks.Any(m => m.Item1 == "fire_draw" && m.Item2 == "FullDraw"));
+            // lösen
+            c.Tick(Dt, Idle);
+            Assert.AreEqual(1, c.shots, "Loslassen löst einen Pfeil");
+            Assert.AreEqual("fire_release", c.ActionName);
+            Assert.IsTrue(c.Busy, "Auflegen sperrt das nächste Spannen");
+            float minArrow = 1;
+            bool hidden = false;
+            for (int j = 0; j < 60 && c.Busy; j++)
+            {
+                c.Tick(Dt, Idle);
+                if (c.output.mech.TryGetValue("arrow_shaft", out float av)) minArrow = Mathf.Min(minArrow, av);
+                hidden |= c.output.magHidden;
+            }
+            Assert.Less(minArrow, -1f, "Pfeil fliegt nach vorn");
+            Assert.IsTrue(hidden, "Pfeil nach dem Flug verdeckt, bis die Zughand den nächsten bringt");
+            Assert.IsTrue(marks.Any(m => m.Item1 == "fire_release" && m.Item2 == "Nocked"), "neuer Pfeil aufgelegt");
+            Run(c, Idle, 0.3f);
+            Assert.AreEqual("idle_hip", c.ActionName);
+            Assert.AreEqual(BW.gameplay.magazine, c.ammo, "kein Magazin");
+            // im Zielen spannen
+            var aim = new EgoIntent { grounded = true, aim = true };
+            Run(c, aim, 0.6f);
+            c.Tick(Dt, new EgoIntent { grounded = true, aim = true, fire = true });
+            Assert.AreEqual("fire_draw_ads", c.ActionName, "im Zielen bleibt der Bogen im Anschlag");
+        }
+
+        /// <summary>Granatwerfer BASIC-13 (Spec v2.1 semi_auto, Trommel): nach jedem Schuss dreht die Trommel eine Kammer weiter (fire_cycle),
+        /// keine Hülse beim Schuss; Nachladen je Kammer wie die Schrotflinte (Einstieg, reload_shell bis voll, reload_end ohne Pumpen), je
+        /// Kammer fällt eine Hülse (EJECT on='reload', Marker Eject). Bis 0.32 kannte das Ego-System die Klasse nicht.</summary>
+        [Test]
+        public void Granatwerfer_Trommel_dreht_und_laedt_je_Kammer()
+        {
+            var GL = Class("grenade_launcher");
+            Assert.AreEqual("semi_auto", GL.gameplay.fire_mode);
+            Assert.IsTrue(GL.gameplay.Cycles && GL.ShellReload, "Trommel: fire_cycle und Nachladen je Kammer");
+            Assert.AreEqual("reload", GL.weapon.eject.on, "Hülsen nur beim Nachladen");
+            var c = new EgoController(new EgoSolver(GL));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            long shells0 = c.shellsEjected;
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            Assert.AreEqual(1, c.shots);
+            Assert.AreEqual("fire_cycle", c.ActionName, "Trommel dreht nach dem Schuss");
+            float drum = 0;
+            for (int j = 0; j < 30 && c.Busy; j++)
+            {
+                c.Tick(Dt, Idle);
+                if (c.output.mech.TryGetValue("drum", out float v)) drum = Mathf.Max(drum, v);
+            }
+            Assert.Greater(drum, 0.9f, "eine Kammer weiter");
+            Assert.AreEqual(shells0, c.shellsEjected, "keine Hülse beim Schuss");
+            Run(c, Idle, 0.3f);
+            // Nachladen 3 → 6
+            c.ammo = 3;
+            var seq = new List<string>();
+            c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            float last = float.MaxValue;
+            for (int j = 0; j < 900 && c.Busy; j++)
+            {
+                if (seq.Count == 0 || seq[seq.Count - 1] != c.ActionName || c.Frame < last) seq.Add(c.ActionName);
+                last = c.Frame;
+                c.Tick(Dt, Idle);
+            }
+            TestContext.WriteLine($"Granatwerfer: Nachladen 3 → {c.ammo}: {string.Join(" ", seq)}; Hülsen {c.shellsEjected - shells0}");
+            CollectionAssert.AreEqual(new[] { "reload_tactical", "reload_shell", "reload_shell", "reload_end" }, seq.ToArray());
+            Assert.AreEqual(GL.gameplay.magazine, c.ammo);
+            Assert.AreEqual(3, c.shellsEjected - shells0, "eine Hülse je geladener Kammer");
+            // leer: Ende ohne Pumpen
+            c.ammo = 0;
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            string end = "";
+            for (int j = 0; j < 1500 && c.Busy; j++) { end = c.ActionName; c.Tick(Dt, Idle); }
+            Assert.AreEqual("reload_end", end, "Trommel: kein reload_end_pump");
+            Assert.AreEqual(GL.gameplay.magazine, c.ammo);
+        }
+
+        /// <summary>Feuerart single_shot (Raketenwerfer BASIC-14): Magazin 1, nach dem Schuss sofort Nachladen (reload_empty = Klassenaktion):
+        /// die Rakete fliegt in den ersten Bildern aus dem Rohr, ist verdeckt, bis die linke Hand die nächste bringt, und sitzt bei MagIn;
+        /// danach wieder schussbereit. Bis 0.32 fehlte die Feuerart.</summary>
+        [Test]
+        public void Raketenwerfer_laedt_nach_jedem_Schuss()
+        {
+            var RL = Class("rocket_launcher");
+            Assert.AreEqual("single_shot", RL.gameplay.fire_mode);
+            Assert.AreEqual(1, RL.gameplay.magazine);
+            var c = new EgoController(new EgoSolver(RL));
+            var marks = new List<(string, string)>();
+            c.Marker += (a, m) => marks.Add((a, m));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            Assert.AreEqual(1, c.shots);
+            Assert.AreEqual(0, c.ammo);
+            Assert.AreEqual("reload_empty", c.ActionName, "sofort nachladen");
+            float minRocket = 0;
+            bool hidden = false;
+            float tIn = -1;
+            for (float t = 0; t < 4f && c.Busy; t += Dt)
+            {
+                c.Tick(Dt, Idle);
+                minRocket = Mathf.Min(minRocket, c.output.mech.TryGetValue("rocket", out float v) ? v : 0);
+                hidden |= c.output.magHidden;
+                if (tIn < 0 && c.ammo == 1) tIn = t + Dt;
+            }
+            TestContext.WriteLine($"Raketenwerfer: Rakete sitzt nach {tIn:0.00} s, Nachladen {RL.Action("reload_empty").frames / 30f:0.00} s");
+            Assert.Less(minRocket, -1f, "Rakete fliegt aus dem Rohr");
+            Assert.IsTrue(hidden, "verdeckt, bis die Hand die nächste bringt");
+            Assert.IsTrue(marks.Any(m => m.Item1 == "reload_empty" && m.Item2 == "MagIn"));
+            Assert.AreEqual(1, c.ammo, "geladen");
+            Run(c, Idle, 0.3f);
+            Assert.AreEqual("idle_hip", c.ActionName);
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            Assert.AreEqual(2, c.shots, "wieder schussbereit");
         }
     }
 }

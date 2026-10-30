@@ -460,6 +460,21 @@ namespace Ballon.Ego.Editor
             return res;
         }
 
+        /// <summary>Waffensymbol (0.33 Ziel 2, tools/make_icons.py) als GUI-Textur ohne Mipmaps; fehlt es, bleibt das HUD ohne Symbol.</summary>
+        static Texture2D Icon(string id)
+        {
+            var path = $"{Gen}/Icons/{id}.png";
+            if (AssetImporter.GetAtPath(path) is TextureImporter ti && (ti.textureType != TextureImporterType.GUI || ti.mipmapEnabled))
+            {
+                ti.textureType = TextureImporterType.GUI;
+                ti.mipmapEnabled = false;
+                ti.alphaIsTransparency = true;
+                ti.textureCompression = TextureImporterCompression.Uncompressed;
+                ti.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
         static void Scene(Dictionary<string, Material> mats)
         {
             var sc = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -472,6 +487,7 @@ namespace Ballon.Ego.Editor
                 id = d.weapon.id,
                 model = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.weapon.fbx}"),
                 skins = d.textures.skins.Select(sk => mats[$"Skin_{d.atlas}_{sk.name}"]).ToArray(),
+                icon = Icon(d.weapon.id),
             }).ToArray();
             b.armsModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/arms.fbx");
             b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")).Select(kv => kv.Value).ToArray();

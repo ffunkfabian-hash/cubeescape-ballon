@@ -50,7 +50,7 @@ namespace Ballon.Ego.Tests
         public void Format_und_Umfang()
         {
             Assert.AreEqual(Playable.Length, All.Length, "spielbare Waffen (0.33 P3: Automatik, MP, Scout, Impuls, Portalkanone, "
-                                                         + "Handfeuerwaffe, Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion)");
+                                                         + "Handfeuerwaffe, Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion, Bogen, Granatwerfer, Raketenwerfer)");
             CollectionAssert.AreEqual(Playable.Select(p => p.id).ToArray(), All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3 …");
             CollectionAssert.AreEqual(Playable.Select(p => p.fire).ToArray(), All.Select(d => d.gameplay.fire_mode).ToArray(),
                                       "Feuerart aus der Spec (Spannabzug der Trommel als Einzelfeuer, Gurt als Dauerfeuer: ego.FIRE_ALIAS)");
@@ -67,7 +67,8 @@ namespace Ballon.Ego.Tests
             ("BASIC-05-v2.1", "sidearm", "semi_auto"), ("BASIC-09-v2.1", "sniper_rifle", "bolt_action"),
             ("BASIC-12-v2.1", "trace_rifle", "continuous_beam"), ("BASIC-15-v2.1", "machine_gun", "full_auto"),
             ("BASIC-08-v2.1", "shotgun", "pump_action"), ("BASIC-10-v2.1", "fusion_rifle", "charge_burst"),
-            ("BASIC-11-v2.1", "linear_fusion_rifle", "charge_single"),
+            ("BASIC-11-v2.1", "linear_fusion_rifle", "charge_single"), ("BASIC-07-v2.1", "combat_bow", "draw_release"),
+            ("BASIC-13-v2.1", "grenade_launcher", "semi_auto"), ("BASIC-14-v2.1", "rocket_launcher", "single_shot"),
         };
 
         /// <summary>0.33 „Armory“: jede übertragene Klasse steht vollständig in ego.json – Klasse, Herkunft je Haltung und Aktion, Spielwerte
@@ -107,23 +108,32 @@ namespace Ballon.Ego.Tests
             bool tool = D.gameplay.HasPortals;                // Werkzeug (0.22): ohne Zielen, Nachladen, Magazin und Visier
             Assert.AreEqual(tool ? 8 : 10, D.poses.Length, "Haltungen");
             if (tool) Assert.AreEqual(2, D.grips.Length, "Griffe");
-            else foreach (var g in new[] { "grip", "support", "mag", "charge" })   // 0.33: Klassen dürfen weitere Griffe haben (MG: Deckel)
+            else foreach (var g in D.CanReload ? new[] { "grip", "support", "mag", "charge" } : new[] { "grip", "support" })   // 0.33: Klassen dürfen
+                                                                                // weitere Griffe haben (MG: Deckel); ohne Nachladen (Bogen, P4) ohne mag/charge
                     Assert.DoesNotThrow(() => D.Grip(g), $"{D.weapon.id}: Griff {g}");
-            foreach (var a in tool ? new string[0] : new[] { "idle_hip", "draw", "holster", "aim_in", "aim_out", "fire_hip", "fire_ads",
+            foreach (var a in tool ? new string[0]
+                     : D.gameplay.Draw ? new[] { "idle_hip", "draw", "holster", "aim_in", "aim_out", "fire_draw", "fire_draw_ads", "fire_release",
+                                                 "fire_release_ads", "let_down", "let_down_ads", "inspect", "sprint", "lowered", "walk", "crouch",
+                                                 "jump_land", "sprint_to_aim", "sprint_to_fire", "draw_aim" }   // Bogen (0.33 P4): ohne Nachladen
+                     : new[] { "idle_hip", "draw", "holster", "aim_in", "aim_out", "fire_hip", "fire_ads",
                                                               "reload_tactical", "reload_empty", "inspect", "sprint", "lowered", "walk",
                                                               "crouch", "jump_land", "sprint_to_aim", "sprint_to_fire", "draw_aim",
                                                               "reload_to_switch" })
                 Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: Aktion {a}");
-            Assert.AreEqual(tool ? 12 : 19 + (D.gameplay.Cycles ? 2 : 0) + (D.ShellReload ? 3 : 0), D.actions.Length,
-                            "Aktionen (Repetierer und Pumpe 0.33: dazu fire_cycle, fire_cycle_ads; Einzelladen: reload_shell, reload_end, reload_end_pump)");
+            int shell = D.ShellReload ? (D.HasAction("reload_end_pump") ? 3 : 2) : 0;   // Trommel (0.33 P4): ohne reload_end_pump
+            Assert.AreEqual(tool ? 12 : D.gameplay.Draw ? 20 : 19 + (D.gameplay.Cycles ? 2 : 0) + shell, D.actions.Length,
+                            "Aktionen (Repetierer, Pumpe, Trommel 0.33: dazu fire_cycle, fire_cycle_ads; Einzelladen: reload_shell, reload_end, "
+                            + "reload_end_pump; Bogen: 20 ohne Nachladen, mit Spannen, Lösen, Entspannen)");
             if (D.gameplay.Cycles)
                 foreach (var a in new[] { "fire_cycle", "fire_cycle_ads" }) Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: {a}");
             if (D.ShellReload)
-                foreach (var a in new[] { "reload_shell", "reload_end", "reload_end_pump" }) Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: {a}");
+                foreach (var a in new[] { "reload_shell", "reload_end" }) Assert.IsTrue(D.HasAction(a), $"{D.weapon.id}: {a}");   // reload_end_pump
+                                                                                                    // nur mit Pumpe (Trommel 0.33 P4 ohne)
             bool shortArm = D.gameplay.weapon_type == "hand_cannon" || D.gameplay.weapon_type == "sidearm";   // Kurzwaffen (0.33): 20/25 Teile
             Assert.GreaterOrEqual(D.weapon.parts.Length, tool || shortArm ? 20 : 30, "Waffenteile (0.33 P3: Schrotflinte 36)");
-            bool noBolt = D.gameplay.Cycles || D.gameplay.Beam || D.gameplay.Charge;   // 0.33: Repetierer, Pumpe (fire_cycle), Strahl und Ladewaffe ohne Verschluss je Schuss
-            foreach (var n in tool ? new[] { D.weapon.live.trigger, D.weapon.live.ring }
+            bool noBolt = D.gameplay.Cycles || D.gameplay.Beam || D.gameplay.Charge || D.gameplay.SingleShot;   // 0.33: Repetierer, Pumpe, Trommel
+            // (fire_cycle), Strahl, Ladewaffe und Raketenwerfer ohne Verschluss je Schuss; Bogen (P4) ohne Abzug und Verschluss
+            foreach (var n in D.gameplay.Draw ? new string[0] : tool ? new[] { D.weapon.live.trigger, D.weapon.live.ring }
                                    : noBolt ? new[] { D.weapon.live.trigger } : new[] { D.weapon.live.trigger, D.weapon.live.bolt })
                 Assert.IsTrue(D.HasPart(n), $"{D.weapon.id}: Live-Teil {n}");
             foreach (var g in D.weapon.live.glow ?? new string[0])
@@ -159,7 +169,7 @@ namespace Ballon.Ego.Tests
                 Assert.DoesNotThrow(() => D.Anchor("Socket_Charge"));
             Assert.AreEqual(tool, !D.CanAim && !D.CanReload, $"{D.weapon.id}: Zielen und Nachladen nur mit Visier und Magazin");
             Assert.Greater(D.gameplay.rpm, 0);
-            if (tool) Assert.AreEqual(0, D.gameplay.magazine, "Werkzeug ohne Magazin (unbegrenzt)");
+            if (tool || D.gameplay.Draw) Assert.AreEqual(0, D.gameplay.magazine, "Werkzeug und Bogen (Vorrat, 0.33 P4) ohne Magazin (unbegrenzt)");
             else Assert.Greater(D.gameplay.magazine, 0);
         }
 
@@ -764,6 +774,13 @@ namespace Ballon.Ego.Tests
                     Assert.Greater(roll, 15f, "Werkzeug wie Kurzwaffen nach links gerollt (E, Klasse Werkzeug)");
                     Assert.That(m.x, Is.InRange(38f, 50f), "Achskrone tief links wie die MP-Mündung");
                     Assert.That(m.y, Is.InRange(74f, 86f));
+                }
+                else if (d.profile.type == "combat_bow")
+                {
+                    // Bogen (0.33 P4, cubeescape-reference destiny2:221): Riser ≈ 20° nach rechts geneigt – im Bild, nicht als Rollwinkel (der
+                    // Bogen zeigt im Sprint steil nach unten)
+                    Vector3 g = E.ToScreen(o.weapon.MultiplyPoint3x4(Vector3.zero)), t = E.ToScreen(o.weapon.MultiplyPoint3x4(new Vector3(0, 0, 0.3f)));
+                    Assert.Greater(t.x, g.x, "Bogen: Riser oben nach rechts geneigt");
                 }
                 else Assert.Less(roll, -10f, "Gewehre: Oberseite nach rechts (quer, wie bisher)");
             }
@@ -1412,7 +1429,10 @@ namespace Ballon.Ego.Tests
             TestContext.WriteLine($"{D.weapon.id}: {checks} Matrizen, größte Abweichung {worstP * 1000:0.000} mm ({wp}), {worstR:0.000}° ({wr}), Ober-/Unterarm {worstA:0.000}° ({wa})");
             Assert.LessOrEqual(worstP, R.tolerance_m, $"Lage {worstP * 1000:0.000} mm bei {wp}");
             Assert.LessOrEqual(worstR, R.tolerance_deg, $"Drehung {worstR:0.000}° bei {wr}");
-            Assert.LessOrEqual(worstA, R.tolerance_arm_deg, $"Arm {worstA:0.000}° bei {wa}");
+            // Drehgrenze aus dem kürzeren Glied (0.33 P4): der Export rechnet sie mit dem Oberarm (320 mm), der Unterarm (300 mm) darf bei
+            // denselben 0,5 mm je Punkt 0,191° abweichen (Bogen fire_release_ads: 0,185°)
+            float tolA = Mathf.Max(R.tolerance_arm_deg, Mathf.Atan2(2 * R.tolerance_m, Mathf.Min(D.arm.upper_m, D.arm.fore_m)) * Mathf.Rad2Deg);
+            Assert.LessOrEqual(worstA, tolA, $"Arm {worstA:0.000}° bei {wa}");
             Assert.Greater(checks, D.slot == 0 ? 5000 : D.gameplay.HasPortals ? 3000 : 4000, "Matrizen (Pilot wie bisher > 5000; Werkzeug: 12 Aktionen, 22 Objekte)");
         }
     }

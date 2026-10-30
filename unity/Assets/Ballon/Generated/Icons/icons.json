@@ -1,0 +1,120 @@
+{
+ "format": "ballon-icons/1",
+ "de": "Waffensymbole (weiß, Alpha) aus data/silhouettes.json › side, tools/make_icons.py; Reihenfolge wie export_unity.WEAPONS",
+ "order": [
+  "BASIC-01-v2.1",
+  "BASIC-06-v2.1",
+  "BASIC-03-v2.1",
+  "BASIC-02-v2.1",
+  "BASIC-T01-v2.1",
+  "BASIC-04-v2.1",
+  "BASIC-05-v2.1",
+  "BASIC-09-v2.1",
+  "BASIC-12-v2.1",
+  "BASIC-15-v2.1",
+  "BASIC-08-v2.1",
+  "BASIC-10-v2.1",
+  "BASIC-11-v2.1",
+  "BASIC-07-v2.1",
+  "BASIC-13-v2.1",
+  "BASIC-14-v2.1"
+ ],
+ "icons": {
+  "BASIC-01-v2.1": {
+   "file": "BASIC-01-v2.1.png",
+   "rows_sha256": "a2b07113ff8199fe2a47ca9902ed720916ef3f4762d2743e524ebb57d5cab724",
+   "w": 320,
+   "h": 91
+  },
+  "BASIC-06-v2.1": {
+   "file": "BASIC-06-v2.1.png",
+   "rows_sha256": "ecb322b08581dc7e3e34a253f134de9e13dc3a7acb7a3f2089fd8de5f1f53e2a",
+   "w": 320,
+   "h": 171
+  },
+  "BASIC-03-v2.1": {
+   "file": "BASIC-03-v2.1.png",
+   "rows_sha256": "b828049f696c2d4db338bfb524332bbac25cacd5468f5910a77905ce6932cb1f",
+   "w": 320,
+   "h": 82
+  },
+  "BASIC-02-v2.1": {
+   "file": "BASIC-02-v2.1.png",
+   "rows_sha256": "4bf278642563161bf3fa2ed459e8f82429dcf0d257bc7b099f7f5f9a7d4196b2",
+   "w": 320,
+   "h": 100
+  },
+  "BASIC-T01-v2.1": {
+   "file": "BASIC-T01-v2.1.png",
+   "rows_sha256": "b587340ef93aae1d10c6a4e6f964d2d3a03ebbdf4da28e702ab48736df3bab5a",
+   "w": 320,
+   "h": 199
+  },
+  "BASIC-04-v2.1": {
+   "file": "BASIC-04-v2.1.png",
+   "rows_sha256": "badf804e718e2df751eab7b7581652da0fbabe772a1cf88e315e01da800befe9",
+   "w": 320,
+   "h": 193
+  },
+  "BASIC-05-v2.1": {
+   "file": "BASIC-05-v2.1.png",
+   "rows_sha256": "a5287dab08a9e4d2e84827d2d6bf5f4c2bd5b5c5f210fc9bdacdf7d2a71a4011",
+   "w": 320,
+   "h": 255
+  },
+  "BASIC-09-v2.1": {
+   "file": "BASIC-09-v2.1.png",
+   "rows_sha256": "9441f47afa369b91ab55eed7af162d40c06c86ce256e60f49f1cf122d6f25513",
+   "w": 320,
+   "h": 76
+  },
+  "BASIC-12-v2.1": {
+   "file": "BASIC-12-v2.1.png",
+   "rows_sha256": "5b6cdedf40e69d407246e0b628bbf8e84147dca15dd574081f581a9c51f238db",
+   "w": 320,
+   "h": 105
+  },
+  "BASIC-15-v2.1": {
+   "file": "BASIC-15-v2.1.png",
+   "rows_sha256": "0cea616207a9feda27c3999a5f9d019e3da629369dd038e48e8718275f7dc2e5",
+   "w": 320,
+   "h": 87
+  },
+  "BASIC-08-v2.1": {
+   "file": "BASIC-08-v2.1.png",
+   "rows_sha256": "d3ec4c37b917040f2e9c7e12b080b9b32aae51aaa56d1da71620707a73d979f3",
+   "w": 320,
+   "h": 82
+  },
+  "BASIC-10-v2.1": {
+   "file": "BASIC-10-v2.1.png",
+   "rows_sha256": "2963a12e407a769133cf5354766115a955cbc010f2f0f52a97ebaa7f78709533",
+   "w": 320,
+   "h": 117
+  },
+  "BASIC-11-v2.1": {
+   "file": "BASIC-11-v2.1.png",
+   "rows_sha256": "06b3243e6287e75e19f8f0e31dbff1721cd0957a11df4e8e52b9723696994761",
+   "w": 320,
+   "h": 75
+  },
+  "BASIC-07-v2.1": {
+   "file": "BASIC-07-v2.1.png",
+   "rows_sha256": "5633cd3a1b190d4bb2adc3941c82c10ebf613d7c3134d5b4175f7a356b7a2b78",
+   "w": 320,
+   "h": 444
+  },
+  "BASIC-13-v2.1": {
+   "file": "BASIC-13-v2.1.png",
+   "rows_sha256": "f8f38327392266ec48e011c2bdf461bee713e88bafe5a95b8318b9d13724c161",
+   "w": 320,
+   "h": 129
+  },
+  "BASIC-14-v2.1": {
+   "file": "BASIC-14-v2.1.png",
+   "rows_sha256": "c43a55fab7831d3789978bc5d94471c4f91424c9368581ac5eb98626992af87b",
+   "w": 320,
+   "h": 85
+  }
+ }
+}

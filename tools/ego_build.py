@@ -496,9 +496,10 @@ def fx_eval(sc, A, f, state):
     i = EG.flash_visible(fire, f) if sc.P['gameplay'].get('muzzle_flash', True) else None   # Werkzeug (0.22): ohne Mündungsfeuer
     if i is not None:
         mz = vdir(sc.W.ANCHORS['Socket_Muzzle']['at']) * MM
-        now['flash'] = sc.WM @ Matrix.Translation(mz) @ Matrix.Rotation(math.radians(EG.flash_roll(i)), 4, 'Y')
+        now['flash'] = sc.WM @ Matrix.Translation(mz) @ Matrix.Rotation(math.radians(EG.flash_roll(i)), 4, 'Y') @ \
+            Matrix.Scale(sc.P['gameplay'].get('flash_scale', 1.0), 4)            # Blitzmaßstab je Klasse (0.33 P4, Werfer)
     ej = eject_data(sc.W)
-    if ej and fire:
+    if ej and fire and sc.W.EJECT.get('on') != 'reload':   # Trommel (0.33 P4, EJECT on='reload'): Hülsen nur beim Nachladen (Unity: Marker Eject)
         W0s = state.setdefault('shot_wm', {})
         for k, s in enumerate(fire):
             if s <= f and k not in W0s:
@@ -648,10 +649,12 @@ def evaluate(sc, A, f, report, state):
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
         G = sc.P['gameplay']
         charge_f = G['charge_s'] * EG.FPS if sc.P['fire_mode'] in EG.CHARGE_MODES else 0.0   # Ladewaffe (0.33): Abzug ab dem Aufladen
-        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in EG.SEMI_MODES, lead=charge_f) else 0.0   # je Schuss
+        trig = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in EG.SEMI_MODES, lead=charge_f) else 0.0   # je Schuss
+        if live.get('trigger'):              # Bogen (0.33 P4): ohne Abzug
+            mech[live['trigger']] = trig
         for g in live.get('glow', ()):       # Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht; Ladewaffe: mit der Ladung
             mech[g] = EG.charge_level(A['fire'], f, charge_f, G.get('burst_shots') or 1, G['charge_fade_s'] * EG.FPS) if charge_f \
-                else mech[live['trigger']]
+                else trig
         if live.get('bolt'):                 # Werkzeug (0.22): ohne Verschluss und Auswurfklappe
             mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         if live.get('port'):
@@ -707,13 +710,15 @@ def main():
         o['actions'] = list(sc.P['actions'])
     meta = dict(weapon=wid, camera=EG.CAMERA, fps=EG.FPS, poses={}, actions={}, source=RA.SOURCE)
     scn = bpy.context.scene
+    CLS = EG.CLASSES
     if o['stills']:
         scn.render.resolution_x, scn.render.resolution_y = 1600, 900
         scn.cycles.samples = max(96, o['samples'])
         for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch')
                      if k in sc.P['poses'] and (not o['poses'] or k in o['poses'])]:
             rep = {}
-            A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else 'support')], R=[(0, 'grip')])   # wie Aktion inspect
+            rest = (CLS.get(sc.P['type'], {}).get('support_rest') or {}).get('at', 'support')   # Bogen (0.33 P4): Zughand unter dem Bild
+            A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else rest)], R=[(0, 'grip')])   # wie Aktion inspect
             if name == 'reload':
                 A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
             evaluate(sc, A, 0, rep, {})

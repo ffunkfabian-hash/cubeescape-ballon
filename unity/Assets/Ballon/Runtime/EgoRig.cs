@@ -239,6 +239,20 @@ namespace Ballon.Ego
             t.localRotation = q;
         }
 
+        /// <summary>Sehnenhälfte (0.33 P4, Bewegung segment): Lage T(Ende) · R · S mit Streckung S längs d0 (move.axis) – Drehung ohne die
+        /// Streckung wie Set, die Streckung als localScale längs der Unity-Achse von d0 (die Sehne liegt längs einer Teilachse).</summary>
+        void SetSegment(Transform t, Matrix4x4 b, EgoPart p)
+        {
+            var n = V(p.move.axis).normalized;
+            float kf = Rot3(b).MultiplyVector(n).magnitude;
+            var Si = Matrix4x4.identity;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++) Si[i, j] += (1 / kf - 1) * n[i] * n[j];
+            Set(t, b * Si);
+            var a = _axes.MultiplyVector(n);
+            t.localScale = Vector3.one + (kf - 1) * new Vector3(Mathf.Abs(a.x), Mathf.Abs(a.y), Mathf.Abs(a.z));
+        }
+
         public void Apply(EgoOutput o)
         {
             Set(weaponRoot, o.weapon);
@@ -247,7 +261,8 @@ namespace Ballon.Ego
             {
                 var parent = string.IsNullOrEmpty(p.parent) ? inv : S.World(o, p.parent).inverse;
                 var world = (p.id == S.MagPart && o.magOverride) ? o.magWorld : o.movers[p.id];
-                Set(_parts[p.id], parent * world);
+                if (p.move.kind == "segment") SetSegment(_parts[p.id], parent * world, p);
+                else Set(_parts[p.id], parent * world);
             }
             if (_mag != null && _mag.gameObject.activeSelf == o.magHidden) _mag.gameObject.SetActive(!o.magHidden);
             if (_adsHidden != o.adsHidden)
@@ -266,7 +281,11 @@ namespace Ballon.Ego
                 SetGlow(k, g);
             }
             if (_flashR.enabled != o.flashOn) _flashR.enabled = o.flashOn;
-            if (o.flashOn) Set(_flash, o.flash);
+            if (o.flashOn)
+            {
+                Set(_flash, o.flash);
+                _flash.localScale = Vector3.one * S.D.gameplay.FlashScale;   // 0.33 P4: Blitzmaßstab je Klasse (ego_build wie Matrix.Scale)
+            }
             for (int k = 0; k < _shells.Length; k++)
             {
                 bool on = k < o.shellCount;

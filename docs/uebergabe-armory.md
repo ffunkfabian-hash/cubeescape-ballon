@@ -1,7 +1,7 @@
-# Übergabe 0.33 „Armory“ – nach P3
+# Übergabe 0.33 „Armory“ – nach P4 und Ziel 2 (Code)
 
-Stand: Branch `claude/ballon-0.33-armory` (Basis `main` d0c7b8c, 0.32 „Softgrip“). P1 (erste Sitzung), P2 (zweite) und P3 (Sitzung
-„BALLON 0.33 „Armory“ · Teil 3“, Opus 5.5, high) sind erledigt; Übergabe an eine **frische Sitzung ohne Verlauf** (globale Regel: Übergabe
+Stand: Branch `claude/ballon-0.33-armory` (Basis `main` d0c7b8c, 0.32 „Softgrip“). P1 (erste Sitzung), P2 (zweite), P3 (Sitzung
+„BALLON 0.33 „Armory“ · Teil 3“) und P4 samt dem Code für Ziel 2 (Sitzung „… · Teil 4“, Opus 5.5, high) sind erledigt; Übergabe an eine **frische Sitzung ohne Verlauf** (globale Regel: Übergabe
 am Etappenende, keine Fork-Übergabe). Der Branch ist in den Worktrees von Teil 2 (`unruffled-khayyam-b36461`) und Teil 3 ausgecheckt bzw.
 verfolgt: im eigenen Worktree einen lokalen Branch auf `origin/claude/ballon-0.33-armory` anlegen (`git switch -c <name> --track …`) und
 mit `git push origin HEAD:claude/ballon-0.33-armory` pushen. `unity/Library` per `cp -cR` aus dem Worktree von Teil 3 klonen.
@@ -42,7 +42,41 @@ Auftrag unverändert wie in der Zielsitzung 0.33 „Armory“ (Sightline, 30.10.
 
 Ergebnisse, Messungen und Repo-Größe stehen im Versionsbericht [versions/0.33-armory.md](versions/0.33-armory.md).
 
-## Rest des Auftrags
+## Erledigt (P4, Teil 4)
+
+- **Klassen 07 Bogen, 13 Granatwerfer, 14 Raketenwerfer** spielbar (Waffe 14–16, nur über das Waffenmenü). Werte und Abweichungen im
+  Versionsbericht › P4. Haltungen nach **cubeescape-reference** (`~/Claude/cubeescape-reference/docs/destiny2.md`, `huefte.md`) – dort die
+  Haltungsbeschreibungen selbst lesen, nicht nur die Zahlen aus armory-klassenwerte.md (Nutzerhinweis 30.10.: der Bogen stand zuerst falsch
+  herum gekippt).
+- **Granatwerfer = Spec `semi_auto`** mit Trommel 6 (nicht `single_shot` wie in der alten Tabelle): `fire_cycle` dreht die Trommel, Nachladen je
+  Kammer (ShellReload ohne `reload_end_pump`), Hülsen beim Marker Eject (`EJECT.on='reload'`).
+- **Bogen `draw_release`**: Klassenaktionen `fire_draw(_ads)`, `fire_release(_ads)`, `let_down(_ads)`, Haltung `drawn`, `support_rest` (Zughand
+  in Ruhe unter dem Bild); Sehnen als Bewegung `segment` in Export/Solver/Rig.
+- **Raketenwerfer `single_shot`**: nach dem Schuss sofort Nachladen; `gameplay.flash_scale` (neu, 13: 0,9, 14: 0,7) hält das Mündungsfeuer im
+  Zielen ≤ 20 %.
+- **Ziel 2 Code**: `tools/make_icons.py` (Symbole aus `data/silhouettes.json` per ImageMagick nach `Generated/Icons`, `./check` prüft),
+  `Runtime/EgoMenu.cs` (Raster 4 × 4, Tab/Mausrad öffnet, Pfeile/Rad bewegen, Enter/Klick wählt, Esc/Tab schließt; Wahl = Zifferntaste →
+  holster/reload_to_switch → draw), HUD unten rechts (Symbol, Name, Munition) und Menü in `EgoPlayer.OnGUI` ohne Speicher je Bild,
+  Symbole über `BallonSetup.Icon` → `Bootstrap.WeaponAssets.icon` → `Loadout.icon`. PlayMode-Test `Waffenmenue_waehlt_und_wechselt`.
+- Tests: neue PlayMode-Tests `Bogen_spannt_haelt_und_loest`, `Granatwerfer_Trommel_dreht_und_laedt_je_Kammer`,
+  `Raketenwerfer_laedt_nach_jedem_Schuss`, `Waffenmenue_waehlt_und_wechselt`.
+
+## Rest des Auftrags (für Teil 5)
+
+1. **Gegenprobe** der neuen Feuerarten: Controller ohne die P4-Zeilen (`StartDraw`/`Release`, Sofort-Nachladen `SingleShot`, `cycle` aus
+   fire_cycle) – die drei P4-Tests müssen rot werden; Sicherung außerhalb von `Assets/`.
+2. **Sichtprüfung HUD und Menü bei 1470 × 956**: `tools/unity_run.py build`, die App im Fenster 1470 × 956 starten, Tab drücken,
+   `screencapture` (OnGUI liegt nicht in der Aufnahme-Rendertextur, daher echtes Bildschirmfoto); Symbolgröße/Lesbarkeit prüfen.
+3. `unity_run.py compare 14|15|16` gegen frische Blender-Stills (SSIM in den Bericht), MP4 der neuen Abläufe aus
+   `~/Library/Caches/CubeEscapeBallon/0.33/blender_out/BASIC-{07,13,14}-v2.1/ego/<aktion>/` (ffmpeg, 854 × 480) nach `evidence/clips/`.
+4. Bericht fertigstellen (Ziel 2, Belege, Ist-Zeit Teil 4/5), Richter `./ce codex judge` (Pflicht), PR = Bericht, Merge-Bitte an Sightline,
+   Testbuild nach dem Merge nach `~/BALLON-Testversionen/0.33/`, Aufräumen.
+
+Sichtung Teil 4 (Kontaktbögen unter Belege): beim Auflegen des Pfeils kreuzt der linke Unterarm kurz groß das Bild (fire_release Bild 12–16)
+und beim Heranführen an die Nocke (fire_draw Bild 2–4); beim Granatwerfer-Nachladen deckt der Unterarm an der Granate die Ladeklappe.
+Offen für die Entscheidungsliste, nicht blockierend.
+
+## Rest des Auftrags (Stand nach P3, erledigt bis auf die Abnahme)
 
 Der Zwischenstopp Repo-Größe entfällt: Nutzer 30.10.2026 „Scheiß auf das Limit von 1 GB“ – weiter backen, Größe nur messen und im
 Bericht nennen.

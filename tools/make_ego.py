@@ -287,7 +287,9 @@ def check():
             if G.get('part') and G['part'] not in ids:
                 err.append(f"{wid} Griff {g}: Bauteil {G['part']} fehlt")
         want = set(EG.GRIPS) if not P['drop'] else {'grip', 'support'}   # Werkzeug ohne Nachladen (0.22): ohne Magazin- und Ladegriff
-        if not want <= set(P['grips']) or (P['drop'] and set(P['grips']) != want):   # 0.33: Klassen dürfen weitere Griffe haben (MG: Deckel)
+        named = {(k[0] if isinstance(k, tuple) else k) for A in P['actions'].values() for ch in ('L', 'R') for _, k in A.get(ch, [])}
+        extra = set(P['grips']) - want - (named if P['drop'] else set(P['grips']))   # 0.33: Klassen dürfen weitere Griffe haben (MG: Deckel);
+        if not want <= set(P['grips']) or extra:     # ohne Nachladen (drop) nur solche, die eine Aktion nennt (Bogen: Pfeil, Nockpunkt, P4)
             err.append(f'{wid}: Griffe {sorted(P["grips"])} statt {sorted(want)}')
         for k, v in P['live'].items():
             for q in (v if k == 'glow' else [v]):       # glow (0.33): Leuchtteile mit Bewegung glow

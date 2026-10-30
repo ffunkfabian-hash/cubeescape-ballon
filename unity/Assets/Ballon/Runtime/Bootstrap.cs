@@ -26,7 +26,8 @@ namespace Ballon.Ego
         /// <summary>Alle Lichtatlanten einer Szene, flach: Index = Lichtszene · Zonenzahl + Zone.</summary>
         [Serializable] public class SceneAssetSet { public Texture2D[] textures; }
         /// <summary>Modell und Skin-Materialien einer Waffe (BallonSetup setzt sie in der Reihenfolge von ego.json › weapons).</summary>
-        [Serializable] public class WeaponAssets { public string id; public GameObject model; public Material[] skins; }
+        [Serializable] public class WeaponAssets { public string id; public GameObject model; public Material[] skins;
+                                                   public Texture2D icon; }   // 0.33 Ziel 2: Waffensymbol (Generated/Icons)
         public GameObject weaponModel => weapons[0].model;      // Pilotwaffe (Tests)
         public const int ViewmodelLayer = 31;
         public const int OutRenderer = 1;
@@ -79,6 +80,7 @@ namespace Ballon.Ego
             for (int k = 0; k < Solvers.Length; k++)
             {
                 Player.loadouts[k].skins = weapons[k].skins;
+                Player.loadouts[k].icon = weapons[k].icon;
                 Player.loadouts[k].skinNames = Solvers[k].D.textures?.skins?.Select(s => s.de).ToArray();
             }
             if (int.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonWeapon") ?? "", out var wk) && wk >= 1 && wk <= Solvers.Length)

@@ -22,7 +22,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "3e097b4c2cc583f32a71b3e8f2fe3bbd57225591d5f17144b5aa121080f057ad",
+   "sources_sha256": "9a2cbd9329a0bcebbedeed7c7dc1bc021b0ef922e0d5d68ad13e55d9f887cfe9",
    "pose": "hip",
    "resolution": [
     1600,
@@ -48,7 +48,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "851ddaac15872296ce58d44eca3d33c0a9a6ad015d06dc5559003dea39953214",
+   "sources_sha256": "3a5edab8c6b109e37ef90428fc750af21ca6099f7d3a00fdebbef8e6ebcc7c22",
    "pose": "hip",
    "resolution": [
     1600,
@@ -74,7 +74,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "7210ddf67052d064dff98c87f2ca131d4c01a9fd26fecb68fbc4cb04b57654d6",
+   "sources_sha256": "95d77ca3cbd9abd2ec05dfc829a36178e12e158c7935d591e459b892f5450f49",
    "pose": "hip",
    "resolution": [
     1600,
@@ -100,7 +100,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "48d312c35a23298c5570f83911eb5e9f3a4091dcf03ccd864e29e68072812309",
+   "sources_sha256": "fa1890ef2a9b6c5ef77a8a546a79fcc36f45d428257bf0f93d9353a2eb621bfd",
    "pose": "hip",
    "resolution": [
     1600,
@@ -126,7 +126,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "c73fc0bcea195d1169516c79f6d6b6099d8b5f52dcc63dc646886d4f726a9cc8",
+   "sources_sha256": "c2906a8e61c12d9da8f253667142671a04ab04d3f5fbf301b5dc62f81b331f60",
    "pose": "hip",
    "resolution": [
     1600,
@@ -152,13 +152,39 @@
      0.6667
     ]
    },
-   "sources_sha256": "bcff4a1cff3095be1fe82aac23d2ade981f27c6ee30db169559ca62ee3665a8d",
+   "sources_sha256": "7263d3b2e3f3d2a48783616f28415ea29f4bb7b5d896351142033cae1f243da6",
    "pose": "hip",
    "resolution": [
     1600,
     900
    ],
    "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-06-v2.1.png"
+  },
+  "BASIC-07-v2.1": {
+   "zone_px": 2004,
+   "zone_share": 0.01044,
+   "top_y": 0.5733,
+   "cols": [
+    0.5394,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "aa8f8f5bee6b0dd3dc2250435ce51b7f63326fb41ed750d79443296d04b3267e",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-07-v2.1.png"
   },
   "BASIC-08-v2.1": {
    "zone_px": 1706,
@@ -178,7 +204,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "f63b37c40c98f9607463f38c73ce4168d79e2db5e441eba0d8eb58b9980c9513",
+   "sources_sha256": "4ecd8b7f5abf1db0a47d53e1deae5b7c8a237cb9d48f134d5cc54d9014f87424",
    "pose": "hip",
    "resolution": [
     1600,
@@ -204,7 +230,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "b92820c1c1de8fc5060a457823216bfa8c10b222456c469e6cfb85968c6df0a2",
+   "sources_sha256": "8d11a4dd615d0a8571bdf436cacabf9d9680d5ae48e1c1260bbbdf132dda2d42",
    "pose": "hip",
    "resolution": [
     1600,
@@ -230,7 +256,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "c53ad168157fbce09bb62691a80992f39cff87b2a3d7bc47852ffa7be6030ada",
+   "sources_sha256": "6eed4dbe5f23056547b47c26109bced57b52e16c8bd7fcc6f8ac35bc7081300f",
    "pose": "hip",
    "resolution": [
     1600,
@@ -256,7 +282,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "c0107ef71b6db01bb5e0d7dc1178c56e311e1473ae2621bb2e4c50361455d923",
+   "sources_sha256": "caf8d20eb8b2514ad1b6102bd197a4d5bdb3d3b22ce925cbafc78bfc9869210c",
    "pose": "hip",
    "resolution": [
     1600,
@@ -282,13 +308,62 @@
      0.6667
     ]
    },
-   "sources_sha256": "e22bde4d7a4ab60d9fc35ad6c68c9dc7c75ffb16ed513f1544122784422b5309",
+   "sources_sha256": "c194c7c8bbb5b296c13bac7f31ab86c1fb6068563830ae8afea1b27b2107aa48",
    "pose": "hip",
    "resolution": [
     1600,
     900
    ],
    "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-12-v2.1.png"
+  },
+  "BASIC-13-v2.1": {
+   "zone_px": 2827,
+   "zone_share": 0.01472,
+   "top_y": 0.5911,
+   "cols": [
+    0.57,
+    0.6
+   ],
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "554e41d15fc58990e09fea4d545593e12ea5de089611e1a00f02a0b806def5e4",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-13-v2.1.png"
+  },
+  "BASIC-14-v2.1": {
+   "zone_px": 0,
+   "zone_share": 0.0,
+   "top_y": 0.72,
+   "cols": null,
+   "zone": {
+    "x": [
+     0.4,
+     0.6
+    ],
+    "y": [
+     0.0,
+     0.6667
+    ]
+   },
+   "sources_sha256": "5d1166e88a6273087f8af512fedc6b5df2aed85e63661502c608952530d4e3e4",
+   "pose": "hip",
+   "resolution": [
+    1600,
+    900
+   ],
+   "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-14-v2.1.png"
   },
   "BASIC-15-v2.1": {
    "zone_px": 1825,
@@ -308,7 +383,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "7114a9c0b60dc75e284e76413619c45555442be05e8bb54dc7f1882d37507182",
+   "sources_sha256": "d2c8dfa06fdc5af3dd7b502028987e4b6a169df7c20387b5b6aeecef3df49128",
    "pose": "hip",
    "resolution": [
     1600,
@@ -334,7 +409,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "43c8bef22b5f4257d9ff26f88c7b26f7cf5132ae4f8c236ff7d4a6dcfa747a3c",
+   "sources_sha256": "9a74045813d7baa3ae169dae2da60ace2ffbf31e5f5f8266045d5b27c9c8285b",
    "pose": "hip",
    "resolution": [
     1600,
