@@ -310,8 +310,13 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
                 Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide), $"{o.weapon.id}: kein Teil mit ads_hide");
-                Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
-                CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
+                // 0.33: der Scout hat eine eigene Hüfte nach cubeescape-reference huefte.json (crouch, air, lowered folgen ihr); die übrigen Haltungen gleich
+                var hipBound = new[] { "hip", "crouch", "air", "lowered" };
+                bool refit = o.weapon.id == "BASIC-03-v2.1";
+                if (!refit) Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
+                else CollectionAssert.AreEqual(new[] { "hip" }, n.profile.poses, "Scout: eigene Hüfte im Klassenprofil");
+                CollectionAssert.AreEqual(o.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J),
+                                          n.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
                 CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
                 var m = JsonUtility.FromJson<Motion>(J(o.motion));
@@ -346,12 +351,13 @@ namespace Ballon.Ego.Tests
             CollectionAssert.AreEqual(new[] { 2, 12, 22 }, SR.Action("fire_hip").fire, "180/min = alle 10 Bilder bei 30/s");
             CollectionAssert.AreEqual(new[] { 2, 12, 22 }, SR.Action("fire_ads").fire);
             CollectionAssert.AreEqual(new[] { 7, 17 }, SR.Action("sprint_to_fire").fire);
-            foreach (var n in new[] { "hip", "sprint", "crouch", "air", "lowered", "ads", "reload" })
+            foreach (var n in new[] { "sprint", "ads", "reload" })      // 0.33: eigene Hüfte nach huefte.json (crouch, air, lowered folgen ihr)
             {
                 EgoPose a = D.Pose(n), b = SR.Pose(n);
                 Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
             }
-            StringAssert.Contains("57,0/62,9", SR.Pose("hip").src, "Herkunft der Hüfte am Scout");
+            Assert.AreNotEqual(J(D.Pose("hip")), J(SR.Pose("hip")), "eigene Hüfte (0.33, Abgleich mit cubeescape-reference huefte.json)");
+            StringAssert.Contains("Visier 68/56", SR.Pose("hip").src, "Herkunft der Hüfte am Scout");
             foreach (var A in SR.actions)
             {
                 if (new[] { "aim_in", "aim_out", "fire_hip", "fire_ads", "sprint_to_fire" }.Contains(A.name)) continue;
@@ -422,8 +428,13 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(J(o.gameplay), J(n.gameplay), $"{o.weapon.id}: Spielwerte");
                 o.weapon.type_de = n.weapon.type_de;               // neu in 0.33 (Klasse für HUD und Menü)
                 Assert.AreEqual(J(o.weapon), J(n.weapon), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile");
-                Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
-                CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
+                // 0.33: der Scout hat eine eigene Hüfte nach cubeescape-reference huefte.json (crouch, air, lowered folgen ihr); die übrigen Haltungen gleich
+                var hipBound = new[] { "hip", "crouch", "air", "lowered" };
+                bool refit = o.weapon.id == "BASIC-03-v2.1";
+                if (!refit) Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
+                else CollectionAssert.AreEqual(new[] { "hip" }, n.profile.poses, "Scout: eigene Hüfte im Klassenprofil");
+                CollectionAssert.AreEqual(o.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J),
+                                          n.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
                 CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
                 Assert.AreEqual(J(o.motion), J(n.motion), "Bewegung");
@@ -470,7 +481,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
             }
             Assert.AreNotEqual(J(D.Pose("hip")), J(PR.Pose("hip")), "eigene Hüfte");
-            StringAssert.Contains("57,9/63,6", PR.Pose("hip").src, "Herkunft der Hüfte");
+            StringAssert.Contains("Visier 74/55", PR.Pose("hip").src, "Herkunft der Hüfte (0.33, Abgleich mit huefte.json)");
             Assert.IsTrue(PR.weapon.eject.enabled, "Hülsen über EJECT");
             Assert.AreEqual("rifle", PR.weapon.eject.@case);
             Assert.AreEqual("bolt_carrier", PR.weapon.live.bolt);

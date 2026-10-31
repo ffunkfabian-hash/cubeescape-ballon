@@ -521,11 +521,11 @@ CLASSES = {
         src='Entscheidungsliste Schritt 6, erste übertragene Klasse (Nutzer 26.10.2026): Hüfte 2b/2.1 A, Sprint 3b/3.2 A, Anflug 4d'),
     'scout_rifle': dict(
         # Hüfte und Sprint wie die Automatik (lange Waffe, Gewehr): die Haltungen POSES treffen am Scout schon das Destiny-Band
-        poses={},
+        poses=dict(
+            hip=dict(pos=(-0.136, -0.42, -0.181), aim=(-0.188, -3.414, -0.362), roll=9.9,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone Patrol, Call to Serve)); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 57/63 %, Visier 68/56 %'),
+        ),
         keep=dict(
-            hip='M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); Destiny-Scout '
-                'Tone Patrol Mündung ≈ 57/63, Call to Serve 58/61 (Motiongen destiny2 › 3, huefte); Lage E wie die Automatik: am Scout '
-                'gerechnet Mündung 57,0/62,9 %, Okular 24 pp rechts der Mündung (Band 7–34)',
             sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Scout-Sprint nicht gemessen (Motiongen '
                    'destiny2 › Glidepath: kein Sprint-Clip)'),
         frames=dict(aim_in=7, aim_out=5),
@@ -546,10 +546,8 @@ CLASSES = {
         # Hüfte E an der Automatik ausgerichtet: deren Haltung trifft am Impuls x 59,7 / y 65,6 % (über dem Band 54–59), die kürzere
         # Kammer liegt weiter rechts; 2 cm weiter zur Mitte, 1,6 cm höher, Lauf leicht zur Mitte
         poses=dict(
-            hip=dict(pos=(-0.17, -0.42, -0.214), aim=(0.07, -3.0, -0.184), roll=6,
-                     src='M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); '
-                         'Destiny-Impuls Gridskipper Mündung ≈ 57/61 (Motiongen destiny2 › z-gridskipper-salve); Lage E, gerechnet auf '
-                         'Mündung 57,9/63,6 % (Automatik-Hüfte am Impuls: 59,7/65,6)'),
+            hip=dict(pos=(-0.183, -0.42, -0.18), aim=(0.066, -3.399, -0.43), roll=11.2,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/65 %, Visier 74/55 %'),
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Impuls-Sprint nicht gemessen'),
         frames={},
@@ -569,10 +567,9 @@ CLASSES = {
         # Handfeuerwaffe (0.33 „Armory“, P1): beidhändiger Pistolengriff, kurze Waffe näher an der Kamera als die Gewehre (Körper im Bild
         # wie Destiny 53–70 % B); Trommel: Nachladen als eigene Aktion (Kran schwenkt aus, Hülsen raus, laden, zuklappen), kein Magazin
         poses=dict(
-            hip=dict(pos=(-0.119, -0.38, -0.158), aim=(0.331, -3.0, 0.012), roll=6,
-                     src='M Destiny-Handfeuerwaffe Hüfte: Mündung Annual Skate 57/63 (Motiongen huefte:52), Bad News 54/69 (huefte:60), Körper '
-                         '53–70 % × 59–84 % (huefte:170); Lage E, gerechnet auf Mündung 57,1/63,0 %, Kimme 69,2/67,4 % (Körper 57–70 % B), '
-                         'Lauf zur Mitte geneigt'),
+            hip=dict(pos=(-0.113, -0.441, -0.152), aim=(0.313, -3.407, -0.312), roll=12.0,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/63, 54/69, Kimme 64/66, 62/62, Griffhand 67/87, 67/89); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 56/66 %, Kimme 63/64 %, Griffhand 67/90 % (Rollen 12° statt 13°: der Unterarm in lowered lag an der Kante der '
+                         'Handgelenksklemme, Unity wich dort 0,204° ab)'),
             sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
                         src='M Destiny-Handfeuerwaffe Sprint: Waffe senkrecht, Lauf am oberen Rand, Körper 62–70 % B, hoch rechts (Motiongen '
                             'destiny2:562/467); Lage E, gerechnet Mündung 68,4/10,8 %, Körper 66–72 % B'),
@@ -616,9 +613,8 @@ CLASSES = {
         # Seitenwaffe (0.33, P1): Pistolengriff wie die Handfeuerwaffe, Magazin im Griff (Nachladen der Bezugsklasse mit Magazin unten),
         # Durchladen am Schlitten statt am Ladehebel (mech_map, charge_back_mm)
         poses=dict(
-            hip=dict(pos=(-0.109, -0.38, -0.164), aim=(0.341, -3.0, 0.006), roll=6,
-                     src='M Destiny-Seitenwaffe Hüfte: Mündung Dead Man Walking 57/64 (Motiongen huefte:53), Minimum Distance 59/67 (huefte:65), '
-                         'Brass Attacks 58/68 (destiny2:507); Lage E wie die Handfeuerwaffe, gerechnet auf Mündung 58,0/66,1 %'),
+            hip=dict(pos=(-0.11, -0.448, -0.179), aim=(0.302, -3.401, 0.156), roll=6.0,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/64, 59/67, Visier 66/71, 66/73, Griffhand 67/87, 67/88); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/66 %, Visier 66/71 %, Griffhand 66/96 % (Mündung, Visier und Griff nicht zugleich: Griff 8 pp tiefer)'),
             sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
                         src='E: Seitenwaffen-Sprint nicht gemessen (Motiongen destiny2:563) → Trageform der Handfeuerwaffe (senkrecht, hoch '
                             'rechts, destiny2:562), gerechnet Mündung 70,2/31,0 %'),
@@ -707,10 +703,9 @@ CLASSES = {
         # Spurgewehr (0.33, P2): Dauerstrahl – Dauerfeuer in der Kadenz der Klasse ohne Mündungsfeuer, Hülse und Rückstoß; Fokuslinse und
         # Scheibenmitte leuchten, solange der Abzug zieht (EGO_LIVE glow). Nachladen der Bezugsklasse mit der Energiezelle (mech_map)
         poses=dict(
-            hip=dict(pos=(-0.165, -0.42, -0.205), aim=(0.10, -3.0, -0.12), roll=6,
-                     src='M Destiny-Spurgewehr Hüfte: Mündung 57/60 (Motiongen destiny2:512), 57,7/59,6 (huefte:78); Lage E, gerechnet auf '
-                         'Mündung 57,5/61,9 % (Automatik-Hüfte am Spurgewehr: 60,0/66,4 – kürzere Waffe), 2,5 cm weiter zur Mitte, 2,5 cm höher; '
-                         'mit Mündung 59,2 % lag die Haubennase bei 53,7 % H in der Freihaltezone (A4, Ecke ab 55 %)'),
+            hip=dict(pos=(-0.136, -0.417, -0.156), aim=(-0.075, -3.412, -0.315), roll=10.9,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/63 %, Visier 67/49 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei 53,4 % H in den '
+                         'Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)'),
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen '
                          '(Motiongen destiny2:570)'),
@@ -728,10 +723,11 @@ CLASSES = {
             'mit der Energiezelle (leer wie taktisch, kein Ladehebel)'),
     'machine_gun': dict(
         # Maschinengewehr (0.33, P2): Gurtwaffe wie Dauerfeuer (FIRE_ALIAS); Nachladen als Klassenaktion mit Deckel, Kasten und Gurt
-        poses={},
+        poses=dict(
+            hip=dict(pos=(-0.114, -0.417, -0.152), aim=(-0.096, -3.411, -0.339), roll=4.8,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 56/59 %, Visier 66/44 %'),
+        ),
         keep=dict(
-            hip='M Destiny-MG Hüfte: Mündung 56,2/64 (Motiongen huefte:72), ≈ 56/54 (destiny2:510); Lage E wie die Automatik: am MG gerechnet '
-                'Mündung 57,7/62,7 % (Band lange Waffen 54–59 / 60–71)',
             sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen '
                    'destiny2:561)'),
         frames=dict(draw=28),
@@ -884,10 +880,8 @@ CLASSES = {
         # Lineare Fusion (0.33, P3): Aufladen → ein Schuss (wie die Fusion, ohne Salve; Linearkern leuchtet mit der Ladung). Nachladen der
         # Bezugsklasse mit der Energiezelle hinter dem Griff
         poses=dict(
-            hip=dict(pos=(-0.19, -0.42, -0.23), aim=(-0.02, -3.0, -0.36), roll=6,
-                     src='M Destiny-lineare-Fusion Hüfte: Mündung 58/69 (Motiongen huefte:69), 58/68 (huefte:70), 59/56 (destiny2:511); Lage E '
-                         'wie die Automatik, Lauf 3° tiefer und leicht nach außen (lange Waffe: Automatik-Hüfte trifft 56,9/63,2), gerechnet '
-                         'Mündung 57,5/67,6 %'),
+            hip=dict(pos=(-0.151, -0.417, -0.191), aim=(-0.132, -3.397, -0.536), roll=4.2,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/68 %, Visier 73/59 %'),
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-lineare-Fusion-Sprint nicht gemessen '
                          '(Motiongen destiny2:569)'),
@@ -1099,11 +1093,11 @@ CLASSES = {
         # Körper, Heckklappe auf, die linke Hand holt die nächste Rakete unter dem Bild und schiebt sie von hinten ein (Griffe 'mag' an der
         # Rakete, 'push' an ihrem Heck), Klappe zu, Bereitschaftsanzeige an
         poses=dict(
-            hip=dict(pos=(-0.22, -0.50, -0.16), aim=(0.0, -3.489, 0.616), roll=0,
+            hip=dict(pos=(-0.23, -0.50, -0.16), aim=(-0.01, -3.489, 0.616), roll=0,
                      src='M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × '
                          '17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, '
                          'das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). '
-                         'Lage E (Ausgleichsrechnung, dann 4 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
+                         'Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
                          'ab 60 % B), gerechnet Mündung 63/42 %, Visier 72/63 %, Vordergriff 68/61 %, Rohr 13° steigend, linke Kante 63 % B'),
             sprint=dict(pos=(-0.16, -0.36, -0.28), aim=(0.3, -2.4, -1.3), roll=-20,
                         src='E: Destiny-Raketenwerfer-Sprint nicht gemessen (Motiongen destiny2:572); Rohr von der Schulter gesenkt, Mündung '

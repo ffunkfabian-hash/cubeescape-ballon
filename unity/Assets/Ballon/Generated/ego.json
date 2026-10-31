@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "c5339eb8ce474ba484912d438b7d65da23728f7dcc6ffa7a4e6252db903cbc7a"
+    "sha256": "5a6a21b84d4f6d7aaa6a6bb44fb5ab8c06dd462bda3500ffe9ef7e8933891a2b"
    },
    {
     "path": "tools/ego_build.py",
@@ -14818,7 +14818,9 @@
    "profile": {
     "type": "scout_rifle",
     "src": "Entscheidungsliste Schritt 6, zweite übertragene Klasse (0.20 „Spotter“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, Zielfernrohr nach Visier-Standard 3",
-    "poses": [],
+    "poses": [
+     "hip"
+    ],
     "frames": [
      {
       "action": "aim_in",
@@ -16927,17 +16929,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": 6.0,
-     "src": "M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); Destiny-Scout Tone Patrol Mündung ≈ 57/63, Call to Serve 58/61 (Motiongen destiny2 › 3, huefte); Lage E wie die Automatik: am Scout gerechnet Mündung 57,0/62,9 %, Okular 24 pp rechts der Mündung (Band 7–34) (Haltung POSES['hip'] unverändert)",
+     "roll": 9.9,
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone Patrol, Call to Serve)); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 57/63 %, Visier 68/56 %",
      "pos": [
-      -0.19,
+      -0.136,
       -0.42,
-      -0.23
+      -0.181
      ],
      "aim": [
-      0.02,
-      -3.0,
-      -0.2
+      -0.188,
+      -3.414,
+      -0.362
      ],
      "eye": [
       0.0,
@@ -17005,17 +17007,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": 10.0,
-     "src": "E",
+     "roll": 13.9,
+     "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.17,
+      -0.116,
       -0.38,
-      -0.25
+      -0.201
      ],
      "aim": [
-      0.4,
-      -2.0,
-      -1.2
+      0.192,
+      -2.414,
+      -1.362
      ],
      "eye": [
       0.0,
@@ -17031,17 +17033,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": 9.0,
-     "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
+     "roll": 12.9,
+     "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.18,
+      -0.126,
       -0.41,
-      -0.245
+      -0.196
      ],
      "aim": [
-      0.02,
-      -3.0,
-      -0.25
+      -0.188,
+      -3.414,
+      -0.412
      ],
      "eye": [
       0.0,
@@ -17057,17 +17059,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": 4.0,
-     "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
+     "roll": 7.9,
+     "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.19,
+      -0.136,
       -0.42,
-      -0.215
+      -0.166
      ],
      "aim": [
-      0.02,
-      -3.0,
-      -0.13
+      -0.188,
+      -3.414,
+      -0.292
      ],
      "eye": [
       0.0,
@@ -23450,17 +23452,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": 6.0,
-     "src": "M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); Destiny-Impuls Gridskipper Mündung ≈ 57/61 (Motiongen destiny2 › z-gridskipper-salve); Lage E, gerechnet auf Mündung 57,9/63,6 % (Automatik-Hüfte am Impuls: 59,7/65,6)",
+     "roll": 11.2,
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/65 %, Visier 74/55 %",
      "pos": [
-      -0.17,
+      -0.183,
       -0.42,
-      -0.214
+      -0.18
      ],
      "aim": [
-      0.07,
-      -3.0,
-      -0.184
+      0.066,
+      -3.399,
+      -0.43
      ],
      "eye": [
       0.0,
@@ -23528,17 +23530,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": 10.0,
+     "roll": 15.2,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.15,
+      -0.163,
       -0.38,
-      -0.234
+      -0.2
      ],
      "aim": [
-      0.45,
-      -2.0,
-      -1.184
+      0.446,
+      -2.399,
+      -1.43
      ],
      "eye": [
       0.0,
@@ -23554,17 +23556,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": 9.0,
+     "roll": 14.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.16,
+      -0.173,
       -0.41,
-      -0.229
+      -0.195
      ],
      "aim": [
-      0.07,
-      -3.0,
-      -0.234
+      0.066,
+      -3.399,
+      -0.48
      ],
      "eye": [
       0.0,
@@ -23580,17 +23582,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": 4.0,
+     "roll": 9.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.17,
+      -0.183,
       -0.42,
-      -0.199
+      -0.165
      ],
      "aim": [
-      0.07,
-      -3.0,
-      -0.114
+      0.066,
+      -3.399,
+      -0.36
      ],
      "eye": [
       0.0,
@@ -32137,17 +32139,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": 6.0,
-     "src": "M Destiny-Handfeuerwaffe Hüfte: Mündung Annual Skate 57/63 (Motiongen huefte:52), Bad News 54/69 (huefte:60), Körper 53–70 % × 59–84 % (huefte:170); Lage E, gerechnet auf Mündung 57,1/63,0 %, Kimme 69,2/67,4 % (Körper 57–70 % B), Lauf zur Mitte geneigt",
+     "roll": 12.0,
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/63, 54/69, Kimme 64/66, 62/62, Griffhand 67/87, 67/89); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 56/66 %, Kimme 63/64 %, Griffhand 67/90 % (Rollen 12° statt 13°: der Unterarm in lowered lag an der Kante der Handgelenksklemme, Unity wich dort 0,204° ab)",
      "pos": [
-      -0.119,
-      -0.38,
-      -0.158
+      -0.113,
+      -0.441,
+      -0.152
      ],
      "aim": [
-      0.331,
-      -3.0,
-      0.012
+      0.313,
+      -3.407,
+      -0.312
      ],
      "eye": [
       0.0,
@@ -32215,17 +32217,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": 10.0,
+     "roll": 16.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.099,
-      -0.34,
-      -0.178
+      -0.093,
+      -0.401,
+      -0.172
      ],
      "aim": [
-      0.711,
-      -2.0,
-      -0.988
+      0.693,
+      -2.407,
+      -1.312
      ],
      "eye": [
       0.0,
@@ -32241,17 +32243,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": 9.0,
+     "roll": 15.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.109,
-      -0.37,
-      -0.173
+      -0.103,
+      -0.431,
+      -0.167
      ],
      "aim": [
-      0.331,
-      -3.0,
-      -0.038
+      0.313,
+      -3.407,
+      -0.362
      ],
      "eye": [
       0.0,
@@ -32267,17 +32269,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": 4.0,
+     "roll": 10.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.119,
-      -0.38,
-      -0.143
+      -0.113,
+      -0.441,
+      -0.137
      ],
      "aim": [
-      0.331,
-      -3.0,
-      0.082
+      0.313,
+      -3.407,
+      -0.242
      ],
      "eye": [
       0.0,
@@ -37378,16 +37380,16 @@
      "name": "hip",
      "ads": false,
      "roll": 6.0,
-     "src": "M Destiny-Seitenwaffe Hüfte: Mündung Dead Man Walking 57/64 (Motiongen huefte:53), Minimum Distance 59/67 (huefte:65), Brass Attacks 58/68 (destiny2:507); Lage E wie die Handfeuerwaffe, gerechnet auf Mündung 58,0/66,1 %",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/64, 59/67, Visier 66/71, 66/73, Griffhand 67/87, 67/88); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/66 %, Visier 66/71 %, Griffhand 66/96 % (Mündung, Visier und Griff nicht zugleich: Griff 8 pp tiefer)",
      "pos": [
-      -0.109,
-      -0.38,
-      -0.164
+      -0.11,
+      -0.448,
+      -0.179
      ],
      "aim": [
-      0.341,
-      -3.0,
-      0.006
+      0.302,
+      -3.401,
+      0.156
      ],
      "eye": [
       0.0,
@@ -37458,14 +37460,14 @@
      "roll": 10.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.089,
-      -0.34,
-      -0.184
+      -0.09,
+      -0.408,
+      -0.199
      ],
      "aim": [
-      0.721,
-      -2.0,
-      -0.994
+      0.682,
+      -2.401,
+      -0.844
      ],
      "eye": [
       0.0,
@@ -37484,14 +37486,14 @@
      "roll": 9.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.099,
-      -0.37,
-      -0.179
+      -0.1,
+      -0.438,
+      -0.194
      ],
      "aim": [
-      0.341,
-      -3.0,
-      -0.044
+      0.302,
+      -3.401,
+      0.106
      ],
      "eye": [
       0.0,
@@ -37510,14 +37512,14 @@
      "roll": 4.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.109,
-      -0.38,
-      -0.149
+      -0.11,
+      -0.448,
+      -0.164
      ],
      "aim": [
-      0.341,
-      -3.0,
-      0.076
+      0.302,
+      -3.401,
+      0.226
      ],
      "eye": [
       0.0,
@@ -49847,17 +49849,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": 6.0,
-     "src": "M Destiny-Spurgewehr Hüfte: Mündung 57/60 (Motiongen destiny2:512), 57,7/59,6 (huefte:78); Lage E, gerechnet auf Mündung 57,5/61,9 % (Automatik-Hüfte am Spurgewehr: 60,0/66,4 – kürzere Waffe), 2,5 cm weiter zur Mitte, 2,5 cm höher; mit Mündung 59,2 % lag die Haubennase bei 53,7 % H in der Freihaltezone (A4, Ecke ab 55 %)",
+     "roll": 10.9,
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/63 %, Visier 67/49 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei 53,4 % H in den Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)",
      "pos": [
-      -0.165,
-      -0.42,
-      -0.205
+      -0.136,
+      -0.417,
+      -0.156
      ],
      "aim": [
-      0.1,
-      -3.0,
-      -0.12
+      -0.075,
+      -3.412,
+      -0.315
      ],
      "eye": [
       0.0,
@@ -49925,17 +49927,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": 10.0,
+     "roll": 14.9,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.145,
-      -0.38,
-      -0.225
+      -0.116,
+      -0.377,
+      -0.176
      ],
      "aim": [
-      0.48,
-      -2.0,
-      -1.12
+      0.305,
+      -2.412,
+      -1.315
      ],
      "eye": [
       0.0,
@@ -49951,17 +49953,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": 9.0,
+     "roll": 13.9,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.155,
-      -0.41,
-      -0.22
+      -0.126,
+      -0.407,
+      -0.171
      ],
      "aim": [
-      0.1,
-      -3.0,
-      -0.17
+      -0.075,
+      -3.412,
+      -0.365
      ],
      "eye": [
       0.0,
@@ -49977,17 +49979,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": 4.0,
+     "roll": 8.9,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.165,
-      -0.42,
-      -0.19
+      -0.136,
+      -0.417,
+      -0.141
      ],
      "aim": [
-      0.1,
-      -3.0,
-      -0.05
+      -0.075,
+      -3.412,
+      -0.245
      ],
      "eye": [
       0.0,
@@ -54112,7 +54114,9 @@
    "profile": {
     "type": "machine_gun",
     "src": "Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Sprint der Automatik, Ziehen und Nachladen nach Motiongen (Gurtkasten), Ablauf E",
-    "poses": [],
+    "poses": [
+     "hip"
+    ],
     "frames": [
      {
       "action": "draw",
@@ -56270,17 +56274,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": 6.0,
-     "src": "M Destiny-MG Hüfte: Mündung 56,2/64 (Motiongen huefte:72), ≈ 56/54 (destiny2:510); Lage E wie die Automatik: am MG gerechnet Mündung 57,7/62,7 % (Band lange Waffen 54–59 / 60–71) (Haltung POSES['hip'] unverändert)",
+     "roll": 4.8,
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 56/59 %, Visier 66/44 %",
      "pos": [
-      -0.19,
-      -0.42,
-      -0.23
+      -0.114,
+      -0.417,
+      -0.152
      ],
      "aim": [
-      0.02,
-      -3.0,
-      -0.2
+      -0.096,
+      -3.411,
+      -0.339
      ],
      "eye": [
       0.0,
@@ -56348,17 +56352,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": 10.0,
-     "src": "E",
+     "roll": 8.8,
+     "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.17,
-      -0.38,
-      -0.25
+      -0.094,
+      -0.377,
+      -0.172
      ],
      "aim": [
-      0.4,
-      -2.0,
-      -1.2
+      0.284,
+      -2.411,
+      -1.339
      ],
      "eye": [
       0.0,
@@ -56374,17 +56378,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": 9.0,
-     "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
+     "roll": 7.8,
+     "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.18,
-      -0.41,
-      -0.245
+      -0.104,
+      -0.407,
+      -0.167
      ],
      "aim": [
-      0.02,
-      -3.0,
-      -0.25
+      -0.096,
+      -3.411,
+      -0.389
      ],
      "eye": [
       0.0,
@@ -56400,17 +56404,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": 4.0,
-     "src": "E (wie hip versetzt, 0.15 mit hip gesenkt)",
+     "roll": 2.8,
+     "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.19,
-      -0.42,
-      -0.215
+      -0.114,
+      -0.417,
+      -0.137
      ],
      "aim": [
-      0.02,
-      -3.0,
-      -0.13
+      -0.096,
+      -3.411,
+      -0.269
      ],
      "eye": [
       0.0,
@@ -75328,17 +75332,17 @@
     {
      "name": "hip",
      "ads": false,
-     "roll": 6.0,
-     "src": "M Destiny-lineare-Fusion Hüfte: Mündung 58/69 (Motiongen huefte:69), 58/68 (huefte:70), 59/56 (destiny2:511); Lage E wie die Automatik, Lauf 3° tiefer und leicht nach außen (lange Waffe: Automatik-Hüfte trifft 56,9/63,2), gerechnet Mündung 57,5/67,6 %",
+     "roll": 4.2,
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/68 %, Visier 73/59 %",
      "pos": [
-      -0.19,
-      -0.42,
-      -0.23
+      -0.151,
+      -0.417,
+      -0.191
      ],
      "aim": [
-      -0.02,
-      -3.0,
-      -0.36
+      -0.132,
+      -3.397,
+      -0.536
      ],
      "eye": [
       0.0,
@@ -75406,17 +75410,17 @@
     {
      "name": "lowered",
      "ads": false,
-     "roll": 10.0,
+     "roll": 8.2,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.17,
-      -0.38,
-      -0.25
+      -0.131,
+      -0.377,
+      -0.211
      ],
      "aim": [
-      0.36,
-      -2.0,
-      -1.36
+      0.248,
+      -2.397,
+      -1.536
      ],
      "eye": [
       0.0,
@@ -75432,17 +75436,17 @@
     {
      "name": "crouch",
      "ads": false,
-     "roll": 9.0,
+     "roll": 7.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.18,
-      -0.41,
-      -0.245
+      -0.141,
+      -0.407,
+      -0.206
      ],
      "aim": [
-      -0.02,
-      -3.0,
-      -0.41
+      -0.132,
+      -3.397,
+      -0.586
      ],
      "eye": [
       0.0,
@@ -75458,17 +75462,17 @@
     {
      "name": "air",
      "ads": false,
-     "roll": 4.0,
+     "roll": 2.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.19,
-      -0.42,
-      -0.215
+      -0.151,
+      -0.417,
+      -0.176
      ],
      "aim": [
-      -0.02,
-      -3.0,
-      -0.29
+      -0.132,
+      -3.397,
+      -0.466
      ],
      "eye": [
       0.0,
@@ -94234,14 +94238,14 @@
      "name": "hip",
      "ads": false,
      "roll": 0.0,
-     "src": "M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 4 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B), gerechnet Mündung 63/42 %, Visier 72/63 %, Vordergriff 68/61 %, Rohr 13° steigend, linke Kante 63 % B",
+     "src": "M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B), gerechnet Mündung 63/42 %, Visier 72/63 %, Vordergriff 68/61 %, Rohr 13° steigend, linke Kante 63 % B",
      "pos": [
-      -0.22,
+      -0.23,
       -0.5,
       -0.16
      ],
      "aim": [
-      0.0,
+      -0.01,
       -3.489,
       0.616
      ],
@@ -94314,12 +94318,12 @@
      "roll": 4.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.2,
+      -0.21,
       -0.46,
       -0.18
      ],
      "aim": [
-      0.38,
+      0.37,
       -2.489,
       -0.384
      ],
@@ -94340,12 +94344,12 @@
      "roll": 3.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.21,
+      -0.22,
       -0.49,
       -0.175
      ],
      "aim": [
-      0.0,
+      -0.01,
       -3.489,
       0.566
      ],
@@ -94366,12 +94370,12 @@
      "roll": -2.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.22,
+      -0.23,
       -0.5,
       -0.145
      ],
      "aim": [
-      0.0,
+      -0.01,
       -3.489,
       0.686
      ],
