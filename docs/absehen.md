@@ -112,7 +112,7 @@ Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px 
 | `grenade_launcher` | `gl_brackets` | 11.2 | 10.39 mm | gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H) | aus | `circle_cross` 4.5 % H |
 | `rocket_launcher` | `none` | 0.0 | 0 mm | gemessen (Glidepath, kein Mittenzeichen, 1 Clip) | aus | `circle_cross` 4.5 % H |
 | `machine_gun` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus | wie Hüfte |
-| `combat_bow` | `arcs_ladder` | 4.6 | 8.05 mm | gemessen (Glidepath, Ø 4,6 % H) | aus | `chevron` 4.5 % H |
+| `combat_bow` | `arcs_ladder` | 4.6 | 8.05 mm | gemessen (Glidepath, Ø 4,6 % H) | aus | Pins (kein gezeichnetes Absehen) |
 | `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus | wie Hüfte |
 | `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
 | `portal_cannon` | `ring_dot` | 4.5 | 5.91 mm | entworfen (Werkzeug, Portal 2 / Cube Escape) | aus | wie Hüfte |

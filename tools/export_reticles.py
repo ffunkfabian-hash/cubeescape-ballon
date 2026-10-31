@@ -32,7 +32,8 @@ def data():
                 hip=dict(color=RT.HIP['color'], weight=RT.HIP['weight'], min_line_px=RT.HIP['min_line_px'],
                          hidden_in=list(RT.HIP['hidden_in']), size='sichtbares Außenmaß bei Spreizung 0 mit Linienstärke als Anteil der Bildhöhe (share_h)',
                          by_type={k: RT.hud_hip(k) for k in RT.DEFAULTS},
-                         sight_form_by_type={k: RT.hip(k)['kind'] for k in RT.DEFAULTS if RT.hip(k)['kind'] != RT.hud_hip(k)['kind']},
+                         sight_form_by_type={k: RT.hip(k)['kind'] for k in RT.DEFAULTS
+                                             if RT.hip(k)['kind'] != RT.hud_hip(k)['kind'] and RT.SIGHT_KIND.get(k) != 'pins'},
                          sight_form='Form des gezeichneten Absehens im Visierglas, wo sie vom HUD-Hüftzeichen abweicht (reticles.HUD_HIP, 0.33)'),
                 sight_kind=RT.SIGHT_KIND, sight_kind_de={str(k): v for k, v in RT.SIGHT_KIND_DE.items()}, ads_feedback=RT.ADS_FEEDBACK,
                 spread_model='s ← base(+move) + (s − base)·exp(−dt/recover_s); je Schuss s ← min(max, s + per_shot); '
@@ -74,7 +75,8 @@ def doc():
     for k in RT.DEFAULTS:
         h, g = RT.hud_hip(k), RT.hip(k)
         sp = f"`{h['sprint']['kind']}` {h['sprint']['share_h'] * 100:.1f} % H" if h['sprint'] else 'aus'
-        gl = 'wie Hüfte' if g['kind'] == h['kind'] else f"`{g['kind']}` {g['share_h'] * 100:.1f} % H"
+        gl = ('Pins (kein gezeichnetes Absehen)' if RT.SIGHT_KIND.get(k) == 'pins' else 'wie Hüfte' if g['kind'] == h['kind']
+              else f"`{g['kind']}` {g['share_h'] * 100:.1f} % H")
         L.append(f"| `{k}` | `{h['kind']}` | {h['share_h'] * 100:.1f} | {h['extent_mm']:g} mm | {h['status']} | {sp} | {gl} |")
     S = RT.SIGHT
     L += ['', '## Visier-Standard', '',

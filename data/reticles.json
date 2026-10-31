@@ -1642,8 +1642,7 @@
    "fusion_rifle": "corners",
    "linear_fusion_rifle": "cross",
    "grenade_launcher": "circle_cross",
-   "rocket_launcher": "circle_cross",
-   "combat_bow": "chevron"
+   "rocket_launcher": "circle_cross"
   },
   "sight_form": "Form des gezeichneten Absehens im Visierglas, wo sie vom HUD-Hüftzeichen abweicht (reticles.HUD_HIP, 0.33)"
  },
