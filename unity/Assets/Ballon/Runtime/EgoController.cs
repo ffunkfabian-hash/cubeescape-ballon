@@ -973,10 +973,11 @@ namespace Ballon.Ego
 
         /// <summary>Füllstand (0.34, weapon.live.rounds) für das Modell: Gurt (line) Satz i an, solange mehr als i Patronen da sind; Trommel
         /// (drum) je Kammer – ein Schuss leert die Laufkammer, eine geladene Patrone füllt die Ladekammer, springt die Trommel zurück
-        /// (fire_cycle, Laden), rückt der Zustand eine Kammer weiter (k → k + 1). Weicht die Zahl geladener Kammern von der Munition ab
-        /// (Test setzt ammo, Abbruch), wird in Schussfolge aufgefüllt bzw. von hinten geleert; beim Zurückspringen nach dem Schuss (fire_cycle)
-        /// werden die Kammern in Schussfolge geordnet (nach teilweisem Nachladen). Beim Nachladen ist die Ladekammer immer zu sehen (die
-        /// Granate kommt in der Hand). Kein Speicher je Bild.</summary>
+        /// (fire_cycle, Schließen nach dem Laden), rückt der Zustand eine Kammer weiter (k → k + 1); springt sie aus der Gegendrehung zurück
+        /// (vor jeder Granate, 0.35), eine Kammer zurück (k → k − 1). Weicht die Zahl geladener Kammern von der Munition ab (Test setzt ammo),
+        /// wird in Schussfolge aufgefüllt bzw. von hinten geleert. Mit der Gegendrehung liegen die Kammern nach jedem Nachladen in Schussfolge
+        /// (bis 0.34 ordnete fire_cycle sie nach teilweisem Nachladen um). Beim Nachladen ist die Ladekammer immer zu sehen (die Granate kommt
+        /// in der Hand). Kein Speicher je Bild.</summary>
         void Rounds(EgoOutput o)
         {
             var R = S.D.weapon.live.rounds;
@@ -994,10 +995,12 @@ namespace Ballon.Ego
                 bool last = _chamber[n - 1];
                 for (int k = n - 1; k > 0; k--) _chamber[k] = _chamber[k - 1];
                 _chamber[0] = last;
-                // Nach dem Schuss (fire_cycle) in Schussfolge ordnen: nach vollem Nachladen und Schüssen ändert das nichts; nach einem
-                // teilweisen Nachladen (das Laden dreht in Schussrichtung, die geladenen Kammern liegen dann nicht in Schussfolge) fällt
-                // der Wechsel in die Drehung, danach leert jeder Schuss sichtbar die Laufkammer
-                if (_t.A.name.StartsWith("fire_cycle", StringComparison.Ordinal)) InFiringOrder();
+            }
+            else if (_drumPrev < -0.5f && drum > -0.5f)                 // Gegendrehung springt zurück (Laden, 0.35): eine Kammer zurück
+            {
+                bool first = _chamber[0];
+                for (int k = 0; k < n - 1; k++) _chamber[k] = _chamber[k + 1];
+                _chamber[n - 1] = first;
             }
             _drumPrev = drum;
             for (; _roundsAmmo > ammo; _roundsAmmo--) Take(R.barrel, -1, false);   // Schuss: Laufkammer, sonst die nächste in Schussfolge

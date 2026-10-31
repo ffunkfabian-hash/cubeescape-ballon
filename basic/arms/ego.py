@@ -58,6 +58,7 @@ FINGER_POSES = dict(RA.FINGER_POSES, foregrip=dict(f=[[62, 74, 48]] * 4, t=[80, 
 # fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
 # der Schüsse), events (Marker). Zwischen Schlüsseln wird geglättet (Ease In/Out).
 OFF_L = ('cam', (0.30, -0.25, -0.62))      # linke Hand unter dem Bild (Magazin holen)
+OFF_TL = ('cam', (0.34, -0.30, 0.22))      # linke Hand links über dem Bild (Raketenwerfer: Rakete von links oben, 0.35)
 
 
 def shots_720(first, n):
@@ -744,10 +745,13 @@ CLASSES = {
             sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
                         src='M Destiny-Handfeuerwaffe Sprint: Waffe senkrecht, Lauf am oberen Rand, Körper 62–70 % B, hoch rechts (Motiongen '
                             'destiny2:562/467); Lage E, gerechnet Mündung 68,4/10,8 %, Körper 66–72 % B'),
-            reload=dict(pos=(-0.07, -0.37, -0.10), aim=(0.6, -1.2, 1.05), roll=10,
+            reload=dict(pos=(-0.07, -0.37, -0.10), aim=(0.5, -1.6, 0.7), roll=10,
                         src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, '
                             'linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand '
-                            'verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen'),
+                            'verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen. '
+                            '0.35 (offen aus 0.34): Mündung weiter nach vorn gekippt (Lauf 41° statt 55° über der Waagerechten): die Rückseite '
+                            'der Trommel, aus der die Hülsen fallen, zeigt zur Kamera (Kosinus 0,32 → 0,64, tools/bildlage.frame), Trommel '
+                            '52/67 %, Mündung 47/30 %'),
         ),
         frames=dict(aim_in=3, aim_out=2.4, draw=18),
         frames_src='M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) '
@@ -763,7 +767,8 @@ CLASSES = {
                         (11, 'reload'), (19, ('reload', dict(roll=3))), (21, ('reload', dict(up=0.006, pitch=-2))),
                         (24, ('reload', dict(roll=-16, yaw=6))), (26, 'reload'), (31, ('hip', dict(roll=-2, up=-0.003))), (36, 'hip')],
                 L=[(0, 'support'), (2, 'support'), (4, 'charge'), (6, 'mag'), (8, ('mag', (-25, 0, 4))), (10, OFF_L), (14, OFF_L),
-                   (19, ('mag', (35, 0, 6))), (21, 'mag'), (23, 'mag'), (25, ('mag', (0, 0, 12))), (29, 'support'), (36, 'support')],
+                   (19, ('mag', (75, 0, 10))), (21, ('mag', (45, 0, 8))), (23, ('mag', (45, 0, 8))), (25, ('mag', (40, 0, 16))), (29, 'support'),
+                   (36, 'support')],
                 fL=[(0, 'underhand'), (3, 'open'), (4, 'pinch'), (6, 'mag_hold'), (9, 'open'), (11, 'relaxed'), (16, 'open'),
                     (19, 'mag_hold'), (24, 'open'), (29, 'underhand')],
                 mech={'cylinder_latch': [(0, 0), (4, 0), (5, 1), (7, 1), (9, 0)], 'crane': [(0, 0), (5, 0), (7, 1), (22, 1), (24, 0)]},
@@ -771,7 +776,8 @@ CLASSES = {
                 src='M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen '
                     'destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E '
                     '(Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit '
-                    'Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste)'),
+                    'Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste). 0.35: die Stützhand lädt vor der '
+                    'Trommel (45 mm vor dem Griff an der Trommelseite), damit sie die Trommel nicht verdeckt'),
         ),
         same_reload=True,
         recoil=dict(freq_hz=1.56, zeta=0.4, back_mps=0.5, pitch_dps=800.0, ads_pitch=0.2,
@@ -1158,10 +1164,13 @@ CLASSES = {
                   src='Bogen ohne Magazin (Vorrat): kein Nachladen; Feuer als Klassenaktionen fire_draw/fire_release/let_down statt fire_hip/fire_ads'),
         ads_hand=dict(off=OFF_L, src='E: im ungespannten Zielen hängt die Zughand unter dem Bild (an der Nocke, 0,42 m vor dem Auge, lag der rechte '
                                       'Arm groß rechts im Bild); sie kommt beim Spannen an die Nocke (fire_draw_ads)'),
-        ads_hide=dict(parts=('arrow_shaft', 'arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r'),
-                      src='M Destiny-Bogen im Zielen (Bilder Ultraclocked dKNTDzi__Qo 48,3/67,7 s): vom Pfeil ist nur die Spitze unter dem Ring '
-                          'zu sehen; hier läuft der gespannte Schaft (Seitenvisier: Pfeil 60 mm rechts der Visierlinie) dicht an der Kamera '
-                          'vorbei – Schaft, Nocke und Federn sind im Zielen aus (Regel ADS_HIDE), Spitze und Hülse bleiben'),
+        ads_hide=dict(parts=('arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r', 'string_top', 'string_bottom'),
+                      src='M Motiongen REF 0.35 Backblast › D (z-bb-bogen-ads): Pfeil senkrecht unter dem Visierpunkt, Spitze 16–22 pp tiefer. Seit '
+                          '0.35 liegt der Pfeil 69,5 mm unter der Visierlinie (Visier über dem Pfeil): der Schaft ist eine schmale Linie von der '
+                          'Spitze bis an den unteren Bildrand (≤ 2,7 % B) und bleibt sichtbar; Nocke und Federn sind im Zielen aus (ungespannt '
+                          'lägen sie unten in der Mitte, gespannt hinter der Kamera), ebenso die Sehne (sie liegt in der Ebene der Visierlinie: '
+                          'ungespannt ein Strich senkrecht durch den Ring, gespannt zwei Striche von oben bis vor die Kamera). Bis 0.34 (Seitenvisier 60 mm neben dem Pfeil) war auch '
+                          'der Schaft aus'),
         hands=dict(swap=True, src='M Destiny: Bogenhand links, Zughand rechts (die Sehnenhand liegt beim Halten rechts unten ≈ 85/95 %, '
                                   'cubeescape-reference destiny2:221/231); Daten: in allen Aktionen tauschen L und R (Griff grip = Bogengriff '
                                   'links, support = Zughand rechts an der Nocke), Bildpunkte unter dem Bild gespiegelt (Nutzerhinweis 30.10.2026: '
@@ -1180,11 +1189,15 @@ CLASSES = {
                     'Bild 18 (wie das Modul: Spannzeit 0,60 s); Heben 0,1 s, dann Ziehen (destiny2:231), senkrecht in 4 Bildern (destiny2:185); '
                     'Spannlicht bei vollem Auszug (Modul draw_hold_release)'),
             fire_draw_ads=dict(
-                de='Spannen im Zielen (Bogen bleibt im Anschlag)', frames=18,
-                weapon=[(0, 'ads'), (18, 'ads')],
+                de='Spannen im Zielen (Ring kommt von unten, die Pfeilspitze bleibt ruhig)', frames=18,
+                weapon=[(0, 'ads'), (4, ('ads', dict(up=-0.055))), (18, 'ads')],
                 L=[(0, OFF_L), (5, 'support'), (18, 'support')], fL=[(0, 'relaxed'), (3, 'open'), (5, 'pinch')],
                 mech=_bow_draw((0, 0), (4, 0), (18, 1)), events=[(18, 'FullDraw')],
-                src='E wie fire_draw, die Waffe bleibt im Zielen (Ringvisier vor dem Auge)'),
+                src='M Motiongen REF 0.35 Backblast › D/E2 (z-bb-bogen-ads): beim Spannen bleibt die Spitze ruhig (≤ 2 pp), der Ring kommt '
+                    'von rechts unten (55,8/68,4 → 50/57,3 in 0,4 s). Lage E: der Bogen senkt sich vor dem Auszug um 55 mm (Ring 67 %) und '
+                    'steigt mit dem Auszug zurück; so wandert die Spitze von Bild 4 bis 18 nur 66,6 → 67,8 % (1,2 pp, tools/bildlage.frame; '
+                    'mit 65 mm stünde sie still, aber der Bogen verließe die Ausblendgrenze ADS_HIDE 6 cm und die Sehne spränge ins Bild). Ring nur von unten, nicht von rechts '
+                    '(E: ein seitlicher Versatz bewegte die Spitze mit). Bis 0.34: Bogen bleibt im Anschlag, Spitze wanderte 9 pp'),
             draw_aim_in=dict(
                 de='Gespannt ins Zielen (Bogen dreht senkrecht vor das Auge, bleibt gespannt)', frames=5,
                 weapon=[(0, 'drawn'), (5, 'ads')], L=[(0, 'support'), (5, 'support')], fL=[(0, 'pinch')],
@@ -1242,7 +1255,9 @@ CLASSES = {
         # Granatwerfer (0.33 „Armory“, P4): Trommel mit sechs Kammern (Spec v2.1 semi_auto, Nutzerwahl „Trommel statt Kipplauf“). Nach jedem
         # Schuss dreht die Trommel eine Kammer weiter (Klassenaktion fire_cycle). Nachladen je Kammer wie die Schrotflinte: reload_tactical
         # (Klappenknopf, Ladeklappe auf, Hülse fällt, erste Granate) ist der Einstieg, reload_shell lädt je eine weitere (Unity bis voll),
-        # reload_end schließt die Klappe; ein Zug am Abzug bricht ab. Die Granate (Griff 'mag', Bauteil grenade) kommt in der linken Hand
+        # reload_end schließt die Klappe; ein Zug am Abzug bricht ab. Ladefolge (0.35): vor jeder Granate dreht die Trommel eine Kammer
+        # zurück (Gegendrehung, bringt die nächste leere Kammer an die Klappe), beim Schließen eine Kammer vor – die Kammern liegen danach in
+        # Schussfolge, auch nach einem abgebrochenen Nachladen. Die Granate (Griff 'mag', Bauteil grenade) kommt in der linken Hand
         # von unter dem Bild und wird von hinten in die Ladekammer geschoben; die Hülse fällt beim Marker Eject (Modul EJECT on='reload')
         poses=dict(
             hip=dict(pos=(-0.17, -0.42, -0.22), aim=(0.10, -3.0, -0.14), roll=6,
@@ -1278,11 +1293,12 @@ CLASSES = {
                 fL=[(0, 'underhand'), (3, 'open'), (5, 'pinch'), (8, 'open'), (12, 'mag_hold'), (23, 'open')],
                 drop=(11, 11), carry=[(14, 21)],
                 mech={'gate_button': [(0, 0), (5, 0), (6, 1), (8, 1), (9, 0)], 'load_gate': [(0, 0), (6, 0), (10, 1), (26, 1)],
-                      'drum': [(0, 0), (22, 0), (25, 1), (25, 0)]},
+                      'drum': [(0, 0), (6, 0), (10, -1), (10, 0)]},
                 events=[(2, 'HandOff'), (10, 'GateOpen'), (11, 'Eject'), (21, 'ShellIn')],
                 src='M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → '
                     'ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer '
-                    'Hülse aus, Granate ein, Trommel weiter); Trommel-Nachladen bei Destiny nicht gemessen'),
+                    'Hülse aus, Granate ein); Trommel-Nachladen bei Destiny nicht gemessen. 0.35: Gegendrehung beim Öffnen (6–10) statt Weiterdrehen '
+                    'nach dem Einlegen (offen aus 0.34: die geladenen Kammern lagen nach teilweisem Nachladen nicht in Schussfolge)'),
             reload_shell=dict(
                 de='Nachladen: eine weitere Granate (Unity wiederholt bis voll)', frames=22,
                 weapon=[(0, 'reload'), (16, 'reload'), (18, ('reload', dict(up=0.005, pitch=-1.5))), (22, 'reload')],
@@ -1290,17 +1306,19 @@ CLASSES = {
                    (22, ('mag', (-60, -20, 20)))],
                 fL=[(0, 'open'), (4, 'mag_hold'), (18, 'open')],
                 drop=(1, 1), carry=[(6, 16)],
-                mech={'load_gate': [(0, 1), (22, 1)], 'drum': [(0, 0), (17, 0), (20, 1), (20, 0)]},
+                mech={'load_gate': [(0, 1), (22, 1)], 'drum': [(0, 0), (2, 0), (6, -1), (6, 0)]},
                 events=[(1, 'Eject'), (16, 'ShellIn')],
-                src='E wie der Einstieg (Hülse aus, Granate holen und einschieben, Trommel weiter), 22 Bilder (× TIME_SCALE 0,92 s) je Kammer'),
+                src='E wie der Einstieg (Trommel eine Kammer zurück, Hülse aus, Granate holen und einschieben), 22 Bilder (× TIME_SCALE 0,92 s) '
+                    'je Kammer; 0.35 Gegendrehung vor dem Einlegen statt Weiterdrehen danach'),
             reload_end=dict(
                 de='Nachladen: Klappe zu, zurück zur Hüfte (voll oder durch Feuer abgebrochen)', frames=10,
                 weapon=[(0, 'reload'), (8, 'hip'), (10, 'hip')],
                 L=[(0, ('mag', (-60, -20, 20))), (2, ('gate', (40, -30, 0))), (4, ('gate', (40, -30, 0))), (8, 'support'), (10, 'support')],
                 fL=[(0, 'open'), (6, 'underhand')],
-                mech={'load_gate': [(0, 1), (2, 1), (4, 0)]},
-                events=[(4, 'GateClosed'), (8, 'HandOn'), (10, 'Ready')],
-                src='E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen)'),
+                mech={'load_gate': [(0, 1), (2, 1), (4, 0)], 'drum': [(0, 0), (4, 0), (7, 1), (7, 0)]},
+                events=[(4, 'GateClosed'), (7, 'Chamber'), (8, 'HandOn'), (10, 'Ready')],
+                src='E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen); 0.35: '
+                    'nach dem Schließen dreht die Trommel eine Kammer vor (die zuletzt geladene Kammer in den Lauf)'),
         ),
         same_reload=True,
         gameplay=dict(rpm=90, magazine=6, path_up_h=0.04, recover_delay_s=0.2, recover_hz=1.7, kick=2.5, flash_scale=0.9,
@@ -1312,11 +1330,12 @@ CLASSES = {
             'Nachladen je Kammer E nach dem Modul'),
     'rocket_launcher': dict(
         # Raketenwerfer (0.33 „Armory“, P4): Einzelschuss (Spec single_shot), Magazin 1. Nach jedem Schuss lädt Unity sofort nach (Klassenaktion
-        # reload_tactical, leer ebenso): die Rakete verlässt das Rohr in den ersten Bildern, die Waffe kommt von der Schulter quer vor den
-        # Körper, Heckklappe auf, die linke Hand holt die nächste Rakete unter dem Bild und schiebt sie von hinten ein (Griffe 'mag' an der
-        # Rakete, 'push' an ihrem Heck), Klappe zu, Bereitschaftsanzeige an
+        # reload_tactical, leer ebenso). 0.35 „Stance“ (Backblast › B): der Werfer kippt quer (Rohr nach rechts oben), die Ladeklappe springt
+        # auf, die linke Hand holt die nächste Rakete von links oben und senkt sie von oben in den Schacht (Griff 'mag' auf der Rakete, 'push'
+        # drückt sie in den Sitz), drückt die Klappe zu ('cap', folgt der Klappe) und verriegelt am Klappenknopf ('charge'); die rechte Hand
+        # bleibt am Griff
         poses=dict(
-            hip=dict(pos=(-0.187, -0.418, -0.118), aim=(-0.187, -3.414, -0.273), roll=0,
+            hip=dict(pos=(-0.190, -0.418, -0.118), aim=(-0.190, -3.414, -0.273), roll=0,
                      src='M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): '
                          'großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, '
                          'Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E '
@@ -1326,14 +1345,18 @@ CLASSES = {
                          '17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, '
                          'das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). '
                          'Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
-                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, '
+                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px; 0.35 Etappe 2 nach der Hüftlage über der Schulter 3 mm weiter, 15 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, '
                          'Rohr 13° steigend, Heck rechts unten unter dem Arm'),
             sprint=dict(pos=(-0.16, -0.36, -0.28), aim=(0.3, -2.4, -1.3), roll=-20,
                         src='E: Destiny-Raketenwerfer-Sprint nicht gemessen (Motiongen destiny2:572); Rohr von der Schulter gesenkt, Mündung '
                             'nach vorn unten'),
-            reload=dict(pos=(-0.22, -0.52, -0.12), aim=(-2.9, -1.7, -0.5), roll=10,
-                        src='E: Rohr quer vor dem Körper, Mündung nach rechts aus dem Bild, das Heck links im Bild (gerechnet Heckring 26/37 %, '
-                            'Griff 78/77 %)'),
+            reload=dict(pos=(0.129, -0.544, -0.201), aim=(-2.526, -1.585, 0.704), roll=-40,
+                        src='M Motiongen REF 0.35 Backblast › B/E2 (z-bb-rl-nachladen, vier Legendary): Werfer quer, Rohr nach rechts oben '
+                            '(obere Kante −14…−28°), Schacht auf der Oberseite bei x 44–53 / y 47–75, Optikende links unten. Lage E (Ausgleich '
+                            'mit tools/bildlage.frame): Ladeklappe 51/59 % in 0,49 m, Oberkante steigt 21° nach rechts, Schacht zur Kamera '
+                            'gekippt (cos 0,74), Mündung 80/45 %, Visier 30/68 %; der Griff liegt bei BALLON hinter dem Schacht und damit '
+                            'links unten (34/93 %, Destiny 80–98 / 70–95: E, der Griff BGM-1 sitzt 154 mm hinter der Schachtmitte). '
+                            'Bis 0.34: Rohr quer, Mündung nach rechts aus dem Bild, Heck links (Laden von hinten)'),
         ),
         frames=dict(aim_in=15, aim_out=16, draw=27),
         frames_src='M Motiongen REF 0.37 Verdict › D/G (z-v37-rl-gjallarhorn): Gjallarhorn ADS ein / aus 15 / 16 echte Bilder bei 30/s '
@@ -1343,24 +1366,35 @@ CLASSES = {
                    'aim_out 5 E, draw 14 (0,18 s bis Hüfte, destiny2:481)',
         actions=dict(
             reload_tactical=dict(
-                de='Nachladen nach dem Schuss (Heckklappe auf, Rakete von hinten einschieben, Klappe zu)', frames=84,
-                weapon=[(0, 'hip'), (3, ('hip', dict(back=0.02, pitch=3))), (14, 'reload'), (44, 'reload'),
-                        (56, ('reload', dict(right=-0.01, up=0.004))), (62, ('reload', dict(right=-0.015))), (66, 'reload'), (72, 'reload'),
-                        (80, ('hip', dict(up=-0.004))), (84, 'hip')],
-                L=[(0, 'support'), (4, 'support'), (12, 'cap'), (14, 'cap'), (18, OFF_L), (24, OFF_L), (44, 'mag'), (52, 'mag'),
-                   (55, 'push'), (60, 'push'), (64, ('cap', (-25, -20, 30))), (68, ('cap', (-10, -10, 25))), (72, ('cap', (0, 0, 20))),
-                   (80, 'support'), (84, 'support')],
-                fL=[(0, 'foregrip'), (5, 'open'), (12, 'pinch'), (15, 'open'), (20, 'mag_hold'), (53, 'open'), (64, 'open'), (78, 'foregrip')],
-                drop=(2, 2), carry=[(24, 44)],
-                mech={'rocket': [(0, 0), (2, -3), (30, -3), (30, 0.5), (44, 0.5), (52, 0.25), (60, 0)],
-                      'cap_release': [(0, 0), (12, 0), (13, 1), (15, 1), (16, 0)], 'breech_cap': [(0, 0), (14, 0), (20, 1), (64, 1), (72, 0)],
-                      'ready_light': [(0, 1), (1, 0), (72, 0), (76, 1)]},
-                events=[(0, 'Launch'), (4, 'HandOff'), (20, 'BreechOpen'), (60, 'MagIn'), (72, 'BreechClosed'), (80, 'HandOn'), (82, 'Ready')],
-                src='M Destiny-Raketenwerfer Nachladen ≈ 2,8 s (Eyes of Tomorrow, Motiongen destiny2:276/513) → 84 Bilder (× TIME_SCALE 3,5 s), '
-                    'Rakete sitzt bei 60; Ablauf E nach dem Modul (reload: Klappenknopf, Heckklappe, Rakete von hinten, Klappe, Anzeige); die '
-                    'Rakete fliegt in 2 Bildern aus dem Rohr (danach verdeckt), die Hand holt die nächste unter dem Bild'),
+                de='Nachladen nach dem Schuss (Werfer quer, Ladeklappe auf, Rakete von oben in den Schacht, Klappe zu, verriegeln)',
+                frames=70,
+                weapon=[(0, 'hip'), (3, ('hip', dict(back=0.02, pitch=3))), (13, 'reload'), (26, ('reload', dict(up=0.004))),
+                        (29, ('reload', dict(up=-0.008))), (32, 'reload'), (36, ('reload', dict(up=-0.005))), (40, 'reload'), (44, 'reload'),
+                        (58, ('hip', dict(up=-0.004))), (70, 'hip')],
+                L=[(0, 'support'), (4, 'support'), (11, OFF_TL), (22, ('mag', (0, 60, 0))), (25, 'mag'), (28, 'mag'), (30, 'push'),
+                   (32, ('push', (0, 30, 0))), (34, ('cap', (0, 25, 0))), (36, 'cap'), (40, 'cap'), (43, 'charge'), (45, 'charge'),
+                   (47, ('charge', (0, 10, 25))), (56, 'support'), (70, 'support')],
+                fL=[(0, 'foregrip'), (5, 'open'), (11, 'mag_hold'), (28, 'mag_hold'), (30, 'open'), (41, 'open'), (43, 'pinch'), (47, 'open'),
+                    (54, 'foregrip')],
+                drop=(0, 1), carry=[(11, 25)],
+                mech={'rocket': [(0, 0), (1, 0.25), (25, 0.25), (28, 0.04), (30, 0)],
+                      'load_hatch': [(0, 0), (4, 0), (10, 1), (33, 1), (36, 0.3), (40, 0)],
+                      'cap_release': [(0, 0), (43, 0), (44, 1), (45, 1), (46, 0)], 'ready_light': [(0, 1), (1, 0), (44, 0), (48, 1)]},
+                events=[(0, 'Launch'), (4, 'HandOff'), (10, 'BreechOpen'), (30, 'MagIn'), (40, 'BreechClosed'), (45, 'Chamber'),
+                        (56, 'HandOn'), (58, 'Ready')],
+                src='M Motiongen REF 0.35 Backblast › B/G, E2 (z-bb-rl-nachladen, z-bb-rl-zeiten): Start → ruhig 2,6–3,0 s (Hoosegow 3,00 s '
+                    'in Normaltempo, Blue Shift 3,03, Mos Epoch 2,73), „im Schacht“ 0,5–1,2 s nach dem Start → 70 Bilder (× TIME_SCALE '
+                    '2,92 s), Rakete im Schacht bei 30 (1,25 s), Klappe zu 40, verriegelt 45, ruhig 70. Ablauf nach Backblast › B: quer '
+                    'kippen, linke Hand bringt die Rakete von links oben und senkt sie von oben ein, Druck von oben, Klappe, Werfer dreht '
+                    'zurück; die Klappe springt nach dem Schuss selbst auf (E). Die Rakete verlässt das Rohr im Schussbild (danach '
+                    'ausgeblendet, Unity fliegt das Geschoss). Bis 0.34: 84 Bilder (3,5 s), Heckklappe, Rakete von hinten'),
         ),
         same_reload=True,
+        ads_hide=dict(parts=('rear_tube', 'tube_cone', 'rear_ring', 'hinge_block', 'breech_cap', 'cap_rim', 'shoulder_rest'),
+                      src='M Motiongen REF 0.35 Backblast › F (z-bb-bildanteil): Destiny-Werfer im Zielen nur am rechten Rand (Hoosegow x 81–100, '
+                          '16,6–16,8 %); Nutzerentscheid 194 (31.10.2026): BALLON-Zielbild nicht mehr 50 %. Das Heckrohr läuft neben dem Auge '
+                          '33 mm an der Kamera vorbei und füllte die rechte Bildhälfte – Heckrohr, Kegel, Heck und Schulterauflage sind im '
+                          'Zielen aus (Regel ADS_HIDE wie beim Zielfernrohr); Startrohr, Visier, Griffe bleiben'),
         gameplay=dict(rpm=20, magazine=1, path_up_h=0.0, recover_hz=1.5, kick=4.0, flash_scale=0.7,
                       src='S Destiny-Raketenwerfer 20/min, Magazin 1 (Motiongen destiny2:276); Feuerart aus der Spec (Einzelschuss, danach sofort '
                           'nachladen); keine Bahnstufe, Kick 4,0 E: Schub zur Kamera, Linse 10 → 25 % H in 3–4 Bildern (destiny2:501); '

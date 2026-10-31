@@ -294,6 +294,32 @@ nennt sie.
 
 [einschlag]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/d0181c7/docs/einschlag.md
 
+## Block 10 – Haltungen und Abläufe (BALLON 0.35 „Stance“)
+
+Nutzerbefunde aus Testbuild 0.33 und Motiongen REF 0.35 „Backblast“ / REF 0.37 „Verdict“ (main ec8e198, [destiny2 › s-backblast][destiny2],
+`#s-verdict`). Übernahmetabelle mit Fundstellen im Bericht [versions/0.35-stance.md](versions/0.35-stance.md); hier die Entscheide.
+
+| # | Thema | Destiny (Motiongen) | BALLON 0.35 | Status |
+|---|---|---|---|---|
+| 10a | Hüfte MG/Spur/LFR | Laufneigung je Klasse (Backblast C) | Fluchtpunkt MG 40/50, Spur 45/50, LFR 45/52 | M/E (Nutzerbefund „zu tief“) |
+| 10b | Raketenwerfer Hüfte | Keil rechts, Optik 63–70 / 48–72 (A) | über der Schulter, Optik 68,5/51,7 | M |
+| 10c | Raketenwerfer nachladen | quer, von oben in den Schacht, 2,6–3,0 s (B, G) | Ladeschacht oben (Modell w14), 2,92 s; Griff links unten statt rechts (E) | M/E |
+| 10d | Bogen im Zielen | Visierpunkt 50/50, Spitze 16–22 pp darunter, ruhig (D) | Visier über dem Pfeil (Modell w07), Spitze 17,8 pp, beim Spannen 1,2 pp | M/E |
+| 10e | Handfeuerwaffe Rückstoß | Spitze +7, ≈ 55°, Unterschwingen, Kick im Zielen 22 pp (E, Verdict B) | eigener Satz `gameplay.recoil` | M |
+| 10f | Laufen / Sprint je Klasse | Verdict C, G | Hub 0,33, abgesenkt; Sprintformen je Klasse | M/E |
+| 10g | Weltzoom | Scout 3,0, Scharfschütze 4,7, Werfer 3,3 (Verdict D) | übernommen | M |
+| 10h | Granatwerfer-Ladefolge | nicht gemessen | Gegendrehung je Granate, beim Schließen vor (Kammern in Schussfolge; ersetzt das Umordnen aus 9n) | E |
+| 10i | Revolver nachladen | Hochdrehen, Trommel zur Kamera (destiny2:492) | Trommelrückseite zur Kamera (cos 0,32 → 0,64), Stützhand vor der Trommel | M/E |
+| 10j | Bildanteil Zielen (Nutzerentscheid 193 B) | 2,7–9,5 %, Median 5,8 (Backblast F) | **offen** – Bildwinkel/Augenabstand gemessen ohne Wirkung (s. u.) | Entscheidung nötig |
+| 10k | Raketenwerfer Zielen (Nutzerentscheid 194) | Hoosegow x 81–100, 16,6 % | Heck im Zielen aus (`ads_hide`), 50 % bleibt | Entscheidung nötig |
+
+**193 B / 194 (31.10.2026, Etappe 2):** gemessen mit `tools/bildanteil.py`: Viewmodel-Bildwinkel im Zielen 75 → 100° (Fläche rechnerisch
+× 0,41) brachte Automatik 13,3 → 12,9 %, Raketenwerfer 50 → 48 %; Kamera 8 cm hinter dem Augenpunkt Automatik 13,3 → 11,3 %, Scout
+13,8 → 15,6 %. Gehäuse, Handschutz und Stützhand laufen als Keil von der Bildmitte bis unter den Rand; beim Verkleinern rückt der vorher
+abgeschnittene Teil nach. Destiny erreicht 2,7–9,5 % nur, wenn im Zielen Teile fehlen (Viewmodel-Trick wie beim Zielfernrohr). Beide
+Wege sind zurückgenommen (das Visier wurde nur kleiner); Frage an den Nutzer über Sightline: (A) je Klasse Teile unter dem Visier im
+Zielen ausblenden oder (B) zurückstellen.
+
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)
 
 Motiongen hat acht Widersprüche zwischen Bestand und Glidepath gelistet, aber nicht entschieden ([destiny2] › Glidepath). Entscheiden

@@ -491,8 +491,9 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(grew, "Füllstand sinkt beim Nachladen nicht");
             Assert.AreEqual(c.magSize, c.ammo);
             Assert.IsTrue(c.output.roundOn.All(b => b), "voll nachgeladen");
-            // teilweises Nachladen (3 → 4, Abbruch mit dem Abzug), danach schießen: nach dem ersten Weiterdrehen liegen die geladenen
-            // Kammern in Schussfolge, jeder weitere Schuss leert die Laufkammer
+            // teilweises Nachladen (3 → 4, Abbruch mit dem Abzug), danach schießen: mit der Gegendrehung beim Laden (0.35) liegen die
+            // geladenen Kammern schon nach dem Nachladen in Schussfolge (bis 0.34 erst nach dem ersten Weiterdrehen), jeder Schuss leert
+            // die Laufkammer
             for (int s = 0; s < 3; s++)
             {
                 for (int k = 0; k < 15; k++) c.Tick(Dt, Idle);
@@ -506,6 +507,8 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < 400 && c.Busy; k++) c.Tick(Dt, k % 2 == 0 ? Fire : Idle);   // Abbruch mit dem Abzug
             for (int k = 0; k < 400 && c.Busy; k++) c.Tick(Dt, Idle);
             int R(int k) => ((GL.weapon.live.rounds.barrel - k) % 6 + 6) % 6;
+            for (int k = 0; k < 6; k++)
+                Assert.AreEqual(R(k) < c.ammo, c.output.roundOn[k], $"nach dem abgebrochenen Nachladen (Munition {c.ammo}): Kammer {k} in Schussfolge");
             for (int s = 0; s < 3 && c.ammo > 0; s++)
             {
                 for (int k = 0; k < 15; k++) c.Tick(Dt, Idle);
@@ -513,7 +516,7 @@ namespace Ballon.Ego.Tests
                 c.Tick(Dt, Fire);
                 if (c.ammo == before) { c.Tick(Dt, Fire); }
                 c.Tick(Dt, Idle);
-                if (s > 0) Assert.IsFalse(c.output.roundOn[GL.weapon.live.rounds.barrel], $"Schuss {s + 1}: Laufkammer leer");
+                Assert.IsFalse(c.output.roundOn[GL.weapon.live.rounds.barrel], $"Schuss {s + 1}: Laufkammer leer");
                 for (int k = 0; k < 30 && c.Busy; k++) c.Tick(Dt, Idle);
                 for (int k = 0; k < 6; k++)
                     Assert.AreEqual(R(k) < c.ammo, c.output.roundOn[k], $"nach Schuss {s + 1} (Munition {c.ammo}): Kammer {k} in Schussfolge");

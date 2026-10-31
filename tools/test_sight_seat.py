@@ -22,7 +22,9 @@ tatsächliche Kontur:
   Bewusst geändertes Verhalten: 0.19 erlaubte einen flachen Sattel vor dem Auge.
 
 Pinvisier B1 am Bogen (`sight_type` `pins`, 0.29): Strahlen vom Augenpunkt durch die lichte Ringöffnung (Raster 24 × 24, innerhalb r − 0,5)
-treffen bis zur Ringebene kein Teil außer Pins und Pinschiene (der Fensterbogen des Mittelstücks liegt neben dem Sichtkegel); die Optik
+treffen bis zur Ringebene kein Teil außer Pins, Pinschiene und Sehne (der Fensterbogen des Mittelstücks liegt neben dem Sichtkegel; die
+Sehne liegt seit 0.35 – Visier über dem Pfeil – in der Ebene der Visierlinie wie bei echten Compoundbögen: gespannt kreuzt sie die Linie
+88 mm vor dem Augenpunkt, hinter der Ego-Kamera im Zielen, ego.CLASSES combat_bow › ads.eye 0,27 m); die Optik
 (Ring, Pins, Sockel) überschneidet kein Teil des Bogens außer ihrem Träger (Schiene, Visierträger).
 """
 import glob
@@ -172,7 +174,7 @@ def measure_pins(W):
     r, cap = max(q[0] for q in hole), -min(q[0] for q in hole)       # links rund, rechts bei −cap abgeflacht (Pinschiene)
     fp = (fr['f0'] + fr['f1']) / 2
     cx, cu = fr.get('cx', 0.0), fr['cu']
-    others, _ = tree([objs[p['id']] for p in W.PARTS if p['id'] not in PIN_OK])
+    others, _ = tree([objs[p['id']] for p in W.PARTS if p['id'] not in PIN_OK and p['asm'] != 'string'])   # Sehne: siehe oben (0.35)
     hits, n, pts = [], 0, []
     for i in range(24):
         for j in range(24):

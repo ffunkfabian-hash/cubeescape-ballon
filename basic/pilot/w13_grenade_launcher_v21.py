@@ -257,7 +257,8 @@ EGO_GRIPS = {
 # Live-Teile: nur der Abzug je Schuss; die Trommel dreht fire_cycle. rounds (0.34 „Payload“): Füllstand je Kammer in Kammerfolge ANG
 # (k = 0 Laufachse, 5 Ladekammer); Unity verfolgt, welche Kammer geladen ist (Schuss leert die Laufkammer, ShellIn füllt die Ladekammer,
 # die Trommel trägt den Zustand mit, sobald sie nach fire_cycle bzw. dem Laden zurückspringt) und blendet Kopf und Zünderring leerer
-# Kammern aus; die Hülse bleibt. Drehsinn: die Trommel bringt Kammer k nach k + 1 (die Ladekammer 5 rückt in den Lauf).
+# Kammern aus; die Hülse bleibt. Drehsinn: die Trommel bringt Kammer k nach k + 1 (die Ladekammer 5 rückt in den Lauf). Laden (0.35): vor
+# jeder Granate eine Kammer zurück (Wert −1, k → k − 1), beim Schließen eine vor – die Kammern liegen danach in Schussfolge.
 EGO_LIVE = dict(trigger='trigger', bolt='', port='',
                 rounds=dict(mode='drum', drum='drum', barrel=0, gate=GATE_K,
                             sets=[['grenade', 'grenade_band'] if k == GATE_K else [_head_id(k), _band_id(k)] for k in range(6)]))
@@ -265,10 +266,10 @@ _idx = [22 + 14 * k for k in range(6)]          # Kammerwechsel beim Laden
 ACTIONS = {
     'fire': dict(de='Schuss, Trommel eine Kammer weiter', frames=18, step=1, keys={
         'trigger': [(0, 0), (2, 1), (6, 0)], 'drum': [(0, 0), (3, 0), (9, 1), (9, 0)]}, events=[(2, 'shot')], view=(-0.85, -0.25, 0.45)),
-    'reload': dict(de='Klappe auf, je Kammer Hülse aus und Granate ein, Trommel weiter, Klappe zu', frames=120, keys={
+    'reload': dict(de='Klappe auf, je Kammer Trommel zurück, Hülse aus, Granate ein; Klappe zu, Trommel vor', frames=120, keys={
         'gate_button': [(0, 0), (4, 1), (10, 1), (14, 0)], 'load_gate': [(0, 0), (6, 0), (16, 1), (106, 1), (116, 0)],
         'grenade': [(0, 0)] + [k for f in _idx for k in ((f - 4, 0), (f - 3, 1), (f + 6, 0))],
-        'drum': [(0, 0)] + [k for f in _idx for k in ((f + 6, 0), (f + 11, 1), (f + 11, 0))]},
+        'drum': [(0, 0)] + [k for f in _idx for k in ((f - 10, 0), (f - 5, -1), (f - 5, 0))] + [(104, 0), (110, 1), (110, 0)]},
         events=[(16, 'gate_open')] + [(f - 3, 'case_out') for f in _idx] + [(f + 6, 'grenade_in') for f in _idx] + [(116, 'gate_closed')],
         view=(0.6, 0.75, 0.45)),          # von links hinten: Ladeklappe links
 }

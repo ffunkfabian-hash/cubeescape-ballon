@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "530629723e18fb2750fa8838d43c9c69a376d9a99dbda373d7542c344975d0f5"
+    "sha256": "dab730396eba88b1e87dd9ace8a49bffba40fa9f2e9d51e4a89e97096f5c87e0"
    },
    {
     "path": "tools/ego_build.py",
@@ -33492,16 +33492,16 @@
      "name": "reload",
      "ads": false,
      "roll": 10.0,
-     "src": "M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen",
+     "src": "M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen. 0.35 (offen aus 0.34): Mündung weiter nach vorn gekippt (Lauf 41° statt 55° über der Waagerechten): die Rückseite der Trommel, aus der die Hülsen fallen, zeigt zur Kamera (Kosinus 0,32 → 0,64, tools/bildlage.frame), Trommel 52/67 %, Mündung 47/30 %",
      "pos": [
       -0.07,
       -0.37,
       -0.1
      ],
      "aim": [
-      0.6,
-      -1.2,
-      1.05
+      0.5,
+      -1.6,
+      0.7
      ],
      "eye": [
       0.0,
@@ -34492,7 +34492,7 @@
      "de": "Nachladen (Trommel: ausschwenken, auswerfen, laden, zuklappen)",
      "frames": 45,
      "time_scale": 1.25,
-     "src": "M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste)",
+     "src": "M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste). 0.35: die Stützhand lädt vor der Trommel (45 mm vor dem Griff an der Trommelseite), damit sie die Trommel nicht verdeckt",
      "weapon": [
       {
        "f": 0.0,
@@ -34721,8 +34721,8 @@
         0.0
        ],
        "offset": [
-        0.006,
-        -0.035,
+        0.01,
+        -0.075,
         0.0
        ]
       },
@@ -34736,8 +34736,8 @@
         0.0
        ],
        "offset": [
-        0.0,
-        0.0,
+        0.008,
+        -0.045,
         0.0
        ]
       },
@@ -34751,8 +34751,8 @@
         0.0
        ],
        "offset": [
-        0.0,
-        0.0,
+        0.008,
+        -0.045,
         0.0
        ]
       },
@@ -34766,8 +34766,8 @@
         0.0
        ],
        "offset": [
-        0.012,
-        0.0,
+        0.016,
+        -0.04,
         0.0
        ]
       },
@@ -34974,7 +34974,7 @@
      "de": "Nachladen (Trommel: ausschwenken, auswerfen, laden, zuklappen), auch leer",
      "frames": 45,
      "time_scale": 1.25,
-     "src": "M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste)",
+     "src": "M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E (Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste). 0.35: die Stützhand lädt vor der Trommel (45 mm vor dem Griff an der Trommelseite), damit sie die Trommel nicht verdeckt",
      "weapon": [
       {
        "f": 0.0,
@@ -35203,8 +35203,8 @@
         0.0
        ],
        "offset": [
-        0.006,
-        -0.035,
+        0.01,
+        -0.075,
         0.0
        ]
       },
@@ -35218,8 +35218,8 @@
         0.0
        ],
        "offset": [
-        0.0,
-        0.0,
+        0.008,
+        -0.045,
         0.0
        ]
       },
@@ -35233,8 +35233,8 @@
         0.0
        ],
        "offset": [
-        0.0,
-        0.0,
+        0.008,
+        -0.045,
         0.0
        ]
       },
@@ -35248,8 +35248,8 @@
         0.0
        ],
        "offset": [
-        0.012,
-        0.0,
+        0.016,
+        -0.04,
         0.0
        ]
       },
@@ -83189,9 +83189,9 @@
       "role": "sight_anod",
       "parent": "",
       "rest": [
-       0.06,
+       0.0,
        -0.07555,
-       0.035495
+       0.0775
       ],
       "move": {
        "kind": "translate",
@@ -83775,7 +83775,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "string_bottom",
@@ -83802,7 +83802,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "arrow_shaft",
@@ -83829,7 +83829,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": true
+      "ads_hide": false
      },
      {
       "id": "arrow_ferrule",
@@ -84053,27 +84053,27 @@
       "id": "Socket_Reticle",
       "part": "sight_pin",
       "pos": [
-       0.06,
+       0.0,
        -0.0897,
-       0.073495
+       0.1155
       ]
      },
      {
       "id": "Socket_Sight",
       "part": "sight_frame",
       "pos": [
-       0.06,
+       0.0,
        -0.0857,
-       0.073495
+       0.1155
       ]
      },
      {
       "id": "Socket_Eye",
       "part": "sight_pin",
       "pos": [
-       0.06,
+       0.0,
        0.59,
-       0.073495
+       0.1155
       ]
      }
     ],
@@ -86672,10 +86672,10 @@
     },
     {
      "name": "fire_draw_ads",
-     "de": "Spannen im Zielen (Bogen bleibt im Anschlag)",
+     "de": "Spannen im Zielen (Ring kommt von unten, die Pfeilspitze bleibt ruhig)",
      "frames": 18,
      "time_scale": 1.0,
-     "src": "E wie fire_draw, die Waffe bleibt im Zielen (Ringvisier vor dem Auge)",
+     "src": "M Motiongen REF 0.35 Backblast › D/E2 (z-bb-bogen-ads): beim Spannen bleibt die Spitze ruhig (≤ 2 pp), der Ring kommt von rechts unten (55,8/68,4 → 50/57,3 in 0,4 s). Lage E: der Bogen senkt sich vor dem Auszug um 55 mm (Ring 67 %) und steigt mit dem Auszug zurück; so wandert die Spitze von Bild 4 bis 18 nur 66,6 → 67,8 % (1,2 pp, tools/bildlage.frame; mit 65 mm stünde sie still, aber der Bogen verließe die Ausblendgrenze ADS_HIDE 6 cm und die Sehne spränge ins Bild). Ring nur von unten, nicht von rechts (E: ein seitlicher Versatz bewegte die Spitze mit). Bis 0.34: Bogen bleibt im Anschlag, Spitze wanderte 9 pp",
      "weapon": [
       {
        "f": 0.0,
@@ -86684,6 +86684,16 @@
        "yaw": 0.0,
        "pitch": 0.0,
        "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 4.0,
+       "pose": "ads",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.055,
        "right": 0.0,
        "back": 0.0
       },
@@ -88299,14 +88309,14 @@
     "files": [
      {
       "path": "basic/pilot/w07_combat_bow_v21.py",
-      "sha256": "497c8d0267032258944a02c52c3a062e0f238f2a4236f6e8af6a8cbe9a75f671"
+      "sha256": "c2840be08a4f6b76f564d563bccb2354488c47aa90e8646cc1198fb292d08585"
      },
      {
       "path": "basic/weapons/w07_combat_bow.py",
       "sha256": "0b84c66bccb8681d45f18e73bf19b174628a9dfe6430331d1b37a68a70b30f25"
      }
     ],
-    "parts_sha256": "a46331091993f9f2fca42c2a079e6a9c03886ddaa2a4bd3958e6aa65515dfb1a"
+    "parts_sha256": "15cfbdaacc479ff521b858e670bcacf1dacd7b4b6f1032891e19c597feb1be7a"
    },
    "textures": {
     "weapon": {
@@ -88403,7 +88413,7 @@
        -0.218
       ],
       "max": [
-       0.03225,
+       0.04425,
        0.022,
        0.218
       ],
@@ -88431,7 +88441,7 @@
        0.037
       ],
       "max": [
-       0.017,
+       0.029,
        0.006,
        0.0424
       ],
@@ -88496,12 +88506,12 @@
      {
       "name": "draw_light",
       "min": [
-       0.021315,
+       0.033315,
        0.0184,
        0.080815
       ],
       "max": [
-       0.027685,
+       0.039685,
        0.02,
        0.087185
       ],
@@ -88510,12 +88520,12 @@
      {
       "name": "draw_light_ring",
       "min": [
-       0.019922,
+       0.031922,
        0.0184,
        0.079422
       ],
       "max": [
-       0.029078,
+       0.041078,
        0.0203,
        0.088578
       ],
@@ -88524,30 +88534,30 @@
      {
       "name": "sight_arm",
       "min": [
-       0.028,
-       -0.062,
-       0.021495
+       0.0105,
+       -0.052,
+       0.0685
       ],
       "max": [
-       0.053,
-       -0.006,
-       0.029495
+       0.0315,
+       -0.03,
+       0.0765
       ],
       "tris": 108
      },
      {
       "name": "rail",
       "min": [
-       0.049,
+       -0.011,
        -0.104,
-       0.026995
+       0.069
       ],
       "max": [
-       0.071,
-       -0.03,
-       0.035495
+       0.011,
+       -0.04,
+       0.0775
       ],
-      "tris": 780
+      "tris": 668
      },
      {
       "name": "sight_mount",
@@ -88566,210 +88576,210 @@
      {
       "name": "sight_clamp",
       "min": [
-       0.0715,
+       0.0115,
        -0.084585,
-       0.036295
+       0.0783
       ],
       "max": [
-       0.0733,
+       0.0133,
        -0.0662,
-       0.039078
+       0.081083
       ],
       "tris": 108
      },
      {
       "name": "sight_body",
       "min": [
-       0.052,
+       -0.008,
        -0.0815,
-       0.040995
+       0.083
       ],
       "max": [
-       0.068,
+       0.008,
        -0.057,
-       0.047495
+       0.0895
       ],
       "tris": 164
      },
      {
       "name": "sight_base",
       "min": [
-       0.0522,
+       -0.0078,
        -0.0957,
-       0.040995
+       0.083
       ],
       "max": [
-       0.0678,
+       0.0078,
        -0.080963,
-       0.047095
+       0.0891
       ],
       "tris": 108
      },
      {
       "name": "sight_knob_w",
       "min": [
-       0.05,
+       -0.01,
        -0.078754,
-       0.040942
+       0.082946
       ],
       "max": [
-       0.0525,
+       -0.0075,
        -0.074046,
-       0.045649
+       0.087654
       ],
       "tris": 188
      },
      {
       "name": "sight_battery",
       "min": [
-       0.0675,
+       0.0075,
        -0.079539,
-       0.040157
+       0.082161
       ],
       "max": [
-       0.07,
+       0.01,
        -0.073261,
-       0.046434
+       0.088439
       ],
       "tris": 188
      },
      {
       "name": "sight_frame",
       "min": [
-       0.03948,
+       -0.02052,
        -0.0937,
-       0.045695
+       0.0877
       ],
       "max": [
-       0.0878,
+       0.0278,
        -0.0857,
-       0.101295
+       0.1433
       ],
       "tris": 1760
      },
      {
       "name": "sight_frame_trim",
       "min": [
-       0.03948,
+       -0.02052,
        -0.0943,
-       0.045695
+       0.0877
       ],
       "max": [
-       0.0878,
+       0.0278,
        -0.0933,
-       0.101295
+       0.1433
       ],
       "tris": 1760
      },
      {
       "name": "sight_pin_rail",
       "min": [
-       0.03628,
+       -0.02372,
        -0.0927,
-       0.057375
+       0.09938
       ],
       "max": [
-       0.03968,
+       -0.02032,
        -0.0867,
-       0.089615
+       0.13162
       ],
       "tris": 108
      },
      {
       "name": "sight_pin_screws",
       "min": [
-       0.03548,
+       -0.02452,
        -0.090763,
-       0.053713
+       0.095717
       ],
       "max": [
-       0.03648,
+       -0.02352,
        -0.088637,
-       0.074558
+       0.116563
       ],
       "tris": 804
      },
      {
       "name": "sight_pin_blade_0",
       "min": [
-       0.03748,
+       -0.02252,
        -0.0906,
-       0.073045
+       0.11505
       ],
       "max": [
-       0.0596,
+       -0.0004,
        -0.0888,
-       0.073945
+       0.11595
       ],
       "tris": 108
      },
      {
       "name": "sight_pin",
       "min": [
-       0.058025,
+       -0.001975,
        -0.0907,
-       0.07152
+       0.113525
       ],
       "max": [
-       0.061975,
+       0.001975,
        -0.0887,
-       0.075471
+       0.117475
       ],
       "tris": 236
      },
      {
       "name": "sight_pin_blade_1",
       "min": [
-       0.03748,
+       -0.02252,
        -0.0906,
-       0.063685
+       0.10569
       ],
       "max": [
-       0.0596,
+       -0.0004,
        -0.0888,
-       0.064585
+       0.10659
       ],
       "tris": 108
      },
      {
       "name": "sight_pin_1",
       "min": [
-       0.058272,
+       -0.001728,
        -0.0907,
-       0.062407
+       0.104412
       ],
       "max": [
-       0.061728,
+       0.001728,
        -0.0887,
-       0.065864
+       0.107868
       ],
       "tris": 236
      },
      {
       "name": "sight_pin_blade_2",
       "min": [
-       0.03748,
+       -0.02252,
        -0.0906,
-       0.054325
+       0.09633
       ],
       "max": [
-       0.0596,
+       -0.0004,
        -0.0888,
-       0.055225
+       0.09723
       ],
       "tris": 108
      },
      {
       "name": "sight_pin_2",
       "min": [
-       0.058518,
+       -0.001482,
        -0.0907,
-       0.053294
+       0.095298
       ],
       "max": [
-       0.061482,
+       0.001482,
        -0.0887,
-       0.056257
+       0.098262
       ],
       "tris": 236
      },
@@ -92530,7 +92540,7 @@
      "de": "Nachladen: Einstieg (Klappe auf, Hülse fällt, erste Granate von hinten einschieben)",
      "frames": 33,
      "time_scale": 1.25,
-     "src": "M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer Hülse aus, Granate ein, Trommel weiter); Trommel-Nachladen bei Destiny nicht gemessen",
+     "src": "M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer Hülse aus, Granate ein); Trommel-Nachladen bei Destiny nicht gemessen. 0.35: Gegendrehung beim Öffnen (6–10) statt Weiterdrehen nach dem Einlegen (offen aus 0.34: die geladenen Kammern lagen nach teilweisem Nachladen nicht in Schussfolge)",
      "weapon": [
       {
        "f": 0.0,
@@ -92864,15 +92874,15 @@
          "v": 0.0
         },
         {
-         "f": 27.5,
+         "f": 7.5,
          "v": 0.0
         },
         {
-         "f": 31.25,
-         "v": 1.0
+         "f": 12.5,
+         "v": -1.0
         },
         {
-         "f": 31.25,
+         "f": 12.5,
          "v": 0.0
         }
        ]
@@ -92926,7 +92936,7 @@
      "de": "Nachladen: Einstieg (Klappe auf, Hülse fällt, erste Granate von hinten einschieben), auch leer",
      "frames": 33,
      "time_scale": 1.25,
-     "src": "M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer Hülse aus, Granate ein, Trommel weiter); Trommel-Nachladen bei Destiny nicht gemessen",
+     "src": "M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer Hülse aus, Granate ein); Trommel-Nachladen bei Destiny nicht gemessen. 0.35: Gegendrehung beim Öffnen (6–10) statt Weiterdrehen nach dem Einlegen (offen aus 0.34: die geladenen Kammern lagen nach teilweisem Nachladen nicht in Schussfolge)",
      "weapon": [
       {
        "f": 0.0,
@@ -93260,15 +93270,15 @@
          "v": 0.0
         },
         {
-         "f": 27.5,
+         "f": 7.5,
          "v": 0.0
         },
         {
-         "f": 31.25,
-         "v": 1.0
+         "f": 12.5,
+         "v": -1.0
         },
         {
-         "f": 31.25,
+         "f": 12.5,
          "v": 0.0
         }
        ]
@@ -95029,7 +95039,7 @@
      "de": "Nachladen: eine weitere Granate (Unity wiederholt bis voll)",
      "frames": 28,
      "time_scale": 1.25,
-     "src": "E wie der Einstieg (Hülse aus, Granate holen und einschieben, Trommel weiter), 22 Bilder (× TIME_SCALE 0,92 s) je Kammer",
+     "src": "E wie der Einstieg (Trommel eine Kammer zurück, Hülse aus, Granate holen und einschieben), 22 Bilder (× TIME_SCALE 0,92 s) je Kammer; 0.35 Gegendrehung vor dem Einlegen statt Weiterdrehen danach",
      "weapon": [
       {
        "f": 0.0,
@@ -95238,15 +95248,15 @@
          "v": 0.0
         },
         {
-         "f": 21.25,
+         "f": 2.5,
          "v": 0.0
         },
         {
-         "f": 25.0,
-         "v": 1.0
+         "f": 7.5,
+         "v": -1.0
         },
         {
-         "f": 25.0,
+         "f": 7.5,
          "v": 0.0
         }
        ]
@@ -95292,7 +95302,7 @@
      "de": "Nachladen: Klappe zu, zurück zur Hüfte (voll oder durch Feuer abgebrochen)",
      "frames": 13,
      "time_scale": 1.25,
-     "src": "E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen)",
+     "src": "E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen); 0.35: nach dem Schließen dreht die Trommel eine Kammer vor (die zuletzt geladene Kammer in den Lauf)",
      "weapon": [
       {
        "f": 0.0,
@@ -95452,6 +95462,27 @@
          "v": 0.0
         }
        ]
+      },
+      {
+       "part": "drum",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 0.0
+        },
+        {
+         "f": 5.0,
+         "v": 0.0
+        },
+        {
+         "f": 8.75,
+         "v": 1.0
+        },
+        {
+         "f": 8.75,
+         "v": 0.0
+        }
+       ]
       }
      ],
      "carry": [],
@@ -95479,6 +95510,10 @@
        "name": "GateClosed"
       },
       {
+       "f": 9,
+       "name": "Chamber"
+      },
+      {
        "f": 10,
        "name": "HandOn"
       },
@@ -95495,7 +95530,7 @@
     "files": [
      {
       "path": "basic/pilot/w13_grenade_launcher_v21.py",
-      "sha256": "92776fa73bf1723f20ad6ceab0018e5419b8fc9f3561f9458c02f51f84a43e71"
+      "sha256": "cd9c7072582b54e6c437a350caa0cd08ca4ddc2b91e537efe4dd4dd200d7e891"
      },
      {
       "path": "basic/weapons/w13_grenade_launcher.py",
@@ -96681,7 +96716,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "tube_cone",
@@ -96708,7 +96743,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "tube",
@@ -96978,7 +97013,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hinge_block",
@@ -97005,7 +97040,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "breech_cap",
@@ -97013,9 +97048,63 @@
       "role": "anodized",
       "parent": "",
       "rest": [
-       -0.042,
-       0.41,
-       0.112
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "cap_rim",
+      "asm": "mechanism",
+      "role": "trim",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": true
+     },
+     {
+      "id": "load_hatch",
+      "asm": "mechanism",
+      "role": "graphite",
+      "parent": "",
+      "rest": [
+       -0.033,
+       -0.154,
+       0.15
       ],
       "move": {
        "kind": "rotate",
@@ -97026,19 +97115,46 @@
        ],
        "axis": [
         0.0,
-        0.0,
-        1.0
+        -1.0,
+        0.0
        ],
        "a0": 0.0,
-       "a1": 110.0
+       "a1": 115.0
       },
       "ads_hide": false
      },
      {
-      "id": "cap_rim",
+      "id": "hatch_hinge",
       "asm": "mechanism",
-      "role": "trim",
-      "parent": "breech_cap",
+      "role": "dark_metal",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "hatch_grip",
+      "asm": "mechanism",
+      "role": "dark_metal",
+      "parent": "load_hatch",
       "rest": [
        0.0,
        0.0,
@@ -97067,9 +97183,9 @@
       "role": "accent",
       "parent": "",
       "rest": [
-       0.037,
-       0.393,
-       0.122
+       0.046,
+       -0.102,
+       0.126
       ],
       "move": {
        "kind": "translate",
@@ -97275,7 +97391,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -97831,8 +97947,8 @@
        "kind": "translate",
        "vec": [
         0.0,
-        0.92,
-        0.0
+        0.0,
+        0.24
        ],
        "axis": [
         0.0,
@@ -97999,14 +98115,14 @@
      "name": "hip",
      "ads": false,
      "roll": 0.0,
-     "src": "M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E (tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm Tiefe), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung 63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend, Heck rechts unten unter dem Arm",
+     "src": "M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E (tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm Tiefe), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung 63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px; 0.35 Etappe 2 nach der Hüftlage über der Schulter 3 mm weiter, 15 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend, Heck rechts unten unter dem Arm",
      "pos": [
-      -0.187,
+      -0.19,
       -0.418,
       -0.118
      ],
      "aim": [
-      -0.187,
+      -0.19,
       -3.414,
       -0.273
      ],
@@ -98079,12 +98195,12 @@
      "roll": 4.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.167,
+      -0.17,
       -0.378,
       -0.138
      ],
      "aim": [
-      0.193,
+      0.19,
       -2.414,
       -1.273
      ],
@@ -98105,12 +98221,12 @@
      "roll": 3.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.177,
+      -0.18,
       -0.408,
       -0.133
      ],
      "aim": [
-      -0.187,
+      -0.19,
       -3.414,
       -0.323
      ],
@@ -98131,12 +98247,12 @@
      "roll": -2.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.187,
+      -0.19,
       -0.418,
       -0.103
      ],
      "aim": [
-      -0.187,
+      -0.19,
       -3.414,
       -0.203
      ],
@@ -98180,17 +98296,17 @@
     {
      "name": "reload",
      "ads": false,
-     "roll": 10.0,
-     "src": "E: Rohr quer vor dem Körper, Mündung nach rechts aus dem Bild, das Heck links im Bild (gerechnet Heckring 26/37 %, Griff 78/77 %)",
+     "roll": -40.0,
+     "src": "M Motiongen REF 0.35 Backblast › B/E2 (z-bb-rl-nachladen, vier Legendary): Werfer quer, Rohr nach rechts oben (obere Kante −14…−28°), Schacht auf der Oberseite bei x 44–53 / y 47–75, Optikende links unten. Lage E (Ausgleich mit tools/bildlage.frame): Ladeklappe 51/59 % in 0,49 m, Oberkante steigt 21° nach rechts, Schacht zur Kamera gekippt (cos 0,74), Mündung 80/45 %, Visier 30/68 %; der Griff liegt bei BALLON hinter dem Schacht und damit links unten (34/93 %, Destiny 80–98 / 70–95: E, der Griff BGM-1 sitzt 154 mm hinter der Schachtmitte). Bis 0.34: Rohr quer, Mündung nach rechts aus dem Bild, Heck links (Laden von hinten)",
      "pos": [
-      -0.22,
-      -0.52,
-      -0.12
+      0.129,
+      -0.544,
+      -0.201
      ],
      "aim": [
-      -2.9,
-      -1.7,
-      -0.5
+      -2.526,
+      -1.585,
+      0.704
      ],
      "eye": [
       0.0,
@@ -98303,72 +98419,72 @@
      "name": "mag",
      "part": "rocket",
      "contact": [
-      0.0,
-      0.02,
-      0.085
+      0.004,
+      -0.098,
+      0.139
      ],
      "palm": [
+      -0.1,
       0.0,
-      0.0,
-      1.0
+      -1.0
      ],
      "fingers": [
-      0.0,
       -1.0,
+      -0.25,
       0.0
      ],
      "fingers_pose": "mag_hold",
-     "src": "E unter der Mitte der Rakete (Ruhelage im Rohr), Hand von unten"
+     "src": "E auf dem hinteren Drittel der Rakete, Hand von oben, Finger quer (0.35: senkt sie von oben in den Schacht, Backblast › B; der Gefechtskopf bleibt vor der Hand sichtbar)"
     },
     {
      "name": "push",
      "part": "rocket",
      "contact": [
       0.0,
-      0.364,
-      0.112
+      -0.14,
+      0.139
      ],
      "palm": [
       0.0,
+      0.0,
+      -1.0
+     ],
+     "fingers": [
+      -0.15,
       -1.0,
       0.0
      ],
-     "fingers": [
-      0.0,
-      0.0,
-      1.0
-     ],
      "fingers_pose": "open",
-     "src": "E: flache Hand am Heck der Rakete, schiebt sie das letzte Stück ins Rohr"
+     "src": "E: flache Hand drückt die Rakete von oben in den Sitz („Druck von oben“, Backblast › B)"
     },
     {
      "name": "cap",
-     "part": "",
+     "part": "load_hatch",
      "contact": [
-      0.041,
-      0.393,
-      0.122
+      0.018,
+      -0.15,
+      0.161
      ],
      "palm": [
-      -1.0,
+      -0.2,
       0.0,
-      0.0
+      -1.0
      ],
      "fingers": [
-      0.0,
-      -0.45,
-      0.9
+      -0.1,
+      -1.0,
+      0.0
      ],
-     "fingers_pose": "pinch",
-     "src": "E am Klappenknopf links am Heckring"
+     "fingers_pose": "open",
+     "src": "E: flache Hand auf der Ladeklappe, drückt sie zu (folgt der Klappe)"
     },
     {
      "name": "charge",
      "part": "",
      "contact": [
-      0.041,
-      0.393,
-      0.122
+      0.05,
+      -0.102,
+      0.126
      ],
      "palm": [
       -1.0,
@@ -98381,7 +98497,7 @@
       0.9
      ],
      "fingers_pose": "pinch",
-     "src": "E wie cap (vom Nachladen nicht genutzt)"
+     "src": "E am Klappenknopf links hinter dem Schacht (verriegelt)"
     }
    ],
    "actions": [
@@ -99218,10 +99334,10 @@
     },
     {
      "name": "reload_tactical",
-     "de": "Nachladen nach dem Schuss (Heckklappe auf, Rakete von hinten einschieben, Klappe zu)",
-     "frames": 105,
+     "de": "Nachladen nach dem Schuss (Werfer quer, Ladeklappe auf, Rakete von oben in den Schacht, Klappe zu, verriegeln)",
+     "frames": 88,
      "time_scale": 1.25,
-     "src": "M Destiny-Raketenwerfer Nachladen ≈ 2,8 s (Eyes of Tomorrow, Motiongen destiny2:276/513) → 84 Bilder (× TIME_SCALE 3,5 s), Rakete sitzt bei 60; Ablauf E nach dem Modul (reload: Klappenknopf, Heckklappe, Rakete von hinten, Klappe, Anzeige); die Rakete fliegt in 2 Bildern aus dem Rohr (danach verdeckt), die Hand holt die nächste unter dem Bild",
+     "src": "M Motiongen REF 0.35 Backblast › B/G, E2 (z-bb-rl-nachladen, z-bb-rl-zeiten): Start → ruhig 2,6–3,0 s (Hoosegow 3,00 s in Normaltempo, Blue Shift 3,03, Mos Epoch 2,73), „im Schacht“ 0,5–1,2 s nach dem Start → 70 Bilder (× TIME_SCALE 2,92 s), Rakete im Schacht bei 30 (1,25 s), Klappe zu 40, verriegelt 45, ruhig 70. Ablauf nach Backblast › B: quer kippen, linke Hand bringt die Rakete von links oben und senkt sie von oben ein, Druck von oben, Klappe, Werfer dreht zurück; die Klappe springt nach dem Schuss selbst auf (E). Die Rakete verlässt das Rohr im Schussbild (danach ausgeblendet, Unity fliegt das Geschoss). Bis 0.34: 84 Bilder (3,5 s), Heckklappe, Rakete von hinten",
      "weapon": [
       {
        "f": 0.0,
@@ -99244,7 +99360,57 @@
        "back": 0.02
       },
       {
-       "f": 17.5,
+       "f": 16.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.5,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.004,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 36.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.008,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 40.0,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 45.0,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.005,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 50.0,
        "pose": "reload",
        "roll": 0.0,
        "yaw": 0.0,
@@ -99264,47 +99430,7 @@
        "back": 0.0
       },
       {
-       "f": 70.0,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.004,
-       "right": -0.01,
-       "back": 0.0
-      },
-      {
-       "f": 77.5,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": -0.015,
-       "back": 0.0
-      },
-      {
-       "f": 82.5,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": 0.0,
-       "back": 0.0
-      },
-      {
-       "f": 90.0,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": 0.0,
-       "back": 0.0
-      },
-      {
-       "f": 100.0,
+       "f": 72.5,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -99314,7 +99440,7 @@
        "back": 0.0
       },
       {
-       "f": 105.0,
+       "f": 87.5,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -99356,43 +99482,13 @@
        ]
       },
       {
-       "f": 15.0,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 17.5,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 22.5,
+       "f": 13.75,
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.34,
+        -0.3,
+        0.22
        ],
        "offset": [
         0.0,
@@ -99401,22 +99497,22 @@
        ]
       },
       {
-       "f": 30.0,
-       "kind": "cam",
-       "grip": "support",
+       "f": 27.5,
+       "kind": "grip",
+       "grip": "mag",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
         0.0,
-        0.0
+        0.06
        ]
       },
       {
-       "f": 55.0,
+       "f": 31.25,
        "kind": "grip",
        "grip": "mag",
        "point": [
@@ -99431,7 +99527,7 @@
        ]
       },
       {
-       "f": 65.0,
+       "f": 35.0,
        "kind": "grip",
        "grip": "mag",
        "point": [
@@ -99446,7 +99542,7 @@
        ]
       },
       {
-       "f": 68.75,
+       "f": 37.5,
        "kind": "grip",
        "grip": "push",
        "point": [
@@ -99461,7 +99557,7 @@
        ]
       },
       {
-       "f": 75.0,
+       "f": 40.0,
        "kind": "grip",
        "grip": "push",
        "point": [
@@ -99472,11 +99568,11 @@
        "offset": [
         0.0,
         0.0,
-        0.0
+        0.03
        ]
       },
       {
-       "f": 80.0,
+       "f": 42.5,
        "kind": "grip",
        "grip": "cap",
        "point": [
@@ -99485,43 +99581,88 @@
         0.0
        ],
        "offset": [
-        0.03,
+        0.0,
+        0.0,
+        0.025
+       ]
+      },
+      {
+       "f": 45.0,
+       "kind": "grip",
+       "grip": "cap",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 50.0,
+       "kind": "grip",
+       "grip": "cap",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 53.75,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 56.25,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 58.75,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
         0.025,
-        -0.02
+        0.0,
+        0.01
        ]
       },
       {
-       "f": 85.0,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.025,
-        0.01,
-        -0.01
-       ]
-      },
-      {
-       "f": 90.0,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.02,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 100.0,
+       "f": 70.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -99536,7 +99677,7 @@
        ]
       },
       {
-       "f": 105.0,
+       "f": 87.5,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -99578,27 +99719,31 @@
        "pose": "foregrip_open"
       },
       {
-       "f": 15.0,
-       "pose": "pinch"
-      },
-      {
-       "f": 18.75,
-       "pose": "foregrip_open"
-      },
-      {
-       "f": 25.0,
+       "f": 13.75,
        "pose": "mag_hold"
       },
       {
-       "f": 66.25,
+       "f": 35.0,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 37.5,
        "pose": "foregrip_open"
       },
       {
-       "f": 80.0,
+       "f": 51.25,
        "pose": "foregrip_open"
       },
       {
-       "f": 97.5,
+       "f": 53.75,
+       "pose": "pinch"
+      },
+      {
+       "f": 58.75,
+       "pose": "foregrip_open"
+      },
+      {
+       "f": 67.5,
        "pose": "foregrip"
       }
      ],
@@ -99617,27 +99762,48 @@
          "v": 0.0
         },
         {
-         "f": 2.5,
-         "v": -3.0
-        },
-        {
-         "f": 37.5,
-         "v": -3.0
-        },
-        {
-         "f": 37.5,
-         "v": 0.5
-        },
-        {
-         "f": 55.0,
-         "v": 0.5
-        },
-        {
-         "f": 65.0,
+         "f": 1.25,
          "v": 0.25
         },
         {
-         "f": 75.0,
+         "f": 31.25,
+         "v": 0.25
+        },
+        {
+         "f": 35.0,
+         "v": 0.04
+        },
+        {
+         "f": 37.5,
+         "v": 0.0
+        }
+       ]
+      },
+      {
+       "part": "load_hatch",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 0.0
+        },
+        {
+         "f": 5.0,
+         "v": 0.0
+        },
+        {
+         "f": 12.5,
+         "v": 1.0
+        },
+        {
+         "f": 41.25,
+         "v": 1.0
+        },
+        {
+         "f": 45.0,
+         "v": 0.3
+        },
+        {
+         "f": 50.0,
          "v": 0.0
         }
        ]
@@ -99650,44 +99816,19 @@
          "v": 0.0
         },
         {
-         "f": 15.0,
+         "f": 53.75,
          "v": 0.0
         },
         {
-         "f": 16.25,
+         "f": 55.0,
          "v": 1.0
         },
         {
-         "f": 18.75,
+         "f": 56.25,
          "v": 1.0
         },
         {
-         "f": 20.0,
-         "v": 0.0
-        }
-       ]
-      },
-      {
-       "part": "breech_cap",
-       "keys": [
-        {
-         "f": 0.0,
-         "v": 0.0
-        },
-        {
-         "f": 17.5,
-         "v": 0.0
-        },
-        {
-         "f": 25.0,
-         "v": 1.0
-        },
-        {
-         "f": 80.0,
-         "v": 1.0
-        },
-        {
-         "f": 90.0,
+         "f": 57.5,
          "v": 0.0
         }
        ]
@@ -99704,11 +99845,11 @@
          "v": 0.0
         },
         {
-         "f": 90.0,
+         "f": 55.0,
          "v": 0.0
         },
         {
-         "f": 95.0,
+         "f": 60.0,
          "v": 1.0
         }
        ]
@@ -99716,13 +99857,13 @@
      ],
      "carry": [
       {
-       "a": 30.0,
-       "b": 55.0
+       "a": 13.75,
+       "b": 31.25
       }
      ],
      "drop": {
-      "a": 2.5,
-      "b": 2.5
+      "a": 0.0,
+      "b": 1.25
      },
      "fire": [],
      "kick": 1.0,
@@ -99748,33 +99889,37 @@
        "name": "HandOff"
       },
       {
-       "f": 25,
+       "f": 12,
        "name": "BreechOpen"
       },
       {
-       "f": 75,
+       "f": 38,
        "name": "MagIn"
       },
       {
-       "f": 90,
+       "f": 50,
        "name": "BreechClosed"
       },
       {
-       "f": 100,
+       "f": 56,
+       "name": "Chamber"
+      },
+      {
+       "f": 70,
        "name": "HandOn"
       },
       {
-       "f": 102,
+       "f": 72,
        "name": "Ready"
       }
      ]
     },
     {
      "name": "reload_empty",
-     "de": "Nachladen nach dem Schuss (Heckklappe auf, Rakete von hinten einschieben, Klappe zu), auch leer",
-     "frames": 105,
+     "de": "Nachladen nach dem Schuss (Werfer quer, Ladeklappe auf, Rakete von oben in den Schacht, Klappe zu, verriegeln), auch leer",
+     "frames": 88,
      "time_scale": 1.25,
-     "src": "M Destiny-Raketenwerfer Nachladen ≈ 2,8 s (Eyes of Tomorrow, Motiongen destiny2:276/513) → 84 Bilder (× TIME_SCALE 3,5 s), Rakete sitzt bei 60; Ablauf E nach dem Modul (reload: Klappenknopf, Heckklappe, Rakete von hinten, Klappe, Anzeige); die Rakete fliegt in 2 Bildern aus dem Rohr (danach verdeckt), die Hand holt die nächste unter dem Bild",
+     "src": "M Motiongen REF 0.35 Backblast › B/G, E2 (z-bb-rl-nachladen, z-bb-rl-zeiten): Start → ruhig 2,6–3,0 s (Hoosegow 3,00 s in Normaltempo, Blue Shift 3,03, Mos Epoch 2,73), „im Schacht“ 0,5–1,2 s nach dem Start → 70 Bilder (× TIME_SCALE 2,92 s), Rakete im Schacht bei 30 (1,25 s), Klappe zu 40, verriegelt 45, ruhig 70. Ablauf nach Backblast › B: quer kippen, linke Hand bringt die Rakete von links oben und senkt sie von oben ein, Druck von oben, Klappe, Werfer dreht zurück; die Klappe springt nach dem Schuss selbst auf (E). Die Rakete verlässt das Rohr im Schussbild (danach ausgeblendet, Unity fliegt das Geschoss). Bis 0.34: 84 Bilder (3,5 s), Heckklappe, Rakete von hinten",
      "weapon": [
       {
        "f": 0.0,
@@ -99797,7 +99942,57 @@
        "back": 0.02
       },
       {
-       "f": 17.5,
+       "f": 16.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 32.5,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.004,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 36.25,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.008,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 40.0,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": 0.0,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 45.0,
+       "pose": "reload",
+       "roll": 0.0,
+       "yaw": 0.0,
+       "pitch": 0.0,
+       "up": -0.005,
+       "right": 0.0,
+       "back": 0.0
+      },
+      {
+       "f": 50.0,
        "pose": "reload",
        "roll": 0.0,
        "yaw": 0.0,
@@ -99817,47 +100012,7 @@
        "back": 0.0
       },
       {
-       "f": 70.0,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.004,
-       "right": -0.01,
-       "back": 0.0
-      },
-      {
-       "f": 77.5,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": -0.015,
-       "back": 0.0
-      },
-      {
-       "f": 82.5,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": 0.0,
-       "back": 0.0
-      },
-      {
-       "f": 90.0,
-       "pose": "reload",
-       "roll": 0.0,
-       "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
-       "right": 0.0,
-       "back": 0.0
-      },
-      {
-       "f": 100.0,
+       "f": 72.5,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -99867,7 +100022,7 @@
        "back": 0.0
       },
       {
-       "f": 105.0,
+       "f": 87.5,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -99909,43 +100064,13 @@
        ]
       },
       {
-       "f": 15.0,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 17.5,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 22.5,
+       "f": 13.75,
        "kind": "cam",
        "grip": "support",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.34,
+        -0.3,
+        0.22
        ],
        "offset": [
         0.0,
@@ -99954,22 +100079,22 @@
        ]
       },
       {
-       "f": 30.0,
-       "kind": "cam",
-       "grip": "support",
+       "f": 27.5,
+       "kind": "grip",
+       "grip": "mag",
        "point": [
-        0.3,
-        -0.25,
-        -0.62
+        0.0,
+        0.0,
+        0.0
        ],
        "offset": [
         0.0,
         0.0,
-        0.0
+        0.06
        ]
       },
       {
-       "f": 55.0,
+       "f": 31.25,
        "kind": "grip",
        "grip": "mag",
        "point": [
@@ -99984,7 +100109,7 @@
        ]
       },
       {
-       "f": 65.0,
+       "f": 35.0,
        "kind": "grip",
        "grip": "mag",
        "point": [
@@ -99999,7 +100124,7 @@
        ]
       },
       {
-       "f": 68.75,
+       "f": 37.5,
        "kind": "grip",
        "grip": "push",
        "point": [
@@ -100014,7 +100139,7 @@
        ]
       },
       {
-       "f": 75.0,
+       "f": 40.0,
        "kind": "grip",
        "grip": "push",
        "point": [
@@ -100025,11 +100150,11 @@
        "offset": [
         0.0,
         0.0,
-        0.0
+        0.03
        ]
       },
       {
-       "f": 80.0,
+       "f": 42.5,
        "kind": "grip",
        "grip": "cap",
        "point": [
@@ -100038,43 +100163,88 @@
         0.0
        ],
        "offset": [
-        0.03,
+        0.0,
+        0.0,
+        0.025
+       ]
+      },
+      {
+       "f": 45.0,
+       "kind": "grip",
+       "grip": "cap",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 50.0,
+       "kind": "grip",
+       "grip": "cap",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 53.75,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 56.25,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "f": 58.75,
+       "kind": "grip",
+       "grip": "charge",
+       "point": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "offset": [
         0.025,
-        -0.02
+        0.0,
+        0.01
        ]
       },
       {
-       "f": 85.0,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.025,
-        0.01,
-        -0.01
-       ]
-      },
-      {
-       "f": 90.0,
-       "kind": "grip",
-       "grip": "cap",
-       "point": [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "offset": [
-        0.02,
-        0.0,
-        0.0
-       ]
-      },
-      {
-       "f": 100.0,
+       "f": 70.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -100089,7 +100259,7 @@
        ]
       },
       {
-       "f": 105.0,
+       "f": 87.5,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -100131,27 +100301,31 @@
        "pose": "foregrip_open"
       },
       {
-       "f": 15.0,
-       "pose": "pinch"
-      },
-      {
-       "f": 18.75,
-       "pose": "foregrip_open"
-      },
-      {
-       "f": 25.0,
+       "f": 13.75,
        "pose": "mag_hold"
       },
       {
-       "f": 66.25,
+       "f": 35.0,
+       "pose": "mag_hold"
+      },
+      {
+       "f": 37.5,
        "pose": "foregrip_open"
       },
       {
-       "f": 80.0,
+       "f": 51.25,
        "pose": "foregrip_open"
       },
       {
-       "f": 97.5,
+       "f": 53.75,
+       "pose": "pinch"
+      },
+      {
+       "f": 58.75,
+       "pose": "foregrip_open"
+      },
+      {
+       "f": 67.5,
        "pose": "foregrip"
       }
      ],
@@ -100170,27 +100344,48 @@
          "v": 0.0
         },
         {
-         "f": 2.5,
-         "v": -3.0
-        },
-        {
-         "f": 37.5,
-         "v": -3.0
-        },
-        {
-         "f": 37.5,
-         "v": 0.5
-        },
-        {
-         "f": 55.0,
-         "v": 0.5
-        },
-        {
-         "f": 65.0,
+         "f": 1.25,
          "v": 0.25
         },
         {
-         "f": 75.0,
+         "f": 31.25,
+         "v": 0.25
+        },
+        {
+         "f": 35.0,
+         "v": 0.04
+        },
+        {
+         "f": 37.5,
+         "v": 0.0
+        }
+       ]
+      },
+      {
+       "part": "load_hatch",
+       "keys": [
+        {
+         "f": 0.0,
+         "v": 0.0
+        },
+        {
+         "f": 5.0,
+         "v": 0.0
+        },
+        {
+         "f": 12.5,
+         "v": 1.0
+        },
+        {
+         "f": 41.25,
+         "v": 1.0
+        },
+        {
+         "f": 45.0,
+         "v": 0.3
+        },
+        {
+         "f": 50.0,
          "v": 0.0
         }
        ]
@@ -100203,44 +100398,19 @@
          "v": 0.0
         },
         {
-         "f": 15.0,
+         "f": 53.75,
          "v": 0.0
         },
         {
-         "f": 16.25,
+         "f": 55.0,
          "v": 1.0
         },
         {
-         "f": 18.75,
+         "f": 56.25,
          "v": 1.0
         },
         {
-         "f": 20.0,
-         "v": 0.0
-        }
-       ]
-      },
-      {
-       "part": "breech_cap",
-       "keys": [
-        {
-         "f": 0.0,
-         "v": 0.0
-        },
-        {
-         "f": 17.5,
-         "v": 0.0
-        },
-        {
-         "f": 25.0,
-         "v": 1.0
-        },
-        {
-         "f": 80.0,
-         "v": 1.0
-        },
-        {
-         "f": 90.0,
+         "f": 57.5,
          "v": 0.0
         }
        ]
@@ -100257,11 +100427,11 @@
          "v": 0.0
         },
         {
-         "f": 90.0,
+         "f": 55.0,
          "v": 0.0
         },
         {
-         "f": 95.0,
+         "f": 60.0,
          "v": 1.0
         }
        ]
@@ -100269,13 +100439,13 @@
      ],
      "carry": [
       {
-       "a": 30.0,
-       "b": 55.0
+       "a": 13.75,
+       "b": 31.25
       }
      ],
      "drop": {
-      "a": 2.5,
-      "b": 2.5
+      "a": 0.0,
+      "b": 1.25
      },
      "fire": [],
      "kick": 1.0,
@@ -100301,23 +100471,27 @@
        "name": "HandOff"
       },
       {
-       "f": 25,
+       "f": 12,
        "name": "BreechOpen"
       },
       {
-       "f": 75,
+       "f": 38,
        "name": "MagIn"
       },
       {
-       "f": 90,
+       "f": 50,
        "name": "BreechClosed"
       },
       {
-       "f": 100,
+       "f": 56,
+       "name": "Chamber"
+      },
+      {
+       "f": 70,
        "name": "HandOn"
       },
       {
-       "f": 102,
+       "f": 72,
        "name": "Ready"
       }
      ]
@@ -101790,14 +101964,14 @@
     "files": [
      {
       "path": "basic/pilot/w14_rocket_launcher_v21.py",
-      "sha256": "d5d67c65cb175a7472f00f3ef76293db3b08f3b32196005af6c781180d7f5d14"
+      "sha256": "31f6901f402456d6860e024b240c4a8e944f304b16d8946eb0a01caa20121608"
      },
      {
       "path": "basic/weapons/w14_rocket_launcher.py",
       "sha256": "ee0a9600fd049fb2ef69717741fa2e2e9d38715279ab0df61747a7461902b971"
      }
     ],
-    "parts_sha256": "b868e29844ba5c782d22f21a63b5b83a2d64a7e465b227efe47fa62ace71b470"
+    "parts_sha256": "f7128a79b55a65e55fc3748df822251e2da0742d34c1b348b9c685a0c7ea9fa4"
    },
    "textures": {
     "weapon": {
@@ -101816,7 +101990,10 @@
       "grip",
       "grip_cap",
       "grip_mount",
+      "hatch_grip",
+      "hatch_hinge",
       "hinge_block",
+      "load_hatch",
       "lower",
       "muzzle",
       "muzzle_crown",
@@ -101929,21 +102106,21 @@
        -0.006,
        0.157902
       ],
-      "tris": 1388
+      "tris": 1832
      },
      {
       "name": "window_rim",
       "min": [
        -0.031931,
-       -0.376,
+       -0.23,
        0.080069
       ],
       "max": [
        0.031931,
-       -0.296,
-       0.143931
+       -0.17,
+       0.128705
       ],
-      "tris": 1364
+      "tris": 1068
      },
      {
       "name": "muzzle",
@@ -102074,14 +102251,14 @@
      {
       "name": "breech_cap",
       "min": [
-       0.005,
-       -0.006,
-       -0.035923
+       -0.037,
+       0.404,
+       0.076077
       ],
       "max": [
-       0.077923,
-       0.022,
-       0.035923
+       0.035923,
+       0.432,
+       0.147923
       ],
       "tris": 2412
      },
@@ -102100,14 +102277,56 @@
       "tris": 1152
      },
      {
+      "name": "load_hatch",
+      "min": [
+       0.003,
+       -0.084,
+       -0.0021
+      ],
+      "max": [
+       0.063,
+       0.084,
+       0.010496
+      ],
+      "tris": 348
+     },
+     {
+      "name": "hatch_hinge",
+      "min": [
+       -0.036161,
+       -0.218,
+       0.146839
+      ],
+      "max": [
+       -0.029839,
+       -0.09,
+       0.153161
+      ],
+      "tris": 236
+     },
+     {
+      "name": "hatch_grip",
+      "min": [
+       0.0285,
+       -0.178,
+       0.149
+      ],
+      "max": [
+       0.0335,
+       -0.13,
+       0.155
+      ],
+      "tris": 108
+     },
+     {
       "name": "cap_release",
       "min": [
-       -0.002,
+       -0.003,
        -0.004445,
        -0.004445
       ],
       "max": [
-       0.003,
+       0.0025,
        0.004445,
        0.004445
       ],
@@ -102494,28 +102713,28 @@
      {
       "name": "rocket",
       "min": [
-       -0.027,
-       -0.3,
-       -0.027
+       -0.026,
+       -0.172,
+       -0.026
       ],
       "max": [
-       0.027,
-       0.36,
-       0.027
+       0.026,
+       -0.076,
+       0.026
       ],
       "tris": 596
      },
      {
       "name": "rocket_head",
       "min": [
-       -0.025598,
-       -0.39,
-       0.086402
+       -0.025468,
+       -0.232,
+       0.086532
       ],
       "max": [
-       0.025598,
-       -0.3,
-       0.137598
+       0.025468,
+       -0.172,
+       0.137468
       ],
       "tris": 380
      }

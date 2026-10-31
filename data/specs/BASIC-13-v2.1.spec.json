@@ -2659,7 +2659,7 @@
    "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
   },
   "reload": {
-   "de": "Klappe auf, je Kammer Hülse aus und Granate ein, Trommel weiter, Klappe zu",
+   "de": "Klappe auf, je Kammer Trommel zurück, Hülse aus, Granate ein; Klappe zu, Trommel vor",
    "frames": 120,
    "fps": 30,
    "parts": [
