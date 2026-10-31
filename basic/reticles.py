@@ -46,6 +46,22 @@ RETICLES = {
                      prims=[dict(t='line', a=(sx * 5, -3), b=(sx * 5, 3), d=(sx, 0)) for sx in (1, -1)]
                      + [dict(t='line', a=(sx * 5, su * 3), b=(sx * 3.8, su * 3), d=(sx, 0)) for sx in (1, -1) for su in (1, -1)]
                      + [dict(t='dot', r=0.6)]),
+    # Hüftformen der Sonderklassen nach Glidepath (Motiongen/cubeescape-reference destiny2 › Fadenkreuz, [M]; 0.33 „Armory“ beim Ego-Übertrag
+    # je Klasse, wie oben angekündigt): Bogen „zwei offene Bögen + Leiter aus 3 Strichen“, kurze und lineare Fusion „Ring + Eckmarken“,
+    # Granatwerfer „zwei Eckklammern + Mittenstrich + zweiter Strich 2,8 % H tiefer“ (Rahmen 6,3 % B × 5,6 % H ≈ 2 : 1), Raketenwerfer
+    # „im Hüftbild kein Mittenzeichen“
+    'arcs_ladder': dict(de='Bögen mit Leiter', en='Arcs and ladder', use='Zwei offene Bögen gehen seitlich auf; drei Striche darunter als Fallmarken',
+                        prims=[dict(t='line', a=(2.57, -3.06), b=(3.83, -1.17), d=(1, 0)), dict(t='line', a=(3.83, -1.17), b=(3.83, 1.17), d=(1, 0)), dict(t='line', a=(3.83, 1.17), b=(2.57, 3.06), d=(1, 0)), dict(t='line', a=(-2.57, -3.06), b=(-3.83, -1.17), d=(-1, 0)), dict(t='line', a=(-3.83, -1.17), b=(-3.83, 1.17), d=(-1, 0)), dict(t='line', a=(-3.83, 1.17), b=(-2.57, 3.06), d=(-1, 0))]
+                        + [dict(t='line', a=(-w, u), b=(w, u), d=(0, 0)) for w, u in ((0.9, -1.2), (0.7, -2.1), (0.5, -3.0))]),
+    'ring_corners': dict(de='Ring mit Eckmarken', en='Ring and corners', use='Kleiner Ring in der Mitte, vier Eckwinkel gehen diagonal auf',
+                         prims=[dict(t='ring', r=1.6, ri=1.2, grow=0)]
+                         + [dict(t='line', a=(sx * 5, su * 5), b=(sx * 5, su * 3.4), d=(sx * _D, su * _D)) for sx in (1, -1) for su in (1, -1)]
+                         + [dict(t='line', a=(sx * 5, su * 5), b=(sx * 3.4, su * 5), d=(sx * _D, su * _D)) for sx in (1, -1) for su in (1, -1)]),
+    'gl_brackets': dict(de='Werferklammern', en='Launcher brackets', use='Zwei Eckklammern gehen seitlich auf; Mittenstrich und tieferer Strich als Fallmarke',
+                        prims=[dict(t='line', a=(sx * 5, -2.5), b=(sx * 5, 2.5), d=(sx, 0)) for sx in (1, -1)]
+                        + [dict(t='line', a=(sx * 5, su * 2.5), b=(sx * 4.0, su * 2.5), d=(sx, 0)) for sx in (1, -1) for su in (1, -1)]
+                        + [dict(t='line', a=(-0.9, 0), b=(0.9, 0), d=(0, 0)), dict(t='line', a=(-0.6, -2.5), b=(0.6, -2.5), d=(0, 0))]),
+    'none': dict(de='ohne', en='None', use='Kein Hüftzeichen (Raketenwerfer, Destiny)', prims=[]),
     'caret': dict(de='Dach', en='Caret', use='Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander',
                   prims=[dict(t='line', a=(2.0, -1.6), b=(0, 0), d=(1, 0)), dict(t='line', a=(0, 0), b=(-2.0, -1.6), d=(-1, 0))]),
 }
@@ -125,14 +141,17 @@ ADS_FEEDBACK = dict(hud_dot=dict(share_h=0.011, color='cyan'), shot_ring=dict(sh
 # Entscheidungsliste 1.2 A (Nutzer 25.10.2026): Weltzoom an die Glidepath-Messung (Motiongen destiny2 › Glidepath, [M]) angeglichen –
 # Scout 2,9 → 2,0 (Grundzoom 1,2 + Zielfernrohr 0,8), Handfeuerwaffe 1,5 → 1,15, MP 1,25 → 1,45; übrige Klassen unverändert.
 CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 1.2, 'hand_cannon': 1.15, 'sidearm': 1.25, 'submachine_gun': 1.45,
-              'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 5.5, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,
+              'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 4.0, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,
               'trace_rifle': 1.5, 'rocket_launcher': 2.5, 'machine_gun': 1.6, 'combat_bow': 1.9, 'sword': 1.0, 'glaive': 1.25}
 CLASS_ZOOM_STATUS = {k: 'beobachtet' for k in ('auto_rifle', 'pulse_rifle', 'scout_rifle', 'hand_cannon', 'sidearm', 'submachine_gun',
                                                'shotgun', 'grenade_launcher', 'sniper_rifle')}
 CLASS_ZOOM_STATUS.update({k: 'gemessen (Glidepath)' for k in ('scout_rifle', 'hand_cannon', 'submachine_gun')})
 # Bogen (0.29): cubeescape-reference misst den Endmaßstab Hüfte → ADS der Imperial Needle ≈ 2,2× [M] (destiny2 ›
 # z-zb-imperial-needle-zoom, REF 0.17); bis 0.32 1,5 + Reflexbonus 0,3 = 1,8, mit dem Ego-Übertrag des Bogens (0.33 „Armory“ P4)
-# angeglichen: 1,9 + 0,3 = 2,2.
+# angeglichen: 1,9 + 0,3 = 2,2. Ebenso 0.33 „Armory“ (Abgleich aller Klassen mit cubeescape-reference destiny2 › Glidepath/zielbewegung):
+# Scharfschütze 5,5 → 4,0 (Far Future ≈ 4×, destiny2:496; Vollbild ohne Visierbonus). Impuls 2,0 (Gridskipper 2,10×; Entscheidung 1.2 A),
+# Automatik 1,9 (1,84×), MG 1,9 (1,84×), Seitenwaffe 1,25 (1,29×), Granatwerfer 1,4 (1,44×) liegen in der Messgenauigkeit ±0,05–0,1;
+# lineare Fusion (Kandidat 3,0×) und Raketenwerfer (nicht messbar) bleiben offen.
 
 
 def world_zoom(weapon_type, sight_type):
@@ -215,6 +234,8 @@ def extent_mm(kind, weight=None):
     das sichtbare Maß wie gezeichnet (common.reticle, Unity HipReticle): Linien ± LINE_R·weight (runde Enden), Ringe außen
     ri + (r − ri)·weight, Punkte r·(0,5 + 0,5·weight); ohne `weight` die Mittellinien und r."""
     xs, us = [], []
+    if not RETICLES[kind]['prims']:          # 'none' (0.33, Raketenwerfer): kein Zeichen
+        return 0.0
     lw = LINE_R * weight if weight is not None else 0.0
     for p in RETICLES[kind]['prims']:
         if p['t'] == 'line':
@@ -235,6 +256,25 @@ def hip(weapon_type):
     return dict(kind=D['hip'], share_h=HIP['share_h'].get(weapon_type, HIP['share_h_default']), extent_mm=extent_mm(D['hip'], w),
                 spread=D['spread'], status=HIP_STATUS.get(weapon_type, 'entworfen'),
                 sprint=dict(sp, extent_mm=extent_mm(sp['kind'], w)) if sp else None)
+
+
+# HUD-Hüftzeichen der Sonderklassen nach Glidepath (0.33 „Armory“, cubeescape-reference destiny2 › Fadenkreuz [M]): hip() bleibt die Form
+# des gezeichneten Absehens im Visierglas (common.drawn_reticle – Teil des Waffenmodells, Formquelle; ändern hieße neu backen), hud_hip()
+# ist das Hüft-Fadenkreuz im HUD (Unity gameplay.hip; gameplay.sight_form trägt hip() für das Absehen im Glas).
+HUD_HIP = {'combat_bow': ('arcs_ladder', 0.046, 'gemessen (Glidepath, Ø 4,6 % H)'),
+           'fusion_rifle': ('ring_corners', 0.055, 'gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H)'),
+           'linear_fusion_rifle': ('ring_corners', 0.125, 'gemessen (Glidepath, 12–13 % H)'),
+           'grenade_launcher': ('gl_brackets', 0.112, 'gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H)'),
+           'rocket_launcher': ('none', 0.0, 'gemessen (Glidepath, kein Mittenzeichen, 1 Clip)')}
+
+
+def hud_hip(weapon_type):
+    """Hüft-Fadenkreuz im HUD: wie hip(), bei den Klassen in HUD_HIP mit der gemessenen Form und Größe."""
+    h = dict(hip(weapon_type))
+    if weapon_type in HUD_HIP:
+        kind, share, status = HUD_HIP[weapon_type]
+        h.update(kind=kind, share_h=share, status=status, extent_mm=extent_mm(kind, WEIGHTS[HIP['weight']][1]))
+    return h
 
 
 # Einstellbare Optionen (Spieler): Wertebereich und Vorgabe

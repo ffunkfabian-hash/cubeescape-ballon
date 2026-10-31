@@ -222,7 +222,7 @@ namespace Ballon.Ego
                 p.loadouts[k] = new Loadout { rig = rig, hip = new HipReticle(Ss[k].D.gameplay.hip) };
                 if (rig.ReticleRole != "" && Ss[k].D.weapon.anchors.Any(a => a.id == "Socket_Reticle"))
                 {
-                    p.loadouts[k].sight = new HipReticle(Ss[k].D.gameplay.hip);
+                    p.loadouts[k].sight = new HipReticle(Ss[k].D.gameplay.SightHip);   // 0.33: Absehen im Glas (sight_form)
                     ColorUtility.TryParseHtmlString(Ss[k].D.Role(rig.ReticleRole).color, out p.loadouts[k].sightColor);
                 }
                 sp.gameObject.SetActive(k == 0);

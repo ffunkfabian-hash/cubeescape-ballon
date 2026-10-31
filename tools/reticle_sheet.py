@@ -113,7 +113,8 @@ def spread_video():
 
 
 HIP_SHEET = [('auto_rifle', False), ('pulse_rifle', False), ('submachine_gun', False), ('hand_cannon', False), ('sniper_rifle', False),
-             ('auto_rifle', True)]
+             ('auto_rifle', True), ('combat_bow', False), ('fusion_rifle', False), ('linear_fusion_rifle', False),   # 0.33: Sonderklassen
+             ('grenade_launcher', False)]
 
 
 def hip_svg(kind, share_h, extent, spread, h=1080, size=200):
@@ -144,7 +145,7 @@ def hip_sheet():
     os.makedirs(d, exist_ok=True)
     rows = []
     for t, sprint in HIP_SHEET:
-        H = RT.hip(t)
+        H = RT.hud_hip(t)   # 0.33: HUD-Hüftzeichen (Sonderklassen nach Glidepath)
         kind, share = (H['sprint']['kind'], H['sprint']['share_h']) if sprint else (H['kind'], H['share_h'])
         S = RT.SPREAD[H['spread']]
         three = RT.simulate(H['spread'], [i * 60 / 720 for i in range(3)], 3 * 60 / 720)[-1]

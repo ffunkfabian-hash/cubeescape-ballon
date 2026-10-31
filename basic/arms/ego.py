@@ -657,9 +657,12 @@ CLASSES = {
                      src='M Destiny-Scharfschütze Hüfte: Mündung 56/68 (Motiongen huefte:51), 56/66 (huefte:61), Far Future 56/64 '
                          '(destiny2:496); Lage E wie die Automatik, Lauf 1,8° tiefer (langer Lauf: Automatik-Hüfte trifft 56,1/61,9), '
                          'gerechnet Mündung 56,1/65,7 %'),
+            sprint=dict(pos=(-0.20, -0.38, -0.21), aim=(0.5, -2.4, -0.6), roll=-25,
+                        src='O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 '
+                            'pp); eine ältere Zeile (destiny2:483) nennt bei 60/s eine höhere, mittigere Form – widersprüchlich, hier die '
+                            'Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; '
+                            'bis 0.33 die Automatik-Form (Mündung 19/86 %)'),
         ),
-        keep=dict(sprint='O Destiny-Scharfschütze „tief rechts“ nur beobachtet (Motiongen destiny2:567); E nach 3.2 A „Gewehre tief und quer '
-                         'wie heute“: Trageform der Automatik (Entscheidungsliste)'),
         frames=dict(aim_in=6, aim_out=6),
         frames_src='M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen '
                    'destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); '
@@ -880,9 +883,11 @@ CLASSES = {
             hip=dict(pos=(-0.17, -0.42, -0.215), aim=(0.10, -3.0, -0.25), roll=6,
                      src='M Destiny-Fusion Hüfte: Mündung 59/68 (Motiongen huefte:57), 58/66 (destiny2:499); Lage E, gerechnet Mündung '
                          '59,0/67,3 % (Automatik-Hüfte an der kurzen Fusion: 61,4/68,0), 2 cm weiter zur Mitte, 1,5 cm höher'),
+            sprint=dict(pos=(-0.20, -0.38, -0.21), aim=(0.5, -2.4, -0.6), roll=-25,
+                        src='O cubeescape-reference destiny2 › Glidepath (Sprint): Fusion „groß und tief, Körper ≈ 55–100 % × 62–100 %“ '
+                            '(Sichtung). Lage E, gerechnet Mündung 58/79 %, Visier 91/68 %, Heck rechts aus dem Bild; bis 0.33 die Automatik-Form '
+                            '(Mündung 34/89 %, Körper zu weit links)'),
         ),
-        keep=dict(sprint='O Destiny-Fusion-Sprint „groß und tief“ nur beobachtet (Motiongen destiny2:568); E Trageform der Automatik nach 3.2 A '
-                         '(Entscheidungsliste)'),
         frames=dict(aim_in=3, aim_out=2.4, reload_tactical=73),
         frames_src='M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; '
                    'ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s '

@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "ec8da2daaf5798d667c273d7ed34ad6b09dba8f8e0dcfd894b74a3daca0ade2e"
+    "sha256": "e95f26cd82266023fdd2193604c09009b73d32025c9ac87c84a921b54002315e"
    },
    {
     "path": "tools/ego_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "eac7257b8797f3290d817518e100e78667150f28a5b86739794fe13aea34d8d1"
+    "sha256": "03d16432f9a5cd87da90f515bcd86bb3347447fe7464c9af5c1d6b69d419c6c7"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1436,7 +1436,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -1539,6 +1539,23 @@
       ]
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "ring_dot",
+     "share_h": 0.032,
+     "extent_mm": 5.91,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 3.2,
+       "ri": 2.5,
+       "grow": 1.0
+      },
+      {
+       "t": "dot",
+       "r": 0.8
+      }
+     ]
     },
     "fire_mode": "full_auto"
    },
@@ -8631,7 +8648,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -8763,6 +8780,83 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "circle_cross",
+     "share_h": 0.061,
+     "extent_mm": 15.19,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 4.6,
+       "ri": 4.0,
+       "grow": 1.0
+      },
+      {
+       "t": "line",
+       "a": [
+        5.4,
+        0.0
+       ],
+       "b": [
+        7.4,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.4,
+        0.0
+       ],
+       "b": [
+        -7.4,
+        0.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        5.4
+       ],
+       "b": [
+        0.0,
+        7.4
+       ],
+       "d": [
+        0.0,
+        1.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        -5.4
+       ],
+       "b": [
+        0.0,
+        -7.4
+       ],
+       "d": [
+        0.0,
+        -1.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.6
+      }
+     ]
     },
     "fire_mode": "full_auto"
    },
@@ -14889,7 +14983,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -15015,6 +15109,77 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "cross",
+     "share_h": 0.045,
+     "extent_mm": 14.39,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        -7.0,
+        0.0
+       ],
+       "b": [
+        -1.6,
+        0.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        1.6,
+        0.0
+       ],
+       "b": [
+        7.0,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        -7.0
+       ],
+       "b": [
+        0.0,
+        -1.6
+       ],
+       "d": [
+        0.0,
+        -1.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        1.6
+       ],
+       "b": [
+        0.0,
+        7.0
+       ],
+       "d": [
+        0.0,
+        1.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.45
+      }
+     ]
     },
     "fire_mode": "semi_auto"
    },
@@ -21502,7 +21667,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -21574,6 +21739,23 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "ring_dot",
+     "share_h": 0.032,
+     "extent_mm": 5.91,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 3.2,
+       "ri": 2.5,
+       "grow": 1.0
+      },
+      {
+       "t": "dot",
+       "r": 0.8
+      }
+     ]
     },
     "fire_mode": "burst"
    },
@@ -28039,7 +28221,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -28111,6 +28293,23 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "ring_dot",
+     "share_h": 0.045,
+     "extent_mm": 5.91,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 3.2,
+       "ri": 2.5,
+       "grow": 1.0
+      },
+      {
+       "t": "dot",
+       "r": 0.8
+      }
+     ]
     },
     "fire_mode": "single"
    },
@@ -31337,7 +31536,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -31493,6 +31692,107 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "brackets",
+     "share_h": 0.06,
+     "extent_mm": 10.39,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -3.0
+       ],
+       "b": [
+        5.0,
+        3.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -3.0
+       ],
+       "b": [
+        -5.0,
+        3.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        3.0
+       ],
+       "b": [
+        3.8,
+        3.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -3.0
+       ],
+       "b": [
+        3.8,
+        -3.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        3.0
+       ],
+       "b": [
+        -3.8,
+        3.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -3.0
+       ],
+       "b": [
+        -3.8,
+        -3.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.6
+      }
+     ]
     },
     "fire_mode": "semi_auto"
    },
@@ -36248,7 +36548,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -36374,6 +36674,77 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "cross",
+     "share_h": 0.045,
+     "extent_mm": 14.39,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        -7.0,
+        0.0
+       ],
+       "b": [
+        -1.6,
+        0.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        1.6,
+        0.0
+       ],
+       "b": [
+        7.0,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        -7.0
+       ],
+       "b": [
+        0.0,
+        -1.6
+       ],
+       "d": [
+        0.0,
+        -1.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        1.6
+       ],
+       "b": [
+        0.0,
+        7.0
+       ],
+       "d": [
+        0.0,
+        1.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.45
+      }
+     ]
     },
     "fire_mode": "semi_auto"
    },
@@ -41403,7 +41774,8 @@
     "type": "sniper_rifle",
     "src": "Ego-Übertrag 0.33 „Armory“ P2: Hüfte, Anflug und Nachladen nach Motiongen (Scharfschütze Far Future), Sprint der Automatik, Repetieren nach jedem Schuss E",
     "poses": [
-     "hip"
+     "hip",
+     "sprint"
     ],
     "frames": [
      {
@@ -41436,7 +41808,7 @@
     "src": "S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec (Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, 1,5 Hz); Kick 3,0 E (schwerer Einzelschuss)",
     "weapon_type": "sniper_rifle",
     "sight": "fullscreen",
-    "world_zoom": 5.5,
+    "world_zoom": 4.0,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -41472,7 +41844,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -41564,6 +41936,43 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "caret",
+     "share_h": 0.01,
+     "extent_mm": 4.39,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        2.0,
+        -1.6
+       ],
+       "b": [
+        0.0,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        0.0
+       ],
+       "b": [
+        -2.0,
+        -1.6
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      }
+     ]
     },
     "fire_mode": "bolt_action"
    },
@@ -43233,17 +43642,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -35.0,
-     "src": "O Destiny-Scharfschütze „tief rechts“ nur beobachtet (Motiongen destiny2:567); E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik (Entscheidungsliste) (Haltung POSES['sprint'] unverändert)",
+     "roll": -25.0,
+     "src": "O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 pp); eine ältere Zeile (destiny2:483) nennt bei 60/s eine höhere, mittigere Form – widersprüchlich, hier die Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; bis 0.33 die Automatik-Form (Mündung 19/86 %)",
      "pos": [
-      -0.1,
-      -0.34,
-      -0.23
+      -0.2,
+      -0.38,
+      -0.21
      ],
      "aim": [
-      1.2,
-      -1.6,
-      -0.55
+      0.5,
+      -2.4,
+      -0.6
      ],
      "eye": [
       0.0,
@@ -48258,7 +48667,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -48390,6 +48799,83 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "circle_cross",
+     "share_h": 0.045,
+     "extent_mm": 15.19,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 4.6,
+       "ri": 4.0,
+       "grow": 1.0
+      },
+      {
+       "t": "line",
+       "a": [
+        5.4,
+        0.0
+       ],
+       "b": [
+        7.4,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.4,
+        0.0
+       ],
+       "b": [
+        -7.4,
+        0.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        5.4
+       ],
+       "b": [
+        0.0,
+        7.4
+       ],
+       "d": [
+        0.0,
+        1.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        -5.4
+       ],
+       "b": [
+        0.0,
+        -7.4
+       ],
+       "d": [
+        0.0,
+        -1.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.6
+      }
+     ]
     },
     "fire_mode": "continuous_beam"
    },
@@ -54180,7 +54666,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -54252,6 +54738,23 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "ring_dot",
+     "share_h": 0.032,
+     "extent_mm": 5.91,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 3.2,
+       "ri": 2.5,
+       "grow": 1.0
+      },
+      {
+       "t": "dot",
+       "r": 0.8
+      }
+     ]
     },
     "fire_mode": "full_auto"
    },
@@ -61446,7 +61949,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -61632,6 +62135,137 @@
       "prims": []
      },
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "corners",
+     "share_h": 0.045,
+     "extent_mm": 10.39,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        5.0
+       ],
+       "b": [
+        5.0,
+        3.0
+       ],
+       "d": [
+        0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -5.0
+       ],
+       "b": [
+        5.0,
+        -3.0
+       ],
+       "d": [
+        0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        5.0
+       ],
+       "b": [
+        -5.0,
+        3.0
+       ],
+       "d": [
+        -0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -5.0
+       ],
+       "b": [
+        -5.0,
+        -3.0
+       ],
+       "d": [
+        -0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        5.0
+       ],
+       "b": [
+        3.0,
+        5.0
+       ],
+       "d": [
+        0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -5.0
+       ],
+       "b": [
+        3.0,
+        -5.0
+       ],
+       "d": [
+        0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        5.0
+       ],
+       "b": [
+        -3.0,
+        5.0
+       ],
+       "d": [
+        -0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -5.0
+       ],
+       "b": [
+        -3.0,
+        -5.0
+       ],
+       "d": [
+        -0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.6
+      }
+     ]
     },
     "fire_mode": "pump_action"
    },
@@ -67824,7 +68458,8 @@
     "type": "fusion_rifle",
     "src": "Ego-Übertrag 0.33 „Armory“ P3: Hüfte, Anflug, Aufladen und Nachladen nach Motiongen (Fusion), Sprint der Automatik, Nachladen der Bezugsklasse mit der Energiezelle (leer wie taktisch, kein Ladehebel)",
     "poses": [
-     "hip"
+     "hip",
+     "sprint"
     ],
     "frames": [
      {
@@ -67897,7 +68532,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -67933,15 +68568,163 @@
      }
     ],
     "hip": {
-     "kind": "corners",
-     "share_h": 0.045,
+     "kind": "ring_corners",
+     "share_h": 0.055,
      "extent_mm": 10.39,
-     "status": "entworfen",
+     "status": "gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H)",
      "color": "#EEF2F5",
      "weight": 0.65,
      "line_r_mm": 0.3,
      "opacity": 0.9,
      "min_line_px": 0.6,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 1.6,
+       "ri": 1.2,
+       "grow": 0.0
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        5.0
+       ],
+       "b": [
+        5.0,
+        3.4
+       ],
+       "d": [
+        0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -5.0
+       ],
+       "b": [
+        5.0,
+        -3.4
+       ],
+       "d": [
+        0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        5.0
+       ],
+       "b": [
+        -5.0,
+        3.4
+       ],
+       "d": [
+        -0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -5.0
+       ],
+       "b": [
+        -5.0,
+        -3.4
+       ],
+       "d": [
+        -0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        5.0
+       ],
+       "b": [
+        3.4,
+        5.0
+       ],
+       "d": [
+        0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -5.0
+       ],
+       "b": [
+        3.4,
+        -5.0
+       ],
+       "d": [
+        0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        5.0
+       ],
+       "b": [
+        -3.4,
+        5.0
+       ],
+       "d": [
+        -0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -5.0
+       ],
+       "b": [
+        -3.4,
+        -5.0
+       ],
+       "d": [
+        -0.707107,
+        -0.707107
+       ]
+      }
+     ],
+     "spread": {
+      "id": "charge",
+      "base": 0.0,
+      "per_shot": 1.5,
+      "max": 4.0,
+      "recover_s": 0.25,
+      "move": 1.2
+     },
+     "sprint": {
+      "kind": "",
+      "share_h": 0.0,
+      "extent_mm": 0.0,
+      "prims": []
+     },
+     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "corners",
+     "share_h": 0.045,
+     "extent_mm": 10.39,
      "prims": [
       {
        "t": "line",
@@ -68067,22 +68850,7 @@
        "t": "dot",
        "r": 0.6
       }
-     ],
-     "spread": {
-      "id": "charge",
-      "base": 0.0,
-      "per_shot": 1.5,
-      "max": 4.0,
-      "recover_s": 0.25,
-      "move": 1.2
-     },
-     "sprint": {
-      "kind": "",
-      "share_h": 0.0,
-      "extent_mm": 0.0,
-      "prims": []
-     },
-     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+     ]
     },
     "fire_mode": "charge_burst"
    },
@@ -69459,17 +70227,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -35.0,
-     "src": "O Destiny-Fusion-Sprint „groß und tief“ nur beobachtet (Motiongen destiny2:568); E Trageform der Automatik nach 3.2 A (Entscheidungsliste) (Haltung POSES['sprint'] unverändert)",
+     "roll": -25.0,
+     "src": "O cubeescape-reference destiny2 › Glidepath (Sprint): Fusion „groß und tief, Körper ≈ 55–100 % × 62–100 %“ (Sichtung). Lage E, gerechnet Mündung 58/79 %, Visier 91/68 %, Heck rechts aus dem Bild; bis 0.33 die Automatik-Form (Mündung 34/89 %, Körper zu weit links)",
      "pos": [
-      -0.1,
-      -0.34,
-      -0.23
+      -0.2,
+      -0.38,
+      -0.21
      ],
      "aim": [
-      1.2,
-      -1.6,
-      -0.55
+      0.5,
+      -2.4,
+      -0.6
      ],
      "eye": [
       0.0,
@@ -73658,7 +74426,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -73694,15 +74462,163 @@
      }
     ],
     "hip": {
-     "kind": "cross",
-     "share_h": 0.045,
-     "extent_mm": 14.39,
-     "status": "entworfen",
+     "kind": "ring_corners",
+     "share_h": 0.125,
+     "extent_mm": 10.39,
+     "status": "gemessen (Glidepath, 12–13 % H)",
      "color": "#EEF2F5",
      "weight": 0.65,
      "line_r_mm": 0.3,
      "opacity": 0.9,
      "min_line_px": 0.6,
+     "prims": [
+      {
+       "t": "ring",
+       "r": 1.6,
+       "ri": 1.2,
+       "grow": 0.0
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        5.0
+       ],
+       "b": [
+        5.0,
+        3.4
+       ],
+       "d": [
+        0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -5.0
+       ],
+       "b": [
+        5.0,
+        -3.4
+       ],
+       "d": [
+        0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        5.0
+       ],
+       "b": [
+        -5.0,
+        3.4
+       ],
+       "d": [
+        -0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -5.0
+       ],
+       "b": [
+        -5.0,
+        -3.4
+       ],
+       "d": [
+        -0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        5.0
+       ],
+       "b": [
+        3.4,
+        5.0
+       ],
+       "d": [
+        0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -5.0
+       ],
+       "b": [
+        3.4,
+        -5.0
+       ],
+       "d": [
+        0.707107,
+        -0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        5.0
+       ],
+       "b": [
+        -3.4,
+        5.0
+       ],
+       "d": [
+        -0.707107,
+        0.707107
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -5.0
+       ],
+       "b": [
+        -3.4,
+        -5.0
+       ],
+       "d": [
+        -0.707107,
+        -0.707107
+       ]
+      }
+     ],
+     "spread": {
+      "id": "charge",
+      "base": 0.0,
+      "per_shot": 1.5,
+      "max": 4.0,
+      "recover_s": 0.25,
+      "move": 1.2
+     },
+     "sprint": {
+      "kind": "",
+      "share_h": 0.0,
+      "extent_mm": 0.0,
+      "prims": []
+     },
+     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "cross",
+     "share_h": 0.045,
+     "extent_mm": 14.39,
      "prims": [
       {
        "t": "line",
@@ -73768,22 +74684,7 @@
        "t": "dot",
        "r": 0.45
       }
-     ],
-     "spread": {
-      "id": "charge",
-      "base": 0.0,
-      "per_shot": 1.5,
-      "max": 4.0,
-      "recover_s": 0.25,
-      "move": 1.2
-     },
-     "sprint": {
-      "kind": "",
-      "share_h": 0.0,
-      "extent_mm": 0.0,
-      "prims": []
-     },
-     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+     ]
     },
     "fire_mode": "charge_single"
    },
@@ -79692,7 +80593,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -79728,15 +80629,172 @@
      }
     ],
     "hip": {
-     "kind": "chevron",
-     "share_h": 0.045,
-     "extent_mm": 6.79,
-     "status": "entworfen",
+     "kind": "arcs_ladder",
+     "share_h": 0.046,
+     "extent_mm": 8.05,
+     "status": "gemessen (Glidepath, Ø 4,6 % H)",
      "color": "#EEF2F5",
      "weight": 0.65,
      "line_r_mm": 0.3,
      "opacity": 0.9,
      "min_line_px": 0.6,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        2.57,
+        -3.06
+       ],
+       "b": [
+        3.83,
+        -1.17
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        3.83,
+        -1.17
+       ],
+       "b": [
+        3.83,
+        1.17
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        3.83,
+        1.17
+       ],
+       "b": [
+        2.57,
+        3.06
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -2.57,
+        -3.06
+       ],
+       "b": [
+        -3.83,
+        -1.17
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -3.83,
+        -1.17
+       ],
+       "b": [
+        -3.83,
+        1.17
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -3.83,
+        1.17
+       ],
+       "b": [
+        -2.57,
+        3.06
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -0.9,
+        -1.2
+       ],
+       "b": [
+        0.9,
+        -1.2
+       ],
+       "d": [
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -0.7,
+        -2.1
+       ],
+       "b": [
+        0.7,
+        -2.1
+       ],
+       "d": [
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -0.5,
+        -3.0
+       ],
+       "b": [
+        0.5,
+        -3.0
+       ],
+       "d": [
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "spread": {
+      "id": "charge",
+      "base": 0.0,
+      "per_shot": 1.5,
+      "max": 4.0,
+      "recover_s": 0.25,
+      "move": 1.2
+     },
+     "sprint": {
+      "kind": "",
+      "share_h": 0.0,
+      "extent_mm": 0.0,
+      "prims": []
+     },
+     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "chevron",
+     "share_h": 0.045,
+     "extent_mm": 6.79,
      "prims": [
       {
        "t": "line",
@@ -79768,22 +80826,7 @@
         0.0
        ]
       }
-     ],
-     "spread": {
-      "id": "charge",
-      "base": 0.0,
-      "per_shot": 1.5,
-      "max": 4.0,
-      "recover_s": 0.25,
-      "move": 1.2
-     },
-     "sprint": {
-      "kind": "",
-      "share_h": 0.0,
-      "extent_mm": 0.0,
-      "prims": []
-     },
-     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+     ]
     },
     "fire_mode": "draw_release"
    },
@@ -85925,7 +86968,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -85961,15 +87004,157 @@
      }
     ],
     "hip": {
-     "kind": "circle_cross",
-     "share_h": 0.045,
-     "extent_mm": 15.19,
-     "status": "entworfen",
+     "kind": "gl_brackets",
+     "share_h": 0.112,
+     "extent_mm": 10.39,
+     "status": "gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H)",
      "color": "#EEF2F5",
      "weight": 0.65,
      "line_r_mm": 0.3,
      "opacity": 0.9,
      "min_line_px": 0.6,
+     "prims": [
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -2.5
+       ],
+       "b": [
+        5.0,
+        2.5
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -2.5
+       ],
+       "b": [
+        -5.0,
+        2.5
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        2.5
+       ],
+       "b": [
+        4.0,
+        2.5
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        5.0,
+        -2.5
+       ],
+       "b": [
+        4.0,
+        -2.5
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        2.5
+       ],
+       "b": [
+        -4.0,
+        2.5
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.0,
+        -2.5
+       ],
+       "b": [
+        -4.0,
+        -2.5
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -0.9,
+        0.0
+       ],
+       "b": [
+        0.9,
+        0.0
+       ],
+       "d": [
+        0.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -0.6,
+        -2.5
+       ],
+       "b": [
+        0.6,
+        -2.5
+       ],
+       "d": [
+        0.0,
+        0.0
+       ]
+      }
+     ],
+     "spread": {
+      "id": "explosive",
+      "base": 0.5,
+      "per_shot": 1.8,
+      "max": 4.0,
+      "recover_s": 0.5,
+      "move": 0.8
+     },
+     "sprint": {
+      "kind": "",
+      "share_h": 0.0,
+      "extent_mm": 0.0,
+      "prims": []
+     },
+     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "circle_cross",
+     "share_h": 0.045,
+     "extent_mm": 15.19,
      "prims": [
       {
        "t": "ring",
@@ -86041,22 +87226,7 @@
        "t": "dot",
        "r": 0.6
       }
-     ],
-     "spread": {
-      "id": "explosive",
-      "base": 0.5,
-      "per_shot": 1.8,
-      "max": 4.0,
-      "recover_s": 0.5,
-      "move": 0.8
-     },
-     "sprint": {
-      "kind": "",
-      "share_h": 0.0,
-      "extent_mm": 0.0,
-      "prims": []
-     },
-     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+     ]
     },
     "fire_mode": "semi_auto"
    },
@@ -92784,7 +93954,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 5.5
+      "zoom": 4.0
      },
      {
       "type": "fusion_rifle",
@@ -92820,15 +93990,36 @@
      }
     ],
     "hip": {
-     "kind": "circle_cross",
-     "share_h": 0.045,
-     "extent_mm": 15.19,
-     "status": "entworfen",
+     "kind": "none",
+     "share_h": 0.0,
+     "extent_mm": 0.0,
+     "status": "gemessen (Glidepath, kein Mittenzeichen, 1 Clip)",
      "color": "#EEF2F5",
      "weight": 0.65,
      "line_r_mm": 0.3,
      "opacity": 0.9,
      "min_line_px": 0.6,
+     "prims": [],
+     "spread": {
+      "id": "explosive",
+      "base": 0.5,
+      "per_shot": 1.8,
+      "max": 4.0,
+      "recover_s": 0.5,
+      "move": 0.8
+     },
+     "sprint": {
+      "kind": "",
+      "share_h": 0.0,
+      "extent_mm": 0.0,
+      "prims": []
+     },
+     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+    },
+    "sight_form": {
+     "kind": "circle_cross",
+     "share_h": 0.045,
+     "extent_mm": 15.19,
      "prims": [
       {
        "t": "ring",
@@ -92900,22 +94091,7 @@
        "t": "dot",
        "r": 0.6
       }
-     ],
-     "spread": {
-      "id": "explosive",
-      "base": 0.5,
-      "per_shot": 1.8,
-      "max": 4.0,
-      "recover_s": 0.5,
-      "move": 0.8
-     },
-     "sprint": {
-      "kind": "",
-      "share_h": 0.0,
-      "extent_mm": 0.0,
-      "prims": []
-     },
-     "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
+     ]
     },
     "fire_mode": "single_shot"
    },

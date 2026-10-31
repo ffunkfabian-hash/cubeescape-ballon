@@ -93,7 +93,8 @@ def gameplay(weapon_type, G=None):
     Waffentyp. Ohne Visier (Werkzeug) Visiertyp 'none' und Weltzoom 1."""
     from basic import reticles as RT
     GAMEPLAY = dict(GAMEPLAY_DEFAULTS, **(G if G is not None else EG.CLASSES[weapon_type]['gameplay']))
-    H = RT.hip(weapon_type)
+    H = RT.hud_hip(weapon_type)          # 0.33: HUD-Hüftzeichen (Sonderklassen nach Glidepath); das Absehen im Glas bleibt RT.hip (sight_form)
+    G0 = RT.hip(weapon_type)
     S = RT.SPREAD[H['spread']]
     sp = H['sprint']
     sprint = dict(kind=sp['kind'], share_h=sp['share_h'], extent_mm=sp['extent_mm'], prims=[prim(q) for q in RT.RETICLES[sp['kind']]['prims']]) \
@@ -107,7 +108,9 @@ def gameplay(weapon_type, G=None):
     sighted = RT.SIGHT_KIND[weapon_type] is not None
     return dict(GAMEPLAY, weapon_type=weapon_type, sight=RT.sight_type(weapon_type) if sighted else 'none',
                 world_zoom=RT.class_world_zoom(weapon_type) if sighted else 1.0,
-                zoom_table=[dict(type=k, zoom=RT.class_world_zoom(k)) for k in RT.CLASS_ZOOM], hip=hip)
+                zoom_table=[dict(type=k, zoom=RT.class_world_zoom(k)) for k in RT.CLASS_ZOOM], hip=hip,
+                sight_form=dict(kind=G0['kind'], share_h=G0['share_h'], extent_mm=G0['extent_mm'],
+                                prims=[prim(q) for q in RT.RETICLES[G0['kind']]['prims']]))
 
 
 def r6(v):

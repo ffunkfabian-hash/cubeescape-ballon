@@ -16,6 +16,10 @@ Eine Quelle für Blender (`basic/common.drawn_reticle`, Visier-Baukasten v3 in `
 | `circle_cross` | Kreis mit Kreuzmarken | Großer Ring mit vier Marken; Ring und Marken gehen auf | ja |
 | `corners` | Eckklammern | Vier Winkel zeigen die Streuung, gehen diagonal auf | ja |
 | `brackets` | Klammern | Zwei eckige Klammern um einen Punkt; Klammern wandern seitlich nach außen | ja |
+| `arcs_ladder` | Bögen mit Leiter | Zwei offene Bögen gehen seitlich auf; drei Striche darunter als Fallmarken | ja |
+| `ring_corners` | Ring mit Eckmarken | Kleiner Ring in der Mitte, vier Eckwinkel gehen diagonal auf | ja |
+| `gl_brackets` | Werferklammern | Zwei Eckklammern gehen seitlich auf; Mittenstrich und tieferer Strich als Fallmarke | ja |
+| `none` | ohne | Kein Hüftzeichen (Raketenwerfer, Destiny) | nein |
 | `caret` | Dach | Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander | ja |
 
 Jede Form gibt es in jeder Farbe und jeder Linienstärke.
@@ -145,7 +149,7 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `submachine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.45 | gemessen (Glidepath) | **×1.45** | ×1.45 |
 | `shotgun` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `grenade_launcher` | runde Linse mit Winkel | ×1.4 | beobachtet | **×1.4** | ×1.4 |
-| `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×5.5 | beobachtet | **×5.5** | ×5.5 |
+| `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×4.0 | beobachtet | **×4.0** | ×4.0 |
 | `fusion_rifle` | Ring oder Doppelring | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×3.0 | entworfen | ×3.3 | **×3.8** |
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
@@ -161,7 +165,7 @@ Im Zielen: Leuchtpunkt am Zielpunkt getrennt vom Glas (1.1 % Bildhöhe), kein Au
 
 | Option | Name | Werte | Vorgabe |
 |---|---|---|---|
-| `kind` | Form | `ring_dot`, `dot`, `cross`, `chevron`, `t_post`, `circle_cross`, `corners`, `brackets`, `caret` | Vorgabe der Waffe |
+| `kind` | Form | `ring_dot`, `dot`, `cross`, `chevron`, `t_post`, `circle_cross`, `corners`, `brackets`, `arcs_ladder`, `ring_corners`, `gl_brackets`, `none`, `caret` | Vorgabe der Waffe |
 | `color` | Farbe | `cyan`, `red`, `green`, `amber`, `white` | cyan |
 | `weight` | Linienstärke | `fine`, `normal`, `bold` | fine |
 | `scale` | Größe | 0.6 – 1.6 | 1.0 |

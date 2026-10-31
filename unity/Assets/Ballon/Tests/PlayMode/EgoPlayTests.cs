@@ -679,7 +679,9 @@ namespace Ballon.Ego.Tests
                     continue;
                 }
                 Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
-                Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
+                Assert.AreEqual(p.C.S.D.gameplay.SightHip.kind, L.sight.Kind, "Form des Absehens im Glas (sight_form)");
+                if (p.C.S.D.gameplay.sight_form.kind == p.C.S.D.gameplay.hip.kind)   // 0.33: Sonderklassen mit eigenem HUD-Hüftzeichen (reticles.HUD_HIP)
+                    Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
                 var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
                 Assert.IsFalse(L.rig.Part(role.id).GetComponent<Renderer>().enabled, "Modell-Absehen aus");
                 ColorUtility.TryParseHtmlString(p.C.S.D.Role(role.role).color, out var want);

@@ -29,6 +29,21 @@ namespace Ballon.Ego
         public float range_m;                           // 10: Reichweite der Portalschüsse (Werkzeug); 0 = Waffe
         public float charge_s, charge_fade_s;           // 10 (0.33 P3): Aufladen bis zum Schuss und Abklingen der Ladung (Ladewaffe); 0 = ohne
         public float flash_scale;                       // 10 (0.33 P4): Maßstab des Mündungsfeuers je Klasse (Werfer); 0 (älterer Export) = 1
+        public EgoHipForm sight_form;                   // 10 (0.33): Absehen im Visierglas; leer (älterer Export) = Hüftform
+        EgoHip _sightHip;
+        /// <summary>Form des gezeichneten Absehens im Visier (0.33 getrennt vom HUD-Hüftzeichen der Sonderklassen): hip mit sight_form.</summary>
+        public EgoHip SightHip
+        {
+            get
+            {
+                if (_sightHip != null) return _sightHip;
+                if (sight_form == null || string.IsNullOrEmpty(sight_form.kind) || sight_form.kind == hip.kind) return _sightHip = hip;
+                _sightHip = JsonUtility.FromJson<EgoHip>(JsonUtility.ToJson(hip));
+                _sightHip.kind = sight_form.kind; _sightHip.share_h = sight_form.share_h;
+                _sightHip.extent_mm = sight_form.extent_mm; _sightHip.prims = sight_form.prims;
+                return _sightHip;
+            }
+        }
         public float FlashScale => flash_scale > 0 ? flash_scale : 1f;
 
         /// <summary>Einzelfeuer: ein Schuss je Zug des Abzugs (Feuerart semi_auto, Werkzeug single, Repetierer bolt_action; ego.SEMI_MODES).</summary>
@@ -432,6 +447,9 @@ namespace Ballon.Ego
             foreach (var a in weapon.anchors) _anchors[a.id] = a;
             gameplay.cycle = _actions.ContainsKey("fire_cycle");          // 0.33 P4: Trommel dreht nach dem Schuss wie Repetierer und Pumpe
             if (gameplay.flash_scale <= 0) gameplay.flash_scale = 1;      // vor 0.33 P4: Blitz in Familiengröße
+            if (gameplay.hip != null && (gameplay.sight_form == null || string.IsNullOrEmpty(gameplay.sight_form.kind)))   // vor 0.33: Absehen
+                gameplay.sight_form = new EgoHipForm { kind = gameplay.hip.kind, share_h = gameplay.hip.share_h,        // im Glas = Hüftform
+                                                       extent_mm = gameplay.hip.extent_mm, prims = gameplay.hip.prims };
             if (weapon.eject != null && weapon.eject.enabled && string.IsNullOrEmpty(weapon.eject.on))
                 weapon.eject.on = "shot";                                  // vor 0.33 P4: Hülse je Schuss
         }

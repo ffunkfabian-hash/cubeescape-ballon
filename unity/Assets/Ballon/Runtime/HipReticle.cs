@@ -56,8 +56,8 @@ namespace Ballon.Ego
                 Visible = SprintForm;
                 return;
             }
-            Visible = Reason == null;
-            Reason ??= "hip";
+            Visible = Reason == null && H.prims != null && H.prims.Length > 0;   // 0.33: Raketenwerfer ohne Hüftzeichen (Form 'none')
+            Reason ??= H.prims != null && H.prims.Length > 0 ? "hip" : "none";
         }
 
         /// <summary>Pixel je mm auf der Scheibe bei Bildhöhe h: sichtbares Außenmaß der Form (mit Linienstärke) = share_h · h.</summary>

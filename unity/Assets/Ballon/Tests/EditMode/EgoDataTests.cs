@@ -399,14 +399,16 @@ namespace Ballon.Ego.Tests
             Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
         }
 
-        /// <summary>0.33 P4: der Weltzoom des Bogens in der Zoomtabelle stieg von 1,8 auf 2,2 (Imperial Needle gemessen); sonst ist die Tabelle
-        /// gleich. Die alten Dateien tragen den alten Wert – für den Vergleich übernommen, die übrigen Einträge geprüft.</summary>
+        /// <summary>0.33: Weltzoom in der Zoomtabelle angeglichen – Bogen 1,8 → 2,2 (Imperial Needle gemessen), Scharfschütze 5,5 → 4,0 (Far
+        /// Future ≈ 4×); sonst ist die Tabelle gleich. Die alten Dateien tragen die alten Werte – für den Vergleich übernommen, die übrigen
+        /// Einträge geprüft. Ebenso sight_form (0.33, Absehen im Glas): alte Dateien setzen es beim Lesen auf die Hüftform.</summary>
         static EgoFile BowZoom(EgoFile o, EgoFile n)
         {
             var a = o.gameplay.zoom_table; var b = n.gameplay.zoom_table;
             Assert.AreEqual(a.Length, b.Length, "Zoomtabelle");
             for (int k = 0; k < a.Length; k++)
                 if (a[k].type == "combat_bow") Assert.AreEqual(2.2f, b[k].zoom, 1e-4f, "Bogen 2,2×");
+                else if (a[k].type == "sniper_rifle") Assert.AreEqual(4.0f, b[k].zoom, 1e-4f, "Scharfschütze 4×");
                 else Assert.AreEqual(a[k].zoom, b[k].zoom, 1e-6f, a[k].type);
             o.gameplay.zoom_table = b;
             return o;
@@ -832,7 +834,7 @@ namespace Ballon.Ego.Tests
             var G = D.gameplay;
             var want = new Dictionary<string, float> { ["scout_rifle"] = 2.0f, ["hand_cannon"] = 1.15f, ["submachine_gun"] = 1.45f,
                 ["auto_rifle"] = 1.9f, ["pulse_rifle"] = 2.0f, ["machine_gun"] = 1.9f, ["sidearm"] = 1.25f, ["grenade_launcher"] = 1.4f,
-                ["linear_fusion_rifle"] = 3.8f, ["sniper_rifle"] = 5.5f };
+                ["linear_fusion_rifle"] = 3.8f, ["sniper_rifle"] = 4.0f };   // 0.33: Scharfschütze ≈ 4× (Far Future, destiny2:496)
             foreach (var kv in want) Assert.AreEqual(kv.Value, G.ZoomFor(kv.Key), 1e-4f, kv.Key);
             Assert.AreEqual(17, G.zoom_table.Length, "alle Waffentypen");
             Assert.AreEqual("auto_rifle", G.weapon_type);
