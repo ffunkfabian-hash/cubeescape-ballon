@@ -31,6 +31,7 @@ python3 tools/unity_run.py projektil    # MP4 (0.34): Granatwerfer, Raketenwerfe
 python3 tools/unity_run.py strahlen      # MP4 (0.34): Spurgewehr, Fusion, lineare Fusion, Bogen
 python3 tools/unity_run.py streuschuss  # MP4 (0.34): Schrot, Automatik, Handfeuerwaffe (Einschläge)
 python3 tools/unity_run.py fuellstand   # MP4 (0.34): MG, Granatwerfer, Handfeuerwaffe (Hülsen, Füllstand)
+python3 tools/unity_run.py holdfast     # MP4 (0.36): Hüfte Impuls/Scout, Handfeuerwaffe Schuss, Werfer Zielen, Bogen Spannen/Zoom
 BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1" python3 tools/unity_run.py feel   # Messlauf: 60/s, Waffe und Arme auf Magenta, ohne Fadenkreuz (…_mess)
 BALLON_TEST_FILTER="Name1|Name2" python3 tools/unity_run.py test   # nur diese Tests (Gegenproben, 0.32)
 open unity/Build/BallonFirstfeel.app --args -ballonFov 100   # Welt-Bildwinkel 100° waagrecht (50–120); Waffe und Arme bleiben bei 75° (A9, 0.32)

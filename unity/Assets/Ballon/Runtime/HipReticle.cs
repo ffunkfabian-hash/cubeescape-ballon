@@ -1,6 +1,7 @@
 // Hüft-Fadenkreuz (Entscheidungsliste 4.1 A / 4.2 A, Nutzer 25.10.2026): Form, Größe, Farbe und Aufgehen aus ego.json › gameplay.hip
 // (Katalog basic/reticles.py › HIP, DEFAULTS, SPREAD). Nur in der Hüfte sichtbar; aus beim Zielen (schon im ersten Bild), im Sprint
 // (Automatik: nur „^“), beim Nachladen, Ziehen, Wegstecken, Betrachten und bei gesenkter Waffe. Kein ständiges Kreuz wie in 0.9.
+// 0.36: an beim Spannen, Lösen und Entspannen des Bogens aus der Hüfte (shown_in), dabei schließt es sich mit dem Auszug.
 using UnityEngine;
 
 namespace Ballon.Ego
@@ -32,11 +33,12 @@ namespace Ballon.Ego
             _sprintReason = "sprint_" + h.sprint?.kind;
         }
 
-        /// <summary>Vor dem Feuern dieses Bilds: Abklingen zur Basis (+ Laufen) mit recover_s, wie reticles.simulate.</summary>
-        public void Decay(float dt, float speed01)
+        /// <summary>Vor dem Feuern dieses Bilds: Abklingen zur Basis (+ Laufen) mit recover_s, wie reticles.simulate; `open` 0 … 1 öffnet
+        /// zusätzlich um charge_from (0.36, Bogen: 1 − Auszug – ungespannt offen, voll gespannt geschlossen).</summary>
+        public void Decay(float dt, float speed01, float open = 0)
         {
             var S = H.spread;
-            float target = S.@base + S.move * Mathf.Clamp01(speed01);
+            float target = S.@base + S.move * Mathf.Clamp01(speed01) + S.charge_from * Mathf.Clamp01(open);
             spread = target + (spread - target) * Mathf.Exp(-dt / Mathf.Max(1e-4f, S.recover_s));
         }
 
@@ -47,7 +49,7 @@ namespace Ballon.Ego
         public void See(EgoController c)
         {
             SprintForm = false;
-            Reason = c.Holstered ? "holstered" : c.Busy ? c.ActionName : c.CurrentStance == EgoController.Stance.Ads ? "ads"
+            Reason = c.Holstered ? "holstered" : c.Busy && !ShownIn(c.ActionName) ? c.ActionName : c.CurrentStance == EgoController.Stance.Ads ? "ads"
                    : c.adsWeight > 0 ? "aim_out" : c.CurrentStance == EgoController.Stance.Lowered ? "lowered" : null;
             if (Reason == null && c.CurrentStance == EgoController.Stance.Sprint)
             {
@@ -58,6 +60,14 @@ namespace Ballon.Ego
             }
             Visible = Reason == null && H.prims != null && H.prims.Length > 0;   // 0.33: Raketenwerfer ohne Hüftzeichen (Form 'none')
             Reason ??= H.prims != null && H.prims.Length > 0 ? "hip" : "none";
+        }
+
+        /// <summary>0.36: blockierende Aktion, in der das Hüftzeichen an bleibt (reticles.HIP shown_in: Bogen spannen, lösen, entspannen).</summary>
+        bool ShownIn(string action)
+        {
+            if (H.shown_in != null)
+                foreach (var a in H.shown_in) if (a == action) return true;
+            return false;
         }
 
         /// <summary>Pixel je mm auf der Scheibe bei Bildhöhe h: sichtbares Außenmaß der Form (mit Linienstärke) = share_h · h.</summary>

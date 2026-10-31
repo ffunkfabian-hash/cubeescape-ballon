@@ -696,11 +696,13 @@ namespace Ballon.Ego.Tests
         {
             ["combat_bow"] = ("chevron", "arcs_ladder"), ["fusion_rifle"] = ("corners", "ring_corners"),
             ["linear_fusion_rifle"] = ("cross", "ring_corners"), ["grenade_launcher"] = ("circle_cross", "gl_brackets"),
-            ["rocket_launcher"] = ("circle_cross", "none"),
+            ["rocket_launcher"] = ("circle_cross", "circle_cross"),       // 0.36 E: Nutzerbefund „man zielt blind“ (bis 0.35 „none“)
         };
 
-        /// <summary>0.33 „Armory“: Glas- und HUD-Form der Sonderklassen getrennt (gameplay.sight_form gegen gameplay.hip); der Raketenwerfer
-        /// zeigt in der Hüfte kein Mittenzeichen (Glidepath) – unsichtbar mit Grund „none“, Außenmaß 0 (Aufnahme-Protokoll), im Sprint aus.</summary>
+        /// <summary>0.33 „Armory“: Glas- und HUD-Form der Sonderklassen getrennt (gameplay.sight_form gegen gameplay.hip). 0.36 „Holdfast“
+        /// (Nutzerbefund Testbuild 0.35: „Raketenwerfer an der Hüfte ohne Fadenkreuz – man zielt blind“): der Werfer zeigt in der Hüfte den
+        /// Kreis mit Kreuzmarken (Form seines Absehens, 5 % H; Destiny ohne Mittenzeichen, Glidepath: E), im Sprint aus. Bis 0.35 unsichtbar
+        /// mit Grund „none“ – die Form „none“ bleibt im Katalog und zeichnet nichts (Außenmaß 0).</summary>
         [UnityTest]
         public IEnumerator Sonderklassen_Hueftzeichen_HUD_und_Glas()
         {
@@ -717,9 +719,11 @@ namespace Ballon.Ego.Tests
             Run(c, Idle, 0.3f);
             hip.See(c);
             Assert.AreEqual("idle_hip", c.ActionName);
-            Assert.IsFalse(hip.Visible, "Raketenwerfer: kein Hüftzeichen");
-            Assert.AreEqual("none", hip.Reason);
-            Assert.AreEqual(0f, hip.ExtentPx(720), "Außenmaß 0 statt Rahmen ohne Grundelemente");
+            Assert.IsTrue(hip.Visible, "Raketenwerfer: Hüftzeichen sichtbar (0.36)");
+            Assert.AreEqual("hip", hip.Reason);
+            Assert.That(hip.ExtentPx(720) / 720, Is.InRange(0.05f, 0.06f), "Außenmaß 5 % H (Grundspreizung der Sprengwaffe 0,5 mm)");
+            var none = new HipReticle(new EgoHip { kind = "none", color = "#FFFFFF", prims = new EgoPrim[0], spread = RL.gameplay.hip.spread });
+            Assert.AreEqual(0f, none.ExtentPx(720), "Form „none“: Außenmaß 0 statt Rahmen ohne Grundelemente");
             Run(c, new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f }, 0.6f);
             hip.See(c);
             Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance);
@@ -2846,6 +2850,145 @@ namespace Ballon.Ego.Tests
         static void Run(EgoArsenal A, float s)
         {
             for (float t = 0; t < s; t += Dt) A.Tick(Dt, Idle);
+        }
+
+        /// <summary>0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35, Punkt 3: „Handfeuerwaffe: linker Arm schwingt sehr stark mit“): beim
+        /// Hüftschuss kippt die Waffe ≈ 48° und schwingt unter die Ruhe (Backblast › E); die Stützhand hing am Griffende und pendelte
+        /// 94,5–107 % H, der Unterarm kam bei jedem Schuss von unten ins Bild. Mit support_still 1 bleibt sie an der Waffe ohne Rückstoß:
+        /// Hand im Bild ruhig (≤ 1,5 pp H) und nie höher als in Ruhe; die Waffe kippt weiter wie gemessen. Im Zielen stützt sie mit.</summary>
+        [Test]
+        public void Handfeuerwaffe_Stuetzhand_schwingt_beim_Huefschuss_nicht()
+        {
+            var HC = Class("hand_cannon");
+            Assert.AreEqual(1f, HC.gameplay.RecoilOr(HC.motion.recoil).support_still, 1e-6f, "Daten: support_still der Handfeuerwaffe");
+            var scr = new EgoScreen(new EgoSolver(HC));
+            var muz = BMath.V(HC.Anchor("Socket_Muzzle").pos);
+            (float lo, float hi, float tilt) Shot(bool ads)
+            {
+                var c = new EgoController(new EgoSolver(HC));
+                c.ReadyNow();
+                var rest = ads ? new EgoIntent { grounded = true, aim = true } : Idle;
+                Run(c, rest, 1.0f);
+                float y0 = scr.ToScreen(BMath.Pos(c.output.handL)).y, m0 = scr.ToScreen(c.output.weapon.MultiplyPoint3x4(muz)).y;
+                float lo = 0, hi = 0, tilt = 0;
+                c.Tick(Dt, new EgoIntent { grounded = true, fire = true, aim = ads });
+                for (float t = 0; t < 1.2f; t += Dt)
+                {
+                    c.Tick(Dt, rest);
+                    float y = scr.ToScreen(BMath.Pos(c.output.handL)).y - y0;     // im Viewmodel-Bild (der Kamera-Ruck bewegt alles)
+                    lo = Mathf.Min(lo, y); hi = Mathf.Max(hi, y);
+                    tilt = Mathf.Max(tilt, m0 - scr.ToScreen(c.output.weapon.MultiplyPoint3x4(muz)).y);
+                }
+                return (lo, hi, tilt);
+            }
+            var h = Shot(false);
+            var a = Shot(true);
+            TestContext.WriteLine($"Hüftschuss: Stützhand {h.lo:+0.0;-0.0} … {h.hi:+0.0;-0.0} pp H um die Ruhe, Mündung steigt {h.tilt:0.0} pp H; " +
+                                  $"Zielen: Hand {a.lo:+0.0;-0.0} … {a.hi:+0.0;-0.0} pp H, Mündung {a.tilt:0.0} pp H");
+            Assert.Greater(h.tilt, 10f, "die Waffe kippt weiter sichtbar (Backblast › E)");
+            Assert.GreaterOrEqual(h.lo, -1.5f, "Stützhand kommt nicht höher ins Bild (bis 0.35: −2,7 pp beim Unterschwingen)");
+            Assert.LessOrEqual(h.hi - h.lo, 1.5f, "Stützhand pendelt nicht (bis 0.35: ≈ 12 pp H)");
+            Assert.Greater(a.hi - a.lo, 0.2f, "im Zielen stützt die Hand die Waffe und folgt dem Kick");
+        }
+
+        /// <summary>0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35, Punkt 5: „Bogen: an der Hüfte verschwindet das Fadenkreuz beim Spannen“):
+        /// Spannen, Halten und Lösen aus der Hüfte blockieren wie bisher, das Hüftzeichen bleibt aber an (reticles.HIP shown_in); es ist
+        /// ungespannt offen (SPREAD charge_from) und schließt sich mit dem Auszug (Destiny: Bögen gehen auf, Glidepath). Im Zielen aus.
+        /// Bis 0.35 aus mit Grund „fire_draw“.</summary>
+        [Test]
+        public void Bogen_Hueftzeichen_bleibt_beim_Spannen()
+        {
+            var BW = Class("combat_bow");
+            var hip = new HipReticle(BW.gameplay.hip);
+            var c = new EgoController(new EgoSolver(BW));
+            c.ReadyNow();
+            void Step(EgoIntent i, float s)
+            {
+                for (float t = 0; t < s; t += Dt)
+                {
+                    hip.Decay(Dt, 0, 1 - c.DrawLevel);              // wie EgoPlayer.Step
+                    c.Tick(Dt, i);
+                    hip.See(c);
+                }
+            }
+            Step(Idle, 1.0f);
+            Assert.IsTrue(hip.Visible, "ungespannt in der Hüfte: an");
+            float open = hip.ExtentPx(720);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            Step(fire, 0.2f);
+            Assert.AreEqual("fire_draw", c.ActionName);
+            Assert.IsTrue(c.Busy, "Spannen blockiert weiter (kein Haltungswechsel)");
+            Assert.IsTrue(hip.Visible, $"beim Spannen an (Grund {hip.Reason})");
+            Step(fire, 2.0f);
+            Assert.AreEqual(1f, c.DrawLevel, 1e-3f);
+            Assert.IsTrue(hip.Visible, "gespannt gehalten: an");
+            float closed = hip.ExtentPx(720);
+            TestContext.WriteLine($"Bogen-Hüftzeichen: ungespannt {open:0.0} px, voll gespannt {closed:0.0} px (720 p)");
+            Assert.Less(closed, open * 0.8f, "schließt sich mit dem Auszug");
+            Assert.AreEqual(BW.gameplay.hip.share_h * 720, closed, 2f, "voll gespannt: Größe der Form (4,6 % H)");
+            Step(Idle, Dt);
+            Assert.AreEqual("fire_release", c.ActionName);
+            Assert.IsTrue(hip.Visible, "beim Lösen an");
+            Step(new EgoIntent { grounded = true, aim = true }, 1.0f);
+            Assert.AreEqual(EgoController.Stance.Ads, c.CurrentStance);
+            Assert.IsFalse(hip.Visible, "im Zielen aus");
+        }
+
+        /// <summary>Weltzoom-Verlauf Hüfte → Zielen bei 30 Bildern/s: Zoom in jedem Bild, größter Bildmaßstab-Sprung von Bild zu Bild
+        /// (Motiongen Methode 29: Weltzoom als Bildmaßstab).</summary>
+        static List<float> ZoomSteps(EgoFile d, EgoIntent before, float pre, EgoIntent after, out float maxStep, out int firstMove)
+        {
+            const float dt = 1f / 30f;
+            var c = new EgoController(new EgoSolver(d));
+            c.ReadyNow();
+            for (float t = 0; t < pre; t += dt) c.Tick(dt, before);
+            var z = new List<float> { c.Zoom };
+            for (int k = 0; k < 30; k++) { c.Tick(dt, after); z.Add(c.Zoom); }
+            maxStep = 1;
+            firstMove = -1;
+            for (int k = 1; k < z.Count; k++)
+            {
+                maxStep = Mathf.Max(maxStep, z[k] / z[k - 1]);
+                if (firstMove < 0 && z[k] > z[k - 1] + 1e-5f) firstMove = k;
+            }
+            return z;
+        }
+
+        /// <summary>0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35, Punkt 6: „Bogen: Wechsel Visier → Zielen – die Welt springt“): gespannt ins
+        /// Zielen sprang der Weltzoom im ersten Bild von 1 auf 1,40 (Bildwinkel 46,7° → 34,3°), weil der Weg des Augenpunkts beim
+        /// Hüftabstand begann, der gespannte Bogen aber näher an der Kamera steht; ungespannt wuchs er bis 1,34× je Bild. Jetzt beginnt der
+        /// Zoom bei 1 und wächst über mindestens gameplay.zoom_in_min_s (0,25 s, Destiny Imperial Needle) mit höchstens 1,2× je Bild
+        /// (Raketenwerfer 3,3× ≈ 1,21); er erreicht den Klassenzoom. Vergleichswerte der übrigen Klassen im Protokoll.</summary>
+        [Test]
+        public void Bogen_Weltzoom_stetig_gespannt_ins_Zielen()
+        {
+            var BW = Class("combat_bow");
+            var fire = new EgoIntent { grounded = true, fire = true };
+            var fireAim = new EgoIntent { grounded = true, fire = true, aim = true };
+            var aim = new EgoIntent { grounded = true, aim = true };
+            var zd = ZoomSteps(BW, fire, 1.0f, fireAim, out float sd, out int fd);
+            var zu = ZoomSteps(BW, Idle, 0.6f, aim, out float su, out int fu);
+            TestContext.WriteLine($"Bogen gespannt → Zielen: größter Schritt {sd:0.000}, erster Zoom im Bild {fd}, Verlauf " +
+                                  string.Join(" ", zd.Take(12).Select(v => v.ToString("0.000"))));
+            TestContext.WriteLine($"Bogen ungespannt → Zielen: größter Schritt {su:0.000}, Verlauf " + string.Join(" ", zu.Take(12).Select(v => v.ToString("0.000"))));
+            float ref_ = 1;
+            foreach (var t in new[] { "auto_rifle", "scout_rifle", "pulse_rifle", "hand_cannon", "rocket_launcher" })
+            {
+                ZoomSteps(Class(t), Idle, 0.6f, aim, out float s, out _);
+                ref_ = Mathf.Max(ref_, s);
+                TestContext.WriteLine($"{t} Hüfte → Zielen: größter Schritt {s:0.000}");
+            }
+            Assert.AreEqual(1f, zd[0], 1e-4f, "gespannt an der Hüfte: kein Zoom");
+            Assert.AreEqual(BW.gameplay.world_zoom, zd[zd.Count - 1], 1e-3f, "Klassenzoom erreicht");
+            Assert.GreaterOrEqual(fd, 1, "Zoom beginnt mit dem Modell, nicht vor dem ersten Bild");
+            Assert.Less(zd[1], 1.25f, "kein Sprung im ersten Bild (bis 0.35: 1,40)");
+            Assert.AreEqual(BW.gameplay.world_zoom, zu[zu.Count - 1], 1e-3f, "ungespannt: Klassenzoom erreicht");
+            Assert.LessOrEqual(sd, 1.2f, "gespannt → Zielen: höchstens 1,2× je Bild (bis 0.35: 1,40 im ersten Bild)");
+            Assert.LessOrEqual(su, 1.2f, "ungespannt → Zielen: höchstens 1,2× je Bild (bis 0.35: 1,34)");
+            int nd = zd.FindIndex(v => v >= BW.gameplay.world_zoom - 1e-3f), nu = zu.FindIndex(v => v >= BW.gameplay.world_zoom - 1e-3f);
+            TestContext.WriteLine($"Bogen: Klassenzoom nach {nd} (gespannt) bzw. {nu} Bildern (Destiny Imperial Needle ≈ 7,5 Bilder bei 30/s)");
+            Assert.That(nd, Is.InRange(7, 11), "gespannt: Zoom über ≈ 0,25–0,35 s");
+            Assert.That(nu, Is.InRange(7, 11), "ungespannt: Zoom über ≈ 0,25–0,35 s");
         }
 
         // ---------------------------------------------------------------- 0.33 „Armory“ P4: Bogen, Granatwerfer, Raketenwerfer

@@ -864,8 +864,10 @@ namespace Ballon.Ego
             L.rot = L.rot * RotZ(Rad(_sway.x)) * RotX(Rad(_sway.y));
             L.pos += new Vector3(-_sway.x, 0, _sway.y) * tune.swayPos;
             // Rückstoß
-            L.pos += R.MultiplyVector(new Vector3(0, _recX.x, 0));
-            L.rot = L.rot * RotX(Rad(-(_recX.y + _rClimb)));
+            L.recPos = R.MultiplyVector(new Vector3(0, _recX.x, 0));
+            L.recDeg = -(_recX.y + _rClimb);
+            L.pos += L.recPos;
+            L.rot = L.rot * RotX(Rad(L.recDeg));
             L.camPitch = _recCx.x * (1 - adsWeight);           // Viewmodel-Kamera: Ruck nur in der Hüfte (im Zielen nur die Welt)
             L.trigger = _triggerHeld ? 1 : 0;
             if (S.D.gameplay.Beam) L.glow = L.trigger;         // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
@@ -897,7 +899,10 @@ namespace Ballon.Ego
         {
             float d = (baseW.MultiplyPoint3x4(_eyeLocal) - _adsEye).magnitude;
             bool aiming = _stance == Stance.Ads || (_t.A.name == "draw_aim" && !_t.ended && _t.frame >= K("draw_aim", 1));
-            if (aiming && !_aimPrev) _d0 = Mathf.Max(_dHip, d);
+            // 0.36: aus einer Haltung näher an der Kamera als die Hüfte (Bogen gespannt) beginnt der Weg beim Abstand dieses Bilds – mit
+            // dem Hüftabstand sprang der Zoom des Bogens beim Wechsel gespannt → Zielen im ersten Bild um 40 % (Nutzerbefund Testbuild 0.35);
+            // mitten im Verlassen (Zoom noch da) bleibt der Hüftabstand, damit der Zoom stetig weiterläuft
+            if (aiming && !_aimPrev) _d0 = adsWeight > 0 ? Mathf.Max(_dHip, d) : d;
             if (!aiming && _aimPrev) { _leaving = true; _leaveT = 0; }
             _aimPrev = aiming;
             float target = 0;
@@ -909,7 +914,9 @@ namespace Ballon.Ego
                 target = Mathf.Min(Mathf.Min(adsWeight, Remap(1 - d / _dHip)), cap);
                 if (target <= 0) _leaving = false;
             }
-            adsWeight = Mathf.MoveTowards(adsWeight, target, _dt * 30f / 3f);
+            float rate = _dt * 30f / 3f, zmin = S.D.gameplay.zoom_in_min_s;   // 0.36: ins Zielen je Klasse höchstens so schnell (Bogen)
+            if (target > adsWeight && zmin > 0) rate = Mathf.Min(rate, _dt / zmin);
+            adsWeight = Mathf.MoveTowards(adsWeight, target, rate);
         }
 
         /// <summary>Blitz und Hülsen im laufenden Spiel (gleiche Formeln wie FxScripted): neue Hülsen starten mit der Waffe dieses Bilds und
@@ -1067,6 +1074,8 @@ namespace Ballon.Ego
             var pf = _pf ?? (_pf = pid => S.PartFrame(output, pid));
             o.handL = S.BlendHand(A.L, f, pf);
             o.handR = S.BlendHand(A.R, f, pf);
+            float still = S.D.gameplay.RecoilOr(S.D.motion.recoil).support_still;      // 0.36: Stützhand folgt dem Kick nicht (Hüfte)
+            o.handL = EgoSolver.SupportStill(o.handL, WM, L, _t.scripted ? S.StillScripted(A) : still * (1 - adsWeight));
             if (e < 1)
             {
                 o.handL = Blend(WM * _fromRelL, o.handL, e);

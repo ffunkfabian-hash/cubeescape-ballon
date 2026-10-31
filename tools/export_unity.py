@@ -84,7 +84,8 @@ def prim(q):
 
 # Felder von gameplay, die nicht jede Klasse nennt (0.22): ohne Salve, mit Mündungsfeuer, ohne Portale
 GAMEPLAY_DEFAULTS = dict(burst_shots=0, burst_rpm=0, muzzle_flash=True, ring_turn_s=0.0, portals=[], range_m=0.0, charge_s=0.0, charge_fade_s=0.0,
-                         flash_scale=1.0)   # 0.33 P4: Maßstab des Mündungsfeuers je Klasse (Werfer: Öffnung ≤ 20 %)
+                         flash_scale=1.0,   # 0.33 P4: Maßstab des Mündungsfeuers je Klasse (Werfer: Öffnung ≤ 20 %)
+                         zoom_in_min_s=0.0)  # 0.36: kürzeste Dauer des Weltzooms ins Zielen je Klasse (0 = folgt nur dem Modell)
 
 
 def gameplay(weapon_type, G=None):
@@ -103,7 +104,8 @@ def gameplay(weapon_type, G=None):
                color=RT.COLORS[RT.HIP['color']][1], weight=RT.WEIGHTS[RT.HIP['weight']][1], line_r_mm=RT.LINE_R,
                opacity=RT.SETTINGS['opacity']['default'], min_line_px=RT.HIP['min_line_px'],
                prims=[prim(q) for q in RT.RETICLES[H['kind']]['prims']],
-               spread=dict(id=H['spread'], **{k: S[k] for k in ('base', 'per_shot', 'max', 'recover_s', 'move')}), sprint=sprint,
+               spread=dict(id=H['spread'], **{k: S[k] for k in ('base', 'per_shot', 'max', 'recover_s', 'move')},
+                           charge_from=S.get('charge_from', 0.0)), sprint=sprint, shown_in=list(RT.HIP['shown_in']),
                src='basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)')
     sighted = RT.SIGHT_KIND[weapon_type] is not None
     return dict(GAMEPLAY, weapon_type=weapon_type, sight=RT.sight_type(weapon_type) if sighted else 'none',

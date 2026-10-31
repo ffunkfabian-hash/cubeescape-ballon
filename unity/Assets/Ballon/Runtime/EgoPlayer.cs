@@ -325,7 +325,8 @@ namespace Ballon.Ego
                 speed01 = new Vector2(_vel.x, _vel.z).magnitude / move.walk, look = r.lookDeg, move = r.move,
                 nearWall = NearWall(),
             };
-            hipReticle?.Decay(dt, it.speed01);            // vor den Schüssen dieses Bilds, wie reticles.simulate
+            // vor den Schüssen dieses Bilds, wie reticles.simulate; 0.36: Bogen ungespannt offen, schließt mit dem Auszug
+            hipReticle?.Decay(dt, it.speed01, C.S.D.gameplay.Draw ? 1 - C.DrawLevel : 0);
             C.aspect = worldCam.aspect > 0 ? worldCam.aspect : 16f / 9f;   // Grundbahn in Anteilen der Bildhöhe
             var o = arsenal.Tick(dt, it, r.select);            // Tasten 1/2: Waffe wählen (Wechsel 6.1 A über holster/draw)
             hipReticle?.See(C);

@@ -191,7 +191,8 @@ GLASS = {'clean': ('Klar', 'unbehandelt beschichtet, Tönung ≤ 5 %'), 'dust': 
 # Aufgehen beim Schießen (entworfen, an Shooter-Konventionen angelehnt): Spreizung s in mm auf der Scheibe bei Größe 1,0.
 # s folgt base + Σ Schussimpulse, begrenzt auf max, klingt mit Zeitkonstante recover_s ab; Laufen addiert move, Zielen
 # multipliziert mit ads – v3: im Zielen 0 (Destiny: kein Aufgehen, stattdessen Schuss-Ring, ADS_FEEDBACK); das Aufgehen gilt dem
-# Hüft-Fadenkreuz. charge: Spreizung schrumpft während des Aufladens auf base.
+# Hüft-Fadenkreuz. charge: Spreizung schrumpft während des Aufladens auf base – beim Bogen (0.36) mit dem Auszug: ungespannt
+# charge_from offen, voll gespannt base (Unity HipReticle.Decay mit EgoController.DrawLevel).
 SPREAD = {
     'auto':      dict(de='Dauerfeuer', base=0.0, per_shot=0.9, max=5.0, recover_s=0.28, move=1.5, ads=0.0),
     'burst':     dict(de='Salve', base=0.0, per_shot=1.2, max=4.5, recover_s=0.22, move=1.4, ads=0.0),
@@ -233,7 +234,11 @@ HIP = dict(color='white', weight='fine', share_h={'auto_rifle': 0.032, 'pulse_ri
                                                   'submachine_gun': 0.061, 'hand_cannon': 0.06, 'sniper_rifle': 0.01},
            share_h_default=0.045, min_line_px=0.6,
            sprint={'auto_rifle': dict(kind='caret', share_h=0.015)},
-           hidden_in=('ads', 'sprint', 'reload', 'draw', 'holster', 'inspect', 'lowered'))
+           hidden_in=('ads', 'sprint', 'reload', 'draw', 'holster', 'inspect', 'lowered'),
+           # 0.36 (Nutzerbefund Testbuild 0.35 „Bogen: an der Hüfte verschwindet das Fadenkreuz beim Spannen“): diese Aktionen blockieren
+           # wie Nachladen, das Hüftzeichen bleibt aber an (Spannen, Halten, Lösen, Entspannen aus der Hüfte; Destiny-Bogen: Hüftzeichen
+           # 4,6 % H, Bögen gehen seitlich auf, Motiongen destiny2 › Glidepath); beim Spannen schließt es sich (SPREAD charge_from)
+           shown_in=('fire_draw', 'fire_release', 'let_down'))
 HIP_STATUS = {'auto_rifle': 'gemessen (Glidepath)', 'submachine_gun': 'gemessen (Glidepath, 5,9–6,3 % H)',
               'hand_cannon': 'gemessen (Glidepath, ≈ 6 % H)', 'sniper_rifle': 'gemessen (Glidepath, ≈ 1 % H)',
               'pulse_rifle': 'übertragen (Automatik)', 'machine_gun': 'übertragen (Automatik)',
@@ -276,7 +281,10 @@ HUD_HIP = {'combat_bow': ('arcs_ladder', 0.046, 'gemessen (Glidepath, Ø 4,6 % H
            'fusion_rifle': ('ring_corners', 0.055, 'gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H)'),
            'linear_fusion_rifle': ('ring_corners', 0.125, 'gemessen (Glidepath, 12–13 % H)'),
            'grenade_launcher': ('gl_brackets', 0.112, 'gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H)'),
-           'rocket_launcher': ('none', 0.0, 'gemessen (Glidepath, kein Mittenzeichen, 1 Clip)')}
+           'rocket_launcher': ('circle_cross', 0.05, 'E (0.36): Nutzerbefund Testbuild 0.35 „an der Hüfte kein Fadenkreuz, man zielt blind“; '
+                                                       'Form des Absehens im Werferglas, Größe zwischen Automatik (3,2 % H) und '
+                                                       'Granatwerfer (5,6 % H); Destiny zeigt keins (Glidepath, 1 Clip, '
+                                                       'Motiongen z-gp-rl-fadenkreuz) – bis 0.35 „none“')}
 
 
 def hud_hip(weapon_type):

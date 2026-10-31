@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.36.0 „Holdfast“ – Hüfthaltungen und Zielhilfen nach Testbuild-Befunden (Branch `claude/ballon-0.36-holdfast`)
+
+- Hüfte Impuls und Scout zeigen nicht mehr nach unten: Fluchtpunkt der Laufachse 44,6/59,7 → 45/50 bzw. 51,1/57,0 → 45/50 (Automatik
+  44,7/48,7); ./check prüft die langen Gewehre gegen die Automatik (`tools/bildlage.py`).
+- Handfeuerwaffe: die Stützhand folgt dem Hüft-Rückstoß nicht mehr (`RECOIL.support_still`, Blender und Unity) – der linke Unterarm
+  schwingt beim Schuss nicht mehr ins Bild; im Zielen stützt sie weiter.
+- Raketenwerfer mit Hüftzeichen (Kreis mit Kreuzmarken, 5 % H; Destiny ohne, E); im Zielen schließt der neue Rohrboden `bore_plug`
+  das offene Startrohr (Heckteile bleiben aus, 194).
+- Bogen: Hüftzeichen bleibt beim Spannen, Halten und Lösen an und schließt sich mit dem Auszug (`reticles.HIP shown_in`,
+  `SPREAD charge_from`); Weltzoom ins Zielen ohne Sprung (gespannt 1,40× im ersten Bild → stetig, über ≥ 0,25 s, `gameplay.zoom_in_min_s`).
+- Bericht [docs/versions/0.36-holdfast.md](docs/versions/0.36-holdfast.md).
+
 ## 0.35.1 Patch „ads-visible“ – Waffe im Zielen wieder sichtbar (Branch `claude/ballon-patch-ads-visible`)
 
 - Nutzerbefund Testbuild 0.35 („Waffen beim Zoom komplett ausgeblendet“), Entscheidung 208 A: `ego.ADS_STRIP_ON = False` – im Zielen sind Waffe und

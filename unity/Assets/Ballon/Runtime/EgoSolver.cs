@@ -21,6 +21,8 @@ namespace Ballon.Ego
         public float glow;                  // 0.33: Leuchtteile weapon.live.glow (Dauerstrahl, Ladung) 0 … 1, < 0 = aus der Aktion
         public float index;                 // 0.34: Schrittteile weapon.live.index (Trommel, Gurtvorschub) 0 … 1, < 0 = aus der Aktion
         public float fill;                  // 0.34: Füllstand für die Zählzellen weapon.live.fill 0 … 1, < 0 = voll (Clips)
+        public Vector3 recPos;              // 0.36: Anteil des Rückstoßes an pos/rot (Modellkick, Hochziehen) – für die Stützhand (support_still)
+        public float recDeg;
 
         public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN, glow = -1,
                                                   index = -1, fill = -1 };
@@ -443,8 +445,10 @@ namespace Ballon.Ego
                 foreach (var s in A.fire) if (s <= f) { n++; last = s; }
                 float climb = Rc.climb_deg * k * kl * n * Mathf.Exp(-Mathf.Max(0, f - A.fire[A.fire.Length - 1]) / 8f);
                 L.camPitch = st.recCx.x;
-                L.pos += R.MultiplyVector(new Vector3(0, st.recX.x, 0));
-                L.rot = L.rot * RotX(Rad(-(st.recX.y + climb)));          // Mündung steigt
+                L.recPos = R.MultiplyVector(new Vector3(0, st.recX.x, 0));
+                L.recDeg = -(st.recX.y + climb);
+                L.pos += L.recPos;
+                L.rot = L.rot * RotX(Rad(L.recDeg));                       // Mündung steigt
                 var G = D.gameplay;
                 float chargeF = G.Charge ? G.charge_s * fps : 0;           // Ladewaffe (0.33 P3): Abzug ab dem Aufladen
                 L.trigger = TriggerOn(A.fire, f, G.Semi, chargeF) ? 1 : 0;
@@ -487,6 +491,19 @@ namespace Ballon.Ego
         {
             var R2 = Rot3(baseW) * L.rot;
             return WithPos(R2, Pos(baseW) + L.pos);
+        }
+
+        /// <summary>Anteil support_still einer geskripteten Aktion: nur mit Schüssen und nicht im Zielen (wie ego_build.evaluate).</summary>
+        public float StillScripted(EgoAction A) =>
+            A.fire != null && A.fire.Length > 0 && !A.EndsInAds ? D.gameplay.RecoilOr(D.motion.recoil).support_still : 0;
+
+        /// <summary>0.36 (ego.RECOIL support_still, wie ego_build.evaluate): Stützhand an der Waffe ohne Rückstoß – Hand H an der Waffe WM
+        /// (mit Rückstoß L.recPos/L.recDeg) zum Anteil still auf dieselbe Stelle der Waffe ohne Rückstoß gezogen.</summary>
+        public static Matrix4x4 SupportStill(Matrix4x4 H, Matrix4x4 WM, Layers L, float still)
+        {
+            if (still <= 0) return H;
+            var WN = WithPos(Rot3(WM) * RotX(Rad(-L.recDeg)), Pos(WM) - L.recPos);
+            return Blend(H, WN * WM.inverse * H, still);
         }
 
         public void MechAt(EgoAction A, float f, Layers L, Dictionary<string, float> mech)
@@ -723,7 +740,7 @@ namespace Ballon.Ego
             MechAt(A, f, L, o.mech);
             SetWeapon(o, WM, o.mech);
             Func<string, Matrix4x4> pf = pid => PartFrame(o, pid);
-            o.handL = BlendHand(A.L, f, pf);
+            o.handL = SupportStill(BlendHand(A.L, f, pf), WM, L, StillScripted(A));
             o.handR = BlendHand(A.R, f, pf);
             Magazine(o, A, f, o.handL, st);
             BlendFingers(A.fL, f, o.fingersL);
