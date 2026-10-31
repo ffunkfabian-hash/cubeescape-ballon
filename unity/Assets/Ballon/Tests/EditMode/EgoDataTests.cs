@@ -310,13 +310,8 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
                 Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide), $"{o.weapon.id}: kein Teil mit ads_hide");
-                // 0.33: der Scout hat eine eigene Hüfte nach cubeescape-reference huefte.json (crouch, air, lowered folgen ihr); die übrigen Haltungen gleich
-                var hipBound = new[] { "hip", "crouch", "air", "lowered" };
-                bool refit = o.weapon.id == "BASIC-03-v2.1";
-                if (!refit) Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
-                else CollectionAssert.AreEqual(new[] { "hip" }, n.profile.poses, "Scout: eigene Hüfte im Klassenprofil");
-                CollectionAssert.AreEqual(o.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J),
-                                          n.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J), $"{o.weapon.id}: Haltungen");
+                Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
+                CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
                 CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
                 var m = JsonUtility.FromJson<Motion>(J(o.motion));
@@ -328,7 +323,7 @@ namespace Ballon.Ego.Tests
         // ---------------------------------------------------------------- Scout BASIC-03 0.20 (Entscheidungsliste Schritt 6, Visier-Standard 3)
         /// <summary>Werte der Klasse Scout aus den Daten (ego.CLASSES › scout_rifle, keine Sonderlogik nach Waffen-ID): Einzelfeuer aus der
         /// Spec, 180/min und 15 Schuss (Tone Patrol), Weltzoom 2,0 (1.2 A), Hüft-Fadenkreuz aus dem Katalog, Anflug 7 Bilder bei 30/s (4d,
-        /// am Unity-Bild 15–20 bei 60/s), aim_out 5; Hüfte und Sprint wie die Automatik (lange Waffe, 2.1 A / 3.2 A); Schussbilder der Clips in
+        /// am Unity-Bild 15–20 bei 60/s), aim_out 5; Sprint wie die Automatik (lange Waffe, 2.1 A / 3.2 A), eigene Hüfte nach huefte.json (0.33); Schussbilder der Clips in
         /// der Klassenkadenz; die übrigen Aktionen wie die Automatik; Teile mit ads_hide sind Okular, Rohr, Türme, Okularlinse, Spannband.</summary>
         [Test]
         public void Werte_des_Scouts()
@@ -357,7 +352,17 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
             }
             Assert.AreNotEqual(J(D.Pose("hip")), J(SR.Pose("hip")), "eigene Hüfte (0.33, Abgleich mit cubeescape-reference huefte.json)");
-            StringAssert.Contains("Visier 68/56", SR.Pose("hip").src, "Herkunft der Hüfte am Scout");
+            foreach (var k in new[] { "crouch", "air", "lowered" })        // FOLLOW_HIP: gleicher Versatz zur Hüfte wie bei der Automatik
+            {
+                EgoPose a = D.Pose(k), b = SR.Pose(k), ha = D.Pose("hip"), hb = SR.Pose("hip");
+                for (int i = 0; i < 3; i++)
+                {
+                    Assert.AreEqual(a.pos[i] - ha.pos[i], b.pos[i] - hb.pos[i], 1e-3f, $"{k} folgt der Hüfte (Lage)");
+                    Assert.AreEqual(a.aim[i] - ha.aim[i], b.aim[i] - hb.aim[i], 1e-3f, $"{k} folgt der Hüfte (Zielpunkt)");
+                }
+                Assert.AreEqual(a.roll - ha.roll, b.roll - hb.roll, 1e-3f, $"{k} folgt der Hüfte (Rollen)");
+            }
+            StringAssert.Contains("Visier 68,4/56,0", SR.Pose("hip").src, "Herkunft der Hüfte am Scout");
             foreach (var A in SR.actions)
             {
                 if (new[] { "aim_in", "aim_out", "fire_hip", "fire_ads", "sprint_to_fire" }.Contains(A.name)) continue;
@@ -410,7 +415,8 @@ namespace Ballon.Ego.Tests
         // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 0.22 (Schritt 6)
         /// <summary>0.22 Formatwechsel /9 → /10: der Leser liest die Datei von main (0.21 „Ironsight“, Kopie Tests/EditMode/Data/ego_v9.json)
         /// weiter und setzt Salve, Bahnstufe, Mündungsfeuer und Portale wie bisher (keine Salve, gemeinsame Bahnstufe, mit Blitz, ohne Portale).
-        /// Automatik, MP und Scout sind in /10 Feld für Feld gleich: Spielwerte, Teile, Profil, Haltungen, Griffe, Aktionen, Bewegung.</summary>
+        /// Automatik, MP und Scout sind in /10 Feld für Feld gleich: Spielwerte, Teile, Profil, Haltungen, Griffe, Aktionen, Bewegung – außer
+        /// der Hüfte des Scouts und den an ihr hängenden Haltungen (0.33, eigene Hüfte nach cubeescape-reference huefte.json).</summary>
         [Test]
         public void Altes_Format_9_wird_gelesen_drei_Waffen_unveraendert()
         {
@@ -481,7 +487,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
             }
             Assert.AreNotEqual(J(D.Pose("hip")), J(PR.Pose("hip")), "eigene Hüfte");
-            StringAssert.Contains("Visier 74/55", PR.Pose("hip").src, "Herkunft der Hüfte (0.33, Abgleich mit huefte.json)");
+            StringAssert.Contains("Visier 73,4/55,2", PR.Pose("hip").src, "Herkunft der Hüfte (0.33, Abgleich mit huefte.json)");
             Assert.IsTrue(PR.weapon.eject.enabled, "Hülsen über EJECT");
             Assert.AreEqual("rifle", PR.weapon.eject.@case);
             Assert.AreEqual("bolt_carrier", PR.weapon.live.bolt);

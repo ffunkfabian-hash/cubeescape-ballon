@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "5a6a21b84d4f6d7aaa6a6bb44fb5ab8c06dd462bda3500ffe9ef7e8933891a2b"
+    "sha256": "ec8da2daaf5798d667c273d7ed34ad6b09dba8f8e0dcfd894b74a3daca0ade2e"
    },
    {
     "path": "tools/ego_build.py",
@@ -16930,7 +16930,7 @@
      "name": "hip",
      "ads": false,
      "roll": 9.9,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone Patrol, Call to Serve)); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 57/63 %, Visier 68/56 %",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone Patrol, Call to Serve); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,5/63,2 %, Visier 68,4/56,0 %",
      "pos": [
       -0.136,
       -0.42,
@@ -23453,7 +23453,7 @@
      "name": "hip",
      "ads": false,
      "roll": 11.2,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/65 %, Visier 74/55 %",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 58,4/65,5 %, Visier 73,4/55,2 %",
      "pos": [
       -0.183,
       -0.42,
@@ -32140,7 +32140,7 @@
      "name": "hip",
      "ads": false,
      "roll": 12.0,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/63, 54/69, Kimme 64/66, 62/62, Griffhand 67/87, 67/89); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 56/66 %, Kimme 63/64 %, Griffhand 67/90 % (Rollen 12° statt 13°: der Unterarm in lowered lag an der Kante der Handgelenksklemme, Unity wich dort 0,204° ab)",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/63, 54/69, Kimme 64/66, 62/62, Griffhand 67/87, 67/89); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, die Griffhand lag 9–12 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 55,7/66,0 %, Kimme 63,4/63,4 %, Griffhand 66,7/89,9 % (Rollen 12° statt 13°: der Unterarm in lowered lag an der Kante der Handgelenksklemme, Unity wich dort 0,204° ab)",
      "pos": [
       -0.113,
       -0.441,
@@ -37380,7 +37380,7 @@
      "name": "hip",
      "ads": false,
      "roll": 6.0,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/64, 59/67, Visier 66/71, 66/73, Griffhand 67/87, 67/88); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/66 %, Visier 66/71 %, Griffhand 66/96 % (Mündung, Visier und Griff nicht zugleich: Griff 8 pp tiefer)",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/64, 59/67, Visier 66/71, 66/73, Griffhand 67/87, 67/88); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, die Griffhand lag 9–12 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 58,0/65,5 %, Visier 65,8/71,5 %, Griffhand 66,0/96,3 % (Mündung, Visier und Griff nicht zugleich: Griff 8 pp tiefer)",
      "pos": [
       -0.11,
       -0.448,
@@ -49850,7 +49850,7 @@
      "name": "hip",
      "ads": false,
      "roll": 10.9,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/63 %, Visier 67/49 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei 53,4 % H in den Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,7/61,1 %, Visier 66,6/49,0 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei 53,4 % H in den Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)",
      "pos": [
       -0.136,
       -0.417,
@@ -56275,16 +56275,16 @@
      "name": "hip",
      "ads": false,
      "roll": 4.8,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 56/59 %, Visier 66/44 %",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 56,1/59,7 %, Visier 66,1/44,9 % – 3 mm tiefer als die Ausgleichslage: der oberste belegte Punkt lag genau auf der Ecke der Freihaltezone (A4, 55 % H; Richter 0.33)",
      "pos": [
       -0.114,
       -0.417,
-      -0.152
+      -0.155
      ],
      "aim": [
       -0.096,
       -3.411,
-      -0.339
+      -0.342
      ],
      "eye": [
       0.0,
@@ -56357,12 +56357,12 @@
      "pos": [
       -0.094,
       -0.377,
-      -0.172
+      -0.175
      ],
      "aim": [
       0.284,
       -2.411,
-      -1.339
+      -1.342
      ],
      "eye": [
       0.0,
@@ -56383,12 +56383,12 @@
      "pos": [
       -0.104,
       -0.407,
-      -0.167
+      -0.17
      ],
      "aim": [
       -0.096,
       -3.411,
-      -0.389
+      -0.392
      ],
      "eye": [
       0.0,
@@ -56409,12 +56409,12 @@
      "pos": [
       -0.114,
       -0.417,
-      -0.137
+      -0.14
      ],
      "aim": [
       -0.096,
       -3.411,
-      -0.269
+      -0.272
      ],
      "eye": [
       0.0,
@@ -75333,7 +75333,7 @@
      "name": "hip",
      "ads": false,
      "roll": 4.2,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet Mündung 58/68 %, Visier 73/59 %",
+     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,9/68,5 %, Visier 73,0/58,8 %",
      "pos": [
       -0.151,
       -0.417,
@@ -94238,7 +94238,7 @@
      "name": "hip",
      "ads": false,
      "roll": 0.0,
-     "src": "M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B), gerechnet Mündung 63/42 %, Visier 72/63 %, Vordergriff 68/61 %, Rohr 13° steigend, linke Kante 63 % B",
+     "src": "M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend",
      "pos": [
       -0.23,
       -0.5,
