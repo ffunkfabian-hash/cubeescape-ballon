@@ -615,7 +615,7 @@ namespace Ballon.Ego.Tests
             }
         }
 
-        /// <summary>Scout im Spieler (Taste 3 über die Eingabekette): Weltzoom 2,0, Teile mit ads_hide im Zielen aus und in der Hüfte da,
+        /// <summary>Scout im Spieler (Taste 3 über die Eingabekette): Weltzoom 3,0 (bis 0.34 2,0), Teile mit ads_hide im Zielen aus und in der Hüfte da,
         /// Einzelfeuer mit gehaltenem Abzug genau ein Schuss, Hüft-Fadenkreuz der Klasse.</summary>
         [UnityTest]
         public IEnumerator Scout_im_Spieler_Taste_3_Zielfernrohr_Einzelfeuer()
@@ -629,7 +629,7 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < 42; k++) yield return null;
             Assert.AreEqual(2, p.arsenal.Active, "Taste 3: Scout");
             var rig = p.rig;
-            Assert.AreEqual(7, rig.AdsHideCount, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband");
+            Assert.Greater(rig.AdsHideCount, 7, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband – seit 0.35 (193 B) auch die übrige Waffe und die Arme");
             Assert.IsFalse(rig.AdsHidden, "Hüfte: Zielfernrohr ganz");
             Assert.AreEqual("cross", p.hipReticle.Kind, "Hüft-Fadenkreuz des Scouts");
             long s0 = p.C.shots;
@@ -637,7 +637,7 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < 36; k++) yield return null;
             float zoom = Mathf.Tan(p.viewCam.fieldOfView * Mathf.Deg2Rad / 2) / Mathf.Tan(p.worldCam.fieldOfView * Mathf.Deg2Rad / 2);
             Assert.IsTrue(rig.AdsHidden, "Zielen: Teile mit ads_hide aus");
-            Assert.AreEqual(2.0f, zoom, 1e-3f, "Weltzoom 2,0");
+            Assert.AreEqual(3.0f, zoom, 1e-3f, "Weltzoom 3,0 (0.35 Verdict)");
             Assert.IsTrue(p.SightVisible, "gezeichnetes Absehen im Zielfernrohr");
             var sc = p.SightScreen();
             Assert.AreEqual(0.5f, sc.x / p.viewCam.pixelWidth, 0.02f, "Absehen nahe der Bildmitte");
@@ -2956,8 +2956,9 @@ namespace Ballon.Ego.Tests
         }
 
         /// <summary>Feuerart single_shot (Raketenwerfer BASIC-14): Magazin 1, nach dem Schuss sofort Nachladen (reload_empty = Klassenaktion):
-        /// die Rakete fliegt in den ersten Bildern aus dem Rohr, ist verdeckt, bis die linke Hand die nächste bringt, und sitzt bei MagIn;
-        /// danach wieder schussbereit. Bis 0.32 fehlte die Feuerart.</summary>
+        /// die Rakete ist nach dem Schussbild verdeckt, bis die linke Hand die nächste bringt; die Ladeklappe oben öffnet, die Rakete kommt
+        /// von oben in den Schacht (0.35 „Stance“, Backblast › B; bis 0.34 von hinten durch das Heckrohr) und sitzt bei MagIn, die Klappe
+        /// schließt; danach wieder schussbereit. Bis 0.32 fehlte die Feuerart.</summary>
         [Test]
         public void Raketenwerfer_laedt_nach_jedem_Schuss()
         {
@@ -2973,19 +2974,26 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(1, c.shots);
             Assert.AreEqual(0, c.ammo);
             Assert.AreEqual("reload_empty", c.ActionName, "sofort nachladen");
-            float minRocket = 0;
+            float minRocket = 0, maxRocket = 0, maxHatch = 0;
             bool hidden = false;
             float tIn = -1;
             for (float t = 0; t < 4f && c.Busy; t += Dt)
             {
                 c.Tick(Dt, Idle);
-                minRocket = Mathf.Min(minRocket, c.output.mech.TryGetValue("rocket", out float v) ? v : 0);
+                float v = c.output.mech.TryGetValue("rocket", out float rv) ? rv : 0;
+                minRocket = Mathf.Min(minRocket, v);
+                if (!c.output.magHidden) maxRocket = Mathf.Max(maxRocket, v);
+                maxHatch = Mathf.Max(maxHatch, c.output.mech.TryGetValue("load_hatch", out float h) ? h : 0);
                 hidden |= c.output.magHidden;
                 if (tIn < 0 && c.ammo == 1) tIn = t + Dt;
             }
             TestContext.WriteLine($"Raketenwerfer: Rakete sitzt nach {tIn:0.00} s, Nachladen {RL.Action("reload_empty").frames / 30f:0.00} s");
-            Assert.Less(minRocket, -1f, "Rakete fliegt aus dem Rohr");
+            Assert.GreaterOrEqual(minRocket, 0f, "Rakete nie unter dem Sitz (von oben, nicht durchs Rohr)");
+            Assert.Greater(maxRocket, 0.2f, "Rakete kommt sichtbar von oben in den Schacht");
+            Assert.Greater(maxHatch, 0.99f, "Ladeklappe öffnet");
+            Assert.AreEqual(0f, c.output.mech.TryGetValue("load_hatch", out float hEnd) ? hEnd : 0, 1e-3f, "Ladeklappe zu");
             Assert.IsTrue(hidden, "verdeckt, bis die Hand die nächste bringt");
+            Assert.That(RL.Action("reload_empty").frames / 30f, Is.InRange(2.6f, 3.0f), "Start → ruhig 2,6–3,0 s (Backblast › G)");
             Assert.IsTrue(marks.Any(m => m.Item1 == "reload_empty" && m.Item2 == "MagIn"));
             Assert.AreEqual(1, c.ammo, "geladen");
             Run(c, Idle, 0.3f);

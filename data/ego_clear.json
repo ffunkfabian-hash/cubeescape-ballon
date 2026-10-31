@@ -22,7 +22,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "d1061c8f4e468041544b3e3edeab725016827057eaec0949dc927c1ab197f74c",
+   "sources_sha256": "49e1c5b3d7a4c78063f6ecd3616634daa73721f2f7db5572ab1972eae0d45f15",
    "pose": "hip",
    "resolution": [
     1600,
@@ -48,7 +48,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "10a616455d0c4fc5ff7952ab9ac58edefd42c2578fa8c9de0a44d7286b7832d8",
+   "sources_sha256": "cb2a3b3a73caab3132d5e24384f2bf39df34e44fced2c9d76ce1cd917d555d0b",
    "pose": "hip",
    "resolution": [
     1600,
@@ -74,7 +74,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "b71897f888bfaca47bb4b02581ea0af044692d163e2330c49d580139ab594423",
+   "sources_sha256": "3f3cf7897a60e56447f98bad4825b357ede242c459677d63b55d241e509e8fa5",
    "pose": "hip",
    "resolution": [
     1600,
@@ -100,7 +100,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "8173594bec536929da6a73592238b9e62cb6f6a9f0aff4c1d5b926b643eaced8",
+   "sources_sha256": "08885bf5d99359fd8bdcba5a2c58ee031feb4d41647bad6707eda613163bac4c",
    "pose": "hip",
    "resolution": [
     1600,
@@ -126,7 +126,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "ece99778d5154ebe11f4477b12ed5dbdddfd5fe00f0cd580ec8b200ecd6b12f1",
+   "sources_sha256": "cfdfed27bd76fb6406f7cbc13b31444df463dad058536a96647a0006f8fc7a12",
    "pose": "hip",
    "resolution": [
     1600,
@@ -152,7 +152,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "3ecb70ac7b67bbb2190ef73b14a5b0e729762c83a424a9483cb3d812d81b4736",
+   "sources_sha256": "7f0e027becf3e76514901ecbbf8511fc579f85777e996eb587a34c370bab5c8b",
    "pose": "hip",
    "resolution": [
     1600,
@@ -161,13 +161,10 @@
    "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-06-v2.1.png"
   },
   "BASIC-07-v2.1": {
-   "zone_px": 392,
-   "zone_share": 0.00204,
-   "top_y": 0.6322,
-   "cols": [
-    0.5419,
-    0.5925
-   ],
+   "zone_px": 0,
+   "zone_share": 0.0,
+   "top_y": 0.6711,
+   "cols": null,
    "zone": {
     "x": [
      0.4,
@@ -178,7 +175,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "829df4d6934af2610e26f3b8377f9fb3f6d7db38b5243e938a4bc7a78398cc9a",
+   "sources_sha256": "ce60822090d53d3f332f5e459ca50ccb4c03d059f0187f452ad12556a0bd95a4",
    "pose": "hip",
    "resolution": [
     1600,
@@ -204,7 +201,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "ec89e85ca9bdde1c70aae74d02d6a16f4f187a3f61acacb70f5c2706787b6b52",
+   "sources_sha256": "08124c40a6cee8bfa3111ee60370370c809235332ab6421cc9468007eb941432",
    "pose": "hip",
    "resolution": [
     1600,
@@ -230,7 +227,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "93acb5cec22ddf6f5d8adb5adfe0e47d0c47d302964c6b167c33d5face1d621a",
+   "sources_sha256": "6bf8674e8fa0375ae79ce80d4171012128803c9514ac12ede62fcf10360a9d5c",
    "pose": "hip",
    "resolution": [
     1600,
@@ -256,7 +253,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "e2efff78851e73ebbc2105a89388b699e0a282e032a1b8cdf0db0d669e05ecb6",
+   "sources_sha256": "9f16982edb1fbe7c03b671ee8cd4b1a1ac646afef11a724db5350149a2e10655",
    "pose": "hip",
    "resolution": [
     1600,
@@ -265,9 +262,9 @@
    "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-10-v2.1.png"
   },
   "BASIC-11-v2.1": {
-   "zone_px": 628,
-   "zone_share": 0.00327,
-   "top_y": 0.6522,
+   "zone_px": 1934,
+   "zone_share": 0.01007,
+   "top_y": 0.6156,
    "cols": [
     0.5669,
     0.6
@@ -282,7 +279,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "76bb26f3135ffc90117047c1edf8968079802dd2c1751286d2734b6c3010a849",
+   "sources_sha256": "22f8b3dfc12077a8bb291ab4d01106bca3cc84c607c509d344cbb13c1419dedc",
    "pose": "hip",
    "resolution": [
     1600,
@@ -291,11 +288,11 @@
    "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-11-v2.1.png"
   },
   "BASIC-12-v2.1": {
-   "zone_px": 5093,
-   "zone_share": 0.02653,
-   "top_y": 0.5522,
+   "zone_px": 3991,
+   "zone_share": 0.02079,
+   "top_y": 0.5556,
    "cols": [
-    0.5456,
+    0.565,
     0.6
    ],
    "zone": {
@@ -308,7 +305,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "01e219dde19b74466650ec76b696a434e9bb8481165d20105eed6d0d3f175308",
+   "sources_sha256": "b8c9efb1c7908e50fd7e307f1609761b476813b87d8721610a48516578e239c5",
    "pose": "hip",
    "resolution": [
     1600,
@@ -334,7 +331,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "844649dafa46e60f60be62be939107f34a5037515b5332e3caddef75315ea1f4",
+   "sources_sha256": "3478deff87e3cb2042ea62a296a7e46eb7db0230b5510d4fa2dee4d8a535b0dd",
    "pose": "hip",
    "resolution": [
     1600,
@@ -345,7 +342,7 @@
   "BASIC-14-v2.1": {
    "zone_px": 0,
    "zone_share": 0.0,
-   "top_y": null,
+   "top_y": 0.7589,
    "cols": null,
    "zone": {
     "x": [
@@ -357,7 +354,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "1aa99923728e387350c7c6f26a87b23642aba64d2174d5f6feaf056f57e12ac3",
+   "sources_sha256": "598bd93bae4f52e69e503dce5c94157092c3ab928fb94f3486dfbd6e403e16b0",
    "pose": "hip",
    "resolution": [
     1600,
@@ -366,11 +363,11 @@
    "evidence": "~/Library/Caches/CubeEscapeBallon/evidence/rulebook/clear_BASIC-14-v2.1.png"
   },
   "BASIC-15-v2.1": {
-   "zone_px": 5651,
-   "zone_share": 0.02943,
-   "top_y": 0.5567,
+   "zone_px": 6169,
+   "zone_share": 0.03213,
+   "top_y": 0.5678,
    "cols": [
-    0.5525,
+    0.5363,
     0.6
    ],
    "zone": {
@@ -383,7 +380,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "d044446b68ee45dc7303bc39f801a042b823972934ed03657b04d72bb4cc6614",
+   "sources_sha256": "6a4c9bdbe5bf9dff00a2dbc260506b88fd5a973e82b5b35b34939aa194e1cf65",
    "pose": "hip",
    "resolution": [
     1600,
@@ -409,7 +406,7 @@
      0.6667
     ]
    },
-   "sources_sha256": "fcda3a478332276bc176e6fec551e5b3584b01f3c742d317b7a8a86ad8ea8c36",
+   "sources_sha256": "23121e17b031cf1cc166e53c0ba80989ef2950136dce945987d46d1a4d7a0ec4",
    "pose": "hip",
    "resolution": [
     1600,

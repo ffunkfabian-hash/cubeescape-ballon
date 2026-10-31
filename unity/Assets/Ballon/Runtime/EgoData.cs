@@ -31,6 +31,11 @@ namespace Ballon.Ego
         public float flash_scale;                       // 10 (0.33 P4): Maßstab des Mündungsfeuers je Klasse (Werfer); 0 (älterer Export) = 1
         public EgoHipForm sight_form;                   // 10 (0.33): Absehen im Visierglas; leer (älterer Export) = Hüftform
         public EgoFx fx;                                // 10 (0.34): Wirkung der Klasse (ego.PAYLOAD); leer (älterer Export) = Kugel mit Einschlag
+        public bool ads_hide_arms;                      // 10 (0.35, Nutzerentscheid 193 B): im Zielen (Regel ads_hide) auch die Arme aus; fehlt = false
+        public Recoil recoil;                           // 10 (0.35): eigener Rückstoßsatz der Klasse (ego.CLASSES recoil, mit ego.RECOIL ergänzt);
+                                                        // leer (freq_hz 0, ältere Exporte und Klassen ohne) = motion.recoil
+        /// <summary>Rückstoßfedern dieser Klasse: gameplay.recoil, sonst der gemeinsame Satz motion.recoil (ego.profile › recoil).</summary>
+        public Recoil RecoilOr(Recoil common) => recoil != null && recoil.freq_hz > 0 ? recoil : common;
         EgoHip _sightHip;
         /// <summary>Form des gezeichneten Absehens im Visier (0.33 getrennt vom HUD-Hüftzeichen der Sonderklassen): hip mit sight_form.</summary>
         public EgoHip SightHip
@@ -279,6 +284,8 @@ namespace Ballon.Ego
 
     /// <summary>Schrittteile (ego.INDEX, 0.34): nach jedem Schuss in frames Bildern (höchstens share des Schussabstands) von 0 auf 1.</summary>
     [Serializable] public class EgoIndex { public float frames, share; public string src; }
+    /// <summary>Zielweite der Projektile (0.35, ego.AIM): ohne Treffer längs der Blickachse zielt die Bahn auf den Punkt range_m voraus.</summary>
+    [Serializable] public class EgoAim { public float range_m; public string src; }
 
     /// <summary>Gemeinsame Werte der Wirkung (0.34, ego.DECAL, IMPACTS, EXPLOSION, MUZZLE_SMOKE).</summary>
     [Serializable]
@@ -325,7 +332,8 @@ namespace Ballon.Ego
     [Serializable]
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
                           public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; public Flash flash; public Eject eject;
-                          public AdsHide ads_hide; public EgoIndex index; public EgoPayload payload; }
+                          public AdsHide ads_hide; public EgoIndex index; public EgoPayload payload;
+                          public EgoAim aim; }   // 10 (0.35): Zielweite der Projektile (ego.AIM); fehlt/0 = 60 m
 
     [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, spec, normal, ao; }
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }

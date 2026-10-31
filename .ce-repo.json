@@ -1,7 +1,7 @@
 {
   "name": "cubeescape-ballon",
-  "version": "0.34.2",
-  "version_name": "Payload",
+  "version": "0.35.0",
+  "version_name": "Stance",
   "check": {
     "quick": [
       [

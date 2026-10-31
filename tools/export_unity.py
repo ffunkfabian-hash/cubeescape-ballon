@@ -339,6 +339,7 @@ def data():
                   recoil={k: v if isinstance(v, int) else r6(v) for k, v in EG.RECOIL.items()},
                   switch=dict(empty_s=r6(EG.SWITCH['empty_s']), src=EG.SWITCH['src']),
                   ads_hide=dict(eye_m=r6(EG.ADS_HIDE['eye_m']), src=EG.ADS_HIDE['src']),
+                  aim=dict(range_m=r6(EG.AIM['range_m']), src=EG.AIM['src']),
                   flash=flash_data(),
                   eject=dict(speed_mps=r6(EG.EJECT['speed_mps']), gravity_mps2=r6(EG.EJECT['gravity_mps2']), spin_dps=r6(EG.EJECT['spin_dps']),
                              spin_axis=r6(vdir(EG.EJECT['spin_axis'])), life_s=r6(EG.EJECT['life_s']), max_live=EG.EJECT['max_live'],

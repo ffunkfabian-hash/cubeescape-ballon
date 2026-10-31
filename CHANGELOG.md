@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.35.0 „Stance“ – Ego-Haltungen, Abläufe, Laufen/Sprint, Bildanteil (Branch `claude/ballon-0.35-stance`)
+
+- Haltungen nach Motiongen REF 0.35 „Backblast“ / REF 0.37 „Verdict“: Hüfte MG/Spur/LFR, Raketenwerfer über der Schulter, Sprint je Klasse,
+  Laufen (Hub, abgesenkt), Rückstoßsatz der Handfeuerwaffe (`gameplay.recoil`), Weltzoom Scout/Scharfschütze/Werfer, Projektile auf den
+  Punkt unter dem Fadenkreuz; Daten nur in `basic/arms/ego.py`.
+- Raketenwerfer BASIC-14: Ladeschacht mit Klappe oben im Startrohr, kurze Rakete von oben eingesetzt (Werfer quer, 2,92 s), Heckklappe
+  fest; neue Teile `load_hatch`, `hatch_hinge`, `hatch_grip`, Rakete und Sichtfenster verlegt (keine ID umbenannt). Neu gebacken.
+- Bogen BASIC-07: Pinvisier direkt über dem Pfeil (Spitze im Zielen 17,8 pp unter dem Ring), Fenster breiter, Spannen im Zielen mit
+  ruhiger Spitze, Sehne/Federn im Zielen aus. Neu gebacken.
+- Granatwerfer: Gegendrehung beim Laden, Kammern immer in Schussfolge (Unity ordnet nicht mehr beim Schuss um). Revolver: Nachladehaltung
+  mit der Trommelrückseite zur Kamera.
+- Zielbild wie Destiny (Nutzerentscheid 193 B / 194 „So wie Destiny“): im Zielen nur Visier und Mündung, Arme aus, Kamera je Klasse
+  hinter Socket_Eye (`ego.ADS_STRIP`, `gameplay.ads_hide_arms`); Bildanteil Zielen 2,7–9,2 % (Destiny 2,7–9,5).
+- Bericht [docs/versions/0.35-stance.md](docs/versions/0.35-stance.md), Entscheidungsliste Block 10.
+
 ## 0.34.2 Patch „impact-nachtrag“ – offene Punkte aus 0.34.1 (Branch `claude/ballon-patch-impact-nachtrag`)
 
 - Explosion je Art (`ego.EXPLOSIONS`): Rakete mit bildweitem Blitz 0,025 s getrennt vom Kern, kein Rohrrauch mehr; Granatwerfer mit Kern

@@ -164,6 +164,14 @@ def _src_table(W):
     hid = [p['id'] for p in W.PARTS if p.get('ads_hide')]
     if hid:
         rows.append(('Zielfernrohr im Zielen', f"aus: {', '.join(hid)} (Socket_Eye < {EG.ADS_HIDE['eye_m'] * 1000:.0f} mm)", EG.ADS_HIDE['src']))
+    SR = EG.ads_strip_rule(W, C) if 'ads' in P['poses'] else None
+    if SR:                                          # 0.35 Nutzerentscheid 193 B: Zielbild wie Destiny
+        keep = [p['id'] for p in W.PARTS if p['id'] not in P['ads_hide'] and not p.get('ads_hide')]
+        rows.append(('Zielbild (Nutzerentscheid 193 B)',
+                     f"im Zielen sichtbar nur {', '.join(keep)}; Arme {'aus' if G.get('ads_hide_arms') else 'sichtbar'}; Kamera "
+                     f"{SR.get('back_m', 0) * 1000:.0f} mm hinter Socket_Eye (Regel ADS_HIDE, Socket_Eye < {EG.ADS_HIDE['eye_m'] * 1000:.0f} mm)",
+                     EG.ADS_STRIP['src'] + '; Weg: Ausblenden, weil Viewmodel-Bildwinkel und Augenabstand allein den Bildanteil nachweislich nicht '
+                     'senken (Bericht 0.35 › 193 B / 194); Klassenwerte ego.ADS_STRIP_CLASS'))
     E = getattr(W, 'EJECT', None)
     rows += [('Mündungsfeuer', f"{EG.FLASH['dur_s'] * 1000:.0f} ms" if G['muzzle_flash'] else 'keins (Werkzeug)', EG.FLASH['src'] if G['muzzle_flash'] else G['src']),
              ('Hülsen', f"{E['case']} ({EG.EJECT['cases'][E['case']]['len_mm']} × {EG.EJECT['cases'][E['case']]['r_mm'] * 2:g} mm)" if E else 'keine',

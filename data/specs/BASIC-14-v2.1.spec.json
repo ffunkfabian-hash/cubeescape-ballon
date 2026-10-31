@@ -132,7 +132,10 @@
     "rear_ring",
     "hinge_block",
     "breech_cap",
-    "cap_rim"
+    "cap_rim",
+    "load_hatch",
+    "hatch_hinge",
+    "hatch_grip"
    ]
   }
  ],
@@ -255,8 +258,8 @@
     438.0,
     91.8
    ],
-   "triangles": 1388,
-   "volume_cm3": 1797.99,
+   "triangles": 1832,
+   "volume_cm3": 1624.68,
    "moving": null,
    "removable": false
   },
@@ -282,22 +285,22 @@
    "bounds_m": {
     "min": [
      -0.03193,
-     -0.376,
+     -0.23,
      0.08007
     ],
     "max": [
      0.03193,
-     -0.296,
-     0.14393
+     -0.17,
+     0.1287
     ]
    },
    "size_mm": [
     63.9,
-    80.0,
-    63.9
+    60.0,
+    48.6
    ],
-   "triangles": 1364,
-   "volume_cm3": 55.67,
+   "triangles": 1068,
+   "volume_cm3": 25.78,
    "moving": null,
    "removable": false
   },
@@ -631,10 +634,10 @@
   },
   {
    "id": "hinge_block",
-   "name_de": "Klappenscharnier",
-   "name_en": "Breech hinge",
+   "name_de": "Kappenlager",
+   "name_en": "Breech lug",
    "assembly": "mechanism",
-   "function_de": "Lagert die Heckklappe rechts",
+   "function_de": "Hält die Heckkappe rechts",
    "attachment_de": "rechts am Heckring angeformt",
    "material_role": "dark_metal",
    "material_de": "Brüniertes Metall",
@@ -672,11 +675,11 @@
   },
   {
    "id": "breech_cap",
-   "name_de": "Heckklappe",
+   "name_de": "Heckkappe",
    "name_en": "Breech cap",
    "assembly": "mechanism",
-   "function_de": "Verschließt das Heck mit offener Düse; schwenkt zum Laden auf",
-   "attachment_de": "Scharnier rechts am Heckring",
+   "function_de": "Schließt das Heck mit offener Düse (fest; geladen wird seit 0.35 oben im Schacht)",
+   "attachment_de": "am Heckring und am Kappenlager verschraubt",
    "material_role": "anodized",
    "material_de": "Schwarz eloxiert",
    "interface": null,
@@ -685,9 +688,9 @@
    "bevel_mm": 1.5,
    "blender_object": "breech_cap",
    "origin_m": [
-    -0.042,
-    0.41,
-    0.112
+    0.0,
+    0.0,
+    0.0
    ],
    "bounds_m": {
     "min": [
@@ -708,22 +711,7 @@
    ],
    "triangles": 2412,
    "volume_cm3": 51.81,
-   "moving": {
-    "kind": "rotate",
-    "event": "reload",
-    "note": null,
-    "pivot_m": [
-     -0.042,
-     0.41,
-     0.112
-    ],
-    "axis_blender": "Z",
-    "axis_sign": 1.0,
-    "range_deg": [
-     0,
-     110
-    ]
-   },
+   "moving": null,
    "removable": false
   },
   {
@@ -732,11 +720,11 @@
    "name_en": "Nozzle rim",
    "assembly": "mechanism",
    "function_de": "Blanke Kante der Heckdüse",
-   "attachment_de": "hinten an der Klappe",
+   "attachment_de": "hinten an der Kappe",
    "material_role": "trim",
    "material_de": "Blanke Zierkante",
    "interface": null,
-   "parent_part": "breech_cap",
+   "parent_part": null,
    "shape": "cyl",
    "bevel_mm": 0.3,
    "blender_object": "cap_rim",
@@ -768,12 +756,150 @@
    "removable": false
   },
   {
+   "id": "load_hatch",
+   "name_de": "Ladeklappe",
+   "name_en": "Loading hatch",
+   "assembly": "mechanism",
+   "function_de": "Deckt den Ladeschacht oben im Startrohr; schwenkt zum Laden nach rechts auf",
+   "attachment_de": "Scharnier rechts am Schacht",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "load_hatch",
+   "origin_m": [
+    -0.033,
+    -0.154,
+    0.15
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03,
+     -0.238,
+     0.1479
+    ],
+    "max": [
+     0.03,
+     -0.07,
+     0.1605
+    ]
+   },
+   "size_mm": [
+    60.0,
+    168.0,
+    12.6
+   ],
+   "triangles": 348,
+   "volume_cm3": 21.66,
+   "moving": {
+    "kind": "rotate",
+    "event": "reload",
+    "note": null,
+    "pivot_m": [
+     -0.033,
+     -0.154,
+     0.15
+    ],
+    "axis_blender": "Y",
+    "axis_sign": -1.0,
+    "range_deg": [
+     0,
+     115
+    ]
+   },
+   "removable": false
+  },
+  {
+   "id": "hatch_hinge",
+   "name_de": "Ladeklappenscharnier",
+   "name_en": "Hatch hinge",
+   "assembly": "mechanism",
+   "function_de": "Lagert die Ladeklappe rechts",
+   "attachment_de": "rechts am Schacht angeformt",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "hatch_hinge",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.03616,
+     -0.218,
+     0.14684
+    ],
+    "max": [
+     -0.02984,
+     -0.09,
+     0.15316
+    ]
+   },
+   "size_mm": [
+    6.3,
+    128.0,
+    6.3
+   ],
+   "triangles": 236,
+   "volume_cm3": 4.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "hatch_grip",
+   "name_de": "Klappengriff",
+   "name_en": "Hatch grip",
+   "assembly": "mechanism",
+   "function_de": "Griffleiste an der linken Kante der Ladeklappe",
+   "attachment_de": "an die Ladeklappe geschraubt",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "load_hatch",
+   "shape": "box",
+   "bevel_mm": 0.8,
+   "blender_object": "hatch_grip",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0285,
+     -0.178,
+     0.149
+    ],
+    "max": [
+     0.0335,
+     -0.13,
+     0.155
+    ]
+   },
+   "size_mm": [
+    5.0,
+    48.0,
+    6.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 1.4,
+   "moving": null,
+   "removable": false
+  },
+  {
    "id": "cap_release",
    "name_de": "Klappenknopf",
-   "name_en": "Breech release",
+   "name_en": "Hatch release",
    "assembly": "grip_controls",
-   "function_de": "Entriegelt die Heckklappe",
-   "attachment_de": "Druckknopf links am Heckring",
+   "function_de": "Verriegelt die Ladeklappe",
+   "attachment_de": "Druckknopf links am Startrohr hinter dem Schacht",
    "material_role": "accent",
    "material_de": "Akzent Orange (Bedienelement)",
    "interface": null,
@@ -782,37 +908,37 @@
    "bevel_mm": 0.8,
    "blender_object": "cap_release",
    "origin_m": [
-    0.037,
-    0.393,
-    0.122
+    0.046,
+    -0.102,
+    0.126
    ],
    "bounds_m": {
     "min": [
-     0.035,
-     0.38856,
-     0.11756
+     0.043,
+     -0.10644,
+     0.12156
     ],
     "max": [
-     0.04,
-     0.39744,
-     0.12644
+     0.0485,
+     -0.09756,
+     0.13044
     ]
    },
    "size_mm": [
-    5.0,
+    5.5,
     8.9,
     8.9
    ],
    "triangles": 236,
-   "volume_cm3": 0.3,
+   "volume_cm3": 0.33,
    "moving": {
     "kind": "translate",
     "event": "reload",
     "note": null,
     "pivot_m": [
-     0.037,
-     0.393,
-     0.122
+     0.046,
+     -0.102,
+     0.126
     ],
     "vector_m": [
      -0.0025,
@@ -1971,8 +2097,8 @@
    "name_de": "Rakete",
    "name_en": "Rocket",
    "assembly": "ammo",
-   "function_de": "Eine Rakete im Rohr; verlässt das Rohr ganz (keine Hülse)",
-   "attachment_de": "im Rohr (Gefechtskopf im Sichtfenster)",
+   "function_de": "Eine kurze Rakete im Schacht; verlässt das Rohr ganz (keine Hülse)",
+   "attachment_de": "im Schacht unter der Ladeklappe (Gefechtskopf im Sichtfenster)",
    "material_role": "dark_metal",
    "material_de": "Brüniertes Metall",
    "interface": null,
@@ -1987,27 +2113,27 @@
    ],
    "bounds_m": {
     "min": [
-     -0.027,
-     -0.3,
-     0.085
+     -0.026,
+     -0.172,
+     0.086
     ],
     "max": [
-     0.027,
-     0.36,
-     0.139
+     0.026,
+     -0.076,
+     0.138
     ]
    },
    "size_mm": [
-    54.0,
-    660.0,
-    54.0
+    52.0,
+    96.0,
+    52.0
    ],
    "triangles": 596,
-   "volume_cm3": 1399.37,
+   "volume_cm3": 207.38,
    "moving": {
     "kind": "translate",
     "event": "reload",
-    "note": "Ruhelage = geladen; die Ladeaktion schiebt sie von hinten durch das Heckrohr ein",
+    "note": "Ruhelage = geladen; die Ladeaktion senkt sie von oben in den Schacht (0.35, bis 0.34 von hinten durch das Heckrohr)",
     "pivot_m": [
      0.0,
      0.0,
@@ -2015,10 +2141,10 @@
     ],
     "vector_m": [
      0.0,
-     0.92,
-     0.0
+     0.0,
+     0.24
     ],
-    "travel_mm": 920.0
+    "travel_mm": 240.0
    },
    "removable": true
   },
@@ -2043,23 +2169,23 @@
    ],
    "bounds_m": {
     "min": [
-     -0.0256,
-     -0.39,
-     0.0864
+     -0.02547,
+     -0.232,
+     0.08653
     ],
     "max": [
-     0.0256,
-     -0.3,
-     0.1376
+     0.02547,
+     -0.172,
+     0.13747
     ]
    },
    "size_mm": [
-    51.2,
-    90.0,
-    51.2
+    50.9,
+    60.0,
+    50.9
    ],
    "triangles": 380,
-   "volume_cm3": 92.66,
+   "volume_cm3": 61.73,
    "moving": null,
    "removable": false
   }
@@ -2102,7 +2228,7 @@
     0.112
    ],
    "part": "rear_ring",
-   "note": "Ladeöffnung hinten (Heckklappe offen)",
+   "note": "Heck (Düse, seit 0.35 fest; geladen wird oben im Schacht)",
    "source": "Modell (gesetzt im Entwurf)"
   },
   "Socket_Sight": {
@@ -2137,9 +2263,9 @@
   },
   "Socket_CenterOfMass": {
    "position_m": [
-    0.00273,
-    -0.05095,
-    0.10193
+    0.00283,
+    -0.09946,
+    0.10127
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
@@ -2166,8 +2292,8 @@
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
-  "parts": 45,
-  "triangles": 31236,
+  "parts": 48,
+  "triangles": 32076,
   "assemblies": 8
  },
  "actions": {
@@ -2188,30 +2314,30 @@
    "status": "Mechanik definiert; Bildfolge und Sichtung siehe data/review.json; Dauer entworfen"
   },
   "reload": {
-   "de": "Klappe öffnen, Rakete von hinten einschieben, schließen",
+   "de": "Ladeklappe auf, Rakete von oben in den Schacht senken, Klappe zu, verriegeln",
    "frames": 100,
    "fps": 30,
    "parts": [
-    "cap_release",
-    "breech_cap",
+    "load_hatch",
     "rocket",
+    "cap_release",
     "ready_light"
    ],
    "events": [
     [
-     20,
-     "breech_open"
+     14,
+     "hatch_open"
     ],
     [
-     64,
+     60,
      "rocket_in"
     ],
     [
-     86,
-     "breech_closed"
+     82,
+     "hatch_closed"
     ],
     [
-     90,
+     92,
      "ready"
     ]
    ],

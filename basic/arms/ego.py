@@ -55,9 +55,11 @@ FINGER_POSES = dict(RA.FINGER_POSES, foregrip=dict(f=[[62, 74, 48]] * 4, t=[80, 
                     foregrip_open=dict(f=[[4, 4, 3]] * 4, t=[80, 5, 60]))
 
 # Aktionen. Kanäle: weapon (Haltung oder (Haltung, Versatz)), L/R (Griff, ('cam', Punkt) oder (Griff, Versatz mm in Waffenachsen)),
-# fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
+# fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen; −1 = Gegenrichtung, 0.35 Gegendrehung der
+# Granatwerfer-Trommel), carry (Magazin folgt der linken Hand), fire (Bilder
 # der Schüsse), events (Marker). Zwischen Schlüsseln wird geglättet (Ease In/Out).
 OFF_L = ('cam', (0.30, -0.25, -0.62))      # linke Hand unter dem Bild (Magazin holen)
+OFF_TL = ('cam', (0.34, -0.30, 0.22))      # linke Hand links über dem Bild (Raketenwerfer: Rakete von links oben, 0.35)
 
 
 def shots_720(first, n):
@@ -185,8 +187,15 @@ ACTIONS = {
                        '(Entscheidungsliste 3.1 A, gemessen wie in Schritt 2: Oberkante, linke Kante)'),
     'lowered': dict(de='Gesenkte Haltung / Wandnähe', frames=36, weapon=[(0, 'hip'), (8, 'lowered'), (26, 'lowered'), (36, 'hip')],
                     events=[(8, 'Lowered'), (36, 'Ready')], src='E'),
-    'walk': dict(de='Gehen (liegende Acht)', frames=48, weapon=[(0, 'hip'), (48, 'hip')],
-                 bob=dict(start=0, end=48, period=24, amp=(0.007, 0.004), roll=1.2), events=[], src='E (CE: liegende Acht)'),
+    'walk': dict(de='Gehen (liegende Acht, Waffe etwas gesenkt)', frames=48,
+                 weapon=[(0, ('hip', dict(up=-0.012, pitch=-1.5))), (48, ('hip', dict(up=-0.012, pitch=-1.5)))],
+                 bob=dict(start=0, end=48, period=24, amp=(0.007, 0.006), roll=1.2), events=[],
+                 src='O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je '
+                     'Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) '
+                     'bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in '
+                     'abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen '
+                     'Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem '
+                     'Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)'),
     'crouch': dict(de='Ducken', frames=24, weapon=[(0, 'hip'), (8, 'crouch'), (24, 'crouch')], events=[(8, 'Crouched')], src='E'),
     'jump_land': dict(de='Sprung, Luftphase, Landung', frames=40,
                       weapon=[(0, 'hip'), (8, 'air'), (26, 'air'), (30, ('hip', dict(up=-0.022, pitch=-3))), (40, 'hip')],
@@ -256,6 +265,59 @@ RECOIL = dict(
 ADS_HIDE = dict(eye_m=0.06, src='E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; '
                                 'Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, '
                                 'Entscheidungsliste 1d)')
+# Zielweite der Projektile (0.35 „Stance“, Richter): ohne Treffer längs der Blickachse zielt die Bahn ab der Mündung auf den Punkt in
+# range_m voraus (Unity WeaponFx.Launch; mit Treffer auf den Treffpunkt unter dem Fadenkreuz)
+AIM = dict(range_m=60.0, src='E: Nutzerbefund Testbuild 0.33 Bogen „Schuss geht daneben“ (parallel zur Blickachse lief die Bahn neben der '
+                             'Mitte vorbei); Motiongen REF 0.35 Backblast › D: Pfeilachse durch die Bildmitte. 60 m ≈ halbe Parcourslänge, '
+                             'Abweichung dahinter < 0,2° bei 20 cm Mündungsversatz')
+# Zielbild wie Destiny (0.35 „Stance“, Nutzerentscheid 193 B, 31.10.2026 über Sightline: „So wie Destiny“): im Zielen sind alle Teile der
+# Waffe aus außer dem Visier (Baugruppe sight), seiner Schiene (BRI-22), dem Mündungsteil (Teil von Socket_Muzzle, Mündungsaufsatz BMZ)
+# und den Baugruppen in keep_asm der Klasse; die Arme sind ebenfalls aus (arms; ohne sie blieb die Automatik bei 12,4 %: Griffhand und
+# Stützarm unter dem Visier) – dieselbe Regel ADS_HIDE in Blender und Unity (Teile mit ads_hide, Augenpunkt nah an der
+# Ziellage). Bildwinkel und Augenabstand senkten den Bildanteil nachweislich nicht (Bericht 0.35 › 193 B / 194); Destiny erreicht 2,7–9,5 %
+# nur ohne die Waffe unter dem Visier (Motiongen REF 0.35 Backblast › F, z-bb-bildanteil). Je Klasse: CLASSES[...]['ads_strip']
+# (keep_asm, keep_parts; False = aus).
+ADS_STRIP = dict(keep_asm=('sight',), keep_iface=('BMZ',), keep_anchors=('Socket_Muzzle',), arms=True,
+                 drop_iface=('BRI-22',), drop_parts=('sight_clamp', 'scope_keel'),   # Visierfuß, Klemme, Kiel: unter dem Glas, nah an der Kamera
+                 src='Nutzerentscheid 193 B „So wie Destiny“ (31.10.2026): Destiny-Zielbild 2,7–9,5 % je Klasse (Backblast › F); Visier, '
+                     'Absehen und Laufspitze bleiben sichtbar')
+
+
+# Je Klasse (Waffentyp): Kamera im Zielen back_m hinter Socket_Eye (das Visier allein ist bei Visier-Standard 3 mit 90 mm Augenabstand
+# größer als bei Destiny; ohne Schaft und Gehäuse wirkt der Abstand jetzt wie gerechnet: Fläche × (90 / (90 + back))²) bzw. weitere
+# Baugruppen sichtbar, wo BALLON unter Destiny läge. Ziel Destiny-Zielen je Klasse (Backblast › F, Bericht 0.35 › Bildanteil).
+ADS_STRIP_CLASS = {
+    'auto_rifle': dict(back_m=0.05), 'submachine_gun': dict(back_m=0.015), 'scout_rifle': dict(back_m=0.005),
+    'pulse_rifle': dict(back_m=0.005), 'trace_rifle': dict(back_m=0.01), 'fusion_rifle': dict(back_m=0.015),
+    'linear_fusion_rifle': dict(back_m=0.03), 'grenade_launcher': dict(back_m=0.015),
+    'sidearm': dict(keep_asm=('sight', 'barrel')), 'shotgun': dict(keep_asm=('sight', 'barrel')),
+}
+
+
+def ads_strip_rule(W, C):
+    """Regel ADS_STRIP für die Waffe W (Klasse C): gemeinsamer Satz, Klassensatz ADS_STRIP_CLASS, Klassenwert ads_strip; None = aus."""
+    if C.get('ads_strip') is False:
+        return None
+    return dict(ADS_STRIP, **ADS_STRIP_CLASS.get(W.META['type'], {}), **(C.get('ads_strip') or {}))
+
+
+def ads_strip_parts(W, C):
+    """Teile der Waffe W, die im Zielen nach ads_strip_rule aus sind; leer, wenn die Klasse es abschaltet."""
+    R = ads_strip_rule(W, C)
+    if R is None:
+        return ()
+    keep = {W.ANCHORS[a]['part'] for a in R['keep_anchors'] if a in W.ANCHORS and W.ANCHORS[a].get('part')}
+    keep |= set(R.get('keep_parts', ()))
+    keep |= {p['id'] for p in W.PARTS if p['asm'] in R['keep_asm'] or any((p.get('iface') or '').startswith(i) for i in R['keep_iface'])}
+    while True:                              # Kinder sichtbarer Teile bleiben sichtbar (parent_part, bis nichts mehr dazukommt)
+        more = {p['id'] for p in W.PARTS if p.get('parent_part') in keep} - keep
+        if not more:
+            break
+        keep |= more
+    keep -= {p['id'] for p in W.PARTS if p['id'] in R['drop_parts'] or any((p.get('iface') or '').startswith(i) for i in R['drop_iface'])}
+    return tuple(p['id'] for p in W.PARTS if p['id'] not in keep)
+
+
 # Waffenwechsel (6.1 A): Wegstecken (holster 0,27 s), danach leere Sicht, dann Ziehen wie bisher (draw mit Nachfedern).
 # empty_s ist die Pause zwischen Ende von holster und Beginn von draw; die sichtbare leere Sicht ist länger, weil die Waffe schon vor
 # dem Ende des Wegsteckens unter dem Bildrand ist und beim Ziehen erst nach einigen Bildern auftaucht.
@@ -705,8 +767,10 @@ CLASSES = {
                          'gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung '
                          'eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) '
                          'Mündung 58,4/65,5 %, Visier 73,4/55,2 %'),
+            sprint=dict(pos=(-0.12, -0.34, -0.22), aim=(0.8, -1.8, -0.95), roll=-30,
+                        src='M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Die Abgenutzte Spitze): fast aus dem Bild gesenkt, Hülle '
+                            'x 46–100 / y 66–100, Visier 56–65 / 67–80, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik'),
         ),
-        keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Impuls-Sprint nicht gemessen'),
         frames=dict(draw=23),
         frames_src='M Destiny-Anflug Automatik/Impuls/MG 20 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen Glidepath, Entscheidungsliste '
                    '4d; Gridskipper ADS ein 18 Bilder bis ruhig, Motiongen destiny2): aim_in 10 Bilder bei 30/s wie die Automatik; Ziehen '
@@ -735,10 +799,13 @@ CLASSES = {
             sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
                         src='M Destiny-Handfeuerwaffe Sprint: Waffe senkrecht, Lauf am oberen Rand, Körper 62–70 % B, hoch rechts (Motiongen '
                             'destiny2:562/467); Lage E, gerechnet Mündung 68,4/10,8 %, Körper 66–72 % B'),
-            reload=dict(pos=(-0.07, -0.37, -0.10), aim=(0.6, -1.2, 1.05), roll=10,
+            reload=dict(pos=(-0.07, -0.37, -0.10), aim=(0.5, -1.6, 0.7), roll=10,
                         src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, '
                             'linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand '
-                            'verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen'),
+                            'verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen. '
+                            '0.35 (offen aus 0.34): Mündung weiter nach vorn gekippt (Lauf 41° statt 55° über der Waagerechten): die Rückseite '
+                            'der Trommel, aus der die Hülsen fallen, zeigt zur Kamera (Kosinus 0,32 → 0,64, tools/bildlage.frame), Trommel '
+                            '52/67 %, Mündung 47/30 %'),
         ),
         frames=dict(aim_in=3, aim_out=2.4, draw=18),
         frames_src='M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) '
@@ -754,7 +821,8 @@ CLASSES = {
                         (11, 'reload'), (19, ('reload', dict(roll=3))), (21, ('reload', dict(up=0.006, pitch=-2))),
                         (24, ('reload', dict(roll=-16, yaw=6))), (26, 'reload'), (31, ('hip', dict(roll=-2, up=-0.003))), (36, 'hip')],
                 L=[(0, 'support'), (2, 'support'), (4, 'charge'), (6, 'mag'), (8, ('mag', (-25, 0, 4))), (10, OFF_L), (14, OFF_L),
-                   (19, ('mag', (35, 0, 6))), (21, 'mag'), (23, 'mag'), (25, ('mag', (0, 0, 12))), (29, 'support'), (36, 'support')],
+                   (19, ('mag', (75, 0, 10))), (21, ('mag', (45, 0, 8))), (23, ('mag', (45, 0, 8))), (25, ('mag', (40, 0, 16))), (29, 'support'),
+                   (36, 'support')],
                 fL=[(0, 'underhand'), (3, 'open'), (4, 'pinch'), (6, 'mag_hold'), (9, 'open'), (11, 'relaxed'), (16, 'open'),
                     (19, 'mag_hold'), (24, 'open'), (29, 'underhand')],
                 mech={'cylinder_latch': [(0, 0), (4, 0), (5, 1), (7, 1), (9, 0)], 'crane': [(0, 0), (5, 0), (7, 1), (22, 1), (24, 0)]},
@@ -762,14 +830,26 @@ CLASSES = {
                 src='M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen '
                     'destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E '
                     '(Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit '
-                    'Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste)'),
+                    'Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste). 0.35: die Stützhand lädt vor der '
+                    'Trommel (45 mm vor dem Griff an der Trommelseite), damit sie die Trommel nicht verdeckt'),
         ),
         same_reload=True,
-        gameplay=dict(rpm=140, magazine=10, path_up_h=0.017, kick=2.5,
+        recoil=dict(freq_hz=1.56, zeta=0.4, back_mps=0.5, pitch_dps=800.0, ads_pitch=0.2,
+                    cam_freq_hz=0.94, cam_zeta=1.0, cam_dps=48.0, ads_cam=3.0,
+                    src='M Motiongen REF 0.35 Backblast › E (z-bb-hc-rueckstoss, Annual Skate/Kindled Orchid, 60/s): Hüftschuss Spitze '
+                        '+5…+10 Bilder (Median +7) mit ≈ +55° Kippen, Modell kommt zur Kamera, Unterschwingen bis +25…+32 (25–54 % der '
+                        'Spitze), Rückkehr ≤ 1 pp bei +38…+47 → Feder 1,56 Hz, ζ 0,4: Spitze +7,7, Tiefpunkt +29, Nulldurchgang +42 '
+                        'Bilder bei 60/s, Tiefe 25 % der Spitze; Kippen 800 °/s → ≈ 49° Spitze (E: etwas unter 55°, Visier bleibt '
+                        'lesbar), zur Kamera 0,5 m/s → ≈ 3 cm (E). Zielen (› G, z-bb-hc-exotics, Lumina): Modell ≈ 10 pp hoch, ruhig '
+                        'nach +28…+32 → ads_pitch 0,2 (≈ 10°, E). Kamera (Verdict › B/E2, z-v37-hc-kick): ≈ 22 pp H in 0,17 s, nach '
+                        '0,40 s noch 14 pp → kritisch gedämpft 0,94 Hz (Spitze nach 1/ω = 0,17 s, bei 0,40 s 61 %); Hüfte 5–9 pp H [O] '
+                        '→ 48 °/s ≈ 3°, im Zielen × 3,0 bei Weltzoom 1,15 ≈ 22 pp H („großen senkrechten Kick testen“, keine '
+                        'Stabilitätsregel). Bis 0.34: gemeinsame Federn (5 Hz, ζ 0,5) mit Kick 2,5 ≈ 5° ohne sichtbares Unterschwingen'),
+        gameplay=dict(rpm=140, magazine=10, path_up_h=0.017, kick=1.0,
                       src='S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); '
                           'gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, '
                           'ein Schuss je Zug); Bahnstufe 0,017 M: Netto-Rest vor dem Folgeschuss 1,7 pp H (Hochimpuls bis 7,6 pp, Motiongen '
-                          'rueckstoss:106); Kick 2,5 E: Modell ≈ 6 % hoch und 8° gekippt (destiny2:492) gegen Automatik-Kick 3° je Schuss'),
+                          'rueckstoss:106); Kick 1,0: die Federn stehen seit 0.35 als eigener Satz in recoil (bis 0.34 Kick 2,5)'),
         src='Ego-Übertrag 0.33 „Armory“ P1: Hüfte, Sprint, Anflug, Ziehen und Nachladen nach Motiongen (Handfeuerwaffe), Trommelablauf E'),
     'sidearm': dict(
         # Seitenwaffe (0.33, P1): Pistolengriff wie die Handfeuerwaffe, Magazin im Griff (Nachladen der Bezugsklasse mit Magazin unten),
@@ -810,8 +890,10 @@ CLASSES = {
                      src='M Destiny-Scharfschütze Hüfte: Mündung 56/68 (Motiongen huefte:51), 56/66 (huefte:61), Far Future 56/64 '
                          '(destiny2:496); Lage E wie die Automatik, Lauf 1,8° tiefer (langer Lauf: Automatik-Hüfte trifft 56,1/61,9), '
                          'gerechnet Mündung 56,1/65,7 %'),
-            sprint=dict(pos=(-0.20, -0.38, -0.21), aim=(0.5, -2.4, -0.6), roll=-25,
-                        src='O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 '
+            sprint=dict(pos=(-0.32, -0.42, -0.27), aim=(0.6, -2.3, -0.05), roll=-20,
+                        src='O Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Widerruf, eine Stelle): tief unten rechts, Hülle x 56–100 / '
+                            'y 64–100, Längskante ≈ +22°, kein Fadenkreuz; 0.35: 4 cm weiter rechts, 1 cm tiefer (Hülle begann bei x 48). '
+                            'Vorher: O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 '
                             'pp); eine ältere Zeile (destiny2:483) nennt bei 60/s eine höhere, mittigere Form – widersprüchlich, hier die '
                             'Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; '
                             'bis 0.33 die Automatik-Form (Mündung 19/86 %)'),
@@ -875,15 +957,15 @@ CLASSES = {
         # Spurgewehr (0.33, P2): Dauerstrahl – Dauerfeuer in der Kadenz der Klasse ohne Mündungsfeuer, Hülse und Rückstoß; Fokuslinse und
         # Scheibenmitte leuchten, solange der Abzug zieht (EGO_LIVE glow). Nachladen der Bezugsklasse mit der Energiezelle (mech_map)
         poses=dict(
-            hip=dict(pos=(-0.136, -0.417, -0.156), aim=(-0.075, -3.412, -0.315), roll=10.9,
-                     src='M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: '
-                         'Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur '
-                         'die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, '
-                         'Socket_Hand) Mündung 57,7/61,1 %, Visier 66,6/49,0 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei '
-                         '53,4 % H in den Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)'),
+            hip=dict(pos=(-0.169, -0.424, -0.183), aim=(0.061, -3.415, -0.183), roll=10.9,
+                     src='M Motiongen REF 0.35 Backblast › C (z-bb-neigung): Spurgewehr ohne Klassenmuster (Coldheart Fluchtpunkt 48/51, '
+                         'Prometheus Lens 51,5/59 wie die Automatik); Nutzerbefund Testbuild 0.33 „Spurgewehr-Hüfte zu tief“ (31.10.2026). '
+                         'Lage E (tools/bildlage.py --fit): Fluchtpunkt 45/50 wie die Automatik (44,7/48,7) statt 48,7/56,1, Mündung 58/61,2 %, '
+                         'Visier 72,1/56,7 % (Gehäusenase unter 55 % H, A4). Bis 0.34: huefte.json-Ausgleich (Hollow Denial Mündung 57,7/59,6, Visier 66,9/45,6)'),
+            sprint=dict(pos=(-0.19, -0.37, -0.23), aim=(1.4, -1.5, -0.10), roll=-15,
+                        src='M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, schweres Spurgewehr Mikrokosmos): flach quer ganz unten, '
+                            'Hülle x 29–100 / y 60–100, Oberkante +8–10°, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik'),
         ),
-        keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen '
-                         '(Motiongen destiny2:570)'),
         frames=dict(aim_in=4, aim_out=6, draw=17, reload_tactical=67),
         frames_src='M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung '
                    'wie Scharfschütze); Ager\'s Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › '
@@ -901,16 +983,16 @@ CLASSES = {
     'machine_gun': dict(
         # Maschinengewehr (0.33, P2): Gurtwaffe wie Dauerfeuer (FIRE_ALIAS); Nachladen als Klassenaktion mit Deckel, Kasten und Gurt
         poses=dict(
-            hip=dict(pos=(-0.114, -0.417, -0.155), aim=(-0.096, -3.411, -0.342), roll=4.8,
-                     src='M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung '
-                         '56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer '
-                         '31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet '
-                         '(Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 56,1/59,7 %, Visier 66,1/44,9 % – 3 mm tiefer '
-                         'als die Ausgleichslage: der oberste belegte Punkt lag genau auf der Ecke der Freihaltezone (A4, 55 % H; Richter 0.33)'),
+            hip=dict(pos=(-0.182, -0.431, -0.185), aim=(0.273, -3.396, -0.185), roll=4.8,
+                     src='M Motiongen REF 0.35 Backblast › C (z-bb-neigung): Fluchtpunkt der Laufachse beim MG quer links (Hammerhead −22/51, '
+                         'Bitter End 31/46), die Waffe zeigt ihre Seite; Nutzerbefund Testbuild 0.33 „MG-Hüfte zu tief“ (31.10.2026). Lage E '
+                         '(tools/bildlage.py --fit): Fluchtpunkt 40/50 statt 49,6/57,2 (Lauf waagerecht wie Automatik 44,7/48,7 und Fusion '
+                         '43,2/51,6), Mündung 54,5/58,5 % (vorderes Ende in der erlaubten Ecke der Freihaltezone A4), Visier 77,7/53,9 %. Bis 0.34: huefte.json-Ausgleich (Shattered Cipher Mündung 56,1/55,1, '
+                         'Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflex 65,9/48,2) mit Lauf 7 pp unter die Mitte'),
+            sprint=dict(pos=(-0.25, -0.40, -0.20), aim=(1.4, -1.8, -0.34), roll=-6,
+                        src='M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, 21% Delirium): flach quer unten, Hülle x 38–100 / y 55–100, '
+                            'Längskante 0…−2°, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik (Hülle ab y ≈ 80)'),
         ),
-        keep=dict(
-            sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen '
-                   'destiny2:561)'),
         frames=dict(aim_out=11, draw=23),
         frames_src='M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); ADS aus Qullim\'s Terminus 21, '
                    'Thunderlord 23 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-thunderlord) ≈ 22 → 11 '
@@ -962,12 +1044,13 @@ CLASSES = {
             reload=dict(pos=(-0.09, -0.36, -0.16), aim=(0.55, -2.4, 0.25), roll=-60,
                         src='E nach Destiny-Schrotflinte (Einzelladen, Motiongen nachladen:52/53): Waffe vor dem Körper nach rechts gerollt, '
                             'Ladeklappe zeigt nach links unten zur Stützhand'),
+            sprint=dict(pos=(-0.18, -0.32, -0.27), aim=(0.4, -1.3, -1.3), roll=-25,
+                        src='M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Python): Waffe fast ganz aus dem Bild, nur der Rand x ≥ 72 / '
+                            'y ≥ 85, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik'),
         ),
         keep=dict(
             hip='M Destiny-Schrotflinte Hüfte: Mündung FILO 57/63 (Motiongen huefte:54), ≈ 58/66 (destiny2:495); Lage E wie die Automatik: '
-                'an der Schrotflinte gerechnet Mündung 58,4/64,1 %',
-            sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Schrotflinten-Sprint nicht gemessen '
-                   '(Motiongen destiny2:566)'),
+                'an der Schrotflinte gerechnet Mündung 58,4/64,1 %'),
         frames=dict(aim_in=10, aim_out=3, draw=27),
         frames_src='M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem '
                    'Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis '
@@ -1070,11 +1153,11 @@ CLASSES = {
         # Lineare Fusion (0.33, P3): Aufladen → ein Schuss (wie die Fusion, ohne Salve; Linearkern leuchtet mit der Ladung). Nachladen der
         # Bezugsklasse mit der Energiezelle hinter dem Griff
         poses=dict(
-            hip=dict(pos=(-0.151, -0.417, -0.191), aim=(-0.132, -3.397, -0.536), roll=4.2,
-                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung '
-                         'gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung '
-                         'eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) '
-                         'Mündung 57,9/68,5 %, Visier 73,0/58,8 %'),
+            hip=dict(pos=(-0.204, -0.424, -0.228), aim=(0.025, -3.415, -0.28), roll=4.2,
+                     src='M Motiongen REF 0.35 Backblast › C (z-bb-neigung): lineare Fusion Man O\' War Fluchtpunkt 46/56, lange Diagonale '
+                         '+17…+21°; Nutzerbefund Testbuild 0.33 „LFR-Hüfte zu tief“ (31.10.2026). Lage E (tools/bildlage.py --fit): '
+                         'Fluchtpunkt 45/52 (zwischen Automatik 44,7/48,7 und Man O\' War) statt 49,6/63,4, Mündung 58/65 % statt 57,9/68,5, '
+                         'Visier 70,7/64,8 %. Bis 0.34: huefte.json-Ausgleich (Mündung 58/69, 58/68, Visier 73/57, 73/60)'),
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-lineare-Fusion-Sprint nicht gemessen '
                          '(Motiongen destiny2:569)'),
@@ -1112,14 +1195,19 @@ CLASSES = {
                          'unten Mitte; der Ring ist ≈ 9 % B groß. Lage E: der Bogen steht 27 cm näher an der Kamera als der Ankerpunkt des vollen '
                          'Auszugs (Socket_Eye 23 cm hinter dem Auge, Sehne und Zughand hinter der Kamera; Nutzer 30.10.2026: „beim Bogen ist das '
                          'Visier näher am Bild“; mit 23 cm ≈ 6 % B im Bildvergleich), gerechnet Ring 50/50 % mit Ø 52 mm in 0,41 m ≈ 9,8 % B'),
-            drawn=dict(pos=(0.0, -0.49, -0.16), aim=(-0.776, -3.388, 0.101), roll=-65,
-                       src='M Destiny-Bogen Imperial Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer '
+            drawn=dict(pos=(-0.001, -0.477, -0.159), aim=(-0.001, -3.477, -0.159), roll=-65,
+                       src='M Motiongen REF 0.35 Backblast › D (z-bb-bogen-huefte): die Pfeilachse zeigt in allen Phasen durch die Bildmitte '
+                            '(acht Bögen, Schnitt bei y = 50: x 47,7–51,4), voll gespannt 61–75° im Bild; Nutzerbefund Testbuild 0.33 '
+                            '„Hüftzielen zeigt nach rechts, Schuss geht daneben“: bis 0.34 lag der Fluchtpunkt bei 67,4/39,6. 0.35 E '
+                            '(tools/bildlage.py --fit): Fluchtpunkt 50/50, Pfeilspitze 52,7/65,7, Nocke 58,5/99,4 (Achse im Bild 73°). Vorher M Destiny-Bogen Imperial '
+                           'Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer '
                            'gekantet, etwas gehoben, Ring ≈ 57/64 %, linke Hand unten ≈ 47/89 %, oberer Wurfarm rechts aus dem Bild, Zughand '
                            'nicht sichtbar (andere Bögen stehen dabei rechts senkrecht, destiny2:221). Lage E (Ausgleichsrechnung), gerechnet '
                            'Griff 50/88 %, Ring 57/64 %, voller Auszug hinter der Kamera'),
-            sprint=dict(pos=(-0.12, -0.40, -0.03), aim=(0.0, -2.6, -0.5), roll=-20,
-                        src='O cubeescape-reference destiny2:221 (Sprint, wahrscheinlich): Riser größer und höher, Mitte ≈ 68/55 %, oberes '
-                            'Wurfarmende aus dem Bild, ≈ 20° geneigt; destiny2:231 ohne Pfeil tief rechts. Lage E, gerechnet Griff 69/61 %'),
+            sprint=dict(pos=(-0.14, -0.38, -0.13), aim=(0.4, -2.6, -0.28), roll=-75,
+                        src='M Motiongen REF 0.35 Backblast › D/E2 (z-bb-bogen-sprint, vier Bögen): flach quer rechts unten, Neigung '
+                            '−9…−28° (meist −15…−24°), Oberkante 45–70 % H, Hülle 13–27 %; Nutzerbefund Testbuild 0.33 „Bogen-Sprint zu '
+                            'hoch“. Lage E. Bis 0.34 (O destiny2:221): Riser hoch rechts, Griff 69/61 %'),
             inspect_l=dict(pos=(-0.06, -0.52, -0.14), aim=(1.6, -1.2, 0.0), roll=-60,
                            src='E: Bogen 1 m hoch – Betrachten weiter weg als die Gewehre, Visierseite zur Kamera (gerechnet Ring 50/59 %); '
                                'Destiny hat keinen Ego-Inspect'),
@@ -1130,10 +1218,14 @@ CLASSES = {
                   src='Bogen ohne Magazin (Vorrat): kein Nachladen; Feuer als Klassenaktionen fire_draw/fire_release/let_down statt fire_hip/fire_ads'),
         ads_hand=dict(off=OFF_L, src='E: im ungespannten Zielen hängt die Zughand unter dem Bild (an der Nocke, 0,42 m vor dem Auge, lag der rechte '
                                       'Arm groß rechts im Bild); sie kommt beim Spannen an die Nocke (fire_draw_ads)'),
-        ads_hide=dict(parts=('arrow_shaft', 'arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r'),
-                      src='M Destiny-Bogen im Zielen (Bilder Ultraclocked dKNTDzi__Qo 48,3/67,7 s): vom Pfeil ist nur die Spitze unter dem Ring '
-                          'zu sehen; hier läuft der gespannte Schaft (Seitenvisier: Pfeil 60 mm rechts der Visierlinie) dicht an der Kamera '
-                          'vorbei – Schaft, Nocke und Federn sind im Zielen aus (Regel ADS_HIDE), Spitze und Hülse bleiben'),
+        ads_strip=False,   # 193 B: der Bogen bleibt im Zielen ganz (Destiny: Riser und Wurfarme über die volle Höhe, 6,0–6,8 %; BALLON 9,9 %)
+        ads_hide=dict(parts=('arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r', 'string_top', 'string_bottom'),
+                      src='M Motiongen REF 0.35 Backblast › D (z-bb-bogen-ads): Pfeil senkrecht unter dem Visierpunkt, Spitze 16–22 pp tiefer. Seit '
+                          '0.35 liegt der Pfeil 69,5 mm unter der Visierlinie (Visier über dem Pfeil): der Schaft ist eine schmale Linie von der '
+                          'Spitze bis an den unteren Bildrand (≤ 2,7 % B) und bleibt sichtbar; Nocke und Federn sind im Zielen aus (ungespannt '
+                          'lägen sie unten in der Mitte, gespannt hinter der Kamera), ebenso die Sehne (sie liegt in der Ebene der Visierlinie: '
+                          'ungespannt ein Strich senkrecht durch den Ring, gespannt zwei Striche von oben bis vor die Kamera). Bis 0.34 (Seitenvisier 60 mm neben dem Pfeil) war auch '
+                          'der Schaft aus'),
         hands=dict(swap=True, src='M Destiny: Bogenhand links, Zughand rechts (die Sehnenhand liegt beim Halten rechts unten ≈ 85/95 %, '
                                   'cubeescape-reference destiny2:221/231); Daten: in allen Aktionen tauschen L und R (Griff grip = Bogengriff '
                                   'links, support = Zughand rechts an der Nocke), Bildpunkte unter dem Bild gespiegelt (Nutzerhinweis 30.10.2026: '
@@ -1152,11 +1244,15 @@ CLASSES = {
                     'Bild 18 (wie das Modul: Spannzeit 0,60 s); Heben 0,1 s, dann Ziehen (destiny2:231), senkrecht in 4 Bildern (destiny2:185); '
                     'Spannlicht bei vollem Auszug (Modul draw_hold_release)'),
             fire_draw_ads=dict(
-                de='Spannen im Zielen (Bogen bleibt im Anschlag)', frames=18,
-                weapon=[(0, 'ads'), (18, 'ads')],
+                de='Spannen im Zielen (Ring kommt von unten, die Pfeilspitze bleibt ruhig)', frames=18,
+                weapon=[(0, 'ads'), (4, ('ads', dict(up=-0.055))), (18, 'ads')],
                 L=[(0, OFF_L), (5, 'support'), (18, 'support')], fL=[(0, 'relaxed'), (3, 'open'), (5, 'pinch')],
                 mech=_bow_draw((0, 0), (4, 0), (18, 1)), events=[(18, 'FullDraw')],
-                src='E wie fire_draw, die Waffe bleibt im Zielen (Ringvisier vor dem Auge)'),
+                src='M Motiongen REF 0.35 Backblast › D/E2 (z-bb-bogen-ads): beim Spannen bleibt die Spitze ruhig (≤ 2 pp), der Ring kommt '
+                    'von rechts unten (55,8/68,4 → 50/57,3 in 0,4 s). Lage E: der Bogen senkt sich vor dem Auszug um 55 mm (Ring 67 %) und '
+                    'steigt mit dem Auszug zurück; so wandert die Spitze von Bild 4 bis 18 nur 66,6 → 67,8 % (1,2 pp, tools/bildlage.frame; '
+                    'mit 65 mm stünde sie still, aber der Bogen verließe die Ausblendgrenze ADS_HIDE 6 cm und die Sehne spränge ins Bild). Ring nur von unten, nicht von rechts '
+                    '(E: ein seitlicher Versatz bewegte die Spitze mit). Bis 0.34: Bogen bleibt im Anschlag, Spitze wanderte 9 pp'),
             draw_aim_in=dict(
                 de='Gespannt ins Zielen (Bogen dreht senkrecht vor das Auge, bleibt gespannt)', frames=5,
                 weapon=[(0, 'drawn'), (5, 'ads')], L=[(0, 'support'), (5, 'support')], fL=[(0, 'pinch')],
@@ -1214,7 +1310,9 @@ CLASSES = {
         # Granatwerfer (0.33 „Armory“, P4): Trommel mit sechs Kammern (Spec v2.1 semi_auto, Nutzerwahl „Trommel statt Kipplauf“). Nach jedem
         # Schuss dreht die Trommel eine Kammer weiter (Klassenaktion fire_cycle). Nachladen je Kammer wie die Schrotflinte: reload_tactical
         # (Klappenknopf, Ladeklappe auf, Hülse fällt, erste Granate) ist der Einstieg, reload_shell lädt je eine weitere (Unity bis voll),
-        # reload_end schließt die Klappe; ein Zug am Abzug bricht ab. Die Granate (Griff 'mag', Bauteil grenade) kommt in der linken Hand
+        # reload_end schließt die Klappe; ein Zug am Abzug bricht ab. Ladefolge (0.35): vor jeder Granate dreht die Trommel eine Kammer
+        # zurück (Gegendrehung, bringt die nächste leere Kammer an die Klappe), beim Schließen eine Kammer vor – die Kammern liegen danach in
+        # Schussfolge, auch nach einem abgebrochenen Nachladen. Die Granate (Griff 'mag', Bauteil grenade) kommt in der linken Hand
         # von unter dem Bild und wird von hinten in die Ladekammer geschoben; die Hülse fällt beim Marker Eject (Modul EJECT on='reload')
         poses=dict(
             hip=dict(pos=(-0.17, -0.42, -0.22), aim=(0.10, -3.0, -0.14), roll=6,
@@ -1250,11 +1348,12 @@ CLASSES = {
                 fL=[(0, 'underhand'), (3, 'open'), (5, 'pinch'), (8, 'open'), (12, 'mag_hold'), (23, 'open')],
                 drop=(11, 11), carry=[(14, 21)],
                 mech={'gate_button': [(0, 0), (5, 0), (6, 1), (8, 1), (9, 0)], 'load_gate': [(0, 0), (6, 0), (10, 1), (26, 1)],
-                      'drum': [(0, 0), (22, 0), (25, 1), (25, 0)]},
+                      'drum': [(0, 0), (6, 0), (10, -1), (10, 0)]},
                 events=[(2, 'HandOff'), (10, 'GateOpen'), (11, 'Eject'), (21, 'ShellIn')],
                 src='M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → '
                     'ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer '
-                    'Hülse aus, Granate ein, Trommel weiter); Trommel-Nachladen bei Destiny nicht gemessen'),
+                    'Hülse aus, Granate ein); Trommel-Nachladen bei Destiny nicht gemessen. 0.35: Gegendrehung beim Öffnen (6–10) statt Weiterdrehen '
+                    'nach dem Einlegen (offen aus 0.34: die geladenen Kammern lagen nach teilweisem Nachladen nicht in Schussfolge)'),
             reload_shell=dict(
                 de='Nachladen: eine weitere Granate (Unity wiederholt bis voll)', frames=22,
                 weapon=[(0, 'reload'), (16, 'reload'), (18, ('reload', dict(up=0.005, pitch=-1.5))), (22, 'reload')],
@@ -1262,17 +1361,19 @@ CLASSES = {
                    (22, ('mag', (-60, -20, 20)))],
                 fL=[(0, 'open'), (4, 'mag_hold'), (18, 'open')],
                 drop=(1, 1), carry=[(6, 16)],
-                mech={'load_gate': [(0, 1), (22, 1)], 'drum': [(0, 0), (17, 0), (20, 1), (20, 0)]},
+                mech={'load_gate': [(0, 1), (22, 1)], 'drum': [(0, 0), (2, 0), (6, -1), (6, 0)]},
                 events=[(1, 'Eject'), (16, 'ShellIn')],
-                src='E wie der Einstieg (Hülse aus, Granate holen und einschieben, Trommel weiter), 22 Bilder (× TIME_SCALE 0,92 s) je Kammer'),
+                src='E wie der Einstieg (Trommel eine Kammer zurück, Hülse aus, Granate holen und einschieben), 22 Bilder (× TIME_SCALE 0,92 s) '
+                    'je Kammer; 0.35 Gegendrehung vor dem Einlegen statt Weiterdrehen danach'),
             reload_end=dict(
                 de='Nachladen: Klappe zu, zurück zur Hüfte (voll oder durch Feuer abgebrochen)', frames=10,
                 weapon=[(0, 'reload'), (8, 'hip'), (10, 'hip')],
                 L=[(0, ('mag', (-60, -20, 20))), (2, ('gate', (40, -30, 0))), (4, ('gate', (40, -30, 0))), (8, 'support'), (10, 'support')],
                 fL=[(0, 'open'), (6, 'underhand')],
-                mech={'load_gate': [(0, 1), (2, 1), (4, 0)]},
-                events=[(4, 'GateClosed'), (8, 'HandOn'), (10, 'Ready')],
-                src='E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen)'),
+                mech={'load_gate': [(0, 1), (2, 1), (4, 0)], 'drum': [(0, 0), (4, 0), (7, 1), (7, 0)]},
+                events=[(4, 'GateClosed'), (7, 'Chamber'), (8, 'HandOn'), (10, 'Ready')],
+                src='E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen); 0.35: '
+                    'nach dem Schließen dreht die Trommel eine Kammer vor (die zuletzt geladene Kammer in den Lauf)'),
         ),
         same_reload=True,
         gameplay=dict(rpm=90, magazine=6, path_up_h=0.04, recover_delay_s=0.2, recover_hz=1.7, kick=2.5, flash_scale=0.9,
@@ -1284,46 +1385,72 @@ CLASSES = {
             'Nachladen je Kammer E nach dem Modul'),
     'rocket_launcher': dict(
         # Raketenwerfer (0.33 „Armory“, P4): Einzelschuss (Spec single_shot), Magazin 1. Nach jedem Schuss lädt Unity sofort nach (Klassenaktion
-        # reload_tactical, leer ebenso): die Rakete verlässt das Rohr in den ersten Bildern, die Waffe kommt von der Schulter quer vor den
-        # Körper, Heckklappe auf, die linke Hand holt die nächste Rakete unter dem Bild und schiebt sie von hinten ein (Griffe 'mag' an der
-        # Rakete, 'push' an ihrem Heck), Klappe zu, Bereitschaftsanzeige an
+        # reload_tactical, leer ebenso). 0.35 „Stance“ (Backblast › B): der Werfer kippt quer (Rohr nach rechts oben), die Ladeklappe springt
+        # auf, die linke Hand holt die nächste Rakete von links oben und senkt sie von oben in den Schacht (Griff 'mag' auf der Rakete, 'push'
+        # drückt sie in den Sitz), drückt die Klappe zu ('cap', folgt der Klappe) und verriegelt am Klappenknopf ('charge'); die rechte Hand
+        # bleibt am Griff
         poses=dict(
-            hip=dict(pos=(-0.23, -0.50, -0.16), aim=(-0.01, -3.489, 0.616), roll=0,
-                     src='M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × '
+            hip=dict(pos=(-0.190, -0.418, -0.118), aim=(-0.190, -3.414, -0.273), roll=0,
+                     src='M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): '
+                         'großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, '
+                         'Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E '
+                         '(tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm '
+                         'Tiefe; Etappe 2: 3 mm weiter nach rechts, Freihaltezone A4 15 → 0 px), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung '
+                         '63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × '
                          '17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, '
                          'das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). '
                          'Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
-                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend'),
+                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, '
+                         'Rohr 13° steigend, Heck rechts unten unter dem Arm'),
             sprint=dict(pos=(-0.16, -0.36, -0.28), aim=(0.3, -2.4, -1.3), roll=-20,
                         src='E: Destiny-Raketenwerfer-Sprint nicht gemessen (Motiongen destiny2:572); Rohr von der Schulter gesenkt, Mündung '
                             'nach vorn unten'),
-            reload=dict(pos=(-0.22, -0.52, -0.12), aim=(-2.9, -1.7, -0.5), roll=10,
-                        src='E: Rohr quer vor dem Körper, Mündung nach rechts aus dem Bild, das Heck links im Bild (gerechnet Heckring 26/37 %, '
-                            'Griff 78/77 %)'),
+            reload=dict(pos=(0.129, -0.544, -0.201), aim=(-2.526, -1.585, 0.704), roll=-40,
+                        src='M Motiongen REF 0.35 Backblast › B/E2 (z-bb-rl-nachladen, vier Legendary): Werfer quer, Rohr nach rechts oben '
+                            '(obere Kante −14…−28°), Schacht auf der Oberseite bei x 44–53 / y 47–75, Optikende links unten. Lage E (Ausgleich '
+                            'mit tools/bildlage.frame): Ladeklappe 51/59 % in 0,49 m, Oberkante steigt 21° nach rechts, Schacht zur Kamera '
+                            'gekippt (cos 0,74), Mündung 80/45 %, Visier 30/68 %; der Griff liegt bei BALLON hinter dem Schacht und damit '
+                            'links unten (34/93 %, Destiny 80–98 / 70–95: E, der Griff BGM-1 sitzt 154 mm hinter der Schachtmitte). '
+                            'Bis 0.34: Rohr quer, Mündung nach rechts aus dem Bild, Heck links (Laden von hinten)'),
         ),
-        frames=dict(aim_in=6, aim_out=5, draw=14),
-        frames_src='M Destiny-Raketenwerfer ADS ein 14 Bilder bei 60/s (Motiongen destiny2:594) → 6 Bilder bei 30/s (wie Scharfschütze); ADS '
-                   'aus nicht gemessen → E 5; Ziehen 0,18 s bis Hüfte (destiny2:481) + Ausfedern E → 14',
+        frames=dict(aim_in=15, aim_out=16, draw=27),
+        frames_src='M Motiongen REF 0.37 Verdict › D/G (z-v37-rl-gjallarhorn): Gjallarhorn ADS ein / aus 15 / 16 echte Bilder bei 30/s '
+                   '(0,50 / 0,53 s) → aim_in 15, aim_out 16 (Umrechnung wie Automatik 20 B60 → 10: gleiche Dauer); Ziehen nach Wechsel bis '
+                   'ruhig 0,90 s mit Überschwingen −11,5 / +16,7 pp (Gjallarhorn) bzw. 0,30 s ohne (Todbringer, O) → draw 27 E: der '
+                   'schwere Werfer schwingt mit dem Feder-Nachlauf nach wie Gjallarhorn. Bis 0.34: aim_in 6 (Destiny 14 B60, destiny2:594), '
+                   'aim_out 5 E, draw 14 (0,18 s bis Hüfte, destiny2:481)',
         actions=dict(
             reload_tactical=dict(
-                de='Nachladen nach dem Schuss (Heckklappe auf, Rakete von hinten einschieben, Klappe zu)', frames=84,
-                weapon=[(0, 'hip'), (3, ('hip', dict(back=0.02, pitch=3))), (14, 'reload'), (44, 'reload'),
-                        (56, ('reload', dict(right=-0.01, up=0.004))), (62, ('reload', dict(right=-0.015))), (66, 'reload'), (72, 'reload'),
-                        (80, ('hip', dict(up=-0.004))), (84, 'hip')],
-                L=[(0, 'support'), (4, 'support'), (12, 'cap'), (14, 'cap'), (18, OFF_L), (24, OFF_L), (44, 'mag'), (52, 'mag'),
-                   (55, 'push'), (60, 'push'), (64, ('cap', (-25, -20, 30))), (68, ('cap', (-10, -10, 25))), (72, ('cap', (0, 0, 20))),
-                   (80, 'support'), (84, 'support')],
-                fL=[(0, 'foregrip'), (5, 'open'), (12, 'pinch'), (15, 'open'), (20, 'mag_hold'), (53, 'open'), (64, 'open'), (78, 'foregrip')],
-                drop=(2, 2), carry=[(24, 44)],
-                mech={'rocket': [(0, 0), (2, -3), (30, -3), (30, 0.5), (44, 0.5), (52, 0.25), (60, 0)],
-                      'cap_release': [(0, 0), (12, 0), (13, 1), (15, 1), (16, 0)], 'breech_cap': [(0, 0), (14, 0), (20, 1), (64, 1), (72, 0)],
-                      'ready_light': [(0, 1), (1, 0), (72, 0), (76, 1)]},
-                events=[(0, 'Launch'), (4, 'HandOff'), (20, 'BreechOpen'), (60, 'MagIn'), (72, 'BreechClosed'), (80, 'HandOn'), (82, 'Ready')],
-                src='M Destiny-Raketenwerfer Nachladen ≈ 2,8 s (Eyes of Tomorrow, Motiongen destiny2:276/513) → 84 Bilder (× TIME_SCALE 3,5 s), '
-                    'Rakete sitzt bei 60; Ablauf E nach dem Modul (reload: Klappenknopf, Heckklappe, Rakete von hinten, Klappe, Anzeige); die '
-                    'Rakete fliegt in 2 Bildern aus dem Rohr (danach verdeckt), die Hand holt die nächste unter dem Bild'),
+                de='Nachladen nach dem Schuss (Werfer quer, Ladeklappe auf, Rakete von oben in den Schacht, Klappe zu, verriegeln)',
+                frames=70,
+                weapon=[(0, 'hip'), (3, ('hip', dict(back=0.02, pitch=3))), (13, 'reload'), (26, ('reload', dict(up=0.004))),
+                        (29, ('reload', dict(up=-0.008))), (32, 'reload'), (36, ('reload', dict(up=-0.005))), (40, 'reload'), (44, 'reload'),
+                        (58, ('hip', dict(up=-0.004))), (70, 'hip')],
+                L=[(0, 'support'), (4, 'support'), (11, OFF_TL), (22, ('mag', (0, 60, 0))), (25, 'mag'), (28, 'mag'), (30, 'push'),
+                   (32, ('push', (0, 30, 0))), (34, ('cap', (0, 25, 0))), (36, 'cap'), (40, 'cap'), (43, 'charge'), (45, 'charge'),
+                   (47, ('charge', (0, 10, 25))), (56, 'support'), (70, 'support')],
+                fL=[(0, 'foregrip'), (5, 'open'), (11, 'mag_hold'), (28, 'mag_hold'), (30, 'open'), (41, 'open'), (43, 'pinch'), (47, 'open'),
+                    (54, 'foregrip')],
+                drop=(0, 1), carry=[(11, 25)],
+                mech={'rocket': [(0, 0), (1, 0.25), (25, 0.25), (28, 0.04), (30, 0)],
+                      'load_hatch': [(0, 0), (4, 0), (10, 1), (33, 1), (36, 0.3), (40, 0)],
+                      'cap_release': [(0, 0), (43, 0), (44, 1), (45, 1), (46, 0)], 'ready_light': [(0, 1), (1, 0), (44, 0), (48, 1)]},
+                events=[(0, 'Launch'), (4, 'HandOff'), (10, 'BreechOpen'), (30, 'MagIn'), (40, 'BreechClosed'), (45, 'Chamber'),
+                        (56, 'HandOn'), (58, 'Ready')],
+                src='M Motiongen REF 0.35 Backblast › B/G, E2 (z-bb-rl-nachladen, z-bb-rl-zeiten): Start → ruhig 2,6–3,0 s (Hoosegow 3,00 s '
+                    'in Normaltempo, Blue Shift 3,03, Mos Epoch 2,73), „im Schacht“ 0,5–1,2 s nach dem Start → 70 Bilder (× TIME_SCALE '
+                    '2,92 s), Rakete im Schacht bei 30 (1,25 s), Klappe zu 40, verriegelt 45, ruhig 70. Ablauf nach Backblast › B: quer '
+                    'kippen, linke Hand bringt die Rakete von links oben und senkt sie von oben ein, Druck von oben, Klappe, Werfer dreht '
+                    'zurück; die Klappe springt nach dem Schuss selbst auf (E). Die Rakete verlässt das Rohr im Schussbild (danach '
+                    'ausgeblendet, Unity fliegt das Geschoss). Bis 0.34: 84 Bilder (3,5 s), Heckklappe, Rakete von hinten'),
         ),
         same_reload=True,
+        ads_hide=dict(parts=('rear_tube', 'tube_cone', 'rear_ring', 'hinge_block', 'breech_cap', 'cap_rim', 'shoulder_rest'),
+                      src='M Motiongen REF 0.35 Backblast › F (z-bb-bildanteil): Destiny-Werfer im Zielen nur am rechten Rand (Hoosegow x 81–100, '
+                          '16,6–16,8 %); Nutzerentscheid 194 (31.10.2026): BALLON-Zielbild nicht mehr 50 %. Das Heckrohr läuft neben dem Auge '
+                          '33 mm an der Kamera vorbei – Heckrohr, Kegel, Heck und Schulterauflage sind im Zielen aus (Regel ADS_HIDE wie beim '
+                          'Zielfernrohr); Startrohr, Visier, Griffe bleiben. Allein gemessen 50,1 → 50,4 % (das Startrohr läuft zur Mitte); '
+                          'mit ADS_STRIP (Nutzer „So wie Destiny“, Startrohr bis auf die Mündung aus) 11,2 %'),
         gameplay=dict(rpm=20, magazine=1, path_up_h=0.0, recover_hz=1.5, kick=4.0, flash_scale=0.7,
                       src='S Destiny-Raketenwerfer 20/min, Magazin 1 (Motiongen destiny2:276); Feuerart aus der Spec (Einzelschuss, danach sofort '
                           'nachladen); keine Bahnstufe, Kick 4,0 E: Schub zur Kamera, Linse 10 → 25 % H in 3–4 Bildern (destiny2:501); '
@@ -1439,6 +1566,12 @@ def profile(W):
         for k in FOLLOW_HIP:
             if k not in C['poses']:
                 poses[k] = _follow(poses['hip'], POSES['hip'], POSES[k])
+    SR = ads_strip_rule(W, C)
+    if 'ads' in poses and SR and SR.get('back_m'):   # 0.35 (193 B): Kamera im Zielen hinter Socket_Eye, je Klasse
+        e = poses['ads']['eye']
+        poses['ads'] = dict(poses['ads'], eye=(e[0], round(e[1] - SR['back_m'], 6), e[2]),
+                            src=poses['ads']['src'] + f" · 0.35 Nutzerentscheid 193 B: Kamera {SR['back_m'] * 1000:.0f} mm hinter Socket_Eye "
+                                                      f"(ego.ADS_STRIP_CLASS)")
     actions = {k: copy.deepcopy(A) for k, A in ACTIONS.items() if k not in drop.get('actions', ())}
     mmap, back = C.get('mech_map', {}), C.get('charge_back_mm')
     for A in actions.values():                       # Bauteile der Bezugswaffe → Bauteile der Klasse (Pistole: Schlitten statt Ladehebel)
@@ -1496,6 +1629,11 @@ def profile(W):
     for k in ('path_up_h', 'recover_delay_s', 'recover_hz'):   # Bahn je Klasse (0.22), sonst gemeinsam (ego.RECOIL)
         G.setdefault(k, RECOIL[k])
     G.setdefault('kick', 1.0)                   # Modellkick und Kamera-Ruck je Schuss relativ zu ego.RECOIL (0.22; Clips und Unity gleich)
+    G['ads_hide_arms'] = bool(ads_strip_rule(W, C) and ads_strip_rule(W, C)['arms'] and 'ads' in poses)   # 193 B
+    recoil = dict(RECOIL, **C.get('recoil', {}))  # Rückstoßfedern je Klasse (0.35, Handfeuerwaffe: Kippen und Unterschwingen), sonst RECOIL
+    recoil.pop('src', None)
+    if 'recoil' in C:                           # nur Klassen mit eigenem Satz tragen ihn im Export (gameplay.recoil, Unity RecoilOr)
+        G['recoil'] = recoil
     for A in actions.values():
         if A.get('fire') and G['kick'] != 1.0:
             A['kick'] = G['kick']
@@ -1523,9 +1661,10 @@ def profile(W):
         A['src'] = f"{A['src']}; Klasse {t}: {rpm}/min, {FIRE_MODES[fire_mode]} (Schussbilder {A['fire']})"
     live = getattr(W, 'EGO_LIVE', None) or LIVE
     P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=G, src=C['src'],
-             frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop,
+             frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop, recoil=recoil,
              mag=grips.get('mag', {}).get('part', 'magazine'),   # Bauteil, das das Nachladen trägt (carry/drop): Magazin, Energiezelle (0.33)
              hands_swap=bool(C.get('hands', {}).get('swap')),     # Bogenhand links (0.33 P4)
-             ads_hide=tuple(C.get('ads_hide', {}).get('parts', ())))   # Teile, die im Zielen aus sind, je Klasse (0.33 P4, Bogen)
+             ads_hide=tuple(dict.fromkeys(tuple(C.get('ads_hide', {}).get('parts', ())) +   # je Klasse (0.33 P4, Bogen)
+                                          (ads_strip_parts(W, C) if 'ads' in poses else ()))))   # Zielbild wie Destiny (0.35, 193 B)
     _PROFILES[wid] = P
     return P

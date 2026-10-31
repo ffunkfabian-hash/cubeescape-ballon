@@ -24,13 +24,14 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Ergonomie | Griffstück mit Handballenwölbung, Pfeilauflage direkt über der Hand, Zughand am Nockpunkt |
 
 Visier: B1 „Pins“ (Baukasten v3, visier-konzept › 6a; `common.pins`): drei Leuchtpins von der Pinschiene rechts sind das Absehen,
-Ring Ø 52 auf einer kurzen H0-Plattform; die Plattform klemmt auf einer Schiene BRI-22 am Visierträger **links neben** dem
-Fensterbogen (Seitenvisier, Ringmitte 60 mm links und 27,5 mm über dem Pfeil – der Ringrand bleibt auch vor der Vorderkante
-des Fensterbogens frei, Richter 0.29; Nutzer 28.10.2026: „das visier muss nach links, nicht nach rechts“ – Wahl „ganz zur linken
-Seite“). Augenpunkt am Ankerpunkt bei vollem Auszug (20 mm hinter dem Nockpunkt), in
-Linie mit dem Ring; Visierhöhe als Abstand zum Pfeil 66 mm (Familie; seitliche Visiere nur links, Regel aus 0.28). Im Zielbild
-steht der Fensterbogen damit rechts neben dem Ring wie der Riser bei Destiny („Riser knapp rechts der Mitte“, cubeescape-reference
-destiny2 › Imperial Needle ADS); die Pfeilspitze liegt rechts unten statt in der Mitte (Abweichung, Seitenvisier).
+Ring Ø 52 auf einer kurzen H0-Plattform; die Plattform klemmt auf einer Schiene BRI-22 **direkt über dem Pfeil** (0.35 „Stance“,
+Motiongen REF 0.35 Backblast › D/E2, z-bb-bogen-ads: Visierpunkt 50/50, Pfeil senkrecht darunter in derselben Spalte, Spitze 16–22 pp
+tiefer; Nutzerbefund Testbuild 0.33 „Pfeil beim Spannen unsichtbar“). Der Visierträger hält die Schiene vom Fensterbogen aus an ihrer
+linken Flanke; der Ring steht vor der Vorderkante des Mittelstücks. Visierhöhe 69,5 mm über dem Pfeil (66 ± 4): bei vollem Auszug liegt
+die Spitze im Zielen ≈ 18 pp unter dem Ring. Augenpunkt am Ankerpunkt bei vollem Auszug (20 mm hinter dem Nockpunkt), in Linie mit dem
+Ring. Der Fensterbogen steht im Zielbild links neben Pfeil und Ring (Destiny: Riser rechts; E, Kröpfung links seit 0.29). Bis 0.34:
+Seitenvisier 60 mm links und 27,5 mm über dem Pfeil (Nutzer 28.10.2026: „das visier muss nach links“), Spitze rechts unten hinter
+dem Riser.
 Schlichtheitsbudget: Leuchten 2 Funktionen (Visier: Pinköpfe · Auszug: Spannlicht) · Grafik 1 Band · Schrift 1 · Orange 2 (Klemmhebel
 des Visiers, Leitfeder des Pfeils) · Schrauben nur an Pinschiene und Rollenachsen.
 Proportion: Spanne 1016 mm (v1 1018), H/L mit Pfeil (Motiongen-Definition: L = Spanne, H in Pfeilrichtung) 0,72; Destiny-Bogen
@@ -65,9 +66,10 @@ AXLE = (-150, 478)           # Rollenachse oben (unten gespiegelt); die Sehne en
 CAM_R = 30
 CAM_DEG = 90                 # Rollendrehung beim vollen Auszug (oben im, unten gegen den Uhrzeigersinn, Seitenansicht vorn rechts)
 ARROW = (-150, 505)          # Pfeilschaft Nocke bis Spitzenhülse
-WIN = dict(x_in=16.0, x_out=32.0, u0=38.0, u1=170.0)   # Sichtfenster: rechts davon frei für den Pfeil (Federn bis x 13), links der Fensterbogen
-SIGHT_X = 60                 # Seitenvisier links neben dem Fensterbogen (Nutzer 28.10.2026: „das visier muss nach links“); Auge ebenso
-SIGHT_U = ARROW_U + math.sqrt(SIGHT['height_mm'] ** 2 - SIGHT_X ** 2)   # Visierlinie 66 mm vom Pfeil (seitlich: Abstand, wie 0.28)
+WIN = dict(x_in=28.0, x_out=44.0, u0=38.0, u1=170.0)   # Sichtfenster: rechts davon frei für Pfeil und Blick durch den Ring (0.35: x_in 16 → 28,
+                                                       # der Kegel vom Auge durch den Ring über dem Pfeil braucht x ≥ 27), links der Fensterbogen
+SIGHT_X = 0                  # 0.35: Visier direkt über dem Pfeil (Backblast › D); bis 0.34 60 mm links neben dem Fensterbogen
+SIGHT_U = ARROW_U + SIGHT['height_mm'] + 3.5   # Visierlinie 69,5 mm über dem Pfeil (66 ± 4): Spitze im Zielen ≈ 18 pp unter dem Ring
 DECK = SIGHT_U - PINS_SIZES['M'] - PINS_LINE                             # Schienenoberkante am Visierträger
 W_RISER = 30
 
@@ -117,13 +119,12 @@ P += [
 P += [
     part('sight_arm', 'Visierträger', 'Sight arm', 'riser', 'multi', 'anodized', 'Trägt die Visierschiene links neben dem Fensterbogen',
          'außen an der Kröpfung des Mittelstücks verschraubt (6 mm eingelassen)', bevel=R_FINE,
-         # Richter 0.29 Runde 2: begann bei f 26 und schwebte 14 mm vor dem Mittelstück (Vorderkante dort f 12) → ab f 6;
-         # quer vom Fensterbogen (x bis 32,25, Kröpfung u 18–38) bis unter die Schiene (x 49–71)
-         items=[dict(shape='box', f0=6, f1=62, u0=DECK - 14, u1=DECK - 6, w=SIGHT_X - 11 - WIN['x_out'] + 8,
-                     x=(SIGHT_X - 11 + WIN['x_out'] - 4) / 2 + 2)]),
+         # 0.35: neben der Schiene (nicht darunter: unter der Schiene läge er im Zielen über der Pfeilspitze), vom Fensterbogen
+         # (x 28–44, Vorderkante bei u ≈ 72 auf f ≈ 39) bis an die linke Schienenflanke (x 11); bis 0.34 quer bis unter die Schiene links
+         items=[dict(shape='box', f0=30, f1=52, u0=DECK - 9, u1=DECK - 1, w=21, x=21)]),
 ]
-P += [dict(p, asm='riser', iface='BRI-22', x=SIGHT_X) for p in rail(30, 104, DECK - 8)]
-P[-1]['cuts'] = [cut_box(36 + 12 * i, 41 + 12 * i, DECK - 4, DECK + 1, 30, x=SIGHT_X) for i in range(6)]
+P += [dict(p, asm='riser', iface='BRI-22', x=SIGHT_X) for p in rail(40, 104, DECK - 8)]
+P[-1]['cuts'] = [cut_box(46 + 12 * i, 51 + 12 * i, DECK - 4, DECK + 1, 30, x=SIGHT_X) for i in range(5)]
 _sight, SIGHT_ANCHORS = side_mount(*pins(56, DECK, eye_f=STRING_F - DRAW - EYE_BEHIND), SIGHT_X)
 P += _sight
 # ---------------------------------------------------------------- Wurfarme (gespalten), Rollen mit Durchbrüchen

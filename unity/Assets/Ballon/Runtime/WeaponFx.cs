@@ -517,11 +517,17 @@ namespace Ballon.Ego
         }
 
         /// <summary>Projektil der Waffe k (Granate, Rakete, Pfeil) mit eigener Flugbahn ab der Mündung: Geschwindigkeit fx.speed_mps längs
-        /// dir, Fall fx.gravity_mps2; ein Hindernis zwischen Kamera und Mündung trifft sofort.</summary>
+        /// dir, Fall fx.gravity_mps2; ein Hindernis zwischen Kamera und Mündung trifft sofort. Die Flugrichtung zielt von der Mündung auf den
+        /// Punkt unter dem Fadenkreuz (0.35, Nutzerbefund Bogen „Schuss geht daneben“: parallel zur Blickachse lief die Bahn neben der Mitte
+        /// vorbei; Destiny-Pfeilachse durch die Bildmitte, Motiongen REF 0.35 › D): erster Treffer längs dir, sonst AimRange voraus.</summary>
         public void Launch(int k, Vector3 dir, EgoFx fx, int ignoreMask)
         {
             var cam = _p.worldCam.transform.position;
             var a = MuzzleWorld(k);
+            var A = _p.loadouts[0].rig.S.D.motion.aim;
+            float range = A != null && A.range_m > 0 ? A.range_m : AimRange;
+            var aim = Physics.Raycast(cam, dir, out var ah, range, ignoreMask, QueryTriggerInteraction.Ignore) ? ah.point : cam + dir.normalized * range;
+            if ((aim - a).sqrMagnitude > 1e-4f) dir = aim - a;
             int j = -1;
             for (int i = 0; i < ProjectilePool; i++) if (!_projOn[i]) { j = i; break; }
             if (j < 0)                                                   // Pool voll: das älteste weiter fliegende ersetzen
@@ -547,6 +553,9 @@ namespace Ballon.Ego
             _projR[j].enabled = true;
             if (Physics.Linecast(cam, a, out var hit, ignoreMask, QueryTriggerInteraction.Ignore)) Land(j, hit);
         }
+
+        /// <summary>Rückfall der Zielweite (m) für Exporte ohne motion.aim (ego.AIM, 0.35); sonst gilt motion.aim.range_m.</summary>
+        public const float AimRange = 60f;
 
         /// <summary>Startpunkt des letzten Projektils (Mündung in der Welt, Tests).</summary>
         public Vector3 LastLaunch { get; private set; }

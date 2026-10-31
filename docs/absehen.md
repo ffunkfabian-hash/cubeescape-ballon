@@ -143,17 +143,17 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 |---|---|---|---|---|---|
 | `auto_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.6 | beobachtet | **×1.9** | ×2.4 |
 | `pulse_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.7 | beobachtet | **×2.0** | ×2.5 |
-| `scout_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×1.2 | gemessen (Glidepath) | ×1.5 | **×2.0** |
+| `scout_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×2.2 | gemessen (Verdict) | ×2.5 | **×3.0** |
 | `hand_cannon` | Kimme und Korn mit leuchtenden Klammern | ×1.15 | gemessen (Glidepath) | **×1.15** | ×1.15 |
 | `sidearm` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `submachine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.45 | gemessen (Glidepath) | **×1.45** | ×1.45 |
 | `shotgun` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `grenade_launcher` | runde Linse mit Winkel | ×1.4 | beobachtet | **×1.4** | ×1.4 |
-| `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×4.0 | beobachtet | **×4.0** | ×4.0 |
+| `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×4.7 | gemessen (Verdict) | **×4.7** | ×4.7 |
 | `fusion_rifle` | Ring oder Doppelring | ×1.15 | gemessen (Gapfill) | **×1.45** | ×1.95 |
 | `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×2.2 | gemessen (Gapfill) | ×2.5 | **×3.0** |
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | gemessen (Gapfill) | **×1.8** | ×2.3 |
-| `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
+| `rocket_launcher` | runde Linse mit Winkel | ×3.0 | gemessen (Verdict) | **×3.3** | ×3.8 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |
 | `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.9 | entworfen | **×2.2** | ×2.7 |
 | `sword` | kein Visier | ×1.0 | entworfen | **×1.3** | ×1.8 |

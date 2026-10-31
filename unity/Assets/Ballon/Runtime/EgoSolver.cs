@@ -421,7 +421,7 @@ namespace Ballon.Ego
             }
             if (A.fire != null && A.fire.Length > 0)
             {
-                var Rc = D.motion.recoil;
+                var Rc = D.gameplay.RecoilOr(D.motion.recoil);
                 float k = A.kick, dt = 1f / fps;
                 // Zielen (5.1 A, wie ego_build): kleiner Modellkick, kein Hochziehen, der Kamera-Ruck geht nur in die Welt
                 bool ads = A.EndsInAds;

@@ -698,7 +698,7 @@ namespace Ballon.Ego
 
             // Rückstoß (ego.RECOIL): Modellkick und Kamera-Ruck als Federn (kritisch gedämpft: kein Unterschwingen), Hochziehen des
             // Modells klingt nach dem Feuern ab; die Grundbahn steigt in der Salve und kehrt danach kritisch gedämpft zurück (5.2 A)
-            var Rc = S.D.motion.recoil;
+            var Rc = S.D.gameplay.RecoilOr(S.D.motion.recoil);
             EgoSolver.SpringStep(ref _recX, ref _recV, Vector3.zero, 2 * Mathf.PI * Rc.freq_hz, Rc.zeta, dt);
             EgoSolver.SpringStep(ref _recCx, ref _recCv, Vector3.zero, 2 * Mathf.PI * Rc.cam_freq_hz, Rc.cam_zeta, dt);
             if (_sinceShot > interval * 1.5f) _rClimb *= Mathf.Exp(-dt * S.fps / 8f);
@@ -793,7 +793,7 @@ namespace Ballon.Ego
             _sinceShot = 0;
             _boltT = tune.boltOpenS;
             _portOpen = true;
-            var Rc = S.D.motion.recoil;
+            var Rc = S.D.gameplay.RecoilOr(S.D.motion.recoil);
             float w = adsWeight;
             // Modellkick: im Zielen klein (Visier < 1 % H), ohne Hochziehen; Kamera-Ruck gleich, er wird erst beim Anwenden verteilt
             float kick = S.D.gameplay.kick;               // je Klasse (0.22, Werkzeug 0,6), wie die Feueraktion im Clip
@@ -855,6 +855,11 @@ namespace Ballon.Ego
             float rollW = _walk.bob.roll * _bobW + _sprintA.bob.roll * _sprintW;
             L.pos += new Vector3(side * Mathf.Sin(_bobPh), 0, up) * bobK;
             L.rot = L.rot * RotY(Rad(rollW * Mathf.Sin(_bobPh) * bobK + _tilt));
+            // Laufen (0.35, Verdict): Waffe abgesenkt um den Versatz des ersten Schlüssels von walk, mit dem Wippgewicht, im Zielen aus
+            var wk = _walk.weapon[0];
+            float lw = _bobW * (1 - adsWeight);
+            L.pos.z += wk.up * lw;
+            L.rot = L.rot * RotX(Rad(-wk.pitch * lw));
             // Pendeln: Gieren um die Hochachse der Waffe, Nicken um die Querachse, leichte Lageverschiebung
             L.rot = L.rot * RotZ(Rad(_sway.x)) * RotX(Rad(_sway.y));
             L.pos += new Vector3(-_sway.x, 0, _sway.y) * tune.swayPos;
@@ -968,10 +973,11 @@ namespace Ballon.Ego
 
         /// <summary>Füllstand (0.34, weapon.live.rounds) für das Modell: Gurt (line) Satz i an, solange mehr als i Patronen da sind; Trommel
         /// (drum) je Kammer – ein Schuss leert die Laufkammer, eine geladene Patrone füllt die Ladekammer, springt die Trommel zurück
-        /// (fire_cycle, Laden), rückt der Zustand eine Kammer weiter (k → k + 1). Weicht die Zahl geladener Kammern von der Munition ab
-        /// (Test setzt ammo, Abbruch), wird in Schussfolge aufgefüllt bzw. von hinten geleert; beim Zurückspringen nach dem Schuss (fire_cycle)
-        /// werden die Kammern in Schussfolge geordnet (nach teilweisem Nachladen). Beim Nachladen ist die Ladekammer immer zu sehen (die
-        /// Granate kommt in der Hand). Kein Speicher je Bild.</summary>
+        /// (fire_cycle, Schließen nach dem Laden), rückt der Zustand eine Kammer weiter (k → k + 1); springt sie aus der Gegendrehung zurück
+        /// (vor jeder Granate, 0.35), eine Kammer zurück (k → k − 1). Weicht die Zahl geladener Kammern von der Munition ab (Test setzt ammo),
+        /// wird in Schussfolge aufgefüllt bzw. von hinten geleert. Mit der Gegendrehung liegen die Kammern nach jedem Nachladen in Schussfolge
+        /// (bis 0.34 ordnete fire_cycle sie nach teilweisem Nachladen um). Beim Nachladen ist die Ladekammer immer zu sehen (die Granate kommt
+        /// in der Hand). Kein Speicher je Bild.</summary>
         void Rounds(EgoOutput o)
         {
             var R = S.D.weapon.live.rounds;
@@ -989,10 +995,12 @@ namespace Ballon.Ego
                 bool last = _chamber[n - 1];
                 for (int k = n - 1; k > 0; k--) _chamber[k] = _chamber[k - 1];
                 _chamber[0] = last;
-                // Nach dem Schuss (fire_cycle) in Schussfolge ordnen: nach vollem Nachladen und Schüssen ändert das nichts; nach einem
-                // teilweisen Nachladen (das Laden dreht in Schussrichtung, die geladenen Kammern liegen dann nicht in Schussfolge) fällt
-                // der Wechsel in die Drehung, danach leert jeder Schuss sichtbar die Laufkammer
-                if (_t.A.name.StartsWith("fire_cycle", StringComparison.Ordinal)) InFiringOrder();
+            }
+            else if (_drumPrev < -0.5f && drum > -0.5f)                 // Gegendrehung springt zurück (Laden, 0.35): eine Kammer zurück
+            {
+                bool first = _chamber[0];
+                for (int k = 0; k < n - 1; k++) _chamber[k] = _chamber[k + 1];
+                _chamber[n - 1] = first;
             }
             _drumPrev = drum;
             for (; _roundsAmmo > ammo; _roundsAmmo--) Take(R.barrel, -1, false);   // Schuss: Laufkammer, sonst die nächste in Schussfolge
