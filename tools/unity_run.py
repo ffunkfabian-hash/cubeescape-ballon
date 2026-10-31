@@ -109,7 +109,11 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'feuer': 'BALLON 0.16 Flash · Unity · Mündungsfeuer (1 Bild bei 30/s) und Hülsen: Hüfte und Zielen',
          'quickdraw': 'BALLON 0.18 Quickdraw · Unity · Automatik → Taste 2 → MP: Hüfte, Zielen (Anflug 4d), Sprint (tief, nach links gerollt)',
          'spotter': 'BALLON 0.20 Spotter · Unity · Taste 3 → Scout: Hüfte, Zielfernrohr (Weltzoom 2,0), Einzelfeuer, Sprint',
-         'volley': 'BALLON 0.22 Volley · Unity · 1 → 4 Impuls (Salve Hüfte/Zielen) → 5 Portalkanone (A links, B rechts) → 2 → 3 → 1'}
+         'volley': 'BALLON 0.22 Volley · Unity · 1 → 4 Impuls (Salve Hüfte/Zielen) → 5 Portalkanone (A links, B rechts) → 2 → 3 → 1',
+         'projektil': 'BALLON 0.34 Payload · Unity · Granatwerfer (Bogen, Explosion, Laufrauch) → Raketenwerfer (gerade, Rauchspur)',
+         'strahlen': 'BALLON 0.34 Payload · Unity · Spurgewehr (Dauerstrahl) → Fusion (Bolzen) → lineare Fusion (Strahl) → Bogen (Pfeil)',
+         'streuschuss': 'BALLON 0.34 Payload · Unity · Schrot (Streukegel, Hüfte/Zielen) → Automatik → Handfeuerwaffe: Einschläge, Löcher',
+         'fuellstand': 'BALLON 0.34 Payload · Unity · MG (Glieder, Gurt, Zählfenster) → Granatwerfer (Kammern) → Handfeuerwaffe (Trommel, Hülsen)'}
 WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1', 4: 'BASIC-02-v2.1', 5: 'BASIC-T01-v2.1', 6: 'BASIC-04-v2.1',
            7: 'BASIC-05-v2.1', 8: 'BASIC-09-v2.1', 9: 'BASIC-12-v2.1', 10: 'BASIC-15-v2.1', 11: 'BASIC-08-v2.1', 12: 'BASIC-10-v2.1',
            13: 'BASIC-11-v2.1', 14: 'BASIC-07-v2.1', 15: 'BASIC-13-v2.1', 16: 'BASIC-14-v2.1'}   # Waffe n → ID (tools/export_unity.WEAPONS;

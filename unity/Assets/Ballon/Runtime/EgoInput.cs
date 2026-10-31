@@ -137,6 +137,7 @@ namespace Ballon.Ego
                 case "weapon3": r.select = 3; break;
                 case "weapon4": r.select = 4; break;
                 case "weapon5": r.select = 5; break;
+                case var w when w.StartsWith("weapon") && int.TryParse(w.Substring(6), out int wn): r.select = wn; break;   // 0.34: alle Waffen
                 case "menu": r.menu.toggle = true; break;          // 0.33 Ziel 2: Waffenmenü (Aufnahme, Tests)
                 case "menu_next": r.menu.wheel = 1; break;
                 case "menu_prev": r.menu.wheel = -1; break;

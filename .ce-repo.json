@@ -1,7 +1,7 @@
 {
   "name": "cubeescape-ballon",
-  "version": "0.33.2",
-  "version_name": "Armory",
+  "version": "0.34.0",
+  "version_name": "Payload",
   "check": {
     "quick": [
       [

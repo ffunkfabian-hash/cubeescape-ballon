@@ -70,9 +70,17 @@
    "en": "Ammunition feed",
    "parts": [
     "load_gate",
-    "grenades",
     "grenade_cases",
+    "grenades",
     "grenade_bands",
+    "grenade_k1",
+    "grenade_band_k1",
+    "grenade_k2",
+    "grenade_band_k2",
+    "grenade_k3",
+    "grenade_band_k3",
+    "grenade_k4",
+    "grenade_band_k4",
     "grenade",
     "grenade_case",
     "grenade_band"
@@ -1431,57 +1439,16 @@
    "removable": false
   },
   {
-   "id": "grenades",
-   "name_de": "Granaten",
-   "name_en": "Grenades",
-   "assembly": "ammo",
-   "function_de": "Fünf 40-mm-Granaten in der Trommel (sichtbar in den Fenstern)",
-   "attachment_de": "in den Kammern",
-   "material_role": "dark_metal",
-   "material_de": "Brüniertes Metall",
-   "interface": null,
-   "parent_part": "drum",
-   "shape": "multi",
-   "bevel_mm": 1.5,
-   "blender_object": "grenades",
-   "origin_m": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "bounds_m": {
-    "min": [
-     -0.05967,
-     -0.196,
-     0.00017
-    ],
-    "max": [
-     0.05967,
-     -0.133,
-     0.13183
-    ]
-   },
-   "size_mm": [
-    119.3,
-    63.0,
-    131.7
-   ],
-   "triangles": 2840,
-   "volume_cm3": 325.26,
-   "moving": null,
-   "removable": false
-  },
-  {
    "id": "grenade_cases",
    "name_de": "Granathülsen",
    "name_en": "Grenade cases",
    "assembly": "ammo",
-   "function_de": "Hülsen der fünf Granaten",
-   "attachment_de": "an den Granaten",
+   "function_de": "Hülsen der fünf Granaten (bleiben nach dem Schuss in der Kammer)",
+   "attachment_de": "in den Kammern",
    "material_role": "brass",
    "material_de": "Messing (Patronen)",
    "interface": null,
-   "parent_part": "grenades",
+   "parent_part": "drum",
    "shape": "multi",
    "bevel_mm": 0.6,
    "blender_object": "grenade_cases",
@@ -1513,12 +1480,53 @@
    "removable": false
   },
   {
-   "id": "grenade_bands",
-   "name_de": "Zünderringe",
-   "name_en": "Fuse bands",
+   "id": "grenades",
+   "name_de": "Granate Kammer 0",
+   "name_en": "Grenade chamber 0",
    "assembly": "ammo",
-   "function_de": "Kennzeichnen die Granaten (Munitionskennung)",
-   "attachment_de": "auf den Granatköpfen",
+   "function_de": "Granatkopf in der Kammer (sichtbar im Kammerfenster); fehlt, wenn die Kammer verschossen ist",
+   "attachment_de": "in der Kammer auf der Hülse",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "drum",
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "grenades",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01983,
+     -0.196,
+     0.09217
+    ],
+    "max": [
+     0.01983,
+     -0.133,
+     0.13183
+    ]
+   },
+   "size_mm": [
+    39.7,
+    63.0,
+    39.7
+   ],
+   "triangles": 568,
+   "volume_cm3": 65.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_bands",
+   "name_de": "Zünderring Kammer 0",
+   "name_en": "Fuse band chamber 0",
+   "assembly": "ammo",
+   "function_de": "Kennzeichnet die Granate (Munitionskennung)",
+   "attachment_de": "auf dem Granatkopf",
    "material_role": "accent",
    "material_de": "Akzent Orange (Bedienelement)",
    "interface": null,
@@ -1533,23 +1541,351 @@
    ],
    "bounds_m": {
     "min": [
-     -0.06006,
+     -0.02023,
      -0.149,
-     -0.00023
+     0.09177
     ],
     "max": [
-     0.06006,
+     0.02023,
      -0.141,
      0.13223
     ]
    },
    "size_mm": [
-    120.1,
+    40.5,
     8.0,
-    132.5
+    40.5
    ],
-   "triangles": 1420,
-   "volume_cm3": 51.46,
+   "triangles": 284,
+   "volume_cm3": 10.29,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_k1",
+   "name_de": "Granate Kammer 1",
+   "name_en": "Grenade chamber 1",
+   "assembly": "ammo",
+   "function_de": "Granatkopf in der Kammer (sichtbar im Kammerfenster); fehlt, wenn die Kammer verschossen ist",
+   "attachment_de": "in der Kammer auf der Hülse",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "drum",
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "grenade_k1",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05967,
+     -0.196,
+     0.06917
+    ],
+    "max": [
+     -0.02001,
+     -0.133,
+     0.10883
+    ]
+   },
+   "size_mm": [
+    39.7,
+    63.0,
+    39.7
+   ],
+   "triangles": 568,
+   "volume_cm3": 65.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_band_k1",
+   "name_de": "Zünderring Kammer 1",
+   "name_en": "Fuse band chamber 1",
+   "assembly": "ammo",
+   "function_de": "Kennzeichnet die Granate (Munitionskennung)",
+   "attachment_de": "auf dem Granatkopf",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "grenade_k1",
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "grenade_band_k1",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.06006,
+     -0.149,
+     0.06877
+    ],
+    "max": [
+     -0.01961,
+     -0.141,
+     0.10923
+    ]
+   },
+   "size_mm": [
+    40.5,
+    8.0,
+    40.5
+   ],
+   "triangles": 284,
+   "volume_cm3": 10.29,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_k2",
+   "name_de": "Granate Kammer 2",
+   "name_en": "Grenade chamber 2",
+   "assembly": "ammo",
+   "function_de": "Granatkopf in der Kammer (sichtbar im Kammerfenster); fehlt, wenn die Kammer verschossen ist",
+   "attachment_de": "in der Kammer auf der Hülse",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "drum",
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "grenade_k2",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.05967,
+     -0.196,
+     0.02317
+    ],
+    "max": [
+     -0.02001,
+     -0.133,
+     0.06283
+    ]
+   },
+   "size_mm": [
+    39.7,
+    63.0,
+    39.7
+   ],
+   "triangles": 568,
+   "volume_cm3": 65.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_band_k2",
+   "name_de": "Zünderring Kammer 2",
+   "name_en": "Fuse band chamber 2",
+   "assembly": "ammo",
+   "function_de": "Kennzeichnet die Granate (Munitionskennung)",
+   "attachment_de": "auf dem Granatkopf",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "grenade_k2",
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "grenade_band_k2",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.06006,
+     -0.149,
+     0.02277
+    ],
+    "max": [
+     -0.01961,
+     -0.141,
+     0.06323
+    ]
+   },
+   "size_mm": [
+    40.5,
+    8.0,
+    40.5
+   ],
+   "triangles": 284,
+   "volume_cm3": 10.29,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_k3",
+   "name_de": "Granate Kammer 3",
+   "name_en": "Grenade chamber 3",
+   "assembly": "ammo",
+   "function_de": "Granatkopf in der Kammer (sichtbar im Kammerfenster); fehlt, wenn die Kammer verschossen ist",
+   "attachment_de": "in der Kammer auf der Hülse",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "drum",
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "grenade_k3",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.01983,
+     -0.196,
+     0.00017
+    ],
+    "max": [
+     0.01983,
+     -0.133,
+     0.03983
+    ]
+   },
+   "size_mm": [
+    39.7,
+    63.0,
+    39.7
+   ],
+   "triangles": 568,
+   "volume_cm3": 65.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_band_k3",
+   "name_de": "Zünderring Kammer 3",
+   "name_en": "Fuse band chamber 3",
+   "assembly": "ammo",
+   "function_de": "Kennzeichnet die Granate (Munitionskennung)",
+   "attachment_de": "auf dem Granatkopf",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "grenade_k3",
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "grenade_band_k3",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02023,
+     -0.149,
+     -0.00023
+    ],
+    "max": [
+     0.02023,
+     -0.141,
+     0.04023
+    ]
+   },
+   "size_mm": [
+    40.5,
+    8.0,
+    40.5
+   ],
+   "triangles": 284,
+   "volume_cm3": 10.29,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_k4",
+   "name_de": "Granate Kammer 4",
+   "name_en": "Grenade chamber 4",
+   "assembly": "ammo",
+   "function_de": "Granatkopf in der Kammer (sichtbar im Kammerfenster); fehlt, wenn die Kammer verschossen ist",
+   "attachment_de": "in der Kammer auf der Hülse",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "drum",
+   "shape": "multi",
+   "bevel_mm": 1.5,
+   "blender_object": "grenade_k4",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.02001,
+     -0.196,
+     0.02317
+    ],
+    "max": [
+     0.05967,
+     -0.133,
+     0.06283
+    ]
+   },
+   "size_mm": [
+    39.7,
+    63.0,
+    39.7
+   ],
+   "triangles": 568,
+   "volume_cm3": 65.05,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "grenade_band_k4",
+   "name_de": "Zünderring Kammer 4",
+   "name_en": "Fuse band chamber 4",
+   "assembly": "ammo",
+   "function_de": "Kennzeichnet die Granate (Munitionskennung)",
+   "attachment_de": "auf dem Granatkopf",
+   "material_role": "accent",
+   "material_de": "Akzent Orange (Bedienelement)",
+   "interface": null,
+   "parent_part": "grenade_k4",
+   "shape": "multi",
+   "bevel_mm": 0.8,
+   "blender_object": "grenade_band_k4",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.01961,
+     -0.149,
+     0.02277
+    ],
+    "max": [
+     0.06006,
+     -0.141,
+     0.06323
+    ]
+   },
+   "size_mm": [
+    40.5,
+    8.0,
+    40.5
+   ],
+   "triangles": 284,
+   "volume_cm3": 10.29,
    "moving": null,
    "removable": false
   },
@@ -2301,7 +2637,7 @@
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
-  "parts": 48,
+  "parts": 56,
   "triangles": 43364,
   "assemblies": 8
  },

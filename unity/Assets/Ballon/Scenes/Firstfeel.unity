@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &502203730
+--- !u!1 &2115638632
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,8 +127,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 502203732}
-  - component: {fileID: 502203731}
+  - component: {fileID: 2115638634}
+  - component: {fileID: 2115638633}
   m_Layer: 0
   m_Name: Firstfeel
   m_TagString: Untagged
@@ -136,13 +136,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &502203731
+--- !u!114 &2115638633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502203730}
+  m_GameObject: {fileID: 2115638632}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20087572eab344f5aaf16962429f0fb2, type: 3}
@@ -330,8 +330,13 @@ MonoBehaviour:
   targetRing: {fileID: 2100000, guid: 46ec238baa2c8459e9f204dcf5be6af1, type: 2}
   flash: {fileID: 2100000, guid: 70f9786cecf484a4db327b434ea311d6, type: 2}
   post: {fileID: 2100000, guid: 62fbbf3b5d461438da7991fb941fdca7, type: 2}
-  decal: {fileID: 2100000, guid: 19ef0c35cd8db498dbbe6792f4e82eaa, type: 2}
+  decal: {fileID: 2100000, guid: 25d084139ebc84d079ce2b533a91abf0, type: 2}
   backdrop: {fileID: 2100000, guid: a37e820a3c2ea4d57b717f1d881373e3, type: 2}
+  fxSpark: {fileID: 2100000, guid: c9c52a8938c1e4479bc37b6c90876ce0, type: 2}
+  fxGlow: {fileID: 2100000, guid: b5f3c9916271a4229ba8943276e865d4, type: 2}
+  fxSmoke: {fileID: 2100000, guid: caaeff194956648e09fd09298dffdea7, type: 2}
+  fxRing: {fileID: 2100000, guid: 0cdafd4ac81f94777ad939e39d73e660, type: 2}
+  fxBeam: {fileID: 2100000, guid: 707946d5f791b4a77bf26ddc9132b34e, type: 2}
   sceneJson:
   - {fileID: 4900000, guid: b775ad8cc1a964a98bbe297310c86d3d, type: 3}
   scenePrefabs:
@@ -356,13 +361,13 @@ MonoBehaviour:
     - {fileID: 2800000, guid: 4fc9c5c947a214967811e8dad1f1ae77, type: 3}
     - {fileID: 2800000, guid: d9de11eaaf87e42fd8ffe8827696a1e6, type: 3}
     - {fileID: 2800000, guid: 4701c9673dd3f4bae917834a1c9c2c21, type: 3}
---- !u!4 &502203732
+--- !u!4 &2115638634
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502203730}
+  m_GameObject: {fileID: 2115638632}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -375,4 +380,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 502203732}
+  - {fileID: 2115638634}

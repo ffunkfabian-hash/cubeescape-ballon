@@ -23,6 +23,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | M Destiny-Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A) |
+| Wirkung | Kugel, Einschlag bullet | E: Einschlag Kugel (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | ego.GRIPS (Pilotwaffe) |
 | Live-Teile | trigger = trigger, bolt = bolt_carrier, port = port_cover | ego.LIVE (Pilotwaffe) |
@@ -128,6 +129,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | pistol (20 × 9.2 mm) | E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01); Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Destiny-MP: Kick im Zielen ≤ 1 % H, Kamera-Anstieg < 2 % [M, ein PvP-Clip], keine Klassenmessung der Bahn |
+| Wirkung | Kugel, Einschlag bullet | E: Einschlag Kugel (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = bolt, port = port_cover | Modul-Feld EGO_LIVE |
@@ -235,6 +237,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts im Einteilgehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01); Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Destiny-Scout Tone Patrol: kräftiger Einzelimpuls, Rest wächst vor den Folgeschüssen, im Zielen fünf Schüsse ≈ 6 % H [M] (Motiongen rueckstoss › 4) – hier dieselbe Säule je Schuss, Salve = Schüsse im Abstand ≤ 1,5 × 60/rpm |
+| Wirkung | Kugel, Einschlag bullet | E: Einschlag Kugel (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = bolt, port = port_cover | Modul-Feld EGO_LIVE |
@@ -340,6 +343,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts im Oberen Gehäuse (port_cover f 22–74), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01); Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Destiny-Impuls Gridskipper: Stufe ≈ 4 pp H je Salve, Erholung in der Pause, im Zielen Welt ≈ 5 pp H, Visier < 1 pp [M] (Motiongen rueckstoss › r-d2-gridskipper) – Bahnstufe der Klasse, zweistufig |
+| Wirkung | Kugel, Einschlag bullet | E: Einschlag Kugel (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = bolt_carrier, port = port_cover | Modul-Feld EGO_LIVE |
@@ -445,6 +449,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | keins (Werkzeug) | Cube Escape (Q-CE-14/15): Linksklick Portal A (Cyan #1AD9FF), Rechtsklick Portal B (Orange #FF7314), Abklingzeit 0,25 s → 240/min, Kick E 0,6 der Automatik (Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild, portal2.md), Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul t01 fire_a/fire_b), Richtung je Portal; ohne Mündungsfeuer und ohne Bahnstufe (E: Werkzeug, Rückmeldung über Ring und Treffermarke in Portalfarbe) |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | keine | Werkzeug: eigene Treffermarke in Portalfarbe (0.22), keine Wirkung (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = , port = , ring = emitter_ring | Modul-Feld EGO_LIVE |
@@ -527,11 +532,12 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Dauer `aim_out` | 2.4 Bilder bei 30/s (0.080 s) | M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) → wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News 16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25) |
 | Dauer `draw` | 18 Bilder bei 30/s (0.600 s) | M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) → wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News 16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25) |
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
-| Hülsen | keine | Waffe ohne Feld EJECT |
+| Hülsen | revolver (30 × 11.2 mm) | M beim Nachladen (Motiongen muendung › 3/5); E: hinten aus den Kammern, nach hinten und außen (vom Rahmen weg, zur Kamera), 0,8 s sichtbar; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Kugel, Einschlag heavy | E: Einschlag schwer (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
-| Live-Teile | trigger = trigger, bolt = hammer, port =  | Modul-Feld EGO_LIVE |
+| Live-Teile | trigger = trigger, bolt = hammer, port = , index = cylinder | Modul-Feld EGO_LIVE |
 
 ### Haltungen
 
@@ -638,6 +644,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | pistol (20 × 9.2 mm) | E: Auswurffenster rechts im Schlitten, Hülse nach rechts, etwas hoch und vorn (wie BASIC-06); Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Kugel, Einschlag bullet | E: Einschlag Kugel (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = slide, port =  | Modul-Feld EGO_LIVE |
@@ -745,6 +752,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts beim Zurückziehen des Verschlusses (Stängel links), Hülse nach rechts, etwas hoch und vorn (wie Destiny, Motiongen muendung › 6); Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Kugel, Einschlag heavy | E: Einschlag schwer (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |
@@ -771,8 +779,8 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | `idle_hip` | Ruhe an der Hüfte (Atmen) | 75 (2.50 s) | – | offen° | offen | offen | E |
 | `draw` | Ziehen | 23 (0.77 s) | Ready (17) | offen° | offen | offen | M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse sniper_rifle: 25 → 23 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) – bis 0.33.1; Nutzerentscheid 31.10.2026: Gapfill Defiance of Yasmin / Cloudstrike ein 25 / 27, aus 21 / 26–28 Bilder bei 60/s bis Ruhe → aim_in 13, aim_out 12 (über Automatik 20 → 10 hinaus linear, 22 → 11); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)) |
 | `holster` | Wegstecken | 8 (0.27 s) | HandOff (1), Holstered (8) | offen° | offen | offen | M Destiny-Wechsel: Wegstecken 0,08–0,27 s (Motiongen wechsel › 4, Entscheidungsliste 6.1 A) → 0,27 s ohne TIME_SCALE (bis 0.14: 0,60 s); Ablauf E (CE: Holster ab aktueller Stellung) |
-| `aim_in` | Hüfte → Zielen | 13 (0.43 s) | Aimed (12) | offen° | offen | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse sniper_rifle: 10 → 13 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) – bis 0.33.1; Nutzerentscheid 31.10.2026: Gapfill Defiance of Yasmin / Cloudstrike ein 25 / 27, aus 21 / 26–28 Bilder bei 60/s bis Ruhe → aim_in 13, aim_out 12 (über Automatik 20 → 10 hinaus linear, 22 → 11); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)) |
-| `aim_out` | Zielen → Hüfte | 12 (0.40 s) | Ready (12) | offen° | offen | offen | E; Klasse sniper_rifle: 8 → 12 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) – bis 0.33.1; Nutzerentscheid 31.10.2026: Gapfill Defiance of Yasmin / Cloudstrike ein 25 / 27, aus 21 / 26–28 Bilder bei 60/s bis Ruhe → aim_in 13, aim_out 12 (über Automatik 20 → 10 hinaus linear, 22 → 11); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)) |
+| `aim_in` | Hüfte → Zielen | 13 (0.43 s) | Aimed (12) | 28.0° | ego_BASIC-09-v2.1_aim_in.mp4 | offen | E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse sniper_rifle: 10 → 13 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) – bis 0.33.1; Nutzerentscheid 31.10.2026: Gapfill Defiance of Yasmin / Cloudstrike ein 25 / 27, aus 21 / 26–28 Bilder bei 60/s bis Ruhe → aim_in 13, aim_out 12 (über Automatik 20 → 10 hinaus linear, 22 → 11); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)) |
+| `aim_out` | Zielen → Hüfte | 12 (0.40 s) | Ready (12) | 28.0° | ego_BASIC-09-v2.1_aim_out.mp4 | offen | E; Klasse sniper_rifle: 8 → 12 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s) – bis 0.33.1; Nutzerentscheid 31.10.2026: Gapfill Defiance of Yasmin / Cloudstrike ein 25 / 27, aus 21 / 26–28 Bilder bei 60/s bis Ruhe → aim_in 13, aim_out 12 (über Automatik 20 → 10 hinaus linear, 22 → 11); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)) |
 | `fire_hip` | Dauerfeuer aus der Hüfte | 32 (1.07 s) | Fire (2) | offen° | offen | offen | M 720/min = 1 Schuss je 2,5 Bilder (Q-REF; bis 0.14 alle 2 Bilder ≈ 940/min); Rückstoß T 17,5 mm/3°; Klasse sniper_rifle: 90/min, Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads) (Schussbilder [2, 22]) |
 | `fire_ads` | Dauerfeuer im Zielen | 32 (1.07 s) | AimFire (2) | offen° | offen | offen | M Kadenz wie fire_hip; Rückstoß im Zielen nach RECOIL ads_* (5.1 A: Visier steht, die Welt wandert) E; Klasse sniper_rifle: 90/min, Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads) (Schussbilder [2, 22]) |
 | `reload_tactical` | Nachladen (Kastenmagazin tauschen, am Ende repetieren) | 82 (2.73 s) | HandOff (4), MagOut (10), MagIn (26), Eject (44), Chamber (48), HandOn (60), Ready (78) | offen° | ego_BASIC-09-v2.1_reload_tactical.mp4 | offen | M Destiny-Scharfschütze Far Future: MagOut +0,28, MagIn +0,70, Kammerstängel +1,2, Hüfte 2,07, ruhig 2,18 s (Motiongen nachladen:58) → Marker bei 8/21/36/62 von 65 Bildern, × TIME_SCALE; Ablauf E wie das Nachladen der Automatik, Repetieren am Kammerknopf links (Nutzer 28.10.2026) aus der Hüfte wie fire_cycle (aus der Nachladehaltung lag der Oberarm groß vor der Kamera); taktisch gegen leer nicht gemessen (Entscheidungsliste) |
@@ -854,9 +862,10 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | keins (Werkzeug) | S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse (Energiezelle, EJECT None) |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Dauerstrahl 4.5 cm | E: durchgehender Strahl 4,5 cm vom Lauf zum Einschlag, solange der Abzug zieht, flackernd; Destiny Prometheus Lens: Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %, Strahl und Kontakt beginnen gemeinsam (destiny2 › z-ballista-prometheus-lens) (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
-| Live-Teile | trigger = trigger, bolt = , port = , glow = ('focus_lens', 'disc_lens') | Modul-Feld EGO_LIVE |
+| Live-Teile | trigger = trigger, bolt = , port = , glow = focus_lens + disc_lens | Modul-Feld EGO_LIVE |
 
 ### Haltungen
 
@@ -959,9 +968,10 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | rifle (42 × 9.6 mm) | E: Auswurffenster rechts unter der Klappe port_cover, Hülse nach rechts und etwas nach unten; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Kugel, Einschlag bullet, Leuchtspur jeder 3. Schuss | E: Einschlag Kugel; Leuchtspur jeder 3. Schuss, 320 m/s, 2,4 m, warmweiß (BF6 B36A4: roter Strich zur Bildmitte ist Leuchtspur, Motiongen muendung › z-mf-bf6-b36a4; Häufigkeit und Farbe E) (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge, cover | Modul-Feld EGO_GRIPS |
-| Live-Teile | trigger = trigger, bolt = bolt, port = port_cover | Modul-Feld EGO_LIVE |
+| Live-Teile | trigger = trigger, bolt = bolt, port = port_cover, index = belt, rounds = line (4 Sätze), fill = counter_cell_1 + counter_cell_2 + counter_cell_3 + counter_cell_4 + counter_cell_5 | Modul-Feld EGO_LIVE |
 
 ### Haltungen
 
@@ -1063,6 +1073,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | shotshell (50 × 19 mm) | E: Auswurffenster rechts im Oberen Gehäuse beim Zurückziehen der Pumpe, Hülse nach rechts, etwas hoch und vorn; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Schrot 12 Kugeln, Kegel 3° | E: 12 Kugeln gleichmäßig im Kegel 3,0° (halber Öffnungswinkel; Zielen × 0,75), ein Ring um die Mitte; Destiny-Schrot 12 Kugeln (Community-Wert, nicht gemessen), Pelletmuster offen (Motiongen destiny2 › Methode 16) (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |
@@ -1177,9 +1188,10 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Bolzen 110 m/s, 2.5 m | E: je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang (sichtbar fliegend bis 30 m); Destiny: Bolzenzahl, Abstand und Streuung offen, Mündungskern ≈ 10–15 % (destiny2 › z-ballista-cartesian-coordinate, Methode 16) (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
-| Live-Teile | trigger = trigger, bolt = , port = , glow = ('ember_core', 'sight_emitter') | Modul-Feld EGO_LIVE |
+| Live-Teile | trigger = trigger, bolt = , port = , glow = ember_core + sight_emitter | Modul-Feld EGO_LIVE |
 
 ### Haltungen
 
@@ -1286,9 +1298,10 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Strahl 3.5 cm, 0.22 s | E: ein scharfer Strahl je Schuss, 0,22 s sichtbar und schmaler werdend; Destiny Threaded Needle: diffuse Ring-/Aufhellungsphase ohne isolierten Kern (Motiongen muendung › 7) (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, charge | Modul-Feld EGO_GRIPS |
-| Live-Teile | trigger = trigger, bolt = , port = , glow = ('linear_core',) | Modul-Feld EGO_LIVE |
+| Live-Teile | trigger = trigger, bolt = , port = , glow = linear_core | Modul-Feld EGO_LIVE |
 
 ### Haltungen
 
@@ -1397,6 +1410,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | keins (Werkzeug) | Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen destiny2:270); Takt E 60/min (begrenzt nicht: Lösen, Auflegen und Spannen dauern 1,3 s, Destiny Lösen → Lösen 1,45 s); keine Bahnstufe (die Welt steigt nicht, der Bogen ruckt), Kick 1,5 E (Wurfarme-Ruck, destiny2:498); kein Mündungsfeuer, keine Hülse |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Pfeil 70 m/s, Fall 4 m/s², steckt 4 s | E: Pfeil 70 m/s mit leichter Fallkurve, steckt 4 s, Leuchtspur; beim Lösen ein Lichtpuls an der Auflage; Destiny Imperial Needle: blauer Entladefächer 2 Bilder ≈ 22 % beim Lösen (destiny2 › z-ballista-imperial-needle), Pfeilfall und Steckdauer offen (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, nock | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = , bolt = , port =  | Modul-Feld EGO_LIVE |
@@ -1499,9 +1513,10 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | grenade_40 (35 × 42 mm) | E: aus der Ladekammer durch die offene Ladeklappe, nach links unten (Stützhand-Seite, Waffe beim Nachladen abgesenkt); nur beim Nachladen; Bahn: M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Projektil 42 m/s, Fall 7 m/s², Explosion 3 m, Laufrauch 1.4 s | E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), Explosion Radius 3 m, Rauch aus dem Lauf 1,4 s; Destiny: Geschoss sichtbar 3 Bilder bei 60/s, Einschlag 0,13 s nach dem Blitz (FalloutPlays, destiny2 › 2: Granatwerfer 2 Schuss), Ignition Code sichtbare Spur 6 Bilder – keine reine Flugzeit (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, gate, charge | Modul-Feld EGO_GRIPS |
-| Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |
+| Live-Teile | trigger = trigger, bolt = , port = , rounds = drum (6 Sätze, Trommel drum) | Modul-Feld EGO_LIVE |
 
 ### Haltungen
 
@@ -1611,6 +1626,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
+| Wirkung | Projektil 34 m/s, Fall 0 m/s², Explosion 4.5 m, Laufrauch 2 s | E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m, Rauchspur, Rauch aus dem Rohr 2 s; Destiny: große Explosion 0,45 s nach dem Blitz (Motiongen destiny2 › z-ballista-blue-shift), keine reine Flugzeit (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, push, cap, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |

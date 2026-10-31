@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.34.0 „Payload“ – Wirkung der Waffen, Hülsen und Füllstände (Branch `claude/ballon-0.34-payload`)
+
+- Welteffekte in Unity (`WeaponFx.cs`, Shader `Ballon/Fx`, Unity-Partikelsystem, alles gepoolt, virtuelle Zeit): Granate im Bogen und gerade
+  Rakete mit Explosion (Blitz, Feuer, Druckring, Funken, Rauch, Licht, Brandfleck) und Rauch aus dem Lauf; Dauerstrahl, Fusionsbolzen,
+  scharfer Strahl, Pfeil mit Leuchtspur; Schrot-Streuschuss (12 Kugeln); Einschläge mit Funken, Staub, Licht und neuen Löchern (Rand, Ruß,
+  vier Formen, Ausblenden, Pool 96); MG-Leuchtspur.
+- Modell: Trommel der Handfeuerwaffe dreht je Schuss, Hülsen beim Nachladen; MG-Gurtglied und Gurtvorschub je Schuss, Gurt und
+  Zählfenster zeigen den Füllstand; Granatwerfer-Kammern geladen/leer (neue Teile in w13/w15, nur diese neu gebacken).
+- Alle Werte als Daten in `basic/arms/ego.py` (PAYLOAD, IMPACTS, DECAL, EXPLOSION, MUZZLE_SMOKE, INDEX) → `ego.json`, Entwurf E,
+  Entscheidungsliste Block 9; Bericht [docs/versions/0.34-payload.md](docs/versions/0.34-payload.md).
+
 ## 0.33.2 Patch „zeiten“ – Zielen und Ziehen nach Gapfill (Nutzerentscheid 31.10.2026; Branch `claude/ballon-patch-zeiten`)
 
 - Zielen ein/aus (Bilder bei 30/s): kurze Fusion 7/8, Scharfschütze 13/12, Scout 9/8, Schrotflinte ein 10; Ziehen bis ruhig: Impuls 23,

@@ -156,13 +156,35 @@ def _band(c, f0):
 
 
 _full = [_ch(a) for k, a in enumerate(ANG) if k != GATE_K]
+# Füllstand (0.34 „Payload“): je Kammer ein eigener Granatkopf mit Zünderring, damit Unity leere Kammern zeigt (der Kopf ist weg, die
+# Hülse bleibt bis zum Nachladen). Kammer 0 (Laufachse) behält die IDs grenades/grenade_bands, die Kammern 1–4 sind neu; die Hülsen
+# bleiben ein Teil (grenade_cases), die Ladekammer (5) ist das Teil grenade.
+_KS = [k for k in range(6) if k != GATE_K]
+
+
+def _head_id(k):
+    return 'grenades' if k == 0 else f'grenade_k{k}'
+
+
+def _band_id(k):
+    return 'grenade_bands' if k == 0 else f'grenade_band_k{k}'
+
+
 P += [
-    part('grenades', 'Granaten', 'Grenades', 'ammo', 'multi', 'dark_metal', 'Fünf 40-mm-Granaten in der Trommel (sichtbar in den Fenstern)',
-         'in den Kammern', bevel=R_SMALL, smooth=True, parent_part='drum', items=[i for c in _full for i in _grenade(c, G0)]),
-    part('grenade_cases', 'Granathülsen', 'Grenade cases', 'ammo', 'multi', 'brass', 'Hülsen der fünf Granaten',
-         'an den Granaten', bevel=0.6, smooth=True, parent_part='grenades', items=[i for c in _full for i in _case(c, G0)]),
-    part('grenade_bands', 'Zünderringe', 'Fuse bands', 'ammo', 'multi', 'accent', 'Kennzeichnen die Granaten (Munitionskennung)',
-         'auf den Granatköpfen', bevel=R_FINE, smooth=True, parent_part='grenades', items=[i for c in _full for i in _band(c, G0)]),
+    part('grenade_cases', 'Granathülsen', 'Grenade cases', 'ammo', 'multi', 'brass', 'Hülsen der fünf Granaten (bleiben nach dem Schuss in der Kammer)',
+         'in den Kammern', bevel=0.6, smooth=True, parent_part='drum', items=[i for c in _full for i in _case(c, G0)]),
+]
+for k in _KS:
+    c = _ch(ANG[k])
+    P += [
+        part(_head_id(k), f'Granate Kammer {k}', f'Grenade chamber {k}', 'ammo', 'multi', 'dark_metal',
+             'Granatkopf in der Kammer (sichtbar im Kammerfenster); fehlt, wenn die Kammer verschossen ist',
+             'in der Kammer auf der Hülse', bevel=R_SMALL, smooth=True, parent_part='drum', items=_grenade(c, G0)),
+        part(_band_id(k), f'Zünderring Kammer {k}', f'Fuse band chamber {k}', 'ammo', 'multi', 'accent',
+             'Kennzeichnet die Granate (Munitionskennung)', 'auf dem Granatkopf', bevel=R_FINE, smooth=True, parent_part=_head_id(k),
+             items=_band(c, G0)),
+    ]
+P += [
     part('grenade', 'Ladegranate', 'Loading grenade', 'ammo', 'multi', 'dark_metal', 'Granate der Ladekammer; wird von hinten eingeschoben',
          'in der Ladekammer', bevel=R_SMALL, smooth=True, parent_part='drum', items=_grenade(GATE_C, G0),
          move=dict(kind='translate', pivot=(G0 + 50, GATE_C[0], GATE_C[1]), vector_mm=(-100, 0, 0), event='reload', removable=True,
@@ -232,7 +254,13 @@ EGO_GRIPS = {
     'charge':  dict(contact=(34, 126, W_REC / 2 + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
                     src='E wie gate (vom Nachladen nicht genutzt)'),
 }
-EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss; die Trommel dreht fire_cycle
+# Live-Teile: nur der Abzug je Schuss; die Trommel dreht fire_cycle. rounds (0.34 „Payload“): Füllstand je Kammer in Kammerfolge ANG
+# (k = 0 Laufachse, 5 Ladekammer); Unity verfolgt, welche Kammer geladen ist (Schuss leert die Laufkammer, ShellIn füllt die Ladekammer,
+# die Trommel trägt den Zustand mit, sobald sie nach fire_cycle bzw. dem Laden zurückspringt) und blendet Kopf und Zünderring leerer
+# Kammern aus; die Hülse bleibt. Drehsinn: die Trommel bringt Kammer k nach k + 1 (die Ladekammer 5 rückt in den Lauf).
+EGO_LIVE = dict(trigger='trigger', bolt='', port='',
+                rounds=dict(mode='drum', drum='drum', barrel=0, gate=GATE_K,
+                            sets=[['grenade', 'grenade_band'] if k == GATE_K else [_head_id(k), _band_id(k)] for k in range(6)]))
 _idx = [22 + 14 * k for k in range(6)]          # Kammerwechsel beim Laden
 ACTIONS = {
     'fire': dict(de='Schuss, Trommel eine Kammer weiter', frames=18, step=1, keys={

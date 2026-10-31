@@ -139,7 +139,14 @@ namespace Ballon.Ego
         readonly float[] _shAge;
         readonly int[] _shId;
         readonly bool[] _shOn;
-        int _shNext;
+        readonly bool[] _shLink;                    // 0.34: mit Gurtglied (MG, Hülse je Schuss)
+        readonly Vector3[] _shOff;                  // 0.34: Versatz auf dem Kammerkreis (Hülsen beim Nachladen)
+        readonly float[] _shLife;                   // 0.34: Lebensdauer je Platz (beim Nachladen × eject.life_k)
+        int _shNext, _pendingReload;
+        // Füllstand (0.34, weapon.live.rounds): Kammern der Trommel (drum) – geladen je Kammer k, Trommelwert im letzten Bild, Munition dort
+        readonly bool[] _chamber;
+        float _drumPrev;
+        int _roundsAmmo = -1;
         /// <summary>Schüsse seit dem Start, die eine Hülse auswarfen (Messwert für Tests).</summary>
         public long shellsEjected;
         // Werkzeug mit Portalen (0.22, gameplay.portals): Ring in Dritteln (live, folgt dem Ziel in ring_turn_s), letztes Portal, Zug je Taste
@@ -173,6 +180,10 @@ namespace Ballon.Ego
             _shAge = new float[cap];
             _shId = new int[cap];
             _shOn = new bool[cap];
+            _shLink = new bool[cap];
+            _shOff = new Vector3[cap];
+            _shLife = new float[cap];
+            _chamber = new bool[s.D.weapon.live.rounds.sets.Length];
             _onReady = _ => Ready();
             _onShell = _ => NextShell();
             _onHolster = _ => holstered = true;
@@ -248,6 +259,10 @@ namespace Ballon.Ego
         public string ActionName => _t.A.name;
         public float Frame => _t.frame;
         public bool Busy => _t.busy && !_t.ended;
+        /// <summary>Abzug gezogen und Feuer erlaubt (Dauerstrahl: der Strahl läuft, 0.34).</summary>
+        public bool TriggerHeld => _triggerHeld;
+        /// <summary>Sekunden seit dem letzten Schuss.</summary>
+        public float SinceShot => _sinceShot;
         public Stance CurrentStance => _stance;
         /// <summary>Pendeln in Grad (x Gieren, y Nicken) – Messwert für Aufnahme und Bericht.</summary>
         public Vector2 SwayDeg => _sway;
@@ -305,9 +320,22 @@ namespace Ballon.Ego
                     if (m.name == "Fire") _fireArmed = true;
                     if (m.name == "ShellIn") ammo = Mathf.Min(magSize, ammo + 1);              // Einzelladen (0.33 P3): eine Patrone
                     if (m.name == "Nocked" && S.D.gameplay.Draw) _t.busy = false;               // Bogen (0.33 P4): Pfeil liegt auf, neu spannen
-                    if (m.name == "Eject" && S.Ejects && S.D.gameplay.Cycles) _pendingShells++;  // Repetierer, Pumpe: Hülse beim Zurückziehen
+                    if (m.name == "Eject" && S.Ejects && S.D.weapon.eject.on == "reload")       // Trommel (0.33 P4, 0.34): beim Nachladen je
+                        _pendingReload += WeaponFx.Off ? (S.D.gameplay.Cycles ? 1 : 0) : ReloadShells;                                          // verschossene Kammer eine Hülse
+                    else if (m.name == "Eject" && S.Ejects && S.D.gameplay.Cycles) _pendingShells++;  // Repetierer, Pumpe: Hülse beim Zurückziehen
                     Marker?.Invoke(_t.A.name, m.name);
                 }
+        }
+
+        /// <summary>Hülsen beim Marker Eject einer Trommel: mit Kammerkreis (Handfeuerwaffe) so viele, wie verschossen sind (höchstens
+        /// ring_n), sonst eine, wenn eine Kammer verschossen ist (Granatwerfer: je Kammer beim Laden).</summary>
+        int ReloadShells
+        {
+            get
+            {
+                int spent = magSize - ammo, n = S.D.weapon.eject.ring_n;
+                return n > 0 ? Mathf.Clamp(spent, 0, n) : (spent > 0 ? 1 : 0);
+            }
         }
 
         void Advance(float df)
@@ -623,7 +651,7 @@ namespace Ballon.Ego
             _flashLeft = Mathf.Max(0, _flashLeft - dt);
             var Ej = S.D.motion.eject;
             for (int k = 0; k < _shOn.Length; k++)
-                if (_shOn[k] && (_shAge[k] += dt) - Ej.delay_frames / (float)S.fps >= Ej.life_s) _shOn[k] = false;
+                if (_shOn[k] && (_shAge[k] += dt) - Ej.delay_frames / (float)S.fps >= _shLife[k]) _shOn[k] = false;
             // Feuer mit fester Kadenz; eine angefangene Salve läuft zu Ende
             _triggerHeld = i.fire && CanFire;
             _sinceShot += dt;
@@ -793,7 +821,7 @@ namespace Ballon.Ego
                 _ringTgt += S.D.gameplay.portals[LastPortal].ring;
                 _ringT = 0;
             }
-            if (S.Ejects && !S.D.gameplay.Cycles) _pendingShells++;   // Hülse startet in Compose mit der Waffe dieses Bilds (Repetierer, Pumpe: Marker Eject)
+            if (S.Ejects && !S.D.gameplay.Cycles && S.D.weapon.eject.on != "reload") _pendingShells++;   // Hülse startet in Compose mit der Waffe dieses Bilds (Repetierer, Pumpe: Marker Eject)
             Shot?.Invoke();
             if (S.D.gameplay.Cycles && HasAmmo) Cycle();
             else if (S.D.gameplay.SingleShot && ammo == 0 && CanReload) StartReload(_intent);   // Raketenwerfer (0.33 P4): sofort nachladen
@@ -839,6 +867,8 @@ namespace Ballon.Ego
             L.bolt = _boltT > 0 ? 1 : 0;
             L.port = _portOpen ? 1 : 0;
             if (S.D.gameplay.HasPortals) L.ring = _ring;
+            if (!WeaponFx.Off) L.index = shots > 0 ? Mathf.Clamp01(_sinceShot * S.fps / S.D.IndexFrames) : 0;   // 0.34: Trommel, Gurt (wie ego.index_level)
+            L.fill = S.D.gameplay.Unlimited || magSize <= 0 ? 1 : ammo / (float)magSize;     // 0.34: Zählzellen nach dem Füllstand
             return L;
         }
 
@@ -888,18 +918,89 @@ namespace Ballon.Ego
                 _shAge[_shNext] = 0;
                 _shId[_shNext] = (int)(shots - _pendingShells);
                 _shOn[_shNext] = true;
+                _shLink[_shNext] = S.EjectsLinks && !WeaponFx.Off;
+                _shOff[_shNext] = Vector3.zero;
+                _shLife[_shNext] = S.D.motion.eject.life_s;
                 _shNext = (_shNext + 1) % _shOn.Length;
                 shellsEjected++;
             }
+            if (_pendingReload > 0)                       // Trommel (0.34): Start im Rahmen des Teils (ausgeschwenkte Trommel), je Kammer versetzt
+            {
+                var W0 = S.PartFrame(o, S.D.weapon.eject.part);
+                int n = _pendingReload;
+                for (int k = 0; k < n; k++)
+                {
+                    _shW[_shNext] = W0;
+                    _shAge[_shNext] = 0;
+                    _shId[_shNext] = (int)shellsEjected;
+                    _shOn[_shNext] = true;
+                    _shLink[_shNext] = false;
+                    _shOff[_shNext] = S.RingOffset(k, n);
+                    _shLife[_shNext] = S.D.motion.eject.life_s * S.D.weapon.eject.life_k;
+                    _shNext = (_shNext + 1) % _shOn.Length;
+                    shellsEjected++;
+                    reloadShells++;
+                }
+                _pendingReload = 0;
+            }
             var Ej = S.D.motion.eject;
             o.shellCount = 0;
+            o.linkCount = 0;
             for (int k = 0; k < _shOn.Length; k++)
             {
                 if (!_shOn[k]) continue;
                 float t = _shAge[k] - Ej.delay_frames / (float)S.fps;
                 if (t < 0) continue;
-                o.shells[o.shellCount] = S.ShellMatrix(_shW[k], t);
+                o.shells[o.shellCount] = S.ShellMatrix(_shW[k], t, _shOff[k]);
                 o.shellIds[o.shellCount++] = _shId[k];
+                if (_shLink[k])
+                {
+                    o.links[o.linkCount] = S.LinkMatrix(_shW[k], t);
+                    o.linkIds[o.linkCount++] = _shId[k];
+                }
+            }
+            Rounds(o);
+        }
+
+        /// <summary>Hülsen, die beim Nachladen fielen (Trommel, 0.34; Messwert für Tests).</summary>
+        public long reloadShells;
+
+        /// <summary>Füllstand (0.34, weapon.live.rounds) für das Modell: Gurt (line) Satz i an, solange mehr als i Patronen da sind; Trommel
+        /// (drum) je Kammer – ein Schuss leert die Laufkammer, eine geladene Patrone füllt die Ladekammer, springt die Trommel zurück
+        /// (fire_cycle, Laden), rückt der Zustand eine Kammer weiter (k → k + 1). Weicht die Zahl geladener Kammern von der Munition ab
+        /// (Test setzt ammo, Abbruch), wird in Schussfolge aufgefüllt bzw. von hinten geleert. Beim Nachladen ist die Ladekammer immer zu
+        /// sehen (die Granate kommt in der Hand). Kein Speicher je Bild.</summary>
+        void Rounds(EgoOutput o)
+        {
+            var R = S.D.weapon.live.rounds;
+            int n = R.sets.Length;
+            if (n == 0 || WeaponFx.Off) return;
+            if (R.mode == "line")
+            {
+                for (int k = 0; k < n; k++) o.roundOn[k] = S.D.gameplay.Unlimited || ammo > k;
+                return;
+            }
+            if (_roundsAmmo < 0) { for (int k = 0; k < n; k++) _chamber[k] = k < ammo; _roundsAmmo = ammo; }
+            _mech.TryGetValue(R.drum, out float drum);
+            if (_drumPrev > 0.5f && drum < 0.5f)                        // Trommel springt zurück: Inhalt eine Kammer weiter
+            {
+                bool last = _chamber[n - 1];
+                for (int k = n - 1; k > 0; k--) _chamber[k] = _chamber[k - 1];
+                _chamber[0] = last;
+            }
+            _drumPrev = drum;
+            for (; _roundsAmmo > ammo; _roundsAmmo--) Take(R.barrel, -1, false);   // Schuss: Laufkammer, sonst die nächste in Schussfolge
+            for (; _roundsAmmo < ammo; _roundsAmmo++) Take(R.gate, -1, true);      // Laden: Ladekammer, sonst die nächste davor
+            bool loading = _t.A.name.StartsWith("reload");
+            for (int k = 0; k < n; k++) o.roundOn[k] = _chamber[k] || (loading && k == R.gate);
+
+            void Take(int start, int dir, bool fill)
+            {
+                for (int r = 0; r < n; r++)
+                {
+                    int k = ((start + dir * r) % n + n) % n;
+                    if (_chamber[k] != fill) { _chamber[k] = fill; return; }
+                }
             }
         }
 
@@ -968,7 +1069,11 @@ namespace Ballon.Ego
             o.camPitch = L.camPitch;
             o.worldPitch = _t.scripted ? L.camPitch : _worldPitch;
             o.worldYaw = _t.scripted ? 0 : _worldYaw;
-            if (_t.scripted) S.FxScripted(A, f, WM, _t.st, o);
+            if (_t.scripted)
+            {
+                S.FxScripted(A, f, WM, _t.st, o);
+                for (int k = 0; k < o.roundOn.Length; k++) o.roundOn[k] = true;    // Clips: voller Füllstand (0.34)
+            }
             else LiveFx(o, WM);
             _hasOutput = true;
             return o;

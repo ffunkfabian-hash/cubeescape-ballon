@@ -415,6 +415,30 @@ namespace Ballon.Ego.Tests
                 else if (a[k].type == "linear_fusion_rifle") Assert.AreEqual(3.0f, b[k].zoom, 1e-4f, "lineare Fusion 3,0× (Gapfill)");
                 else Assert.AreEqual(a[k].zoom, b[k].zoom, 1e-6f, a[k].type);
             o.gameplay.zoom_table = b;
+            return Payload034(o, n);
+        }
+
+        /// <summary>0.34 „Payload“ (ohne neues Format): ein älterer Export kennt Wirkung, Schrittteile, Füllstand und Glieder nicht – der
+        /// Leser setzt die alte Wirkung (Kugel mit Einschlag) und leere Listen; für den Vergleich übernimmt die alte Datei die neuen Felder.</summary>
+        static EgoFile Payload034(EgoFile o, EgoFile n)
+        {
+            Assert.AreEqual("vor 0.34", o.gameplay.fx.src, "älterer Export: Wirkung aus dem Leser");
+            Assert.AreEqual(o.gameplay.HasPortals ? "none" : "hitscan", o.gameplay.fx.kind);
+            Assert.AreEqual(0, o.weapon.live.index.Length + o.weapon.live.fill.Length + o.weapon.live.rounds.sets.Length, "ohne Schrittteile, Füllstand");
+            o.gameplay.fx = n.gameplay.fx;
+            o.motion.index = n.motion.index;
+            o.motion.payload = n.motion.payload;
+            o.weapon.live.index = n.weapon.live.index;
+            o.weapon.live.fill = n.weapon.live.fill;
+            o.weapon.live.rounds = n.weapon.live.rounds;
+            if (o.weapon.eject != null && n.weapon.eject != null)
+            {
+                o.weapon.eject.links = n.weapon.eject.links;
+                o.weapon.eject.part = n.weapon.eject.part;
+                o.weapon.eject.ring_m = n.weapon.eject.ring_m;
+                o.weapon.eject.ring_n = n.weapon.eject.ring_n;
+                o.weapon.eject.speed_k = n.weapon.eject.speed_k;
+            }
             return o;
         }
 
@@ -1407,6 +1431,35 @@ namespace Ballon.Ego.Tests
             TestContext.WriteLine($"größter Handgelenkknick {worst:0.0}° ({at})");
         }
 
+        /// <summary>0.34 „Payload“: jede Klasse hat ihre Wirkung aus ego.PAYLOAD (Art, Einschlagstil vorhanden, Projektile mit
+        /// Geschwindigkeit, Schrot mit Kugeln und Kegel, Strahlen mit Breite); gemeinsame Werte in motion.payload.</summary>
+        [Test]
+        public void Wirkung_je_Klasse_in_ego_json()
+        {
+            var want = new Dictionary<string, string> {
+                ["auto_rifle"] = "hitscan", ["submachine_gun"] = "hitscan", ["scout_rifle"] = "hitscan", ["pulse_rifle"] = "hitscan",
+                ["hand_cannon"] = "hitscan", ["sidearm"] = "hitscan", ["sniper_rifle"] = "hitscan", ["machine_gun"] = "hitscan",
+                ["shotgun"] = "pellets", ["grenade_launcher"] = "projectile", ["rocket_launcher"] = "projectile", ["trace_rifle"] = "beam",
+                ["fusion_rifle"] = "bolts", ["linear_fusion_rifle"] = "rail", ["combat_bow"] = "arrow", ["portal_cannon"] = "none" };
+            foreach (var d in All)
+            {
+                var F = d.gameplay.fx;
+                Assert.AreEqual(want[d.gameplay.weapon_type], F.kind, d.weapon.id);
+                Assert.IsFalse(string.IsNullOrEmpty(F.src), $"{d.weapon.id}: Herkunft");
+                if (F.kind == "none") continue;
+                if (F.Explodes) Assert.Greater(F.radius_m, 0, d.weapon.id);
+                else Assert.IsNotNull(d.Impact(F.impact), $"{d.weapon.id}: Einschlagstil {F.impact}");
+                if (F.Projectile) Assert.Greater(F.speed_mps, 0, d.weapon.id);
+                if (F.kind == "pellets") { Assert.Greater(F.pellets, 1); Assert.Greater(F.cone_deg, 0); }
+                if (F.kind == "beam" || F.kind == "rail" || F.kind == "bolts") Assert.Greater(F.width_m, 0, d.weapon.id);
+            }
+            var P = D.motion.payload;
+            Assert.AreEqual(5, P.impacts.Length, "Stile bullet, heavy, pellet, energy, arrow");
+            Assert.Greater(P.decal.max, 0);
+            Assert.Greater(P.explosion.sparks, 0);
+            Assert.Greater(P.muzzle_smoke.rate_hz, 0);
+        }
+
         // ---------------------------------------------------------------- Referenz
         [Test]
         public void Gleich_wie_Blender_Referenz()
@@ -1443,6 +1496,13 @@ namespace Ballon.Ego.Tests
                         got = o.shells[j];
                         fx++;
                     }
+                    else if (ob.name.StartsWith("link_") && int.TryParse(ob.name.Substring(5), out int lid))   // Gurtglied (0.34)
+                    {
+                        int j = Array.IndexOf(o.linkIds, lid, 0, o.linkCount);
+                        Assert.GreaterOrEqual(j, 0, $"{s.label}: {ob.name} fehlt");
+                        got = o.links[j];
+                        fx++;
+                    }
                     else if (ob.name == "weapon") got = o.weapon;
                     else if (ob.name == "camera") got = RotX(Rad(o.camPitch));
                     else if (ob.name.StartsWith("R_")) got = o.segR[S.SegmentIndex(ob.name.Substring(2))];
@@ -1456,7 +1516,7 @@ namespace Ballon.Ego.Tests
                     else if (dr > worstR) { worstR = dr; wr = $"{s.label} {ob.name}"; }
                     checks++;
                 }
-                Assert.AreEqual(fx, (o.flashOn ? 1 : 0) + o.shellCount, $"{s.label}: Blitz/Hülsen sichtbar in Unity, nicht in Blender");
+                Assert.AreEqual(fx, (o.flashOn ? 1 : 0) + o.shellCount + o.linkCount, $"{s.label}: Blitz/Hülsen/Glieder sichtbar in Unity, nicht in Blender");
                 Assert.AreEqual(s.ads_hidden, o.adsHidden, $"{s.label}: Zielfernrohr-Teile (ads_hide) wie Blender");
             }
             foreach (var s in R.samples.Where(s => s.label.StartsWith("still:")))
