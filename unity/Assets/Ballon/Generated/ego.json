@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "02d9c3b6a49ca5522b6904f17bb87e3c617244b04e697acde04d13b5b42b01e6"
+    "sha256": "530629723e18fb2750fa8838d43c9c69a376d9a99dbda373d7542c344975d0f5"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "aa51433f2b0d991deb2fd31cdf4df9e79076d44c001b9bf66f50c65053bad108"
+    "sha256": "5880442dc8c94bd437cf5ec8e17d128f872ed49c17b144033c63b43a65bf0619"
    },
    {
     "path": "tools/blender_build.py",
@@ -1623,7 +1623,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -1647,7 +1647,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -1663,7 +1663,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -6688,18 +6688,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -6708,8 +6708,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -6776,7 +6776,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -8899,7 +8899,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -8923,7 +8923,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -8939,7 +8939,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -13432,18 +13432,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -13452,8 +13452,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -13520,7 +13520,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -15290,7 +15290,7 @@
     "kick": 1.0,
     "weapon_type": "scout_rifle",
     "sight": "scope",
-    "world_zoom": 2.0,
+    "world_zoom": 3.0,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -15302,7 +15302,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -15326,7 +15326,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -15342,7 +15342,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -20061,18 +20061,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -20081,8 +20081,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -20149,7 +20149,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -22014,7 +22014,8 @@
     "type": "pulse_rifle",
     "src": "Entscheidungsliste Schritt 6, dritte übertragene Klasse (0.22 „Volley“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, Salve aus der Spec",
     "poses": [
-     "hip"
+     "hip",
+     "sprint"
     ],
     "frames": [
      {
@@ -22055,7 +22056,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -22079,7 +22080,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -22095,7 +22096,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -24162,17 +24163,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -35.0,
-     "src": "E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Impuls-Sprint nicht gemessen (Haltung POSES['sprint'] unverändert)",
+     "roll": -30.0,
+     "src": "M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Die Abgenutzte Spitze): fast aus dem Bild gesenkt, Hülle x 46–100 / y 66–100, Visier 56–65 / 67–80, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik",
      "pos": [
-      -0.1,
+      -0.12,
       -0.34,
-      -0.23
+      -0.22
      ],
      "aim": [
-      1.2,
-      -1.6,
-      -0.55
+      0.8,
+      -1.8,
+      -0.95
      ],
      "eye": [
       0.0,
@@ -26682,18 +26683,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -26702,8 +26703,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -26770,7 +26771,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -28673,7 +28674,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -28697,7 +28698,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -28713,7 +28714,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -30785,18 +30786,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -30805,8 +30806,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -30873,7 +30874,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -32034,10 +32035,49 @@
     "rpm": 140,
     "magazine": 10,
     "path_up_h": 0.017,
-    "kick": 2.5,
-    "src": "S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, ein Schuss je Zug); Bahnstufe 0,017 M: Netto-Rest vor dem Folgeschuss 1,7 pp H (Hochimpuls bis 7,6 pp, Motiongen rueckstoss:106); Kick 2,5 E: Modell ≈ 6 % hoch und 8° gekippt (destiny2:492) gegen Automatik-Kick 3° je Schuss",
+    "kick": 1.0,
+    "src": "S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, ein Schuss je Zug); Bahnstufe 0,017 M: Netto-Rest vor dem Folgeschuss 1,7 pp H (Hochimpuls bis 7,6 pp, Motiongen rueckstoss:106); Kick 1,0: die Federn stehen seit 0.35 als eigener Satz in recoil (bis 0.34 Kick 2,5)",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "recoil": {
+     "freq_hz": 1.56,
+     "zeta": 0.4,
+     "back_mps": 0.5,
+     "pitch_dps": 800.0,
+     "climb_deg": 0.12,
+     "ads_back": 0.45,
+     "ads_pitch": 0.2,
+     "cam_freq_hz": 0.94,
+     "cam_zeta": 1.0,
+     "cam_dps": 48.0,
+     "ads_cam": 3.0,
+     "path_up_h": 0.01,
+     "path_hz": 10.0,
+     "path_side_b": [
+      0.0,
+      0.003,
+      0.006,
+      0.007,
+      0.004,
+      0.0,
+      -0.004,
+      -0.007,
+      -0.008,
+      -0.005,
+      -0.001,
+      0.003,
+      0.006,
+      0.008,
+      0.006,
+      0.002,
+      -0.003,
+      -0.006
+     ],
+     "recover_delay_s": 0.12,
+     "recover_hz": 2.0,
+     "spread_hip_deg": 1.1,
+     "spread_ads_deg": 0.12
+    },
     "weapon_type": "hand_cannon",
     "sight": "reflex",
     "world_zoom": 1.15,
@@ -32052,7 +32092,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -32076,7 +32116,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -32092,7 +32132,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -34323,7 +34363,7 @@
       2,
       14
      ],
-     "kick": 2.5,
+     "kick": 1.0,
      "breathe": false,
      "bob": {
       "enabled": false,
@@ -34427,7 +34467,7 @@
       2,
       14
      ],
-     "kick": 2.5,
+     "kick": 1.0,
      "breathe": false,
      "bob": {
       "enabled": false,
@@ -35910,18 +35950,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -35930,8 +35970,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -35998,7 +36038,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -36460,7 +36500,7 @@
       7,
       19
      ],
-     "kick": 2.5,
+     "kick": 1.0,
      "breathe": false,
      "bob": {
       "enabled": false,
@@ -37354,7 +37394,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -37378,7 +37418,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -37394,7 +37434,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -41208,18 +41248,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -41228,8 +41268,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -41296,7 +41336,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -42706,7 +42746,7 @@
     "src": "S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec (Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, 1,5 Hz); Kick 3,0 E (schwerer Einzelschuss)",
     "weapon_type": "sniper_rifle",
     "sight": "fullscreen",
-    "world_zoom": 4.0,
+    "world_zoom": 4.7,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -42718,7 +42758,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -42742,7 +42782,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -42758,7 +42798,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -44604,17 +44644,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -25.0,
-     "src": "O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 pp); eine ältere Zeile (destiny2:483) nennt bei 60/s eine höhere, mittigere Form – widersprüchlich, hier die Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; bis 0.33 die Automatik-Form (Mündung 19/86 %)",
+     "roll": -20.0,
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Widerruf, eine Stelle): tief unten rechts, Hülle x 56–100 / y 64–100, Längskante ≈ +22°, kein Fadenkreuz; 0.35: 4 cm weiter rechts, 1 cm tiefer (Hülle begann bei x 48). Vorher: O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 pp); eine ältere Zeile (destiny2:483) nennt bei 60/s eine höhere, mittigere Form – widersprüchlich, hier die Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; bis 0.33 die Automatik-Form (Mündung 19/86 %)",
      "pos": [
-      -0.2,
-      -0.38,
-      -0.21
+      -0.32,
+      -0.42,
+      -0.27
      ],
      "aim": [
-      0.5,
-      -2.4,
-      -0.6
+      0.6,
+      -2.3,
+      -0.05
      ],
      "eye": [
       0.0,
@@ -47269,18 +47309,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -47289,8 +47329,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -47357,7 +47397,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -49556,7 +49596,8 @@
     "type": "trace_rifle",
     "src": "Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Anflug nach Motiongen (Spurgewehr), Sprint der Automatik, Nachladen der Bezugsklasse mit der Energiezelle (leer wie taktisch, kein Ladehebel)",
     "poses": [
-     "hip"
+     "hip",
+     "sprint"
     ],
     "frames": [
      {
@@ -49609,7 +49650,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -49633,7 +49674,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -49649,7 +49690,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -51366,16 +51407,16 @@
      "name": "hip",
      "ads": false,
      "roll": 10.9,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,7/61,1 %, Visier 66,6/49,0 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei 53,4 % H in den Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)",
+     "src": "M Motiongen REF 0.35 Backblast › C (z-bb-neigung): Spurgewehr ohne Klassenmuster (Coldheart Fluchtpunkt 48/51, Prometheus Lens 51,5/59 wie die Automatik); Nutzerbefund Testbuild 0.33 „Spurgewehr-Hüfte zu tief“ (31.10.2026). Lage E (tools/bildlage.py --fit): Fluchtpunkt 45/50 wie die Automatik (44,7/48,7) statt 48,7/56,1, Mündung 58/61,2 %, Visier 72,1/56,7 % (Gehäusenase unter 55 % H, A4). Bis 0.34: huefte.json-Ausgleich (Hollow Denial Mündung 57,7/59,6, Visier 66,9/45,6)",
      "pos": [
-      -0.136,
-      -0.417,
-      -0.156
+      -0.169,
+      -0.424,
+      -0.183
      ],
      "aim": [
-      -0.075,
-      -3.412,
-      -0.315
+      0.061,
+      -3.415,
+      -0.183
      ],
      "eye": [
       0.0,
@@ -51417,17 +51458,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -35.0,
-     "src": "E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen (Motiongen destiny2:570) (Haltung POSES['sprint'] unverändert)",
+     "roll": -15.0,
+     "src": "M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, schweres Spurgewehr Mikrokosmos): flach quer ganz unten, Hülle x 29–100 / y 60–100, Oberkante +8–10°, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik",
      "pos": [
-      -0.1,
-      -0.34,
+      -0.19,
+      -0.37,
       -0.23
      ],
      "aim": [
-      1.2,
-      -1.6,
-      -0.55
+      1.4,
+      -1.5,
+      -0.1
      ],
      "eye": [
       0.0,
@@ -51446,14 +51487,14 @@
      "roll": 14.9,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.116,
-      -0.377,
-      -0.176
+      -0.149,
+      -0.384,
+      -0.203
      ],
      "aim": [
-      0.305,
-      -2.412,
-      -1.315
+      0.441,
+      -2.415,
+      -1.183
      ],
      "eye": [
       0.0,
@@ -51472,14 +51513,14 @@
      "roll": 13.9,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.126,
-      -0.407,
-      -0.171
+      -0.159,
+      -0.414,
+      -0.198
      ],
      "aim": [
-      -0.075,
-      -3.412,
-      -0.365
+      0.061,
+      -3.415,
+      -0.233
      ],
      "eye": [
       0.0,
@@ -51498,14 +51539,14 @@
      "roll": 8.9,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.136,
-      -0.417,
-      -0.141
+      -0.169,
+      -0.424,
+      -0.168
      ],
      "aim": [
-      -0.075,
-      -3.412,
-      -0.245
+      0.061,
+      -3.415,
+      -0.113
      ],
      "eye": [
       0.0,
@@ -53844,18 +53885,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -53864,8 +53905,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -53932,7 +53973,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -55631,7 +55672,8 @@
     "type": "machine_gun",
     "src": "Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Sprint der Automatik, Ziehen und Nachladen nach Motiongen (Gurtkasten), Ablauf E",
     "poses": [
-     "hip"
+     "hip",
+     "sprint"
     ],
     "frames": [
      {
@@ -55676,7 +55718,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -55700,7 +55742,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -55716,7 +55758,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -58394,16 +58436,16 @@
      "name": "hip",
      "ads": false,
      "roll": 4.8,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 56,1/59,7 %, Visier 66,1/44,9 % – 3 mm tiefer als die Ausgleichslage: der oberste belegte Punkt lag genau auf der Ecke der Freihaltezone (A4, 55 % H; Richter 0.33)",
+     "src": "M Motiongen REF 0.35 Backblast › C (z-bb-neigung): Fluchtpunkt der Laufachse beim MG quer links (Hammerhead −22/51, Bitter End 31/46), die Waffe zeigt ihre Seite; Nutzerbefund Testbuild 0.33 „MG-Hüfte zu tief“ (31.10.2026). Lage E (tools/bildlage.py --fit): Fluchtpunkt 40/50 statt 49,6/57,2 (Lauf waagerecht wie Automatik 44,7/48,7 und Fusion 43,2/51,6), Mündung 54,5/58,5 % (vorderes Ende in der erlaubten Ecke der Freihaltezone A4), Visier 77,7/53,9 %. Bis 0.34: huefte.json-Ausgleich (Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung 56,2/64, Reflex 65,9/48,2) mit Lauf 7 pp unter die Mitte",
      "pos": [
-      -0.114,
-      -0.417,
-      -0.155
+      -0.182,
+      -0.431,
+      -0.185
      ],
      "aim": [
-      -0.096,
-      -3.411,
-      -0.342
+      0.273,
+      -3.396,
+      -0.185
      ],
      "eye": [
       0.0,
@@ -58445,17 +58487,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -35.0,
-     "src": "E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen destiny2:561) (Haltung POSES['sprint'] unverändert)",
+     "roll": -6.0,
+     "src": "M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, 21% Delirium): flach quer unten, Hülle x 38–100 / y 55–100, Längskante 0…−2°, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik (Hülle ab y ≈ 80)",
      "pos": [
-      -0.1,
-      -0.34,
-      -0.23
+      -0.25,
+      -0.4,
+      -0.2
      ],
      "aim": [
-      1.2,
-      -1.6,
-      -0.55
+      1.4,
+      -1.8,
+      -0.34
      ],
      "eye": [
       0.0,
@@ -58474,14 +58516,14 @@
      "roll": 8.8,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.094,
-      -0.377,
-      -0.175
+      -0.162,
+      -0.391,
+      -0.205
      ],
      "aim": [
-      0.284,
-      -2.411,
-      -1.342
+      0.653,
+      -2.396,
+      -1.185
      ],
      "eye": [
       0.0,
@@ -58500,14 +58542,14 @@
      "roll": 7.8,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.104,
-      -0.407,
-      -0.17
+      -0.172,
+      -0.421,
+      -0.2
      ],
      "aim": [
-      -0.096,
-      -3.411,
-      -0.392
+      0.273,
+      -3.396,
+      -0.235
      ],
      "eye": [
       0.0,
@@ -58526,14 +58568,14 @@
      "roll": 2.8,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.114,
-      -0.417,
-      -0.14
+      -0.182,
+      -0.431,
+      -0.17
      ],
      "aim": [
-      -0.096,
-      -3.411,
-      -0.272
+      0.273,
+      -3.396,
+      -0.115
      ],
      "eye": [
       0.0,
@@ -61523,18 +61565,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -61543,8 +61585,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -61611,7 +61653,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -63653,7 +63695,8 @@
     "type": "shotgun",
     "src": "Ego-Übertrag 0.33 „Armory“ P3: Hüfte und Sprint der Automatik, Anflug und Ziehen nach Motiongen (Schrotflinte), Pumpen nach jedem Schuss und Einzelladen E nach den Destiny-Zeiten",
     "poses": [
-     "reload"
+     "reload",
+     "sprint"
     ],
     "frames": [
      {
@@ -63702,7 +63745,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -63726,7 +63769,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -63742,7 +63785,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -65497,17 +65540,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -35.0,
-     "src": "E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Schrotflinten-Sprint nicht gemessen (Motiongen destiny2:566) (Haltung POSES['sprint'] unverändert)",
+     "roll": -25.0,
+     "src": "M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Python): Waffe fast ganz aus dem Bild, nur der Rand x ≥ 72 / y ≥ 85, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik",
      "pos": [
-      -0.1,
-      -0.34,
-      -0.23
+      -0.18,
+      -0.32,
+      -0.27
      ],
      "aim": [
-      1.2,
-      -1.6,
-      -0.55
+      0.4,
+      -1.3,
+      -1.3
      ],
      "eye": [
       0.0,
@@ -67686,18 +67729,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -67706,8 +67749,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -67774,7 +67817,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -70353,7 +70396,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -70377,7 +70420,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -70393,7 +70436,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -74549,18 +74592,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -74569,8 +74612,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -74637,7 +74680,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -76311,7 +76354,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -76335,7 +76378,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -76351,7 +76394,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -78207,16 +78250,16 @@
      "name": "hip",
      "ads": false,
      "roll": 4.2,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,9/68,5 %, Visier 73,0/58,8 %",
+     "src": "M Motiongen REF 0.35 Backblast › C (z-bb-neigung): lineare Fusion Man O' War Fluchtpunkt 46/56, lange Diagonale +17…+21°; Nutzerbefund Testbuild 0.33 „LFR-Hüfte zu tief“ (31.10.2026). Lage E (tools/bildlage.py --fit): Fluchtpunkt 45/52 (zwischen Automatik 44,7/48,7 und Man O' War) statt 49,6/63,4, Mündung 58/65 % statt 57,9/68,5, Visier 70,7/64,8 %. Bis 0.34: huefte.json-Ausgleich (Mündung 58/69, 58/68, Visier 73/57, 73/60)",
      "pos": [
-      -0.151,
-      -0.417,
-      -0.191
+      -0.204,
+      -0.424,
+      -0.228
      ],
      "aim": [
-      -0.132,
-      -3.397,
-      -0.536
+      0.025,
+      -3.415,
+      -0.28
      ],
      "eye": [
       0.0,
@@ -78287,14 +78330,14 @@
      "roll": 8.2,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.131,
-      -0.377,
-      -0.211
+      -0.184,
+      -0.384,
+      -0.248
      ],
      "aim": [
-      0.248,
-      -2.397,
-      -1.536
+      0.405,
+      -2.415,
+      -1.28
      ],
      "eye": [
       0.0,
@@ -78313,14 +78356,14 @@
      "roll": 7.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.141,
-      -0.407,
-      -0.206
+      -0.194,
+      -0.414,
+      -0.243
      ],
      "aim": [
-      -0.132,
-      -3.397,
-      -0.586
+      0.025,
+      -3.415,
+      -0.33
      ],
      "eye": [
       0.0,
@@ -78339,14 +78382,14 @@
      "roll": 2.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.151,
-      -0.417,
-      -0.176
+      -0.204,
+      -0.424,
+      -0.213
      ],
      "aim": [
-      -0.132,
-      -3.397,
-      -0.466
+      0.025,
+      -3.415,
+      -0.21
      ],
      "eye": [
       0.0,
@@ -80661,18 +80704,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -80681,8 +80724,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -80749,7 +80792,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -82542,7 +82585,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -82566,7 +82609,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -82582,7 +82625,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -84147,17 +84190,17 @@
     {
      "name": "sprint",
      "ads": false,
-     "roll": -20.0,
-     "src": "O cubeescape-reference destiny2:221 (Sprint, wahrscheinlich): Riser größer und höher, Mitte ≈ 68/55 %, oberes Wurfarmende aus dem Bild, ≈ 20° geneigt; destiny2:231 ohne Pfeil tief rechts. Lage E, gerechnet Griff 69/61 %",
+     "roll": -75.0,
+     "src": "M Motiongen REF 0.35 Backblast › D/E2 (z-bb-bogen-sprint, vier Bögen): flach quer rechts unten, Neigung −9…−28° (meist −15…−24°), Oberkante 45–70 % H, Hülle 13–27 %; Nutzerbefund Testbuild 0.33 „Bogen-Sprint zu hoch“. Lage E. Bis 0.34 (O destiny2:221): Riser hoch rechts, Griff 69/61 %",
      "pos": [
-      -0.12,
-      -0.4,
-      -0.03
+      -0.14,
+      -0.38,
+      -0.13
      ],
      "aim": [
-      0.0,
+      0.4,
       -2.6,
-      -0.5
+      -0.28
      ],
      "eye": [
       0.0,
@@ -84330,16 +84373,16 @@
      "name": "drawn",
      "ads": false,
      "roll": -65.0,
-     "src": "M Destiny-Bogen Imperial Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer gekantet, etwas gehoben, Ring ≈ 57/64 %, linke Hand unten ≈ 47/89 %, oberer Wurfarm rechts aus dem Bild, Zughand nicht sichtbar (andere Bögen stehen dabei rechts senkrecht, destiny2:221). Lage E (Ausgleichsrechnung), gerechnet Griff 50/88 %, Ring 57/64 %, voller Auszug hinter der Kamera",
+     "src": "M Motiongen REF 0.35 Backblast › D (z-bb-bogen-huefte): die Pfeilachse zeigt in allen Phasen durch die Bildmitte (acht Bögen, Schnitt bei y = 50: x 47,7–51,4), voll gespannt 61–75° im Bild; Nutzerbefund Testbuild 0.33 „Hüftzielen zeigt nach rechts, Schuss geht daneben“: bis 0.34 lag der Fluchtpunkt bei 67,4/39,6. 0.35 E (tools/bildlage.py --fit): Fluchtpunkt 50/50, Pfeilspitze 52,7/65,7, Nocke 58,5/99,4 (Achse im Bild 73°). Vorher M Destiny-Bogen Imperial Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer gekantet, etwas gehoben, Ring ≈ 57/64 %, linke Hand unten ≈ 47/89 %, oberer Wurfarm rechts aus dem Bild, Zughand nicht sichtbar (andere Bögen stehen dabei rechts senkrecht, destiny2:221). Lage E (Ausgleichsrechnung), gerechnet Griff 50/88 %, Ring 57/64 %, voller Auszug hinter der Kamera",
      "pos": [
-      0.0,
-      -0.49,
-      -0.16
+      -0.001,
+      -0.477,
+      -0.159
      ],
      "aim": [
-      -0.776,
-      -3.388,
-      0.101
+      -0.001,
+      -3.477,
+      -0.159
      ],
      "eye": [
       0.0,
@@ -85596,18 +85639,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -85616,8 +85659,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -85684,7 +85727,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -88985,7 +89028,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -89009,7 +89052,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -89025,7 +89068,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -93773,18 +93816,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -93793,8 +93836,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -93861,7 +93904,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false
@@ -96364,18 +96407,18 @@
     "frames": [
      {
       "action": "aim_in",
-      "frames": 6.0
+      "frames": 15.0
      },
      {
       "action": "aim_out",
-      "frames": 5.0
+      "frames": 16.0
      },
      {
       "action": "draw",
-      "frames": 14.0
+      "frames": 27.0
      }
     ],
-    "frames_src": "M Destiny-Raketenwerfer ADS ein 14 Bilder bei 60/s (Motiongen destiny2:594) → 6 Bilder bei 30/s (wie Scharfschütze); ADS aus nicht gemessen → E 5; Ziehen 0,18 s bis Hüfte (destiny2:481) + Ausfedern E → 14"
+    "frames_src": "M Motiongen REF 0.37 Verdict › D/G (z-v37-rl-gjallarhorn): Gjallarhorn ADS ein / aus 15 / 16 echte Bilder bei 30/s (0,50 / 0,53 s) → aim_in 15, aim_out 16 (Umrechnung wie Automatik 20 B60 → 10: gleiche Dauer); Ziehen nach Wechsel bis ruhig 0,90 s mit Überschwingen −11,5 / +16,7 pp (Gjallarhorn) bzw. 0,30 s ohne (Todbringer, O) → draw 27 E: der schwere Werfer schwingt mit dem Feder-Nachlauf nach wie Gjallarhorn. Bis 0.34: aim_in 6 (Destiny 14 B60, destiny2:594), aim_out 5 E, draw 14 (0,18 s bis Hüfte, destiny2:481)"
    },
    "gameplay": {
     "burst_shots": 0,
@@ -96396,7 +96439,7 @@
     "recover_delay_s": 0.12,
     "weapon_type": "rocket_launcher",
     "sight": "reflex",
-    "world_zoom": 2.8,
+    "world_zoom": 3.3,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -96408,7 +96451,7 @@
      },
      {
       "type": "scout_rifle",
-      "zoom": 2.0
+      "zoom": 3.0
      },
      {
       "type": "hand_cannon",
@@ -96432,7 +96475,7 @@
      },
      {
       "type": "sniper_rifle",
-      "zoom": 4.0
+      "zoom": 4.7
      },
      {
       "type": "fusion_rifle",
@@ -96448,7 +96491,7 @@
      },
      {
       "type": "rocket_launcher",
-      "zoom": 2.8
+      "zoom": 3.3
      },
      {
       "type": "machine_gun",
@@ -97956,16 +97999,16 @@
      "name": "hip",
      "ads": false,
      "roll": 0.0,
-     "src": "M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend",
+     "src": "M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E (tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm Tiefe), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung 63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend, Heck rechts unten unter dem Arm",
      "pos": [
-      -0.23,
-      -0.5,
-      -0.16
+      -0.187,
+      -0.418,
+      -0.118
      ],
      "aim": [
-      -0.01,
-      -3.489,
-      0.616
+      -0.187,
+      -3.414,
+      -0.273
      ],
      "eye": [
       0.0,
@@ -98036,14 +98079,14 @@
      "roll": 4.0,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.21,
-      -0.46,
-      -0.18
+      -0.167,
+      -0.378,
+      -0.138
      ],
      "aim": [
-      0.37,
-      -2.489,
-      -0.384
+      0.193,
+      -2.414,
+      -1.273
      ],
      "eye": [
       0.0,
@@ -98062,14 +98105,14 @@
      "roll": 3.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.22,
-      -0.49,
-      -0.175
+      -0.177,
+      -0.408,
+      -0.133
      ],
      "aim": [
-      -0.01,
-      -3.489,
-      0.566
+      -0.187,
+      -3.414,
+      -0.323
      ],
      "eye": [
       0.0,
@@ -98088,14 +98131,14 @@
      "roll": -2.0,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.23,
-      -0.5,
-      -0.145
+      -0.187,
+      -0.418,
+      -0.103
      ],
      "aim": [
-      -0.01,
-      -3.489,
-      0.686
+      -0.187,
+      -3.414,
+      -0.203
      ],
      "eye": [
       0.0,
@@ -98441,9 +98484,9 @@
     {
      "name": "draw",
      "de": "Ziehen",
-     "frames": 14,
-     "time_scale": 0.56,
-     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse rocket_launcher: 25 → 14 Bilder (M Destiny-Raketenwerfer ADS ein 14 Bilder bei 60/s (Motiongen destiny2:594) → 6 Bilder bei 30/s (wie Scharfschütze); ADS aus nicht gemessen → E 5; Ziehen 0,18 s bis Hüfte (destiny2:481) + Ausfedern E → 14)",
+     "frames": 27,
+     "time_scale": 1.08,
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse rocket_launcher: 25 → 27 Bilder (M Motiongen REF 0.37 Verdict › D/G (z-v37-rl-gjallarhorn): Gjallarhorn ADS ein / aus 15 / 16 echte Bilder bei 30/s (0,50 / 0,53 s) → aim_in 15, aim_out 16 (Umrechnung wie Automatik 20 B60 → 10: gleiche Dauer); Ziehen nach Wechsel bis ruhig 0,90 s mit Überschwingen −11,5 / +16,7 pp (Gjallarhorn) bzw. 0,30 s ohne (Todbringer, O) → draw 27 E: der schwere Werfer schwingt mit dem Feder-Nachlauf nach wie Gjallarhorn. Bis 0.34: aim_in 6 (Destiny 14 B60, destiny2:594), aim_out 5 E, draw 14 (0,18 s bis Hüfte, destiny2:481))",
      "weapon": [
       {
        "f": 0.0,
@@ -98456,7 +98499,7 @@
        "back": 0.0
       },
       {
-       "f": 9.8,
+       "f": 18.9,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -98466,7 +98509,7 @@
        "back": 0.0
       },
       {
-       "f": 14.0,
+       "f": 27.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -98493,7 +98536,7 @@
        ]
       },
       {
-       "f": 4.2,
+       "f": 8.1,
        "kind": "cam",
        "grip": "support",
        "point": [
@@ -98508,7 +98551,7 @@
        ]
       },
       {
-       "f": 9.1,
+       "f": 17.55,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -98523,7 +98566,7 @@
        ]
       },
       {
-       "f": 14.0,
+       "f": 27.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -98561,11 +98604,11 @@
        "pose": "relaxed"
       },
       {
-       "f": 7.7,
+       "f": 14.85,
        "pose": "foregrip_open"
       },
       {
-       "f": 9.8,
+       "f": 18.9,
        "pose": "foregrip"
       }
      ],
@@ -98597,7 +98640,7 @@
      },
      "events": [
       {
-       "f": 10,
+       "f": 19,
        "name": "Ready"
       }
      ]
@@ -98758,9 +98801,9 @@
     {
      "name": "aim_in",
      "de": "Hüfte → Zielen",
-     "frames": 6,
-     "time_scale": 0.6,
-     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse rocket_launcher: 10 → 6 Bilder (M Destiny-Raketenwerfer ADS ein 14 Bilder bei 60/s (Motiongen destiny2:594) → 6 Bilder bei 30/s (wie Scharfschütze); ADS aus nicht gemessen → E 5; Ziehen 0,18 s bis Hüfte (destiny2:481) + Ausfedern E → 14)",
+     "frames": 15,
+     "time_scale": 1.5,
+     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse rocket_launcher: 10 → 15 Bilder (M Motiongen REF 0.37 Verdict › D/G (z-v37-rl-gjallarhorn): Gjallarhorn ADS ein / aus 15 / 16 echte Bilder bei 30/s (0,50 / 0,53 s) → aim_in 15, aim_out 16 (Umrechnung wie Automatik 20 B60 → 10: gleiche Dauer); Ziehen nach Wechsel bis ruhig 0,90 s mit Überschwingen −11,5 / +16,7 pp (Gjallarhorn) bzw. 0,30 s ohne (Todbringer, O) → draw 27 E: der schwere Werfer schwingt mit dem Feder-Nachlauf nach wie Gjallarhorn. Bis 0.34: aim_in 6 (Destiny 14 B60, destiny2:594), aim_out 5 E, draw 14 (0,18 s bis Hüfte, destiny2:481))",
      "weapon": [
       {
        "f": 0.0,
@@ -98773,7 +98816,7 @@
        "back": 0.0
       },
       {
-       "f": 5.4,
+       "f": 13.5,
        "pose": "ads",
        "roll": 0.0,
        "yaw": 0.0,
@@ -98783,7 +98826,7 @@
        "back": 0.0
       },
       {
-       "f": 6.0,
+       "f": 15.0,
        "pose": "ads",
        "roll": 0.0,
        "yaw": 0.0,
@@ -98861,7 +98904,7 @@
      },
      "events": [
       {
-       "f": 5,
+       "f": 14,
        "name": "Aimed"
       }
      ]
@@ -98869,9 +98912,9 @@
     {
      "name": "aim_out",
      "de": "Zielen → Hüfte",
-     "frames": 5,
-     "time_scale": 0.625,
-     "src": "E; Klasse rocket_launcher: 8 → 5 Bilder (M Destiny-Raketenwerfer ADS ein 14 Bilder bei 60/s (Motiongen destiny2:594) → 6 Bilder bei 30/s (wie Scharfschütze); ADS aus nicht gemessen → E 5; Ziehen 0,18 s bis Hüfte (destiny2:481) + Ausfedern E → 14)",
+     "frames": 16,
+     "time_scale": 2.0,
+     "src": "E; Klasse rocket_launcher: 8 → 16 Bilder (M Motiongen REF 0.37 Verdict › D/G (z-v37-rl-gjallarhorn): Gjallarhorn ADS ein / aus 15 / 16 echte Bilder bei 30/s (0,50 / 0,53 s) → aim_in 15, aim_out 16 (Umrechnung wie Automatik 20 B60 → 10: gleiche Dauer); Ziehen nach Wechsel bis ruhig 0,90 s mit Überschwingen −11,5 / +16,7 pp (Gjallarhorn) bzw. 0,30 s ohne (Todbringer, O) → draw 27 E: der schwere Werfer schwingt mit dem Feder-Nachlauf nach wie Gjallarhorn. Bis 0.34: aim_in 6 (Destiny 14 B60, destiny2:594), aim_out 5 E, draw 14 (0,18 s bis Hüfte, destiny2:481))",
      "weapon": [
       {
        "f": 0.0,
@@ -98884,7 +98927,7 @@
        "back": 0.0
       },
       {
-       "f": 5.0,
+       "f": 16.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -98962,7 +99005,7 @@
      },
      "events": [
       {
-       "f": 5,
+       "f": 16,
        "name": "Ready"
       }
      ]
@@ -100778,18 +100821,18 @@
     },
     {
      "name": "walk",
-     "de": "Gehen (liegende Acht)",
+     "de": "Gehen (liegende Acht, Waffe etwas gesenkt)",
      "frames": 60,
      "time_scale": 1.25,
-     "src": "E (CE: liegende Acht)",
+     "src": "O Motiongen REF 0.37 Verdict › C/G (z-v37-laufen): Laufen ohne Sprint mit eigenem, langsamerem Takt 0,37–0,41 s je Schritt (Automatik, MP, Fusion, MG) → period 24 (Doppelschritt 0,80 s, vertikal 0,40 s je Schritt; Sprint 19) bleibt; Hub vertikal 2–5 pp H ≈ 0,2–0,5 des Sprinthubs → 0,006 m (0,33 von 0,018; bis 0.34 0,004 = 0,22); Waffe in abgesenkter Hüftlage mit vollem Fadenkreuz → E 12 mm tiefer, 1,5° gesenkt (≈ 3 pp H; Destiny-Hüllen beim Laufen Automatik 4 pp tiefer, MP und Fusion höher als ihre Hüfte – kein einheitliches Maß). Unity legt den Versatz mit dem Wippgewicht auf (EgoController); seitlich, Rollen und liegende Acht E (CE)",
      "weapon": [
       {
        "f": 0.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       },
@@ -100798,8 +100841,8 @@
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
-       "pitch": 0.0,
-       "up": 0.0,
+       "pitch": -1.5,
+       "up": -0.012,
        "right": 0.0,
        "back": 0.0
       }
@@ -100866,7 +100909,7 @@
       "period": 24.0,
       "amp": [
        0.007,
-       0.004
+       0.006
       ],
       "roll": 1.2,
       "u": false

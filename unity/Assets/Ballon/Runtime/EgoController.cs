@@ -698,7 +698,7 @@ namespace Ballon.Ego
 
             // Rückstoß (ego.RECOIL): Modellkick und Kamera-Ruck als Federn (kritisch gedämpft: kein Unterschwingen), Hochziehen des
             // Modells klingt nach dem Feuern ab; die Grundbahn steigt in der Salve und kehrt danach kritisch gedämpft zurück (5.2 A)
-            var Rc = S.D.motion.recoil;
+            var Rc = S.D.gameplay.RecoilOr(S.D.motion.recoil);
             EgoSolver.SpringStep(ref _recX, ref _recV, Vector3.zero, 2 * Mathf.PI * Rc.freq_hz, Rc.zeta, dt);
             EgoSolver.SpringStep(ref _recCx, ref _recCv, Vector3.zero, 2 * Mathf.PI * Rc.cam_freq_hz, Rc.cam_zeta, dt);
             if (_sinceShot > interval * 1.5f) _rClimb *= Mathf.Exp(-dt * S.fps / 8f);
@@ -793,7 +793,7 @@ namespace Ballon.Ego
             _sinceShot = 0;
             _boltT = tune.boltOpenS;
             _portOpen = true;
-            var Rc = S.D.motion.recoil;
+            var Rc = S.D.gameplay.RecoilOr(S.D.motion.recoil);
             float w = adsWeight;
             // Modellkick: im Zielen klein (Visier < 1 % H), ohne Hochziehen; Kamera-Ruck gleich, er wird erst beim Anwenden verteilt
             float kick = S.D.gameplay.kick;               // je Klasse (0.22, Werkzeug 0,6), wie die Feueraktion im Clip
@@ -855,6 +855,11 @@ namespace Ballon.Ego
             float rollW = _walk.bob.roll * _bobW + _sprintA.bob.roll * _sprintW;
             L.pos += new Vector3(side * Mathf.Sin(_bobPh), 0, up) * bobK;
             L.rot = L.rot * RotY(Rad(rollW * Mathf.Sin(_bobPh) * bobK + _tilt));
+            // Laufen (0.35, Verdict): Waffe abgesenkt um den Versatz des ersten Schlüssels von walk, mit dem Wippgewicht, im Zielen aus
+            var wk = _walk.weapon[0];
+            float lw = _bobW * (1 - adsWeight);
+            L.pos.z += wk.up * lw;
+            L.rot = L.rot * RotX(Rad(-wk.pitch * lw));
             // Pendeln: Gieren um die Hochachse der Waffe, Nicken um die Querachse, leichte Lageverschiebung
             L.rot = L.rot * RotZ(Rad(_sway.x)) * RotX(Rad(_sway.y));
             L.pos += new Vector3(-_sway.x, 0, _sway.y) * tune.swayPos;

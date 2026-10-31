@@ -673,7 +673,7 @@ def evaluate(sc, A, f, report, state):
         mech[pid] = BB.value_at(keys, f)
     shots = [s for s in A.get('fire', []) if s <= f]
     if A.get('fire'):                        # EG.RECOIL: Impuls je Schuss in gedämpfte Federn (Waffe zurück/hoch, Kamera getrennt)
-        k, Rc, dt = A.get('kick', 1.0), EG.RECOIL, 1.0 / EG.FPS
+        k, Rc, dt = A.get('kick', 1.0), sc.P['recoil'], 1.0 / EG.FPS   # 0.35: Rückstoßsatz der Klasse (ego.profile)
         # Zielen (5.1 A): kleiner Modellkick, kein Hochziehen, der Kamera-Ruck geht nur in die Welt (hier ohne Welt: Kamera steht)
         kb, kp, kc, kl = (Rc['ads_back'], Rc['ads_pitch'], 0.0, 0.0) if EG.ends_in_ads(A) else (1.0, 1.0, 1.0, 1.0)
         rc = state.setdefault('rec', dict(x=Vector(), v=Vector(), cx=Vector(), cv=Vector(), f=f - 1))

@@ -267,7 +267,7 @@ namespace Ballon.Ego.Tests
             Visier_v3(D.weapon);
             CollectionAssert.AreEqual(o.poses.Select(J), D.poses.Select(J), "Haltungen");
             CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
-            CollectionAssert.AreEqual(o.actions.Select(J), D.actions.Select(J), "Aktionen");
+            CollectionAssert.AreEqual(o.actions.Where(NotWalk).Select(J), D.actions.Where(NotWalk).Select(J), "Aktionen (ohne walk, 0.35)");
             CollectionAssert.AreEqual(o.textures.skins.Select(s => s.name + s.kind), D.textures.skins.Select(s => s.name + s.kind), "Skins");
             // 0.21: das Absehen ändert seine Netzgrenzen (Röhren → flach in der Glasebene); 0.32: der Griff mit R_SOFT (A5, −0,013 mm,
             // mit 0,05 mm Toleranz); alle übrigen Teile bleiben gleich
@@ -313,7 +313,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
                 CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
-                CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
+                CollectionAssert.AreEqual(o.actions.Where(NotWalk).Select(J), n.actions.Where(NotWalk).Select(J), $"{o.weapon.id}: Aktionen (ohne walk)");
                 var m = JsonUtility.FromJson<Motion>(J(o.motion));
                 m.ads_hide = n.motion.ads_hide;
                 Assert.AreEqual(J(m), J(n.motion), "Bewegung (ohne die neue Regel ads_hide)");
@@ -322,7 +322,7 @@ namespace Ballon.Ego.Tests
 
         // ---------------------------------------------------------------- Scout BASIC-03 0.20 (Entscheidungsliste Schritt 6, Visier-Standard 3)
         /// <summary>Werte der Klasse Scout aus den Daten (ego.CLASSES › scout_rifle, keine Sonderlogik nach Waffen-ID): Einzelfeuer aus der
-        /// Spec, 180/min und 15 Schuss (Tone Patrol), Weltzoom 2,0 (1.2 A), Hüft-Fadenkreuz aus dem Katalog, Anflug 7 Bilder bei 30/s (4d,
+        /// Spec, 180/min und 15 Schuss (Tone Patrol), Weltzoom 3,0 (0.35 Verdict; 2,0 nach 1.2 A bis 0.34), Hüft-Fadenkreuz aus dem Katalog, Anflug 7 Bilder bei 30/s (4d,
         /// am Unity-Bild 15–20 bei 60/s), aim_out 5; Sprint wie die Automatik (lange Waffe, 2.1 A / 3.2 A), eigene Hüfte nach huefte.json (0.33); Schussbilder der Clips in
         /// der Klassenkadenz; die übrigen Aktionen wie die Automatik; Teile mit ads_hide sind Okular, Rohr, Türme, Okularlinse, Spannband.</summary>
         [Test]
@@ -335,7 +335,7 @@ namespace Ballon.Ego.Tests
             Assert.IsFalse(D.gameplay.Semi || MP.gameplay.Semi, "Automatik und MP: Dauerfeuer");
             Assert.AreEqual(180, SR.gameplay.rpm);
             Assert.AreEqual(15, SR.gameplay.magazine);
-            Assert.AreEqual(2.0f, SR.gameplay.world_zoom, 1e-6f, "Weltzoom Scout 2,0 (1.2 A, seit 0.13)");
+            Assert.AreEqual(3.0f, SR.gameplay.world_zoom, 1e-6f, "Weltzoom Scout 3,0 (0.35 Verdict: Das Führende Visier ≈ 3,0; bis 0.34 2,0)");
             Assert.AreEqual(0.2f, SR.gameplay.zoom_start, 1e-6f, "Zoom ab 20 % des Augenwegs (1d, am Unity-Bild gemessen)");
             Assert.AreEqual(0f, D.gameplay.zoom_start + MP.gameplay.zoom_start, "Automatik und MP: 5 % wie bisher");
             Assert.AreEqual("scope", SR.gameplay.sight);
@@ -401,20 +401,32 @@ namespace Ballon.Ego.Tests
         }
 
         /// <summary>0.33: Weltzoom in der Zoomtabelle angeglichen – Bogen 1,8 → 2,2 (Imperial Needle gemessen), Scharfschütze 5,5 → 4,0 (Far
-        /// Future ≈ 4×), kurze Fusion 1,8 → 1,45 und lineare Fusion 3,8 → 3,0 (REF 0.34 „Gapfill“); sonst ist die Tabelle gleich.
+        /// Future ≈ 4×), kurze Fusion 1,8 → 1,45 und lineare Fusion 3,8 → 3,0 (REF 0.34 „Gapfill“); 0.35 „Stance“ (REF 0.37 „Verdict“): Scout
+        /// 2,0 → 3,0, Scharfschütze 4,0 → 4,7, Raketenwerfer 2,8 → 3,3; sonst ist die Tabelle gleich.
         /// Die alten Dateien tragen die alten Werte – für den Vergleich übernommen, die übrigen
         /// Einträge geprüft. Ebenso sight_form (0.33, Absehen im Glas): alte Dateien setzen es beim Lesen auf die Hüftform.</summary>
+        /// <summary>0.35 „Stance“: walk hat einen langsameren Hub und eine abgesenkte Hüftlage (Verdict › G) – alte Dateien tragen den alten
+        /// Ablauf; geprüft im Test Sprintschritt (Laufen).</summary>
+        static bool NotWalk(EgoAction a) => a.name != "walk";
+
         static EgoFile BowZoom(EgoFile o, EgoFile n)
         {
             var a = o.gameplay.zoom_table; var b = n.gameplay.zoom_table;
             Assert.AreEqual(a.Length, b.Length, "Zoomtabelle");
             for (int k = 0; k < a.Length; k++)
                 if (a[k].type == "combat_bow") Assert.AreEqual(2.2f, b[k].zoom, 1e-4f, "Bogen 2,2×");
-                else if (a[k].type == "sniper_rifle") Assert.AreEqual(4.0f, b[k].zoom, 1e-4f, "Scharfschütze 4×");
+                else if (a[k].type == "sniper_rifle") Assert.AreEqual(4.7f, b[k].zoom, 1e-4f, "Scharfschütze 4,7× (0.35 Verdict, Widerruf)");
+                else if (a[k].type == "scout_rifle") Assert.AreEqual(3.0f, b[k].zoom, 1e-4f, "Scout 3,0× (0.35 Verdict)");
+                else if (a[k].type == "rocket_launcher") Assert.AreEqual(3.3f, b[k].zoom, 1e-4f, "Raketenwerfer 3,3× (0.35 Verdict, Gjallarhorn)");
                 else if (a[k].type == "fusion_rifle") Assert.AreEqual(1.45f, b[k].zoom, 1e-4f, "kurze Fusion 1,45× (Gapfill)");
                 else if (a[k].type == "linear_fusion_rifle") Assert.AreEqual(3.0f, b[k].zoom, 1e-4f, "lineare Fusion 3,0× (Gapfill)");
                 else Assert.AreEqual(a[k].zoom, b[k].zoom, 1e-6f, a[k].type);
             o.gameplay.zoom_table = b;
+            if (new[] { "scout_rifle", "sniper_rifle", "rocket_launcher" }.Contains(o.gameplay.weapon_type))   // 0.35: Weltzoom der Klasse
+            {
+                Assert.AreEqual(n.gameplay.ZoomFor(n.gameplay.weapon_type), n.gameplay.world_zoom, 1e-6f, "Weltzoom aus der Tabelle (0.35)");
+                o.gameplay.world_zoom = n.gameplay.world_zoom;
+            }
             return Payload034(o, n);
         }
 
@@ -477,15 +489,15 @@ namespace Ballon.Ego.Tests
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
                 // 0.33.2: Zielen und Ziehen des Scouts nach Gapfill (eigene Bildzahlen, Werte_des_Scouts); die übrigen Aktionen gleich
                 var retimed = new[] { "draw", "aim_in", "aim_out" };
-                CollectionAssert.AreEqual(o.actions.Where(a => !refit || !retimed.Contains(a.name)).Select(J),
-                                          n.actions.Where(a => !refit || !retimed.Contains(a.name)).Select(J), $"{o.weapon.id}: Aktionen");
+                CollectionAssert.AreEqual(o.actions.Where(a => NotWalk(a) && (!refit || !retimed.Contains(a.name))).Select(J),
+                                          n.actions.Where(a => NotWalk(a) && (!refit || !retimed.Contains(a.name))).Select(J), $"{o.weapon.id}: Aktionen");
                 Assert.AreEqual(J(o.motion), J(n.motion), "Bewegung");
             }
         }
 
         /// <summary>Werte der Klasse Impuls aus den Daten (ego.CLASSES › pulse_rifle, keine Sonderlogik nach Waffen-ID): Salve aus der Spec
         /// (burst_3), 900/min in der Salve, 540/min gemittelt (Gridskipper), Magazin 36, Bahnstufe 1,33 % H je Schuss (≈ 4 pp je Salve),
-        /// Weltzoom 2,0 (Holo), Hüftform ring_dot, Anflug 10 Bilder bei 30/s wie die Automatik (Destiny 20 bei 60/s), Sprint wie die Automatik,
+        /// Weltzoom 2,0 (Holo), Hüftform ring_dot, Anflug 10 Bilder bei 30/s wie die Automatik (Destiny 20 bei 60/s), Sprint eigen (0.35 Verdict, bis 0.34 wie die Automatik),
         /// eigene Hüfte; Schussbilder der Clips in ganzen Salven; Hülsen, Verschluss und Klappe aus dem Modul.</summary>
         [Test]
         public void Werte_des_Impulses()
@@ -517,7 +529,7 @@ namespace Ballon.Ego.Tests
             CollectionAssert.AreEqual(new[] { 2, 4, 6, 12, 14, 16, 22, 24, 26 }, PR.Action("fire_hip").fire, "drei Salven: 2 Bilder Takt, 10 Bilder Folge");
             CollectionAssert.AreEqual(PR.Action("fire_hip").fire, PR.Action("fire_ads").fire);
             CollectionAssert.AreEqual(new[] { 7, 9, 11, 17, 19, 21 }, PR.Action("sprint_to_fire").fire);
-            foreach (var n in new[] { "sprint", "ads", "reload" })
+            foreach (var n in new[] { "ads", "reload" })       // 0.35: Sprint eigen (Verdict: fast aus dem Bild)
             {
                 EgoPose a = D.Pose(n), b = PR.Pose(n);
                 Assert.AreEqual(J(a.pos) + J(a.aim) + a.roll + J(a.eye), J(b.pos) + J(b.aim) + b.roll + J(b.eye), $"Haltung {n} wie die Automatik");
@@ -853,6 +865,8 @@ namespace Ballon.Ego.Tests
                     Vector3 g = E.ToScreen(o.weapon.MultiplyPoint3x4(Vector3.zero)), t = E.ToScreen(o.weapon.MultiplyPoint3x4(new Vector3(0, 0, 0.3f)));
                     Assert.Greater(t.x, g.x, "Bogen: Riser oben nach rechts geneigt");
                 }
+                else if (d.profile.type == "machine_gun" || d.profile.type == "trace_rifle" || d.profile.type == "shotgun")
+                    Assert.That(roll, Is.InRange(-20f, 0f), $"{d.profile.type}: flach quer unten bzw. fast aus dem Bild (0.35 Verdict), Oberseite leicht nach rechts");
                 else Assert.Less(roll, -10f, "Gewehre: Oberseite nach rechts (quer, wie bisher)");
             }
             Assert.AreEqual(JsonUtility.ToJson(D.Action("sprint").bob), JsonUtility.ToJson(MP.Action("sprint").bob), "Frequenz und Hub wie bisher (3c)");
@@ -866,10 +880,11 @@ namespace Ballon.Ego.Tests
         public void Weltzoom_je_Klasse()
         {
             var G = D.gameplay;
-            var want = new Dictionary<string, float> { ["scout_rifle"] = 2.0f, ["hand_cannon"] = 1.15f, ["submachine_gun"] = 1.45f,
+            var want = new Dictionary<string, float> { ["scout_rifle"] = 3.0f, ["hand_cannon"] = 1.15f, ["submachine_gun"] = 1.45f,
                 ["auto_rifle"] = 1.9f, ["pulse_rifle"] = 2.0f, ["machine_gun"] = 1.9f, ["sidearm"] = 1.25f, ["grenade_launcher"] = 1.4f,
                 ["linear_fusion_rifle"] = 3.0f, ["fusion_rifle"] = 1.45f, ["trace_rifle"] = 1.8f,
-                ["sniper_rifle"] = 4.0f };   // 0.33: Scharfschütze ≈ 4× (Far Future, destiny2:496); Fusionen nach Gapfill (REF 0.34)
+                ["sniper_rifle"] = 4.7f, ["rocket_launcher"] = 3.3f };   // 0.33: Fusionen nach Gapfill (REF 0.34); 0.35 Verdict: Scout 3,0,
+                                                                         // Scharfschütze 4,7 (Widerruf), Raketenwerfer 3,3 (Gjallarhorn)
             foreach (var kv in want) Assert.AreEqual(kv.Value, G.ZoomFor(kv.Key), 1e-4f, kv.Key);
             Assert.AreEqual(17, G.zoom_table.Length, "alle Waffentypen");
             Assert.AreEqual("auto_rifle", G.weapon_type);
@@ -997,6 +1012,10 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(B.u, "Sprint-Bahn als U-Bogen (oben an den Seitenumkehren) wie Destiny 2");
             var W = D.Action("walk").bob;
             Assert.Less(2f * D.fps / W.period, steps, "Gehen langsamer als Sprint");
+            // 0.35 (Verdict › G): Laufen 0,37–0,41 s je Schritt (Doppelschritt 22–25 Bilder), Hub 0,2–0,5 des Sprinthubs, Waffe gesenkt
+            Assert.That(W.period, Is.InRange(22f, 25f), "Laufen: Doppelschritt 22–25 Bilder (Destiny 0,37–0,41 s je Schritt)");
+            Assert.That(W.amp[1] / B.amp[1], Is.InRange(0.2f, 0.5f), "Laufen: Hub 0,2–0,5 des Sprinthubs");
+            Assert.Less(D.Action("walk").weapon[0].up, 0f, "Laufen: Waffe in abgesenkter Hüftlage");
 
             var S = new EgoSolver(D);
             var E = new EgoScreen(S);
@@ -1467,6 +1486,49 @@ namespace Ballon.Ego.Tests
         }
 
         // ---------------------------------------------------------------- Referenz
+        /// <summary>0.35 „Stance“: eigener Rückstoßsatz der Handfeuerwaffe (Motiongen REF 0.35 › E: Spitze +5…+10, Unterschwingen +25…+32,
+        /// Rückkehr ≤ +47 Bilder bei 60/s; Kamera im Zielen ≈ 22 pp H nach 0,17 s), die übrigen Klassen mit motion.recoil; Raketenwerfer
+        /// Ziehen und Zielen nach Verdict › G.</summary>
+        [Test]
+        public void Stance_Rueckstoss_und_Werferzeiten()
+        {
+            var HC = All.First(d => d.gameplay.weapon_type == "hand_cannon");
+            var Rc = HC.gameplay.RecoilOr(HC.motion.recoil);
+            Assert.AreNotSame(HC.motion.recoil, Rc, "Handfeuerwaffe: eigener Rückstoßsatz");
+            foreach (var d in All.Where(d => d.gameplay.weapon_type != "hand_cannon"))
+                Assert.AreSame(d.motion.recoil, d.gameplay.RecoilOr(d.motion.recoil), $"{d.weapon.id}: gemeinsamer Rückstoß");
+            Vector3 x = Vector3.zero, v = new Vector3(0, Rc.pitch_dps * HC.gameplay.kick, 0);
+            float peak = 0, trough = 0; int fPeak = 0, fTrough = 0, fBack = -1;
+            for (int f = 1; f <= 60; f++)
+            {
+                EgoSolver.SpringStep(ref x, ref v, Vector3.zero, 2 * Mathf.PI * Rc.freq_hz, Rc.zeta, 1f / 60);
+                if (x.y > peak) { peak = x.y; fPeak = f; }
+                if (x.y < trough) { trough = x.y; fTrough = f; }
+                if (fTrough > 0 && f > fTrough && fBack < 0 && Mathf.Abs(x.y) < 0.05f * peak) fBack = f;
+            }
+            Assert.That(fPeak, Is.InRange(5, 10), "Spitze +5…+10 Bilder bei 60/s");
+            Assert.That(peak, Is.InRange(40f, 60f), "Kippen ≈ 55° (E 40–60°)");
+            Assert.That(fTrough, Is.InRange(25, 32), "Unterschwingen +25…+32");
+            Assert.That(-trough / peak, Is.InRange(0.2f, 0.55f), "Unterschwingen 25–54 % der Spitze");
+            Assert.That(fBack, Is.InRange(36, 47), "Rückkehr +38…+47");
+            Vector3 c = Vector3.zero, cv = new Vector3(Rc.cam_dps * Rc.ads_cam * HC.gameplay.kick, 0, 0);
+            float cPeak = 0; int fc = 0;
+            for (int f = 1; f <= 30; f++)
+            {
+                EgoSolver.SpringStep(ref c, ref cv, Vector3.zero, 2 * Mathf.PI * Rc.cam_freq_hz, Rc.cam_zeta, 1f / 60);
+                if (c.x > cPeak) { cPeak = c.x; fc = f; }
+            }
+            float vfov = 2 * Mathf.Atan(Mathf.Tan(HC.camera.h_fov_deg * Mathf.Deg2Rad / 2) * 9f / 16f) * Mathf.Rad2Deg / HC.gameplay.world_zoom;
+            Assert.That(fc / 60f, Is.InRange(0.12f, 0.22f), "Kamerakick im Zielen: Spitze nach ≈ 0,17 s");
+            Assert.That(cPeak / vfov, Is.InRange(0.15f, 0.28f), "Kamerakick im Zielen ≈ 22 pp H (großer senkrechter Kick)");
+            var RL = All.First(d => d.gameplay.weapon_type == "rocket_launcher");
+            Assert.AreEqual(27, RL.Action("draw").frames, "Werfer ziehen bis ruhig 0,90 s (Gjallarhorn)");
+            Assert.AreEqual(15, RL.Action("aim_in").frames, "Werfer ADS ein 15 Bilder");
+            Assert.AreEqual(16, RL.Action("aim_out").frames, "Werfer ADS aus 16 Bilder");
+            TestContext.WriteLine($"Handfeuerwaffe: Spitze {peak:0.0}° bei {fPeak}, Tief {trough:0.0}° bei {fTrough}, zurück bei {fBack} (60/s); " +
+                                  $"Kamera im Zielen {cPeak:0.00}° = {100 * cPeak / vfov:0.0} pp H nach {fc / 60f:0.000} s");
+        }
+
         [Test]
         public void Gleich_wie_Blender_Referenz()
         {

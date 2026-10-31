@@ -615,7 +615,7 @@ namespace Ballon.Ego.Tests
             }
         }
 
-        /// <summary>Scout im Spieler (Taste 3 über die Eingabekette): Weltzoom 2,0, Teile mit ads_hide im Zielen aus und in der Hüfte da,
+        /// <summary>Scout im Spieler (Taste 3 über die Eingabekette): Weltzoom 3,0 (bis 0.34 2,0), Teile mit ads_hide im Zielen aus und in der Hüfte da,
         /// Einzelfeuer mit gehaltenem Abzug genau ein Schuss, Hüft-Fadenkreuz der Klasse.</summary>
         [UnityTest]
         public IEnumerator Scout_im_Spieler_Taste_3_Zielfernrohr_Einzelfeuer()
@@ -637,7 +637,7 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < 36; k++) yield return null;
             float zoom = Mathf.Tan(p.viewCam.fieldOfView * Mathf.Deg2Rad / 2) / Mathf.Tan(p.worldCam.fieldOfView * Mathf.Deg2Rad / 2);
             Assert.IsTrue(rig.AdsHidden, "Zielen: Teile mit ads_hide aus");
-            Assert.AreEqual(2.0f, zoom, 1e-3f, "Weltzoom 2,0");
+            Assert.AreEqual(3.0f, zoom, 1e-3f, "Weltzoom 3,0 (0.35 Verdict)");
             Assert.IsTrue(p.SightVisible, "gezeichnetes Absehen im Zielfernrohr");
             var sc = p.SightScreen();
             Assert.AreEqual(0.5f, sc.x / p.viewCam.pixelWidth, 0.02f, "Absehen nahe der Bildmitte");
