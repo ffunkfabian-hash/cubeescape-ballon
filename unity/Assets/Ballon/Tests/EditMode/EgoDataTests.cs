@@ -1457,7 +1457,7 @@ namespace Ballon.Ego.Tests
                 if (F.kind == "beam" || F.kind == "rail" || F.kind == "bolts") Assert.Greater(F.width_m, 0, d.weapon.id);
             }
             var P = D.motion.payload;
-            Assert.AreEqual(5, P.impacts.Length, "Stile bullet, heavy, pellet, energy, arrow");
+            Assert.AreEqual(6, P.impacts.Length, "Stile bullet, heavy, pellet, shotgun, energy, arrow");
             Assert.Greater(P.decal.max, 0);
             Assert.Greater(P.explosion.sparks, 0);
             Assert.Greater(P.muzzle_smoke.rate_hz, 0);

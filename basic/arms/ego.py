@@ -465,27 +465,37 @@ def index_level(fire, f, dur):
 DECAL = dict(size_m=0.05, max=96, life_s=30.0, fade_s=2.5, variants=4, scorch_m=1.4, scorch_max=8,
              src='E: Loch 5 cm (seit Patch einschuss), dunkler Kern, heller aufgeworfener Rand, Rußhof; vier Formen (gedreht, Rand '
                  'unregelmäßig), nach 30 s in 2,5 s ausgeblendet, höchstens 96 (der älteste wird wiederverwendet); Explosion: Brandfleck 1,4 m')
-# Einschläge: Funken (gestreckt, kurz), Staub (grau, weich), Lichtpunkt; je Stil
+# Einschläge: Funken (gestreckt, kurz), Staub bzw. dunkle Säule (dust_color, steigt mit dust_rise_mps), Lichtpunkt; je Stil.
+# 0.34.1 „impact“: Zeiten und Farben nach REF 0.36 „Impact“ (Motiongen main d0181c7, einschlag.md › 7, einschlag.json › ballon_uebernahme); Größen (m) misst Impact nicht (E).
 IMPACTS = dict(
-    bullet=dict(sparks=9, spark_mps=6.0, spark_s=0.22, dust=3, dust_m=0.22, dust_s=0.7, glow_m=0.28, glow_s=0.07, decal='hole',
-                src='E: kurze Funken und eine kleine Staubwolke (Destiny Chroma Rush: Einschlagrauch durch Folgeschüsse überlagert, Ende offen; '
-                    'Motiongen destiny2 › z-ballista-chroma-rush)'),
-    heavy=dict(sparks=14, spark_mps=8.0, spark_s=0.28, dust=5, dust_m=0.38, dust_s=0.9, glow_m=0.42, glow_s=0.09, decal='hole',
-               src='E: Handfeuerwaffe und Scharfschütze größer (mehr Funken, größere Wolke)'),
-    pellet=dict(sparks=3, spark_mps=5.0, spark_s=0.16, dust=1, dust_m=0.16, dust_s=0.5, glow_m=0.16, glow_s=0.06, decal='hole',
-                src='E: je Schrotkugel wenig, die Menge macht das Bild'),
-    energy=dict(sparks=8, spark_mps=4.5, spark_s=0.30, dust=1, dust_m=0.16, dust_s=0.5, glow_m=0.45, glow_s=0.12, decal='scorch',
-                src='E: Energie: Funken in der Leuchtfarbe der Waffe, heller Lichtfleck, Brandfleck statt Loch (Prometheus Lens: Kontaktrest länger '
-                    'als der Strahl, Ende offen; Motiongen destiny2 › z-ballista-prometheus-lens)'),
-    arrow=dict(sparks=4, spark_mps=3.5, spark_s=0.25, dust=2, dust_m=0.16, dust_s=0.6, glow_m=0.20, glow_s=0.08, decal='scorch',
-               src='E: Pfeil: kleiner Lichtpunkt in der Leuchtfarbe, wenig Staub; der Pfeil steckt stick_s'),
+    bullet=dict(sparks=9, spark_mps=6.0, spark_s=0.10, dust=4, dust_m=0.14, dust_s=0.30, dust_color='#150F0D', dust_rise_mps=0.9,
+                glow_m=0.28, glow_s=0.03, decal='hole',
+                src='M Funken 0,02–0,1 s, dunkle Säule (B : H ≈ 1 : 3–4) bis 0,25–0,3 s, #150F0D–#2A1D1A, Leuchten 1–2 Bilder '
+                    '(IKELOS, Outbreak, Solemn Hymn; z-im-ikelos); Loch E (Destiny zeigt keins, Nutzerentscheid 180: behalten)'),
+    heavy=dict(sparks=14, spark_mps=8.0, spark_s=0.10, dust=6, dust_m=0.20, dust_s=0.38, dust_color='#150F0D', dust_rise_mps=1.1,
+               glow_m=0.42, glow_s=0.04, decal='hole',
+               src='M Scharfschütze: Funken 0,1 s, Säule ≈ 0,38 s (Far Future, z-im-far-future); Handfeuerwaffe auf Wand nicht gemessen'),
+    pellet=dict(sparks=3, spark_mps=5.0, spark_s=0.16, dust=1, dust_m=0.16, dust_s=0.5, dust_color='#8E9196', dust_rise_mps=0.0,
+                glow_m=0.16, glow_s=0.06, decal='hole',
+                src='E: je Schrotkugel (nur mit shot_impacts 0; seit 0.34.1 zeigt die Schrotflinte einen Einschlag je Schuss)'),
+    shotgun=dict(sparks=28, spark_mps=5.0, spark_s=0.17, dust=3, dust_m=0.35, dust_s=0.5, dust_color='#101828', dust_rise_mps=0.4,
+                 glow_m=0.55, glow_s=0.17, decal='hole',
+                 src='M ein Einschlag je Schuss: Funkenball dicht ≈ 0,17 s, Funken bis ≈ 0,5 s, Rauchball ≈ 0,5 s, #F1EBFA/#101828 (Python, '
+                     'Horseman; z-im-python, z-im-horseman); Nutzerentscheid 181'),
+    energy=dict(sparks=8, spark_mps=4.5, spark_s=0.25, dust=2, dust_m=0.16, dust_s=0.38, dust_color='#150F0D', dust_rise_mps=0.9,
+                glow_m=0.45, glow_s=0.12, decal='scorch',
+                src='M lineare Fusion: Funkenkrone 0,25 s, Säule 0,35–0,4 s (Threaded Needle, z-im-threaded-needle); Brandfleck E'),
+    arrow=dict(sparks=4, spark_mps=3.5, spark_s=0.25, dust=2, dust_m=0.16, dust_s=0.6, dust_color='#8E9196', dust_rise_mps=0.0,
+               glow_m=0.20, glow_s=0.08, decal='scorch',
+               src='E: Pfeil: kleiner Lichtpunkt in der Leuchtfarbe, wenig Staub; der Pfeil steckt stick_s (Destiny-Pfeil im Flug unsichtbar)'),
 )
 # Explosion (Granatwerfer, Raketenwerfer): Blitz, Druckring, Funken, Rauch, kurzes Licht; Größen mit radius_m der Klasse skaliert
-EXPLOSION = dict(flash_s=0.12, flash_k=1.3, fire=10, fire_s=0.45, fire_k=0.75, ring_s=0.35, ring_k=0.9, sparks=40, spark_mps=14.0,
-                 spark_s=0.7, smoke=16, smoke_s=2.6, smoke_k=0.7, light_s=0.18, light_k=4.0,
-                 colors=dict(core='#FFF2D6', fire='#FF7A2A', smoke='#3E4146', ring='#FFE2B8'),
-                 src='M Destiny: Ignition Code Explosion 9 Bilder bei 60/s (0,15 s), Blitz 3 Bilder (Motiongen destiny2 › '
-                     'z-ballista-ignition-code), Rauch und Ende nicht isolierbar; Feuerkugeln, Ring, Funken, Rauch, Farben E')
+EXPLOSION = dict(flash_s=0.17, flash_k=1.3, fire=10, fire_s=0.75, fire_k=0.75, ring_s=0.10, ring_k=0.9, sparks=40, spark_mps=14.0,
+                 spark_s=0.7, smoke=16, smoke_s=1.0, smoke_k=0.7, light_s=0.15, light_k=4.0,
+                 colors=dict(core='#FCECDE', fire='#E9B268', smoke='#020C08', ring='#FFE2B8'),
+                 src='M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): Kern 0,12–0,22 s (flash_s = Kern), Ring 0,07–0,13 s, '
+                     'Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, Rauch #020C08; bildweiter Blitz '
+                     '0,02–0,03 s nicht umgesetzt; Granatwerfer (Kern 0,12–0,13 s, kein Feuerball) teilt die Explosion – offen; Ringfarbe, Größen E')
 # Rauchschwaden aus der Mündung der Werfer nach dem Schuss (Viewmodel-Ebene, steigt und wird breiter)
 MUZZLE_SMOKE = dict(rate_hz=9.0, puff_m=0.05, grow=3.0, rise_mps=0.10, life_s=1.3, color='#C9CCD1', alpha=0.35,
                     src='E: nach dem Schuss weiße Schwaden aus dem Rohr (Nutzerbefund 0.33; CoD MW .357: heller Rauchpuff vor dem Lauf, '
@@ -496,42 +506,45 @@ MUZZLE_SMOKE = dict(rate_hz=9.0, puff_m=0.05, grow=3.0, rise_mps=0.10, life_s=1.
 PAYLOAD_DEFAULTS = dict(kind='hitscan', impact='bullet', pellets=0, cone_deg=0.0, cone_ads=1.0, speed_mps=0.0, gravity_mps2=0.0,
                         life_s=0.0, radius_m=0.0, smoke_s=0.0, trail='', width_m=0.0, length_m=0.0, beam_s=0.0, stick_s=0.0,
                         muzzle_glow_m=0.0, muzzle_glow_s=0.10, color='', tracer_every=0, tracer_mps=0.0, tracer_m=0.0, tracer_w_m=0.0,
-                        tracer_color='', trail_step_m=0.0, trail_life_s=0.0, scorch_every=1, spark_hz=0.0)
+                        tracer_color='', trail_step_m=0.0, trail_life_s=0.0, scorch_every=1, spark_hz=0.0, shot_impacts=0, pulse_hz=6.0)
+# shot_impacts (0.34.1): sichtbare Einschläge je Schuss beim Streuschuss (0 = je Kugel); pulse_hz: Pulsen des Dauerstrahls
 # Spur hinter Projektilen (trail_step_m Abstand der Ballen, trail_life_s ihre Dauer); Dauerstrahl: beam_s = Strahl hält nach dem letzten
 # Takt, scorch_every = Brandfleck je n. Takt, spark_hz = Funken je Sekunde am Kontakt; muzzle_glow_s = Dauer des Mündungslichts
 # Leuchtspur (hitscan): jeder tracer_every-te Schuss zeigt einen Strich (tracer_m lang, tracer_mps schnell) von der Mündung zum Einschlag
 TRACER_MG = dict(tracer_every=3, tracer_mps=320.0, tracer_m=2.4, tracer_w_m=0.018, tracer_color='#FFC27A')
 PAYLOAD = {
-    'auto_rifle': dict(src='E: Einschlag Kugel'),
-    'submachine_gun': dict(src='E: Einschlag Kugel'),
-    'scout_rifle': dict(src='E: Einschlag Kugel'),
-    'pulse_rifle': dict(src='E: Einschlag Kugel'),
-    'sidearm': dict(src='E: Einschlag Kugel'),
+    'auto_rifle': dict(src='M keine Spur, Funken, kein Loch in Destiny (REF 0.36 z-im-solemn-hymn); Loch E (Nutzerentscheid 180)'),
+    'submachine_gun': dict(src='M keine Spur, Funken + dunkle Säule (REF 0.36 z-im-ikelos); Loch E (Nutzerentscheid 180)'),
+    'scout_rifle': dict(src='M keine Spur (REF 0.36 z-im-sauerstoff); Einschlag wie Kugel, Loch E (Nutzerentscheid 180)'),
+    'pulse_rifle': dict(src='M keine Spur, Funken (REF 0.36 z-im-outbreak); Loch E (Nutzerentscheid 180)'),
+    'sidearm': dict(src='M keine Spur, kein Loch sichtbar (REF 0.36 › 7 Fußnote 1); Einschlag auf Wand nicht gemessen; Loch E (180)'),
     'machine_gun': dict(TRACER_MG, src='E: Einschlag Kugel; Leuchtspur jeder 3. Schuss, 320 m/s, 2,4 m, warmweiß (BF6 B36A4: roter Strich '
-                                         'zur Bildmitte ist Leuchtspur, Motiongen muendung › z-mf-bf6-b36a4; Häufigkeit und Farbe E)'),
-    'hand_cannon': dict(impact='heavy', src='E: Einschlag schwer'),
-    'sniper_rifle': dict(impact='heavy', src='E: Einschlag schwer'),
-    'shotgun': dict(kind='pellets', impact='pellet', pellets=12, cone_deg=3.0, cone_ads=0.75,
-                    src='E: 12 Kugeln gleichmäßig im Kegel 3,0° (halber Öffnungswinkel; Zielen × 0,75), ein Ring um die Mitte; Destiny-Schrot '
-                        '12 Kugeln (Community-Wert, nicht gemessen), Pelletmuster offen (Motiongen destiny2 › Methode 16)'),
-    'grenade_launcher': dict(kind='projectile', impact='explosion', speed_mps=42.0, gravity_mps2=7.0, life_s=4.0, radius_m=3.0, smoke_s=1.4,
-                             trail='grenade', width_m=0.045, length_m=0.07, trail_step_m=0.30, trail_life_s=0.65,
-                             src='E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), Explosion Radius 3 m, Rauch aus dem Lauf 1,4 s; '
-                                 'Destiny: Geschoss sichtbar 3 Bilder bei 60/s, Einschlag 0,13 s nach dem Blitz (FalloutPlays, destiny2 › 2: '
-                                 'Granatwerfer 2 Schuss), Ignition Code sichtbare Spur 6 Bilder – keine reine Flugzeit'),
+                                         'zur Bildmitte ist Leuchtspur, Motiongen muendung › z-mf-bf6-b36a4; Destiny-MG in REF 0.36 nicht gemessen)'),
+    'hand_cannon': dict(impact='heavy', src='M keine Spur, kein Loch sichtbar (REF 0.36 › 7 Fußnote 1); Einschlag schwer E, Loch E (180)'),
+    'sniper_rifle': dict(impact='heavy', src='M keine Spur, Funken 0,1 s, Säule ≈ 0,38 s (REF 0.36 z-im-far-future); Loch E (180)'),
+    'shotgun': dict(kind='pellets', impact='shotgun', pellets=12, cone_deg=3.0, cone_ads=0.75, shot_impacts=1,
+                    src='S 12 Kugeln, feste Muster (Destiny 6.3.0); im Bild EIN Einschlag je Schuss (M, REF 0.36 z-im-python) → die Kugeln '
+                        'treffen (Scheiben), gezeigt wird ein Einschlag mit einem Loch an der mittleren Kugel (Nutzerentscheid 181); Kegel 3,0° E'),
+    'grenade_launcher': dict(kind='projectile', impact='explosion', speed_mps=42.0, gravity_mps2=7.0, life_s=4.0, radius_m=3.0, smoke_s=0.2,
+                             trail='grenade', width_m=0.045, length_m=0.07, trail_step_m=0.30, trail_life_s=0.0,
+                             src='M Laufeffekt 0,05–0,2 s → 0,2 s (Nutzerentscheid 182), kein Schweif, Flug nah 0,17–0,22 s (REF 0.36 '
+                                 'z-im-velocity-baton, z-im-chill-inhibitor); E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), '
+                                 'Explosion Radius 3 m'),
     'rocket_launcher': dict(kind='projectile', impact='explosion', speed_mps=34.0, gravity_mps2=0.0, life_s=5.0, radius_m=4.5, smoke_s=2.0,
-                            trail='rocket', width_m=0.07, length_m=0.42, trail_step_m=0.18, trail_life_s=1.8,
-                            src='E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m, Rauchspur, Rauch aus dem Rohr 2 s; '
-                                'Destiny: große Explosion 0,45 s nach dem Blitz (Motiongen destiny2 › z-ballista-blue-shift), keine reine Flugzeit'),
+                            trail='rocket', width_m=0.07, length_m=0.42, trail_step_m=0.18, trail_life_s=0.0,
+                            src='M Glühpunkt ohne Rauchzopf, Flug 0,32–0,65 s (REF 0.36 z-im-blue-shift): Flamme am Heck, keine Rauchspur; '
+                                'E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m; Rauch aus dem Rohr 2 s (Nutzerwunsch 0.33, '
+                                'Destiny zeigt keinen – offen)'),
     'trace_rifle': dict(kind='beam', impact='energy', width_m=0.045, muzzle_glow_m=0.05, beam_s=0.15, scorch_every=3, spark_hz=40.0,
-                        src='E: durchgehender Strahl 4,5 cm vom Lauf zum Einschlag, solange der Abzug zieht, flackernd; Destiny Prometheus Lens: '
-                            'Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %, Strahl und Kontakt beginnen gemeinsam (destiny2 › z-ballista-prometheus-lens)'),
-    'fusion_rifle': dict(kind='bolts', impact='energy', speed_mps=110.0, width_m=0.05, length_m=2.5, muzzle_glow_m=0.06,
-                         src='E: je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang (sichtbar fliegend bis 30 m); Destiny: Bolzenzahl, Abstand '
-                             'und Streuung offen, Mündungskern ≈ 10–15 % (destiny2 › z-ballista-cartesian-coordinate, Methode 16)'),
-    'linear_fusion_rifle': dict(kind='rail', impact='energy', width_m=0.035, beam_s=0.22, muzzle_glow_m=0.08,
-                                src='E: ein scharfer Strahl je Schuss, 0,22 s sichtbar und schmaler werdend; Destiny Threaded Needle: diffuse '
-                                    'Ring-/Aufhellungsphase ohne isolierten Kern (Motiongen muendung › 7)'),
+                        color='#D0D8FF', pulse_hz=12.0,
+                        src='M Kern #D0D8FF, Rand #5060E0, Kontaktpunkt pulsiert 12/s (REF 0.36 z-im-agers); E: durchgehender Strahl 4,5 cm '
+                            'vom Lauf zum Einschlag, solange der Abzug zieht; Destiny Prometheus Lens: Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %'),
+    'fusion_rifle': dict(kind='bolts', impact='energy', speed_mps=110.0, width_m=0.05, length_m=2.5, muzzle_glow_m=0.06, muzzle_glow_s=0.07,
+                         src='M Auslöseblitz ≈ 0,07 s; Destiny-Bolzen im Bild nicht sichtbar, [S] 5–9 je Salve (REF 0.36 z-im-tadel) – sichtbare '
+                             'Bolzen bleiben (Nutzerwunsch 0.33, offen); E: je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang'),
+    'linear_fusion_rifle': dict(kind='rail', impact='energy', width_m=0.035, beam_s=0.07, muzzle_glow_m=0.08,
+                                src='M Schleier am Lauf 4 Bilder ≈ 0,07 s, kein fester Strahl (REF 0.36 z-im-threaded-needle) – hier ein Strahl '
+                                    'für 0,07 s (Nutzerwunsch 0.33); Breite E'),
     'combat_bow': dict(kind='arrow', impact='arrow', speed_mps=70.0, gravity_mps2=4.0, life_s=3.0, stick_s=4.0, width_m=0.008, length_m=0.70,
                        muzzle_glow_m=0.05, trail_step_m=0.35, trail_life_s=0.18,
                        src='E: Pfeil 70 m/s mit leichter Fallkurve, steckt 4 s, Leuchtspur; beim Lösen ein Lichtpuls an der Auflage; Destiny '

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.34.1 Patch „impact“ – Wirkungswerte nach REF 0.36 „Impact“ (Branch `claude/ballon-patch-impact`)
+
+- Zeiten und Farben aus Motiongen `einschlag.md › 7` (main d0181c7) in `ego.py`: Funken 0,1 s, dunkle Säule, Explosion (Kern, Ring, Feuer, Rauch,
+  Licht, Farben), Dauerstrahl #D0D8FF mit 12/s, lineare Fusion 0,07 s; keine Rauchspur bei Granate und Rakete.
+- Entscheide: Löcher bleiben (180), Schrot ein Einschlag je Schuss (181), Granatwerfer-Laufrauch 0,2 s (182); Tabelle übernommen/abweichend im PR-Bericht.
+
 ## 0.34.0 „Payload“ – Wirkung der Waffen, Hülsen und Füllstände (Branch `claude/ballon-0.34-payload`)
 
 - Welteffekte in Unity (`WeaponFx.cs`, Shader `Ballon/Fx`, Unity-Partikelsystem, alles gepoolt, virtuelle Zeit): Granate im Bogen und gerade

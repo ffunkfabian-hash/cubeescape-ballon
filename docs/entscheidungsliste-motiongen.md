@@ -274,6 +274,18 @@ Revolver-Hülsen (9m): die Nachladehaltung der Handfeuerwaffe liegt 5 cm höher 
 Weitere Daten (Richter 0.34): Spur der Projektile `trail_step_m`/`trail_life_s` (Rakete 0,18 m / 1,8 s, Granate 0,30 m / 0,65 s, Pfeil
 0,35 m / 0,18 s), Dauerstrahl `beam_s` 0,15 s, Brandfleck je 3. Takt, Funken 40/s, Mündungslicht 0,10 s – alle E.
 
+**Stand 0.34.1 (Patch „impact“, 31.10.2026):** REF 0.36 „Impact“ ([einschlag.md › 7][einschlag], main d0181c7) übernommen, soweit
+gemessen: Funken 0,1 s und dunkle Säule (#150F0D, 0,3 s, Scharfschütze 0,38 s), Explosion Kern 0,17 s / Ring 0,10 s / Feuer 0,75 s /
+Rauch 1,0 s / Licht 0,15 s mit Farben der Rakete, Dauerstrahl #D0D8FF pulsiert 12/s, lineare Fusion 0,07 s, Fusions-Auslöseblitz 0,07 s,
+Granate und Rakete ohne Spur bzw. Rauchzopf. Nutzerentscheide (über Sightline, „Entscheidungen wie empfohlen“): **180** Löcher bleiben
+(Destiny zeigt keine), **181** Schrot zeigt einen Einschlag je Schuss (Funkenball ≈ 0,17 s, ein Loch), die 12 Kugeln treffen weiter,
+**182** Laufrauch Granatwerfer 1,4 → 0,2 s. Bewusst abweichend und offen: Rohrrauch Rakete 2 s (Destiny keiner; Nutzerwunsch 0.33),
+sichtbare Fusionsbolzen und Pfeile (Destiny im Bild unsichtbar), fester Strahl der linearen Fusion (Destiny Schleier), gemeinsame
+Explosion für Granatwerfer (Destiny ohne Feuerball, Elementfarbe), bildweiter Blitz der Rakete, MG-Leuchtspur (nicht gemessen); alle
+Meterwerte bleiben E.
+
+[einschlag]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/d0181c7/docs/einschlag.md
+
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)
 
 Motiongen hat acht Widersprüche zwischen Bestand und Glidepath gelistet, aber nicht entschieden ([destiny2] › Glidepath). Entscheiden
