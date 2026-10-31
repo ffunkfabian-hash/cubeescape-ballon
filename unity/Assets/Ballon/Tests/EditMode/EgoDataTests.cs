@@ -341,8 +341,9 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("scope", SR.gameplay.sight);
             Assert.AreEqual("cross", SR.gameplay.hip.kind, "Hüft-Fadenkreuz aus basic/reticles.py (DEFAULTS scout_rifle)");
             Assert.AreEqual("", SR.gameplay.hip.sprint.kind, "im Sprint aus");
-            Assert.AreEqual(7, SR.Action("aim_in").frames, "aim_in 7 Bilder bei 30/s");
-            Assert.AreEqual(5, SR.Action("aim_out").frames, "aim_out 5 Bilder (Destiny-Scout ADS aus 0,17 s)");
+            Assert.AreEqual(9, SR.Action("aim_in").frames, "aim_in 9 Bilder bei 30/s (0.33.2: Gapfill ein 18–20 bei 60/s)");
+            Assert.AreEqual(8, SR.Action("aim_out").frames, "aim_out 8 Bilder (0.33.2: Gapfill aus 16–18 bei 60/s)");
+            Assert.AreEqual(22, SR.Action("draw").frames, "draw 22 Bilder (0.33.2: Gapfill erstes Modellbild → ruhig 42–44 bei 60/s)");
             CollectionAssert.AreEqual(new[] { 2, 12, 22 }, SR.Action("fire_hip").fire, "180/min = alle 10 Bilder bei 30/s");
             CollectionAssert.AreEqual(new[] { 2, 12, 22 }, SR.Action("fire_ads").fire);
             CollectionAssert.AreEqual(new[] { 7, 17 }, SR.Action("sprint_to_fire").fire);
@@ -365,7 +366,7 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("Visier 68,4/56,0", SR.Pose("hip").src, "Herkunft der Hüfte am Scout");
             foreach (var A in SR.actions)
             {
-                if (new[] { "aim_in", "aim_out", "fire_hip", "fire_ads", "sprint_to_fire" }.Contains(A.name)) continue;
+                if (new[] { "aim_in", "aim_out", "fire_hip", "fire_ads", "sprint_to_fire", "draw" }.Contains(A.name)) continue;   // draw: 0.33.2 eigene Dauer
                 var B = D.Action(A.name);
                 Assert.AreEqual(J(B.weapon) + J(B.L) + J(B.R) + J(B.fL) + J(B.fR) + J(B.mech) + J(B.events) + J(B.bob) + B.frames,
                                 J(A.weapon) + J(A.L) + J(A.R) + J(A.fL) + J(A.fR) + J(A.mech) + J(A.events) + J(A.bob) + A.frames, A.name);
@@ -447,7 +448,10 @@ namespace Ballon.Ego.Tests
                 CollectionAssert.AreEqual(o.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J),
                                           n.poses.Where(q => !refit || !hipBound.Contains(q.name)).Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
-                CollectionAssert.AreEqual(o.actions.Select(J), n.actions.Select(J), $"{o.weapon.id}: Aktionen");
+                // 0.33.2: Zielen und Ziehen des Scouts nach Gapfill (eigene Bildzahlen, Werte_des_Scouts); die übrigen Aktionen gleich
+                var retimed = new[] { "draw", "aim_in", "aim_out" };
+                CollectionAssert.AreEqual(o.actions.Where(a => !refit || !retimed.Contains(a.name)).Select(J),
+                                          n.actions.Where(a => !refit || !retimed.Contains(a.name)).Select(J), $"{o.weapon.id}: Aktionen");
                 Assert.AreEqual(J(o.motion), J(n.motion), "Bewegung");
             }
         }

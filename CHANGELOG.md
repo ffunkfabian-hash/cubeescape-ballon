@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.33.2 Patch „zeiten“ – Zielen und Ziehen nach Gapfill (Nutzerentscheid 31.10.2026; Branch `claude/ballon-patch-zeiten`)
+
+- Zielen ein/aus (Bilder bei 30/s): kurze Fusion 7/8, Scharfschütze 13/12, Scout 9/8, Schrotflinte ein 10; Ziehen bis ruhig: Impuls 23,
+  Scout 22, Schrotflinte 27, MG 23 – die zuvor als Widerspruch offenen Gapfill-Messungen.
+- Tabelle: [Bericht 0.33 › Nachtrag Gapfill](docs/versions/0.33-armory.md); `.ce-repo.json` auf 0.33.2.
+
 ## 0.33.1 Patch „gapfill“ – neue Destiny-Messungen übernommen (Branch `claude/ballon-patch-gapfill`)
 
 - Nach REF 0.34 „Gapfill“ (cubeescape-reference `main` 20c28df: `destiny2.md` › Methode 29, `data/gapfill.json`): Weltzoom
