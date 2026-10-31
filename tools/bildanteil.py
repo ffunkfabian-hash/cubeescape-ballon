@@ -115,12 +115,13 @@ def main():
             EB.evaluate(sc, EB.still_action(sc.P, pose), 0, rep, {})
             bpy.context.view_layer.update()
             st = see_through(sc)
-            for _, _, ob in st:
-                ob.hide_render = False
+            h0 = [ob.hide_render for _, _, ob in st]     # Zustand aus evaluate (ads_hide); Richter 0.35: Glas im Zielen nicht einblenden
             with_glass = measure(mask_now())
             for _, _, ob in st:
                 ob.hide_render = True
             mask = mask_now()
+            for (_, _, ob), h in zip(st, h0):
+                ob.hide_render = h
             r = measure(mask)
             r.update(pct_mit_glas=with_glass['pct'], ausgeblendet=sorted(f'{pid}:{role}' for pid, role, _ in st),
                      ads_hide_aktiv=bool(rep.get('ads_hidden')))

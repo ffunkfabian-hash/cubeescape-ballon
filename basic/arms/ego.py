@@ -55,7 +55,8 @@ FINGER_POSES = dict(RA.FINGER_POSES, foregrip=dict(f=[[62, 74, 48]] * 4, t=[80, 
                     foregrip_open=dict(f=[[4, 4, 3]] * 4, t=[80, 5, 60]))
 
 # Aktionen. Kanäle: weapon (Haltung oder (Haltung, Versatz)), L/R (Griff, ('cam', Punkt) oder (Griff, Versatz mm in Waffenachsen)),
-# fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen), carry (Magazin folgt der linken Hand), fire (Bilder
+# fL/fR (Fingerstellung), mech (Bauteilbewegung 0..1 wie in den Waffenmodulen; −1 = Gegenrichtung, 0.35 Gegendrehung der
+# Granatwerfer-Trommel), carry (Magazin folgt der linken Hand), fire (Bilder
 # der Schüsse), events (Marker). Zwischen Schlüsseln wird geglättet (Ease In/Out).
 OFF_L = ('cam', (0.30, -0.25, -0.62))      # linke Hand unter dem Bild (Magazin holen)
 OFF_TL = ('cam', (0.34, -0.30, 0.22))      # linke Hand links über dem Bild (Raketenwerfer: Rakete von links oben, 0.35)
@@ -264,6 +265,11 @@ RECOIL = dict(
 ADS_HIDE = dict(eye_m=0.06, src='E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; '
                                 'Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, '
                                 'Entscheidungsliste 1d)')
+# Zielweite der Projektile (0.35 „Stance“, Richter): ohne Treffer längs der Blickachse zielt die Bahn ab der Mündung auf den Punkt in
+# range_m voraus (Unity WeaponFx.Launch; mit Treffer auf den Treffpunkt unter dem Fadenkreuz)
+AIM = dict(range_m=60.0, src='E: Nutzerbefund Testbuild 0.33 Bogen „Schuss geht daneben“ (parallel zur Blickachse lief die Bahn neben der '
+                             'Mitte vorbei); Motiongen REF 0.35 Backblast › D: Pfeilachse durch die Bildmitte. 60 m ≈ halbe Parcourslänge, '
+                             'Abweichung dahinter < 0,2° bei 20 cm Mündungsversatz')
 # Waffenwechsel (6.1 A): Wegstecken (holster 0,27 s), danach leere Sicht, dann Ziehen wie bisher (draw mit Nachfedern).
 # empty_s ist die Pause zwischen Ende von holster und Beginn von draw; die sichtbare leere Sicht ist länger, weil die Waffe schon vor
 # dem Ende des Wegsteckens unter dem Bildrand ist und beim Ziehen erst nach einigen Bildern auftaucht.
@@ -1340,12 +1346,12 @@ CLASSES = {
                          'großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, '
                          'Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E '
                          '(tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm '
-                         'Tiefe), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung '
+                         'Tiefe; Etappe 2: 3 mm weiter nach rechts, Freihaltezone A4 15 → 0 px), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung '
                          '63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × '
                          '17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, '
                          'das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). '
                          'Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
-                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px; 0.35 Etappe 2 nach der Hüftlage über der Schulter 3 mm weiter, 15 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, '
+                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, '
                          'Rohr 13° steigend, Heck rechts unten unter dem Arm'),
             sprint=dict(pos=(-0.16, -0.36, -0.28), aim=(0.3, -2.4, -1.3), roll=-20,
                         src='E: Destiny-Raketenwerfer-Sprint nicht gemessen (Motiongen destiny2:572); Rohr von der Schulter gesenkt, Mündung '
@@ -1393,8 +1399,9 @@ CLASSES = {
         ads_hide=dict(parts=('rear_tube', 'tube_cone', 'rear_ring', 'hinge_block', 'breech_cap', 'cap_rim', 'shoulder_rest'),
                       src='M Motiongen REF 0.35 Backblast › F (z-bb-bildanteil): Destiny-Werfer im Zielen nur am rechten Rand (Hoosegow x 81–100, '
                           '16,6–16,8 %); Nutzerentscheid 194 (31.10.2026): BALLON-Zielbild nicht mehr 50 %. Das Heckrohr läuft neben dem Auge '
-                          '33 mm an der Kamera vorbei und füllte die rechte Bildhälfte – Heckrohr, Kegel, Heck und Schulterauflage sind im '
-                          'Zielen aus (Regel ADS_HIDE wie beim Zielfernrohr); Startrohr, Visier, Griffe bleiben'),
+                          '33 mm an der Kamera vorbei – Heckrohr, Kegel, Heck und Schulterauflage sind im Zielen aus (Regel ADS_HIDE wie beim '
+                          'Zielfernrohr); Startrohr, Visier, Griffe bleiben. Gemessen 50,1 → 50,4 % (das Startrohr läuft zur Mitte): 194 bleibt '
+                          'offen (Bericht 0.35 › 193 B / 194, Entscheidung nötig)'),
         gameplay=dict(rpm=20, magazine=1, path_up_h=0.0, recover_hz=1.5, kick=4.0, flash_scale=0.7,
                       src='S Destiny-Raketenwerfer 20/min, Magazin 1 (Motiongen destiny2:276); Feuerart aus der Spec (Einzelschuss, danach sofort '
                           'nachladen); keine Bahnstufe, Kick 4,0 E: Schub zur Kamera, Linse 10 → 25 % H in 3–4 Bildern (destiny2:501); '

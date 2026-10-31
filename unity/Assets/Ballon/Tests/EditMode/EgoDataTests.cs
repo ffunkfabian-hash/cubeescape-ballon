@@ -405,10 +405,6 @@ namespace Ballon.Ego.Tests
         /// 2,0 → 3,0, Scharfschütze 4,0 → 4,7, Raketenwerfer 2,8 → 3,3; sonst ist die Tabelle gleich.
         /// Die alten Dateien tragen die alten Werte – für den Vergleich übernommen, die übrigen
         /// Einträge geprüft. Ebenso sight_form (0.33, Absehen im Glas): alte Dateien setzen es beim Lesen auf die Hüftform.</summary>
-        /// <summary>0.35 „Stance“: walk hat einen langsameren Hub und eine abgesenkte Hüftlage (Verdict › G) – alte Dateien tragen den alten
-        /// Ablauf; geprüft im Test Sprintschritt (Laufen).</summary>
-        static bool NotWalk(EgoAction a) => a.name != "walk";
-
         static EgoFile BowZoom(EgoFile o, EgoFile n)
         {
             var a = o.gameplay.zoom_table; var b = n.gameplay.zoom_table;
@@ -430,6 +426,10 @@ namespace Ballon.Ego.Tests
             return Payload034(o, n);
         }
 
+        /// <summary>0.35 „Stance“: walk hat einen langsameren Hub und eine abgesenkte Hüftlage (Verdict › G) – alte Dateien tragen den alten
+        /// Ablauf; geprüft im Test Sprintschritt (Laufen).</summary>
+        static bool NotWalk(EgoAction a) => a.name != "walk";
+
         /// <summary>0.34 „Payload“ (ohne neues Format): ein älterer Export kennt Wirkung, Schrittteile, Füllstand und Glieder nicht – der
         /// Leser setzt die alte Wirkung (Kugel mit Einschlag) und leere Listen; für den Vergleich übernimmt die alte Datei die neuen Felder.</summary>
         static EgoFile Payload034(EgoFile o, EgoFile n)
@@ -443,6 +443,9 @@ namespace Ballon.Ego.Tests
             o.gameplay.fx = n.gameplay.fx;
             o.motion.index = n.motion.index;
             o.motion.payload = n.motion.payload;
+            if (o.motion.aim != n.motion.aim)               // BowZoom läuft je Vergleich bis zu zweimal
+                Assert.AreEqual(0f, o.motion.aim?.range_m ?? 0f, "vor 0.35 ohne Zielweite (Rückfall WeaponFx.AimRange)");
+            o.motion.aim = n.motion.aim;                    // 0.35: motion.aim (ego.AIM)
             o.weapon.live.index = n.weapon.live.index;
             o.weapon.live.fill = n.weapon.live.fill;
             o.weapon.live.rounds = n.weapon.live.rounds;
@@ -864,6 +867,13 @@ namespace Ballon.Ego.Tests
                     // Bogen zeigt im Sprint steil nach unten)
                     Vector3 g = E.ToScreen(o.weapon.MultiplyPoint3x4(Vector3.zero)), t = E.ToScreen(o.weapon.MultiplyPoint3x4(new Vector3(0, 0, 0.3f)));
                     Assert.Greater(t.x, g.x, "Bogen: Riser oben nach rechts geneigt");
+                }
+                else if (d.profile.type == "pulse_rifle")
+                {
+                    // 0.35 (Verdict › C/G, Richter): Impuls fast aus dem Bild – Mündung am unteren Rand (Automatik ≈ 86 %), Absehen tief rechts
+                    Assert.Less(roll, -10f, "Impuls: Oberseite nach rechts");
+                    Assert.Greater(m.y, 95f, "Impuls: Mündung am unteren Bildrand (fast aus dem Bild; Automatik ≈ 86 %)");
+                    Assert.Greater(r.x, 65f, "Impuls: Absehen rechts (Hülle ab x ≈ 41 %)");
                 }
                 else if (d.profile.type == "machine_gun" || d.profile.type == "trace_rifle" || d.profile.type == "shotgun")
                     Assert.That(roll, Is.InRange(-20f, 0f), $"{d.profile.type}: flach quer unten bzw. fast aus dem Bild (0.35 Verdict), Oberseite leicht nach rechts");

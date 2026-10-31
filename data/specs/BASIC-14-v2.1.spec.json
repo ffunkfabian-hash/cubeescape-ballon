@@ -813,7 +813,7 @@
   },
   {
    "id": "hatch_hinge",
-   "name_de": "Klappenscharnier",
+   "name_de": "Ladeklappenscharnier",
    "name_en": "Hatch hinge",
    "assembly": "mechanism",
    "function_de": "Lagert die Ladeklappe rechts",

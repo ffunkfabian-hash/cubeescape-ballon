@@ -129,7 +129,7 @@ P += [
                cut_box(HATCH[0] - 2, HATCH[1] + 2, BORE - 60, BORE + 10, 2 * HATCH[2] + 4)],
          move=dict(kind='rotate', pivot=HATCH_HINGE, axis='f', range_deg=(0, 115), event='reload',
                    expect=((HATCH_HINGE[0], BORE + R_F, HATCH[2]), (0, 1, -0.3)))),
-    part('hatch_hinge', 'Klappenscharnier', 'Hatch hinge', 'mechanism', 'cyl', 'dark_metal', 'Lagert die Ladeklappe rechts',
+    part('hatch_hinge', 'Ladeklappenscharnier', 'Hatch hinge', 'mechanism', 'cyl', 'dark_metal', 'Lagert die Ladeklappe rechts',
          'rechts am Schacht angeformt', bevel=R_FINE, smooth=True, axis='f', c=HATCH_HINGE[1:], a0=HATCH[0] + 20, a1=HATCH[1] - 20,
          r=3.2, segs=20),
     part('hatch_grip', 'Klappengriff', 'Hatch grip', 'mechanism', 'box', 'dark_metal', 'Griffleiste an der linken Kante der Ladeklappe',

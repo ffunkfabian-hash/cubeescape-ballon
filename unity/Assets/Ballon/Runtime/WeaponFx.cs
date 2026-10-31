@@ -524,7 +524,9 @@ namespace Ballon.Ego
         {
             var cam = _p.worldCam.transform.position;
             var a = MuzzleWorld(k);
-            var aim = Physics.Raycast(cam, dir, out var ah, AimRange, ignoreMask, QueryTriggerInteraction.Ignore) ? ah.point : cam + dir.normalized * AimRange;
+            var A = _p.loadouts[0].rig.S.D.motion.aim;
+            float range = A != null && A.range_m > 0 ? A.range_m : AimRange;
+            var aim = Physics.Raycast(cam, dir, out var ah, range, ignoreMask, QueryTriggerInteraction.Ignore) ? ah.point : cam + dir.normalized * range;
             if ((aim - a).sqrMagnitude > 1e-4f) dir = aim - a;
             int j = -1;
             for (int i = 0; i < ProjectilePool; i++) if (!_projOn[i]) { j = i; break; }
@@ -552,7 +554,7 @@ namespace Ballon.Ego
             if (Physics.Linecast(cam, a, out var hit, ignoreMask, QueryTriggerInteraction.Ignore)) Land(j, hit);
         }
 
-        /// <summary>Zielweite der Projektile ohne Treffer längs der Blickachse (m): dorthin zielt die Bahn ab der Mündung (0.35).</summary>
+        /// <summary>Rückfall der Zielweite (m) für Exporte ohne motion.aim (ego.AIM, 0.35); sonst gilt motion.aim.range_m.</summary>
         public const float AimRange = 60f;
 
         /// <summary>Startpunkt des letzten Projektils (Mündung in der Welt, Tests).</summary>

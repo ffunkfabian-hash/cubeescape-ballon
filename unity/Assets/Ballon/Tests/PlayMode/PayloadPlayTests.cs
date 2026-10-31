@@ -169,6 +169,39 @@ namespace Ballon.Ego.Tests
             finally { Done(p, wall); }
         }
 
+        /// <summary>Projektile zielen von der Mündung auf den Punkt unter dem Fadenkreuz (0.35, Nutzerbefund Bogen „Schuss geht daneben“;
+        /// Motiongen REF 0.35 Backblast › D): Granatwerfer aus der Hüfte, Streuung für den Test 0, Wand in 4 m – die Bahn trifft seitlich
+        /// die Blickachse der Kamera (x, der Fall wirkt nur senkrecht). Selbstprüfung: eine Bahn parallel zur Blickachse (bis 0.34) läge um den
+        /// seitlichen Mündungsversatz daneben. Ohne Treffer zielt die Bahn auf motion.aim.range_m voraus.</summary>
+        [UnityTest]
+        public IEnumerator Projektil_zielt_auf_den_Punkt_unter_dem_Fadenkreuz()
+        {
+            var p = Setup("grenade_launcher", 4f, out var wall);
+            var Rc = p.C.S.D.motion.recoil;
+            float s0 = Rc.spread_hip_deg;
+            try
+            {
+                Rc.spread_hip_deg = 0;
+                Assert.AreEqual(60f, p.C.S.D.motion.aim.range_m, 1e-4f, "Zielweite aus ego.AIM");
+                yield return null;
+                var cam = p.worldCam.transform;
+                Vector3 c0 = cam.position, f0 = cam.forward;
+                p.input = new ScriptedInput().Add(0, 0.1f, hold: "fire").Add(0.1f, 1000);
+                for (int f = 0; f < 60 && p.fx.launched == 0; f++) yield return null;
+                Assert.AreEqual(1, p.fx.launched);
+                Assert.IsTrue(p.fx.FirstProjectile(out _, out var v), "Granate fliegt");
+                var a = p.fx.LastLaunch;
+                float zw = wall.transform.position.z - wall.transform.localScale.z / 2;
+                float xHit = a.x + v.x * ((zw - a.z) / v.z), xAxis = c0.x + f0.x * ((zw - c0.z) / f0.z), xPar = a.x + f0.x * ((zw - a.z) / f0.z);
+                TestContext.WriteLine($"Granate aus der Hüfte auf 4 m: Bahn {100 * (xHit - xAxis):0.0} cm seitlich der Blickachse, parallel wären es " +
+                                      $"{100 * (xPar - xAxis):0.0} cm");
+                Assert.Greater(Mathf.Abs(xPar - xAxis), 0.02f, "Selbstprüfung: die alte parallele Bahn läge daneben");
+                Assert.Less(Mathf.Abs(xHit - xAxis), 0.005f, "Bahn trifft seitlich den Punkt unter dem Fadenkreuz");
+                for (int f = 0; f < 75; f++) yield return null;   // Rückstoß der Weltkamera abklingen lassen (sonst zielt der nächste Test schief)
+            }
+            finally { Rc.spread_hip_deg = s0; Done(p, wall); }
+        }
+
         // ------------------------------------------------------------------------------------------------ Strahlen
         /// <summary>Spurgewehr: solange der Abzug zieht, läuft ein Strahl von der Mündung (gleicher Bildpunkt wie Socket_Muzzle in der
         /// Viewmodel-Kamera) bis zum Einschlag an der Wand; dort Licht und Funken, an der Waffe Mündungslicht; losgelassen ist er weg.</summary>

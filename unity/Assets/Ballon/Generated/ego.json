@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "dab730396eba88b1e87dd9ace8a49bffba40fa9f2e9d51e4a89e97096f5c87e0"
+    "sha256": "b3e83171337f1bbf0c04b0aa0880b65c77ca230448aeb455ee68a358bb819c70"
    },
    {
     "path": "tools/ego_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "088fd045f61e0bd9faa255ecda42945bb5cce04712cf9cfd099281c719021b9f"
+    "sha256": "1ffbbdccd59542285fecc2a2fd78b09354abc6b5b20fc6630618b6e5adfa8438"
    },
    {
     "path": "tools/bake_unity.py",
@@ -128,6 +128,10 @@
   "ads_hide": {
    "eye_m": 0.06,
    "src": "E: Okular bis an die Nahebene sichtbar (Augenabstand Okularende 30 mm + near 30 mm), danach Linsenbild; Destiny-Scharfschütze: Okular füllt das Bild 4 Bilder, Linse nach dem Modell (Motiongen destiny2 › 2, Entscheidungsliste 1d)"
+  },
+  "aim": {
+   "range_m": 60.0,
+   "src": "E: Nutzerbefund Testbuild 0.33 Bogen „Schuss geht daneben“ (parallel zur Blickachse lief die Bahn neben der Mitte vorbei); Motiongen REF 0.35 Backblast › D: Pfeilachse durch die Bildmitte. 60 m ≈ halbe Parcourslänge, Abweichung dahinter < 0,2° bei 20 cm Mündungsversatz"
   },
   "flash": {
    "dur_s": 0.033333,
@@ -98115,7 +98119,7 @@
      "name": "hip",
      "ads": false,
      "roll": 0.0,
-     "src": "M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E (tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm Tiefe), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung 63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px; 0.35 Etappe 2 nach der Hüftlage über der Schulter 3 mm weiter, 15 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend, Heck rechts unten unter dem Arm",
+     "src": "M Motiongen REF 0.35 Backblast › A/E2 (z-bb-rl-huefte, vier Werfer) und REF 0.37 Verdict (Todbringer 68–70/64–72): großer Keil rechts von oben bis unten, Optik mit der Spitze zur Mitte x 63–70 / y 48–72, Oberkante −27…−42°, Mündung und Rohrachse nicht im Bild; Nutzerbefund Testbuild 0.33 „Raketenwerfer über die Schulter“. Lage E (tools/bildlage.py --fit): Rohr rechts neben dem Kopf auf Augenhöhe, Heck neben der Kamera (Socket_Breech in 2 cm Tiefe; Etappe 2: 3 mm weiter nach rechts, Freihaltezone A4 15 → 0 px), Fluchtpunkt 50/56 – „leicht nach unten“ (Nutzer) ist in Destiny nicht belegt (E, 6 pp wie die Automatik), Mündung 63,5/54 %, Visier 68,5/51,7 % (Optik ab 60 % B, A4). Bis 0.34: huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × 17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend, Heck rechts unten unter dem Arm",
      "pos": [
       -0.19,
       -0.418,
@@ -101964,14 +101968,14 @@
     "files": [
      {
       "path": "basic/pilot/w14_rocket_launcher_v21.py",
-      "sha256": "31f6901f402456d6860e024b240c4a8e944f304b16d8946eb0a01caa20121608"
+      "sha256": "1bf73e6d8c4ce0a29252dadefb1050b2dfacc69d116767c7ca5b62ee676bd4d1"
      },
      {
       "path": "basic/weapons/w14_rocket_launcher.py",
       "sha256": "ee0a9600fd049fb2ef69717741fa2e2e9d38715279ab0df61747a7461902b971"
      }
     ],
-    "parts_sha256": "f7128a79b55a65e55fc3748df822251e2da0742d34c1b348b9c685a0c7ea9fa4"
+    "parts_sha256": "8f712e4f3de2d43bb967a47b322b0b306f98a88773cc16a0c180f93af1a10916"
    },
    "textures": {
     "weapon": {
