@@ -31,6 +31,7 @@ namespace Ballon.Ego
         public float flash_scale;                       // 10 (0.33 P4): Maßstab des Mündungsfeuers je Klasse (Werfer); 0 (älterer Export) = 1
         public EgoHipForm sight_form;                   // 10 (0.33): Absehen im Visierglas; leer (älterer Export) = Hüftform
         public EgoFx fx;                                // 10 (0.34): Wirkung der Klasse (ego.PAYLOAD); leer (älterer Export) = Kugel mit Einschlag
+        public bool ads_hide_arms;                      // 10 (0.35, Nutzerentscheid 193 B): im Zielen (Regel ads_hide) auch die Arme aus; fehlt = false
         public Recoil recoil;                           // 10 (0.35): eigener Rückstoßsatz der Klasse (ego.CLASSES recoil, mit ego.RECOIL ergänzt);
                                                         // leer (freq_hz 0, ältere Exporte und Klassen ohne) = motion.recoil
         /// <summary>Rückstoßfedern dieser Klasse: gameplay.recoil, sonst der gemeinsame Satz motion.recoil (ego.profile › recoil).</summary>

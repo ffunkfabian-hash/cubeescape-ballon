@@ -11,6 +11,8 @@
   ruhiger Spitze, Sehne/Federn im Zielen aus. Neu gebacken.
 - Granatwerfer: Gegendrehung beim Laden, Kammern immer in Schussfolge (Unity ordnet nicht mehr beim Schuss um). Revolver: Nachladehaltung
   mit der Trommelrückseite zur Kamera.
+- Zielbild wie Destiny (Nutzerentscheid 193 B / 194 „So wie Destiny“): im Zielen nur Visier und Mündung, Arme aus, Kamera je Klasse
+  hinter Socket_Eye (`ego.ADS_STRIP`, `gameplay.ads_hide_arms`); Bildanteil Zielen 2,7–9,2 % (Destiny 2,7–9,5).
 - Bericht [docs/versions/0.35-stance.md](docs/versions/0.35-stance.md), Entscheidungsliste Block 10.
 
 ## 0.34.2 Patch „impact-nachtrag“ – offene Punkte aus 0.34.1 (Branch `claude/ballon-patch-impact-nachtrag`)

@@ -650,6 +650,10 @@ def evaluate(sc, A, f, report, state):
     for p in W.PARTS:
         if (p.get('ads_hide') or p['id'] in sc.P['ads_hide']) and p['id'] in sc.objs:
             sc.objs[p['id']].hide_render = hidden
+    if sc.P['gameplay'].get('ads_hide_arms'):    # 0.35 (Nutzerentscheid 193 B, ego.ADS_STRIP): im Zielen auch die Arme aus
+        for s in ('R', 'L'):
+            for ob in sc.arms[s][1].values():
+                ob.hide_render = hidden
     report['ads_hidden'] = sc.ads_hidden = hidden
     off_pos, off_rot = Vector(), Matrix.Identity(3)
     cam_pitch = 0.0

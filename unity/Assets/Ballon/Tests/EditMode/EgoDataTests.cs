@@ -309,7 +309,8 @@ namespace Ballon.Ego.Tests
                 o.weapon.type_de = n.weapon.type_de;               // neu in 0.33 (Klasse für HUD und Menü)
                 Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
-                Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide), $"{o.weapon.id}: kein Teil mit ads_hide");
+                Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide && p.asm == "sight" && p.role.StartsWith("glass")),
+                               $"{o.weapon.id}: Visierglas bleibt im Zielen (0.35: übrige Waffe nach 193 B aus)");
                 Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
                 CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
@@ -374,8 +375,10 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(SR.weapon.eject.enabled, "Scout wirft Hülsen aus (Feld EJECT)");
             Assert.AreEqual("rifle", SR.weapon.eject.@case);
             Assert.AreEqual("bolt", SR.weapon.live.bolt);
-            CollectionAssert.AreEquivalent(new[] { "scope_eye_trim", "scope_eyepiece", "scope_ocular_glass", "scope_strap", "scope_tube", "scope_turret",
-                                                   "scope_turret_w" }, SR.weapon.parts.Where(p => p.ads_hide).Select(p => p.id), "Teile mit ads_hide");
+            CollectionAssert.IsSubsetOf(new[] { "scope_eye_trim", "scope_eyepiece", "scope_ocular_glass", "scope_strap", "scope_tube", "scope_turret",
+                                                "scope_turret_w" }, SR.weapon.parts.Where(p => p.ads_hide).Select(p => p.id).ToArray(), "Teile mit ads_hide");
+            CollectionAssert.IsEmpty(SR.weapon.parts.Where(p => p.ads_hide && (p.id == "scope_glass" || p.id == "scope_objective" || p.id == "sight_reticle"))
+                                       .Select(p => p.id), "Objektiv, Linse und Absehen bleiben im Zielen (0.35: übrige Waffe nach 193 B aus)");
             Assert.AreEqual(0.06f, SR.motion.ads_hide.eye_m, 1e-6f, "Augenabstand Okularende 30 mm + near 30 mm");
         }
 
@@ -432,6 +435,23 @@ namespace Ballon.Ego.Tests
 
         /// <summary>0.34 „Payload“ (ohne neues Format): ein älterer Export kennt Wirkung, Schrittteile, Füllstand und Glieder nicht – der
         /// Leser setzt die alte Wirkung (Kugel mit Einschlag) und leere Listen; für den Vergleich übernimmt die alte Datei die neuen Felder.</summary>
+        /// <summary>0.35 (Nutzerentscheid 193 B, ego.ADS_STRIP): im Zielen sind Waffe unter dem Visier und Arme aus, die Kamera liegt je Klasse
+        /// hinter Socket_Eye – alte Dateien kennen das nicht; für den Vergleich übernommen.</summary>
+        static void Strip035(EgoFile o, EgoFile n)
+        {
+            if (o.gameplay.ads_hide_arms != n.gameplay.ads_hide_arms)
+                Assert.IsFalse(o.gameplay.ads_hide_arms, "vor 0.35: Arme im Zielen sichtbar");
+            o.gameplay.ads_hide_arms = n.gameplay.ads_hide_arms;
+            foreach (var p in o.weapon.parts)
+            {
+                var q = n.weapon.parts.FirstOrDefault(x => x.id == p.id);
+                if (q != null) p.ads_hide = q.ads_hide;
+            }
+            var oa = o.poses.FirstOrDefault(x => x.name == "ads");
+            var na = n.poses.FirstOrDefault(x => x.name == "ads");
+            if (oa != null && na != null) { oa.eye = na.eye; oa.src = na.src; }
+        }
+
         static EgoFile Payload034(EgoFile o, EgoFile n)
         {
             Assert.AreEqual("vor 0.34", o.gameplay.fx.src, "älterer Export: Wirkung aus dem Leser");
@@ -446,6 +466,7 @@ namespace Ballon.Ego.Tests
             if (o.motion.aim != n.motion.aim)               // BowZoom läuft je Vergleich bis zu zweimal
                 Assert.AreEqual(0f, o.motion.aim?.range_m ?? 0f, "vor 0.35 ohne Zielweite (Rückfall WeaponFx.AimRange)");
             o.motion.aim = n.motion.aim;                    // 0.35: motion.aim (ego.AIM)
+            Strip035(o, n);
             o.weapon.live.index = n.weapon.live.index;
             o.weapon.live.fill = n.weapon.live.fill;
             o.weapon.live.rounds = n.weapon.live.rounds;

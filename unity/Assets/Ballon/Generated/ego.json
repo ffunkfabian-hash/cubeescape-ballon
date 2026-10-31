@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "b3e83171337f1bbf0c04b0aa0880b65c77ca230448aeb455ee68a358bb819c70"
+    "sha256": "00be6d841668875588040003e446f162c4e17deab18f0f2b99ed1f9802d604db"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "5880442dc8c94bd437cf5ec8e17d128f872ed49c17b144033c63b43a65bf0619"
+    "sha256": "5bb99072200e645d2c589201e13ffe7e8dcccbf0d2b55a6979abe2cd79100f06"
    },
    {
     "path": "tools/blender_build.py",
@@ -1613,6 +1613,7 @@
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
     "kick": 1.0,
+    "ads_hide_arms": true,
     "weapon_type": "auto_rifle",
     "sight": "reflex",
     "world_zoom": 1.9,
@@ -1839,7 +1840,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -1866,7 +1867,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -1893,7 +1894,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -1920,7 +1921,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -1947,7 +1948,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -1974,7 +1975,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "armor_l",
@@ -2001,7 +2002,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "armor_r",
@@ -2028,7 +2029,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "armor_screws",
@@ -2055,7 +2056,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_shroud",
@@ -2082,7 +2083,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud_bracket",
@@ -2109,7 +2110,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud_web",
@@ -2136,7 +2137,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "chevron_top",
@@ -2163,7 +2164,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "chevron_side",
@@ -2190,7 +2191,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -2217,7 +2218,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_cover",
@@ -2244,7 +2245,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_cover_trim",
@@ -2271,7 +2272,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "core_glow",
@@ -2298,7 +2299,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "core_lens",
@@ -2325,7 +2326,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "core_ring",
@@ -2352,7 +2353,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_bezel",
@@ -2379,7 +2380,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ammo_counter",
@@ -2406,7 +2407,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_release",
@@ -2433,7 +2434,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_well",
@@ -2460,7 +2461,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt_carrier",
@@ -2487,7 +2488,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "port_cover",
@@ -2514,7 +2515,7 @@
        "a0": 0.0,
        "a1": 75.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -2541,7 +2542,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -2568,7 +2569,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -2595,7 +2596,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -2865,7 +2866,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -2892,7 +2893,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -2919,7 +2920,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -2946,7 +2947,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector",
@@ -2973,7 +2974,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector_r",
@@ -3000,7 +3001,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "charging_handle",
@@ -3027,7 +3028,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine",
@@ -3054,7 +3055,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_base",
@@ -3081,7 +3082,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_round",
@@ -3108,7 +3109,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_band",
@@ -3135,7 +3136,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_lips",
@@ -3162,7 +3163,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_rounds",
@@ -3189,7 +3190,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard",
@@ -3216,7 +3217,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_grip",
@@ -3243,7 +3244,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_cap",
@@ -3270,7 +3271,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_screws",
@@ -3297,7 +3298,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "heatsink",
@@ -3324,7 +3325,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "gas_piston",
@@ -3351,7 +3352,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -3378,7 +3379,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "gas_block",
@@ -3405,7 +3406,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -3486,7 +3487,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_joint",
@@ -3513,7 +3514,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_ring",
@@ -3540,7 +3541,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_spine",
@@ -3567,7 +3568,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -3594,7 +3595,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "buffer_body",
@@ -3621,7 +3622,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "buffer_rod",
@@ -3648,7 +3649,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_rest",
@@ -3675,7 +3676,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_posts",
@@ -3702,7 +3703,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -3729,7 +3730,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_cable",
@@ -3756,7 +3757,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -4145,7 +4146,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 50 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -4158,7 +4159,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.05,
       0.0
      ],
      "aim_dir": [
@@ -8889,6 +8890,7 @@
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
     "kick": 1.0,
+    "ads_hide_arms": true,
     "weapon_type": "submachine_gun",
     "sight": "reflex",
     "world_zoom": 1.45,
@@ -9204,7 +9206,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -9231,7 +9233,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -9258,7 +9260,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -9285,7 +9287,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -9312,7 +9314,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_bezel",
@@ -9339,7 +9341,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ammo_counter",
@@ -9366,7 +9368,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt",
@@ -9393,7 +9395,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "port_cover",
@@ -9420,7 +9422,7 @@
        "a0": 0.0,
        "a1": 75.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_release",
@@ -9447,7 +9449,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -9474,7 +9476,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -9501,7 +9503,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -9528,7 +9530,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -9825,7 +9827,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud_cap",
@@ -9852,7 +9854,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud_screws",
@@ -9879,7 +9881,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -9906,7 +9908,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -9933,7 +9935,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -9960,7 +9962,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -10041,7 +10043,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -10068,7 +10070,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -10095,7 +10097,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -10122,7 +10124,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector",
@@ -10149,7 +10151,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector_r",
@@ -10176,7 +10178,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "charging_handle",
@@ -10203,7 +10205,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine",
@@ -10230,7 +10232,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_base",
@@ -10257,7 +10259,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_round",
@@ -10284,7 +10286,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_rounds",
@@ -10311,7 +10313,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "loop",
@@ -10338,7 +10340,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "foregrip",
@@ -10365,7 +10367,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "foregrip_pad",
@@ -10392,7 +10394,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_joint",
@@ -10419,7 +10421,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_spine",
@@ -10446,7 +10448,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -10473,7 +10475,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -10500,7 +10502,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -10889,7 +10891,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 15 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -10902,7 +10904,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.015,
       0.0
      ],
      "aim_dir": [
@@ -15292,6 +15294,7 @@
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
     "kick": 1.0,
+    "ads_hide_arms": true,
     "weapon_type": "scout_rifle",
     "sight": "scope",
     "world_zoom": 3.0,
@@ -15595,7 +15598,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_well",
@@ -15622,7 +15625,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -15649,7 +15652,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -15676,7 +15679,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -15703,7 +15706,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_cover",
@@ -15730,7 +15733,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_cover_trim",
@@ -15757,7 +15760,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "chamber_pip",
@@ -15784,7 +15787,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "pip_bezel",
@@ -15811,7 +15814,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -15838,7 +15841,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -15865,7 +15868,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt",
@@ -15892,7 +15895,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "port_cover",
@@ -15919,7 +15922,7 @@
        "a0": 0.0,
        "a1": 75.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -15946,7 +15949,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail_front",
@@ -15973,7 +15976,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_mount_r",
@@ -16000,7 +16003,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_strap",
@@ -16378,7 +16381,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -16405,7 +16408,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_keel",
@@ -16432,7 +16435,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_reticle",
@@ -16486,7 +16489,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_grip",
@@ -16513,7 +16516,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_cap",
@@ -16540,7 +16543,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_screws",
@@ -16567,7 +16570,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -16594,7 +16597,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "gas_tube",
@@ -16621,7 +16624,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "gas_block",
@@ -16648,7 +16651,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -16729,7 +16732,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -16756,7 +16759,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -16783,7 +16786,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -16810,7 +16813,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector",
@@ -16837,7 +16840,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector_r",
@@ -16864,7 +16867,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "charging_handle",
@@ -16891,7 +16894,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_release",
@@ -16918,7 +16921,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine",
@@ -16945,7 +16948,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_base",
@@ -16972,7 +16975,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_round",
@@ -16999,7 +17002,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_rounds",
@@ -17026,7 +17029,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -17053,7 +17056,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_bolts",
@@ -17080,7 +17083,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_pad",
@@ -17107,7 +17110,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -17134,7 +17137,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -17532,7 +17535,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 5 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -17545,7 +17548,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.005,
       0.0
      ],
      "aim_dir": [
@@ -22046,6 +22049,7 @@
     "recover_hz": 5.0,
     "src": "M Gridskipper (Rapid-Fire Frame): Menü 540/min und Magazin 36 [S], in der Salve 4 Bilder Abstand bei 60/s = 900/min [M], Salvenbeginn → Salvenbeginn 3 · 60/540 = 0,333 s (beobachtet ≥ 0,383 s im Spielertakt, kein Grenzwert; Motiongen destiny2 › z-gridskipper-salve); Salvenlänge aus der Spec (META fire burst_3); Bahnstufe ≈ 4 pp H je Salve, Erholung in der Pause (Motiongen rueckstoss › r-d2-gridskipper, 5.2 A) → path_up_h 0,0133 je Schuss (Automatik 0,010); Erholung zwischen den Salven ≈ 80 % (Gridskipper, Salvenfolge 0,38–0,40 s, Motiongen destiny2 › z-gridskipper-salve) → E Erholung ab 0,10 s nach dem Schuss (1,5 Takte) mit 5 Hz kritisch gedämpft: in der Pause von 0,2 s bleiben ≈ 20 % (gemeinsam 0,12 s / 2 Hz: ≈ 78 % blieben, und die nächste Salve sank anfangs ab)",
     "kick": 1.0,
+    "ads_hide_arms": true,
     "weapon_type": "pulse_rifle",
     "sight": "reflex",
     "world_zoom": 2.0,
@@ -22241,7 +22245,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -22268,7 +22272,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_well",
@@ -22295,7 +22299,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -22322,7 +22326,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -22349,7 +22353,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -22376,7 +22380,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -22403,7 +22407,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_cover",
@@ -22430,7 +22434,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_cover_trim",
@@ -22457,7 +22461,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_release",
@@ -22484,7 +22488,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt_carrier",
@@ -22511,7 +22515,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "port_cover",
@@ -22538,7 +22542,7 @@
        "a0": 0.0,
        "a1": 75.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -22565,7 +22569,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -22592,7 +22596,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -22619,7 +22623,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -22916,7 +22920,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard",
@@ -22943,7 +22947,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_grip",
@@ -22970,7 +22974,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "chamber_screws",
@@ -22997,7 +23001,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "pulse_coils",
@@ -23024,7 +23028,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "coil_rings",
@@ -23051,7 +23055,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "burst_1",
@@ -23078,7 +23082,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "burst_2",
@@ -23105,7 +23109,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "burst_3",
@@ -23132,7 +23136,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "pip_bezel",
@@ -23159,7 +23163,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -23186,7 +23190,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -23213,7 +23217,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -23240,7 +23244,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -23294,7 +23298,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle_crown",
@@ -23348,7 +23352,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -23375,7 +23379,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -23402,7 +23406,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -23429,7 +23433,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector",
@@ -23456,7 +23460,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "selector_r",
@@ -23483,7 +23487,7 @@
        "a0": 0.0,
        "a1": 90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "charging_handle",
@@ -23510,7 +23514,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine",
@@ -23537,7 +23541,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_base",
@@ -23564,7 +23568,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_round",
@@ -23591,7 +23595,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_band",
@@ -23618,7 +23622,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_rounds",
@@ -23645,7 +23649,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -23672,7 +23676,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_bolts",
@@ -23699,7 +23703,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_pad",
@@ -23726,7 +23730,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -23753,7 +23757,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -24142,7 +24146,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 5 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -24155,7 +24159,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.005,
       0.0
      ],
      "aim_dir": [
@@ -28664,6 +28668,7 @@
     "src": "Cube Escape (Q-CE-14/15): Linksklick Portal A (Cyan #1AD9FF), Rechtsklick Portal B (Orange #FF7314), Abklingzeit 0,25 s → 240/min, Kick E 0,6 der Automatik (Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild, portal2.md), Reichweite 24 m, ohne Streuung (Sichtlinie zum Fadenkreuz), Munition keine (magazine 0 = unbegrenzt); Ring je Schuss 120° in 10 Bildern bei 30/s (Modul t01 fire_a/fire_b), Richtung je Portal; ohne Mündungsfeuer und ohne Bahnstufe (E: Werkzeug, Rückmeldung über Ring und Treffermarke in Portalfarbe)",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": false,
     "weapon_type": "portal_cannon",
     "sight": "none",
     "world_zoom": 1.0,
@@ -32043,6 +32048,7 @@
     "src": "S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, ein Schuss je Zug); Bahnstufe 0,017 M: Netto-Rest vor dem Folgeschuss 1,7 pp H (Hochimpuls bis 7,6 pp, Motiongen rueckstoss:106); Kick 1,0: die Federn stehen seit 0.35 als eigener Satz in recoil (bis 0.34 Kick 2,5)",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": true,
     "recoil": {
      "freq_hz": 1.56,
      "zeta": 0.4,
@@ -32445,7 +32451,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hammer",
@@ -32472,7 +32478,7 @@
        "a0": 0.0,
        "a1": 28.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cylinder_latch",
@@ -32499,7 +32505,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "crane",
@@ -32526,7 +32532,7 @@
        "a0": 0.0,
        "a1": -90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cylinder",
@@ -32553,7 +32559,7 @@
        "a0": 0.0,
        "a1": -60.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud",
@@ -32580,7 +32586,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -32607,7 +32613,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle_crown",
@@ -32661,7 +32667,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -32688,7 +32694,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -32715,7 +32721,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -32742,7 +32748,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -32769,7 +32775,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -32796,7 +32802,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -32850,7 +32856,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_rear",
@@ -37384,6 +37390,7 @@
     "path_up_h": 0.01,
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": true,
     "weapon_type": "sidearm",
     "sight": "reflex",
     "world_zoom": 1.25,
@@ -37687,7 +37694,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "slide_stop",
@@ -37714,7 +37721,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_release",
@@ -37741,7 +37748,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_bezel",
@@ -37768,7 +37775,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ammo_counter",
@@ -37795,7 +37802,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -37822,7 +37829,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "slide",
@@ -37849,7 +37856,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "slide_cap",
@@ -37876,7 +37883,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel_hood",
@@ -38011,7 +38018,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -38038,7 +38045,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -38065,7 +38072,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -38092,7 +38099,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -38119,7 +38126,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine",
@@ -38146,7 +38153,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_base",
@@ -38173,7 +38180,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -38227,7 +38234,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_rear",
@@ -42748,6 +42755,7 @@
     "recover_hz": 1.5,
     "kick": 3.0,
     "src": "S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec (Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, 1,5 Hz); Kick 3,0 E (schwerer Einzelschuss)",
+    "ads_hide_arms": true,
     "weapon_type": "sniper_rifle",
     "sight": "fullscreen",
     "world_zoom": 4.7,
@@ -42983,7 +42991,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud",
@@ -43010,7 +43018,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "saddle_block",
@@ -43037,7 +43045,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt",
@@ -43064,7 +43072,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt_handle",
@@ -43091,7 +43099,7 @@
        "a0": 0.0,
        "a1": 60.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt_knob",
@@ -43118,7 +43126,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -43145,7 +43153,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -43172,7 +43180,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -43199,7 +43207,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail_front",
@@ -43226,7 +43234,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_mount_r",
@@ -43253,7 +43261,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_strap",
@@ -43577,7 +43585,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -43604,7 +43612,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_keel",
@@ -43631,7 +43639,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_shade",
@@ -43712,7 +43720,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_well",
@@ -43739,7 +43747,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard",
@@ -43766,7 +43774,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_grip",
@@ -43793,7 +43801,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "mag_release",
@@ -43820,7 +43828,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -43847,7 +43855,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -43928,7 +43936,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -43955,7 +43963,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -43982,7 +43990,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -44009,7 +44017,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine",
@@ -44036,7 +44044,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_base",
@@ -44063,7 +44071,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "magazine_round",
@@ -44090,7 +44098,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_joint",
@@ -44117,7 +44125,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_spine",
@@ -44144,7 +44152,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -44171,7 +44179,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -44198,7 +44206,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_rest",
@@ -44225,7 +44233,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -49640,6 +49648,7 @@
     "src": "S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse (Energiezelle, EJECT None)",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": true,
     "weapon_type": "trace_rifle",
     "sight": "reflex",
     "world_zoom": 1.8,
@@ -49955,7 +49964,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -49982,7 +49991,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_lip",
@@ -50009,7 +50018,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -50036,7 +50045,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -50063,7 +50072,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -50090,7 +50099,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -50117,7 +50126,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_release",
@@ -50144,7 +50153,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_disc",
@@ -50171,7 +50180,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_disc_ring",
@@ -50198,7 +50207,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "disc_lens",
@@ -50225,7 +50234,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -50252,7 +50261,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -50279,7 +50288,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -50306,7 +50315,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -50657,7 +50666,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "tube_grip",
@@ -50684,7 +50693,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_ring_1",
@@ -50711,7 +50720,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_ring_2",
@@ -50738,7 +50747,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_ring_3",
@@ -50765,7 +50774,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ring_rims",
@@ -50792,7 +50801,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hood",
@@ -50819,7 +50828,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hood_screws",
@@ -50846,7 +50855,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -50873,7 +50882,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_cone",
@@ -50900,7 +50909,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_tip",
@@ -50927,7 +50936,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_crown",
@@ -50954,7 +50963,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "focus_lens",
@@ -51008,7 +51017,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -51035,7 +51044,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -51062,7 +51071,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -51089,7 +51098,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -51116,7 +51125,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "energy_cell",
@@ -51143,7 +51152,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_band",
@@ -51170,7 +51179,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_window",
@@ -51197,7 +51206,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rear_body",
@@ -51224,7 +51233,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -51251,7 +51260,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_bolts",
@@ -51278,7 +51287,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -51437,7 +51446,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 10 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -51450,7 +51459,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.01,
       0.0
      ],
      "aim_dir": [
@@ -55708,6 +55717,7 @@
     "path_up_h": 0.01,
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": true,
     "weapon_type": "machine_gun",
     "sight": "reflex",
     "world_zoom": 1.9,
@@ -55903,7 +55913,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -55930,7 +55940,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "box_lip",
@@ -55957,7 +55967,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -55984,7 +55994,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -56011,7 +56021,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -56038,7 +56048,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -56065,7 +56075,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "feed_cover",
@@ -56092,7 +56102,7 @@
        "a0": 0.0,
        "a1": -62.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cover_hinge",
@@ -56119,7 +56129,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cover_latch",
@@ -56146,7 +56156,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "feed_tray",
@@ -56173,7 +56183,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt",
@@ -56200,7 +56210,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "port_cover",
@@ -56227,7 +56237,7 @@
        "a0": 0.0,
        "a1": 75.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "charging_handle",
@@ -56254,7 +56264,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -56281,7 +56291,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -56308,7 +56318,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -56335,7 +56345,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -56713,7 +56723,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "box_band",
@@ -56740,7 +56750,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "box_counter",
@@ -56767,7 +56777,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_cell_1",
@@ -56794,7 +56804,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_cell_2",
@@ -56821,7 +56831,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_cell_3",
@@ -56848,7 +56858,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_cell_4",
@@ -56875,7 +56885,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_cell_5",
@@ -56902,7 +56912,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "box_grip",
@@ -56929,7 +56939,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt",
@@ -56956,7 +56966,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_links",
@@ -56983,7 +56993,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_round_2",
@@ -57010,7 +57020,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_link_2",
@@ -57037,7 +57047,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_round_3",
@@ -57064,7 +57074,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_link_3",
@@ -57091,7 +57101,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_round_4",
@@ -57118,7 +57128,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_link_4",
@@ -57145,7 +57155,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "belt_guide",
@@ -57172,7 +57182,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "feed_mouth",
@@ -57199,7 +57209,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "feed_lip",
@@ -57226,7 +57236,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud",
@@ -57253,7 +57263,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard",
@@ -57280,7 +57290,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_grip",
@@ -57307,7 +57317,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shroud_screws",
@@ -57334,7 +57344,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "carry_handle",
@@ -57361,7 +57371,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handle_blocks",
@@ -57388,7 +57398,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -57415,7 +57425,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -57442,7 +57452,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -57469,7 +57479,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel_fins",
@@ -57496,7 +57506,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -57577,7 +57587,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -57604,7 +57614,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -57631,7 +57641,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -57658,7 +57668,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -57685,7 +57695,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_joint",
@@ -57712,7 +57722,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_spine",
@@ -57739,7 +57749,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -57766,7 +57776,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -57793,7 +57803,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_rest",
@@ -57820,7 +57830,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_bolts",
@@ -57847,7 +57857,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -63735,6 +63745,7 @@
     "recover_hz": 3.0,
     "kick": 3.0,
     "src": "S Hawthorne 80/min, Magazin 7 (Menü, Motiongen destiny2:258; Baligant 55/min, 5) → 80/min, Magazin 6 E (Röhrenmagazin des Modells „hält sechs Patronen“); Feuerart aus der Spec (Pumpe: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,03 M: Ring 1–2 Bilder ≈ 3 % H hoch, nach 0,10 s zurück (destiny2:495) → Erholung E ab 0,2 s mit 3 Hz; Kick 3,0 E (schwerer Einzelschuss wie der Scharfschütze)",
+    "ads_hide_arms": true,
     "weapon_type": "shotgun",
     "sight": "reflex",
     "world_zoom": 1.25,
@@ -64158,7 +64169,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "upper",
@@ -64185,7 +64196,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bolt",
@@ -64212,7 +64223,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "loading_gate",
@@ -64239,7 +64250,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "counter_bezel",
@@ -64266,7 +64277,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ammo_counter",
@@ -64293,7 +64304,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "pump_release",
@@ -64320,7 +64331,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -64347,7 +64358,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -64374,7 +64385,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -64401,7 +64412,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -64536,7 +64547,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "tube_cap",
@@ -64563,7 +64574,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel_clamp",
@@ -64617,7 +64628,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "pump_pad",
@@ -64644,7 +64655,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "action_bars",
@@ -64671,7 +64682,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shell_round",
@@ -64698,7 +64709,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shell_head",
@@ -64725,7 +64736,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -64752,7 +64763,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -64779,7 +64790,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -64806,7 +64817,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -64833,7 +64844,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_joint",
@@ -64860,7 +64871,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_spine",
@@ -64887,7 +64898,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -64914,7 +64925,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -64941,7 +64952,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_rest",
@@ -64968,7 +64979,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -65022,7 +65033,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_rear",
@@ -70386,6 +70397,7 @@
     "src": "S Cartesian Coordinate Laden 500 ms, Magazin 7 (Menü, Motiongen destiny2:254), gemessen 0,517 s (destiny2:499); Salve 5–6 Strahlen in 0,25 s → 6 Schuss im Abstand 0,05 s (1200/min); Takt gehalten 60/min E (Aufladen 0,5 + Salve 0,25 + Pause); Feuerart aus der Spec (Aufladen → Salve); Leuchten fällt in 0,3 s (Modul charge_fire: 9 Bilder); Bahnstufe 0,004 je Strahl E (Waffe ruhig, Mündung steigt über die Salve, destiny2:254/499), Kick 0,6 je Strahl E",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": true,
     "weapon_type": "fusion_rifle",
     "sight": "reflex",
     "world_zoom": 1.45,
@@ -70811,7 +70823,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -70838,7 +70850,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_lip",
@@ -70865,7 +70877,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -70892,7 +70904,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -70919,7 +70931,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -70946,7 +70958,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -70973,7 +70985,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_release",
@@ -71000,7 +71012,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -71027,7 +71039,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -71054,7 +71066,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -71081,7 +71093,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -71459,7 +71471,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard",
@@ -71486,7 +71498,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "handguard_grip",
@@ -71513,7 +71525,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hood_screws",
@@ -71540,7 +71552,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ember_core",
@@ -71567,7 +71579,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "coils",
@@ -71594,7 +71606,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "coil_rims",
@@ -71621,7 +71633,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -71648,7 +71660,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -71675,7 +71687,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "emitter",
@@ -71729,7 +71741,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -71756,7 +71768,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -71783,7 +71795,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -71810,7 +71822,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -71837,7 +71849,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "energy_cell",
@@ -71864,7 +71876,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_band",
@@ -71891,7 +71903,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_window",
@@ -71918,7 +71930,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -71945,7 +71957,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -71972,7 +71984,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_bolts",
@@ -71999,7 +72011,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -72158,7 +72170,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 15 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -72171,7 +72183,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.015,
       0.0
      ],
      "aim_dir": [
@@ -76344,6 +76356,7 @@
     "recover_hz": 1.5,
     "kick": 3.0,
     "src": "S Laden 563 ms, Magazin 5 (Menü, Motiongen destiny2:274), sichtbar 20 Bilder bei 60/s [M]; Takt gehalten 60/min E; Feuerart aus der Spec (Aufladen → Einzelschuss); Leuchten fällt in 0,2 s (Modul charge_fire: 6 Bilder); Bahnstufe 0,065 M: 6,5 pp H je Schuss (rueckstoss:111), Erholung langsam wie der Scharfschütze E; Kick 3,0 E",
+    "ads_hide_arms": true,
     "weapon_type": "linear_fusion_rifle",
     "sight": "scope",
     "world_zoom": 3.0,
@@ -76709,7 +76722,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -76736,7 +76749,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_lip",
@@ -76763,7 +76776,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -76790,7 +76803,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -76817,7 +76830,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -76844,7 +76857,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -76871,7 +76884,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_release",
@@ -76898,7 +76911,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -76925,7 +76938,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail_front",
@@ -76952,7 +76965,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_mount_r",
@@ -76979,7 +76992,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_strap",
@@ -77303,7 +77316,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -77330,7 +77343,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "scope_fork",
@@ -77492,7 +77505,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail_bottom",
@@ -77519,7 +77532,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail_grip",
@@ -77546,7 +77559,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "linear_core",
@@ -77573,7 +77586,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "coils",
@@ -77600,7 +77613,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "coil_rims",
@@ -77627,7 +77640,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle_bridge",
@@ -77654,7 +77667,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "bridge_screws",
@@ -77681,7 +77694,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -77762,7 +77775,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -77789,7 +77802,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -77816,7 +77829,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -77843,7 +77856,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -77870,7 +77883,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -77897,7 +77910,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "energy_cell",
@@ -77924,7 +77937,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_band",
@@ -77951,7 +77964,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cell_window",
@@ -77978,7 +77991,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_joint",
@@ -78005,7 +78018,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_spine",
@@ -78032,7 +78045,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -78059,7 +78072,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -78086,7 +78099,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cheek_rest",
@@ -78113,7 +78126,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -78280,7 +78293,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 30 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -78293,7 +78306,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.03,
       0.0
      ],
      "aim_dir": [
@@ -82575,6 +82588,7 @@
     "src": "Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen destiny2:270); Takt E 60/min (begrenzt nicht: Lösen, Auflegen und Spannen dauern 1,3 s, Destiny Lösen → Lösen 1,45 s); keine Bahnstufe (die Welt steigt nicht, der Bogen ruckt), Kick 1,5 E (Wurfarme-Ruck, destiny2:498); kein Mündungsfeuer, keine Hülse",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
+    "ads_hide_arms": false,
     "weapon_type": "combat_bow",
     "sight": "reflex",
     "world_zoom": 2.2,
@@ -89028,6 +89042,7 @@
     "recover_hz": 1.7,
     "kick": 2.5,
     "src": "S Destiny-Granatwerfer 90/min (Motiongen destiny2:271-272, Einzellader mit Magazin 1); Magazin 6 E (Trommel des Modells, Spec v2.1 semi_auto); Feuerart aus der Spec (Einzelfeuer, danach dreht die Trommel); Bahnstufe 0,04 E: Waffe schlägt hoch zur Kamera, Rückkehr ≈ 0,6 s (destiny2:509) → Erholung ab 0,2 s mit 1,7 Hz; Kick 2,5 E; Blitz 0,9 E (die D-Linse W1 lag bei 20,3 % > 20 %, 5.3 A)",
+    "ads_hide_arms": true,
     "weapon_type": "grenade_launcher",
     "sight": "reflex",
     "world_zoom": 1.4,
@@ -89393,7 +89408,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "top_strap",
@@ -89420,7 +89435,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "yoke",
@@ -89447,7 +89462,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -89474,7 +89489,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "recoil_plate",
@@ -89501,7 +89516,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "drum_axle",
@@ -89528,7 +89543,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_l",
@@ -89555,7 +89570,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "side_panel_r",
@@ -89582,7 +89597,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "panel_screws",
@@ -89609,7 +89624,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "takedown_pins",
@@ -89636,7 +89651,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "band_side",
@@ -89663,7 +89678,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -89690,7 +89705,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -89717,7 +89732,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -89744,7 +89759,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -89771,7 +89786,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -90095,7 +90110,7 @@
        "a0": 0.0,
        "a1": 60.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "drum_rim",
@@ -90122,7 +90137,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "load_gate",
@@ -90149,7 +90164,7 @@
        "a0": 0.0,
        "a1": -90.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "gate_button",
@@ -90176,7 +90191,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_cases",
@@ -90203,7 +90218,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenades",
@@ -90230,7 +90245,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_bands",
@@ -90257,7 +90272,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_k1",
@@ -90284,7 +90299,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_band_k1",
@@ -90311,7 +90326,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_k2",
@@ -90338,7 +90353,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_band_k2",
@@ -90365,7 +90380,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_k3",
@@ -90392,7 +90407,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_band_k3",
@@ -90419,7 +90434,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_k4",
@@ -90446,7 +90461,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_band_k4",
@@ -90473,7 +90488,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade",
@@ -90500,7 +90515,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_case",
@@ -90527,7 +90542,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grenade_band",
@@ -90554,7 +90569,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel",
@@ -90581,7 +90596,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "barrel_rings",
@@ -90608,7 +90623,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -90635,7 +90650,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle_crown",
@@ -90689,7 +90704,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip",
@@ -90716,7 +90731,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -90743,7 +90758,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -90770,7 +90785,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -90797,7 +90812,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock",
@@ -90824,7 +90839,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "butt_pad",
@@ -90851,7 +90866,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "stock_bolts",
@@ -90878,7 +90893,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [
@@ -91367,7 +91382,7 @@
      "name": "ads",
      "ads": true,
      "roll": 0.0,
-     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse",
+     "src": "Visier-Standard v2: Socket_Eye ist der Augenpunkt, liegt in der Kamera; Waffenmodell ungezoomt, Welt zoomt je Klasse · 0.35 Nutzerentscheid 193 B: Kamera 15 mm hinter Socket_Eye (ego.ADS_STRIP_CLASS)",
      "pos": [
       0.0,
       0.0,
@@ -91380,7 +91395,7 @@
      ],
      "eye": [
       0.0,
-      0.0,
+      -0.015,
       0.0
      ],
      "aim_dir": [
@@ -96476,6 +96491,7 @@
     "kick": 4.0,
     "src": "S Destiny-Raketenwerfer 20/min, Magazin 1 (Motiongen destiny2:276); Feuerart aus der Spec (Einzelschuss, danach sofort nachladen); keine Bahnstufe, Kick 4,0 E: Schub zur Kamera, Linse 10 → 25 % H in 3–4 Bildern (destiny2:501); Mündungsfeuer 0,7 der Familie E (das Seitenvisier W2 liegt nah am Rohr: mit 1,0 deckte der Blitz 33,6 % der Öffnung, Regel ≤ 20 %, 5.3 A; Destiny-Weißblende 0,10–0,15 s offen)",
     "recover_delay_s": 0.12,
+    "ads_hide_arms": true,
     "weapon_type": "rocket_launcher",
     "sight": "reflex",
     "world_zoom": 3.3,
@@ -96774,7 +96790,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "window_rim",
@@ -96801,7 +96817,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle",
@@ -96828,7 +96844,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "muzzle_crown",
@@ -96882,7 +96898,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "clamp_1",
@@ -96909,7 +96925,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "clamp_2",
@@ -96936,7 +96952,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "clamp_rims",
@@ -96963,7 +96979,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "clamp_screws",
@@ -96990,7 +97006,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rear_ring",
@@ -97125,7 +97141,7 @@
        "a0": 0.0,
        "a1": 115.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hatch_hinge",
@@ -97152,7 +97168,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "hatch_grip",
@@ -97179,7 +97195,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "cap_release",
@@ -97206,7 +97222,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "lower",
@@ -97233,7 +97249,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "ready_light",
@@ -97260,7 +97276,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "text_l",
@@ -97287,7 +97303,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_mount",
@@ -97314,7 +97330,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "foregrip",
@@ -97341,7 +97357,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "foregrip_pad",
@@ -97368,7 +97384,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "shoulder_rest",
@@ -97422,7 +97438,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger",
@@ -97449,7 +97465,7 @@
        "a0": 0.0,
        "a1": -12.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "trigger_guard",
@@ -97476,7 +97492,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "grip_cap",
@@ -97503,7 +97519,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_collar",
@@ -97530,7 +97546,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_arm",
@@ -97557,7 +97573,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rail",
@@ -97584,7 +97600,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_mount",
@@ -97611,7 +97627,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_clamp",
@@ -97638,7 +97654,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "sight_body",
@@ -97962,7 +97978,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      },
      {
       "id": "rocket_head",
@@ -97989,7 +98005,7 @@
        "a0": 0.0,
        "a1": 0.0
       },
-      "ads_hide": false
+      "ads_hide": true
      }
     ],
     "anchors": [

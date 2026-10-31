@@ -310,15 +310,17 @@ Nutzerbefunde aus Testbuild 0.33 und Motiongen REF 0.35 „Backblast“ / REF 0.
 | 10g | Weltzoom | Scout 3,0, Scharfschütze 4,7, Werfer 3,3 (Verdict D) | übernommen | M |
 | 10h | Granatwerfer-Ladefolge | nicht gemessen | Gegendrehung je Granate, beim Schließen vor (Kammern in Schussfolge; ersetzt das Umordnen aus 9n) | E |
 | 10i | Revolver nachladen | Hochdrehen, Trommel zur Kamera (destiny2:492) | Trommelrückseite zur Kamera (cos 0,32 → 0,64), Stützhand vor der Trommel | M/E |
-| 10j | Bildanteil Zielen (Nutzerentscheid 193 B) | 2,7–9,5 %, Median 5,8 (Backblast F) | **offen** – Bildwinkel/Augenabstand gemessen ohne Wirkung (s. u.) | Entscheidung nötig |
-| 10k | Raketenwerfer Zielen (Nutzerentscheid 194) | Hoosegow x 81–100, 16,6 % | Heck im Zielen aus (`ads_hide`), 50 % bleibt | Entscheidung nötig |
+| 10j | Bildanteil Zielen (Nutzerentscheid 193 B) | 2,7–9,5 %, Median 5,8 (Backblast F) | **Ausblenden wie Destiny** (`ego.ADS_STRIP`): im Zielen nur Visier und Mündung, Arme aus, Kamera je Klasse 0–50 mm hinter Socket_Eye; 2,7–9,2 %, Median 5,2 | Nutzer „So wie Destiny“ (31.10.2026) |
+| 10k | Raketenwerfer Zielen (Nutzerentscheid 194) | Hoosegow x 81–100, 16,6 % | Startrohr bis auf die Mündung aus, 50,1 → 11,2 % | Nutzer „So wie Destiny“ (E: kleiner als Hoosegow, Visier seitlich) |
 
 **193 B / 194 (31.10.2026, Etappe 2):** gemessen mit `tools/bildanteil.py`: Viewmodel-Bildwinkel im Zielen 75 → 100° (Fläche rechnerisch
 × 0,41) brachte Automatik 13,3 → 12,9 %, Raketenwerfer 50 → 48 %; Kamera 8 cm hinter dem Augenpunkt Automatik 13,3 → 11,3 %, Scout
 13,8 → 15,6 %. Gehäuse, Handschutz und Stützhand laufen als Keil von der Bildmitte bis unter den Rand; beim Verkleinern rückt der vorher
 abgeschnittene Teil nach. Destiny erreicht 2,7–9,5 % nur, wenn im Zielen Teile fehlen (Viewmodel-Trick wie beim Zielfernrohr). Beide
 Wege sind zurückgenommen (das Visier wurde nur kleiner); Frage an den Nutzer über Sightline: (A) je Klasse Teile unter dem Visier im
-Zielen ausblenden oder (B) zurückstellen.
+Zielen ausblenden oder (B) zurückstellen. **Entscheid (Nutzer über Sightline, 31.10.2026): „So wie Destiny“ – (A).** Umgesetzt als
+`ego.ADS_STRIP` (gemeinsame Regel: Visier, Mündung; Schiene, Visierfuß und Klemmen aus; Arme aus) und `ego.ADS_STRIP_CLASS` (Kamera je
+Klasse hinter Socket_Eye, Seitenwaffe und Schrot mit Lauf); Blender und Unity rechnen dieselbe Regel ADS_HIDE.
 
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)
 

@@ -270,6 +270,51 @@ ADS_HIDE = dict(eye_m=0.06, src='E: Okular bis an die Nahebene sichtbar (Augenab
 AIM = dict(range_m=60.0, src='E: Nutzerbefund Testbuild 0.33 Bogen „Schuss geht daneben“ (parallel zur Blickachse lief die Bahn neben der '
                              'Mitte vorbei); Motiongen REF 0.35 Backblast › D: Pfeilachse durch die Bildmitte. 60 m ≈ halbe Parcourslänge, '
                              'Abweichung dahinter < 0,2° bei 20 cm Mündungsversatz')
+# Zielbild wie Destiny (0.35 „Stance“, Nutzerentscheid 193 B, 31.10.2026 über Sightline: „So wie Destiny“): im Zielen sind alle Teile der
+# Waffe aus außer dem Visier (Baugruppe sight), seiner Schiene (BRI-22), dem Mündungsteil (Teil von Socket_Muzzle, Mündungsaufsatz BMZ)
+# und den Baugruppen in keep_asm der Klasse; die Arme sind ebenfalls aus (arms; ohne sie blieb die Automatik bei 12,4 %: Griffhand und
+# Stützarm unter dem Visier) – dieselbe Regel ADS_HIDE in Blender und Unity (Teile mit ads_hide, Augenpunkt nah an der
+# Ziellage). Bildwinkel und Augenabstand senkten den Bildanteil nachweislich nicht (Bericht 0.35 › 193 B / 194); Destiny erreicht 2,7–9,5 %
+# nur ohne die Waffe unter dem Visier (Motiongen REF 0.35 Backblast › F, z-bb-bildanteil). Je Klasse: CLASSES[...]['ads_strip']
+# (keep_asm, keep_parts; False = aus).
+ADS_STRIP = dict(keep_asm=('sight',), keep_iface=('BMZ',), keep_anchors=('Socket_Muzzle',), arms=True,
+                 drop_iface=('BRI-22',), drop_parts=('sight_clamp', 'scope_keel'),   # Visierfuß, Klemme, Kiel: unter dem Glas, nah an der Kamera
+                 src='Nutzerentscheid 193 B „So wie Destiny“ (31.10.2026): Destiny-Zielbild 2,7–9,5 % je Klasse (Backblast › F); Visier, '
+                     'Absehen und Laufspitze bleiben sichtbar')
+
+
+# Je Klasse (Waffentyp): Kamera im Zielen back_m hinter Socket_Eye (das Visier allein ist bei Visier-Standard 3 mit 90 mm Augenabstand
+# größer als bei Destiny; ohne Schaft und Gehäuse wirkt der Abstand jetzt wie gerechnet: Fläche × (90 / (90 + back))²) bzw. weitere
+# Baugruppen sichtbar, wo BALLON unter Destiny läge. Ziel Destiny-Zielen je Klasse (Backblast › F, Bericht 0.35 › Bildanteil).
+ADS_STRIP_CLASS = {
+    'auto_rifle': dict(back_m=0.05), 'submachine_gun': dict(back_m=0.015), 'scout_rifle': dict(back_m=0.005),
+    'pulse_rifle': dict(back_m=0.005), 'trace_rifle': dict(back_m=0.01), 'fusion_rifle': dict(back_m=0.015),
+    'linear_fusion_rifle': dict(back_m=0.03), 'grenade_launcher': dict(back_m=0.015),
+    'sidearm': dict(keep_asm=('sight', 'barrel')), 'shotgun': dict(keep_asm=('sight', 'barrel')),
+}
+
+
+def ads_strip_rule(W, C):
+    """Regel ADS_STRIP für die Waffe W (Klasse C): gemeinsamer Satz, Klassensatz ADS_STRIP_CLASS, Klassenwert ads_strip; None = aus."""
+    if C.get('ads_strip') is False:
+        return None
+    return dict(ADS_STRIP, **ADS_STRIP_CLASS.get(W.META['type'], {}), **(C.get('ads_strip') or {}))
+
+
+def ads_strip_parts(W, C):
+    """Teile der Waffe W, die im Zielen nach ads_strip_rule aus sind; leer, wenn die Klasse es abschaltet."""
+    R = ads_strip_rule(W, C)
+    if R is None:
+        return ()
+    keep = {W.ANCHORS[a]['part'] for a in R['keep_anchors'] if a in W.ANCHORS and W.ANCHORS[a].get('part')}
+    keep |= set(R.get('keep_parts', ()))
+    keep |= {p['id'] for p in W.PARTS if p['asm'] in R['keep_asm'] or any((p.get('iface') or '').startswith(i) for i in R['keep_iface'])}
+    for _ in range(3):                       # Kinder sichtbarer Teile bleiben sichtbar (parent_part)
+        keep |= {p['id'] for p in W.PARTS if p.get('parent_part') in keep}
+    keep -= {p['id'] for p in W.PARTS if p['id'] in R['drop_parts'] or any((p.get('iface') or '').startswith(i) for i in R['drop_iface'])}
+    return tuple(p['id'] for p in W.PARTS if p['id'] not in keep)
+
+
 # Waffenwechsel (6.1 A): Wegstecken (holster 0,27 s), danach leere Sicht, dann Ziehen wie bisher (draw mit Nachfedern).
 # empty_s ist die Pause zwischen Ende von holster und Beginn von draw; die sichtbare leere Sicht ist länger, weil die Waffe schon vor
 # dem Ende des Wegsteckens unter dem Bildrand ist und beim Ziehen erst nach einigen Bildern auftaucht.
@@ -1170,6 +1215,7 @@ CLASSES = {
                   src='Bogen ohne Magazin (Vorrat): kein Nachladen; Feuer als Klassenaktionen fire_draw/fire_release/let_down statt fire_hip/fire_ads'),
         ads_hand=dict(off=OFF_L, src='E: im ungespannten Zielen hängt die Zughand unter dem Bild (an der Nocke, 0,42 m vor dem Auge, lag der rechte '
                                       'Arm groß rechts im Bild); sie kommt beim Spannen an die Nocke (fire_draw_ads)'),
+        ads_strip=False,   # 193 B: der Bogen bleibt im Zielen ganz (Destiny: Riser und Wurfarme über die volle Höhe, 6,0–6,8 %; BALLON 9,9 %)
         ads_hide=dict(parts=('arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r', 'string_top', 'string_bottom'),
                       src='M Motiongen REF 0.35 Backblast › D (z-bb-bogen-ads): Pfeil senkrecht unter dem Visierpunkt, Spitze 16–22 pp tiefer. Seit '
                           '0.35 liegt der Pfeil 69,5 mm unter der Visierlinie (Visier über dem Pfeil): der Schaft ist eine schmale Linie von der '
@@ -1400,8 +1446,8 @@ CLASSES = {
                       src='M Motiongen REF 0.35 Backblast › F (z-bb-bildanteil): Destiny-Werfer im Zielen nur am rechten Rand (Hoosegow x 81–100, '
                           '16,6–16,8 %); Nutzerentscheid 194 (31.10.2026): BALLON-Zielbild nicht mehr 50 %. Das Heckrohr läuft neben dem Auge '
                           '33 mm an der Kamera vorbei – Heckrohr, Kegel, Heck und Schulterauflage sind im Zielen aus (Regel ADS_HIDE wie beim '
-                          'Zielfernrohr); Startrohr, Visier, Griffe bleiben. Gemessen 50,1 → 50,4 % (das Startrohr läuft zur Mitte): 194 bleibt '
-                          'offen (Bericht 0.35 › 193 B / 194, Entscheidung nötig)'),
+                          'Zielfernrohr); Startrohr, Visier, Griffe bleiben. Allein gemessen 50,1 → 50,4 % (das Startrohr läuft zur Mitte); '
+                          'mit ADS_STRIP (Nutzer „So wie Destiny“, Startrohr bis auf die Mündung aus) 11,2 %'),
         gameplay=dict(rpm=20, magazine=1, path_up_h=0.0, recover_hz=1.5, kick=4.0, flash_scale=0.7,
                       src='S Destiny-Raketenwerfer 20/min, Magazin 1 (Motiongen destiny2:276); Feuerart aus der Spec (Einzelschuss, danach sofort '
                           'nachladen); keine Bahnstufe, Kick 4,0 E: Schub zur Kamera, Linse 10 → 25 % H in 3–4 Bildern (destiny2:501); '
@@ -1517,6 +1563,12 @@ def profile(W):
         for k in FOLLOW_HIP:
             if k not in C['poses']:
                 poses[k] = _follow(poses['hip'], POSES['hip'], POSES[k])
+    SR = ads_strip_rule(W, C)
+    if 'ads' in poses and SR and SR.get('back_m'):   # 0.35 (193 B): Kamera im Zielen hinter Socket_Eye, je Klasse
+        e = poses['ads']['eye']
+        poses['ads'] = dict(poses['ads'], eye=(e[0], round(e[1] - SR['back_m'], 6), e[2]),
+                            src=poses['ads']['src'] + f" · 0.35 Nutzerentscheid 193 B: Kamera {SR['back_m'] * 1000:.0f} mm hinter Socket_Eye "
+                                                      f"(ego.ADS_STRIP_CLASS)")
     actions = {k: copy.deepcopy(A) for k, A in ACTIONS.items() if k not in drop.get('actions', ())}
     mmap, back = C.get('mech_map', {}), C.get('charge_back_mm')
     for A in actions.values():                       # Bauteile der Bezugswaffe → Bauteile der Klasse (Pistole: Schlitten statt Ladehebel)
@@ -1574,6 +1626,7 @@ def profile(W):
     for k in ('path_up_h', 'recover_delay_s', 'recover_hz'):   # Bahn je Klasse (0.22), sonst gemeinsam (ego.RECOIL)
         G.setdefault(k, RECOIL[k])
     G.setdefault('kick', 1.0)                   # Modellkick und Kamera-Ruck je Schuss relativ zu ego.RECOIL (0.22; Clips und Unity gleich)
+    G['ads_hide_arms'] = bool(ads_strip_rule(W, C) and ads_strip_rule(W, C)['arms'] and 'ads' in poses)   # 193 B
     recoil = dict(RECOIL, **C.get('recoil', {}))  # Rückstoßfedern je Klasse (0.35, Handfeuerwaffe: Kippen und Unterschwingen), sonst RECOIL
     recoil.pop('src', None)
     if 'recoil' in C:                           # nur Klassen mit eigenem Satz tragen ihn im Export (gameplay.recoil, Unity RecoilOr)
@@ -1608,6 +1661,7 @@ def profile(W):
              frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop, recoil=recoil,
              mag=grips.get('mag', {}).get('part', 'magazine'),   # Bauteil, das das Nachladen trägt (carry/drop): Magazin, Energiezelle (0.33)
              hands_swap=bool(C.get('hands', {}).get('swap')),     # Bogenhand links (0.33 P4)
-             ads_hide=tuple(C.get('ads_hide', {}).get('parts', ())))   # Teile, die im Zielen aus sind, je Klasse (0.33 P4, Bogen)
+             ads_hide=tuple(dict.fromkeys(tuple(C.get('ads_hide', {}).get('parts', ())) +   # je Klasse (0.33 P4, Bogen)
+                                          (ads_strip_parts(W, C) if 'ads' in poses else ()))))   # Zielbild wie Destiny (0.35, 193 B)
     _PROFILES[wid] = P
     return P

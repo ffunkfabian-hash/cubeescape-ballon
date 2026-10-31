@@ -629,7 +629,7 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < 42; k++) yield return null;
             Assert.AreEqual(2, p.arsenal.Active, "Taste 3: Scout");
             var rig = p.rig;
-            Assert.AreEqual(7, rig.AdsHideCount, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband");
+            Assert.Greater(rig.AdsHideCount, 7, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband – seit 0.35 (193 B) auch die übrige Waffe und die Arme");
             Assert.IsFalse(rig.AdsHidden, "Hüfte: Zielfernrohr ganz");
             Assert.AreEqual("cross", p.hipReticle.Kind, "Hüft-Fadenkreuz des Scouts");
             long s0 = p.C.shots;

@@ -68,6 +68,8 @@ namespace Ballon.Ego
             foreach (var r in a.GetComponentsInChildren<Renderer>(true)) Dress(r, role, roles, layer);
             foreach (var p in s.D.weapon.parts)                // Zielfernrohr (0.20): Teile mit ads_hide schaltet Apply im Zielen aus
                 if (p.ads_hide && _parts[p.id].TryGetComponent<Renderer>(out var hr)) _adsHide.Add(hr);
+            if (s.D.gameplay.ads_hide_arms)                     // 0.35 (Nutzerentscheid 193 B): Zielbild wie Destiny, auch die Arme aus
+                _adsHide.AddRange(a.GetComponentsInChildren<Renderer>(true));
             foreach (var p in s.D.weapon.parts)                // Absehen (0.20, Nutzer 26.10.2026): gezeichnet statt Modellteil (EgoPlayer, SightReticle)
                 if (p.role.StartsWith("reticle") && _parts[p.id].TryGetComponent<Renderer>(out var rr))
                 {
