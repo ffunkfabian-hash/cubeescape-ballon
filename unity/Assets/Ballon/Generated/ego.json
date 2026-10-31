@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "1d1b13c72b62c668620852c7dc06464545844c3dab71c21e1dc6daea59994002"
+    "sha256": "4194d0e684ecef9334aebaf5dd5ce73df6f374dc874553fcc2cb8fbf2cef3c70"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "0558acf70d9910c94d709216fdaedbdd5d95ff48cb9e8f3530c3e036e85a3d66"
+    "sha256": "aa51433f2b0d991deb2fd31cdf4df9e79076d44c001b9bf66f50c65053bad108"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "03d16432f9a5cd87da90f515bcd86bb3347447fe7464c9af5c1d6b69d419c6c7"
+    "sha256": "ceda7379b0bddb49c434e40e91192db9e09e633e72d8a67df131cabdce90e5ae"
    },
    {
     "path": "tools/bake_unity.py",
@@ -409,6 +409,122 @@
    "delay_frames": 0,
    "role": "brass",
    "src": "M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); Geschwindigkeit, Drehung, Lebensdauer E"
+  },
+  "index": {
+   "frames": 3.0,
+   "share": 0.8,
+   "src": "E: Trommel dreht nach dem Schuss in 0,1 s eine Kammer weiter (Spannabzug; Destiny dreht beim Schuss, Zeit nicht gemessen); Gurt zieht in derselben Zeit eine Gliedteilung nach"
+  },
+  "payload": {
+   "decal": {
+    "size_m": 0.05,
+    "max": 96,
+    "life_s": 30.0,
+    "fade_s": 2.5,
+    "variants": 4,
+    "scorch_m": 1.4,
+    "scorch_max": 8,
+    "src": "E: Loch 5 cm (seit Patch einschuss), dunkler Kern, heller aufgeworfener Rand, Rußhof; vier Formen (gedreht, Rand unregelmäßig), nach 30 s in 2,5 s ausgeblendet, höchstens 96 (der älteste wird wiederverwendet); Explosion: Brandfleck 1,4 m"
+   },
+   "impacts": [
+    {
+     "sparks": 9,
+     "spark_mps": 6.0,
+     "spark_s": 0.22,
+     "dust": 3,
+     "dust_m": 0.22,
+     "dust_s": 0.7,
+     "glow_m": 0.28,
+     "glow_s": 0.07,
+     "decal": "hole",
+     "src": "E: kurze Funken und eine kleine Staubwolke (Destiny Chroma Rush: Einschlagrauch durch Folgeschüsse überlagert, Ende offen; Motiongen destiny2 › z-ballista-chroma-rush)",
+     "name": "bullet"
+    },
+    {
+     "sparks": 14,
+     "spark_mps": 8.0,
+     "spark_s": 0.28,
+     "dust": 5,
+     "dust_m": 0.38,
+     "dust_s": 0.9,
+     "glow_m": 0.42,
+     "glow_s": 0.09,
+     "decal": "hole",
+     "src": "E: Handfeuerwaffe und Scharfschütze größer (mehr Funken, größere Wolke)",
+     "name": "heavy"
+    },
+    {
+     "sparks": 3,
+     "spark_mps": 5.0,
+     "spark_s": 0.16,
+     "dust": 1,
+     "dust_m": 0.16,
+     "dust_s": 0.5,
+     "glow_m": 0.16,
+     "glow_s": 0.06,
+     "decal": "hole",
+     "src": "E: je Schrotkugel wenig, die Menge macht das Bild",
+     "name": "pellet"
+    },
+    {
+     "sparks": 8,
+     "spark_mps": 4.5,
+     "spark_s": 0.3,
+     "dust": 1,
+     "dust_m": 0.16,
+     "dust_s": 0.5,
+     "glow_m": 0.45,
+     "glow_s": 0.12,
+     "decal": "scorch",
+     "src": "E: Energie: Funken in der Leuchtfarbe der Waffe, heller Lichtfleck, Brandfleck statt Loch (Prometheus Lens: Kontaktrest länger als der Strahl, Ende offen; Motiongen destiny2 › z-ballista-prometheus-lens)",
+     "name": "energy"
+    },
+    {
+     "sparks": 4,
+     "spark_mps": 3.5,
+     "spark_s": 0.25,
+     "dust": 2,
+     "dust_m": 0.16,
+     "dust_s": 0.6,
+     "glow_m": 0.2,
+     "glow_s": 0.08,
+     "decal": "scorch",
+     "src": "E: Pfeil: kleiner Lichtpunkt in der Leuchtfarbe, wenig Staub; der Pfeil steckt stick_s",
+     "name": "arrow"
+    }
+   ],
+   "explosion": {
+    "flash_s": 0.12,
+    "flash_k": 1.3,
+    "fire": 10,
+    "fire_s": 0.45,
+    "fire_k": 0.75,
+    "ring_s": 0.35,
+    "ring_k": 0.9,
+    "sparks": 40,
+    "spark_mps": 14.0,
+    "spark_s": 0.7,
+    "smoke": 16,
+    "smoke_s": 2.6,
+    "smoke_k": 0.7,
+    "light_s": 0.18,
+    "light_k": 4.0,
+    "src": "M Destiny: Ignition Code Explosion 9 Bilder bei 60/s (0,15 s), Blitz 3 Bilder (Motiongen destiny2 › z-ballista-ignition-code), Rauch und Ende nicht isolierbar; Feuerkugeln, Ring, Funken, Rauch, Farben E",
+    "core_color": "#FFF2D6",
+    "fire_color": "#FF7A2A",
+    "smoke_color": "#3E4146",
+    "ring_color": "#FFE2B8"
+   },
+   "muzzle_smoke": {
+    "rate_hz": 9.0,
+    "puff_m": 0.05,
+    "grow": 3.0,
+    "rise_mps": 0.1,
+    "life_s": 1.3,
+    "color": "#C9CCD1",
+    "alpha": 0.35,
+    "src": "E: nach dem Schuss weiße Schwaden aus dem Rohr (Nutzerbefund 0.33; CoD MW .357: heller Rauchpuff vor dem Lauf, Motiongen muendung › z-mf-cod-357)"
+   }
   },
   "de": "Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoß, Wechsel, Tempo)"
  },
@@ -1557,7 +1673,37 @@
       }
      ]
     },
-    "fire_mode": "full_auto"
+    "fire_mode": "full_auto",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "bullet",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag Kugel"
+    }
    },
    "weapon": {
     "id": "BASIC-01-v2.1",
@@ -3825,14 +3971,45 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn"
+     "src": "E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "bolt_carrier",
      "port": "port_cover",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -8858,7 +9035,37 @@
       }
      ]
     },
-    "fire_mode": "full_auto"
+    "fire_mode": "full_auto",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "bullet",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag Kugel"
+    }
    },
    "weapon": {
     "id": "BASIC-06-v2.1",
@@ -10505,14 +10712,45 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)"
+     "src": "E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "bolt",
      "port": "port_cover",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -15185,7 +15423,37 @@
       }
      ]
     },
-    "fire_mode": "semi_auto"
+    "fire_mode": "semi_auto",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "bullet",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag Kugel"
+    }
    },
    "weapon": {
     "id": "BASIC-03-v2.1",
@@ -17084,14 +17352,45 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts im Einteilgehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)"
+     "src": "E: Auswurffenster rechts im Einteilgehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "bolt",
      "port": "port_cover",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -21766,7 +22065,37 @@
       }
      ]
     },
-    "fire_mode": "burst"
+    "fire_mode": "burst",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "bullet",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag Kugel"
+    }
    },
    "weapon": {
     "id": "BASIC-02-v2.1",
@@ -23629,14 +23958,45 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts im Oberen Gehäuse (port_cover f 22–74), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)"
+     "src": "E: Auswurffenster rechts im Oberen Gehäuse (port_cover f 22–74), Hülse nach rechts, etwas hoch und vorn (wie BASIC-01)",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "bolt_carrier",
      "port": "port_cover",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -28320,7 +28680,37 @@
       }
      ]
     },
-    "fire_mode": "single"
+    "fire_mode": "single",
+    "fx": {
+     "kind": "none",
+     "impact": "",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "Werkzeug: eigene Treffermarke in Portalfarbe (0.22), keine Wirkung"
+    }
    },
    "weapon": {
     "id": "BASIC-T01-v2.1",
@@ -29077,14 +29467,45 @@
      "verts": [],
      "tris": [],
      "on": "",
-     "src": "kein Auswurf"
+     "src": "kein Auswurf",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "",
      "port": "",
      "ring": "emitter_ring",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -31803,7 +32224,37 @@
       }
      ]
     },
-    "fire_mode": "semi_auto"
+    "fire_mode": "semi_auto",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "heavy",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag schwer"
+    }
    },
    "weapon": {
     "id": "BASIC-04-v2.1",
@@ -32419,29 +32870,286 @@
      }
     ],
     "eject": {
-     "enabled": false,
+     "enabled": true,
      "pos": [
-      0.0,
-      0.0,
-      0.0
+      0.004,
+      -0.0155,
+      0.057
      ],
      "dir": [
-      0.0,
-      0.0,
-      0.0
+      0.908153,
+      -0.317854,
+      0.272446
      ],
-     "case": "",
-     "verts": [],
-     "tris": [],
-     "on": "",
-     "src": "kein Auswurf"
+     "case": "revolver",
+     "verts": [
+      -0.015,
+      0.0,
+      0.0,
+      0.015,
+      0.0,
+      0.0,
+      -0.015,
+      -0.0056,
+      0.0,
+      -0.015,
+      -0.00485,
+      0.0028,
+      -0.015,
+      -0.0028,
+      0.00485,
+      -0.015,
+      0.0,
+      0.0056,
+      -0.015,
+      0.0028,
+      0.00485,
+      -0.015,
+      0.00485,
+      0.0028,
+      -0.015,
+      0.0056,
+      0.0,
+      -0.015,
+      0.00485,
+      -0.0028,
+      -0.015,
+      0.0028,
+      -0.00485,
+      -0.015,
+      0.0,
+      -0.0056,
+      -0.015,
+      -0.0028,
+      -0.00485,
+      -0.015,
+      -0.00485,
+      -0.0028,
+      0.015,
+      -0.0056,
+      0.0,
+      0.015,
+      -0.00485,
+      0.0028,
+      0.015,
+      -0.0028,
+      0.00485,
+      0.015,
+      0.0,
+      0.0056,
+      0.015,
+      0.0028,
+      0.00485,
+      0.015,
+      0.00485,
+      0.0028,
+      0.015,
+      0.0056,
+      0.0,
+      0.015,
+      0.00485,
+      -0.0028,
+      0.015,
+      0.0028,
+      -0.00485,
+      0.015,
+      0.0,
+      -0.0056,
+      0.015,
+      -0.0028,
+      -0.00485,
+      0.015,
+      -0.00485,
+      -0.0028
+     ],
+     "tris": [
+      0,
+      3,
+      2,
+      1,
+      14,
+      15,
+      2,
+      3,
+      15,
+      2,
+      15,
+      14,
+      0,
+      4,
+      3,
+      1,
+      15,
+      16,
+      3,
+      4,
+      16,
+      3,
+      16,
+      15,
+      0,
+      5,
+      4,
+      1,
+      16,
+      17,
+      4,
+      5,
+      17,
+      4,
+      17,
+      16,
+      0,
+      6,
+      5,
+      1,
+      17,
+      18,
+      5,
+      6,
+      18,
+      5,
+      18,
+      17,
+      0,
+      7,
+      6,
+      1,
+      18,
+      19,
+      6,
+      7,
+      19,
+      6,
+      19,
+      18,
+      0,
+      8,
+      7,
+      1,
+      19,
+      20,
+      7,
+      8,
+      20,
+      7,
+      20,
+      19,
+      0,
+      9,
+      8,
+      1,
+      20,
+      21,
+      8,
+      9,
+      21,
+      8,
+      21,
+      20,
+      0,
+      10,
+      9,
+      1,
+      21,
+      22,
+      9,
+      10,
+      22,
+      9,
+      22,
+      21,
+      0,
+      11,
+      10,
+      1,
+      22,
+      23,
+      10,
+      11,
+      23,
+      10,
+      23,
+      22,
+      0,
+      12,
+      11,
+      1,
+      23,
+      24,
+      11,
+      12,
+      24,
+      11,
+      24,
+      23,
+      0,
+      13,
+      12,
+      1,
+      24,
+      25,
+      12,
+      13,
+      25,
+      12,
+      25,
+      24,
+      0,
+      2,
+      13,
+      1,
+      25,
+      14,
+      13,
+      2,
+      14,
+      13,
+      14,
+      25
+     ],
+     "on": "reload",
+     "src": "M beim Nachladen (Motiongen muendung › 3/5); E: hinten aus den Kammern, langsam nach außen (vom Rahmen weg, zur Kamera) und etwas nach vorn, dann fallend, 0,8 s sichtbar",
+     "part": "cylinder",
+     "ring_m": 0.014,
+     "ring_n": 6,
+     "speed_k": 0.35,
+     "life_k": 2.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "hammer",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [
+      "cylinder"
+     ],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -32631,16 +33339,16 @@
      "name": "reload",
      "ads": false,
      "roll": 10.0,
-     "src": "M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben (gerechnet 47,3/27,6 %), linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand verdeckte das halbe Bild)",
+     "src": "M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen",
      "pos": [
       -0.07,
       -0.37,
-      -0.15
+      -0.1
      ],
      "aim": [
       0.6,
       -1.2,
-      1.0
+      1.05
      ],
      "eye": [
       0.0,
@@ -36059,7 +36767,7 @@
     "files": [
      {
       "path": "basic/pilot/w04_hand_cannon_v21.py",
-      "sha256": "d9d8329675d8dd72c6a972b680de3bf568299cb3a09939349a3d4f7393391075"
+      "sha256": "763a9691d4a6569f0124312a1742b5c82e2e9ce41a5bf950657b0c0a3340ebb4"
      },
      {
       "path": "basic/weapons/w04_hand_cannon.py",
@@ -36755,7 +37463,37 @@
       }
      ]
     },
-    "fire_mode": "semi_auto"
+    "fire_mode": "semi_auto",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "bullet",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag Kugel"
+    }
    },
    "weapon": {
     "id": "BASIC-05-v2.1",
@@ -37745,14 +38483,45 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts im Schlitten, Hülse nach rechts, etwas hoch und vorn (wie BASIC-06)"
+     "src": "E: Auswurffenster rechts im Schlitten, Hülse nach rechts, etwas hoch und vorn (wie BASIC-06)",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "slide",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -41987,7 +42756,37 @@
       }
      ]
     },
-    "fire_mode": "bolt_action"
+    "fire_mode": "bolt_action",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "heavy",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag schwer"
+    }
    },
    "weapon": {
     "id": "BASIC-09-v2.1",
@@ -43589,14 +44388,45 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts beim Zurückziehen des Verschlusses (Stängel links), Hülse nach rechts, etwas hoch und vorn (wie Destiny, Motiongen muendung › 6)"
+     "src": "E: Auswurffenster rechts beim Zurückziehen des Verschlusses (Stängel links), Hülse nach rechts, etwas hoch und vorn (wie Destiny, Motiongen muendung › 6)",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -48894,7 +49724,37 @@
       }
      ]
     },
-    "fire_mode": "continuous_beam"
+    "fire_mode": "continuous_beam",
+    "fx": {
+     "kind": "beam",
+     "impact": "energy",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.045,
+     "length_m": 0.0,
+     "beam_s": 0.15,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.05,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 3,
+     "spark_hz": 40.0,
+     "src": "E: durchgehender Strahl 4,5 cm vom Lauf zum Einschlag, solange der Abzug zieht, flackernd; Destiny Prometheus Lens: Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %, Strahl und Kontakt beginnen gemeinsam (destiny2 › z-ballista-prometheus-lens)"
+    }
    },
    "weapon": {
     "id": "BASIC-12-v2.1",
@@ -50335,7 +51195,29 @@
      "verts": [],
      "tris": [],
      "on": "",
-     "src": "kein Auswurf"
+     "src": "kein Auswurf",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
@@ -50345,7 +51227,16 @@
      "glow": [
       "focus_lens",
       "disc_lens"
-     ]
+     ],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -54777,7 +55668,37 @@
       }
      ]
     },
-    "fire_mode": "full_auto"
+    "fire_mode": "full_auto",
+    "fx": {
+     "kind": "hitscan",
+     "impact": "bullet",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 3,
+     "tracer_mps": 320.0,
+     "tracer_m": 2.4,
+     "tracer_w_m": 0.018,
+     "tracer_color": "#FFC27A",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Einschlag Kugel; Leuchtspur jeder 3. Schuss, 320 m/s, 2,4 m, warmweiß (BF6 B36A4: roter Strich zur Bildmitte ist Leuchtspur, Motiongen muendung › z-mf-bf6-b36a4; Häufigkeit und Farbe E)"
+    }
    },
    "weapon": {
     "id": "BASIC-15-v2.1",
@@ -55653,7 +56574,7 @@
      {
       "id": "box_counter",
       "asm": "ammo",
-      "role": "energy",
+      "role": "graphite",
       "parent": "ammo_box",
       "rest": [
        0.0,
@@ -55662,6 +56583,141 @@
       ],
       "move": {
        "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "counter_cell_1",
+      "asm": "ammo",
+      "role": "energy",
+      "parent": "ammo_box",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "glow",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "counter_cell_2",
+      "asm": "ammo",
+      "role": "energy",
+      "parent": "ammo_box",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "glow",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "counter_cell_3",
+      "asm": "ammo",
+      "role": "energy",
+      "parent": "ammo_box",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "glow",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "counter_cell_4",
+      "asm": "ammo",
+      "role": "energy",
+      "parent": "ammo_box",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "glow",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "counter_cell_5",
+      "asm": "ammo",
+      "role": "energy",
+      "parent": "ammo_box",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "glow",
        "vec": [
         0.0,
         0.0,
@@ -55736,6 +56792,168 @@
       "asm": "ammo",
       "role": "dark_metal",
       "parent": "belt",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "belt_round_2",
+      "asm": "ammo",
+      "role": "brass",
+      "parent": "belt",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "belt_link_2",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "belt_round_2",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "belt_round_3",
+      "asm": "ammo",
+      "role": "brass",
+      "parent": "belt",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "belt_link_3",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "belt_round_3",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "belt_round_4",
+      "asm": "ammo",
+      "role": "brass",
+      "parent": "belt",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "belt_link_4",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "belt_round_4",
       "rest": [
        0.0,
        0.0,
@@ -56784,14 +58002,266 @@
       25
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts unter der Klappe port_cover, Hülse nach rechts und etwas nach unten"
+     "src": "E: Auswurffenster rechts unter der Klappe port_cover, Hülse nach rechts und etwas nach unten",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": true,
+      "pos": [
+       -0.026,
+       -0.125,
+       0.1145
+      ],
+      "dir": [
+       -0.939682,
+       -0.093968,
+       0.328889
+      ],
+      "case": "belt_link",
+      "verts": [
+       -0.004,
+       0.0,
+       0.0,
+       0.004,
+       0.0,
+       0.0,
+       -0.004,
+       -0.0054,
+       0.0,
+       -0.004,
+       -0.004369,
+       0.003174,
+       -0.004,
+       -0.001669,
+       0.005136,
+       -0.004,
+       0.001669,
+       0.005136,
+       -0.004,
+       0.004369,
+       0.003174,
+       -0.004,
+       0.0054,
+       0.0,
+       -0.004,
+       0.004369,
+       -0.003174,
+       -0.004,
+       0.001669,
+       -0.005136,
+       -0.004,
+       -0.001669,
+       -0.005136,
+       -0.004,
+       -0.004369,
+       -0.003174,
+       0.004,
+       -0.0054,
+       0.0,
+       0.004,
+       -0.004369,
+       0.003174,
+       0.004,
+       -0.001669,
+       0.005136,
+       0.004,
+       0.001669,
+       0.005136,
+       0.004,
+       0.004369,
+       0.003174,
+       0.004,
+       0.0054,
+       0.0,
+       0.004,
+       0.004369,
+       -0.003174,
+       0.004,
+       0.001669,
+       -0.005136,
+       0.004,
+       -0.001669,
+       -0.005136,
+       0.004,
+       -0.004369,
+       -0.003174
+      ],
+      "tris": [
+       0,
+       3,
+       2,
+       1,
+       12,
+       13,
+       2,
+       3,
+       13,
+       2,
+       13,
+       12,
+       0,
+       4,
+       3,
+       1,
+       13,
+       14,
+       3,
+       4,
+       14,
+       3,
+       14,
+       13,
+       0,
+       5,
+       4,
+       1,
+       14,
+       15,
+       4,
+       5,
+       15,
+       4,
+       15,
+       14,
+       0,
+       6,
+       5,
+       1,
+       15,
+       16,
+       5,
+       6,
+       16,
+       5,
+       16,
+       15,
+       0,
+       7,
+       6,
+       1,
+       16,
+       17,
+       6,
+       7,
+       17,
+       6,
+       17,
+       16,
+       0,
+       8,
+       7,
+       1,
+       17,
+       18,
+       7,
+       8,
+       18,
+       7,
+       18,
+       17,
+       0,
+       9,
+       8,
+       1,
+       18,
+       19,
+       8,
+       9,
+       19,
+       8,
+       19,
+       18,
+       0,
+       10,
+       9,
+       1,
+       19,
+       20,
+       9,
+       10,
+       20,
+       9,
+       20,
+       19,
+       0,
+       11,
+       10,
+       1,
+       20,
+       21,
+       10,
+       11,
+       21,
+       10,
+       21,
+       20,
+       0,
+       2,
+       11,
+       1,
+       21,
+       12,
+       11,
+       2,
+       12,
+       11,
+       12,
+       21
+      ],
+      "src": "E: Gliederauswurf rechts über dem Auswurffenster, Glied nach rechts und etwas hoch"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "bolt",
      "port": "port_cover",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [
+      "belt"
+     ],
+     "rounds": {
+      "mode": "line",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": [
+       {
+        "parts": [
+         "belt",
+         "belt_links"
+        ]
+       },
+       {
+        "parts": [
+         "belt_round_2",
+         "belt_link_2"
+        ]
+       },
+       {
+        "parts": [
+         "belt_round_3",
+         "belt_link_3"
+        ]
+       },
+       {
+        "parts": [
+         "belt_round_4",
+         "belt_link_4"
+        ]
+       }
+      ]
+     },
+     "fill": [
+      "counter_cell_1",
+      "counter_cell_2",
+      "counter_cell_3",
+      "counter_cell_4",
+      "counter_cell_5"
+     ]
     }
    },
    "poses": [
@@ -60903,14 +62373,14 @@
     "files": [
      {
       "path": "basic/pilot/w15_machine_gun_v21.py",
-      "sha256": "4607c76dc60bd27753b18c50d92ac0c94105a3c8dd5a564c29926ab644007d64"
+      "sha256": "3472c79e4f24f3ecd2990e0491069a31d21224c974f1e27e40827c2a20824f9e"
      },
      {
       "path": "basic/weapons/w15_machine_gun.py",
       "sha256": "d93de95b1ad4acf2b76853b6a4b25c0fdad428047df61e636a8c19970114ac78"
      }
     ],
-    "parts_sha256": "78cc4f339f7d086e10605f3eabb4572fa91766c5544986b00a02184813a2b17c"
+    "parts_sha256": "c71268f240365bfef75afdccdf18ef8e665ed0e53399e697fbcb18e5d28432fc"
    },
    "textures": {
     "weapon": {
@@ -60923,9 +62393,16 @@
       "barrel_nut",
       "belt",
       "belt_guide",
+      "belt_link_2",
+      "belt_link_3",
+      "belt_link_4",
       "belt_links",
+      "belt_round_2",
+      "belt_round_3",
+      "belt_round_4",
       "bolt",
       "box_band",
+      "box_counter",
       "box_grip",
       "box_lip",
       "butt_pad",
@@ -61483,6 +62960,76 @@
       "tris": 108
      },
      {
+      "name": "counter_cell_1",
+      "min": [
+       0.1002,
+       -0.166,
+       0.019
+      ],
+      "max": [
+       0.1008,
+       -0.163,
+       0.023
+      ],
+      "tris": 108
+     },
+     {
+      "name": "counter_cell_2",
+      "min": [
+       0.1002,
+       -0.17,
+       0.019
+      ],
+      "max": [
+       0.1008,
+       -0.167,
+       0.023
+      ],
+      "tris": 108
+     },
+     {
+      "name": "counter_cell_3",
+      "min": [
+       0.1002,
+       -0.174,
+       0.019
+      ],
+      "max": [
+       0.1008,
+       -0.171,
+       0.023
+      ],
+      "tris": 108
+     },
+     {
+      "name": "counter_cell_4",
+      "min": [
+       0.1002,
+       -0.178,
+       0.019
+      ],
+      "max": [
+       0.1008,
+       -0.175,
+       0.023
+      ],
+      "tris": 108
+     },
+     {
+      "name": "counter_cell_5",
+      "min": [
+       0.1002,
+       -0.182,
+       0.019
+      ],
+      "max": [
+       0.1008,
+       -0.179,
+       0.023
+      ],
+      "tris": 108
+     },
+     {
       "name": "box_grip",
       "min": [
        0.0516,
@@ -61501,17 +63048,101 @@
       "min": [
        -0.004512,
        -0.032,
-       -0.035712
+       -0.004512
       ],
       "max": [
        0.004512,
        0.02,
        0.004512
       ],
-      "tris": 1504
+      "tris": 376
      },
      {
       "name": "belt_links",
+      "min": [
+       0.026504,
+       -0.135,
+       0.090304
+      ],
+      "max": [
+       0.037096,
+       -0.106,
+       0.100896
+      ],
+      "tris": 768
+     },
+     {
+      "name": "belt_round_2",
+      "min": [
+       0.027288,
+       -0.152,
+       0.080688
+      ],
+      "max": [
+       0.036312,
+       -0.1,
+       0.089712
+      ],
+      "tris": 376
+     },
+     {
+      "name": "belt_link_2",
+      "min": [
+       0.026504,
+       -0.135,
+       0.079904
+      ],
+      "max": [
+       0.037096,
+       -0.106,
+       0.090496
+      ],
+      "tris": 768
+     },
+     {
+      "name": "belt_round_3",
+      "min": [
+       0.027288,
+       -0.152,
+       0.070288
+      ],
+      "max": [
+       0.036312,
+       -0.1,
+       0.079312
+      ],
+      "tris": 376
+     },
+     {
+      "name": "belt_link_3",
+      "min": [
+       0.026504,
+       -0.135,
+       0.069504
+      ],
+      "max": [
+       0.037096,
+       -0.106,
+       0.080096
+      ],
+      "tris": 768
+     },
+     {
+      "name": "belt_round_4",
+      "min": [
+       0.027288,
+       -0.152,
+       0.059888
+      ],
+      "max": [
+       0.036312,
+       -0.1,
+       0.068912
+      ],
+      "tris": 376
+     },
+     {
+      "name": "belt_link_4",
       "min": [
        0.026504,
        -0.135,
@@ -61520,9 +63151,9 @@
       "max": [
        0.037096,
        -0.106,
-       0.100896
+       0.069696
       ],
-      "tris": 3072
+      "tris": 768
      },
      {
       "name": "belt_guide",
@@ -62288,7 +63919,37 @@
       }
      ]
     },
-    "fire_mode": "pump_action"
+    "fire_mode": "pump_action",
+    "fx": {
+     "kind": "pellets",
+     "impact": "pellet",
+     "pellets": 12,
+     "cone_deg": 3.0,
+     "cone_ads": 0.75,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.0,
+     "length_m": 0.0,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: 12 Kugeln gleichmäßig im Kegel 3,0° (halber Öffnungswinkel; Zielen × 0,75), ein Ring um die Mitte; Destiny-Schrot 12 Kugeln (Community-Wert, nicht gemessen), Pelletmuster offen (Motiongen destiny2 › Methode 16)"
+    }
    },
    "weapon": {
     "id": "BASIC-08-v2.1",
@@ -63611,14 +65272,45 @@
       29
      ],
      "on": "shot",
-     "src": "E: Auswurffenster rechts im Oberen Gehäuse beim Zurückziehen der Pumpe, Hülse nach rechts, etwas hoch und vorn"
+     "src": "E: Auswurffenster rechts im Oberen Gehäuse beim Zurückziehen der Pumpe, Hülse nach rechts, etwas hoch und vorn",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -68877,7 +70569,37 @@
       }
      ]
     },
-    "fire_mode": "charge_burst"
+    "fire_mode": "charge_burst",
+    "fx": {
+     "kind": "bolts",
+     "impact": "energy",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 110.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.05,
+     "length_m": 2.5,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.06,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang (sichtbar fliegend bis 30 m); Destiny: Bolzenzahl, Abstand und Streuung offen, Mündungskern ≈ 10–15 % (destiny2 › z-ballista-cartesian-coordinate, Methode 16)"
+    }
    },
    "weapon": {
     "id": "BASIC-10-v2.1",
@@ -70183,7 +71905,29 @@
      "verts": [],
      "tris": [],
      "on": "",
-     "src": "kein Auswurf"
+     "src": "kein Auswurf",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
@@ -70193,7 +71937,16 @@
      "glow": [
       "ember_core",
       "sight_emitter"
-     ]
+     ],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -74711,7 +76464,37 @@
       }
      ]
     },
-    "fire_mode": "charge_single"
+    "fire_mode": "charge_single",
+    "fx": {
+     "kind": "rail",
+     "impact": "energy",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 0.0,
+     "gravity_mps2": 0.0,
+     "life_s": 0.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.035,
+     "length_m": 0.0,
+     "beam_s": 0.22,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.08,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.0,
+     "trail_life_s": 0.0,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: ein scharfer Strahl je Schuss, 0,22 s sichtbar und schmaler werdend; Destiny Threaded Needle: diffuse Ring-/Aufhellungsphase ohne isolierten Kern (Motiongen muendung › 7)"
+    }
    },
    "weapon": {
     "id": "BASIC-11-v2.1",
@@ -76242,7 +78025,29 @@
      "verts": [],
      "tris": [],
      "on": "",
-     "src": "kein Auswurf"
+     "src": "kein Auswurf",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
@@ -76251,7 +78056,16 @@
      "ring": "",
      "glow": [
       "linear_core"
-     ]
+     ],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -80853,7 +82667,37 @@
       }
      ]
     },
-    "fire_mode": "draw_release"
+    "fire_mode": "draw_release",
+    "fx": {
+     "kind": "arrow",
+     "impact": "arrow",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 70.0,
+     "gravity_mps2": 4.0,
+     "life_s": 3.0,
+     "radius_m": 0.0,
+     "smoke_s": 0.0,
+     "trail": "",
+     "width_m": 0.008,
+     "length_m": 0.7,
+     "beam_s": 0.0,
+     "stick_s": 4.0,
+     "muzzle_glow_m": 0.05,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.35,
+     "trail_life_s": 0.18,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Pfeil 70 m/s mit leichter Fallkurve, steckt 4 s, Leuchtspur; beim Lösen ein Lichtpuls an der Auflage; Destiny Imperial Needle: blauer Entladefächer 2 Bilder ≈ 22 % beim Lösen (destiny2 › z-ballista-imperial-needle), Pfeilfall und Steckdauer offen"
+    }
    },
    "weapon": {
     "id": "BASIC-07-v2.1",
@@ -82069,14 +83913,45 @@
      "verts": [],
      "tris": [],
      "on": "",
-     "src": "kein Auswurf"
+     "src": "kein Auswurf",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "",
      "bolt": "",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -87257,7 +89132,37 @@
       }
      ]
     },
-    "fire_mode": "semi_auto"
+    "fire_mode": "semi_auto",
+    "fx": {
+     "kind": "projectile",
+     "impact": "explosion",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 42.0,
+     "gravity_mps2": 7.0,
+     "life_s": 4.0,
+     "radius_m": 3.0,
+     "smoke_s": 1.4,
+     "trail": "grenade",
+     "width_m": 0.045,
+     "length_m": 0.07,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.3,
+     "trail_life_s": 0.65,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), Explosion Radius 3 m, Rauch aus dem Lauf 1,4 s; Destiny: Geschoss sichtbar 3 Bilder bei 60/s, Einschlag 0,13 s nach dem Blitz (FalloutPlays, destiny2 › 2: Granatwerfer 2 Schuss), Ignition Code sichtbare Spur 6 Bilder – keine reine Flugzeit"
+    }
    },
    "weapon": {
     "id": "BASIC-13-v2.1",
@@ -88077,6 +89982,33 @@
       "ads_hide": false
      },
      {
+      "id": "grenade_cases",
+      "asm": "ammo",
+      "role": "brass",
+      "parent": "drum",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
       "id": "grenades",
       "asm": "ammo",
       "role": "dark_metal",
@@ -88104,9 +90036,9 @@
       "ads_hide": false
      },
      {
-      "id": "grenade_cases",
+      "id": "grenade_bands",
       "asm": "ammo",
-      "role": "brass",
+      "role": "accent",
       "parent": "grenades",
       "rest": [
        0.0,
@@ -88131,10 +90063,199 @@
       "ads_hide": false
      },
      {
-      "id": "grenade_bands",
+      "id": "grenade_k1",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "drum",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_band_k1",
       "asm": "ammo",
       "role": "accent",
-      "parent": "grenades",
+      "parent": "grenade_k1",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_k2",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "drum",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_band_k2",
+      "asm": "ammo",
+      "role": "accent",
+      "parent": "grenade_k2",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_k3",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "drum",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_band_k3",
+      "asm": "ammo",
+      "role": "accent",
+      "parent": "grenade_k3",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_k4",
+      "asm": "ammo",
+      "role": "dark_metal",
+      "parent": "drum",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "grenade_band_k4",
+      "asm": "ammo",
+      "role": "accent",
+      "parent": "grenade_k4",
       "rest": [
        0.0,
        0.0,
@@ -88940,14 +91061,82 @@
       33
      ],
      "on": "reload",
-     "src": "E: aus der Ladekammer durch die offene Ladeklappe, nach links unten (Stützhand-Seite, Waffe beim Nachladen abgesenkt); nur beim Nachladen"
+     "src": "E: aus der Ladekammer durch die offene Ladeklappe, nach links unten (Stützhand-Seite, Waffe beim Nachladen abgesenkt); nur beim Nachladen",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "drum",
+      "drum": "drum",
+      "barrel": 0,
+      "gate": 5,
+      "sets": [
+       {
+        "parts": [
+         "grenades",
+         "grenade_bands"
+        ]
+       },
+       {
+        "parts": [
+         "grenade_k1",
+         "grenade_band_k1"
+        ]
+       },
+       {
+        "parts": [
+         "grenade_k2",
+         "grenade_band_k2"
+        ]
+       },
+       {
+        "parts": [
+         "grenade_k3",
+         "grenade_band_k3"
+        ]
+       },
+       {
+        "parts": [
+         "grenade_k4",
+         "grenade_band_k4"
+        ]
+       },
+       {
+        "parts": [
+         "grenade",
+         "grenade_band"
+        ]
+       }
+      ]
+     },
+     "fill": []
     }
    },
    "poses": [
@@ -93123,14 +95312,14 @@
     "files": [
      {
       "path": "basic/pilot/w13_grenade_launcher_v21.py",
-      "sha256": "a7043376be59911b79b77e757d4372ad58c0c859f19197b66c0b860c7b1a0578"
+      "sha256": "92776fa73bf1723f20ad6ceab0018e5419b8fc9f3561f9458c02f51f84a43e71"
      },
      {
       "path": "basic/weapons/w13_grenade_launcher.py",
       "sha256": "ffd353c516450a979d4d75290246da48f2fbc83bead1576fb8ee91500d0365d2"
      }
     ],
-    "parts_sha256": "b6488f9a9202eff30f3fa61311b2e66009a2e39d357a44683d500155efa10874"
+    "parts_sha256": "0f68812fd08d3fa111f312c6aef14a06d4756d0334c4747fd588b533bdbf6941"
    },
    "textures": {
     "weapon": {
@@ -93147,9 +95336,17 @@
       "gate_button",
       "grenade",
       "grenade_band",
+      "grenade_band_k1",
+      "grenade_band_k2",
+      "grenade_band_k3",
+      "grenade_band_k4",
       "grenade_bands",
       "grenade_case",
       "grenade_cases",
+      "grenade_k1",
+      "grenade_k2",
+      "grenade_k3",
+      "grenade_k4",
       "grenades",
       "grip",
       "grip_cap",
@@ -93648,20 +95845,6 @@
       "tris": 236
      },
      {
-      "name": "grenades",
-      "min": [
-       -0.059666,
-       -0.196,
-       0.000171
-      ],
-      "max": [
-       0.059666,
-       -0.133,
-       0.131829
-      ],
-      "tris": 2840
-     },
-     {
       "name": "grenade_cases",
       "min": [
        -0.060955,
@@ -93676,18 +95859,144 @@
       "tris": 2840
      },
      {
+      "name": "grenades",
+      "min": [
+       -0.019829,
+       -0.196,
+       0.092171
+      ],
+      "max": [
+       0.019829,
+       -0.133,
+       0.131829
+      ],
+      "tris": 568
+     },
+     {
       "name": "grenade_bands",
       "min": [
+       -0.020225,
+       -0.149,
+       0.091775
+      ],
+      "max": [
+       0.020225,
+       -0.141,
+       0.132225
+      ],
+      "tris": 284
+     },
+     {
+      "name": "grenade_k1",
+      "min": [
+       -0.059666,
+       -0.196,
+       0.069171
+      ],
+      "max": [
+       -0.020008,
+       -0.133,
+       0.108829
+      ],
+      "tris": 568
+     },
+     {
+      "name": "grenade_band_k1",
+      "min": [
        -0.060063,
+       -0.149,
+       0.068775
+      ],
+      "max": [
+       -0.019612,
+       -0.141,
+       0.109225
+      ],
+      "tris": 284
+     },
+     {
+      "name": "grenade_k2",
+      "min": [
+       -0.059666,
+       -0.196,
+       0.023171
+      ],
+      "max": [
+       -0.020008,
+       -0.133,
+       0.062829
+      ],
+      "tris": 568
+     },
+     {
+      "name": "grenade_band_k2",
+      "min": [
+       -0.060063,
+       -0.149,
+       0.022775
+      ],
+      "max": [
+       -0.019612,
+       -0.141,
+       0.063225
+      ],
+      "tris": 284
+     },
+     {
+      "name": "grenade_k3",
+      "min": [
+       -0.019829,
+       -0.196,
+       0.000171
+      ],
+      "max": [
+       0.019829,
+       -0.133,
+       0.039829
+      ],
+      "tris": 568
+     },
+     {
+      "name": "grenade_band_k3",
+      "min": [
+       -0.020225,
        -0.149,
        -0.000225
       ],
       "max": [
+       0.020225,
+       -0.141,
+       0.040225
+      ],
+      "tris": 284
+     },
+     {
+      "name": "grenade_k4",
+      "min": [
+       0.020008,
+       -0.196,
+       0.023171
+      ],
+      "max": [
+       0.059666,
+       -0.133,
+       0.062829
+      ],
+      "tris": 568
+     },
+     {
+      "name": "grenade_band_k4",
+      "min": [
+       0.019612,
+       -0.149,
+       0.022775
+      ],
+      "max": [
        0.060063,
        -0.141,
-       0.132225
+       0.063225
       ],
-      "tris": 1420
+      "tris": 284
      },
      {
       "name": "grenade",
@@ -94122,7 +96431,37 @@
       }
      ]
     },
-    "fire_mode": "single_shot"
+    "fire_mode": "single_shot",
+    "fx": {
+     "kind": "projectile",
+     "impact": "explosion",
+     "pellets": 0,
+     "cone_deg": 0.0,
+     "cone_ads": 1.0,
+     "speed_mps": 34.0,
+     "gravity_mps2": 0.0,
+     "life_s": 5.0,
+     "radius_m": 4.5,
+     "smoke_s": 2.0,
+     "trail": "rocket",
+     "width_m": 0.07,
+     "length_m": 0.42,
+     "beam_s": 0.0,
+     "stick_s": 0.0,
+     "muzzle_glow_m": 0.0,
+     "muzzle_glow_s": 0.1,
+     "color": "",
+     "tracer_every": 0,
+     "tracer_mps": 0.0,
+     "tracer_m": 0.0,
+     "tracer_w_m": 0.0,
+     "tracer_color": "",
+     "trail_step_m": 0.18,
+     "trail_life_s": 1.8,
+     "scorch_every": 1,
+     "spark_hz": 0.0,
+     "src": "E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m, Rauchspur, Rauch aus dem Rohr 2 s; Destiny: große Explosion 0,45 s nach dem Blitz (Motiongen destiny2 › z-ballista-blue-shift), keine reine Flugzeit"
+    }
    },
    "weapon": {
     "id": "BASIC-14-v2.1",
@@ -95428,14 +97767,45 @@
      "verts": [],
      "tris": [],
      "on": "",
-     "src": "kein Auswurf"
+     "src": "kein Auswurf",
+     "part": "",
+     "ring_m": 0.0,
+     "ring_n": 0,
+     "speed_k": 1.0,
+     "life_k": 1.0,
+     "links": {
+      "enabled": false,
+      "pos": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "case": "",
+      "verts": [],
+      "tris": [],
+      "src": "kein Gliederauswurf"
+     }
     },
     "live": {
      "trigger": "trigger",
      "bolt": "",
      "port": "",
      "ring": "",
-     "glow": []
+     "glow": [],
+     "index": [],
+     "rounds": {
+      "mode": "",
+      "drum": "",
+      "barrel": 0,
+      "gate": 0,
+      "sets": []
+     },
+     "fill": []
     }
    },
    "poses": [

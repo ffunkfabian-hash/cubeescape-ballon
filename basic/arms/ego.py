@@ -284,7 +284,9 @@ EJECT = dict(
     cases=dict(rifle=dict(len_mm=42, r_mm=4.8, segs=12),
                pistol=dict(len_mm=20, r_mm=4.6, segs=12),      # 0.18: Kurzpatrone der MP (Patronen im Magazinfenster 24 × 4,4 mm) E
                shotshell=dict(len_mm=50, r_mm=9.5, segs=14),   # 0.33: Schrotpatrone (Maße der Patrone shell_round von BASIC-08) E
-               grenade_40=dict(len_mm=35, r_mm=21, segs=16)),  # 0.33 P4: leere 40-mm-Granathülse (BASIC-13, aus dem Modul EJECT_CASES) E
+               grenade_40=dict(len_mm=35, r_mm=21, segs=16),   # 0.33 P4: leere 40-mm-Granathülse (BASIC-13, aus dem Modul EJECT_CASES) E
+               revolver=dict(len_mm=30, r_mm=5.6, segs=12),    # 0.34: Hülse der Handfeuerwaffe (Kammer Ø 12 von BASIC-04 v2.1) E
+               belt_link=dict(len_mm=8, r_mm=5.4, segs=10)),   # 0.34: Gurtglied des MG (aus w15 EJECT_CASES, Gliedring r 5,4) E
     role='brass',
     src='M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); '
         'Geschwindigkeit, Drehung, Lebensdauer E')
@@ -428,6 +430,121 @@ def flash_visible(fire, f):
         if 0 <= f - s < FLASH['dur_s'] * FPS - 1e-6:
             return i
     return None
+
+
+# Schrittteile (0.34 „Payload“, EGO_LIVE index): Teile mit 'cycle shot' (Trommel der Handfeuerwaffe, Gurtvorschub des MG) laufen nach
+# jedem Schuss in INDEX['frames'] Bildern von 0 auf 1 (eine Kammer, eine Gliedteilung) und stehen beim nächsten Schuss wieder auf 0 –
+# die Teilung ist symmetrisch, der Sprung unsichtbar. Bei hoher Kadenz höchstens share des Schussabstands (MG 900/min: 1,6 Bilder).
+INDEX = dict(frames=3.0, share=0.8, src='E: Trommel dreht nach dem Schuss in 0,1 s eine Kammer weiter (Spannabzug; Destiny dreht beim '
+                                         'Schuss, Zeit nicht gemessen); Gurt zieht in derselben Zeit eine Gliedteilung nach')
+
+
+def index_frames(rpm):
+    """Dauer eines Schritts in Bildern bei der Kadenz rpm (INDEX)."""
+    return min(INDEX['frames'], INDEX['share'] * FPS * 60.0 / rpm) if rpm > 0 else INDEX['frames']
+
+
+def index_level(fire, f, dur):
+    """Schrittteil im Bild f einer Feueraktion: 0 vor dem ersten Schuss, nach dem letzten Schuss s ≤ f linear in dur Bildern auf 1."""
+    last = None
+    for s in fire or ():
+        if s <= f:
+            last = s
+    if last is None:
+        return 0.0
+    return min(1.0, max(0.0, (f - last) / dur))
+
+
+# ------------------------------------------------------------------ Wirkung der Waffen (0.34 „Payload“, Nutzerbefunde Testbuild 0.33)
+# Was die Waffe in der Welt anrichtet: Einschläge (Funken, Staub, Loch), Projektile mit eigener Flugbahn, Strahlen, Bolzen, Explosionen.
+# Nur Unity zeichnet die Welt (Blender rendert Waffe und Arme vor neutralem Grund), darum sind diese Werte Spielwerte wie gameplay; die
+# Form der Effekte (Shader Ballon/Fx, Pools) steht in unity/Assets/Ballon/Runtime/WeaponFx.cs. Motiongen hat für Projektile, Strahlen
+# und Schrot keine Flugzeit, keine Geschwindigkeit und kein Pelletmuster gemessen (destiny2 › Methode 16: „keine m/s und keine
+# Reichweite“, Pelletmuster offen) – alle Zahlen hier sind E, Zeilen in der Entscheidungsliste (Schritt 9). Gemessen sind nur die
+# Begleitwerte unten (src).
+DECAL = dict(size_m=0.05, max=96, life_s=30.0, fade_s=2.5, variants=4, scorch_m=1.4, scorch_max=8,
+             src='E: Loch 5 cm (seit Patch einschuss), dunkler Kern, heller aufgeworfener Rand, Rußhof; vier Formen (gedreht, Rand '
+                 'unregelmäßig), nach 30 s in 2,5 s ausgeblendet, höchstens 96 (der älteste wird wiederverwendet); Explosion: Brandfleck 1,4 m')
+# Einschläge: Funken (gestreckt, kurz), Staub (grau, weich), Lichtpunkt; je Stil
+IMPACTS = dict(
+    bullet=dict(sparks=9, spark_mps=6.0, spark_s=0.22, dust=3, dust_m=0.22, dust_s=0.7, glow_m=0.28, glow_s=0.07, decal='hole',
+                src='E: kurze Funken und eine kleine Staubwolke (Destiny Chroma Rush: Einschlagrauch durch Folgeschüsse überlagert, Ende offen; '
+                    'Motiongen destiny2 › z-ballista-chroma-rush)'),
+    heavy=dict(sparks=14, spark_mps=8.0, spark_s=0.28, dust=5, dust_m=0.38, dust_s=0.9, glow_m=0.42, glow_s=0.09, decal='hole',
+               src='E: Handfeuerwaffe und Scharfschütze größer (mehr Funken, größere Wolke)'),
+    pellet=dict(sparks=3, spark_mps=5.0, spark_s=0.16, dust=1, dust_m=0.16, dust_s=0.5, glow_m=0.16, glow_s=0.06, decal='hole',
+                src='E: je Schrotkugel wenig, die Menge macht das Bild'),
+    energy=dict(sparks=8, spark_mps=4.5, spark_s=0.30, dust=1, dust_m=0.16, dust_s=0.5, glow_m=0.45, glow_s=0.12, decal='scorch',
+                src='E: Energie: Funken in der Leuchtfarbe der Waffe, heller Lichtfleck, Brandfleck statt Loch (Prometheus Lens: Kontaktrest länger '
+                    'als der Strahl, Ende offen; Motiongen destiny2 › z-ballista-prometheus-lens)'),
+    arrow=dict(sparks=4, spark_mps=3.5, spark_s=0.25, dust=2, dust_m=0.16, dust_s=0.6, glow_m=0.20, glow_s=0.08, decal='scorch',
+               src='E: Pfeil: kleiner Lichtpunkt in der Leuchtfarbe, wenig Staub; der Pfeil steckt stick_s'),
+)
+# Explosion (Granatwerfer, Raketenwerfer): Blitz, Druckring, Funken, Rauch, kurzes Licht; Größen mit radius_m der Klasse skaliert
+EXPLOSION = dict(flash_s=0.12, flash_k=1.3, fire=10, fire_s=0.45, fire_k=0.75, ring_s=0.35, ring_k=0.9, sparks=40, spark_mps=14.0,
+                 spark_s=0.7, smoke=16, smoke_s=2.6, smoke_k=0.7, light_s=0.18, light_k=4.0,
+                 colors=dict(core='#FFF2D6', fire='#FF7A2A', smoke='#3E4146', ring='#FFE2B8'),
+                 src='M Destiny: Ignition Code Explosion 9 Bilder bei 60/s (0,15 s), Blitz 3 Bilder (Motiongen destiny2 › '
+                     'z-ballista-ignition-code), Rauch und Ende nicht isolierbar; Feuerkugeln, Ring, Funken, Rauch, Farben E')
+# Rauchschwaden aus der Mündung der Werfer nach dem Schuss (Viewmodel-Ebene, steigt und wird breiter)
+MUZZLE_SMOKE = dict(rate_hz=9.0, puff_m=0.05, grow=3.0, rise_mps=0.10, life_s=1.3, color='#C9CCD1', alpha=0.35,
+                    src='E: nach dem Schuss weiße Schwaden aus dem Rohr (Nutzerbefund 0.33; CoD MW .357: heller Rauchpuff vor dem Lauf, '
+                        'Motiongen muendung › z-mf-cod-357)')
+# Je Klasse (META type): Art der Wirkung und ihre Werte. kind: hitscan (Strahl ohne Flugzeit wie bisher), pellets (Streuschuss),
+# projectile (Geschoss mit Flugbahn, Explosion), arrow (Pfeil mit Flugbahn), beam (Dauerstrahl), bolts (Bolzen je Schuss), rail
+# (ein scharfer Strahl je Schuss), none. color '' = Leuchtfarbe der Waffe (erste Rolle von EGO_LIVE glow).
+PAYLOAD_DEFAULTS = dict(kind='hitscan', impact='bullet', pellets=0, cone_deg=0.0, cone_ads=1.0, speed_mps=0.0, gravity_mps2=0.0,
+                        life_s=0.0, radius_m=0.0, smoke_s=0.0, trail='', width_m=0.0, length_m=0.0, beam_s=0.0, stick_s=0.0,
+                        muzzle_glow_m=0.0, muzzle_glow_s=0.10, color='', tracer_every=0, tracer_mps=0.0, tracer_m=0.0, tracer_w_m=0.0,
+                        tracer_color='', trail_step_m=0.0, trail_life_s=0.0, scorch_every=1, spark_hz=0.0)
+# Spur hinter Projektilen (trail_step_m Abstand der Ballen, trail_life_s ihre Dauer); Dauerstrahl: beam_s = Strahl hält nach dem letzten
+# Takt, scorch_every = Brandfleck je n. Takt, spark_hz = Funken je Sekunde am Kontakt; muzzle_glow_s = Dauer des Mündungslichts
+# Leuchtspur (hitscan): jeder tracer_every-te Schuss zeigt einen Strich (tracer_m lang, tracer_mps schnell) von der Mündung zum Einschlag
+TRACER_MG = dict(tracer_every=3, tracer_mps=320.0, tracer_m=2.4, tracer_w_m=0.018, tracer_color='#FFC27A')
+PAYLOAD = {
+    'auto_rifle': dict(src='E: Einschlag Kugel'),
+    'submachine_gun': dict(src='E: Einschlag Kugel'),
+    'scout_rifle': dict(src='E: Einschlag Kugel'),
+    'pulse_rifle': dict(src='E: Einschlag Kugel'),
+    'sidearm': dict(src='E: Einschlag Kugel'),
+    'machine_gun': dict(TRACER_MG, src='E: Einschlag Kugel; Leuchtspur jeder 3. Schuss, 320 m/s, 2,4 m, warmweiß (BF6 B36A4: roter Strich '
+                                         'zur Bildmitte ist Leuchtspur, Motiongen muendung › z-mf-bf6-b36a4; Häufigkeit und Farbe E)'),
+    'hand_cannon': dict(impact='heavy', src='E: Einschlag schwer'),
+    'sniper_rifle': dict(impact='heavy', src='E: Einschlag schwer'),
+    'shotgun': dict(kind='pellets', impact='pellet', pellets=12, cone_deg=3.0, cone_ads=0.75,
+                    src='E: 12 Kugeln gleichmäßig im Kegel 3,0° (halber Öffnungswinkel; Zielen × 0,75), ein Ring um die Mitte; Destiny-Schrot '
+                        '12 Kugeln (Community-Wert, nicht gemessen), Pelletmuster offen (Motiongen destiny2 › Methode 16)'),
+    'grenade_launcher': dict(kind='projectile', impact='explosion', speed_mps=42.0, gravity_mps2=7.0, life_s=4.0, radius_m=3.0, smoke_s=1.4,
+                             trail='grenade', width_m=0.045, length_m=0.07, trail_step_m=0.30, trail_life_s=0.65,
+                             src='E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), Explosion Radius 3 m, Rauch aus dem Lauf 1,4 s; '
+                                 'Destiny: Geschoss sichtbar 3 Bilder bei 60/s, Einschlag 0,13 s nach dem Blitz (FalloutPlays, destiny2 › 2: '
+                                 'Granatwerfer 2 Schuss), Ignition Code sichtbare Spur 6 Bilder – keine reine Flugzeit'),
+    'rocket_launcher': dict(kind='projectile', impact='explosion', speed_mps=34.0, gravity_mps2=0.0, life_s=5.0, radius_m=4.5, smoke_s=2.0,
+                            trail='rocket', width_m=0.07, length_m=0.42, trail_step_m=0.18, trail_life_s=1.8,
+                            src='E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m, Rauchspur, Rauch aus dem Rohr 2 s; '
+                                'Destiny: große Explosion 0,45 s nach dem Blitz (Motiongen destiny2 › z-ballista-blue-shift), keine reine Flugzeit'),
+    'trace_rifle': dict(kind='beam', impact='energy', width_m=0.045, muzzle_glow_m=0.05, beam_s=0.15, scorch_every=3, spark_hz=40.0,
+                        src='E: durchgehender Strahl 4,5 cm vom Lauf zum Einschlag, solange der Abzug zieht, flackernd; Destiny Prometheus Lens: '
+                            'Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %, Strahl und Kontakt beginnen gemeinsam (destiny2 › z-ballista-prometheus-lens)'),
+    'fusion_rifle': dict(kind='bolts', impact='energy', speed_mps=110.0, width_m=0.05, length_m=2.5, muzzle_glow_m=0.06,
+                         src='E: je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang (sichtbar fliegend bis 30 m); Destiny: Bolzenzahl, Abstand '
+                             'und Streuung offen, Mündungskern ≈ 10–15 % (destiny2 › z-ballista-cartesian-coordinate, Methode 16)'),
+    'linear_fusion_rifle': dict(kind='rail', impact='energy', width_m=0.035, beam_s=0.22, muzzle_glow_m=0.08,
+                                src='E: ein scharfer Strahl je Schuss, 0,22 s sichtbar und schmaler werdend; Destiny Threaded Needle: diffuse '
+                                    'Ring-/Aufhellungsphase ohne isolierten Kern (Motiongen muendung › 7)'),
+    'combat_bow': dict(kind='arrow', impact='arrow', speed_mps=70.0, gravity_mps2=4.0, life_s=3.0, stick_s=4.0, width_m=0.008, length_m=0.70,
+                       muzzle_glow_m=0.05, trail_step_m=0.35, trail_life_s=0.18,
+                       src='E: Pfeil 70 m/s mit leichter Fallkurve, steckt 4 s, Leuchtspur; beim Lösen ein Lichtpuls an der Auflage; Destiny '
+                           'Imperial Needle: blauer Entladefächer 2 Bilder ≈ 22 % beim Lösen (destiny2 › z-ballista-imperial-needle), Pfeilfall '
+                           'und Steckdauer offen'),
+    'portal_cannon': dict(kind='none', impact='', src='Werkzeug: eigene Treffermarke in Portalfarbe (0.22), keine Wirkung'),
+}
+
+
+def payload(weapon_type):
+    """Wirkung der Klasse (PAYLOAD mit PAYLOAD_DEFAULTS); unbekannte Klassen ohne Wirkung."""
+    P = PAYLOAD.get(weapon_type, dict(kind='none', impact='', src='keine Wirkung (Klasse ohne Eintrag in PAYLOAD)'))
+    return dict(PAYLOAD_DEFAULTS, **P)
 
 
 def _retime(A, k):
@@ -587,10 +704,10 @@ CLASSES = {
             sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
                         src='M Destiny-Handfeuerwaffe Sprint: Waffe senkrecht, Lauf am oberen Rand, Körper 62–70 % B, hoch rechts (Motiongen '
                             'destiny2:562/467); Lage E, gerechnet Mündung 68,4/10,8 %, Körper 66–72 % B'),
-            reload=dict(pos=(-0.07, -0.37, -0.15), aim=(0.6, -1.2, 1.0), roll=10,
-                        src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben '
-                            '(gerechnet 47,3/27,6 %), linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der '
-                            'erste Entwurf (Stützhand verdeckte das halbe Bild)'),
+            reload=dict(pos=(-0.07, -0.37, -0.10), aim=(0.6, -1.2, 1.05), roll=10,
+                        src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, '
+                            'linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand '
+                            'verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen'),
         ),
         frames=dict(aim_in=3, aim_out=2.4, draw=18),
         frames_src='M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) '

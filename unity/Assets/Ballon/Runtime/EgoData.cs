@@ -30,6 +30,7 @@ namespace Ballon.Ego
         public float charge_s, charge_fade_s;           // 10 (0.33 P3): Aufladen bis zum Schuss und Abklingen der Ladung (Ladewaffe); 0 = ohne
         public float flash_scale;                       // 10 (0.33 P4): Maßstab des Mündungsfeuers je Klasse (Werfer); 0 (älterer Export) = 1
         public EgoHipForm sight_form;                   // 10 (0.33): Absehen im Visierglas; leer (älterer Export) = Hüftform
+        public EgoFx fx;                                // 10 (0.34): Wirkung der Klasse (ego.PAYLOAD); leer (älterer Export) = Kugel mit Einschlag
         EgoHip _sightHip;
         /// <summary>Form des gezeichneten Absehens im Visier (0.33 getrennt vom HUD-Hüftzeichen der Sonderklassen): hip mit sight_form.</summary>
         public EgoHip SightHip
@@ -85,6 +86,22 @@ namespace Ballon.Ego
 
     [Serializable] public class EgoZoom { public string type; public float zoom; }
 
+    /// <summary>Wirkung einer Klasse (10, 0.34 „Payload“, ego.PAYLOAD): kind hitscan, pellets (Streuschuss), projectile (Geschoss mit
+    /// Flugbahn und Explosion), arrow (Pfeil), beam (Dauerstrahl), bolts (Bolzen je Schuss), rail (scharfer Strahl je Schuss), none;
+    /// impact = Name eines Stils in motion.payload.impacts bzw. explosion; color leer = Leuchtfarbe der Waffe (weapon.live.glow).</summary>
+    [Serializable]
+    public class EgoFx
+    {
+        public string kind, impact, trail, color, tracer_color, src;
+        public int pellets, tracer_every;                // tracer_every: jeder n-te Schuss mit Leuchtspur (0 = keine)
+        public float tracer_mps, tracer_m, tracer_w_m;
+        public float muzzle_glow_s, trail_step_m, trail_life_s, spark_hz;   // Mündungslicht, Spur der Projektile, Funken am Dauerstrahl
+        public int scorch_every;                         // Dauerstrahl: Brandfleck je n. Takt
+        public float cone_deg, cone_ads, speed_mps, gravity_mps2, life_s, radius_m, smoke_s, width_m, length_m, beam_s, stick_s, muzzle_glow_m;
+        public bool Projectile => kind == "projectile" || kind == "arrow";
+        public bool Explodes => impact == "explosion";
+    }
+
     /// <summary>Portal des Werkzeugs (10, 0.22, ego.CLASSES['portal_cannon']): Eingabe fire (Linksklick) oder aim (Rechtsklick), Leuchtrolle,
     /// Farbe (#RRGGBB) und Richtung der Ringdrehung (+1 im Uhrzeigersinn von hinten).</summary>
     [Serializable] public class EgoPortal { public string name, input, role, color; public int ring; }
@@ -120,10 +137,26 @@ namespace Ballon.Ego
     /// Blender-Waffenrahmen) und Hülsennetz (flach: Punkte in m, Dreiecke). enabled false: Waffe ohne Hülsen.</summary>
     [Serializable]
     public class WeaponEject { public bool enabled; public string @case, src; public float[] pos, dir, verts; public int[] tris;
-                               public string on; }    // 0.33 P4: 'reload' = Hülse nur beim Marker Eject (Trommel), sonst je Schuss
+                               public string on;      // 0.33 P4: 'reload' = Hülse nur beim Marker Eject (Trommel), sonst je Schuss
+                               public string part;    // 0.34: Start im Rahmen dieses Teils (Trommel ausgeschwenkt), leer = Waffe
+                               public float ring_m;   // 0.34: Kammerkreis um die Längsachse (Blender Y), je Hülse eine Kammer
+                               public int ring_n;     // 0.34: Kammern; beim Nachladen fallen so viele Hülsen, wie verschossen sind
+                               public float speed_k;  // 0.34: Anteil von motion.eject.speed_mps (fallen statt fliegen); 0 = 1
+                               public float life_k;   // 0.34: Anteil von motion.eject.life_s für Hülsen beim Nachladen; 0 = 1
+                               public WeaponEjectLinks links; }   // 0.34: Gurtglied je Schuss (MG)
+
+    /// <summary>Gurtglied je Schuss (10, 0.34, Modul-Feld EJECT links): eigene Startlage, Richtung und Form, sonst wie die Hülse.</summary>
+    [Serializable]
+    public class WeaponEjectLinks { public bool enabled; public string @case, src; public float[] pos, dir, verts; public int[] tris; }
+
+    /// <summary>Füllstand (10, 0.34, EGO_LIVE rounds): mode line = Satz i sichtbar, solange mehr als i Patronen da sind (Gurt); drum = je
+    /// Kammer der Trommel (drum: Teil, das nach dem Schuss zurückspringt; barrel: Laufkammer, gate: Ladekammer; Kammer k rückt nach k + 1).</summary>
+    [Serializable] public class EgoRounds { public string mode, drum; public int barrel, gate; public EgoRoundSet[] sets; }
+    [Serializable] public class EgoRoundSet { public string[] parts; }
 
     /// <summary>Live-Teile im laufenden Feuer (8, 0.18; ego.LIVE bzw. Modul-Feld EGO_LIVE): Abzug, Verschluss, Auswurfklappe.</summary>
-    [Serializable] public class WeaponLive { public string trigger, bolt, port, ring; public string[] glow; }    // 10: ring (Werkzeug); leer = Teil fehlt; glow (0.33): Leuchtteile beim Feuern
+    [Serializable] public class WeaponLive { public string trigger, bolt, port, ring; public string[] glow;     // 10: ring (Werkzeug); leer = Teil fehlt; glow (0.33): Leuchtteile beim Feuern
+                                             public string[] index, fill; public EgoRounds rounds; }   // 0.34: Schrittteile je Schuss, Zählzellen, Füllstand
 
     [Serializable]
     // type_de (0.33 Ziel 2): Klasse auf Deutsch für HUD und Menü
@@ -241,11 +274,24 @@ namespace Ballon.Ego
     /// der Kamera liegt. /8 und /7: 0 (nie aus; keine Waffe hatte solche Teile).</summary>
     [Serializable] public class AdsHide { public float eye_m; public string src; }
 
+    /// <summary>Schrittteile (ego.INDEX, 0.34): nach jedem Schuss in frames Bildern (höchstens share des Schussabstands) von 0 auf 1.</summary>
+    [Serializable] public class EgoIndex { public float frames, share; public string src; }
+
+    /// <summary>Gemeinsame Werte der Wirkung (0.34, ego.DECAL, IMPACTS, EXPLOSION, MUZZLE_SMOKE).</summary>
+    [Serializable] public class EgoPayload { public EgoDecal decal; public EgoImpact[] impacts; public EgoExplosion explosion; public EgoSmoke muzzle_smoke; }
+    [Serializable] public class EgoDecal { public float size_m, life_s, fade_s, scorch_m; public int max, variants, scorch_max; public string src; }
+    [Serializable] public class EgoImpact { public string name, decal, src; public int sparks, dust; public float spark_mps, spark_s, dust_m, dust_s, glow_m, glow_s; }
+    [Serializable]
+    public class EgoExplosion { public float flash_s, flash_k, ring_s, ring_k, spark_mps, spark_s, smoke_s, smoke_k, light_s, light_k;
+                                public int sparks, smoke, fire; public float fire_s, fire_k;   // fire: Feuerkugeln (Anzahl, Dauer, Größe zum Radius)
+                                public string core_color, fire_color, smoke_color, ring_color, src; }
+    [Serializable] public class EgoSmoke { public float rate_hz, puff_m, grow, rise_mps, life_s, alpha; public string color, src; }
+
     /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, FLASH, EJECT, ADS_HIDE, TIME_SCALE).</summary>
     [Serializable]
     public class Motion { public string interp, de; public float time_scale; public string[] keep_time; public Spring secondary;
                           public BreatheAll breathe_all; public Recoil recoil; public Switch @switch; public Flash flash; public Eject eject;
-                          public AdsHide ads_hide; }
+                          public AdsHide ads_hide; public EgoIndex index; public EgoPayload payload; }
 
     [Serializable] public class Atlas { public int size; public string[] objects; public string albedo, spec, normal, ao; }
     [Serializable] public class Lut { public string file, view, look, de; public int size; public float[] ev; public float mid_grey; }
@@ -453,7 +499,45 @@ namespace Ballon.Ego
                                                        extent_mm = gameplay.hip.extent_mm, prims = gameplay.hip.prims };
             if (weapon.eject != null && weapon.eject.enabled && string.IsNullOrEmpty(weapon.eject.on))
                 weapon.eject.on = "shot";                                  // vor 0.33 P4: Hülse je Schuss
+            Payload034();
         }
+
+        /// <summary>Felder ab 0.34 „Payload“, die ein älterer Export nicht kennt (ohne neues Format: fehlt = wie bisher).</summary>
+        void Payload034()
+        {
+            if (gameplay.fx == null || string.IsNullOrEmpty(gameplay.fx.kind))      // vorher: Strahl ohne Flugzeit, Einschlag als Loch
+                gameplay.fx = new EgoFx { kind = gameplay.HasPortals ? "none" : "hitscan", impact = gameplay.HasPortals ? "" : "bullet", cone_ads = 1,
+                                          trail = "", color = "", tracer_color = "", src = "vor 0.34" };
+            if (weapon.eject != null && weapon.eject.speed_k <= 0) weapon.eject.speed_k = 1;
+            if (weapon.eject != null && weapon.eject.life_k <= 0) weapon.eject.life_k = 1;
+            if (weapon.eject != null && weapon.eject.links == null) weapon.eject.links = new WeaponEjectLinks();
+            if (weapon.eject?.links != null && weapon.eject.links.enabled && (weapon.eject.links.verts == null || weapon.eject.links.verts.Length == 0))
+                weapon.eject.links.enabled = false;
+            var L = weapon.live;
+            if (L.index == null) L.index = new string[0];
+            if (L.fill == null) L.fill = new string[0];
+            if (L.rounds == null) L.rounds = new EgoRounds { mode = "", drum = "" };
+            if (L.rounds.sets == null) L.rounds.sets = new EgoRoundSet[0];
+            if (motion.index == null || motion.index.frames <= 0) motion.index = new EgoIndex { frames = 3, share = 0.8f, src = "vor 0.34" };
+            var P = motion.payload ??= new EgoPayload();
+            // JsonUtility legt fehlende Klassenfelder als leere Objekte an, nicht als null: nach Werten prüfen (Richter 0.34)
+            if (P.decal == null || P.decal.max <= 0) P.decal = new EgoDecal { size_m = 0.05f, max = 80, life_s = 1e9f, fade_s = 1, variants = 1, scorch_m = 1.4f, scorch_max = 8, src = "vor 0.34" };
+            P.impacts ??= new EgoImpact[0];
+            if (P.explosion == null || P.explosion.sparks <= 0) P.explosion = new EgoExplosion { flash_s = 0.12f, flash_k = 1.3f, fire = 10, fire_s = 0.45f, fire_k = 0.75f, ring_s = 0.35f, ring_k = 0.9f, sparks = 40, spark_mps = 14, spark_s = 0.7f,
+                                               smoke = 14, smoke_s = 2.6f, smoke_k = 0.55f, light_s = 0.18f, light_k = 4, core_color = "#FFF2D6",
+                                               fire_color = "#FF8A3C", smoke_color = "#5A5D63", ring_color = "#FFE2B8" };
+            if (P.muzzle_smoke == null || P.muzzle_smoke.rate_hz <= 0) P.muzzle_smoke = new EgoSmoke { rate_hz = 9, puff_m = 0.05f, grow = 3, rise_mps = 0.1f, life_s = 1.3f, alpha = 0.35f, color = "#C9CCD1" };
+        }
+
+        /// <summary>Einschlagstil nach Namen (motion.payload.impacts), null ohne.</summary>
+        public EgoImpact Impact(string name)
+        {
+            if (motion.payload?.impacts != null) foreach (var i in motion.payload.impacts) if (i.name == name) return i;
+            return null;
+        }
+
+        /// <summary>Dauer eines Schritts der Schrittteile in Bildern bei der Kadenz der Waffe (ego.index_frames).</summary>
+        public float IndexFrames => gameplay.rpm > 0 ? Mathf.Min(motion.index.frames, motion.index.share * fps * 60f / gameplay.rpm) : motion.index.frames;
 
         public EgoPose Pose(string n) => _poses.TryGetValue(n, out var p) ? p : throw new KeyError("Haltung", n);
         public EgoGrip Grip(string n) => _grips.TryGetValue(n, out var p) ? p : throw new KeyError("Griff", n);

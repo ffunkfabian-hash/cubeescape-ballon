@@ -240,6 +240,40 @@ Destiny-Schalen ΔL* 64–78 [M].
 - **B:** Gar nicht, nur Kantenabrieb.
 - Antwort (Nutzer, 25.10.2026): „8.2: A“ → **A**
 
+## Block 9 – Wirkung der Waffen (BALLON 0.34 „Payload“, Entwurf E)
+
+Nutzerbefunde aus dem Testbuild 0.33 (31.10.2026): Projektile, Explosionen, Strahlen, Einschläge, Hülsen und Füllstände fehlten.
+Motiongen hat für Projektile, Strahlen und Schrot **keine** Flugzeit, keine Geschwindigkeit, keine Bolzenzahl und kein Pelletmuster
+gemessen ([destiny2 › Methode 16][destiny2]: „keine m/s und keine Reichweite“). Darum steht jeder Wert unten als **E** in
+`basic/arms/ego.py` (PAYLOAD je Klasse → `ego.json › weapons[].gameplay.fx`; IMPACTS, DECAL, EXPLOSION, MUZZLE_SMOKE, INDEX →
+`motion.payload`, `motion.index`). Die Messungen von REF 0.36 „Impact“ ersetzen sie danach als Patch: nur `ego.py` ändern und den
+Datenexport laufen lassen (`BALLON_EXPORT_DATA_ONLY=1`, ohne Backen).
+
+| # | Thema | Gemessen (Quelle, Status) | BASIC 0.34 (E) | Offen für REF 0.36 |
+|---|---|---|---|---|
+| 9a | Granate | Geschoss 3 Bilder bei 60/s sichtbar, Einschlag 0,13 s nach dem Blitz; Ignition Code Spur 6 Bilder (keine reine Flugzeit) [O] | 42 m/s, Fall 7 m/s², Explosion Radius 3 m, Lebensdauer 4 s | m/s, Fallkurve, Zünder/Abprall |
+| 9b | Rakete | große Explosion 0,45 s nach dem Blitz (Blue Shift) [O] | 34 m/s gerade, Radius 4,5 m, Rauchspur | m/s, Spurlänge, Rauchdauer |
+| 9c | Explosion | Ignition Code 9 Bilder bei 60/s, Blitz 3 Bilder [M] | Blitz 0,12 s, 10 Feuerkugeln 0,45 s, Druckring 0,35 s (× 0,9 Radius), 40 Funken, 16 Rauchballen 2,6 s, Licht 0,18 s, Brandfleck 1,4 m | Ring, Rauch, Ende |
+| 9d | Rauch aus dem Lauf | nicht gemessen (CoD .357 Rauchpuff [O]) | Werfer: 9 Ballen/s, 1,4 s (Granate) bzw. 2,0 s (Rakete), steigen 0,1 m/s | Dauer, Menge |
+| 9e | Dauerstrahl (Spurgewehr) | Prometheus Lens: Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %, Strahl und Kontakt gemeinsam [M] | 4,5 cm breit, flackernd, Licht und Funken am Kontakt, Mündungslicht | Breite in m, Farbe |
+| 9f | Fusion | Bolzenzahl, Abstand, Streuung offen (Cartesian Coordinate) [O] | je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang | Bolzenzahl, m/s |
+| 9g | lineare Fusion | Threaded Needle: diffuse Phase ohne Kern [O] | ein Strahl 3,5 cm, 0,22 s, wird schmaler | Dauer, Breite |
+| 9h | Bogen | Imperial Needle: Entladefächer 2 Bilder ≈ 22 % beim Lösen [M]; Pfeilfall, Steckdauer offen | Pfeil 70 m/s, Fall 4 m/s², steckt 4 s, Lichtpuls beim Lösen | Fall, Steckdauer |
+| 9i | Schrot | Pelletmuster offen [O] | 12 Kugeln (Mitte + Ring 0,5 · + Ring 1,0 ·), Kegel 3,0° halb, Zielen × 0,75 | Anzahl, Kegel |
+| 9j | Einschlag Kugel | Einschlagrauch überlagert, Ende offen (Chroma Rush) [O] | Stile bullet/heavy/pellet/energy/arrow: Funken, Staub, Licht, Loch bzw. Brandfleck | Größe, Dauer je Klasse |
+| 9k | Einschussloch | – | 5 cm, Kern, aufgeworfener Rand, Ruß, 4 Formen, 30 s dann 2,5 s ausblenden, Pool 96 | Lebensdauer |
+| 9l | Leuchtspur | BF6 B36A4: Leuchtspur zur Bildmitte [O]; Destiny nicht gemessen | nur MG: jeder 3. Schuss, 320 m/s, 2,4 m, warmweiß | Häufigkeit, Farbe je Klasse |
+| 9m | Revolver-Hülsen | Revolver werfen beim Nachladen aus (Wingman, .357, Annual Skate) [O] | Handfeuerwaffe: beim Marker Eject je verschossene Kammer eine Hülse aus der ausgeschwenkten Trommel; Trommel dreht nach jedem Schuss eine Kammer (0,1 s) | Drehzeitpunkt (Schuss oder Spannen) |
+| 9n | Füllstand | – | Granatwerfer: Kopf je Kammer an/aus (Hülse bleibt); MG: Gurt leert sich von unten (4 Patronen), Zählfenster 5 Zellen, Gurtglied je Schuss, Gurtvorschub je Schuss | – |
+
+Granatwerfer nach **teilweisem** Nachladen (9n): Das Laden dreht die Trommel in Schussrichtung weiter, die geladenen Kammern liegen dann
+nicht in Schussfolge (physikalisch stimmig nur beim vollen Nachladen). Unity ordnet die Kammern beim ersten Weiterdrehen nach dem Schuss
+(`fire_cycle`) in Schussfolge – der Wechsel fällt in die Drehung, danach leert jeder Schuss sichtbar die Laufkammer (Test). Ein Ablauf mit
+Gegendrehung bleibt ein Animationsthema für 0.35 „Stance“.
+Revolver-Hülsen (9m): die Nachladehaltung der Handfeuerwaffe liegt 5 cm höher (E), damit Trommelende und Hülsen im Bild liegen.
+Weitere Daten (Richter 0.34): Spur der Projektile `trail_step_m`/`trail_life_s` (Rakete 0,18 m / 1,8 s, Granate 0,30 m / 0,65 s, Pfeil
+0,35 m / 0,18 s), Dauerstrahl `beam_s` 0,15 s, Brandfleck je 3. Takt, Funken 40/s, Mündungslicht 0,10 s – alle E.
+
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)
 
 Motiongen hat acht Widersprüche zwischen Bestand und Glidepath gelistet, aber nicht entschieden ([destiny2] › Glidepath). Entscheiden

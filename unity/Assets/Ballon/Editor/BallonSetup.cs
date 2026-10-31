@@ -297,6 +297,29 @@ namespace Ballon.Ego.Editor
             return m;
         }
 
+        /// <summary>Material für die Wirkung der Waffen (0.34, Shader Ballon/Fx): Form (_Mode), additiv oder Alpha, Rauschen, Tiefenversatz.</summary>
+        static Material FxMat(string name, int mode, bool additive, Color c, float noise, float offset)
+        {
+            var path = $"{Gen}/Materials/{name}.mat";
+            var sh = Shader.Find("Ballon/Fx");
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m == null)
+            {
+                m = new Material(sh) { name = name };
+                AssetDatabase.CreateAsset(m, path);
+            }
+            m.shader = sh;
+            m.SetColor("_BaseColor", c);
+            m.SetFloat("_Mode", mode);
+            m.SetFloat("_Noise", noise);
+            m.SetFloat("_SrcBlend", additive ? (float)UnityEngine.Rendering.BlendMode.One : (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            m.SetFloat("_DstBlend", additive ? (float)UnityEngine.Rendering.BlendMode.One : (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            m.SetFloat("_OffsetUnits", offset);
+            m.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent + (mode == 2 ? -10 : 0);
+            EditorUtility.SetDirty(m);
+            return m;
+        }
+
         static void Transparent(Material m, float alpha)
         {
             var c = m.GetColor("_BaseColor");
@@ -410,7 +433,12 @@ namespace Ballon.Ego.Editor
             Emission(fl, Hex("#FF8A3C") * 1.5f);
             res["flash"] = fl;
             res["post"] = Lit("Range_Post", Hex("#3A3D42"), 0.3f, 0.2f);
-            res["decal"] = Lit("Range_Decal", Hex("#1E1F22"), 0.05f, 0);
+            res["decal"] = FxMat("Fx_Decal", 2, false, Color.white, 0, -2);      // 0.34: Einschussloch mit Rand und Ruß (Shader Ballon/Fx)
+            res["fx_spark"] = FxMat("Fx_Spark", 4, true, Color.white, 0, 0);
+            res["fx_glow"] = FxMat("Fx_Glow", 0, true, Color.white, 0, 0);
+            res["fx_smoke"] = FxMat("Fx_Smoke", 0, false, Color.white, 1, 0);
+            res["fx_ring"] = FxMat("Fx_Ring", 1, true, Hex("#FFE2B8"), 0, -1);
+            res["fx_beam"] = FxMat("Fx_Beam", 3, true, Color.white, 0, 0);
             AssetDatabase.SaveAssets();
             return res;
         }
@@ -500,6 +528,11 @@ namespace Ballon.Ego.Editor
             b.flash = mats["flash"];
             b.post = mats["post"];
             b.decal = mats["decal"];
+            b.fxSpark = mats["fx_spark"];
+            b.fxGlow = mats["fx_glow"];
+            b.fxSmoke = mats["fx_smoke"];
+            b.fxRing = mats["fx_ring"];
+            b.fxBeam = mats["fx_beam"];
             var scenes = SceneAssets();
             b.sceneJson = scenes.Select(x => x.json).ToArray();
             b.scenePrefabs = scenes.Select(x => x.prefab).ToArray();

@@ -122,8 +122,8 @@ namespace Ballon.Ego
         Vector3 _vel;
         bool _grounded = true, _wasGrounded = true;
         System.Random _rng = new System.Random(7);
-        readonly Queue<GameObject> _decals = new Queue<GameObject>();
-        public Material decalMat;
+        /// <summary>Wirkung der Waffen in der Welt (0.34 „Payload“): Einschläge, Projektile, Strahlen, Explosionen; Bootstrap legt sie an.</summary>
+        public WeaponFx fx;
         public Material[] skins { get => Current.skins; set => Current.skins = value; }          // Skins der aktiven Waffe
         public string[] skinNames { get => Current.skinNames; set => Current.skinNames = value; }
         public int skin => Current.skin;
@@ -337,6 +337,7 @@ namespace Ballon.Ego
             viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(ViewmodelHFovDeg, aspect);
             float wv = Camera.HorizontalToVerticalFieldOfView(worldHFovDeg, aspect);
             worldCam.fieldOfView = 2 * Mathf.Atan(Mathf.Tan(wv * Mathf.Deg2Rad / 2) / Zoom) * Mathf.Rad2Deg;
+            fx?.Tick(dt, arsenal.Active, BeamOn, HitMask);       // 0.34: nach Kamera und Modell (Strahl und Rauch an der Mündung dieses Bilds)
             course?.Tick(transform.position + Vector3.up * CourseRun.BodyCenter, dt);
         }
 
@@ -401,60 +402,120 @@ namespace Ballon.Ego
         void OnShot()
         {
             var G = C.S.D.gameplay;
+            var F = G.fx;
             var Rc = C.S.D.motion.recoil;                // Streuung um den Zielpunkt, getrennt von der Grundbahn (5.2 A)
             // Werkzeug (0.22): Portale gehen ohne Streuung auf den Zielpunkt (Cube Escape: Sichtlinie zum Fadenkreuz, Q-CE-15)
             float spread = G.HasPortals ? 0 : Mathf.Lerp(Rc.spread_hip_deg, Rc.spread_ads_deg, C.adsWeight);
             double a = _rng.NextDouble() * Math.PI * 2, rr = Math.Sqrt(_rng.NextDouble()) * spread;
-            var dir = Quaternion.AngleAxis((float)(rr * Math.Cos(a)), worldCam.transform.up) *
-                      Quaternion.AngleAxis((float)(rr * Math.Sin(a)), worldCam.transform.right) * worldCam.transform.forward;
+            var cam = worldCam.transform;
+            var dir = Quaternion.AngleAxis((float)(rr * Math.Cos(a)), cam.up) *
+                      Quaternion.AngleAxis((float)(rr * Math.Sin(a)), cam.right) * cam.forward;
             if (C.adsWeight > 0.5f) _ringFrames = AdsFeedback.ShotRingFrames;
             hipReticle?.Kick();
+            int k = arsenal.Active;
+            fx?.MuzzleShot(k, F);
+            if (F.Projectile && fx != null)                 // Granate, Rakete, Pfeil (0.34): eigene Flugbahn, Treffer beim Aufschlag
+            {
+                fx.Launch(k, dir, F, HitMask);
+                return;
+            }
             float range = G.HasPortals && G.range_m > 0 ? G.range_m : 300f;
-            if (Physics.Raycast(worldCam.transform.position, dir, out var hit, range, ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer), QueryTriggerInteraction.Ignore))
+            if (F.kind == "pellets")                        // Streuschuss (0.34): Kugeln gleichmäßig im Kegel um die Schussrichtung
             {
-                if (G.HasPortals && C.LastPortal >= 0)
+                float cone = F.cone_deg * Mathf.Lerp(1, F.cone_ads, C.adsWeight);
+                float turn = (float)(_rng.NextDouble() * 360);
+                bool any = false;
+                for (int i = 0; i < F.pellets; i++)
                 {
-                    // Werkzeug: Treffermarke in Portalfarbe auf jeder Fläche in Reichweite (die Portale selbst sind nicht Teil von 0.22)
-                    HitColor = PortalColor(G.portals[C.LastPortal]);
-                    _hitX = AdsFeedback.HitXMinS;
-                    portalHits++;
-                    return;
+                    var d = PelletDir(dir, cam.up, cam.right, i, F.pellets, cone, turn);
+                    any |= Bullet(d, range, F, k, i == 0 || !any);
                 }
-                HitColor = AdsFeedback.Orange;
-                var t = hit.collider.GetComponentInParent<RangeTarget>();
-                if (t != null)
-                {
-                    t.Hit(hit.point);
-                    hits++;
-                    _hitX = AdsFeedback.HitXMinS;
-                }
-                Decal(hit);
+                return;
             }
+            Bullet(dir, range, F, k, true);
         }
 
-        public const float DecalSize = 0.05f;       // Einschussloch, Kantenlänge in m
-        public const int DecalMax = 80;             // danach wird das älteste wiederverwendet
+        int HitMask => ~(1 << PlayerLayer | 1 << rig.weaponRoot.gameObject.layer);
 
-        void Decal(RaycastHit hit)
+        /// <summary>Richtung der Kugel i von n im Streukegel (halber Öffnungswinkel cone, Grad): eine in der Mitte, die übrigen auf zwei
+        /// Ringen (0,5 und 1,0 · cone) gleichmäßig verteilt, das ganze Muster um turn gedreht (ego.PAYLOAD shotgun).</summary>
+        public static Vector3 PelletDir(Vector3 dir, Vector3 up, Vector3 right, int i, int n, float cone, float turn)
         {
-            if (decalMat == null) return;
-            GameObject d;
-            if (_decals.Count >= DecalMax) d = _decals.Dequeue();
-            else
-            {
-                d = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                Destroy(d.GetComponent<Collider>());
-                d.GetComponent<Renderer>().sharedMaterial = decalMat;
-                d.name = "Einschlag";
-            }
-            // Erst lösen, dann Lage und Größe in Weltmaßen setzen: ein wiederverwendetes Loch hing noch am alten Träger, localScale 0,05
-            // galt in dessen Maßstab (Wand 20 m breit → Loch 1 m breit), danach behielt SetParent diese Weltgröße (Patch einschuss)
-            d.transform.SetParent(null, false);
-            d.transform.SetPositionAndRotation(hit.point + hit.normal * 0.004f, Quaternion.LookRotation(-hit.normal));
-            d.transform.localScale = Vector3.one * DecalSize;
-            d.transform.SetParent(hit.collider.transform, true);
-            _decals.Enqueue(d);
+            if (i == 0 || n <= 1) return dir;
+            int inner = Mathf.Max(1, (n - 1) / 3), outer = n - 1 - inner;
+            bool inRing = i <= inner;
+            int j = inRing ? i - 1 : i - 1 - inner, m = inRing ? inner : outer;
+            float ang = turn + 360f * j / m + (inRing ? 0 : 180f / m), rad = cone * (inRing ? 0.5f : 1f);
+            return Quaternion.AngleAxis(rad * Mathf.Cos(ang * Mathf.Deg2Rad), up) * Quaternion.AngleAxis(rad * Mathf.Sin(ang * Mathf.Deg2Rad), right) * dir;
         }
+
+        /// <summary>Ein Strahl ohne Flugzeit (Kugel, Schrotkugel, Strahl, Bolzen): Treffer an der Scheibe, Einschlag, je Klasse der Strahl
+        /// oder Bolzen dazu. count = Treffer zählen (Schrot: einmal je Schuss). true, wenn eine Scheibe getroffen wurde.</summary>
+        bool Bullet(Vector3 dir, float range, EgoFx F, int k, bool count)
+        {
+            var G = C.S.D.gameplay;
+            var cam = worldCam.transform;
+            bool hitSome = Physics.Raycast(cam.position, dir, out var hit, range, HitMask, QueryTriggerInteraction.Ignore);
+            var end = hitSome ? hit.point : cam.position + dir * range;
+            var nrm = hitSome ? hit.normal : -dir;
+            var energy = fx != null ? fx.Energy(k) : Color.cyan;
+            if (fx != null)
+            {
+                var muzzle = fx.MuzzleWorld(k);
+                if (F.kind == "beam") fx.BeamShot(end, nrm, hitSome);
+                else if (F.kind == "rail") fx.Rail(muzzle, end, F, energy);
+                else if (F.kind == "bolts")
+                {
+                    fx.Streak(muzzle, end, nrm, F.speed_mps, F.length_m, F.width_m, energy, hitSome ? C.S.D.Impact(F.impact) : null,
+                              hitSome ? hit.collider.transform : null, false);
+                }
+                else if (F.tracer_every > 0 && C.shots % F.tracer_every == 0)   // Leuchtspur jeder n-te Schuss
+                    fx.Streak(muzzle, end, nrm, F.tracer_mps, F.tracer_m, F.tracer_w_m, fx.Tracer(k), null, null, true);
+            }
+            if (!hitSome) return false;
+            if (G.HasPortals && C.LastPortal >= 0)
+            {
+                // Werkzeug: Treffermarke in Portalfarbe auf jeder Fläche in Reichweite (die Portale selbst sind nicht Teil von 0.22)
+                HitColor = PortalColor(G.portals[C.LastPortal]);
+                _hitX = AdsFeedback.HitXMinS;
+                portalHits++;
+                return false;
+            }
+            HitColor = AdsFeedback.Orange;
+            var t = hit.collider.GetComponentInParent<RangeTarget>();
+            if (t != null)
+            {
+                t.Hit(hit.point);
+                if (count) hits++;
+                _hitX = AdsFeedback.HitXMinS;
+            }
+            if (fx != null && F.kind != "bolts" && F.kind != "none")     // Bolzen schlagen erst bei der Ankunft ein (WeaponFx)
+            {
+                var I = C.S.D.Impact(F.impact);
+                if (F.kind == "beam" && F.scorch_every > 1 && C.shots % F.scorch_every != 0)                 // Dauerstrahl: Brand je n. Schuss
+                    fx.Impact(I, hit.point, hit.normal, dir, energy, true, null);
+                else fx.Impact(I, hit.point, hit.normal, dir, energy, I != null && I.decal == "scorch", hit.collider.transform);
+            }
+            return t != null;
+        }
+
+        /// <summary>Dauerstrahl läuft (Spurgewehr, 0.34): Abzug gezogen und der letzte Schuss liegt weniger als gameplay.fx.beam_s zurück.</summary>
+        public bool BeamOn => C.S.D.gameplay.Beam && C.TriggerHeld && C.SinceShot < C.S.D.gameplay.fx.beam_s && C.shots > 0;
+
+        /// <summary>Treffer eines Projektils oder einer Explosion an einer Scheibe (WeaponFx): zählt wie ein Treffer mit Treffer-X.</summary>
+        public void ProjectileHit()
+        {
+            hits++;
+            HitColor = AdsFeedback.Orange;
+            _hitX = AdsFeedback.HitXMinS;
+        }
+
+        /// <summary>Kantenlänge des Einschusslochs in m und Größe des Pools (motion.payload.decal, WeaponFx setzt sie beim Start).</summary>
+        public static float DecalSize = 0.05f;
+        public static int DecalMax = 96;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatics() { DecalSize = 0.05f; DecalMax = 96; }   // ohne Domain-Reload (Richter 0.34)
 
         public void Teleport(Vector3 pos, float yaw, float pitch = 0)
         {

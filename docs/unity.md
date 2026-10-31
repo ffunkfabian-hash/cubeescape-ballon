@@ -27,6 +27,10 @@ python3 tools/unity_run.py huefte           # MP4 Hüft-Fadenkreuz (0.13): Hüft
 python3 tools/unity_run.py sprint|wechsel|rueckstoss   # MP4 (0.15): Sprint-Hub und Sprint → Zielen; Waffenwechsel; Rückstoß Hüfte/Zielen
 python3 tools/unity_run.py feuer            # MP4 (0.16): Mündungsfeuer und Hülsen aus der Hüfte und im Zielen
 python3 tools/unity_run.py volley           # MP4 (0.22): Wechsel durch alle fünf Waffen, Impuls-Salven Hüfte/Zielen, Portal A und B
+python3 tools/unity_run.py projektil    # MP4 (0.34): Granatwerfer, Raketenwerfer, Explosionen
+python3 tools/unity_run.py strahlen      # MP4 (0.34): Spurgewehr, Fusion, lineare Fusion, Bogen
+python3 tools/unity_run.py streuschuss  # MP4 (0.34): Schrot, Automatik, Handfeuerwaffe (Einschläge)
+python3 tools/unity_run.py fuellstand   # MP4 (0.34): MG, Granatwerfer, Handfeuerwaffe (Hülsen, Füllstand)
 BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1" python3 tools/unity_run.py feel   # Messlauf: 60/s, Waffe und Arme auf Magenta, ohne Fadenkreuz (…_mess)
 BALLON_TEST_FILTER="Name1|Name2" python3 tools/unity_run.py test   # nur diese Tests (Gegenproben, 0.32)
 open unity/Build/BallonFirstfeel.app --args -ballonFov 100   # Welt-Bildwinkel 100° waagrecht (50–120); Waffe und Arme bleiben bei 75° (A9, 0.32)
@@ -171,6 +175,24 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
   Waffe dieses Bilds im Auswurffenster und fliegt im Kameraraum (Viewmodel-Ebene) nach rechts, etwas hoch und dann nach unten, mit
   Drehung; nach `life_s` 0,4 s ist sie weg. Unity nimmt dafür einen festen Pool aus `max_live` = 6 Objekten (Ring, der älteste wird
   überschrieben), keine Speicheranforderung je Bild. Waffen ohne Feld `EJECT` (`weapon.eject.enabled` false) werfen nichts aus.
+- **Wirkung der Waffen (0.34 „Payload“, Entscheidungsliste Block 9):** Werte nur in `basic/arms/ego.py` (`PAYLOAD` je Klasse →
+  `gameplay.fx`; `IMPACTS`, `DECAL`, `EXPLOSION`, `MUZZLE_SMOKE` → `motion.payload`), gezeichnet von `Runtime/WeaponFx.cs` mit dem Shader
+  `Ballon/Fx` (Form aus der UV: weicher Fleck, Ring, Einschussloch, Strahl, Funke; Materialien `Fx_*` aus `BallonSetup`). Arten je Klasse:
+  `hitscan` (Kugel: Funken, Staub, Licht, Loch; MG mit Leuchtspur jeder 3. Schuss), `pellets` (Schrot: 12 Kugeln im Kegel),
+  `projectile` (Granate im Bogen, Rakete gerade mit Rauchspur; Explosion mit Blitz, Feuer, Druckring, Funken, Rauch, Licht, Brandfleck,
+  Scheiben im Radius zählen), `arrow` (Pfeil mit Fall, steckt), `beam` (Dauerstrahl), `bolts` (Bolzen je Strahl der Salve, Einschlag bei
+  Ankunft), `rail` (scharfer Strahl, blendet aus), `none` (Werkzeug). Strahlen und Projektile beginnen an `Socket_Muzzle`, durch die
+  Viewmodel-Kamera auf denselben Bildpunkt der Weltkamera gerechnet. An der Waffe: Rauch aus dem Rohr (Werfer) und Mündungslicht
+  (Energie, Bogen) in der Viewmodel-Ebene. Alles in festen Pools (Löcher 96, Projektile 8, Linien 24, Ringe 4, Lichter 2,
+  Brandflecken 8, Partikel je System fest); die Partikel sind angehalten und laufen mit der Spielzeit (`Simulate`), damit Tests und
+  Aufnahmen mit virtueller Zeit dieselben Bilder sehen. Gegenprobe: `BALLON_PAYLOAD_OFF=1` schaltet die Wirkung samt Schrittteilen,
+  Füllstand, Gliedern und Nachlade-Hülsen ab.
+- **Schrittteile, Füllstand, Glieder (0.34):** `EGO_LIVE index` (Trommel der Handfeuerwaffe, Gurtvorschub des MG) läuft nach jedem Schuss
+  in `ego.index_frames` Bildern von 0 auf 1 – Blender (`ego_build`) und Unity gleich. `EGO_LIVE rounds` zeigt den Füllstand nur im Spiel
+  (Clips voll): MG-Gurt (`line`, Satz i an bei mehr als i Patronen), Granatwerfer-Trommel (`drum`, je Kammer; der Zustand rückt mit, wenn
+  die Trommel zurückspringt). `EGO_LIVE fill`: Zählzellen des MG leuchten nach dem Anteil. `EJECT links`: je Schuss ein Gurtglied
+  (Blender und Unity). Hülsen beim Nachladen (`EJECT on='reload'`): Granatwerfer eine je Kammer, Handfeuerwaffe so viele wie verschossen
+  aus der ausgeschwenkten Trommel (`part`, Kammerkreis `ring`, langsam `speed_k`) – nur Unity, die Blender-Nachladeclips zeigen keine Hülsen.
 - Das Hochziehen des Modells klingt erst nach dem Feuern ab.
 - Das Gehwippen folgt der Laufgeschwindigkeit, mit den Werten aus `walk`/`sprint`.
 - Das Atmen nutzt `BREATHE_ALL`, dazu in Ruhe die `idle_hip`-Formel.
@@ -186,6 +208,10 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 
 | Test | prüft |
 |---|---|
+| `Granatwerfer_Granate_fliegt_im_Bogen_und_explodiert`, `Raketenwerfer_Rakete_gerade_mit_Rauchspur_und_Explosion` (PlayMode, 0.34) | Start an der Mündung (Bildlage), Geschwindigkeit, Fallkurve bzw. gerade Bahn, Rauch aus dem Lauf, Rauchspur; Explosion mit Ring, Licht, Brandfleck, Funken, Rauch; Flug und Partikel ohne Speicher je Bild |
+| `Spurgewehr_Dauerstrahl_vom_Lauf_zum_Einschlag`, `Fusion_Salve_aus_Bolzen`, `Lineare_Fusion_ein_scharfer_Strahl`, `Bogen_Pfeil_loest_fliegt_und_steckt` (PlayMode, 0.34) | Strahl von der Mündung (± 1 % des Bilds) bis zur Wand, Mündungslicht; ein Bolzen je Strahl, Einschlag bei Ankunft; Strahl `beam_s`; Pfeil fliegt, steckt `stick_s` |
+| `Schrot_Streuschuss_mit_mehreren_Einschlaegen`, `Einschlag_Funken_Staub_Loch_und_Ausblenden` (PlayMode, 0.34) | 12 Einschläge und Löcher im Kegel; je Kugelklasse Funken, Staub, Loch (Stil bullet/heavy), Ausblenden nach `life_s`, Pool-Obergrenze |
+| `Handfeuerwaffe_Trommel_dreht_je_Schuss_Huelsen_beim_Nachladen`, `MG_Glieder_Gurtvorschub_und_Fuellstand`, `Granatwerfer_Trommel_zeigt_geladene_und_leere_Kammern` (PlayMode, 0.34) | Trommel eine Kammer je Schuss, Hülsen beim Nachladen je verschossene Kammer; Glied je Hülse, Gurtvorschub, Gurt leert sich von unten, Zählzellen, Modell; Kammern leer nach dem Schuss, rücken mit der Trommel, füllen sich beim Nachladen |
 | `Klassen_vollstaendig_in_ego_json` (0.33) | alle 16 Waffen in Tastenreihenfolge mit Klasse und Feuerart, Herkunft, Spielwerte, Griffe, Live-Teile, Atlanten |
 | `Repetierer_repetiert_nach_jedem_Schuss`, `Dauerstrahl_leuchtet_solange_der_Abzug_zieht`, `MG_Gurtkasten_nachladen` (0.33 P2) | Kammerstängel nach dem Schuss, Strahl-Leuchtteile, Gurtkasten-Nachladen |
 | `Pumpe_pumpt_und_laedt_je_Patrone`, `Fusion_laedt_auf_und_schiesst_die_Salve`, `Lineare_Fusion_laedt_auf_und_schiesst_einmal` (0.33 P3) | Pumpe, Einzelladen mit Abbruch durch Feuer, Aufladen |

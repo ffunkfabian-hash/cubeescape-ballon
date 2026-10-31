@@ -193,15 +193,27 @@ def weapon_data(W, live):
     wid = EG.weapon_id(W)
     ids = {p['id'] for p in parts}
     glow = list(live.get('glow', ()))              # 0.33: Leuchtteile, die beim Feuern angehen (Dauerstrahl), Bewegung glow
-    missing = [v for k, v in live.items() if k != 'glow' and v and v not in ids] + [g for g in glow if g not in ids]
+    missing = [v for k, v in live.items() if k in ('trigger', 'bolt', 'port', 'ring') and v and v not in ids] + [g for g in glow if g not in ids]
     if missing:
         raise KeyError(f'{wid}: Live-Teile {missing} fehlen (ego.LIVE bzw. Modul-Feld EGO_LIVE)')
     moves = {p['id']: p['move']['kind'] for p in parts}
     if any(moves[g] != 'glow' for g in glow):
         raise KeyError(f'{wid}: EGO_LIVE glow nennt Teile ohne Bewegung glow')
+    index = list(live.get('index', ()))            # 0.34: Schrittteile je Schuss (Trommel, Gurtvorschub), Bewegung mit cycle 'shot'
+    R = live.get('rounds') or {}                   # 0.34: Füllstand – Teile je Patrone (Gurt) bzw. je Kammer (Trommel)
+    rounds = dict(mode=R.get('mode', ''), drum=R.get('drum', ''), barrel=R.get('barrel', 0), gate=R.get('gate', 0),
+                  sets=[dict(parts=list(s)) for s in R.get('sets', ())])
+    fill = list(live.get('fill', ()))              # 0.34: Zählfenster – Leuchtzellen nach dem Anteil der Munition
+    bad = [q for q in index + fill + [q for s in rounds['sets'] for q in s['parts']] + ([rounds['drum']] if rounds['drum'] else [])
+           if q not in ids]
+    if bad:
+        raise KeyError(f'{wid}: EGO_LIVE index/rounds/fill nennt fehlende Teile {bad}')
+    if any(moves[q] != 'glow' for q in fill):
+        raise KeyError(f'{wid}: EGO_LIVE fill nennt Teile ohne Bewegung glow')
     return dict(id=wid, root=W.META['id'], name=W.META['name'], type_de=W.META.get('type_de', ''),   # 0.33 Ziel 2: Klasse für HUD und Menü
                 fbx=f'{wid}.fbx', parts=parts, anchors=anchors,
-                eject=eject_data(W), live=dict({k: live.get(k, '') for k in ('trigger', 'bolt', 'port', 'ring')}, glow=glow))
+                eject=eject_data(W), live=dict({k: live.get(k, '') for k in ('trigger', 'bolt', 'port', 'ring')}, glow=glow,
+                                               index=index, rounds=rounds, fill=fill))
 
 
 def mesh(V, tris):
@@ -213,12 +225,35 @@ def eject_data(W):
     """Hülsenauswurf der Waffe (Modul-Feld EJECT, 5.4 A): Startlage im Auswurffenster, Richtung (Einheit) und Hülsennetz; enabled false ohne Feld."""
     E = getattr(W, 'EJECT', None)
     if not E:
-        return dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], on='', src='kein Auswurf')
+        return dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], on='', src='kein Auswurf',
+                    part='', ring_m=0.0, ring_n=0, speed_k=1.0, life_k=1.0,
+                    links=dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], src='kein Gliederauswurf'))
     d = vdir(E['dir'])
     n = sum(a * a for a in d) ** 0.5
     vs, ts = mesh(*EG.case_mesh(E['case']))
+    ring = E.get('ring') or {}
+    L = E.get('links')
+    links = dict(enabled=False, pos=[0.0, 0.0, 0.0], dir=[0.0, 0.0, 0.0], case='', verts=[], tris=[], src='kein Gliederauswurf')
+    if L:                                           # 0.34: Gurtglied je Schuss (MG), eigene Startlage und Richtung
+        dl = vdir(L['dir'])
+        nl = sum(a * a for a in dl) ** 0.5
+        lv, lt = mesh(*EG.case_mesh(L['case']))
+        links = dict(enabled=True, pos=xyz(*L['at']), dir=r6([a / nl for a in dl]), case=L['case'], verts=lv, tris=lt, src=L['src'])
     return dict(enabled=True, pos=xyz(*E['at']), dir=r6([a / n for a in d]), case=E['case'],
-                verts=vs, tris=ts, on=E.get('on', 'shot'), src=E['src'])   # on (0.33 P4): 'shot' je Schuss, 'reload' beim Marker Eject
+                verts=vs, tris=ts, on=E.get('on', 'shot'), src=E['src'],   # on (0.33 P4): 'shot' je Schuss, 'reload' beim Marker Eject
+                part=E.get('part', ''), ring_m=r6(ring.get('r_mm', 0.0) * MM), ring_n=ring.get('n', 0),   # 0.34: Start im Teil, Kammerkreis
+                speed_k=r6(E.get('speed_k', 1.0)), life_k=r6(E.get('life_k', 1.0)), links=links)   # life_k (0.34): Lebensdauer beim Nachladen
+
+
+def payload_data():
+    """Gemeinsame Werte der Wirkung (0.34, ego.DECAL, IMPACTS, EXPLOSION, MUZZLE_SMOKE): Einschusslöcher, Einschlagstile (Liste mit
+    Namen), Explosion, Mündungsrauch. Je Klasse steht die Art der Wirkung in gameplay.fx."""
+    def num(d):
+        return {k: (r6(v) if isinstance(v, float) else v) for k, v in d.items()}
+    X = dict(EG.EXPLOSION)
+    colors = X.pop('colors')
+    return dict(decal=num(EG.DECAL), impacts=[dict(num(v), name=k) for k, v in EG.IMPACTS.items()],
+                explosion=dict(num(X), **{f'{k}_color': v for k, v in colors.items()}), muzzle_smoke=num(EG.MUZZLE_SMOKE))
 
 
 def flash_data():
@@ -259,7 +294,8 @@ def weapon_entry(W):
     C = EG.CLASSES[P['type']]
     profile = dict(type=P['type'], src=P['src'], poses=sorted(C['poses']), frames=[dict(action=k, frames=r6(v)) for k, v in C['frames'].items()],
                    frames_src=P['frames_src'])
-    return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type'], P['gameplay']), fire_mode=P['fire_mode']), weapon=weapon, poses=poses, grips=grips,
+    fx = {k: (r6(v) if isinstance(v, float) else v) for k, v in EG.payload(P['type']).items()}   # 0.34: Wirkung der Klasse
+    return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type'], P['gameplay']), fire_mode=P['fire_mode'], fx=fx), weapon=weapon, poses=poses, grips=grips,
                 actions=[action(k, A) for k, A in P['actions'].items()], atlas=ATLAS_KEY.get(wid, f'weapon_{wid}'),
                 reference=f'ego_reference_{wid}.json',
                 sources=dict(files=sha_files(weapon_files(W)), parts_sha256=parts_sha(W)))
@@ -303,6 +339,8 @@ def data():
                   eject=dict(speed_mps=r6(EG.EJECT['speed_mps']), gravity_mps2=r6(EG.EJECT['gravity_mps2']), spin_dps=r6(EG.EJECT['spin_dps']),
                              spin_axis=r6(vdir(EG.EJECT['spin_axis'])), life_s=r6(EG.EJECT['life_s']), max_live=EG.EJECT['max_live'],
                              delay_frames=EG.EJECT['delay_frames'], role=EG.EJECT['role'], src=EG.EJECT['src']),
+                  index=dict(frames=r6(EG.INDEX['frames']), share=r6(EG.INDEX['share']), src=EG.INDEX['src']),
+                  payload=payload_data(),
                   de='Bewegungsgefühl v2 aus basic/arms/ego.py (Kurven, Feder-Nachlauf, Atmen, Rückstoß, Wechsel, Tempo)')
     return dict(format=FORMAT, generated_by='tools/export_unity.py', sources=sources, axes=AXES, fps=EG.FPS, motion=motion,
                 camera=dict(h_fov_deg=EG.CAMERA['h_fov_deg'], aspect=list(EG.CAMERA['aspect']), near_m=EG.CAMERA['near_m']),
@@ -632,7 +670,8 @@ REF_SEGMENTS = ['upper', 'fore', 'hand', 'f0_0', 'f0_2', 'f3_1', 't_0', 't_2']
 def reference(sc, e):
     """Blender-Auswertung (tools/ego_build.evaluate) einer Waffe als Testreferenz: Standbilder und Stichproben aller Aktionen."""
     from tools import ego_build as EB
-    live = [v for k, v in e['weapon']['live'].items() if k != 'glow']
+    lv = e['weapon']['live']
+    live = [lv[k] for k in ('trigger', 'bolt', 'port', 'ring') if lv.get(k)] + list(lv.get('index', ()))   # 0.34: Schrittteile bewegen sich
     acts = [pid for A in EG.CLASSES[sc.P['type']].get('actions', {}).values() for pid in A.get('mech', {})]   # 0.33: Teile der Klassenaktionen
     objs_ref = list(dict.fromkeys(k for k in REF_OBJECTS + [sc.P['mag']] + live + acts if k in sc.objs))
 
@@ -650,6 +689,8 @@ def reference(sc, e):
             objs['flash'] = flat(sc.fx_now['flash'])
         for k, M in sorted(sc.fx_now['shells'].items()):
             objs[f'shell_{k}'] = flat(M)
+        for k, M in sorted(sc.fx_now.get('links', {}).items()):   # Gurtglieder (0.34) mit der Hülse desselben Schusses
+            objs[f'link_{k}'] = flat(M)
         return dict(label=label, action=action, frame=frame, ads_hidden=bool(getattr(sc, 'ads_hidden', False)),   # 0.20: Zielfernrohr
                     objects=[dict(name=k, m=v) for k, v in objs.items()])
 

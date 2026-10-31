@@ -22,6 +22,28 @@ from basic import matrix, reticles as RT  # noqa: E402
 from tools.export_unity import WEAPONS  # noqa: E402
 
 
+
+
+def _fx_text(F):
+    """Wirkung der Klasse (0.34, ego.PAYLOAD) als kurzer Text."""
+    k = F['kind']
+    t = {'hitscan': f"Kugel, Einschlag {F['impact']}", 'pellets': f"Schrot {F['pellets']} Kugeln, Kegel {F['cone_deg']:g}°",
+         'projectile': f"Projektil {F['speed_mps']:g} m/s, Fall {F['gravity_mps2']:g} m/s², Explosion {F['radius_m']:g} m, Laufrauch {F['smoke_s']:g} s",
+         'arrow': f"Pfeil {F['speed_mps']:g} m/s, Fall {F['gravity_mps2']:g} m/s², steckt {F['stick_s']:g} s",
+         'beam': f"Dauerstrahl {F['width_m'] * 100:g} cm", 'bolts': f"Bolzen {F['speed_mps']:g} m/s, {F['length_m']:g} m",
+         'rail': f"Strahl {F['width_m'] * 100:g} cm, {F['beam_s']:g} s", 'none': 'keine'}.get(k, k)
+    if F.get('tracer_every'):
+        t += f", Leuchtspur jeder {F['tracer_every']}. Schuss"
+    return t
+
+def _live_text(v):
+    """Live-Teil für die Doku: Teil, Liste (glow, index, fill) oder Füllstand (rounds, 0.34) als kurzer Text."""
+    if isinstance(v, dict):
+        return f"{v.get('mode', '')} ({len(v.get('sets', ()))} Sätze{', Trommel ' + v['drum'] if v.get('drum') else ''})"
+    if isinstance(v, (list, tuple)):
+        return ' + '.join(v) if v else '–'
+    return v
+
 def module(wid):
     """Waffenmodul zu einer Waffen-ID (BASIC-06-v2.1) unter den spielbaren Waffen."""
     for m in WEAPONS:
@@ -156,9 +178,10 @@ def _src_table(W):
                  '(Motiongen rueckstoss › r-d2-gridskipper) – Bahnstufe der Klasse, zweistufig' if P['type'] == 'pulse_rifle' else
                  '; Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten '
                  'Schussbild)')),
+             ('Wirkung', _fx_text(EG.payload(P['type'])), EG.payload(P['type'])['src'] + ' (ego.PAYLOAD, Entscheidungsliste Block 9)'),
              ('Sprint-Frequenz', '3,16 / 1,58 Hz (gemeinsam)', 'M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c)'),
              ('Griffe', ', '.join(P['grips']), 'Modul-Feld EGO_GRIPS' if getattr(W, 'EGO_GRIPS', None) else 'ego.GRIPS (Pilotwaffe)'),
-             ('Live-Teile', ', '.join(f'{k} = {v}' for k, v in P['live'].items()), 'Modul-Feld EGO_LIVE' if getattr(W, 'EGO_LIVE', None) else 'ego.LIVE (Pilotwaffe)')]
+             ('Live-Teile', ', '.join(f'{k} = {_live_text(v)}' for k, v in P['live'].items()), 'Modul-Feld EGO_LIVE' if getattr(W, 'EGO_LIVE', None) else 'ego.LIVE (Pilotwaffe)')]
     return ['| Wert | Stand | Herkunft |', '|---|---|---|'] + [f'| {a} | {b} | {c} |' for a, b, c in rows]
 
 
@@ -298,10 +321,12 @@ def check():
         if not want <= set(P['grips']) or extra:     # ohne Nachladen (drop) nur solche, die eine Aktion nennt (Bogen: Pfeil, Nockpunkt, P4)
             err.append(f'{wid}: Griffe {sorted(P["grips"])} statt {sorted(want)}')
         for k, v in P['live'].items():
-            for q in (v if k == 'glow' else [v]):       # glow (0.33): Leuchtteile mit Bewegung glow
+            if k == 'rounds':                           # 0.34: Füllstand – Sätze von Teilen, Trommelteil
+                v = [q for st in v.get('sets', ()) for q in st] + [v.get('drum', '')]
+            for q in (v if k in ('glow', 'index', 'fill', 'rounds') else [v]):   # glow (0.33), index/fill (0.34): Teillisten
                 if q and q not in ids:
                     err.append(f'{wid}: Live-Teil {k} = {q} fehlt')
-                elif k == 'glow' and q and next(p for p in W.PARTS if p['id'] == q).get('move', {}).get('kind') != 'glow':
+                elif k in ('glow', 'fill') and q and next(p for p in W.PARTS if p['id'] == q).get('move', {}).get('kind') != 'glow':
                     err.append(f'{wid}: Leuchtteil {q} ohne Bewegung glow')
         used = {k for A in P['actions'].values() for ch in ('L', 'R') for _, k in A.get(ch, [])}
         for g in used:

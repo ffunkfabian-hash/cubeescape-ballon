@@ -18,6 +18,7 @@ namespace Ballon.Ego
         public GameObject armsModel;
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
         public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
+        public Material fxSpark, fxGlow, fxSmoke, fxRing, fxBeam;   // 0.34 „Payload“: Welteffekte (Shader Ballon/Fx); decal = Einschussloch
         public TextAsset[] sceneJson;            // Szenen (ballon-scene/2), von BallonSetup aus Generated/Scenes/*/scene_*.json gesetzt;
         public GameObject[] scenePrefabs;        // gleiche Reihenfolge: FBX der Umgebung
         public Material[] sceneMaterials;        // Unlit-Vorlage (je Zone entsteht eine Kopie)
@@ -76,7 +77,9 @@ namespace Ballon.Ego
                                       ParcoursStart, 0);
             _parcoursBg = Player.worldCam.backgroundColor;
             _worldMask = Player.worldCam.cullingMask;
-            Player.decalMat = decal;
+            roles.TryGetValue("dark_metal", out var body);
+            if (!WeaponFx.Off) Player.fx = new WeaponFx(Player, new WeaponFx.Mats { spark = fxSpark, glow = fxGlow, smoke = fxSmoke, ring = fxRing, decal = decal,
+                                                                 beam = fxBeam, body = body });
             for (int k = 0; k < Solvers.Length; k++)
             {
                 Player.loadouts[k].skins = weapons[k].skins;
@@ -218,6 +221,7 @@ namespace Ballon.Ego
         public void RemoveScene(int i)
         {
             if (CurrentScene == i) ShowScene(-1);
+            Player.fx?.Clear();                                     // Löcher, Brandflecken, Pfeile hängen evtl. an der Szene (0.34)
             if (_scenes[i].loaded != null) Destroy(_scenes[i].loaded.root.gameObject);
             _scenes.RemoveAt(i);
             if (CurrentScene > i) CurrentScene--;
@@ -248,6 +252,7 @@ namespace Ballon.Ego
         {
             if (i < -1 || i >= _scenes.Count) throw new ArgumentOutOfRangeException(nameof(i), $"Szene {i} (von {_scenes.Count})");
             if (i == CurrentScene) return;
+            Player.fx?.Clear();                                     // 0.34: Wirkung bleibt nicht in der verlassenen Szene hängen
             if (CurrentScene >= 0 && _scenes[CurrentScene].loaded != null) _scenes[CurrentScene].loaded.root.gameObject.SetActive(false);
             CurrentScene = i;
             var cam = Player.worldCam;
@@ -471,6 +476,92 @@ namespace Ballon.Ego
             .Add(4.6f, 5.5f, hold: "aim fire")
             .Add(7.0f, 7.4f);
 
+        /// <summary>Beleg 0.34 (Projektil und Explosion): Granatwerfer zwei Schuss auf die 10-m-Mitte (Granate im Bogen, Explosion, Rauch
+        /// aus dem Lauf), Wechsel zum Raketenwerfer, ein Schuss (gerade Rakete mit Rauchspur, große Explosion); 8,4 s.</summary>
+        public static ScriptedInput ProjectileScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)
+            .Add(0.6f, 0.65f, hold: "fire")
+            .Add(0.65f, 2.0f)
+            .Add(2.0f, 2.05f, hold: "fire")
+            .Add(2.05f, 3.4f)
+            .Add(3.4f, 3.45f, press: "weapon16")
+            .Add(3.45f, 5.0f)
+            .Add(5.0f, 5.05f, hold: "fire")
+            .Add(5.05f, 8.4f);
+
+        /// <summary>Beleg 0.34 (Strahlen): Spurgewehr Dauerstrahl, Fusion (Aufladen, Salve aus Bolzen), lineare Fusion (scharfer Strahl),
+        /// Bogen (Spannen, Lösen, Pfeil steckt); 12 s.</summary>
+        public static ScriptedInput BeamScript() => new ScriptedInput()
+            .Add(0.0f, 0.5f)
+            .Add(0.5f, 1.8f, hold: "fire")
+            .Add(1.8f, 2.2f)
+            .Add(2.2f, 2.25f, press: "weapon12")
+            .Add(2.25f, 3.4f)
+            .Add(3.4f, 4.6f, hold: "fire")
+            .Add(4.6f, 5.0f)
+            .Add(5.0f, 5.05f, press: "weapon13")
+            .Add(5.05f, 6.2f)
+            .Add(6.2f, 7.3f, hold: "fire")
+            .Add(7.3f, 7.7f)
+            .Add(7.7f, 7.75f, press: "weapon14")
+            .Add(7.75f, 8.9f)
+            .Add(8.9f, 10.0f, hold: "fire")
+            .Add(10.0f, 12.0f);
+
+        /// <summary>Beleg 0.34 (Streuschuss und Einschläge): Schrotflinte aus der Hüfte und im Zielen (Löcher im Kegel), Automatik-Stoß,
+        /// Handfeuerwaffe zwei Schuss (schwerer Einschlag); 9 s.</summary>
+        public static ScriptedInput SpreadScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)
+            .Add(0.6f, 0.65f, hold: "fire")
+            .Add(0.65f, 1.8f)
+            .Add(1.8f, 3.6f, hold: "aim")
+            .Add(2.6f, 2.65f, hold: "aim fire")
+            .Add(3.6f, 4.0f)
+            .Add(4.0f, 4.05f, press: "weapon1")
+            .Add(4.05f, 5.2f)
+            .Add(5.2f, 5.8f, hold: "fire")
+            .Add(5.8f, 6.2f)
+            .Add(6.2f, 6.25f, press: "weapon6")
+            .Add(6.25f, 7.3f)
+            .Add(7.3f, 7.35f, hold: "fire")
+            .Add(7.35f, 7.9f)
+            .Add(7.9f, 7.95f, hold: "fire")
+            .Add(7.95f, 9.0f);
+
+        /// <summary>Beleg 0.34 (Füllstände und Hülsen): MG mit 9 Patronen – Stoß (Hülsen und Glieder), betrachten mit Restmunition (Gurt
+        /// von unten leer, Zählfenster), leer schießen, nachladen; Granatwerfer drei Schuss (Kammern leer), nachladen (Hülsen fallen, Kammern füllen sich); Handfeuerwaffe drei Schuss
+        /// (Trommel dreht), nachladen (Hülsen fallen aus der Trommel); 30 s.</summary>
+        public static ScriptedInput FillScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)
+            .Add(0.6f, 0.95f, hold: "fire")
+            .Add(0.95f, 1.3f)
+            .Add(1.3f, 1.35f, hold: "inspect")
+            .Add(1.35f, 5.6f)
+            .Add(5.6f, 6.2f, hold: "fire")
+            .Add(6.2f, 6.6f)
+            .Add(6.6f, 6.65f, hold: "reload")
+            .Add(6.65f, 13.4f)
+            .Add(13.4f, 13.45f, press: "weapon15")
+            .Add(13.45f, 14.6f)
+            .Add(14.6f, 14.65f, hold: "fire")
+            .Add(14.65f, 15.4f)
+            .Add(15.4f, 15.45f, hold: "fire")
+            .Add(15.45f, 16.2f)
+            .Add(16.2f, 16.25f, hold: "fire")
+            .Add(16.25f, 17.0f)
+            .Add(17.0f, 17.05f, hold: "reload")
+            .Add(17.05f, 23.9f)
+            .Add(23.9f, 23.95f, press: "weapon6")
+            .Add(23.95f, 25.0f)
+            .Add(25.0f, 25.05f, hold: "fire")
+            .Add(25.05f, 25.5f)
+            .Add(25.5f, 25.55f, hold: "fire")
+            .Add(25.55f, 26.0f)
+            .Add(26.0f, 26.05f, hold: "fire")
+            .Add(26.05f, 26.6f)
+            .Add(26.6f, 26.65f, hold: "reload")
+            .Add(26.65f, 30.4f);
+
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
@@ -478,10 +569,18 @@ namespace Ballon.Ego
             string dn = Arg(Environment.GetCommandLineArgs(), "-ballonDemo");
             var demo = dn == "feel" ? FeelScript() : dn == "sway" ? SwayScript() : dn == "treffer" ? FeedbackScript() : dn == "huefte" ? HipScript()
                      : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript()
-                    : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : dn == "volley" ? VolleyScript() : DemoScript();
+                    : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : dn == "volley" ? VolleyScript()
+                    : dn == "projektil" ? ProjectileScript() : dn == "strahlen" ? BeamScript() : dn == "streuschuss" ? SpreadScript()
+                    : dn == "fuellstand" ? FillScript() : DemoScript();
+            bool payload = dn == "projektil" || dn == "strahlen" || dn == "streuschuss" || dn == "fuellstand";   // 0.34
+            if (payload)                                                    // erste Waffe des Belegs nach Klasse
+            {
+                string first = dn == "projektil" ? "grenade_launcher" : dn == "strahlen" ? "trace_rifle" : dn == "streuschuss" ? "shotgun" : "machine_gun";
+                Player.UseWeapon(Array.FindIndex(Solvers, x => x.D.gameplay.weapon_type == first));
+            }
             Player.input = demo;
             Player.C.ReadyNow();
-            Player.C.ammo = dn == "rueckstoss" || dn == "feuer" ? Player.C.magSize : 9;
+            Player.C.ammo = dn == "rueckstoss" || dn == "feuer" || (payload && dn != "fuellstand") ? Player.C.magSize : 9;
             float fps = float.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonFps") ?? "", out var fp) ? fp : 30f;   // Messläufe: 60
             float dt = 1f / fps;
             Player.deltaOverride = () => dt;
@@ -495,8 +594,19 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw" || dn == "volley") Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw" || dn == "volley" || payload) Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
+            if (payload && dn != "fuellstand")                // 0.34: Wand vor dem Schützen, damit Einschläge und Löcher im Bild lesbar sind
+            {
+                float d = dn == "projektil" ? 14f : dn == "strahlen" ? 8f : 5f;
+                var cam = Player.worldCam.transform;
+                var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                w.name = "Belegwand";
+                w.transform.SetPositionAndRotation(new Vector3(cam.position.x, 2f, cam.position.z + d), Quaternion.identity);
+                w.transform.localScale = new Vector3(14f, 4f, 0.3f);
+                w.GetComponent<Renderer>().sharedMaterial = wall;
+                Physics.SyncTransforms();
+            }
             var rt = HdrTarget(1280, 720, 4);
             Player.worldCam.targetTexture = rt;
             bool key = Arg(Environment.GetCommandLineArgs(), "-ballonKey") != null;

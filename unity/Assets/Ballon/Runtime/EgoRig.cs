@@ -74,15 +74,16 @@ namespace Ballon.Ego
                     rr.enabled = false;
                     ReticleRole = p.role;
                 }
-            var glow = s.D.weapon.live?.glow ?? new string[0];      // Leuchtteile beim Feuern (0.33, Dauerstrahl): aus wie Graphit
+            var glow = new List<string>(s.D.weapon.live?.glow ?? new string[0]);      // Leuchtteile beim Feuern (0.33, Dauerstrahl): aus wie Graphit
+            glow.AddRange(s.D.weapon.live.fill);                                       // Zählzellen (0.34): leuchten nach dem Füllstand
             var off = roles.TryGetValue("graphite", out var gm) && gm != null ? gm.GetColor("_BaseColor") : Color.black;
-            _glowR = new Renderer[glow.Length];
-            _glowId = glow;
-            _glowOn = new Color[glow.Length];
-            _glowEmit = new Color[glow.Length];
-            _glowK = new float[glow.Length];
+            _glowR = new Renderer[glow.Count];
+            _glowId = glow.ToArray();
+            _glowOn = new Color[glow.Count];
+            _glowEmit = new Color[glow.Count];
+            _glowK = new float[glow.Count];
             _glowOff = off;
-            for (int k = 0; k < glow.Length; k++)
+            for (int k = 0; k < glow.Count; k++)
             {
                 _glowR[k] = _parts[glow[k]].GetComponent<Renderer>();
                 var mat = _glowR[k].sharedMaterial;
@@ -108,7 +109,39 @@ namespace Ballon.Ego
                 var bm = new[] { RoleMat(roles, s.D.motion.eject.role) };
                 for (int k = 0; k < pool; k++) _shells[k] = FxObject($"Shell_{k}", fx, cm, bm, layer, true, out _shellR[k]);
             }
+            int lpool = s.EjectsLinks ? pool : 0;              // Gurtglieder (0.34): eigener Pool, eigene Form, dunkles Metall
+            _links = new Transform[lpool];
+            _linkR = new Renderer[lpool];
+            if (lpool > 0)
+            {
+                var lm = BuildMesh("Link", s.D.weapon.eject.links.verts, s.D.weapon.eject.links.tris);
+                var dm = new[] { RoleMat(roles, "dark_metal") };
+                for (int k = 0; k < lpool; k++) _links[k] = FxObject($"Link_{k}", fx, lm, dm, layer, true, out _linkR[k]);
+            }
+            var sets = s.D.weapon.live.rounds.sets;           // Füllstand (0.34): Renderer je Satz, an/aus nur bei Änderung
+            _roundR = new Renderer[sets.Length][];
+            _roundOn = new bool[sets.Length];
+            for (int k = 0; k < sets.Length; k++)
+            {
+                _roundR[k] = new Renderer[sets[k].parts.Length];
+                for (int j = 0; j < sets[k].parts.Length; j++) _roundR[k][j] = _parts[sets[k].parts[j]].GetComponent<Renderer>();
+                _roundOn[k] = true;
+            }
         }
+
+        readonly Transform[] _links;
+        readonly Renderer[] _linkR;
+        readonly Renderer[][] _roundR;
+        readonly bool[] _roundOn;
+
+        /// <summary>Gurtglieder im Pool (0: Waffe ohne Glieder) und gerade gezeichnete (Tests).</summary>
+        public int LinkPool => _links.Length;
+        public int LinksShown { get { int n = 0; foreach (var r in _linkR) if (r.enabled) n++; return n; } }
+        /// <summary>Satz k des Füllstands sichtbar (weapon.live.rounds, Tests).</summary>
+        public bool RoundShown(int k) => _roundOn[k];
+        public int RoundSets => _roundOn.Length;
+        /// <summary>Gezeichnete Hülsen (Tests).</summary>
+        public int ShellsShown { get { int n = 0; foreach (var r in _shellR) if (r.enabled) n++; return n; } }
 
         static Material RoleMat(IDictionary<string, Material> roles, string role)
         {
@@ -291,6 +324,18 @@ namespace Ballon.Ego
                 bool on = k < o.shellCount;
                 if (_shellR[k].enabled != on) _shellR[k].enabled = on;
                 if (on) Set(_shells[k], o.shells[k]);
+            }
+            for (int k = 0; k < _links.Length; k++)
+            {
+                bool on = k < o.linkCount;
+                if (_linkR[k].enabled != on) _linkR[k].enabled = on;
+                if (on) Set(_links[k], o.links[k]);
+            }
+            for (int k = 0; k < _roundOn.Length; k++)
+            {
+                if (_roundOn[k] == o.roundOn[k]) continue;
+                _roundOn[k] = o.roundOn[k];
+                foreach (var r in _roundR[k]) if (r != null) r.enabled = _roundOn[k];
             }
         }
 

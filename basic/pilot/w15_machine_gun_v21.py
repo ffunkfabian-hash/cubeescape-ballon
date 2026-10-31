@@ -122,6 +122,18 @@ _bc = ((BOX[0] + BOX[1]) / 2, (BOX[2] + BOX[3]) / 2)
 PITCH = 10.4                                        # Gliedteilung (Patronenabstand im Gurt)
 ROUNDS = [BOX[3] + 4.4 + PITCH * i for i in range(4)]   # Patronenmitten u der Gurtsäule (Kastenoberkante innen → Einlauf)
 MOUTH = FEED[2] - 2                                 # Unterkante des Gurteinlaufs (Lippe); darüber läuft der Gurt ins Gehäuse
+
+
+def _round(u):
+    return [dict(shape='cyl', axis='f', c=(u, BELT_X), a0=FEED[0] + 2, a1=FEED[0] + 44, r=4.6, segs=16),
+            dict(shape='cyl', axis='f', c=(u, BELT_X), a0=FEED[0] + 44, a1=FEED[0] + 54, r=4.6, r1=1.6, segs=16)]
+
+
+def _links(u):
+    return [dict(shape='cyl', axis='f', c=(u, BELT_X), a0=FEED[0] + a, a1=FEED[0] + a + 7, r=5.4, r_in=4.5, segs=16) for a in (8, 30)]
+
+
+CELLS = 5                                           # Zählfenster (0.34): Leuchtzellen nach dem Füllstand
 P += [
     part('ammo_box', 'Munitionskasten', 'Ammo box', 'ammo', 'box', 'dark_metal', 'Hält den Gurt; austauschbar',
          'links am Unteren Gehäuse eingehängt (lösbar)', bevel=R_MID, iface='BAB-1', f0=BOX[0], f1=BOX[1], u0=BOX[2], u1=BOX[3], w=_bw, x=BOX_X,
@@ -130,23 +142,39 @@ P += [
                    expect=((_bc[0], BOX[2], BOX_X + _bw / 2), (0, -1, 1)))),
     box('box_band', 'Kastenband', 'Box band', 'ammo', 'trim', 'Blankes Band über dem Kastenboden; Greifkante', 'um den Kasten',
         BOX[0] - 0.6, BOX[1] + 0.6, BOX[2] + 6, BOX[2] + 10, _bw + 1.2, bevel=0.4, x=BOX_X, parent_part='ammo_box'),
-    box('box_counter', 'Zählfenster', 'Round counter', 'ammo', 'energy', 'Zeigt den Füllstand des Kastens', 'links in den Kasten eingelassen',
-        BOX[1] - 34, BOX[1] - 14, BOX[2] + 18, BOX[2] + 24, 1.0, bevel=0.3, x=BOX_X + _bw / 2 - 1.0, parent_part='ammo_box'),
+    box('box_counter', 'Zählfenster', 'Round counter', 'ammo', 'graphite', 'Dunkles Fenster für die Leuchtzellen des Füllstands (0.34)',
+        'links in den Kasten eingelassen', BOX[1] - 34, BOX[1] - 14, BOX[2] + 18, BOX[2] + 24, 1.0, bevel=0.3, x=BOX_X + _bw / 2 - 1.0,
+        parent_part='ammo_box'),
+] + [
+    box(f'counter_cell_{i + 1}', f'Zählzelle {i + 1}', f'Counter cell {i + 1}', 'ammo', 'energy',
+        f'Leuchtet, solange der Kasten mehr als {i}/{CELLS} voll ist (Füllstand, 0.34)', 'im Zählfenster',
+        BOX[1] - 33 + 4 * i, BOX[1] - 30 + 4 * i, BOX[2] + 19, BOX[2] + 23, 0.6, bevel=0.15, x=BOX_X + _bw / 2 - 0.1,
+        parent_part='ammo_box', move=dict(kind='glow', pivot=None, event='fire', max=5.0))
+    for i in range(CELLS)
+] + [
     prof('box_grip', 'Kastengriff', 'Box grip', 'ammo', 'anodized', 'Griffleiste vorn am Kasten (Kasten ziehen)', 'vorn am Kasten verschraubt',
          [(BOX[1] - 1, BOX[2] + 12), (BOX[1] + 5, BOX[2] + 16), (BOX[1] + 5, BOX[3] - 16), (BOX[1] - 1, BOX[3] - 12)], 22, bevel=R_SMALL,
          x=BOX_X, parent_part='ammo_box'),
-    part('belt', 'Gurt', 'Belt', 'ammo', 'multi', 'brass', 'Patronen im Gurt vom Kasten zur Zuführung (sichtbarer Füllstand)',
-         'im Kasten, durch die Gurtführung in den Einlauf', bevel=0.3, smooth=True, parent_part='ammo_box',
+    part('belt', 'Gurt', 'Belt', 'ammo', 'multi', 'brass', 'Oberste Patrone des Gurts im Einlauf (Füllstand: die Patronen darunter sind '
+         'eigene Teile belt_round_2–4)', 'durch die Gurtführung in den Einlauf', bevel=0.3, smooth=True, parent_part='ammo_box',
          move=dict(kind='translate', pivot=(FEED[0] + 22, ROUNDS[-1], BELT_X), vector_mm=(0, PITCH, 0), event='fire', cycle='shot',
                    note='Vorschub um eine Gliedteilung je Schuss nach oben in den Einlauf, danach zurück (Schleife: die nächste Patrone '
-                        'steht an derselben Stelle); Animation mit dem Ego-Übertrag',
+                        'steht an derselben Stelle); im Ego-Feuer seit 0.34 (EGO_LIVE index)',
                    expect=((FEED[0] + 22, ROUNDS[-1], BELT_X), (0, 1, 0))),
-         items=[dict(shape='cyl', axis='f', c=(u, BELT_X), a0=FEED[0] + 2, a1=FEED[0] + 44, r=4.6, segs=16) for u in ROUNDS]
-         + [dict(shape='cyl', axis='f', c=(u, BELT_X), a0=FEED[0] + 44, a1=FEED[0] + 54, r=4.6, r1=1.6, segs=16) for u in ROUNDS]),
+         items=_round(ROUNDS[-1])),
     part('belt_links', 'Gurtglieder', 'Belt links', 'ammo', 'multi', 'dark_metal', 'Verbinden die Patronen; werden ausgeworfen',
-         'um die Patronen', bevel=0.2, smooth=True, parent_part='belt',
-         items=[dict(shape='cyl', axis='f', c=(u, BELT_X), a0=FEED[0] + a, a1=FEED[0] + a + 7, r=5.4, r_in=4.5, segs=16)
-                for u in ROUNDS for a in (8, 30)]),
+         'um die oberste Patrone', bevel=0.2, smooth=True, parent_part='belt', items=_links(ROUNDS[-1])),
+]
+# Füllstand (0.34 „Payload“): die Patronen unter der obersten als eigene Teile (Kind des Gurts, laufen mit dem Vorschub); ist der Kasten
+# fast leer, verschwindet der Gurt von unten (EGO_LIVE rounds, Unity)
+for i, u in enumerate(reversed(ROUNDS[:-1]), start=2):
+    P += [
+        part(f'belt_round_{i}', f'Gurtpatrone {i}', f'Belt round {i}', 'ammo', 'multi', 'brass', f'{i}. Patrone von oben im Gurt (Füllstand)',
+             'im Gurt unter der vorigen', bevel=0.3, smooth=True, parent_part='belt', items=_round(u)),
+        part(f'belt_link_{i}', f'Gurtglieder {i}', f'Belt links {i}', 'ammo', 'multi', 'dark_metal', f'Glieder der {i}. Patrone',
+             f'um die {i}. Patrone', bevel=0.2, smooth=True, parent_part=f'belt_round_{i}', items=_links(u)),
+    ]
+P += [
     part('belt_guide', 'Gurtführung', 'Belt guide', 'ammo', 'multi', 'anodized', 'Führt den Gurt vom Kasten zum Zuführfenster',
          'links am Gehäuse verschraubt', bevel=R_FINE,
          items=[dict(shape='box', f0=f0, f1=f0 + 4, u0=BOX[3] - 2, u1=MOUTH, w=12, x=BELT_X) for f0 in (FEED[0] - 4, FEED[1] + 1)]),
@@ -238,8 +266,7 @@ ANCHORS = {
 }
 ANCHORS.update(SIGHT_ANCHORS)
 # Auswurf (Daten, kein Anker): Hülse aus dem Auswurffenster rechts unten, Glied aus dem Gliederauswurf darüber; beide nach rechts
-# (vom Auge weg). Das Glied ist eine eigene Form im Modul, solange ego.py im Unity-Quellenhash steht (wie die Schrothülse von 08).
-EJECT_CASES = {'belt_link': dict(len_mm=8, r_mm=5.4, segs=10)}
+# (vom Auge weg). Die Gliedform belt_link steht seit 0.34 in ego.EJECT.cases.
 EJECT = dict(at=((PORT[0] + PORT[1]) / 2, (PORT[2] + PORT[3]) / 2, -W_REC / 2), dir=(0.15, -0.3, -1.0), case='rifle',
              src='E: Auswurffenster rechts unter der Klappe port_cover, Hülse nach rechts und etwas nach unten',
              links=dict(at=((LINK_PORT[0] + LINK_PORT[1]) / 2, (LINK_PORT[2] + LINK_PORT[3]) / 2, -W_REC / 2), dir=(0.1, 0.35, -1.0),
@@ -258,7 +285,11 @@ EGO_GRIPS = {
     'cover':   dict(part='feed_cover', contact=(COVER[0] + 12, COVER[3] + 0.5, 12), palm=(0.0, -1.0, 0.0), fingers=(1.0, 0.0, -0.2),
                     fingers_pose='pinch', src='E hinten auf dem Zuführdeckel am Deckelriegel (Socket_FeedCover), hebt den Deckel an'),
 }
-EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer
+# Abzug, Verschluss, Auswurfklappe im laufenden Feuer; 0.34 „Payload“: Gurtvorschub je Schuss (index), Gurt von unten leer (rounds:
+# Satz i sichtbar, solange mehr als i Patronen im Kasten sind, Satz 0 = oberste Patrone), Zählzellen nach dem Anteil (fill)
+EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover', index=['belt'],
+                rounds=dict(mode='line', sets=[['belt', 'belt_links']] + [[f'belt_round_{i}', f'belt_link_{i}'] for i in range(2, len(ROUNDS) + 1)]),
+                fill=[f'counter_cell_{i + 1}' for i in range(CELLS)])
 _shots = [3, 7, 11, 15, 19]
 ACTIONS = {
     'fire_auto': dict(de='Dauerfeuer (Verschluss sichtbar)', frames=30, step=1, keys={

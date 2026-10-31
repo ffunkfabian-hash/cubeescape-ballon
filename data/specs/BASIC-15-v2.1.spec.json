@@ -69,9 +69,20 @@
     "ammo_box",
     "box_band",
     "box_counter",
+    "counter_cell_1",
+    "counter_cell_2",
+    "counter_cell_3",
+    "counter_cell_4",
+    "counter_cell_5",
     "box_grip",
     "belt",
     "belt_links",
+    "belt_round_2",
+    "belt_link_2",
+    "belt_round_3",
+    "belt_link_3",
+    "belt_round_4",
+    "belt_link_4",
     "belt_guide",
     "feed_mouth",
     "feed_lip"
@@ -1560,10 +1571,10 @@
    "name_de": "Zählfenster",
    "name_en": "Round counter",
    "assembly": "ammo",
-   "function_de": "Zeigt den Füllstand des Kastens",
+   "function_de": "Dunkles Fenster für die Leuchtzellen des Füllstands (0.34)",
    "attachment_de": "links in den Kasten eingelassen",
-   "material_role": "energy",
-   "material_de": "Energieanzeige (leuchtend)",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
    "interface": null,
    "parent_part": "ammo_box",
    "shape": "box",
@@ -1594,6 +1605,241 @@
    "triangles": 108,
    "volume_cm3": 0.12,
    "moving": null,
+   "removable": false
+  },
+  {
+   "id": "counter_cell_1",
+   "name_de": "Zählzelle 1",
+   "name_en": "Counter cell 1",
+   "assembly": "ammo",
+   "function_de": "Leuchtet, solange der Kasten mehr als 0/5 voll ist (Füllstand, 0.34)",
+   "attachment_de": "im Zählfenster",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "ammo_box",
+   "shape": "box",
+   "bevel_mm": 0.15,
+   "blender_object": "counter_cell_1",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.1002,
+     -0.166,
+     0.019
+    ],
+    "max": [
+     0.1008,
+     -0.163,
+     0.023
+    ]
+   },
+   "size_mm": [
+    0.6,
+    3.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": {
+    "kind": "glow",
+    "event": "fire",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "counter_cell_2",
+   "name_de": "Zählzelle 2",
+   "name_en": "Counter cell 2",
+   "assembly": "ammo",
+   "function_de": "Leuchtet, solange der Kasten mehr als 1/5 voll ist (Füllstand, 0.34)",
+   "attachment_de": "im Zählfenster",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "ammo_box",
+   "shape": "box",
+   "bevel_mm": 0.15,
+   "blender_object": "counter_cell_2",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.1002,
+     -0.17,
+     0.019
+    ],
+    "max": [
+     0.1008,
+     -0.167,
+     0.023
+    ]
+   },
+   "size_mm": [
+    0.6,
+    3.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": {
+    "kind": "glow",
+    "event": "fire",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "counter_cell_3",
+   "name_de": "Zählzelle 3",
+   "name_en": "Counter cell 3",
+   "assembly": "ammo",
+   "function_de": "Leuchtet, solange der Kasten mehr als 2/5 voll ist (Füllstand, 0.34)",
+   "attachment_de": "im Zählfenster",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "ammo_box",
+   "shape": "box",
+   "bevel_mm": 0.15,
+   "blender_object": "counter_cell_3",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.1002,
+     -0.174,
+     0.019
+    ],
+    "max": [
+     0.1008,
+     -0.171,
+     0.023
+    ]
+   },
+   "size_mm": [
+    0.6,
+    3.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": {
+    "kind": "glow",
+    "event": "fire",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "counter_cell_4",
+   "name_de": "Zählzelle 4",
+   "name_en": "Counter cell 4",
+   "assembly": "ammo",
+   "function_de": "Leuchtet, solange der Kasten mehr als 3/5 voll ist (Füllstand, 0.34)",
+   "attachment_de": "im Zählfenster",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "ammo_box",
+   "shape": "box",
+   "bevel_mm": 0.15,
+   "blender_object": "counter_cell_4",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.1002,
+     -0.178,
+     0.019
+    ],
+    "max": [
+     0.1008,
+     -0.175,
+     0.023
+    ]
+   },
+   "size_mm": [
+    0.6,
+    3.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": {
+    "kind": "glow",
+    "event": "fire",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
+   "removable": false
+  },
+  {
+   "id": "counter_cell_5",
+   "name_de": "Zählzelle 5",
+   "name_en": "Counter cell 5",
+   "assembly": "ammo",
+   "function_de": "Leuchtet, solange der Kasten mehr als 4/5 voll ist (Füllstand, 0.34)",
+   "attachment_de": "im Zählfenster",
+   "material_role": "energy",
+   "material_de": "Energieanzeige (leuchtend)",
+   "interface": null,
+   "parent_part": "ammo_box",
+   "shape": "box",
+   "bevel_mm": 0.15,
+   "blender_object": "counter_cell_5",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.1002,
+     -0.182,
+     0.019
+    ],
+    "max": [
+     0.1008,
+     -0.179,
+     0.023
+    ]
+   },
+   "size_mm": [
+    0.6,
+    3.0,
+    4.0
+   ],
+   "triangles": 108,
+   "volume_cm3": 0.01,
+   "moving": {
+    "kind": "glow",
+    "event": "fire",
+    "note": null,
+    "pivot_m": null,
+    "emission_max": 5.0
+   },
    "removable": false
   },
   {
@@ -1642,8 +1888,8 @@
    "name_de": "Gurt",
    "name_en": "Belt",
    "assembly": "ammo",
-   "function_de": "Patronen im Gurt vom Kasten zur Zuführung (sichtbarer Füllstand)",
-   "attachment_de": "im Kasten, durch die Gurtführung in den Einlauf",
+   "function_de": "Oberste Patrone des Gurts im Einlauf (Füllstand: die Patronen darunter sind eigene Teile belt_round_2–4)",
+   "attachment_de": "durch die Gurtführung in den Einlauf",
    "material_role": "brass",
    "material_de": "Messing (Patronen)",
    "interface": null,
@@ -1660,7 +1906,7 @@
     "min": [
      0.02729,
      -0.152,
-     0.05989
+     0.09109
     ],
     "max": [
      0.03631,
@@ -1671,14 +1917,14 @@
    "size_mm": [
     9.0,
     52.0,
-    40.2
+    9.0
    ],
-   "triangles": 1504,
-   "volume_cm3": 12.14,
+   "triangles": 376,
+   "volume_cm3": 3.04,
    "moving": {
     "kind": "translate",
     "event": "fire",
-    "note": "Vorschub um eine Gliedteilung je Schuss nach oben in den Einlauf, danach zurück (Schleife: die nächste Patrone steht an derselben Stelle); Animation mit dem Ego-Übertrag",
+    "note": "Vorschub um eine Gliedteilung je Schuss nach oben in den Einlauf, danach zurück (Schleife: die nächste Patrone steht an derselben Stelle); im Ego-Feuer seit 0.34 (EGO_LIVE index)",
     "pivot_m": [
      0.0318,
      -0.12,
@@ -1699,7 +1945,7 @@
    "name_en": "Belt links",
    "assembly": "ammo",
    "function_de": "Verbinden die Patronen; werden ausgeworfen",
-   "attachment_de": "um die Patronen",
+   "attachment_de": "um die oberste Patrone",
    "material_role": "dark_metal",
    "material_de": "Brüniertes Metall",
    "interface": null,
@@ -1716,7 +1962,7 @@
     "min": [
      0.0265,
      -0.135,
-     0.0591
+     0.0903
     ],
     "max": [
      0.0371,
@@ -1727,10 +1973,256 @@
    "size_mm": [
     10.6,
     29.0,
-    41.8
+    10.6
    ],
-   "triangles": 3072,
-   "volume_cm3": 1.52,
+   "triangles": 768,
+   "volume_cm3": 0.38,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belt_round_2",
+   "name_de": "Gurtpatrone 2",
+   "name_en": "Belt round 2",
+   "assembly": "ammo",
+   "function_de": "2. Patrone von oben im Gurt (Füllstand)",
+   "attachment_de": "im Gurt unter der vorigen",
+   "material_role": "brass",
+   "material_de": "Messing (Patronen)",
+   "interface": null,
+   "parent_part": "belt",
+   "shape": "multi",
+   "bevel_mm": 0.3,
+   "blender_object": "belt_round_2",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.02729,
+     -0.152,
+     0.08069
+    ],
+    "max": [
+     0.03631,
+     -0.1,
+     0.08971
+    ]
+   },
+   "size_mm": [
+    9.0,
+    52.0,
+    9.0
+   ],
+   "triangles": 376,
+   "volume_cm3": 3.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belt_link_2",
+   "name_de": "Gurtglieder 2",
+   "name_en": "Belt links 2",
+   "assembly": "ammo",
+   "function_de": "Glieder der 2. Patrone",
+   "attachment_de": "um die 2. Patrone",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "belt_round_2",
+   "shape": "multi",
+   "bevel_mm": 0.2,
+   "blender_object": "belt_link_2",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0265,
+     -0.135,
+     0.0799
+    ],
+    "max": [
+     0.0371,
+     -0.106,
+     0.0905
+    ]
+   },
+   "size_mm": [
+    10.6,
+    29.0,
+    10.6
+   ],
+   "triangles": 768,
+   "volume_cm3": 0.38,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belt_round_3",
+   "name_de": "Gurtpatrone 3",
+   "name_en": "Belt round 3",
+   "assembly": "ammo",
+   "function_de": "3. Patrone von oben im Gurt (Füllstand)",
+   "attachment_de": "im Gurt unter der vorigen",
+   "material_role": "brass",
+   "material_de": "Messing (Patronen)",
+   "interface": null,
+   "parent_part": "belt",
+   "shape": "multi",
+   "bevel_mm": 0.3,
+   "blender_object": "belt_round_3",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.02729,
+     -0.152,
+     0.07029
+    ],
+    "max": [
+     0.03631,
+     -0.1,
+     0.07931
+    ]
+   },
+   "size_mm": [
+    9.0,
+    52.0,
+    9.0
+   ],
+   "triangles": 376,
+   "volume_cm3": 3.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belt_link_3",
+   "name_de": "Gurtglieder 3",
+   "name_en": "Belt links 3",
+   "assembly": "ammo",
+   "function_de": "Glieder der 3. Patrone",
+   "attachment_de": "um die 3. Patrone",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "belt_round_3",
+   "shape": "multi",
+   "bevel_mm": 0.2,
+   "blender_object": "belt_link_3",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0265,
+     -0.135,
+     0.0695
+    ],
+    "max": [
+     0.0371,
+     -0.106,
+     0.0801
+    ]
+   },
+   "size_mm": [
+    10.6,
+    29.0,
+    10.6
+   ],
+   "triangles": 768,
+   "volume_cm3": 0.38,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belt_round_4",
+   "name_de": "Gurtpatrone 4",
+   "name_en": "Belt round 4",
+   "assembly": "ammo",
+   "function_de": "4. Patrone von oben im Gurt (Füllstand)",
+   "attachment_de": "im Gurt unter der vorigen",
+   "material_role": "brass",
+   "material_de": "Messing (Patronen)",
+   "interface": null,
+   "parent_part": "belt",
+   "shape": "multi",
+   "bevel_mm": 0.3,
+   "blender_object": "belt_round_4",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.02729,
+     -0.152,
+     0.05989
+    ],
+    "max": [
+     0.03631,
+     -0.1,
+     0.06891
+    ]
+   },
+   "size_mm": [
+    9.0,
+    52.0,
+    9.0
+   ],
+   "triangles": 376,
+   "volume_cm3": 3.04,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "belt_link_4",
+   "name_de": "Gurtglieder 4",
+   "name_en": "Belt links 4",
+   "assembly": "ammo",
+   "function_de": "Glieder der 4. Patrone",
+   "attachment_de": "um die 4. Patrone",
+   "material_role": "dark_metal",
+   "material_de": "Brüniertes Metall",
+   "interface": null,
+   "parent_part": "belt_round_4",
+   "shape": "multi",
+   "bevel_mm": 0.2,
+   "blender_object": "belt_link_4",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     0.0265,
+     -0.135,
+     0.0591
+    ],
+    "max": [
+     0.0371,
+     -0.106,
+     0.0697
+    ]
+   },
+   "size_mm": [
+    10.6,
+    29.0,
+    10.6
+   ],
+   "triangles": 768,
+   "volume_cm3": 0.38,
    "moving": null,
    "removable": false
   },
@@ -2938,8 +3430,8 @@
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
-  "parts": 62,
-  "triangles": 32020,
+  "parts": 73,
+  "triangles": 32560,
   "assemblies": 8
  },
  "actions": {

@@ -21,7 +21,8 @@ Visier: K1 „Klammer“ (Baukasten v3, visier-konzept › 6a; Kimme/Korn nach V
 Leuchtklammern bündig im Kimmenblatt, Kornpunkt. M1 „Mini“ bleibt Variante (nur dokumentiert, nicht gebaut).
 Schlichtheitsbudget: Leuchten 1 Funktion (Visier: Klammern und Kornpunkt) · Grafik 1 Band · Schrift 1 · Orange 2 (Trommelriegel,
 Klemmhebel des Visiers) · Schrauben keine.
-Hülsen: Trommel – kein Auswurf beim Schuss (`EJECT = None`); die leeren Hülsen fallen beim Nachladen (Aktion `reload`, Marke `eject`).
+Hülsen: Trommel – kein Auswurf beim Schuss; die leeren Hülsen fallen beim Nachladen (`EJECT on='reload'`, Marker `Eject`, 0.34).
+Die Trommel dreht nach jedem Schuss eine Kammer weiter (`EGO_LIVE index`, 0.34).
 Status: Maße entworfen (Länge an v1 0,32 m angelehnt, Verhältnis H/L an Destiny 0,52–0,61; gemessene Werte im Spec),
 Formprinzipien abgeleitet aus den Bildreferenzen.
 """
@@ -111,7 +112,14 @@ ANCHORS = {
     'Socket_MagWell': dict(at=(CYL_F[1], CYL_U, 0), part='cylinder', note='Ladestelle: Trommelstirn (ausgeschwenkt beim Nachladen)'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
-EJECT = None    # Trommel: keine Hülse beim Schuss (Daten statt Sonderlogik); die Hülsen fallen beim Nachladen (reload › eject)
+# Hülsen (0.34 „Payload“): Trommel – keine Hülse beim Schuss; beim Nachladen (Marker Eject, Kran ausgeschwenkt) fallen die leeren Hülsen
+# hinten aus den Kammern (on='reload', Start im Teil cylinder auf dem Kammerkreis 14 mm, je verschossene Patrone eine, höchstens sechs).
+# Destiny/Motiongen: Revolver werfen beim Nachladen aus, nicht beim Schuss (Titanfall Wingman, CoD .357: muendung › 5; Annual Skate:
+# „Trommel später = Nachladen“, muendung › 3)
+EJECT = dict(at=(CYL_F[0] - 4, CYL_U, 4), dir=(0.35, 0.3, 1.0), case='revolver', on='reload', event='eject', part='cylinder',
+             ring=dict(r_mm=14, n=6), speed_k=0.35, life_k=2.0,
+             src='M beim Nachladen (Motiongen muendung › 3/5); E: hinten aus den Kammern, langsam nach außen (vom Rahmen weg, '
+                 'zur Kamera) und etwas nach vorn, dann fallend, 0,8 s sichtbar')
 # Ego-Griffe (0.33 „Armory“, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. contact = Mitte der
 # Handfläche auf der Oberfläche, palm = Richtung in das Bauteil, fingers = Fingerrichtung; part = Bauteil, an dem der Griff hängt.
 # Pistolengriff beidhändig: die Stützhand legt sich links an Griff und Griffhand (Socket_SupportHand); 'mag' ist die Trommel (folgt dem
@@ -127,7 +135,8 @@ EGO_GRIPS = {
     'charge':  dict(part='cylinder_latch', contact=(4, 62, FR_W / 2 + 3.5), palm=(0.0, 0.0, -1.0), fingers=(0.6, 0.8, 0.0),
                     fingers_pose='pinch', src='E am Trommelriegel links (Daumen der Stützhand)'),
 }
-EGO_LIVE = dict(trigger='trigger', bolt='hammer', port='')     # Abzug, Hahn (zuckt beim Schuss, Spannabzug), keine Auswurfklappe
+# Abzug, Hahn (zuckt beim Schuss, Spannabzug), keine Auswurfklappe; index (0.34): die Trommel dreht nach jedem Schuss eine Kammer weiter
+EGO_LIVE = dict(trigger='trigger', bolt='hammer', port='', index=['cylinder'])
 ACTIONS = {k: dict(A) for k, A in V1.ACTIONS.items()}
 EXPLODE = {'sight': (0, 90, 0), 'ammo': (0, 0, 80), 'barrel': (110, 0, 0), 'grip_controls': (-10, -80, 0), 'mechanism': (0, 0, 60),
            'receiver': (0, 0, 0)}

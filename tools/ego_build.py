@@ -468,7 +468,13 @@ def build_fx(W):
         brass = kit.material(EG.EJECT['role'], 'aaa')
         for k in range(EG.EJECT['max_live']):
             shells.append(fx_mesh(f'FX_shell_{k}', CV, [(t, 0) for t in CF], [brass]))
-    return dict(flash=fl, shells=shells)
+    links = []
+    if E and E.get('links'):                      # Gurtglieder (0.34): eigene Form, eigener Pool, mit jeder Hülse
+        LV, LF = EG.case_mesh(E['links']['case'])
+        dark = kit.material('dark_metal', 'aaa')
+        for k in range(EG.EJECT['max_live']):
+            links.append(fx_mesh(f'FX_link_{k}', LV, [(t, 0) for t in LF], [dark]))
+    return dict(flash=fl, shells=shells, links=links)
 
 
 def eject_data(W):
@@ -476,7 +482,17 @@ def eject_data(W):
     E = getattr(W, 'EJECT', None)
     if not E:
         return None
-    return vdir(E['at']) * MM, vdir(E['dir']).normalized() * EG.EJECT['speed_mps'], vdir(EG.EJECT['spin_axis']).normalized()
+    return vdir(E['at']) * MM, vdir(E['dir']).normalized() * EG.EJECT['speed_mps'] * E.get('speed_k', 1.0), \
+        vdir(EG.EJECT['spin_axis']).normalized()
+
+
+def link_data(W):
+    """Wie eject_data für das Gurtglied (EJECT links, 0.34) oder None."""
+    E = getattr(W, 'EJECT', None)
+    L = E.get('links') if E else None
+    if not L:
+        return None
+    return vdir(L['at']) * MM, vdir(L['dir']).normalized() * EG.EJECT['speed_mps'], vdir(EG.EJECT['spin_axis']).normalized()
 
 
 def shell_matrix(W0, ej, t):
@@ -492,7 +508,7 @@ def fx_eval(sc, A, f, state):
     """Blitz (sichtbar für FLASH.dur_s ab dem Schussbild, gedreht nach flash_roll) und Hülsen (ab dem Schussbild + delay_frames für
     life_s, höchstens max_live gleichzeitig) im Bild f; Ergebnis in sc.fx_now, Objekte (falls gebaut) werden gesetzt."""
     fire = A.get('fire', [])
-    now = dict(flash=None, shells={})
+    now = dict(flash=None, shells={}, links={})
     i = EG.flash_visible(fire, f) if sc.P['gameplay'].get('muzzle_flash', True) else None   # Werkzeug (0.22): ohne Mündungsfeuer
     if i is not None:
         mz = vdir(sc.W.ANCHORS['Socket_Muzzle']['at']) * MM
@@ -505,8 +521,11 @@ def fx_eval(sc, A, f, state):
             if s <= f and k not in W0s:
                 W0s[k] = sc.WM.copy()                # Waffe im Schussbild (nach dem Rückstoß dieses Bilds)
         live = [k for k, s in enumerate(fire) if 0 <= (f - s) / EG.FPS - EG.EJECT['delay_frames'] / EG.FPS < EG.EJECT['life_s']]
+        lk = link_data(sc.W)
         for k in live[-EG.EJECT['max_live']:]:
             now['shells'][k] = shell_matrix(W0s[k], ej, (f - fire[k] - EG.EJECT['delay_frames']) / EG.FPS)
+            if lk:
+                now['links'][k] = shell_matrix(W0s[k], lk, (f - fire[k] - EG.EJECT['delay_frames']) / EG.FPS)
     sc.fx_now = now
     if sc.fx:
         ob = sc.fx['flash']
@@ -519,6 +538,11 @@ def fx_eval(sc, A, f, state):
             sh.hide_render = k is None
             if k is not None:
                 sh.matrix_world = now['shells'][k]
+        for slot, lo in enumerate(sc.fx.get('links', ())):
+            k = next((k for k in now['links'] if k % n == slot), None)
+            lo.hide_render = k is None
+            if k is not None:
+                lo.matrix_world = now['links'][k]
 
 
 # ------------------------------------------------------------------ Szene
@@ -536,7 +560,7 @@ class Scene:
         self.byid = {p['id']: p for p in W.PARTS}
         self.arms = {s: build_arm(s) for s in ('R', 'L')}
         self.fx = build_fx(W) if o.get('fx', True) else None      # Mündungsfeuer und Hülsen (0.16); der Export braucht nur die Matrizen
-        self.fx_now = dict(flash=None, shells={})
+        self.fx_now = dict(flash=None, shells={}, links={})
         BB.setup_render(854, o['samples'], gpu=o['gpu'], aaa=True, bloom=False, bg='mid')
         kit.set_mode(self.objs, 'aaa')
         for s in ('R', 'L'):
@@ -678,6 +702,10 @@ def evaluate(sc, A, f, report, state):
             mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         if live.get('port'):
             mech[live['port']] = 1.0 if shots else 0.0
+        for q in live.get('index', ()):      # Schrittteile (0.34): Trommel eine Kammer, Gurt eine Gliedteilung je Schuss
+            mech[q] = EG.index_level(A['fire'], f, EG.index_frames(G['rpm']))
+    for q in sc.P['live'].get('fill', ()):  # Zählzellen (0.34): in den Clips voller Kasten (Füllstand nur im Spiel, Unity)
+        mech.setdefault(q, 1.0)
     R2 = R @ off_rot
     pos2 = pos + off_pos
     # Magazin: fallen (leer) oder in der linken Hand

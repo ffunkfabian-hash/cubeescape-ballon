@@ -19,8 +19,11 @@ namespace Ballon.Ego
         public float trigger, bolt, port;   // Mechanik beim Feuern, < 0 = aus der Aktion
         public float ring;                  // 0.22: Ringdrehung des Werkzeugs in Dritteln (live), NaN = aus der Aktion
         public float glow;                  // 0.33: Leuchtteile weapon.live.glow (Dauerstrahl, Ladung) 0 … 1, < 0 = aus der Aktion
+        public float index;                 // 0.34: Schrittteile weapon.live.index (Trommel, Gurtvorschub) 0 … 1, < 0 = aus der Aktion
+        public float fill;                  // 0.34: Füllstand für die Zählzellen weapon.live.fill 0 … 1, < 0 = voll (Clips)
 
-        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN, glow = -1 };
+        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN, glow = -1,
+                                                  index = -1, fill = -1 };
     }
 
     public sealed class EgoOutput
@@ -43,6 +46,10 @@ namespace Ballon.Ego
         public Matrix4x4[] shells;                                 // sichtbare Hülsen [0, shellCount), Kapazität motion.eject.max_live
         public int[] shellIds;                                     // Schuss je Hülse (Aktion: Index in fire; live: laufende Nummer)
         public int shellCount;
+        public Matrix4x4[] links;                                  // 0.34: Gurtglieder [0, linkCount), je Hülse eines Schusses (MG)
+        public int[] linkIds;
+        public int linkCount;
+        public bool[] roundOn;                                     // 0.34: Füllstand je Satz weapon.live.rounds (Clips: alle an)
         public bool adsHidden;                                     // Zielfernrohr (0.20, motion.ads_hide): Teile mit ads_hide aus
     }
 
@@ -72,7 +79,7 @@ namespace Ballon.Ego
         readonly int[,] _fingerSeg;
         readonly int[] _thumbSeg;
         readonly Matrix4x4 _magRelLocal;
-        readonly Vector3 _muzzle, _ejPos, _ejVel, _spin;
+        readonly Vector3 _muzzle, _ejPos, _ejVel, _spin, _lkPos, _lkVel;
 
         public EgoSolver(EgoFile d)
         {
@@ -97,8 +104,13 @@ namespace Ballon.Ego
             if (Ejects)
             {
                 _ejPos = V(d.weapon.eject.pos);
-                _ejVel = V(d.weapon.eject.dir).normalized * d.motion.eject.speed_mps;
+                _ejVel = V(d.weapon.eject.dir).normalized * d.motion.eject.speed_mps * d.weapon.eject.speed_k;   // 0.34: fallen (Trommel)
                 _spin = V(d.motion.eject.spin_axis).normalized;
+                if (EjectsLinks)
+                {
+                    _lkPos = V(d.weapon.eject.links.pos);
+                    _lkVel = V(d.weapon.eject.links.dir).normalized * d.motion.eject.speed_mps;
+                }
             }
             MagPart = d.MagPart;         // 0.33: Bauteil des Griffs 'mag' (Magazin, Energiezelle)
             if (d.HasPart(MagPart))      // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
@@ -117,7 +129,19 @@ namespace Ballon.Ego
         public Vector3 AdsEye => D.CanAim ? V(D.Pose("ads").eye) : Vector3.zero;
         public int SegmentIndex(string s) => _seg[s];
         public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length],
-                                                        shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live] };
+                                                        shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live],
+                                                        links = new Matrix4x4[D.motion.eject.max_live], linkIds = new int[D.motion.eject.max_live],
+                                                        roundOn = AllOn(D.weapon.live.rounds.sets.Length) };
+
+        static bool[] AllOn(int n)
+        {
+            var b = new bool[n];
+            for (int k = 0; k < n; k++) b[k] = true;
+            return b;
+        }
+
+        /// <summary>Gurtglieder je Schuss (0.34, weapon.eject.links).</summary>
+        public bool EjectsLinks => Ejects && D.weapon.eject.links != null && D.weapon.eject.links.enabled;
 
         // -------------------------------------------------------------- Mündungsfeuer und Hülsen (ego_build.fx_eval)
         /// <summary>Waffe wirft Hülsen aus (ego.json › weapon.eject.enabled, Modul-Feld EJECT) – keine Sonderlogik nach Waffen-ID.</summary>
@@ -132,12 +156,38 @@ namespace Ballon.Ego
 
         /// <summary>Hülse t Sekunden nach dem Sichtbarwerden: Start im Auswurffenster der Waffe im Schussbild (W0), gerade Bahn plus
         /// Schwerkraft nach unten im Kameraraum, Drehung um spin_axis der Waffe (ego_build.shell_matrix).</summary>
-        public Matrix4x4 ShellMatrix(Matrix4x4 W0, float t)
+        public Matrix4x4 ShellMatrix(Matrix4x4 W0, float t) => Throw(W0, t, _ejPos, _ejVel);
+
+        /// <summary>Hülse mit Versatz off (Blender-Waffenrahmen, m) von der Startlage, z. B. eine Kammer des Trommelkreises (0.34).</summary>
+        public Matrix4x4 ShellMatrix(Matrix4x4 W0, float t, Vector3 off) => Throw(W0, t, _ejPos + off, _ejVel);
+
+        /// <summary>Gurtglied wie die Hülse, aus dem Gliederauswurf (0.34, ego_build.link_data).</summary>
+        public Matrix4x4 LinkMatrix(Matrix4x4 W0, float t) => Throw(W0, t, _lkPos, _lkVel);
+
+        /// <summary>Versatz der Hülse k von n auf dem Kammerkreis weapon.eject.ring_m um die Längsachse (Blender Y), 0 ohne Kreis.</summary>
+        public Vector3 RingOffset(int k, int n)
+        {
+            float r = D.weapon.eject.ring_m;
+            if (r <= 0 || n <= 0) return Vector3.zero;
+            float a = 2 * Mathf.PI * k / Mathf.Max(n, D.weapon.eject.ring_n);
+            return new Vector3(r * Mathf.Cos(a), 0, r * Mathf.Sin(a));
+        }
+
+        Matrix4x4 Throw(Matrix4x4 W0, float t, Vector3 p0, Vector3 v)
         {
             var E = D.motion.eject;
             var R0 = Rot3(W0);
-            var p = W0.MultiplyPoint3x4(_ejPos) + R0.MultiplyVector(_ejVel) * t + new Vector3(0, 0, -0.5f * E.gravity_mps2 * t * t);
+            var p = W0.MultiplyPoint3x4(p0) + R0.MultiplyVector(v) * t + new Vector3(0, 0, -0.5f * E.gravity_mps2 * t * t);
             return WithPos(R0 * Rot(Rad(E.spin_dps * t), _spin), p);
+        }
+
+        /// <summary>ego.index_level (0.34): Schrittteil im Bild f – 0 vor dem ersten Schuss, nach dem letzten Schuss s ≤ f in dur Bildern auf 1.</summary>
+        public static float IndexLevel(int[] fire, float f, float dur)
+        {
+            int last = int.MinValue;
+            if (fire != null) foreach (var s in fire) if (s <= f) last = s;
+            if (last == int.MinValue) return 0;
+            return Mathf.Clamp01((f - last) / dur);
         }
 
         /// <summary>Index des Schusses, dessen Blitz im Bild f sichtbar ist (dur_s ab dem Schussbild), sonst −1 (ego.flash_visible).</summary>
@@ -153,6 +203,7 @@ namespace Ballon.Ego
         {
             o.flashOn = false;
             o.shellCount = 0;
+            o.linkCount = 0;
             var fire = A.fire;
             if (fire == null || fire.Length == 0) return;
             int i = D.gameplay.muzzle_flash ? FlashVisible(fire, f) : -1;     // Werkzeug (0.22): ohne Mündungsfeuer
@@ -171,6 +222,11 @@ namespace Ballon.Ego
                 if (skip-- > 0) continue;
                 o.shells[o.shellCount] = ShellMatrix(st.shotWM[k], (f - fire[k] - E.delay_frames) / fps);
                 o.shellIds[o.shellCount++] = k;
+                if (EjectsLinks)                                         // Gurtglied mit der Hülse desselben Schusses (0.34)
+                {
+                    o.links[o.linkCount] = LinkMatrix(st.shotWM[k], (f - fire[k] - E.delay_frames) / fps);
+                    o.linkIds[o.linkCount++] = k;
+                }
             }
             bool Live(int k) { float t = (f - fire[k] - E.delay_frames) / fps; return t >= 0 && t < E.life_s; }
         }
@@ -396,6 +452,7 @@ namespace Ballon.Ego
                 if (G.Charge) L.glow = ChargeLevel(A.fire, f, chargeF, Mathf.Max(1, G.burst_shots), G.charge_fade_s * fps);
                 L.bolt = (n > 0 && f - last < 1.5f) ? 1 : 0;
                 L.port = n > 0 ? 1 : 0;
+                L.index = IndexLevel(A.fire, f, D.IndexFrames);             // 0.34: Trommel, Gurtvorschub (ego_build wie ego.index_level)
             }
             return L;
         }
@@ -443,6 +500,9 @@ namespace Ballon.Ego
             if (L.port >= 0 && !string.IsNullOrEmpty(live.port)) mech[live.port] = L.port;      // und ohne Auswurfklappe
             if (!float.IsNaN(L.ring) && !string.IsNullOrEmpty(live.ring)) mech[live.ring] = L.ring;
             if (L.glow >= 0 && live.glow != null) foreach (var g in live.glow) mech[g] = L.glow;   // Dauerstrahl, Ladewaffe (0.33)
+            if (L.index >= 0) foreach (var q in live.index) mech[q] = L.index;             // Schrittteile (0.34)
+            float fill = L.fill < 0 ? 1 : L.fill;                                           // Zählzellen (0.34): Clips voll
+            for (int k = 0; k < live.fill.Length; k++) mech[live.fill[k]] = Mathf.Clamp01(fill * live.fill.Length - k);
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));
