@@ -22,7 +22,7 @@ namespace Ballon.Ego
         public const bool Off = false;                               // Auslieferung: ohne Gegenprobe-Schalter
 #endif
 
-        public const int ProjectilePool = 8, LinePool = 24, RingPool = 4, LightPool = 2, MaxHits = 32;
+        public const int ProjectilePool = 8, LinePool = 24, RingPool = 4, LightPool = 2, PuddlePool = 4, MaxHits = 32;
         readonly int ScorchPool;                                     // motion.payload.decal.scorch_max
 
         readonly EgoPlayer _p;
@@ -83,6 +83,12 @@ namespace Ballon.Ego
         int _ringNext;
         readonly Light[] _lights;
         readonly float[] _lightAge, _lightK, _lightLife;
+        // Lachen (0.34.2, Granatwerfer): leuchtender Fleck auf der Fläche, pool_s lang, mit aufsteigender Glut; Ring, der älteste wird ersetzt
+        readonly Transform[] _puddles;
+        readonly Renderer[] _puddleR;
+        readonly float[] _puddleAge, _puddleLife, _puddleFade, _puddleHz, _puddleAcc, _puddleSize;
+        readonly Color[] _puddleC;
+        int _puddleNext;
         // Bildweiter Blitz (0.34.2, Rakete): Fläche vor der Viewmodel-Kamera, sichtbar screen_s (mindestens ein Bild)
         readonly Renderer _screenR;
         float _screenT, _screenK;
@@ -200,6 +206,16 @@ namespace Ballon.Ego
             _lightK = new float[LightPool];
             _lightLife = new float[LightPool];
             _scorchM = P.decal.scorch_m;
+            _puddles = new Transform[PuddlePool];
+            _puddleR = new Renderer[PuddlePool];
+            _puddleAge = new float[PuddlePool];
+            _puddleLife = new float[PuddlePool];
+            _puddleFade = new float[PuddlePool];
+            _puddleHz = new float[PuddlePool];
+            _puddleAcc = new float[PuddlePool];
+            _puddleSize = new float[PuddlePool];
+            _puddleC = new Color[PuddlePool];
+            for (int k = 0; k < PuddlePool; k++) _puddles[k] = Quad("Lache", m.glow, _root, out _puddleR[k]);
             var sq = Quad("Bildblitz", m.glow, p.viewCam.transform, out _screenR);    // füllt das Bild (Fleck × 3 → fast gleichmäßig)
             sq.gameObject.layer = Bootstrap.ViewmodelLayer;
             float z = p.viewCam.nearClipPlane + 0.02f;
@@ -637,6 +653,24 @@ namespace Ballon.Ego
             _scorchAge[s] = 0;
             SetDecal(_scorchR[s], R(0, 4), 1, 1);
             _scorchR[s].enabled = true;
+            if (X.pool_s > 0 && surface != null)                       // Lache auf der getroffenen Fläche (Granatwerfer, 0.34.2)
+            {
+                int q = _puddleNext;
+                _puddleNext = (_puddleNext + 1) % PuddlePool;
+                var pt = _puddles[q];
+                pt.SetParent(null, false);
+                pt.SetPositionAndRotation(p + n * 0.012f, Quaternion.LookRotation(-n) * Quaternion.Euler(0, 0, R(0, 360)));
+                _puddleSize[q] = radius * X.pool_k * 2;
+                pt.localScale = Vector3.one * _puddleSize[q];
+                pt.SetParent(surface, true);
+                _puddleAge[q] = 0;
+                _puddleLife[q] = X.pool_s;
+                _puddleFade[q] = Mathf.Max(0.05f, X.pool_fade_s);
+                _puddleHz[q] = X.pool_hz;
+                _puddleAcc[q] = 0;
+                _puddleC[q] = X.Pool(energy);
+                _puddleR[q].enabled = true;
+            }
             int m = Physics.OverlapSphereNonAlloc(p, radius, _overlap, ~0, QueryTriggerInteraction.Ignore);
             int once = 0;
             for (int k = 0; k < m; k++)
@@ -829,6 +863,33 @@ namespace Ballon.Ego
                 if (a <= 0) _scorchR[k].enabled = false;
                 else if (_scorchAge[k] >= Dc.life_s - Dc.fade_s) SetDecal(_scorchR[k], 1.3f, 1, a);
             }
+            for (int k = 0; k < PuddlePool; k++)                           // Lachen: einblenden, leicht pulsen, am Ende ausblenden; Glut steigt auf
+            {
+                if (!_puddleR[k].enabled) continue;
+                _puddleAge[k] += dt;
+                float t = _puddleAge[k], life = _puddleLife[k];
+                if (t >= life) { _puddleR[k].enabled = false; continue; }
+                float a = Mathf.Min(1, t / 0.15f) * Mathf.Clamp01((life - t) / _puddleFade[k]) * (0.85f + 0.15f * Mathf.Sin(t * 7.3f + k));
+                _puddleR[k].GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", _puddleC[k] * 1.4f);
+                _mpb.SetFloat("_Alpha", a);
+                _mpb.SetFloat("_Noise", 1);                                  // unregelmäßiger Rand statt glatter Scheibe
+                _mpb.SetFloat("_Seed", k * 3.7f);
+                _puddleR[k].SetPropertyBlock(_mpb);
+                _puddleAcc[k] += dt * _puddleHz[k] * a;
+                var tr = _puddles[k];
+                for (; _puddleAcc[k] >= 1; _puddleAcc[k]--)
+                {
+                    float rr = Mathf.Sqrt(R01()) * 0.4f, ang = R(0, 6.2832f);
+                    var ep = new ParticleSystem.EmitParams
+                    {
+                        position = tr.TransformPoint(new Vector3(rr * Mathf.Cos(ang), rr * Mathf.Sin(ang), 0)) - tr.forward * 0.02f,
+                        velocity = -tr.forward * R(0.3f, 0.8f) + Vector3.up * R(0.2f, 0.6f),
+                        startLifetime = R(0.5f, 0.9f), startSize = R(0.04f, 0.09f), startColor = _puddleC[k] * 3f,
+                    };
+                    _glow.Emit(ep, 1);
+                }
+            }
             bool screen = _screenT > 0;                                    // bildweiter Blitz: im Bild der Explosion, mindestens ein Bild
             if (_screenR.enabled != screen) _screenR.enabled = screen;
             if (screen)
@@ -914,6 +975,8 @@ namespace Ballon.Ego
         public int RingsShown { get { int n = 0; foreach (var r in _ringR) if (r.enabled) n++; return n; } }
         public int LightsShown { get { int n = 0; foreach (var l in _lights) if (l.enabled) n++; return n; } }
         public int ScorchShown { get { int n = 0; foreach (var r in _scorchR) if (r.enabled) n++; return n; } }
+        /// <summary>Sichtbare Lachen (0.34.2, Tests).</summary>
+        public int PuddlesShown { get { int n = 0; foreach (var r in _puddleR) if (r.enabled) n++; return n; } }
         /// <summary>Bildweiter Blitz im nächsten gezeichneten Bild (0.34.2, Tests).</summary>
         public bool ScreenFlashShown => _screenR.enabled;
         public int ProjectilesStuck { get { int n = 0; for (int i = 0; i < ProjectilePool; i++) if (_projOn[i] && _projStuck[i] >= 0) n++; return n; } }
@@ -934,6 +997,7 @@ namespace Ballon.Ego
             for (int k = 0; k < LightPool; k++) _lights[k].enabled = false;
             _screenT = 0;
             _screenR.enabled = false;
+            for (int k = 0; k < PuddlePool; k++) { _puddles[k].SetParent(_root, false); _puddleR[k].enabled = false; }
             for (int k = 0; k < _vmSmoke.Length; k++) { _vmSmokeLeft[k] = 0; _vmSmoke[k].Clear(); _vmGlow[k].Clear(); }
             _sparks.Clear();
             _dust.Clear();

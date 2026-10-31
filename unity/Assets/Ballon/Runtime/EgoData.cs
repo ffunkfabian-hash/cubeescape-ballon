@@ -307,14 +307,16 @@ namespace Ballon.Ego
         public string name;                              // 0.34.2: rocket, grenade
         public float flash_s, flash_k, ring_s, ring_k, spark_mps, spark_s, smoke_s, smoke_k, light_s, light_k;
         public float screen_s, screen_k;                 // 0.34.2: bildweiter Blitz (Dauer, Deckung), 0 = keiner
+        public float pool_s, pool_k, pool_hz, pool_fade_s;   // 0.34.2: Lache (Dauer, Radius zum Explosionsradius, Glut je s, Ausblenden)
         public int sparks, smoke, fire; public float fire_s, fire_k;   // fire: Feuerkugeln (Anzahl, Dauer, Größe zum Radius)
-        public string core_color, fire_color, smoke_color, ring_color, src;   // leer = Leuchtfarbe der Waffe (Elementfarbe)
-        [NonSerialized] Color _core, _fire, _smoke, _ring; [NonSerialized] bool _has, _hasFire, _hasSmoke, _hasRing;
+        public string core_color, fire_color, smoke_color, ring_color, pool_color, src;   // leer = Leuchtfarbe der Waffe (Elementfarbe)
+        [NonSerialized] Color _core, _fire, _smoke, _ring, _pool; [NonSerialized] bool _has, _hasFire, _hasSmoke, _hasRing, _hasPool;
         /// <summary>Farben einmal gelesen (kein Speicher je Explosion); ohne Farbe die Leuchtfarbe e der Waffe.</summary>
         public Color Core(Color e) { if (!_has) { _has = Parse(core_color, out _core); } return _has ? _core : e; }
         public Color Fire(Color e) { if (!_hasFire) _hasFire = Parse(fire_color, out _fire); return _hasFire ? _fire : e; }
         public Color Smoke(Color e) { if (!_hasSmoke) _hasSmoke = Parse(smoke_color, out _smoke); return _hasSmoke ? _smoke : e; }
         public Color Ring(Color e) { if (!_hasRing) _hasRing = Parse(ring_color, out _ring); return _hasRing ? _ring : e; }
+        public Color Pool(Color e) { if (!_hasPool) _hasPool = Parse(pool_color, out _pool); return _hasPool ? _pool : e; }
         static bool Parse(string h, out Color c) { c = Color.white; return !string.IsNullOrEmpty(h) && ColorUtility.TryParseHtmlString(h, out c); }
     }
     [Serializable] public class EgoSmoke { public float rate_hz, puff_m, grow, rise_mps, life_s, alpha; public string color, src; }

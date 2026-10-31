@@ -118,9 +118,19 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual("grenade", F.explosion);
                 Assert.That(() => p.fx.Tick(Dt, p.arsenal.Active, false, ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer)),
                             Is.Not.AllocatingGCMemory(), "Ring, Licht, Rauch, Brandfleck ohne Speicher");
+                Assert.AreEqual(1, p.fx.PuddlesShown, "Lache auf der Wand");
                 for (int f = 0; f < 20; f++) yield return null;
                 Assert.AreEqual(0, p.fx.RingsShown, "Ring nach ring_s aus");
                 Assert.AreEqual(0, p.fx.LightsShown, "Licht nach light_s aus");
+                var X = p.C.S.D.Explosion(F.explosion);
+                Assert.AreEqual(1, p.fx.PuddlesShown, "Lache bleibt");
+                Assert.That(() => p.fx.Tick(Dt, p.arsenal.Active, false, ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer)),
+                            Is.Not.AllocatingGCMemory(), "Lache mit Glut ohne Speicher");
+                int mask = ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer);
+                for (float t = 20 * Dt; t < X.pool_s - 0.3f; t += 0.1f) p.fx.Tick(0.1f, p.arsenal.Active, false, mask);
+                Assert.AreEqual(1, p.fx.PuddlesShown, $"Lache steht fast {X.pool_s} s");
+                for (int f = 0; f < 10; f++) p.fx.Tick(0.1f, p.arsenal.Active, false, mask);
+                Assert.AreEqual(0, p.fx.PuddlesShown, $"Lache nach {X.pool_s} s weg");
             }
             finally { Done(p, wall); }
         }

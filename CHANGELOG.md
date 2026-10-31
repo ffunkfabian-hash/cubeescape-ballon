@@ -3,7 +3,7 @@
 ## 0.34.2 Patch „impact-nachtrag“ – offene Punkte aus 0.34.1 (Branch `claude/ballon-patch-impact-nachtrag`)
 
 - Explosion je Art (`ego.EXPLOSIONS`): Rakete mit bildweitem Blitz 0,025 s getrennt vom Kern, kein Rohrrauch mehr; Granatwerfer mit Kern
-  0,125 s nach REF 0.36, ohne Rauch, Ring in der Waffenfarbe, kleiner Feuerball (Nutzerentscheid 184 B).
+  0,125 s nach REF 0.36, ohne Rauch, Ring in der Waffenfarbe, kleiner Feuerball (Nutzerentscheid 184 B), Lache 5,6 s mit Glut (Nutzerwunsch).
 - Fusionsbolzen und sichtbare Pfeile bleiben E (Impact ohne Messung, einschlag.md › 8); Tabelle im PR-Bericht.
 
 ## 0.34.1 Patch „impact“ – Wirkungswerte nach REF 0.36 „Impact“ (Branch `claude/ballon-patch-impact`)

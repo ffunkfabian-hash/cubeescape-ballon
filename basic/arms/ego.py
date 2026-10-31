@@ -490,22 +490,24 @@ IMPACTS = dict(
                src='E: Pfeil: kleiner Lichtpunkt in der Leuchtfarbe, wenig Staub; der Pfeil steckt stick_s (Destiny-Pfeil im Flug unsichtbar)'),
 )
 # Explosion je Art (0.34.2 „impact-nachtrag“, PAYLOAD explosion): Kern (flash_s), bildweiter Blitz (screen_s, screen_k = Deckung), Feuerkugeln,
-# Druckring, Funken, Rauch, kurzes Licht; Größen mit radius_m der Klasse skaliert (E). Farbe leer = Leuchtfarbe der Waffe (Elementfarbe).
+# Druckring, Funken, Rauch, kurzes Licht; Lache (pool_s Dauer, pool_k Radius zum Explosionsradius, pool_hz aufsteigende Glut je Sekunde,
+# pool_fade_s Ausblenden; 0 = keine); Größen mit radius_m der Klasse skaliert (E). Farbe leer = Leuchtfarbe der Waffe (Elementfarbe).
 EXPLOSIONS = dict(
-    rocket=dict(flash_s=0.17, flash_k=1.3, screen_s=0.025, screen_k=0.3, fire=10, fire_s=0.75, fire_k=0.75, ring_s=0.10, ring_k=0.9,
+    rocket=dict(flash_s=0.17, flash_k=1.3, screen_s=0.025, screen_k=0.3, pool_s=0.0, pool_k=0.0, pool_hz=0.0, pool_fade_s=0.0, fire=10, fire_s=0.75, fire_k=0.75, ring_s=0.10, ring_k=0.9,
                 sparks=40, spark_mps=14.0, spark_s=0.7, smoke=16, smoke_s=1.0, smoke_k=0.7, light_s=0.15, light_k=4.0,
-                colors=dict(core='#FCECDE', fire='#E9B268', smoke='#020C08', ring='#FFE2B8'),
+                colors=dict(core='#FCECDE', fire='#E9B268', smoke='#020C08', ring='#FFE2B8', pool=''),
                 src='M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): bildweiter Blitz 0,02–0,03 s getrennt vom Kern '
                     '0,12–0,22 s, Ring 0,07–0,13 s, Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, '
                     'Rauch #020C08; Deckung des Blitzes, Ringfarbe und Größen E'),
-    grenade=dict(flash_s=0.125, flash_k=1.1, screen_s=0.0, screen_k=0.0, fire=5, fire_s=0.35, fire_k=0.55, ring_s=0.10, ring_k=0.8,
+    grenade=dict(flash_s=0.125, flash_k=1.1, screen_s=0.0, screen_k=0.0, pool_s=5.6, pool_k=0.5, pool_hz=8.0, pool_fade_s=1.0, fire=5, fire_s=0.35, fire_k=0.55, ring_s=0.10, ring_k=0.8,
                  sparks=24, spark_mps=10.0, spark_s=0.4, smoke=0, smoke_s=0.0, smoke_k=0.0, light_s=0.15, light_k=3.0,
-                 colors=dict(core='#EEFEFE', fire='#F3AF62', smoke='', ring=''),
+                 colors=dict(core='#EEFEFE', fire='#F3AF62', smoke='', ring='', pool=''),
                  src='M Granatwerfer (Velocity Baton, Chill Inhibitor, Witherhoard, Forbearance; REF 0.36 z-im-velocity-baton, '
                      'z-im-chill-inhibitor): Kern 0,12–0,13 s, kein bildweiter Blitz gemessen, kein Rauch; Kern #EEFEFE (Chill Inhibitor), '
                      'Ring in der Leuchtfarbe der Waffe (Element nicht gemessen). Feuerball: Destiny zeigt keinen (Elementeffekt) – '
                      'Nutzerentscheid 184 B: kleiner und kürzer als bei der Rakete (5 Kugeln, 0,35 s, × 0,55, #F3AF62 aus der Impact-Palette), '
-                     'E; Ring, Funken, Größen E; Lache ≈ 5,6 s nicht umgesetzt'),
+                     'E; Lache ≈ 5,6 s nach dem Einschlag (REF 0.36 z-im-witherhoard, z-im-forbearance) als leuchtender Fleck in der '
+                     'Leuchtfarbe mit aufsteigender Glut, nur auf Flächen (Nutzerwunsch 31.10.2026); Ring, Funken, Größen, Glut E'),
 )
 EXPLOSION = EXPLOSIONS['rocket']    # bis 0.34.1 eine gemeinsame Explosion (motion.payload.explosion, ältere Leser)
 # Rauchschwaden aus der Mündung der Werfer nach dem Schuss (Viewmodel-Ebene, steigt und wird breiter)
