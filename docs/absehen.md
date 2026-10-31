@@ -150,9 +150,9 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `shotgun` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `grenade_launcher` | runde Linse mit Winkel | ×1.4 | beobachtet | **×1.4** | ×1.4 |
 | `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×4.0 | beobachtet | **×4.0** | ×4.0 |
-| `fusion_rifle` | Ring oder Doppelring | ×1.5 | entworfen | **×1.8** | ×2.3 |
-| `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×3.0 | entworfen | ×3.3 | **×3.8** |
-| `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
+| `fusion_rifle` | Ring oder Doppelring | ×1.15 | gemessen (Gapfill) | **×1.45** | ×1.95 |
+| `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×2.2 | gemessen (Gapfill) | ×2.5 | **×3.0** |
+| `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | gemessen (Gapfill) | **×1.8** | ×2.3 |
 | `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |
 | `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.9 | entworfen | **×2.2** | ×2.7 |

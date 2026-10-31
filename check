@@ -391,7 +391,8 @@ if r.returncode:
     fail('Absehen-Export veraltet: python3 tools/export_reticles.py (' + r.stdout.strip() + ')')
 from basic import reticles as RT   # Entscheidungsliste 1.2 A, 4.1 A, 4.2 A (Nutzer 25.10.2026): Weltzoom und Hüft-Fadenkreuz nach Glidepath
 for k, z in {'scout_rifle': 2.0, 'hand_cannon': 1.15, 'submachine_gun': 1.45, 'auto_rifle': 1.9, 'pulse_rifle': 2.0, 'machine_gun': 1.9,
-             'sidearm': 1.25, 'grenade_launcher': 1.4, 'linear_fusion_rifle': 3.8}.items():
+             'sidearm': 1.25, 'grenade_launcher': 1.4, 'linear_fusion_rifle': 3.0,
+             'fusion_rifle': 1.45, 'trace_rifle': 1.8}.items():   # 0.33 Gapfill (REF 0.34): lineare und kurze Fusion
     if abs(RT.class_world_zoom(k) - z) > 1e-6:
         fail(f'Weltzoom {k} {RT.class_world_zoom(k)} statt {z} (Entscheidungsliste 1.2 A)')
 for k, (kind, sh) in {'auto_rifle': ('ring_dot', 0.032), 'pulse_rifle': ('ring_dot', 0.032), 'machine_gun': ('ring_dot', 0.032),

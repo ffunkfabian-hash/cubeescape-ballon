@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.33.1 Patch „gapfill“ – neue Destiny-Messungen übernommen (Branch `claude/ballon-patch-gapfill`)
+
+- Nach REF 0.34 „Gapfill“ (cubeescape-reference `main` 20c28df: `destiny2.md` › Methode 29, `data/gapfill.json`): Weltzoom
+  lineare Fusion 3,8 → 3,0, kurze Fusion 1,8 → 1,45; Zielen aus Granatwerfer 6, Spurgewehr 6, MG 11; Ziehen Scharfschütze und Fusion 23, Granatwerfer 22, Spurgewehr 17 Bilder bei 30/s.
+- Tabelle, nicht übernommene Widersprüche und Belege: [Bericht 0.33 › Nachtrag Gapfill](docs/versions/0.33-armory.md).
+
 ## 0.33.0 „Armory“ – Ego-Übertrag der übrigen Grundtypen, HUD und Waffenmenü (Branch `claude/ballon-0.33-armory`)
 
 - Visier-Umzug nach `basic/common.py`, bitgleich; Skins nur bei Bedarf (`export_unity.SKIN_WEAPONS`).

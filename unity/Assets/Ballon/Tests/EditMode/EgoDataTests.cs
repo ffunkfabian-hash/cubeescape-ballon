@@ -400,7 +400,8 @@ namespace Ballon.Ego.Tests
         }
 
         /// <summary>0.33: Weltzoom in der Zoomtabelle angeglichen – Bogen 1,8 → 2,2 (Imperial Needle gemessen), Scharfschütze 5,5 → 4,0 (Far
-        /// Future ≈ 4×); sonst ist die Tabelle gleich. Die alten Dateien tragen die alten Werte – für den Vergleich übernommen, die übrigen
+        /// Future ≈ 4×), kurze Fusion 1,8 → 1,45 und lineare Fusion 3,8 → 3,0 (REF 0.34 „Gapfill“); sonst ist die Tabelle gleich.
+        /// Die alten Dateien tragen die alten Werte – für den Vergleich übernommen, die übrigen
         /// Einträge geprüft. Ebenso sight_form (0.33, Absehen im Glas): alte Dateien setzen es beim Lesen auf die Hüftform.</summary>
         static EgoFile BowZoom(EgoFile o, EgoFile n)
         {
@@ -409,6 +410,8 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < a.Length; k++)
                 if (a[k].type == "combat_bow") Assert.AreEqual(2.2f, b[k].zoom, 1e-4f, "Bogen 2,2×");
                 else if (a[k].type == "sniper_rifle") Assert.AreEqual(4.0f, b[k].zoom, 1e-4f, "Scharfschütze 4×");
+                else if (a[k].type == "fusion_rifle") Assert.AreEqual(1.45f, b[k].zoom, 1e-4f, "kurze Fusion 1,45× (Gapfill)");
+                else if (a[k].type == "linear_fusion_rifle") Assert.AreEqual(3.0f, b[k].zoom, 1e-4f, "lineare Fusion 3,0× (Gapfill)");
                 else Assert.AreEqual(a[k].zoom, b[k].zoom, 1e-6f, a[k].type);
             o.gameplay.zoom_table = b;
             return o;
@@ -834,7 +837,8 @@ namespace Ballon.Ego.Tests
             var G = D.gameplay;
             var want = new Dictionary<string, float> { ["scout_rifle"] = 2.0f, ["hand_cannon"] = 1.15f, ["submachine_gun"] = 1.45f,
                 ["auto_rifle"] = 1.9f, ["pulse_rifle"] = 2.0f, ["machine_gun"] = 1.9f, ["sidearm"] = 1.25f, ["grenade_launcher"] = 1.4f,
-                ["linear_fusion_rifle"] = 3.8f, ["sniper_rifle"] = 4.0f };   // 0.33: Scharfschütze ≈ 4× (Far Future, destiny2:496)
+                ["linear_fusion_rifle"] = 3.0f, ["fusion_rifle"] = 1.45f, ["trace_rifle"] = 1.8f,
+                ["sniper_rifle"] = 4.0f };   // 0.33: Scharfschütze ≈ 4× (Far Future, destiny2:496); Fusionen nach Gapfill (REF 0.34)
             foreach (var kv in want) Assert.AreEqual(kv.Value, G.ZoomFor(kv.Key), 1e-4f, kv.Key);
             Assert.AreEqual(17, G.zoom_table.Length, "alle Waffentypen");
             Assert.AreEqual("auto_rifle", G.weapon_type);
