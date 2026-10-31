@@ -143,18 +143,22 @@ ADS_FEEDBACK = dict(hud_dot=dict(share_h=0.011, color='cyan'), shot_ring=dict(sh
 # Entscheidungsliste 1.2 A (Nutzer 25.10.2026): Weltzoom an die Glidepath-Messung (Motiongen destiny2 › Glidepath, [M]) angeglichen –
 # Scout 2,9 → 2,0 (Grundzoom 1,2 + Zielfernrohr 0,8), Handfeuerwaffe 1,5 → 1,15, MP 1,25 → 1,45; übrige Klassen unverändert.
 CLASS_ZOOM = {'auto_rifle': 1.6, 'pulse_rifle': 1.7, 'scout_rifle': 1.2, 'hand_cannon': 1.15, 'sidearm': 1.25, 'submachine_gun': 1.45,
-              'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 4.0, 'fusion_rifle': 1.5, 'linear_fusion_rifle': 3.0,
+              'shotgun': 1.25, 'grenade_launcher': 1.4, 'sniper_rifle': 4.0, 'fusion_rifle': 1.15, 'linear_fusion_rifle': 2.2,
               'trace_rifle': 1.5, 'rocket_launcher': 2.5, 'machine_gun': 1.6, 'combat_bow': 1.9, 'sword': 1.0, 'glaive': 1.25}
 CLASS_ZOOM_STATUS = {k: 'beobachtet' for k in ('auto_rifle', 'pulse_rifle', 'scout_rifle', 'hand_cannon', 'sidearm', 'submachine_gun',
                                                'shotgun', 'grenade_launcher', 'sniper_rifle')}
 CLASS_ZOOM_STATUS.update({k: 'gemessen (Glidepath)' for k in ('scout_rifle', 'hand_cannon', 'submachine_gun')})
+CLASS_ZOOM_STATUS.update({k: 'gemessen (Gapfill)' for k in ('fusion_rifle', 'linear_fusion_rifle', 'trace_rifle')})
 # Bogen (0.29): cubeescape-reference misst den Endmaßstab Hüfte → ADS der Imperial Needle ≈ 2,2× [M] (destiny2 ›
 # z-zb-imperial-needle-zoom, REF 0.17); bis 0.32 1,5 + Reflexbonus 0,3 = 1,8, mit dem Ego-Übertrag des Bogens (0.33 „Armory“ P4)
 # angeglichen: 1,9 + 0,3 = 2,2. Ebenso 0.33 „Armory“ (Abgleich aller Klassen mit cubeescape-reference destiny2 › Glidepath/zielbewegung):
 # Scharfschütze 5,5 → 4,0 (Far Future ≈ 4×, destiny2:496; Vollbild ohne Visierbonus). Gesamtzoom (class_world_zoom = Grundzoom + Visierbonus):
 # Impuls 2,0 (Gridskipper 2,10×; Entscheidung 1.2 A), Automatik 1,9 (1,84×), MG 1,9 (1,84×), Seitenwaffe 1,25 (1,29×),
 # Granatwerfer 1,4 (1,44×) liegen in der Messgenauigkeit ±0,05–0,1;
-# lineare Fusion (Kandidat 3,0×) und Raketenwerfer (nicht messbar) bleiben offen.
+# Raketenwerfer bleibt offen (nicht messbar). Nachtrag (cubeescape-reference destiny2 › Gapfill, REF 0.34, PR #61; 31.10.2026):
+# lineare Fusion 3,8 → 3,0 (Lorentz Driver 3,00–3,03 [M]; Cataclysmic 2,65–2,69), kurze Fusion 1,8 → 1,45 (Jötunn 1,43 [M]); Spurgewehr
+# 1,8 (Ager's Scepter 1,84), Schrotflinte 1,25 (Fourth Horseman 1,29), Granatwerfer 1,4 (Velocity Baton 1,35) und Impuls 2,0
+# (Outbreak Perfected 1,975) liegen in der Messgenauigkeit; MG 1,9 bleibt (Gapfill nur 1,5–1,6 [O]).
 
 
 def world_zoom(weapon_type, sight_type):

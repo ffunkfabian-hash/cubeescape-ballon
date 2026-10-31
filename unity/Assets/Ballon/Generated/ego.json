@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "e95f26cd82266023fdd2193604c09009b73d32025c9ac87c84a921b54002315e"
+    "sha256": "831ee75b05581b9283f7be22abefc9fd2c50d294f3c7a05465f02572d3054a74"
    },
    {
     "path": "tools/ego_build.py",
@@ -1440,11 +1440,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -8652,11 +8652,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -14987,11 +14987,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -21671,11 +21671,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -28225,11 +28225,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -31540,11 +31540,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -36552,11 +36552,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -41785,9 +41785,13 @@
      {
       "action": "aim_out",
       "frames": 6.0
+     },
+     {
+      "action": "draw",
+      "frames": 23.0
      }
     ],
-    "frames_src": "M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s)"
+    "frames_src": "M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)"
    },
    "gameplay": {
     "burst_shots": 0,
@@ -41848,11 +41852,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -44034,9 +44038,9 @@
     {
      "name": "draw",
      "de": "Ziehen",
-     "frames": 25,
-     "time_scale": 1.25,
-     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E",
+     "frames": 23,
+     "time_scale": 0.92,
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse sniper_rifle: 25 → 23 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28))",
      "weapon": [
       {
        "f": 0.0,
@@ -44049,7 +44053,7 @@
        "back": 0.0
       },
       {
-       "f": 17.5,
+       "f": 16.1,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -44059,7 +44063,7 @@
        "back": 0.0
       },
       {
-       "f": 25.0,
+       "f": 23.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -44086,7 +44090,7 @@
        ]
       },
       {
-       "f": 7.5,
+       "f": 6.9,
        "kind": "cam",
        "grip": "support",
        "point": [
@@ -44101,7 +44105,7 @@
        ]
       },
       {
-       "f": 16.25,
+       "f": 14.95,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -44116,7 +44120,7 @@
        ]
       },
       {
-       "f": 25.0,
+       "f": 23.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -44154,11 +44158,11 @@
        "pose": "relaxed"
       },
       {
-       "f": 13.75,
+       "f": 12.65,
        "pose": "open"
       },
       {
-       "f": 17.5,
+       "f": 16.1,
        "pose": "underhand"
       }
      ],
@@ -44190,7 +44194,7 @@
      },
      "events": [
       {
-       "f": 18,
+       "f": 17,
        "name": "Ready"
       }
      ]
@@ -44353,7 +44357,7 @@
      "de": "Hüfte → Zielen",
      "frames": 6,
      "time_scale": 0.6,
-     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse sniper_rifle: 10 → 6 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s))",
+     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse sniper_rifle: 10 → 6 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28))",
      "weapon": [
       {
        "f": 0.0,
@@ -44464,7 +44468,7 @@
      "de": "Zielen → Hüfte",
      "frames": 6,
      "time_scale": 0.75,
-     "src": "E; Klasse sniper_rifle: 8 → 6 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s))",
+     "src": "E; Klasse sniper_rifle: 8 → 6 Bilder (M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); ADS aus 0,17–0,25 s → 6 Bilder (0,20 s); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28))",
      "weapon": [
       {
        "f": 0.0,
@@ -48603,14 +48607,18 @@
      },
      {
       "action": "aim_out",
-      "frames": 3.0
+      "frames": 6.0
+     },
+     {
+      "action": "draw",
+      "frames": 17.0
      },
      {
       "action": "reload_tactical",
       "frames": 67.0
      }
     ],
-    "frames_src": "M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt"
+    "frames_src": "M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); Ager's Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig 34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt"
    },
    "gameplay": {
     "burst_shots": 0,
@@ -48671,11 +48679,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -50779,9 +50787,9 @@
     {
      "name": "draw",
      "de": "Ziehen",
-     "frames": 25,
-     "time_scale": 1.25,
-     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E",
+     "frames": 17,
+     "time_scale": 0.68,
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse trace_rifle: 25 → 17 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); Ager's Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig 34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -50794,7 +50802,7 @@
        "back": 0.0
       },
       {
-       "f": 17.5,
+       "f": 11.9,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -50804,7 +50812,7 @@
        "back": 0.0
       },
       {
-       "f": 25.0,
+       "f": 17.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -50831,7 +50839,7 @@
        ]
       },
       {
-       "f": 7.5,
+       "f": 5.1,
        "kind": "cam",
        "grip": "support",
        "point": [
@@ -50846,7 +50854,7 @@
        ]
       },
       {
-       "f": 16.25,
+       "f": 11.05,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -50861,7 +50869,7 @@
        ]
       },
       {
-       "f": 25.0,
+       "f": 17.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -50899,11 +50907,11 @@
        "pose": "relaxed"
       },
       {
-       "f": 13.75,
+       "f": 9.35,
        "pose": "open"
       },
       {
-       "f": 17.5,
+       "f": 11.9,
        "pose": "underhand"
       }
      ],
@@ -50935,7 +50943,7 @@
      },
      "events": [
       {
-       "f": 18,
+       "f": 12,
        "name": "Ready"
       }
      ]
@@ -51098,7 +51106,7 @@
      "de": "Hüfte → Zielen",
      "frames": 4,
      "time_scale": 0.4,
-     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse trace_rifle: 10 → 4 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
+     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse trace_rifle: 10 → 4 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); Ager's Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig 34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -51207,9 +51215,9 @@
     {
      "name": "aim_out",
      "de": "Zielen → Hüfte",
-     "frames": 3,
-     "time_scale": 0.375,
-     "src": "E; Klasse trace_rifle: 8 → 3 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
+     "frames": 6,
+     "time_scale": 0.75,
+     "src": "E; Klasse trace_rifle: 8 → 6 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); Ager's Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig 34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -51222,7 +51230,7 @@
        "back": 0.0
       },
       {
-       "f": 3.0,
+       "f": 6.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -51300,7 +51308,7 @@
      },
      "events": [
       {
-       "f": 3,
+       "f": 6,
        "name": "Ready"
       }
      ]
@@ -51540,7 +51548,7 @@
      "de": "Nachladen mit Restmunition",
      "frames": 67,
      "time_scale": 1.063492,
-     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse trace_rifle: 63 → 67 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
+     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse trace_rifle: 63 → 67 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); Ager's Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig 34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -51930,7 +51938,7 @@
      "de": "Nachladen mit Restmunition, auch leer",
      "frames": 67,
      "time_scale": 1.063492,
-     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse trace_rifle: 63 → 67 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
+     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse trace_rifle: 63 → 67 Bilder (M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung wie Scharfschütze); Ager's Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig 34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -54605,11 +54613,15 @@
     ],
     "frames": [
      {
+      "action": "aim_out",
+      "frames": 11.0
+     },
+     {
       "action": "draw",
       "frames": 28.0
      }
     ],
-    "frames_src": "M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25)"
+    "frames_src": "M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); ADS aus Qullim's Terminus 21, Thunderlord 23 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-thunderlord) ≈ 22 → 11 (über lineare Fusion 19 → 10 und Automatik 20 → 10 hinaus; bis 0.33 Vorgabe 8); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25; Gapfill 42–50)"
    },
    "gameplay": {
     "burst_shots": 0,
@@ -54670,11 +54682,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -57244,7 +57256,7 @@
      "de": "Ziehen",
      "frames": 28,
      "time_scale": 1.12,
-     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse machine_gun: 25 → 28 Bilder (M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25))",
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse machine_gun: 25 → 28 Bilder (M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); ADS aus Qullim's Terminus 21, Thunderlord 23 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-thunderlord) ≈ 22 → 11 (über lineare Fusion 19 → 10 und Automatik 20 → 10 hinaus; bis 0.33 Vorgabe 8); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25; Gapfill 42–50))",
      "weapon": [
       {
        "f": 0.0,
@@ -57670,9 +57682,9 @@
     {
      "name": "aim_out",
      "de": "Zielen → Hüfte",
-     "frames": 8,
-     "time_scale": 1.0,
-     "src": "E",
+     "frames": 11,
+     "time_scale": 1.375,
+     "src": "E; Klasse machine_gun: 8 → 11 Bilder (M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); ADS aus Qullim's Terminus 21, Thunderlord 23 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-thunderlord) ≈ 22 → 11 (über lineare Fusion 19 → 10 und Automatik 20 → 10 hinaus; bis 0.33 Vorgabe 8); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25; Gapfill 42–50))",
      "weapon": [
       {
        "f": 0.0,
@@ -57685,7 +57697,7 @@
        "back": 0.0
       },
       {
-       "f": 8.0,
+       "f": 11.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -57763,7 +57775,7 @@
      },
      "events": [
       {
-       "f": 8,
+       "f": 11,
        "name": "Ready"
       }
      ]
@@ -61953,11 +61965,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -68471,11 +68483,15 @@
       "frames": 2.4
      },
      {
+      "action": "draw",
+      "frames": 23.0
+     },
+     {
       "action": "reload_tactical",
       "frames": 73.0
      }
     ],
-    "frames_src": "M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt"
+    "frames_src": "M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 (Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt"
    },
    "gameplay": {
     "burst_shots": 6,
@@ -68496,7 +68512,7 @@
     "recover_hz": 2.0,
     "weapon_type": "fusion_rifle",
     "sight": "reflex",
-    "world_zoom": 1.8,
+    "world_zoom": 1.45,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -68536,11 +68552,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -70619,9 +70635,9 @@
     {
      "name": "draw",
      "de": "Ziehen",
-     "frames": 25,
-     "time_scale": 1.25,
-     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E",
+     "frames": 23,
+     "time_scale": 0.92,
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse fusion_rifle: 25 → 23 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 (Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -70634,7 +70650,7 @@
        "back": 0.0
       },
       {
-       "f": 17.5,
+       "f": 16.1,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -70644,7 +70660,7 @@
        "back": 0.0
       },
       {
-       "f": 25.0,
+       "f": 23.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -70671,7 +70687,7 @@
        ]
       },
       {
-       "f": 7.5,
+       "f": 6.9,
        "kind": "cam",
        "grip": "support",
        "point": [
@@ -70686,7 +70702,7 @@
        ]
       },
       {
-       "f": 16.25,
+       "f": 14.95,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -70701,7 +70717,7 @@
        ]
       },
       {
-       "f": 25.0,
+       "f": 23.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -70739,11 +70755,11 @@
        "pose": "relaxed"
       },
       {
-       "f": 13.75,
+       "f": 12.65,
        "pose": "open"
       },
       {
-       "f": 17.5,
+       "f": 16.1,
        "pose": "underhand"
       }
      ],
@@ -70775,7 +70791,7 @@
      },
      "events": [
       {
-       "f": 18,
+       "f": 17,
        "name": "Ready"
       }
      ]
@@ -70938,7 +70954,7 @@
      "de": "Hüfte → Zielen",
      "frames": 3,
      "time_scale": 0.3,
-     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse fusion_rifle: 10 → 3 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
+     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse fusion_rifle: 10 → 3 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 (Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -71049,7 +71065,7 @@
      "de": "Zielen → Hüfte",
      "frames": 3,
      "time_scale": 0.3,
-     "src": "E; Klasse fusion_rifle: 8 → 2.4 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
+     "src": "E; Klasse fusion_rifle: 8 → 2.4 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 (Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -71366,7 +71382,7 @@
      "de": "Nachladen mit Restmunition",
      "frames": 73,
      "time_scale": 1.15873,
-     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse fusion_rifle: 63 → 73 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
+     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse fusion_rifle: 63 → 73 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 (Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -71756,7 +71772,7 @@
      "de": "Nachladen mit Restmunition, auch leer",
      "frames": 73,
      "time_scale": 1.15873,
-     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse fusion_rifle: 63 → 73 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
+     "src": "M MagIn ≈ 0,93 s; Ablauf T (Reload-Keys) mit Destiny-Kippen E; v2: Ausholen, Stoß bei MagIn, Nachfedern E; Klasse fusion_rifle: 63 → 73 Bilder (M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 (Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt)",
      "weapon": [
       {
        "f": 0.0,
@@ -74390,7 +74406,7 @@
     "src": "S Laden 563 ms, Magazin 5 (Menü, Motiongen destiny2:274), sichtbar 20 Bilder bei 60/s [M]; Takt gehalten 60/min E; Feuerart aus der Spec (Aufladen → Einzelschuss); Leuchten fällt in 0,2 s (Modul charge_fire: 6 Bilder); Bahnstufe 0,065 M: 6,5 pp H je Schuss (rueckstoss:111), Erholung langsam wie der Scharfschütze E; Kick 3,0 E",
     "weapon_type": "linear_fusion_rifle",
     "sight": "scope",
-    "world_zoom": 3.8,
+    "world_zoom": 3.0,
     "zoom_table": [
      {
       "type": "auto_rifle",
@@ -74430,11 +74446,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -80597,11 +80613,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -86908,10 +86924,14 @@
      },
      {
       "action": "aim_out",
-      "frames": 4.0
+      "frames": 6.0
+     },
+     {
+      "action": "draw",
+      "frames": 22.0
      }
     ],
-    "frames_src": "M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus nicht gemessen → E 4"
+    "frames_src": "M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus Chill Inhibitor 25 Bilder bei 60/s bei ein 22 (Motiongen destiny2 › Gapfill, z-g34-vesper; die anderen gehen ins Nachladen) → Verhältnis aus/ein 1,14 auf aim_in 5 → 6; Ziehen erstes Modellbild → ruhig Chill 54, Velocity Baton 28, Forbearance 46, Witherhoard 39–52 → Mittel ≈ 43 → 22"
    },
    "gameplay": {
     "burst_shots": 0,
@@ -86972,11 +86992,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",
@@ -89390,9 +89410,9 @@
     {
      "name": "draw",
      "de": "Ziehen",
-     "frames": 25,
-     "time_scale": 1.25,
-     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E",
+     "frames": 22,
+     "time_scale": 0.88,
+     "src": "M Ziehen 0,23 s bis Hüfte (Auto Rifle, Q-REF) + Ausfedern E; Klasse grenade_launcher: 25 → 22 Bilder (M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus Chill Inhibitor 25 Bilder bei 60/s bei ein 22 (Motiongen destiny2 › Gapfill, z-g34-vesper; die anderen gehen ins Nachladen) → Verhältnis aus/ein 1,14 auf aim_in 5 → 6; Ziehen erstes Modellbild → ruhig Chill 54, Velocity Baton 28, Forbearance 46, Witherhoard 39–52 → Mittel ≈ 43 → 22)",
      "weapon": [
       {
        "f": 0.0,
@@ -89405,7 +89425,7 @@
        "back": 0.0
       },
       {
-       "f": 17.5,
+       "f": 15.4,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -89415,7 +89435,7 @@
        "back": 0.0
       },
       {
-       "f": 25.0,
+       "f": 22.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -89442,7 +89462,7 @@
        ]
       },
       {
-       "f": 7.5,
+       "f": 6.6,
        "kind": "cam",
        "grip": "support",
        "point": [
@@ -89457,7 +89477,7 @@
        ]
       },
       {
-       "f": 16.25,
+       "f": 14.3,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -89472,7 +89492,7 @@
        ]
       },
       {
-       "f": 25.0,
+       "f": 22.0,
        "kind": "grip",
        "grip": "support",
        "point": [
@@ -89510,11 +89530,11 @@
        "pose": "relaxed"
       },
       {
-       "f": 13.75,
+       "f": 12.1,
        "pose": "open"
       },
       {
-       "f": 17.5,
+       "f": 15.4,
        "pose": "underhand"
       }
      ],
@@ -89546,7 +89566,7 @@
      },
      "events": [
       {
-       "f": 18,
+       "f": 16,
        "name": "Ready"
       }
      ]
@@ -89709,7 +89729,7 @@
      "de": "Hüfte → Zielen",
      "frames": 5,
      "time_scale": 0.5,
-     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse grenade_launcher: 10 → 5 Bilder (M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus nicht gemessen → E 4)",
+     "src": "E 0,30 s (CE-Handling Auto 0,39→0,20 s); Klasse grenade_launcher: 10 → 5 Bilder (M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus Chill Inhibitor 25 Bilder bei 60/s bei ein 22 (Motiongen destiny2 › Gapfill, z-g34-vesper; die anderen gehen ins Nachladen) → Verhältnis aus/ein 1,14 auf aim_in 5 → 6; Ziehen erstes Modellbild → ruhig Chill 54, Velocity Baton 28, Forbearance 46, Witherhoard 39–52 → Mittel ≈ 43 → 22)",
      "weapon": [
       {
        "f": 0.0,
@@ -89818,9 +89838,9 @@
     {
      "name": "aim_out",
      "de": "Zielen → Hüfte",
-     "frames": 4,
-     "time_scale": 0.5,
-     "src": "E; Klasse grenade_launcher: 8 → 4 Bilder (M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus nicht gemessen → E 4)",
+     "frames": 6,
+     "time_scale": 0.75,
+     "src": "E; Klasse grenade_launcher: 8 → 6 Bilder (M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s (Umrechnung wie Schrotflinte 13 → 5); ADS aus Chill Inhibitor 25 Bilder bei 60/s bei ein 22 (Motiongen destiny2 › Gapfill, z-g34-vesper; die anderen gehen ins Nachladen) → Verhältnis aus/ein 1,14 auf aim_in 5 → 6; Ziehen erstes Modellbild → ruhig Chill 54, Velocity Baton 28, Forbearance 46, Witherhoard 39–52 → Mittel ≈ 43 → 22)",
      "weapon": [
       {
        "f": 0.0,
@@ -89833,7 +89853,7 @@
        "back": 0.0
       },
       {
-       "f": 4.0,
+       "f": 6.0,
        "pose": "hip",
        "roll": 0.0,
        "yaw": 0.0,
@@ -89911,7 +89931,7 @@
      },
      "events": [
       {
-       "f": 4,
+       "f": 6,
        "name": "Ready"
       }
      ]
@@ -93958,11 +93978,11 @@
      },
      {
       "type": "fusion_rifle",
-      "zoom": 1.8
+      "zoom": 1.45
      },
      {
       "type": "linear_fusion_rifle",
-      "zoom": 3.8
+      "zoom": 3.0
      },
      {
       "type": "trace_rifle",

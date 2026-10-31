@@ -663,10 +663,11 @@ CLASSES = {
                             'Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; '
                             'bis 0.33 die Automatik-Form (Mündung 19/86 %)'),
         ),
-        frames=dict(aim_in=6, aim_out=6),
+        frames=dict(aim_in=6, aim_out=6, draw=23),
         frames_src='M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen '
                    'destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); '
-                   'ADS aus 0,17–0,25 s → 6 Bilder (0,20 s)',
+                   'ADS aus 0,17–0,25 s → 6 Bilder (0,20 s); Ziehen erstes Modellbild → ruhig Defiance of Yasmin 41, Cloudstrike 47–53 Bilder '
+                   'bei 60/s (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-cloudstrike) ≈ 46 → 23 Bilder bei 30/s (wie MG 55 → 28)',
         actions=dict(
             fire_cycle=dict(
                 de='Repetieren nach dem Schuss aus der Hüfte (Kammerstängel links: heben, zurück, vor, senken)', frames=18,
@@ -728,10 +729,11 @@ CLASSES = {
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen '
                          '(Motiongen destiny2:570)'),
-        frames=dict(aim_in=4, aim_out=3, reload_tactical=67),
+        frames=dict(aim_in=4, aim_out=6, draw=17, reload_tactical=67),
         frames_src='M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung '
-                   'wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ '
-                   '(destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt',
+                   'wie Scharfschütze); Ager\'s Scepter ADS ein 13, aus 14 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › '
+                   'Gapfill, z-g34-agers) → aus 6 (Umrechnung wie Scharfschütze 14 → 6); Ziehen erstes Modellbild → ruhig '
+                   '34 Bilder → 17; Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ (destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt',
         mech_map=dict(mag_release='cell_release'),
         same_reload=True,
         gameplay=dict(rpm=1000, magazine=94, path_up_h=0.0, kick=0.0, muzzle_flash=False,
@@ -753,9 +755,11 @@ CLASSES = {
         keep=dict(
             sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen '
                    'destiny2:561)'),
-        frames=dict(draw=28),
-        frames_src='M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); Ziehen 18 + 37 Bilder bei '
-                   '60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25)',
+        frames=dict(aim_out=11, draw=28),
+        frames_src='M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); ADS aus Qullim\'s Terminus 21, '
+                   'Thunderlord 23 Bilder bei 60/s erste Bewegung → Ruhe (Motiongen destiny2 › Gapfill, z-g34-kingsfall/-thunderlord) ≈ 22 → 11 '
+                   '(über lineare Fusion 19 → 10 und Automatik 20 → 10 hinaus; bis 0.33 Vorgabe 8); Ziehen 18 + 37 Bilder bei 60/s bis ruhig (wechsel:56) = 0,92 s → '
+                   '28 Bilder (Automatik 25; Gapfill 42–50)',
         actions=dict(
             reload_tactical=dict(
                 de='Nachladen (Deckel auf, Kasten tauschen, Gurt einlegen, Deckel zu, durchladen)', frames=146,
@@ -888,10 +892,12 @@ CLASSES = {
                             '(Sichtung). Lage E, gerechnet Mündung 58/79 %, Visier 91/68 %, Heck rechts aus dem Bild; bis 0.33 die Automatik-Form '
                             '(Mündung 34/89 %, Körper zu weit links)'),
         ),
-        frames=dict(aim_in=3, aim_out=2.4, reload_tactical=73),
+        frames=dict(aim_in=3, aim_out=2.4, draw=23, reload_tactical=73),
         frames_src='M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; '
-                   'ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s '
-                   '(nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt',
+                   'ADS aus nicht gemessen → E 2,4 (Verhältnis der MP; Gapfill misst Jötunn ein 18–19 / aus 16–17 bis Ruhe – Widerspruch '
+                   'offen, siehe Bericht); Ziehen erstes Modellbild → ruhig Jötunn 48, Gravitic Arrest 44, Midha 49, Deliverance 40 '
+                   '(Motiongen destiny2 › Gapfill) ≈ 45 → 23; Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s (nachladen:54) '
+                   '× TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt',
         mech_map=dict(mag_release='cell_release'),
         same_reload=True,
         gameplay=dict(rpm=60, magazine=7, charge_s=0.5, charge_fade_s=0.3, burst_shots=6, burst_rpm=1200, path_up_h=0.004, kick=0.6,
@@ -1061,9 +1067,11 @@ CLASSES = {
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Granatwerfer-Sprint nicht gemessen '
                          '(Motiongen destiny2:571)'),
-        frames=dict(aim_in=5, aim_out=4),
+        frames=dict(aim_in=5, aim_out=6, draw=22),
         frames_src='M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s '
-                   '(Umrechnung wie Schrotflinte 13 → 5); ADS aus nicht gemessen → E 4',
+                   '(Umrechnung wie Schrotflinte 13 → 5); ADS aus Chill Inhibitor 25 Bilder bei 60/s bei ein 22 (Motiongen destiny2 › '
+                   'Gapfill, z-g34-vesper; die anderen gehen ins Nachladen) → Verhältnis aus/ein 1,14 auf aim_in 5 → 6; Ziehen erstes '
+                   'Modellbild → ruhig Chill 54, Velocity Baton 28, Forbearance 46, Witherhoard 39–52 → Mittel ≈ 43 → 22',
         actions=dict(
             fire_cycle=dict(
                 de='Trommel eine Kammer weiter nach dem Schuss (Hüfte)', frames=9,

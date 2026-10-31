@@ -1376,8 +1376,8 @@
   "shotgun": 1.25,
   "grenade_launcher": 1.4,
   "sniper_rifle": 4.0,
-  "fusion_rifle": 1.5,
-  "linear_fusion_rifle": 3.0,
+  "fusion_rifle": 1.15,
+  "linear_fusion_rifle": 2.2,
   "trace_rifle": 1.5,
   "rocket_launcher": 2.5,
   "machine_gun": 1.6,
@@ -1423,12 +1423,12 @@
    "scope": 4.0
   },
   "fusion_rifle": {
-   "reflex": 1.8,
-   "scope": 2.3
+   "reflex": 1.45,
+   "scope": 1.95
   },
   "linear_fusion_rifle": {
-   "reflex": 3.3,
-   "scope": 3.8
+   "reflex": 2.5,
+   "scope": 3.0
   },
   "trace_rifle": {
    "reflex": 1.8,
@@ -1465,8 +1465,8 @@
   "shotgun": 1.25,
   "grenade_launcher": 1.4,
   "sniper_rifle": 4.0,
-  "fusion_rifle": 1.8,
-  "linear_fusion_rifle": 3.8,
+  "fusion_rifle": 1.45,
+  "linear_fusion_rifle": 3.0,
   "trace_rifle": 1.8,
   "rocket_launcher": 2.8,
   "machine_gun": 1.9,
