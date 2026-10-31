@@ -99,6 +99,7 @@ namespace Ballon.Ego
         public int scorch_every;                         // Dauerstrahl: Brandfleck je n. Takt
         public int shot_impacts;                         // 0.34.1: sichtbare Einschläge je Streuschuss (0 = je Kugel)
         public float pulse_hz;                           // 0.34.1: Pulsen des Dauerstrahls; 0 (älterer Export) = 6
+        public string explosion;                         // 0.34.2: Name in motion.payload.explosions; leer = die gemeinsame
         public float cone_deg, cone_ads, speed_mps, gravity_mps2, life_s, radius_m, smoke_s, width_m, length_m, beam_s, stick_s, muzzle_glow_m;
         public bool Projectile => kind == "projectile" || kind == "arrow";
         public bool Explodes => impact == "explosion";
@@ -280,7 +281,9 @@ namespace Ballon.Ego
     [Serializable] public class EgoIndex { public float frames, share; public string src; }
 
     /// <summary>Gemeinsame Werte der Wirkung (0.34, ego.DECAL, IMPACTS, EXPLOSION, MUZZLE_SMOKE).</summary>
-    [Serializable] public class EgoPayload { public EgoDecal decal; public EgoImpact[] impacts; public EgoExplosion explosion; public EgoSmoke muzzle_smoke; }
+    [Serializable]
+    public class EgoPayload { public EgoDecal decal; public EgoImpact[] impacts; public EgoExplosion explosion; public EgoSmoke muzzle_smoke;
+                              public EgoExplosion[] explosions; }    // 0.34.2: je Art (gameplay.fx.explosion); explosion = bis 0.34.1 die einzige
     [Serializable] public class EgoDecal { public float size_m, life_s, fade_s, scorch_m; public int max, variants, scorch_max; public string src; }
     [Serializable]
     public class EgoImpact
@@ -299,9 +302,23 @@ namespace Ballon.Ego
         }
     }
     [Serializable]
-    public class EgoExplosion { public float flash_s, flash_k, ring_s, ring_k, spark_mps, spark_s, smoke_s, smoke_k, light_s, light_k;
-                                public int sparks, smoke, fire; public float fire_s, fire_k;   // fire: Feuerkugeln (Anzahl, Dauer, Größe zum Radius)
-                                public string core_color, fire_color, smoke_color, ring_color, src; }
+    public class EgoExplosion
+    {
+        public string name;                              // 0.34.2: rocket, grenade
+        public float flash_s, flash_k, ring_s, ring_k, spark_mps, spark_s, smoke_s, smoke_k, light_s, light_k;
+        public float screen_s, screen_k;                 // 0.34.2: bildweiter Blitz (Dauer, Deckung), 0 = keiner
+        public float pool_s, pool_k, pool_hz, pool_fade_s;   // 0.34.2: Lache (Dauer, Radius zum Explosionsradius, Glut je s, Ausblenden)
+        public int sparks, smoke, fire; public float fire_s, fire_k;   // fire: Feuerkugeln (Anzahl, Dauer, Größe zum Radius)
+        public string core_color, fire_color, smoke_color, ring_color, pool_color, src;   // leer = Leuchtfarbe der Waffe (Elementfarbe)
+        [NonSerialized] Color _core, _fire, _smoke, _ring, _pool; [NonSerialized] bool _has, _hasFire, _hasSmoke, _hasRing, _hasPool;
+        /// <summary>Farben einmal gelesen (kein Speicher je Explosion); ohne Farbe die Leuchtfarbe e der Waffe.</summary>
+        public Color Core(Color e) { if (!_has) { _has = Parse(core_color, out _core); } return _has ? _core : e; }
+        public Color Fire(Color e) { if (!_hasFire) _hasFire = Parse(fire_color, out _fire); return _hasFire ? _fire : e; }
+        public Color Smoke(Color e) { if (!_hasSmoke) _hasSmoke = Parse(smoke_color, out _smoke); return _hasSmoke ? _smoke : e; }
+        public Color Ring(Color e) { if (!_hasRing) _hasRing = Parse(ring_color, out _ring); return _hasRing ? _ring : e; }
+        public Color Pool(Color e) { if (!_hasPool) _hasPool = Parse(pool_color, out _pool); return _hasPool ? _pool : e; }
+        static bool Parse(string h, out Color c) { c = Color.white; return !string.IsNullOrEmpty(h) && ColorUtility.TryParseHtmlString(h, out c); }
+    }
     [Serializable] public class EgoSmoke { public float rate_hz, puff_m, grow, rise_mps, life_s, alpha; public string color, src; }
 
     /// <summary>Bewegungsgefühl v2 (basic/arms/ego.py: INTERP, SECONDARY, BREATHE_ALL, RECOIL, SWITCH, FLASH, EJECT, ADS_HIDE, TIME_SCALE).</summary>
@@ -544,7 +561,15 @@ namespace Ballon.Ego
             if (P.explosion == null || P.explosion.sparks <= 0) P.explosion = new EgoExplosion { flash_s = 0.12f, flash_k = 1.3f, fire = 10, fire_s = 0.45f, fire_k = 0.75f, ring_s = 0.35f, ring_k = 0.9f, sparks = 40, spark_mps = 14, spark_s = 0.7f,
                                                smoke = 14, smoke_s = 2.6f, smoke_k = 0.55f, light_s = 0.18f, light_k = 4, core_color = "#FFF2D6",
                                                fire_color = "#FF8A3C", smoke_color = "#5A5D63", ring_color = "#FFE2B8" };
+            if (P.explosions == null || P.explosions.Length == 0) P.explosions = new[] { P.explosion };   // vor 0.34.2: eine gemeinsame
             if (P.muzzle_smoke == null || P.muzzle_smoke.rate_hz <= 0) P.muzzle_smoke = new EgoSmoke { rate_hz = 9, puff_m = 0.05f, grow = 3, rise_mps = 0.1f, life_s = 1.3f, alpha = 0.35f, color = "#C9CCD1" };
+        }
+
+        /// <summary>Explosion nach Namen (motion.payload.explosions, 0.34.2), sonst die gemeinsame (motion.payload.explosion).</summary>
+        public EgoExplosion Explosion(string name)
+        {
+            if (!string.IsNullOrEmpty(name)) foreach (var x in motion.payload.explosions) if (x != null && x.name == name) return x;
+            return motion.payload.explosion;
         }
 
         /// <summary>Einschlagstil nach Namen (motion.payload.impacts), null ohne.</summary>

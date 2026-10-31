@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "2f9c2b0a34381f8a9c682217ad10995ce864974b99dddae0cee303852a54af9f"
+    "sha256": "02d9c3b6a49ca5522b6904f17bb87e3c617244b04e697acde04d13b5b42b01e6"
    },
    {
     "path": "tools/ego_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "ceda7379b0bddb49c434e40e91192db9e09e633e72d8a67df131cabdce90e5ae"
+    "sha256": "088fd045f61e0bd9faa255ecda42945bb5cce04712cf9cfd099281c719021b9f"
    },
    {
     "path": "tools/bake_unity.py",
@@ -521,6 +521,12 @@
    "explosion": {
     "flash_s": 0.17,
     "flash_k": 1.3,
+    "screen_s": 0.025,
+    "screen_k": 0.3,
+    "pool_s": 0.0,
+    "pool_k": 0.0,
+    "pool_hz": 0.0,
+    "pool_fade_s": 0.0,
     "fire": 10,
     "fire_s": 0.75,
     "fire_k": 0.75,
@@ -534,12 +540,76 @@
     "smoke_k": 0.7,
     "light_s": 0.15,
     "light_k": 4.0,
-    "src": "M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): Kern 0,12–0,22 s (flash_s = Kern), Ring 0,07–0,13 s, Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, Rauch #020C08; bildweiter Blitz 0,02–0,03 s nicht umgesetzt; Granatwerfer (Kern 0,12–0,13 s, kein Feuerball) teilt die Explosion – offen; Ringfarbe, Größen E",
+    "src": "M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): bildweiter Blitz 0,02–0,03 s getrennt vom Kern 0,12–0,22 s, Ring 0,07–0,13 s, Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, Rauch #020C08; Deckung des Blitzes, Ringfarbe und Größen E",
+    "name": "rocket",
     "core_color": "#FCECDE",
     "fire_color": "#E9B268",
     "smoke_color": "#020C08",
-    "ring_color": "#FFE2B8"
+    "ring_color": "#FFE2B8",
+    "pool_color": ""
    },
+   "explosions": [
+    {
+     "flash_s": 0.17,
+     "flash_k": 1.3,
+     "screen_s": 0.025,
+     "screen_k": 0.3,
+     "pool_s": 0.0,
+     "pool_k": 0.0,
+     "pool_hz": 0.0,
+     "pool_fade_s": 0.0,
+     "fire": 10,
+     "fire_s": 0.75,
+     "fire_k": 0.75,
+     "ring_s": 0.1,
+     "ring_k": 0.9,
+     "sparks": 40,
+     "spark_mps": 14.0,
+     "spark_s": 0.7,
+     "smoke": 16,
+     "smoke_s": 1.0,
+     "smoke_k": 0.7,
+     "light_s": 0.15,
+     "light_k": 4.0,
+     "src": "M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): bildweiter Blitz 0,02–0,03 s getrennt vom Kern 0,12–0,22 s, Ring 0,07–0,13 s, Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, Rauch #020C08; Deckung des Blitzes, Ringfarbe und Größen E",
+     "name": "rocket",
+     "core_color": "#FCECDE",
+     "fire_color": "#E9B268",
+     "smoke_color": "#020C08",
+     "ring_color": "#FFE2B8",
+     "pool_color": ""
+    },
+    {
+     "flash_s": 0.125,
+     "flash_k": 1.1,
+     "screen_s": 0.0,
+     "screen_k": 0.0,
+     "pool_s": 5.6,
+     "pool_k": 0.5,
+     "pool_hz": 8.0,
+     "pool_fade_s": 1.0,
+     "fire": 5,
+     "fire_s": 0.35,
+     "fire_k": 0.55,
+     "ring_s": 0.1,
+     "ring_k": 0.8,
+     "sparks": 24,
+     "spark_mps": 10.0,
+     "spark_s": 0.4,
+     "smoke": 0,
+     "smoke_s": 0.0,
+     "smoke_k": 0.0,
+     "light_s": 0.15,
+     "light_k": 3.0,
+     "src": "M Granatwerfer (Velocity Baton, Chill Inhibitor, Witherhoard, Forbearance; REF 0.36 z-im-velocity-baton, z-im-chill-inhibitor): Kern 0,12–0,13 s, kein bildweiter Blitz gemessen, kein Rauch; Kern #EEFEFE (Chill Inhibitor), Ring in der Leuchtfarbe der Waffe (Element nicht gemessen). Feuerball: Destiny zeigt keinen (Elementeffekt) – Nutzerentscheid 184 B: kleiner und kürzer als bei der Rakete (5 Kugeln, 0,35 s, × 0,55, #F3AF62 aus der Impact-Palette), E; Lache ≈ 5,6 s nach dem Einschlag (REF 0.36 z-im-witherhoard, z-im-forbearance) als leuchtender Fleck in der Leuchtfarbe mit aufsteigender Glut, nur auf Flächen (Nutzerwunsch 31.10.2026); Ring, Funken, Größen, Glut E",
+     "name": "grenade",
+     "core_color": "#EEFEFE",
+     "fire_color": "#F3AF62",
+     "smoke_color": "",
+     "ring_color": "",
+     "pool_color": ""
+    }
+   ],
    "muzzle_smoke": {
     "rate_hz": 9.0,
     "puff_m": 0.05,
@@ -1729,6 +1799,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur, Funken, kein Loch in Destiny (REF 0.36 z-im-solemn-hymn); Loch E (Nutzerentscheid 180)"
     }
    },
@@ -9093,6 +9164,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur, Funken + dunkle Säule (REF 0.36 z-im-ikelos); Loch E (Nutzerentscheid 180)"
     }
    },
@@ -15483,6 +15555,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur (REF 0.36 z-im-sauerstoff); Einschlag wie Kugel, Loch E (Nutzerentscheid 180)"
     }
    },
@@ -22127,6 +22200,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur, Funken (REF 0.36 z-im-outbreak); Loch E (Nutzerentscheid 180)"
     }
    },
@@ -28744,6 +28818,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "Werkzeug: eigene Treffermarke in Portalfarbe (0.22), keine Wirkung"
     }
    },
@@ -32290,6 +32365,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur, kein Loch sichtbar (REF 0.36 › 7 Fußnote 1); Einschlag schwer E, Loch E (180)"
     }
    },
@@ -37531,6 +37607,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur, kein Loch sichtbar (REF 0.36 › 7 Fußnote 1); Einschlag auf Wand nicht gemessen; Loch E (180)"
     }
    },
@@ -42826,6 +42903,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M keine Spur, Funken 0,1 s, Säule ≈ 0,38 s (REF 0.36 z-im-far-future); Loch E (180)"
     }
    },
@@ -49796,6 +49874,7 @@
      "spark_hz": 40.0,
      "shot_impacts": 0,
      "pulse_hz": 12.0,
+     "explosion": "",
      "src": "M Kern #D0D8FF, Rand #5060E0, Kontaktpunkt pulsiert 12/s (REF 0.36 z-im-agers); E: durchgehender Strahl 4,5 cm vom Lauf zum Einschlag, solange der Abzug zieht; Destiny Prometheus Lens: Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %"
     }
    },
@@ -55742,6 +55821,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "E: Einschlag Kugel; Leuchtspur jeder 3. Schuss, 320 m/s, 2,4 m, warmweiß (BF6 B36A4: roter Strich zur Bildmitte ist Leuchtspur, Motiongen muendung › z-mf-bf6-b36a4; Destiny-MG in REF 0.36 nicht gemessen)"
     }
    },
@@ -63995,6 +64075,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 1,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "S 12 Kugeln, feste Muster (Destiny 6.3.0); im Bild EIN Einschlag je Schuss (M, REF 0.36 z-im-python) → die Kugeln treffen (Scheiben), gezeigt wird ein Einschlag mit einem Loch an der mittleren Kugel (Nutzerentscheid 181); Kegel 3,0° E"
     }
    },
@@ -70647,6 +70728,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M Auslöseblitz ≈ 0,07 s; Destiny-Bolzen im Bild nicht sichtbar, [S] 5–9 je Salve (REF 0.36 z-im-tadel) – sichtbare Bolzen bleiben (Nutzerwunsch 0.33, offen); E: je Strahl der Salve ein Bolzen 110 m/s, 2,5 m lang"
     }
    },
@@ -76544,6 +76626,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "M Schleier am Lauf 4 Bilder ≈ 0,07 s, kein fester Strahl (REF 0.36 z-im-threaded-needle) – hier ein Strahl für 0,07 s (Nutzerwunsch 0.33); Breite E"
     }
    },
@@ -82749,6 +82832,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "",
      "src": "E: Pfeil 70 m/s mit leichter Fallkurve, steckt 4 s, Leuchtspur; beim Lösen ein Lichtpuls an der Auflage; Destiny Imperial Needle: blauer Entladefächer 2 Bilder ≈ 22 % beim Lösen (destiny2 › z-ballista-imperial-needle), Pfeilfall und Steckdauer offen"
     }
    },
@@ -89216,6 +89300,7 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
+     "explosion": "grenade",
      "src": "M Laufeffekt 0,05–0,2 s → 0,2 s (Nutzerentscheid 182), kein Schweif, Flug nah 0,17–0,22 s (REF 0.36 z-im-velocity-baton, z-im-chill-inhibitor); E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), Explosion Radius 3 m"
     }
    },
@@ -96497,7 +96582,7 @@
      "gravity_mps2": 0.0,
      "life_s": 5.0,
      "radius_m": 4.5,
-     "smoke_s": 2.0,
+     "smoke_s": 0.0,
      "trail": "rocket",
      "width_m": 0.07,
      "length_m": 0.42,
@@ -96517,7 +96602,8 @@
      "spark_hz": 0.0,
      "shot_impacts": 0,
      "pulse_hz": 6.0,
-     "src": "M Glühpunkt ohne Rauchzopf, Flug 0,32–0,65 s (REF 0.36 z-im-blue-shift): Flamme am Heck, keine Rauchspur; E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m; Rauch aus dem Rohr 2 s (Nutzerwunsch 0.33, Destiny zeigt keinen – offen)"
+     "explosion": "rocket",
+     "src": "M Glühpunkt ohne Rauchzopf, Flug 0,32–0,65 s (REF 0.36 z-im-blue-shift): Flamme am Heck, keine Rauchspur; kein Rohrrauch sichtbar (REF 0.36 › 7; 0.34.2, vorher 2 s nach Nutzerwunsch 0.33); E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m"
     }
    },
    "weapon": {

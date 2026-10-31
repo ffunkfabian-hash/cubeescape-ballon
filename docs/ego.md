@@ -1626,7 +1626,7 @@ Spielbare Waffen (Taste 1 = BASIC-01-v2.1, 2 = BASIC-06-v2.1, 3 = BASIC-03-v2.1,
 | Mündungsfeuer | 33 ms | M Destiny: 1–2 Bilder bei 60/s, Kern klein, Seitenflammen breiter, Zielen Automatik ≈ 20 % der Öffnung (Motiongen muendung › 6, Entscheidungsliste 5.3 A); Maße und Farben E (Stil v2.1) |
 | Hülsen | keine | Waffe ohne Feld EJECT |
 | Rückstoß | ego.RECOIL (gemeinsam) | übertragen von der Automatik: Säule 1 % H je Schuss, im Zielen wandert die Welt (5.1 A / 5.2 A); Werkzeug: Modellkick der Aktion (fire_a/fire_b kick 0,6), keine Bahnstufe (E; Portal 2: obere Klaue ≈ 7 % H im ersten Schussbild) |
-| Wirkung | Projektil 34 m/s, Fall 0 m/s², Explosion 4.5 m, Laufrauch 2 s | M Glühpunkt ohne Rauchzopf, Flug 0,32–0,65 s (REF 0.36 z-im-blue-shift): Flamme am Heck, keine Rauchspur; E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m; Rauch aus dem Rohr 2 s (Nutzerwunsch 0.33, Destiny zeigt keinen – offen) (ego.PAYLOAD, Entscheidungsliste Block 9) |
+| Wirkung | Projektil 34 m/s, Fall 0 m/s², Explosion 4.5 m, Laufrauch 0 s | M Glühpunkt ohne Rauchzopf, Flug 0,32–0,65 s (REF 0.36 z-im-blue-shift): Flamme am Heck, keine Rauchspur; kein Rohrrauch sichtbar (REF 0.36 › 7; 0.34.2, vorher 2 s nach Nutzerwunsch 0.33); E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m (ego.PAYLOAD, Entscheidungsliste Block 9) |
 | Sprint-Frequenz | 3,16 / 1,58 Hz (gemeinsam) | M Destiny Automatik/Handfeuerwaffe, für alle Klassen bis zu neuen Messungen (3c) |
 | Griffe | grip, support, mag, push, cap, charge | Modul-Feld EGO_GRIPS |
 | Live-Teile | trigger = trigger, bolt = , port =  | Modul-Feld EGO_LIVE |

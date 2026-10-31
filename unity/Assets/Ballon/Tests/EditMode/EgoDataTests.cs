@@ -1460,6 +1460,9 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(6, P.impacts.Length, "Stile bullet, heavy, pellet, shotgun, energy, arrow");
             Assert.Greater(P.decal.max, 0);
             Assert.Greater(P.explosion.sparks, 0);
+            CollectionAssert.AreEquivalent(new[] { "rocket", "grenade" }, P.explosions.Select(x => x.name).ToArray(), "Explosion je Art (0.34.2)");
+            foreach (var d in All)
+                if (d.gameplay.fx.Explodes) Assert.AreEqual(d.gameplay.fx.explosion, d.Explosion(d.gameplay.fx.explosion).name, d.weapon.id);
             Assert.Greater(P.muzzle_smoke.rate_hz, 0);
         }
 
