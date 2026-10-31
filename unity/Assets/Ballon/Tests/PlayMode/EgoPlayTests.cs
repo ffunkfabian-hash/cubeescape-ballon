@@ -615,6 +615,43 @@ namespace Ballon.Ego.Tests
             }
         }
 
+        /// <summary>0.35.1 (Nutzerentscheid 208 A): bei allen 16 Waffen sind im Zielen und an der Hüfte die Arm-Renderer an und alle Waffenteile
+        /// außer denen mit ads_hide (Zielfernrohr, Werferheck), dem gezeichneten Absehen und den Füllstandsteilen (Granaten, Gurt) – gemessen an den Renderern, nicht nur an
+        /// AdsHideCount (die Regel ADS_STRIP schaltete sonst Arme und Waffe über _adsHide aus).</summary>
+        [UnityTest]
+        public IEnumerator Zielen_zeigt_Waffe_und_Arme_bei_allen_Waffen()
+        {
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            p.deltaOverride = () => 1f / 30f;
+            for (int i = 0; i < p.loadouts.Length; i++)
+            {
+                p.UseWeapon(i);
+                p.C.ReadyNow();
+                p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+                foreach (bool ads in new[] { true, false })
+                {
+                    p.input = new ScriptedInput().Add(0, 1.6f, hold: ads ? "aim" : "");
+                    for (int k = 0; k < 48; k++) yield return null;
+                    var rig = p.loadouts[i].rig;
+                    var D = rig.S.D;
+                    string where = $"{D.weapon.id} {(ads ? "Zielen" : "Hüfte")}";
+                    if (D.CanAim) Assert.AreEqual(ads, p.C.adsWeight > 0.99f, where + ": Zustand erreicht");
+                    var arms = rig.space.Find("Arms").GetComponentsInChildren<Renderer>(true);
+                    Assert.Greater(arms.Length, 0, where + ": Arm-Renderer da");
+                    CollectionAssert.IsEmpty(arms.Where(r => !r.enabled).Select(r => r.name), where + ": Arme sichtbar");
+                    var skip = new HashSet<string>(D.weapon.parts.Where(q => q.ads_hide || q.role.StartsWith("reticle")).Select(q => q.id));
+                    foreach (var set in D.weapon.live.rounds.sets) foreach (var rp in set.parts) skip.Add(rp);      // Füllstand: leere Kammer/Gurtglied aus
+                    var off = rig.space.Find("Weapon").GetComponentsInChildren<Renderer>(true)
+                                 .Where(r => !r.enabled && !skip.Contains(r.name) && r.gameObject.activeInHierarchy).Select(r => r.name);
+                    CollectionAssert.IsEmpty(off, where + ": Waffe sichtbar (außer ads_hide und Absehen)");
+                }
+            }
+            p.deltaOverride = null;
+            p.input = new ScriptedInput().Add(0, 1000);
+            p.UseWeapon(0);
+            p.C.ReadyNow();
+        }
+
         /// <summary>Scout im Spieler (Taste 3 über die Eingabekette): Weltzoom 3,0 (bis 0.34 2,0), Teile mit ads_hide im Zielen aus und in der Hüfte da,
         /// Einzelfeuer mit gehaltenem Abzug genau ein Schuss, Hüft-Fadenkreuz der Klasse.</summary>
         [UnityTest]
@@ -629,7 +666,7 @@ namespace Ballon.Ego.Tests
             for (int k = 0; k < 42; k++) yield return null;
             Assert.AreEqual(2, p.arsenal.Active, "Taste 3: Scout");
             var rig = p.rig;
-            Assert.Greater(rig.AdsHideCount, 7, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband – seit 0.35 (193 B) auch die übrige Waffe und die Arme");
+            Assert.AreEqual(7, rig.AdsHideCount, "Okular, Rohr, Okularkante, Okularlinse, Türme, Spannband – 0.35.1 (208 A): ohne übrige Waffe und Arme wie bis 0.34");
             Assert.IsFalse(rig.AdsHidden, "Hüfte: Zielfernrohr ganz");
             Assert.AreEqual("cross", p.hipReticle.Kind, "Hüft-Fadenkreuz des Scouts");
             long s0 = p.C.shots;
@@ -1836,7 +1873,8 @@ namespace Ballon.Ego.Tests
                 for (int f = 0; f < 1400 && onWall < EgoPlayer.DecalMax; f++)               // bis jedes Loch im Pool an der Wand hängt
                 {
                     yield return null;
-                    onWall = wall.transform.childCount;
+                    var halter = wall.transform.Find("FxHalter");                       // 0.35.1: ungleich skalierte Wand trägt die Löcher über den Halter
+                    onWall = wall.transform.childCount - (halter != null ? 1 : 0) + (halter != null ? halter.childCount : 0);
                 }
                 Assert.AreEqual(EgoPlayer.DecalMax, onWall, "alle Löcher an der Wand");
                 p.input = new ScriptedInput().Add(0, 100, hold: "fire");

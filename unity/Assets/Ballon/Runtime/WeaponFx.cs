@@ -391,6 +391,30 @@ namespace Ballon.Ego
             if (hitT != null && I.decal != "") Hole(point, normal, hitT, I.decal == "scorch");
         }
 
+        /// <summary>Träger für angehängte Wirkungen (Pfeil, Loch, Brandfleck, Lache; 0.35.1, Nutzerbefund 209 A): unter einem ungleich skalierten
+        /// Eltern-Objekt (Scheibe: Zylinder 2r × 0,02 × 2r um 90° gedreht, Wand: Box) würde ein gedrehtes Kind verzerrt (Pfeil: meterlange schräge
+        /// Striche). Der Halter gleicht den Maßstab des Eltern-Objekts aus (Welt: nur dessen Drehung), das Kind behält Weltlage und -maße.</summary>
+        static Transform Holder(Transform surface)
+        {
+            if (surface == null) return null;
+            var s = surface.lossyScale;
+            if (Mathf.Min(Mathf.Abs(s.x), Mathf.Abs(s.y), Mathf.Abs(s.z)) < 1e-6f) return surface;
+            if (Mathf.Abs(s.x - s.y) < 1e-4f && Mathf.Abs(s.y - s.z) < 1e-4f) return surface;     // gleichmäßig: keine Verzerrung
+            var h = surface.Find("FxHalter");
+            if (h == null)
+            {
+                h = new GameObject("FxHalter").transform;
+                h.SetParent(surface, false);
+            }
+            h.localPosition = Vector3.zero;
+            h.localRotation = Quaternion.identity;
+            h.localScale = new Vector3(1f / s.x, 1f / s.y, 1f / s.z);
+            return h;
+        }
+
+        /// <summary>Wirkung t an die getroffene Fläche hängen und Weltlage und -maße behalten.</summary>
+        static void Attach(Transform t, Transform surface) => t.SetParent(Holder(surface), true);
+
         /// <summary>Einschussloch bzw. Brandfleck aus dem Pool (der älteste wird wiederverwendet): erst lösen, dann Lage und Größe in
         /// Weltmaßen, dann an den Träger hängen (Patch einschuss: sonst galt die Größe im Maßstab des alten Trägers).</summary>
         public void Hole(Vector3 point, Vector3 normal, Transform hitT, bool scorch)
@@ -403,7 +427,7 @@ namespace Ballon.Ego
             t.SetParent(null, false);
             t.SetPositionAndRotation(point + normal * 0.004f, Quaternion.LookRotation(-normal) * Quaternion.Euler(0, 0, R(0, 360)));
             t.localScale = Vector3.one * EgoPlayer.DecalSize;
-            t.SetParent(hitT, true);
+            Attach(t, hitT);
             _holeAge[k] = 0;
             _holeSeed[k] = Mathf.Floor(R(0, _p.loadouts[0].rig.S.D.motion.payload.decal.variants)) + 0.37f;
             _holeScorch[k] = scorch;
@@ -586,7 +610,7 @@ namespace Ballon.Ego
             _projStuck[j] = fx.stick_s;
             var tr = _proj[j];
             tr.position = hit.point - _projV[j].normalized * fx.length_m * 0.35f;
-            tr.SetParent(hit.collider.transform, true);
+            Attach(tr, hit.collider.transform);
         }
 
         /// <summary>Explosion: Blitz, Feuerkugeln, Druckring auf der Fläche, Funken, Rauch, kurzes Licht, Brandfleck; Scheiben im Radius
@@ -658,7 +682,7 @@ namespace Ballon.Ego
             st.SetParent(null, false);
             st.SetPositionAndRotation(p + n * 0.006f, Quaternion.LookRotation(-n) * Quaternion.Euler(0, 0, R(0, 360)));
             st.localScale = Vector3.one * _scorchM * radius / 3f;
-            if (surface != null) st.SetParent(surface, true);
+            if (surface != null) Attach(st, surface);
             _scorchAge[s] = 0;
             SetDecal(_scorchR[s], R(0, 4), 1, 1);
             _scorchR[s].enabled = true;
@@ -671,7 +695,7 @@ namespace Ballon.Ego
                 pt.SetPositionAndRotation(p + n * 0.012f, Quaternion.LookRotation(-n) * Quaternion.Euler(0, 0, R(0, 360)));
                 _puddleSize[q] = radius * X.pool_k * 2;
                 pt.localScale = Vector3.one * _puddleSize[q];
-                pt.SetParent(surface, true);
+                Attach(pt, surface);
                 _puddleAge[q] = 0;
                 _puddleLife[q] = X.pool_s;
                 _puddleFade[q] = Mathf.Max(0.05f, X.pool_fade_s);
@@ -988,6 +1012,12 @@ namespace Ballon.Ego
         public int PuddlesShown { get { int n = 0; foreach (var r in _puddleR) if (r.enabled) n++; return n; } }
         /// <summary>Bildweiter Blitz im nächsten gezeichneten Bild (0.34.2, Tests).</summary>
         public bool ScreenFlashShown => _screenR.enabled;
+        /// <summary>Erstes Projektil (stuck: steckendes, sonst fliegendes) für Tests, null ohne.</summary>
+        public Transform ProjectileTransform(bool stuck)
+        {
+            for (int i = 0; i < ProjectilePool; i++) if (_projOn[i] && (_projStuck[i] >= 0) == stuck) return _proj[i];
+            return null;
+        }
         public int ProjectilesStuck { get { int n = 0; for (int i = 0; i < ProjectilePool; i++) if (_projOn[i] && _projStuck[i] >= 0) n++; return n; } }
         public Color Energy(int k) => _energy[k];
         public Color Tracer(int k) => _tracer[k];

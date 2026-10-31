@@ -310,7 +310,7 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(Visier_0_21(o.weapon, true), Visier_0_21(n.weapon, false), $"{o.weapon.id}: Teile, Anker, Hülsen, Live-Teile (Visier 0.21)");
                 Visier_v3(n.weapon);
                 Assert.IsFalse(n.weapon.parts.Any(p => p.ads_hide && p.asm == "sight" && p.role.StartsWith("glass")),
-                               $"{o.weapon.id}: Visierglas bleibt im Zielen (0.35: übrige Waffe nach 193 B aus)");
+                               $"{o.weapon.id}: Visierglas bleibt im Zielen (0.35.1, 208 A: übrige Waffe sichtbar wie bis 0.34; 193 B ruht)");
                 Assert.AreEqual(J(o.profile), J(n.profile), $"{o.weapon.id}: Klassenprofil");
                 CollectionAssert.AreEqual(o.poses.Select(J), n.poses.Select(J), $"{o.weapon.id}: Haltungen");
                 CollectionAssert.AreEqual(o.grips.Select(J), n.grips.Select(J), $"{o.weapon.id}: Griffe");
@@ -378,7 +378,7 @@ namespace Ballon.Ego.Tests
             CollectionAssert.IsSubsetOf(new[] { "scope_eye_trim", "scope_eyepiece", "scope_ocular_glass", "scope_strap", "scope_tube", "scope_turret",
                                                 "scope_turret_w" }, SR.weapon.parts.Where(p => p.ads_hide).Select(p => p.id).ToArray(), "Teile mit ads_hide");
             CollectionAssert.IsEmpty(SR.weapon.parts.Where(p => p.ads_hide && (p.id == "scope_glass" || p.id == "scope_objective" || p.id == "sight_reticle"))
-                                       .Select(p => p.id), "Objektiv, Linse und Absehen bleiben im Zielen (0.35: übrige Waffe nach 193 B aus)");
+                                       .Select(p => p.id), "Objektiv, Linse und Absehen bleiben im Zielen (0.35.1, 208 A: übrige Waffe sichtbar wie bis 0.34; 193 B ruht)");
             Assert.AreEqual(0.06f, SR.motion.ads_hide.eye_m, 1e-6f, "Augenabstand Okularende 30 mm + near 30 mm");
         }
 
@@ -464,8 +464,8 @@ namespace Ballon.Ego.Tests
             return o;
         }
 
-        /// <summary>0.35 (Nutzerentscheid 193 B, ego.ADS_STRIP): im Zielen sind Waffe unter dem Visier und Arme aus, die Kamera liegt je Klasse
-        /// hinter Socket_Eye – alte Dateien kennen das nicht; für den Vergleich übernommen.</summary>
+        /// <summary>0.35 (Nutzerentscheid 193 B, ego.ADS_STRIP; seit 0.35.1 aus, 208 A): im Zielen wären Waffe unter dem Visier und Arme aus, die
+        /// Kamera läge je Klasse hinter Socket_Eye – alte Dateien kennen das nicht; für den Vergleich übernommen.</summary>
         static void Strip035(EgoFile o, EgoFile n)
         {
             if (o.gameplay.ads_hide_arms != n.gameplay.ads_hide_arms)
@@ -856,11 +856,12 @@ namespace Ballon.Ego.Tests
             Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
         }
 
-        /// <summary>0.35 Nutzerentscheid 193 B („So wie Destiny“, ego.ADS_STRIP): im Zielen bleiben bei jeder Waffe das Mündungsteil
-        /// (Socket_Muzzle), das Absehen (reticle*) und das Visierglas sichtbar; bei Waffen mit ads_hide_arms ist der übrige Körper aus
-        /// (mehr als die Hälfte der Teile), der Bogen ist ausgenommen.</summary>
+        /// <summary>0.35.1 Nutzerentscheid 208 A (ADS_STRIP aus, 193 B „So wie Destiny“ ruht bis zum Neuentscheid mit Bildvergleich): im Zielen sind
+        /// bei jeder Waffe die Arme an (ads_hide_arms = false) und nur die Zielfernrohr-Teile (0.20), das Werferheck (194) und beim Bogen
+        /// Pfeilende und Sehne (0.33/0.35 Etappe 2) aus; Mündungsteil, Absehen und Visierglas bleiben. Vor 0.35.1 verlangte der Test das
+        /// Gegenteil (Arme aus, mehr als die Hälfte der Teile aus).</summary>
         [Test]
-        public void Zielbild_wie_Destiny_Visier_und_Muendung_bleiben()
+        public void Zielbild_Waffe_und_Arme_sichtbar_208_A()
         {
             foreach (var d in All.Where(x => x.CanAim))
             {
@@ -869,13 +870,9 @@ namespace Ballon.Ego.Tests
                 Assert.IsFalse(ps.Single(p => p.id == mz).ads_hide, $"{d.weapon.id}: Mündungsteil {mz} bleibt im Zielen");
                 CollectionAssert.IsEmpty(ps.Where(p => p.ads_hide && (p.role.StartsWith("reticle") || (p.asm == "sight" && p.role.StartsWith("glass")
                                                    && !p.id.Contains("ocular")))).Select(p => p.id), $"{d.weapon.id}: Absehen und Visierglas bleiben");
-                if (d.gameplay.weapon_type == "combat_bow")
-                    Assert.IsFalse(d.gameplay.ads_hide_arms, "Bogen: Arme bleiben (ausgenommen)");
-                else
-                {
-                    Assert.IsTrue(d.gameplay.ads_hide_arms, $"{d.weapon.id}: Arme im Zielen aus");
-                    Assert.Greater(ps.Count(p => p.ads_hide), ps.Length / 2, $"{d.weapon.id}: Waffe unter dem Visier aus");
-                }
+                Assert.IsFalse(d.gameplay.ads_hide_arms, $"{d.weapon.id}: Arme bleiben im Zielen (208 A)");
+                Assert.Less(ps.Count(p => p.ads_hide), 8, $"{d.weapon.id}: höchstens Zielfernrohr (7), Bogen (6), Werferheck (7) aus");
+                Assert.Greater(ps.Count(p => !p.ads_hide), ps.Length - 8, $"{d.weapon.id}: Waffe unter dem Visier sichtbar");
             }
         }
 

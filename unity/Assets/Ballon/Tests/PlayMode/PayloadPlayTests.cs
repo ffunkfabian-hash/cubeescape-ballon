@@ -301,6 +301,65 @@ namespace Ballon.Ego.Tests
             finally { Done(p, wall); }
         }
 
+        /// <summary>0.35.1 (Nutzerbefund Testbuild 0.35, Entscheidung 209 A): ein steckender Pfeil behält Weltlänge (0,70 m ± 1 %), Breite und
+        /// rechte Winkel – in der Scheibe (Zylinder um 90° gedreht, Maßstab 2r × 0,02 × 2r) und in der ungleich skalierten Wand. Vorher hing er
+        /// per SetParent(…, true) an der Fläche und wurde zu meterlangen schrägen Strichen verzerrt.</summary>
+        [UnityTest]
+        public IEnumerator Bogen_Pfeil_steckt_unverzerrt_in_Scheibe_und_Wand()
+        {
+            var p = Setup("combat_bow", 10f, out var wall);
+            GameObject disc = null;
+            try
+            {
+                foreach (bool onDisc in new[] { false, true })
+                {
+                    if (onDisc)                                              // Scheibe wie Range.cs: Zylinder, 90° um X, Maßstab (2r, 0,02, 2r)
+                    {
+                        wall.SetActive(false);
+                        disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                        disc.name = "Testscheibe";
+                        Object.Destroy(disc.GetComponent<Collider>());
+                        disc.transform.SetPositionAndRotation(wall.transform.position, Quaternion.Euler(90, 0, 0));
+                        disc.transform.localScale = new Vector3(3f, 0.02f, 3f);
+                        disc.AddComponent<MeshCollider>().sharedMesh = disc.GetComponent<MeshFilter>().sharedMesh;
+                        Physics.SyncTransforms();
+                    }
+                    string where = onDisc ? "Scheibe" : "Wand";
+                    p.fx.Clear();
+                    yield return null;
+                    p.input = new ScriptedInput().Add(0, 1.2f, hold: "fire").Add(1.2f, 1000);
+                    Vector3[] flight = null;
+                    for (int f = 0; f < 60 && p.fx.ProjectilesStuck == 0; f++)
+                    {
+                        yield return null;
+                        var fl = p.fx.ProjectileTransform(false);
+                        if (fl != null) flight = Axes(fl);
+                    }
+                    Assert.IsNotNull(flight, where + ": Pfeil flog");
+                    var tr = p.fx.ProjectileTransform(true);
+                    Assert.IsNotNull(tr, where + ": Pfeil steckt");
+                    var st = Axes(tr);
+                    for (int a = 0; a < 3; a++)
+                        Assert.AreEqual(flight[a].magnitude, st[a].magnitude, 0.01f * flight[a].magnitude, $"{where}: Weltmaß Achse {a} unverändert");
+                    float len = Mathf.Max(st[0].magnitude, st[1].magnitude, st[2].magnitude);
+                    for (int a = 0; a < 3; a++)
+                        Assert.AreEqual(0f, Vector3.Dot(st[a].normalized, st[(a + 1) % 3].normalized), 1e-3f, $"{where}: rechte Winkel (keine Verzerrung)");
+                    TestContext.WriteLine($"Pfeil in {where}: Achsen {st[0].magnitude:0.000}/{st[1].magnitude:0.000}/{st[2].magnitude:0.000} (Flug {flight[0].magnitude:0.000}/{flight[1].magnitude:0.000}/{flight[2].magnitude:0.000}), längste {len:0.000}");
+                }
+            }
+            finally
+            {
+                if (disc != null) Object.Destroy(disc);
+                Done(p, wall);
+            }
+        }
+
+        static Vector3[] Axes(Transform t)
+        {
+            var m = t.localToWorldMatrix;
+            return new Vector3[] { m.GetColumn(0), m.GetColumn(1), m.GetColumn(2) };
+        }
+
         // ------------------------------------------------------------------------------------------------ Einschläge
         /// <summary>Schrotflinte (0.34.1, REF 0.36: im Bild ein Einschlag je Schuss, Nutzerentscheid 181): ein Schuss zeigt EINEN dichten
         /// Einschlag (Funkenball, Rauchball) mit einem Loch; die 12 Kugeln liegen im Streukegel (cone_deg), gestreut statt in einem Punkt,
@@ -371,6 +430,7 @@ namespace Ballon.Ego.Tests
                     Assert.Greater(p.fx.Sparks, 0, $"{type}: Funken (Staub {p.fx.Dust}, Licht {p.fx.Glow}, Einschläge {p.fx.impacts})");
                     Assert.Greater(p.fx.Dust, 0, $"{type}: Staub");
                     var hp = p.fx.HoleTransform(0).parent;
+                    if (hp != null && hp.name == "FxHalter") hp = hp.parent;                // 0.35.1: ungleich skalierte Wand: über den Halter
                     Assert.IsTrue(hp == wall.transform, $"{type}: Loch an der Wand (hängt an {(hp != null ? hp.name : "nichts")}, Schüsse {p.C.shots})");
                     Assert.AreEqual(1f, p.fx.HoleAlpha(0), 1e-4f, $"{type}: Loch deckt");
                     if (type == "machine_gun")                      // Ausblenden vor dem Aufräumen (Clear blendet alle Löcher aus)
