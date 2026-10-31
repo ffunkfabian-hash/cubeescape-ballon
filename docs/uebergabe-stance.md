@@ -62,7 +62,15 @@ Fluchtpunkt ohne Blender; `--fit <modul> <pose> mx my fx fy [roll] [tiefe]` rech
    Etappe 1: ≈ 3 h), Entscheidungsliste (neuer Block 10 „Stance“), Lehren in `docs/LESSONS.md`, `./ce judge`, PR (Bericht = Beschreibung),
    Postfach an Sightline mit PR-Link und vollem Head.
 
-## Entscheidung nötig (im Bericht stehen lassen, über Sightline)
+## Nutzerentscheide 193 B und 194 (Sightline, Postfach cubeescape-nexogen#16, Kommentar 6546623926, 31.10.2026) – Teil von Etappe 2
 
-- **Zielbild 2–5× größer als Destiny** (BALLON 8–17 %, Destiny 2,7–9,5 %): Folge von Visier-Standard 3 (Modell ungezoomt, Öffnung 12–26 % B).
-- **Raketenwerfer im Zielen 50 %** (Destiny 16,7 %): Seitenvisier W2 66 mm neben der Rohrachse.
+9. **193 B – Zielbild verkleinern:** Bildanteil im Zielen aller 16 Waffen in Richtung Destiny (BALLON 8–17 % → Destiny-Spanne 2,7–9,5 %,
+   Median 5,8; z-bb-bildanteil); Visier und Absehen bleiben lesbar. Das ändert Visier-Standard 3 (bisher: Modell ungezoomt, Öffnung
+   12–26 % B): als **Nutzerentscheid 193 B** in der Entscheidungsliste und in `docs/ego.md` (Quelle `tools/make_ego.py`) festhalten und den
+   Weg begründen (z. B. Viewmodel-FOV oder Abstand des Augenpunkts im Zielen; `POSES['ads']`/`poses['ads'].eye`, Unity-Viewmodelkamera –
+   Unity folgt Blender). Betroffen sind auch `check` und Tests zur Visieröffnung (Visier-Standard 3: Holo 12–20 % / Zielfernrohr 20–26 % B).
+10. **194 – Raketenwerfer im Zielen nicht mehr 50 %:** mit der Modelländerung w14 (Punkt 1) erledigen – Visier näher an die Rohrachse oder
+    Rohr weiter aus dem Bild; Destiny-Beispiel Hoosegow nur x 81–100 (16,6–16,8 %).
+
+Für beide: Zeilen in der Übernahmetabelle des Berichts, Bildanteil vorher/nachher mit `tools/bildanteil.py` (vorher:
+`~/Library/Caches/CubeEscapeBallon/0.35/bildanteil/stance.json`), Standbilder je Klasse im Zielen als Beleg.
