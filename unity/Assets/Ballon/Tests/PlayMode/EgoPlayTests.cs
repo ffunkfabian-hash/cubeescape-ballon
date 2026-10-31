@@ -654,6 +654,50 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0, p.arsenal.Active);
         }
 
+        /// <summary>Hüftzeichen der Sonderklassen (0.33 „Armory“, ./check pinnt dieselben Werte): Form des Absehens im Glas, Form im HUD.</summary>
+        static readonly Dictionary<string, (string glass, string hud)> SonderHuefte = new Dictionary<string, (string, string)>
+        {
+            ["combat_bow"] = ("chevron", "arcs_ladder"), ["fusion_rifle"] = ("corners", "ring_corners"),
+            ["linear_fusion_rifle"] = ("cross", "ring_corners"), ["grenade_launcher"] = ("circle_cross", "gl_brackets"),
+            ["rocket_launcher"] = ("circle_cross", "none"),
+        };
+
+        /// <summary>0.33 „Armory“: Glas- und HUD-Form der Sonderklassen getrennt (gameplay.sight_form gegen gameplay.hip); der Raketenwerfer
+        /// zeigt in der Hüfte kein Mittenzeichen (Glidepath) – unsichtbar mit Grund „none“, Außenmaß 0 (Aufnahme-Protokoll), im Sprint aus.</summary>
+        [UnityTest]
+        public IEnumerator Sonderklassen_Hueftzeichen_HUD_und_Glas()
+        {
+            foreach (var kv in SonderHuefte)
+            {
+                var G = Class(kv.Key).gameplay;
+                Assert.AreEqual(kv.Value.glass, G.SightHip.kind, $"{kv.Key}: Glasform");
+                Assert.AreEqual(kv.Value.hud, G.hip.kind, $"{kv.Key}: HUD-Form");
+            }
+            var RL = Class("rocket_launcher");
+            var hip = new HipReticle(RL.gameplay.hip);
+            var c = new EgoController(new EgoSolver(RL));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            hip.See(c);
+            Assert.AreEqual("idle_hip", c.ActionName);
+            Assert.IsFalse(hip.Visible, "Raketenwerfer: kein Hüftzeichen");
+            Assert.AreEqual("none", hip.Reason);
+            Assert.AreEqual(0f, hip.ExtentPx(720), "Außenmaß 0 statt Rahmen ohne Grundelemente");
+            Run(c, new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f }, 0.6f);
+            hip.See(c);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance);
+            Assert.IsFalse(hip.Visible, "im Sprint aus");
+            var GL = new HipReticle(Class("grenade_launcher").gameplay.hip);   // Gegenprobe: Granatwerfer zeigt seine Klammern
+            var g = new EgoController(new EgoSolver(Class("grenade_launcher")));
+            g.ReadyNow();
+            Run(g, Idle, 0.3f);
+            GL.See(g);
+            Assert.IsTrue(GL.Visible, "Granatwerfer: Hüftzeichen sichtbar");
+            Assert.AreEqual("hip", GL.Reason);
+            Assert.Greater(GL.ExtentPx(720), 0f);
+            yield return null;
+        }
+
         /// <summary>Nutzerwunsch 26.10.2026 („lieber etwas Gezeichnetes als Grafik … im Bestfall das Fadenkreuz vom Hüftfeuer im Visier“): das
         /// Absehen aller drei Waffen ist im Spiel gezeichnet, nicht das Modellteil – im Zielen die Hüftform der Klasse in der Farbe des
         /// Modell-Absehens an der Bildlage von Socket_Reticle (auf der Mitte), ohne Aufgehen; in der Hüfte und beim Nachladen aus; das
@@ -679,8 +723,13 @@ namespace Ballon.Ego.Tests
                     continue;
                 }
                 Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
-                Assert.AreEqual(p.C.S.D.gameplay.SightHip.kind, L.sight.Kind, "Form des Absehens im Glas (sight_form)");
-                if (p.C.S.D.gameplay.sight_form.kind == p.C.S.D.gameplay.hip.kind)   // 0.33: Sonderklassen mit eigenem HUD-Hüftzeichen (reticles.HUD_HIP)
+                var type = p.C.S.D.gameplay.weapon_type;
+                if (SonderHuefte.TryGetValue(type, out var want2))       // 0.33: Glas behält die Modellform, das HUD zeigt Glidepath
+                {
+                    Assert.AreEqual(want2.glass, L.sight.Kind, $"{type}: Absehen im Glas wie vor 0.33 (reticles.hip)");
+                    Assert.AreEqual(want2.hud, L.hip.Kind, $"{type}: HUD-Hüftzeichen nach Glidepath (reticles.HUD_HIP)");
+                }
+                else
                     Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
                 var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
                 Assert.IsFalse(L.rig.Part(role.id).GetComponent<Renderer>().enabled, "Modell-Absehen aus");

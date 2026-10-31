@@ -505,6 +505,43 @@
     }
    ]
   },
+  "caret": {
+   "de": "Dach",
+   "en": "Caret",
+   "use": "Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      2.0,
+      -1.6
+     ],
+     "b": [
+      0,
+      0
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      0,
+      0
+     ],
+     "b": [
+      -2.0,
+      -1.6
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    }
+   ]
+  },
   "arcs_ladder": {
    "de": "Bögen mit Leiter",
    "en": "Arcs and ladder",
@@ -912,43 +949,6 @@
    "en": "None",
    "use": "Kein Hüftzeichen (Raketenwerfer, Destiny)",
    "prims": []
-  },
-  "caret": {
-   "de": "Dach",
-   "en": "Caret",
-   "use": "Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander",
-   "prims": [
-    {
-     "t": "line",
-     "a": [
-      2.0,
-      -1.6
-     ],
-     "b": [
-      0,
-      0
-     ],
-     "d": [
-      1,
-      0
-     ]
-    },
-    {
-     "t": "line",
-     "a": [
-      0,
-      0
-     ],
-     "b": [
-      -2.0,
-      -1.6
-     ],
-     "d": [
-      -1,
-      0
-     ]
-    }
-   ]
   }
  },
  "colors": {
@@ -1188,10 +1188,6 @@
     "circle_cross",
     "corners",
     "brackets",
-    "arcs_ladder",
-    "ring_corners",
-    "gl_brackets",
-    "none",
     "caret"
    ],
    "default": "Vorgabe der Waffe"
@@ -1562,19 +1558,19 @@
     "sprint": null
    },
    "fusion_rifle": {
-    "kind": "corners",
-    "share_h": 0.045,
+    "kind": "ring_corners",
+    "share_h": 0.055,
     "extent_mm": 10.39,
     "spread": "charge",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H)",
     "sprint": null
    },
    "linear_fusion_rifle": {
-    "kind": "cross",
-    "share_h": 0.045,
-    "extent_mm": 14.39,
+    "kind": "ring_corners",
+    "share_h": 0.125,
+    "extent_mm": 10.39,
     "spread": "charge",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, 12–13 % H)",
     "sprint": null
    },
    "trace_rifle": {
@@ -1586,19 +1582,19 @@
     "sprint": null
    },
    "grenade_launcher": {
-    "kind": "circle_cross",
-    "share_h": 0.045,
-    "extent_mm": 15.19,
+    "kind": "gl_brackets",
+    "share_h": 0.112,
+    "extent_mm": 10.39,
     "spread": "explosive",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H)",
     "sprint": null
    },
    "rocket_launcher": {
-    "kind": "circle_cross",
-    "share_h": 0.045,
-    "extent_mm": 15.19,
+    "kind": "none",
+    "share_h": 0.0,
+    "extent_mm": 0.0,
     "spread": "explosive",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, kein Mittenzeichen, 1 Clip)",
     "sprint": null
    },
    "machine_gun": {
@@ -1610,11 +1606,11 @@
     "sprint": null
    },
    "combat_bow": {
-    "kind": "chevron",
-    "share_h": 0.045,
-    "extent_mm": 6.79,
+    "kind": "arcs_ladder",
+    "share_h": 0.046,
+    "extent_mm": 8.05,
     "spread": "charge",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, Ø 4,6 % H)",
     "sprint": null
    },
    "sword": {
@@ -1641,7 +1637,15 @@
     "status": "entworfen (Werkzeug, Portal 2 / Cube Escape)",
     "sprint": null
    }
-  }
+  },
+  "sight_form_by_type": {
+   "fusion_rifle": "corners",
+   "linear_fusion_rifle": "cross",
+   "grenade_launcher": "circle_cross",
+   "rocket_launcher": "circle_cross",
+   "combat_bow": "chevron"
+  },
+  "sight_form": "Form des gezeichneten Absehens im Visierglas, wo sie vom HUD-Hüftzeichen abweicht (reticles.HUD_HIP, 0.33)"
  },
  "sight_kind": {
   "auto_rifle": "holo",

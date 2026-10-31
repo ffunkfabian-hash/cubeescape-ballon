@@ -399,6 +399,17 @@ for k, (kind, sh) in {'auto_rifle': ('ring_dot', 0.032), 'pulse_rifle': ('ring_d
     h = RT.hip(k)
     if (h['kind'], h['share_h']) != (kind, sh):
         fail(f"Hüft-Fadenkreuz {k}: {h['kind']} {h['share_h']} statt {kind} {sh} (Entscheidungsliste 4.2 A)")
+# 0.33 „Armory“: Sonderklassen zeigen im HUD die Glidepath-Form (reticles.HUD_HIP), das Absehen im Glas behält die Modellform (hip)
+for k, (glass, hud, sh) in {'combat_bow': ('chevron', 'arcs_ladder', 0.046), 'fusion_rifle': ('corners', 'ring_corners', 0.055),
+                            'linear_fusion_rifle': ('cross', 'ring_corners', 0.125), 'grenade_launcher': ('circle_cross', 'gl_brackets', 0.112),
+                            'rocket_launcher': ('circle_cross', 'none', 0.0)}.items():
+    h, g = RT.hud_hip(k), RT.hip(k)
+    if (g['kind'], h['kind'], h['share_h']) != (glass, hud, sh) or (h['extent_mm'] > 0) != (hud != 'none'):
+        fail(f"Hüftzeichen {k}: Glas {g['kind']}, HUD {h['kind']} {h['share_h']} ({h['extent_mm']} mm) statt {glass}, {hud} {sh} (0.33 HUD_HIP)")
+if any(RT.hud_hip(k) != RT.hip(k) for k in RT.DEFAULTS if k not in RT.HUD_HIP) or set(RT.HUD_HIP) - set(RT.DEFAULTS):
+    fail('Hüftzeichen: HUD und Glas weichen nur bei den Klassen in reticles.HUD_HIP ab')
+if set(RT.HUD_ONLY) & set(RT.SETTINGS['kind']['values']) or any(RT.hip(k)['kind'] in RT.HUD_ONLY for k in RT.DEFAULTS):
+    fail('Hüftzeichen: reine HUD-Formen (reticles.HUD_ONLY) weder als Spieleroption noch als Glasform')
 if (RT.HIP['color'], RT.HIP['weight']) != ('white', 'fine') or {k: v['kind'] for k, v in RT.HIP['sprint'].items()} != {'auto_rifle': 'caret'}:
     fail('Hüft-Fadenkreuz: weiß, fein, im Sprint nur die Automatik mit „^“ (Entscheidungsliste 4.1 A)')
 from basic.arms import ego as EG   # Entscheidungsliste 5.3 A: Mündungsfeuer 1 Bild bei 30/s, im Zielen ≤ 20 % der Holo-Öffnung

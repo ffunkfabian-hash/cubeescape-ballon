@@ -37,7 +37,8 @@ namespace Ballon.Ego
             get
             {
                 if (_sightHip != null) return _sightHip;
-                if (sight_form == null || string.IsNullOrEmpty(sight_form.kind) || sight_form.kind == hip.kind) return _sightHip = hip;
+                if (sight_form == null || string.IsNullOrEmpty(sight_form.kind)
+                    || sight_form.kind == hip.kind && sight_form.share_h == hip.share_h && sight_form.extent_mm == hip.extent_mm) return _sightHip = hip;
                 _sightHip = JsonUtility.FromJson<EgoHip>(JsonUtility.ToJson(hip));
                 _sightHip.kind = sight_form.kind; _sightHip.share_h = sight_form.share_h;
                 _sightHip.extent_mm = sight_form.extent_mm; _sightHip.prims = sight_form.prims;

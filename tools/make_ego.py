@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from tools.paths import OUT, EVIDENCE  # noqa: E402
 from basic.arms import ego as EG, robot_arm as RA  # noqa: E402
-from basic import matrix  # noqa: E402
+from basic import matrix, reticles as RT  # noqa: E402
 from tools.export_unity import WEAPONS  # noqa: E402
 
 
@@ -110,8 +110,12 @@ def _src_table(W):
             ('Feuerart', f"`{P['fire_mode']}` – {EG.FIRE_MODES[P['fire_mode']]}", 'Spec (META fire, data/specs); Unity: gameplay.fire_mode (0.20)'),
             ('Weltzoom im Zielen', 'kein Zielen (Werkzeug ohne Visier)' if G['sight'] == 'none' else f"{G['world_zoom']:g}" + (f", beginnt bei {G['zoom_start'] * 100:.0f} % des Augenwegs" if 'zoom_start' in G else ''),
              'M Glidepath (Entscheidungsliste 1.2 A, basic/reticles.py › CLASS_ZOOM)' + ('; Beginn E (1d, siehe Kadenz)' if 'zoom_start' in G else '')),
-            ('Hüft-Fadenkreuz', f"{H['kind']} {H['share_h'] * 100:.1f} % H", f"{H['status']} (4.1 A / 4.2 A, basic/reticles.py › HIP)"),
+            ('Hüft-Fadenkreuz', 'kein Hüftzeichen' if H['kind'] == 'none' else f"{H['kind']} {H['share_h'] * 100:.1f} % H", f"{H['status']} (4.1 A / 4.2 A, basic/reticles.py › {'HUD_HIP' if P['type'] in RT.HUD_HIP else 'HIP'})"),
             ('Sprint-Fadenkreuz', H['sprint']['kind'] or 'aus', 'basic/reticles.py › HIP.sprint (4.1 A)')]
+    if G['sight_form']['kind'] != H['kind'] and RT.SIGHT_KIND.get(P['type']) != 'pins':   # 0.33: Sonderklassen – das Absehen im Glas
+        # behält die Form des Waffenmodells (der Bogen zielt über Pins, ohne gezeichnetes Absehen)
+        rows.append(('Absehen im Glas', f"{G['sight_form']['kind']} {G['sight_form']['share_h'] * 100:.1f} % H",
+                     'basic/reticles.py › HIP (common.drawn_reticle, Teil des Modells); Unity: gameplay.sight_form'))
     if G['burst_shots']:                         # 0.22: Salve je Klasse
         rows.append(('Salve', f"{G['burst_shots']} Schuss je Zug, {G['burst_rpm']}/min in der Salve ({60 / G['burst_rpm']:.3f} s), Salvenbeginn alle "
                               f"{G['burst_shots'] * 60 / G['rpm']:.3f} s; gehalten Salve um Salve", 'Länge aus der Spec (META fire), Takt und Folge: ' + G['src']))
@@ -126,7 +130,9 @@ def _src_table(W):
                  'ego.RECOIL (gemeinsam, Automatik ≈ 1 % H je Schuss, 5.2 A)'))
     for k in list(C['poses']) + list(C.get('keep', {})):
         q = P['poses'][k]
-        rows.append((f'Haltung `{k}`', f"Socket_Hand {list(q['pos'])}, Ziel {list(q['aim'])}, Rollen {q['roll']}°", q['src']))
+        at = (f"Socket_Hand {list(q['pos'])}, Ziel {list(q['aim'])}" if 'pos' in q else    # Bogen (0.33): Zielen über den Augenpunkt
+              f"Auge {list(q['eye'])}, Blickrichtung {list(q['aim_dir'])}")
+        rows.append((f'Haltung `{k}`', f"{at}, Rollen {q['roll']}°", q['src']))
     for k in EG.FOLLOW_HIP:
         if 'hip' in C['poses'] and k not in C['poses']:
             q = P['poses'][k]

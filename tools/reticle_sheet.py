@@ -20,9 +20,10 @@ DST = os.path.join(OUT, 'reticles')
 FONT = '/System/Library/Fonts/Supplemental/Arial.ttf'
 
 
-VARIANTS = ([('kind', k, dict(reticle_kind=k), f"{R['de']} · {k}") for k, R in RT.RETICLES.items()]
+CATALOG = [k for k in RT.RETICLES if k not in RT.HUD_ONLY]     # HUD-Formen der Sonderklassen stehen im Hüftblatt (HIP_SHEET)
+VARIANTS = ([('kind', k, dict(reticle_kind=k), f"{RT.RETICLES[k]['de']} · {k}") for k in CATALOG]
             + [('color', f'{k}_{c}', dict(reticle_kind=k, reticle_color=c), f"{RT.RETICLES[k]['de']} · {d[0]}")
-               for c, d in RT.COLORS.items() for k in RT.RETICLES]
+               for c, d in RT.COLORS.items() for k in CATALOG]
             + [('weight', w, dict(reticle_kind='cross', reticle_weight=w), f"Fadenkreuz {de} · {w}")
                for w, (de, _) in RT.WEIGHTS.items()]
             + [('glass', g, dict(reticle_kind='ring_dot', glass=g), f"Glas {de} · {g}") for g, (de, _) in RT.GLASS.items()])
@@ -38,7 +39,7 @@ def sheet():
             if g == grp and os.path.exists(p):
                 tiles += ['-label', lab, p]
         out = os.path.join(DST, f'_row_{grp}.png')
-        subprocess.run(['magick', 'montage', *tiles, '-tile', f'{len(RT.RETICLES)}x' if grp == 'color' else 'x1', '-geometry', '360x203+5+5', '-pointsize', '16', '-font', FONT,
+        subprocess.run(['magick', 'montage', *tiles, '-tile', f'{len(CATALOG)}x' if grp == 'color' else 'x1', '-geometry', '360x203+5+5', '-pointsize', '16', '-font', FONT,
                         '-background', '#4C525A', '-fill', '#ECEFF2', '-title', title, out], check=True)
         rows.append(out)
     out = os.path.join(EVIDENCE, 'reticles.png')

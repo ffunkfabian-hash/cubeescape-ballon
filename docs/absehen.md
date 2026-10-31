@@ -16,11 +16,11 @@ Eine Quelle für Blender (`basic/common.drawn_reticle`, Visier-Baukasten v3 in `
 | `circle_cross` | Kreis mit Kreuzmarken | Großer Ring mit vier Marken; Ring und Marken gehen auf | ja |
 | `corners` | Eckklammern | Vier Winkel zeigen die Streuung, gehen diagonal auf | ja |
 | `brackets` | Klammern | Zwei eckige Klammern um einen Punkt; Klammern wandern seitlich nach außen | ja |
+| `caret` | Dach | Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander | ja |
 | `arcs_ladder` | Bögen mit Leiter | Zwei offene Bögen gehen seitlich auf; drei Striche darunter als Fallmarken | ja |
 | `ring_corners` | Ring mit Eckmarken | Kleiner Ring in der Mitte, vier Eckwinkel gehen diagonal auf | ja |
 | `gl_brackets` | Werferklammern | Zwei Eckklammern gehen seitlich auf; Mittenstrich und tieferer Strich als Fallmarke | ja |
 | `none` | ohne | Kein Hüftzeichen (Raketenwerfer, Destiny) | nein |
-| `caret` | Dach | Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander | ja |
 
 Jede Form gibt es in jeder Farbe und jeder Linienstärke.
 
@@ -94,28 +94,28 @@ Profil `charge`: während des Aufladens schrumpft die Spreizung von `charge_from
 
 ## Hüft-Fadenkreuz
 
-Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px breit). Aus bei: ads, sprint, reload, draw, holster, inspect, lowered – beim Zielen schon im ersten Bild. Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. Entscheidungsliste 4.1 A und 4.2 A.
+Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px breit). Aus bei: ads, sprint, reload, draw, holster, inspect, lowered – beim Zielen schon im ersten Bild. Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. Entscheidungsliste 4.1 A und 4.2 A. Sonderklassen (0.33 „Armory“, `reticles.HUD_HIP`): das HUD zeigt die gemessene Glidepath-Form, das gezeichnete Absehen im Visierglas behält die Form der Spalte „Glas“ (Teil des Waffenmodells).
 
-| Typ | Hüfte | Größe (% H) | Außenmaß | Status | Sprint |
-|---|---|---|---|---|---|
-| `auto_rifle` | `ring_dot` | 3.2 | 5.91 mm | gemessen (Glidepath) | `caret` 1.5 % H |
-| `pulse_rifle` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus |
-| `scout_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `hand_cannon` | `brackets` | 6.0 | 10.39 mm | gemessen (Glidepath, ≈ 6 % H) | aus |
-| `sidearm` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `submachine_gun` | `circle_cross` | 6.1 | 15.19 mm | gemessen (Glidepath, 5,9–6,3 % H) | aus |
-| `shotgun` | `corners` | 4.5 | 10.39 mm | entworfen | aus |
-| `sniper_rifle` | `caret` | 1.0 | 4.39 mm | gemessen (Glidepath, ≈ 1 % H) | aus |
-| `fusion_rifle` | `corners` | 4.5 | 10.39 mm | entworfen | aus |
-| `linear_fusion_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `trace_rifle` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
-| `grenade_launcher` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
-| `rocket_launcher` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
-| `machine_gun` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus |
-| `combat_bow` | `chevron` | 4.5 | 6.79 mm | entworfen | aus |
-| `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus |
-| `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `portal_cannon` | `ring_dot` | 4.5 | 5.91 mm | entworfen (Werkzeug, Portal 2 / Cube Escape) | aus |
+| Typ | Hüfte (HUD) | Größe (% H) | Außenmaß | Status | Sprint | Glas |
+|---|---|---|---|---|---|---|
+| `auto_rifle` | `ring_dot` | 3.2 | 5.91 mm | gemessen (Glidepath) | `caret` 1.5 % H | wie Hüfte |
+| `pulse_rifle` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus | wie Hüfte |
+| `scout_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
+| `hand_cannon` | `brackets` | 6.0 | 10.39 mm | gemessen (Glidepath, ≈ 6 % H) | aus | wie Hüfte |
+| `sidearm` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
+| `submachine_gun` | `circle_cross` | 6.1 | 15.19 mm | gemessen (Glidepath, 5,9–6,3 % H) | aus | wie Hüfte |
+| `shotgun` | `corners` | 4.5 | 10.39 mm | entworfen | aus | wie Hüfte |
+| `sniper_rifle` | `caret` | 1.0 | 4.39 mm | gemessen (Glidepath, ≈ 1 % H) | aus | wie Hüfte |
+| `fusion_rifle` | `ring_corners` | 5.5 | 10.39 mm | gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H) | aus | `corners` 4.5 % H |
+| `linear_fusion_rifle` | `ring_corners` | 12.5 | 10.39 mm | gemessen (Glidepath, 12–13 % H) | aus | `cross` 4.5 % H |
+| `trace_rifle` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus | wie Hüfte |
+| `grenade_launcher` | `gl_brackets` | 11.2 | 10.39 mm | gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H) | aus | `circle_cross` 4.5 % H |
+| `rocket_launcher` | `none` | 0.0 | 0 mm | gemessen (Glidepath, kein Mittenzeichen, 1 Clip) | aus | `circle_cross` 4.5 % H |
+| `machine_gun` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus | wie Hüfte |
+| `combat_bow` | `arcs_ladder` | 4.6 | 8.05 mm | gemessen (Glidepath, Ø 4,6 % H) | aus | `chevron` 4.5 % H |
+| `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus | wie Hüfte |
+| `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
+| `portal_cannon` | `ring_dot` | 4.5 | 5.91 mm | entworfen (Werkzeug, Portal 2 / Cube Escape) | aus | wie Hüfte |
 
 ## Visier-Standard
 
@@ -165,7 +165,7 @@ Im Zielen: Leuchtpunkt am Zielpunkt getrennt vom Glas (1.1 % Bildhöhe), kein Au
 
 | Option | Name | Werte | Vorgabe |
 |---|---|---|---|
-| `kind` | Form | `ring_dot`, `dot`, `cross`, `chevron`, `t_post`, `circle_cross`, `corners`, `brackets`, `arcs_ladder`, `ring_corners`, `gl_brackets`, `none`, `caret` | Vorgabe der Waffe |
+| `kind` | Form | `ring_dot`, `dot`, `cross`, `chevron`, `t_post`, `circle_cross`, `corners`, `brackets`, `caret` | Vorgabe der Waffe |
 | `color` | Farbe | `cyan`, `red`, `green`, `amber`, `white` | cyan |
 | `weight` | Linienstärke | `fine`, `normal`, `bold` | fine |
 | `scale` | Größe | 0.6 – 1.6 | 1.0 |

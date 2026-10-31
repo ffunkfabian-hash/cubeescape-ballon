@@ -67,6 +67,7 @@ namespace Ballon.Ego
         /// wie in Mask) – Messwert; bei Spreizung 0 gleich share_h · h, solange min_line_px nicht greift.</summary>
         public float ExtentPx(float h)
         {
+            if (Form.prims == null || Form.prims.Length == 0) return 0;    // Form 'none' (Raketenwerfer): nichts zu zeichnen
             float sp = Drawn, k = PxPerMm(h), w = H.weight, lw = Mathf.Max(H.line_r_mm * w * k, H.min_line_px);
             float x0 = 1e9f, x1 = -1e9f, y0 = 1e9f, y1 = -1e9f;
             foreach (var p in Form.prims)

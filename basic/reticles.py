@@ -46,6 +46,8 @@ RETICLES = {
                      prims=[dict(t='line', a=(sx * 5, -3), b=(sx * 5, 3), d=(sx, 0)) for sx in (1, -1)]
                      + [dict(t='line', a=(sx * 5, su * 3), b=(sx * 3.8, su * 3), d=(sx, 0)) for sx in (1, -1) for su in (1, -1)]
                      + [dict(t='dot', r=0.6)]),
+    'caret': dict(de='Dach', en='Caret', use='Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander',
+                  prims=[dict(t='line', a=(2.0, -1.6), b=(0, 0), d=(1, 0)), dict(t='line', a=(0, 0), b=(-2.0, -1.6), d=(-1, 0))]),
     # Hüftformen der Sonderklassen nach Glidepath (Motiongen/cubeescape-reference destiny2 › Fadenkreuz, [M]; 0.33 „Armory“ beim Ego-Übertrag
     # je Klasse, wie oben angekündigt): Bogen „zwei offene Bögen + Leiter aus 3 Strichen“, kurze und lineare Fusion „Ring + Eckmarken“,
     # Granatwerfer „zwei Eckklammern + Mittenstrich + zweiter Strich 2,8 % H tiefer“ (Rahmen 6,3 % B × 5,6 % H ≈ 2 : 1), Raketenwerfer
@@ -62,9 +64,9 @@ RETICLES = {
                         + [dict(t='line', a=(sx * 5, su * 2.5), b=(sx * 4.0, su * 2.5), d=(sx, 0)) for sx in (1, -1) for su in (1, -1)]
                         + [dict(t='line', a=(-0.9, 0), b=(0.9, 0), d=(0, 0)), dict(t='line', a=(-0.6, -2.5), b=(0.6, -2.5), d=(0, 0))]),
     'none': dict(de='ohne', en='None', use='Kein Hüftzeichen (Raketenwerfer, Destiny)', prims=[]),
-    'caret': dict(de='Dach', en='Caret', use='Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander',
-                  prims=[dict(t='line', a=(2.0, -1.6), b=(0, 0), d=(1, 0)), dict(t='line', a=(0, 0), b=(-2.0, -1.6), d=(-1, 0))]),
 }
+# Nur fürs HUD-Hüftzeichen der Sonderklassen (HUD_HIP): keine Spieleroption „Form“, kein Glas-Absehen, nicht im Katalogblatt
+HUD_ONLY = ('arcs_ladder', 'ring_corners', 'gl_brackets', 'none')
 COLORS = {'cyan': ('Cyan', '#5FD3E0', 'Standard, Familienfarbe'), 'red': ('Rot', '#FF3D2E', 'klassischer Leuchtpunkt'),
           'green': ('Grün', '#38E06E', 'hell auf dunklem Grund'), 'amber': ('Bernstein', '#FFB01F', 'warm, gut auf Grau'),
           'white': ('Weiß', '#EEF2F5', 'neutral, für helle Skins dezent')}
@@ -149,8 +151,9 @@ CLASS_ZOOM_STATUS.update({k: 'gemessen (Glidepath)' for k in ('scout_rifle', 'ha
 # Bogen (0.29): cubeescape-reference misst den Endmaßstab Hüfte → ADS der Imperial Needle ≈ 2,2× [M] (destiny2 ›
 # z-zb-imperial-needle-zoom, REF 0.17); bis 0.32 1,5 + Reflexbonus 0,3 = 1,8, mit dem Ego-Übertrag des Bogens (0.33 „Armory“ P4)
 # angeglichen: 1,9 + 0,3 = 2,2. Ebenso 0.33 „Armory“ (Abgleich aller Klassen mit cubeescape-reference destiny2 › Glidepath/zielbewegung):
-# Scharfschütze 5,5 → 4,0 (Far Future ≈ 4×, destiny2:496; Vollbild ohne Visierbonus). Impuls 2,0 (Gridskipper 2,10×; Entscheidung 1.2 A),
-# Automatik 1,9 (1,84×), MG 1,9 (1,84×), Seitenwaffe 1,25 (1,29×), Granatwerfer 1,4 (1,44×) liegen in der Messgenauigkeit ±0,05–0,1;
+# Scharfschütze 5,5 → 4,0 (Far Future ≈ 4×, destiny2:496; Vollbild ohne Visierbonus). Gesamtzoom (class_world_zoom = Grundzoom + Visierbonus):
+# Impuls 2,0 (Gridskipper 2,10×; Entscheidung 1.2 A), Automatik 1,9 (1,84×), MG 1,9 (1,84×), Seitenwaffe 1,25 (1,29×),
+# Granatwerfer 1,4 (1,44×) liegen in der Messgenauigkeit ±0,05–0,1;
 # lineare Fusion (Kandidat 3,0×) und Raketenwerfer (nicht messbar) bleiben offen.
 
 
@@ -279,7 +282,7 @@ def hud_hip(weapon_type):
 
 # Einstellbare Optionen (Spieler): Wertebereich und Vorgabe
 SETTINGS = {
-    'kind':       dict(de='Form', values=list(RETICLES), default='Vorgabe der Waffe'),
+    'kind':       dict(de='Form', values=[k for k in RETICLES if k not in HUD_ONLY], default='Vorgabe der Waffe'),
     'color':      dict(de='Farbe', values=list(COLORS), default='cyan'),
     'weight':     dict(de='Linienstärke', values=list(WEIGHTS), default='fine'),
     'scale':      dict(de='Größe', min=0.6, max=1.6, default=1.0),
