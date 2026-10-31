@@ -304,8 +304,9 @@ namespace Ballon.Ego.Tests
         // ------------------------------------------------------------------------------------------------ Einschläge
         /// <summary>Schrotflinte (0.34.1, REF 0.36: im Bild ein Einschlag je Schuss, Nutzerentscheid 181): ein Schuss zeigt EINEN dichten
         /// Einschlag (Funkenball, Rauchball) mit einem Loch; die 12 Kugeln liegen im Streukegel (cone_deg), gestreut statt in einem Punkt,
-        /// und treffen (eine Scheibe neben der Mitte zählt als Treffer). Hüftstreuung im Test 0 (0.35): die Zufallsstreuung verschob die
-        /// Kegelmitte bis 11 cm, die Scheibe beginnt bei 22 cm – je nach Zufallsfolge (Tests davor) fiel der Treffer aus.</summary>
+        /// und treffen (eine Scheibe neben der Mitte zählt als Treffer). Hüftstreuung im Test 0 und 2 s Ruhe vor dem Ausrichten (0.35): die
+        /// Zufallsstreuung verschob die Kegelmitte bis 11 cm, die Scheibe beginnt bei 22 cm, und die Weltkamera erholte sich noch vom Rückstoß
+        /// des Tests davor – je nach Zufallsfolge und Takt fiel der Treffer aus.</summary>
         [UnityTest]
         public IEnumerator Schrot_ein_Einschlag_je_Schuss_Kugeln_im_Kegel()
         {
@@ -317,6 +318,7 @@ namespace Ballon.Ego.Tests
             try
             {
                 Rc.spread_hip_deg = 0;
+                for (int f = 0; f < 60; f++) yield return null;   // Rückstoß aus Tests davor (Raketenwerfer, Kick 4) abklingen lassen
                 Assert.AreEqual(12, F.pellets);
                 Assert.AreEqual(1, F.shot_impacts, "ein sichtbarer Einschlag je Schuss");
                 var cam = p.worldCam.transform;

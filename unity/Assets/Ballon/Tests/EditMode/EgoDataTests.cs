@@ -435,23 +435,6 @@ namespace Ballon.Ego.Tests
 
         /// <summary>0.34 „Payload“ (ohne neues Format): ein älterer Export kennt Wirkung, Schrittteile, Füllstand und Glieder nicht – der
         /// Leser setzt die alte Wirkung (Kugel mit Einschlag) und leere Listen; für den Vergleich übernimmt die alte Datei die neuen Felder.</summary>
-        /// <summary>0.35 (Nutzerentscheid 193 B, ego.ADS_STRIP): im Zielen sind Waffe unter dem Visier und Arme aus, die Kamera liegt je Klasse
-        /// hinter Socket_Eye – alte Dateien kennen das nicht; für den Vergleich übernommen.</summary>
-        static void Strip035(EgoFile o, EgoFile n)
-        {
-            if (o.gameplay.ads_hide_arms != n.gameplay.ads_hide_arms)
-                Assert.IsFalse(o.gameplay.ads_hide_arms, "vor 0.35: Arme im Zielen sichtbar");
-            o.gameplay.ads_hide_arms = n.gameplay.ads_hide_arms;
-            foreach (var p in o.weapon.parts)
-            {
-                var q = n.weapon.parts.FirstOrDefault(x => x.id == p.id);
-                if (q != null) p.ads_hide = q.ads_hide;
-            }
-            var oa = o.poses.FirstOrDefault(x => x.name == "ads");
-            var na = n.poses.FirstOrDefault(x => x.name == "ads");
-            if (oa != null && na != null) { oa.eye = na.eye; oa.src = na.src; }
-        }
-
         static EgoFile Payload034(EgoFile o, EgoFile n)
         {
             Assert.AreEqual("vor 0.34", o.gameplay.fx.src, "älterer Export: Wirkung aus dem Leser");
@@ -479,6 +462,25 @@ namespace Ballon.Ego.Tests
                 o.weapon.eject.speed_k = n.weapon.eject.speed_k;
             }
             return o;
+        }
+
+        /// <summary>0.35 (Nutzerentscheid 193 B, ego.ADS_STRIP): im Zielen sind Waffe unter dem Visier und Arme aus, die Kamera liegt je Klasse
+        /// hinter Socket_Eye – alte Dateien kennen das nicht; für den Vergleich übernommen.</summary>
+        static void Strip035(EgoFile o, EgoFile n)
+        {
+            if (o.gameplay.ads_hide_arms != n.gameplay.ads_hide_arms)
+                Assert.IsFalse(o.gameplay.ads_hide_arms, "vor 0.35: Arme im Zielen sichtbar");
+            o.gameplay.ads_hide_arms = n.gameplay.ads_hide_arms;
+            foreach (var p in o.weapon.parts)
+            {
+                var q = n.weapon.parts.FirstOrDefault(x => x.id == p.id);
+                if (q == null) continue;
+                Assert.IsTrue(!p.ads_hide || q.ads_hide, $"{o.weapon.id}/{p.id}: ads_hide aus der alten Datei bleibt (Zielfernrohr)");
+                p.ads_hide = q.ads_hide;
+            }
+            var oa = o.poses.FirstOrDefault(x => x.name == "ads");
+            var na = n.poses.FirstOrDefault(x => x.name == "ads");
+            if (oa != null && na != null) { oa.eye = na.eye; oa.src = na.src; }
         }
 
         // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 0.22 (Schritt 6)
@@ -852,6 +854,29 @@ namespace Ballon.Ego.Tests
             Assert.That(m.y, Is.InRange(59f, 66f), "Mündung y nahe Destiny-MP 61–62 %");
             Assert.That(r.x, Is.InRange(60f, 70f), "Absehen x nahe Destiny-Holo 62–68 %");
             Assert.Greater(pts.Max(p => p.y), 99f, "Kontur reicht bis zum unteren Rand");
+        }
+
+        /// <summary>0.35 Nutzerentscheid 193 B („So wie Destiny“, ego.ADS_STRIP): im Zielen bleiben bei jeder Waffe das Mündungsteil
+        /// (Socket_Muzzle), das Absehen (reticle*) und das Visierglas sichtbar; bei Waffen mit ads_hide_arms ist der übrige Körper aus
+        /// (mehr als die Hälfte der Teile), der Bogen ist ausgenommen.</summary>
+        [Test]
+        public void Zielbild_wie_Destiny_Visier_und_Muendung_bleiben()
+        {
+            foreach (var d in All.Where(x => x.CanAim))
+            {
+                var ps = d.weapon.parts;
+                string mz = d.Anchor("Socket_Muzzle").part;
+                Assert.IsFalse(ps.Single(p => p.id == mz).ads_hide, $"{d.weapon.id}: Mündungsteil {mz} bleibt im Zielen");
+                CollectionAssert.IsEmpty(ps.Where(p => p.ads_hide && (p.role.StartsWith("reticle") || (p.asm == "sight" && p.role.StartsWith("glass")
+                                                   && !p.id.Contains("ocular")))).Select(p => p.id), $"{d.weapon.id}: Absehen und Visierglas bleiben");
+                if (d.gameplay.weapon_type == "combat_bow")
+                    Assert.IsFalse(d.gameplay.ads_hide_arms, "Bogen: Arme bleiben (ausgenommen)");
+                else
+                {
+                    Assert.IsTrue(d.gameplay.ads_hide_arms, $"{d.weapon.id}: Arme im Zielen aus");
+                    Assert.Greater(ps.Count(p => p.ads_hide), ps.Length / 2, $"{d.weapon.id}: Waffe unter dem Visier aus");
+                }
+            }
         }
 
         /// <summary>Entscheidungsliste 3b / 3.2 A: Sprint-Trageform je Klasse – die MP tief und nach links gerollt (Oberseite zeigt im Bild nach

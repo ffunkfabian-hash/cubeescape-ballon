@@ -309,8 +309,11 @@ def ads_strip_parts(W, C):
     keep = {W.ANCHORS[a]['part'] for a in R['keep_anchors'] if a in W.ANCHORS and W.ANCHORS[a].get('part')}
     keep |= set(R.get('keep_parts', ()))
     keep |= {p['id'] for p in W.PARTS if p['asm'] in R['keep_asm'] or any((p.get('iface') or '').startswith(i) for i in R['keep_iface'])}
-    for _ in range(3):                       # Kinder sichtbarer Teile bleiben sichtbar (parent_part)
-        keep |= {p['id'] for p in W.PARTS if p.get('parent_part') in keep}
+    while True:                              # Kinder sichtbarer Teile bleiben sichtbar (parent_part, bis nichts mehr dazukommt)
+        more = {p['id'] for p in W.PARTS if p.get('parent_part') in keep} - keep
+        if not more:
+            break
+        keep |= more
     keep -= {p['id'] for p in W.PARTS if p['id'] in R['drop_parts'] or any((p.get('iface') or '').startswith(i) for i in R['drop_iface'])}
     return tuple(p['id'] for p in W.PARTS if p['id'] not in keep)
 
