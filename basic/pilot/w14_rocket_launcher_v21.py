@@ -19,12 +19,12 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Startrohr läuft hinten als Kegel in das Heckrohr; Schellen tragen Griffmodul, Vordergriff und den Visierarm (keine aufgesetzten Kästen) |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie) unter dem Übergang, senkrechter Vordergriff vor dem Fenster, Schulterauflage unter dem Heckrohr; Heckklappe schwenkt nach rechts (vom Gesicht weg) |
 
-Visier: W2 „Entfernung“ (Baukasten v3, visier-konzept › 6a; `sight_kit.entfernung`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
+Visier: W2 „Entfernung“ (Baukasten v3, visier-konzept › 6a; `common.entfernung`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
 Haube 2,4 mm mit Schutzdach (oben 4 mm, 6 mm vorstehend) und leuchtendem Entfernungsfeld im Sockel; Größe M (26 × 18, 18,9 % der
 Bildbreite); Absehen gezeichnet (Hüftform `circle_cross` flach im Glas); Weltzoom der Klasse 2,5 + 0,3 Reflexbonus (reticles).
 Sitz **seitlich links** (Nutzer 28.10.2026: „Müsste das Visier vom raketenwerfer nicht eher an der Seite sitzen?“, dann „Seitlich links,
 66 mm notfalls Bauteil dazu passend erfinden“): Visierlinie auf Achshöhe 66 mm links neben der Rohrachse (Visierhöhe als Abstand zur
-Achse, 66 ± 4), Schiene BRI-22 auf einem Visierarm an einer Visierschelle um das Startrohr (`sight_kit.side_mount`). Wie bei Destiny
+Achse, 66 ± 4), Schiene BRI-22 auf einem Visierarm an einer Visierschelle um das Startrohr (`common.side_mount`). Wie bei Destiny
 ragt das Rohr im Zielen rechts ins Fenster (bei 66 mm Abstand liegt die Rohrwand ≈ 20 mm neben der Visierlinie; erst ≈ 140 mm wären
 frei); der Zielpunkt bleibt frei. W1 D-Linse in Größe L nur als Variante dokumentiert.
 Schlichtheitsbudget: Leuchten 2 Funktionen (Munition: Bereitschaftsanzeige · Visier: Emitter, Entfernungsfeld und Absehen) · Grafik
@@ -39,7 +39,7 @@ Status: Maße entworfen (an Familie 15 angelehnt, Länge kürzer als v1; gemesse
 """
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, sight_line, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Schellen ohne feine Kratzer)
-from basic.pilot.optics.sight_kit import entfernung, side_mount
+from basic.common import entfernung, side_mount
 from basic.weapons import w14_rocket_launcher as V1
 
 META = dict(V1.META, variant='v2.1', name='Schulterrohr v2.1', nick='Familie v2.1',
@@ -175,6 +175,23 @@ ANCHORS = {
     'Socket_Breech': dict(at=(REAR0 - 12, BORE, 0), part='rear_ring', note='Ladeöffnung hinten (Heckklappe offen)'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
+# Ego-Griffe (0.33 „Armory“ P4, ego.profile)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(262, 22, 14.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.12, 0.0), fingers_pose='foregrip',
+                    finger_map=dict(open='foregrip_open'),
+                    src='E links am Vordergriff (Socket_SupportHand), Faust um den Griff wie BASIC-06 (ego.FINGER_POSES foregrip)'),
+    'mag':     dict(part='rocket', contact=(-20, BORE - R_IN + 1, 0), palm=(0.0, 1.0, 0.0), fingers=(1.0, 0.0, 0.0), fingers_pose='mag_hold',
+                    src='E unter der Mitte der Rakete (Ruhelage im Rohr), Hand von unten'),
+    'push':    dict(part='rocket', contact=(R0 - 4, BORE, 0), palm=(1.0, 0.0, 0.0), fingers=(0.0, 1.0, 0.0), fingers_pose='open',
+                    src='E: flache Hand am Heck der Rakete, schiebt sie das letzte Stück ins Rohr'),
+    'cap':     dict(contact=(REAR0 - 1, BORE + 10, RING_R + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
+                    src='E am Klappenknopf links am Heckring'),
+    'charge':  dict(contact=(REAR0 - 1, BORE + 10, RING_R + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
+                    src='E wie cap (vom Nachladen nicht genutzt)'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss
 EJECT = None    # hülsenlos: die Rakete verlässt das Rohr ganz (Daten statt Sonderlogik; check: Teil mit caseless → EJECT None)
 ACTIONS = {
     'fire': dict(de='Abschuss', frames=12, step=1, keys={'trigger': [(0, 0), (2, 1), (6, 0)],

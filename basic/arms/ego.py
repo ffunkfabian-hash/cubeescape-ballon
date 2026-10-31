@@ -85,14 +85,42 @@ def shots_burst(first, last, n, burst_rpm, rpm):
     return out
 
 
-def trigger_on(fire, f, semi=False):
+def shots_charge(pull, end, charge_f, rpm, n=1, burst_rpm=0):
+    """Schussbilder einer Ladewaffe (0.33, Feuerart charge_burst/charge_single) bei 30 fps: Abzug ab `pull` gehalten; je Zyklus (60/rpm,
+    Aufladen eingeschlossen) erst charge_f Bilder Aufladen, dann n Schuss im Abstand 60/burst_rpm; nur Schüsse bis `end`."""
+    period, step, out, k = 60.0 * FPS / rpm, (60.0 * FPS / burst_rpm if n > 1 else 0.0), [], 0
+    while pull + period * k + charge_f <= end + 1e-9:
+        s0 = pull + period * k + charge_f
+        out += [int(s0 + step * i + 1e-9) for i in range(n) if s0 + step * i <= end + 1e-9]
+        k += 1
+    return out
+
+
+def charge_level(fire, f, charge_f, n=1, fade_f=9.0):
+    """Ladung 0 … 1 im Bild f einer Feueraktion einer Ladewaffe (Leuchtteile EGO_LIVE glow; Unity EgoSolver.ChargeLevel): je Zyklus aus
+    n Schuss steigt sie in den charge_f Bildern vor dem ersten Schuss linear auf 1, bleibt bis zum letzten Schuss und fällt danach in
+    fade_f Bildern auf 0."""
+    lv = 0.0
+    for g in range(0, len(fire), n):
+        s0, s1 = fire[g], fire[min(g + n, len(fire)) - 1]
+        if s0 - charge_f <= f < s0:
+            lv = max(lv, (f - (s0 - charge_f)) / charge_f)
+        elif s0 <= f <= s1:
+            lv = 1.0
+        elif f > s1:
+            lv = max(lv, 1.0 - (f - s1) / fade_f)
+    return max(0.0, min(1.0, lv))
+
+
+def trigger_on(fire, f, semi=False, lead=0.0):
     """Abzug gezogen im Bild f einer Feueraktion: Dauerfeuer vom Bild vor dem ersten bis nach dem letzten Schuss; Einzelfeuer (0.20,
-    Feuerart semi_auto) je Schuss ein Bild davor bis ein Bild danach, dazwischen losgelassen (ein Schuss je Zug)."""
+    Feuerart semi_auto) je Schuss ein Bild davor bis ein Bild danach, dazwischen losgelassen (ein Schuss je Zug). lead (0.33, Ladewaffe):
+    der Abzug zieht schon lead Bilder vor dem ersten Schuss (Aufladen)."""
     if not fire:
         return False
     if semi:
         return any(s - 1 <= f <= s + 1 for s in fire)
-    return fire[0] - 1 <= f <= fire[-1] + 1
+    return fire[0] - 1 - lead <= f <= fire[-1] + 1
 
 ACTIONS = {
     'idle_hip': dict(de='Ruhe an der Hüfte (Atmen)', frames=60, weapon=[(0, 'hip'), (60, 'hip')], breathe=True,
@@ -254,7 +282,9 @@ FLASH = dict(
 EJECT = dict(
     speed_mps=2.4, gravity_mps2=9.81, spin_dps=1500.0, spin_axis=(1.0, 0.25, 0.0), life_s=0.4, max_live=6, delay_frames=0,
     cases=dict(rifle=dict(len_mm=42, r_mm=4.8, segs=12),
-               pistol=dict(len_mm=20, r_mm=4.6, segs=12)),     # 0.18: Kurzpatrone der MP (Patronen im Magazinfenster 24 × 4,4 mm) E
+               pistol=dict(len_mm=20, r_mm=4.6, segs=12),      # 0.18: Kurzpatrone der MP (Patronen im Magazinfenster 24 × 4,4 mm) E
+               shotshell=dict(len_mm=50, r_mm=9.5, segs=14),   # 0.33: Schrotpatrone (Maße der Patrone shell_round von BASIC-08) E
+               grenade_40=dict(len_mm=35, r_mm=21, segs=16)),  # 0.33 P4: leere 40-mm-Granathülse (BASIC-13, aus dem Modul EJECT_CASES) E
     role='brass',
     src='M Destiny: Hülse im 1. Blitzbild oder 1 Bild danach, rechts/rechts unten (Motiongen muendung › 6, Entscheidungsliste 5d/5.4 A); '
         'Geschwindigkeit, Drehung, Lebensdauer E')
@@ -327,7 +357,7 @@ def flash_cover_ads(W, n=120):
     Fenster in der Ebene der vorderen Haubenkante (sight_frame_trim, falls vorhanden; Innenmaß dort gleich dem Glas; Glas als Querprofil:
 nur Rasterpunkte in der projizierten Kontur, 0.21), Raster n × n; beim Zielfernrohr
     (0.20) die kreisrunde Objektivlinse (scope_glass). Verdeckung durch die Waffe zählt nicht (obere Schranke). Für ./check (≤ 20 %, 5.3 A); Unity misst
-    dasselbe im Test mit dem laufenden Controller."""
+    dasselbe im Test mit dem laufenden Controller. Ohne Fenster (Kimme/Korn, 0.33) None."""
     th = math.tan(math.radians(CAMERA['h_fov_deg'] / 2))
     tv = th * CAMERA['aspect'][1] / CAMERA['aspect'][0]
     eye, mz = W.ANCHORS['Socket_Eye']['at'], W.ANCHORS['Socket_Muzzle']['at']
@@ -338,6 +368,8 @@ nur Rasterpunkte in der projizierten Kontur, 0.21), Raster n × n; beim Zielfern
 
     P = {q['id']: q for q in W.PARTS}
     circle = poly = None
+    if 'scope_glass' not in P and not ('sight_glass' in P and ('pts' in P['sight_glass'] or 'ww' in P['sight_glass'])):
+        return None                          # Kimme/Korn (0.33): keine Öffnung – der Kornpunkt heißt sight_glass, ist aber kein Fenster
     if 'sight_glass' in P:
         g = P['sight_glass']
         if 'pts' in g:                       # Baukasten v3 (0.21): Fenster als Querprofil – gezählt wird nur innerhalb der Kontur
@@ -360,6 +392,8 @@ nur Rasterpunkte in der projizierten Kontur, 0.21), Raster n × n; beim Zielfern
         circle = (cx, cy, rr)
         x0, y0, x1, y1 = cx - rr, cy - rr * 16 / 9, cx + rr, cy + rr * 16 / 9
     V, core, flame = flash_mesh()
+    k = CLASSES.get(getattr(W, 'META', {}).get('type'), {}).get('gameplay', {}).get('flash_scale', 1.0)   # Blitzmaßstab je Klasse (0.33 P4)
+    V = [(f * k, u * k, x * k) for f, u, x in V]
 
     def inside(px, py, a, b, c):
         def s(p, q):
@@ -398,8 +432,8 @@ def flash_visible(fire, f):
 
 def _retime(A, k):
     """Alle Bildangaben einer Aktion um k strecken (Feueraktionen bleiben in Originalkadenz)."""
-    def keys(v):
-        return [(f * k, x) for f, x in v]
+    def keys(v):                             # auf 1e-9 gerundet: 14 · (25/14) bliebe sonst 14,000000000000002 > Ende (0.33)
+        return [(round(f * k, 9), x) for f, x in v]
     for ch in ('weapon', 'L', 'R', 'fL', 'fR'):
         if ch in A:
             A[ch] = keys(A[ch])
@@ -447,6 +481,18 @@ def _follow(hip, ref_hip, ref):
                 roll=hip['roll'] + ref['roll'] - ref_hip['roll'], src=f"wie {ref['src']}, an der Klassen-Hüfte (FOLLOW_HIP)")
 
 
+# Bogen (0.33 P4): Teile des Auszugs (Modul w07: Ereignis draw) mit denselben Schlüsseln, Spannlicht erst bei vollem Auszug
+
+
+def _bow_draw(*keys):
+    k = list(keys)
+    if k[0][1] < 1 <= k[-1][1]:                    # Spannen: Spannlicht 2 Bilder vor dem vollen Auszug an
+        light = [(0, 0), (k[-1][0] - 2, 0), (k[-1][0], 1)]
+    else:                                          # gespannt halten, entspannen: Licht aus, sobald der Auszug nachlässt
+        light = [(f, 1.0 if v >= 1 else 0.0) for f, v in k]
+    return {p: list(k) for p in ('arrow_shaft', 'string_top', 'string_bottom', 'cam_top', 'cam_bottom')} | {'draw_light': light}
+
+
 CLASSES = {
     'auto_rifle': dict(
         poses={}, frames={},
@@ -474,12 +520,15 @@ CLASSES = {
                           '750–900/min [S]), Clip fire_hip wie die Automatik alle 2,5 Bilder; Magazin 30 E (Destiny-MP 26–30 [S])'),
         src='Entscheidungsliste Schritt 6, erste übertragene Klasse (Nutzer 26.10.2026): Hüfte 2b/2.1 A, Sprint 3b/3.2 A, Anflug 4d'),
     'scout_rifle': dict(
-        # Hüfte und Sprint wie die Automatik (lange Waffe, Gewehr): die Haltungen POSES treffen am Scout schon das Destiny-Band
-        poses={},
+        # Sprint wie die Automatik (lange Waffe, Gewehr); eigene Hüfte nach cubeescape-reference huefte.json (0.33, Abgleich aller Waffen)
+        poses=dict(
+            hip=dict(pos=(-0.136, -0.42, -0.181), aim=(-0.188, -3.414, -0.362), roll=9.9,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone '
+                         'Patrol, Call to Serve); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 '
+                         '„Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, '
+                         'Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,5/63,2 %, Visier 68,4/56,0 %'),
+        ),
         keep=dict(
-            hip='M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); Destiny-Scout '
-                'Tone Patrol Mündung ≈ 57/63, Call to Serve 58/61 (Motiongen destiny2 › 3, huefte); Lage E wie die Automatik: am Scout '
-                'gerechnet Mündung 57,0/62,9 %, Okular 24 pp rechts der Mündung (Band 7–34)',
             sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Scout-Sprint nicht gemessen (Motiongen '
                    'destiny2 › Glidepath: kein Sprint-Clip)'),
         frames=dict(aim_in=7, aim_out=5),
@@ -498,12 +547,13 @@ CLASSES = {
             'Zielfernrohr nach Visier-Standard 3'),
     'pulse_rifle': dict(
         # Hüfte E an der Automatik ausgerichtet: deren Haltung trifft am Impuls x 59,7 / y 65,6 % (über dem Band 54–59), die kürzere
-        # Kammer liegt weiter rechts; 2 cm weiter zur Mitte, 1,6 cm höher, Lauf leicht zur Mitte
+        # Kammer liegt weiter rechts; Hüfte seit 0.33 nach cubeescape-reference huefte.json (Visier 73–74/55 %)
         poses=dict(
-            hip=dict(pos=(-0.17, -0.42, -0.214), aim=(0.07, -3.0, -0.184), roll=6,
-                     src='M Destiny-Hüfte lange Waffen: Mündung x 54–59 / y 60–71 % (Motiongen huefte › 4, Entscheidungsliste 2.1 A); '
-                         'Destiny-Impuls Gridskipper Mündung ≈ 57/61 (Motiongen destiny2 › z-gridskipper-salve); Lage E, gerechnet auf '
-                         'Mündung 57,9/63,6 % (Automatik-Hüfte am Impuls: 59,7/65,6)'),
+            hip=dict(pos=(-0.183, -0.42, -0.18), aim=(0.066, -3.399, -0.43), roll=11.2,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung '
+                         'gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung '
+                         'eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) '
+                         'Mündung 58,4/65,5 %, Visier 73,4/55,2 %'),
         ),
         keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Impuls-Sprint nicht gemessen'),
         frames={},
@@ -519,6 +569,600 @@ CLASSES = {
                           'Pause von 0,2 s bleiben ≈ 20 % (gemeinsam 0,12 s / 2 Hz: ≈ 78 % blieben, und die nächste Salve sank anfangs ab)'),
         src='Entscheidungsliste Schritt 6, dritte übertragene Klasse (0.22 „Volley“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, '
             'Salve aus der Spec'),
+    'hand_cannon': dict(
+        # Handfeuerwaffe (0.33 „Armory“, P1): beidhändiger Pistolengriff, kurze Waffe näher an der Kamera als die Gewehre (Körper im Bild
+        # wie Destiny 53–70 % B); Trommel: Nachladen als eigene Aktion (Kran schwenkt aus, Hülsen raus, laden, zuklappen), kein Magazin
+        poses=dict(
+            hip=dict(pos=(-0.113, -0.441, -0.152), aim=(0.313, -3.407, -0.312), roll=12.0,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/63, 54/69, Kimme 64/66, 62/62, Griffhand 67/87, 67/89); Lage '
+                         'E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin '
+                         'nur die Mündung eingestellt, die Griffhand lag 9–12 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. '
+                         'Socket_Reticle, Socket_Hand) Mündung 55,7/66,0 %, Kimme 63,4/63,4 %, Griffhand 66,7/89,9 % (Rollen 12° statt 13°: der '
+                         'Unterarm in lowered lag an der Kante der Handgelenksklemme, Unity wich dort 0,204° ab)'),
+            sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
+                        src='M Destiny-Handfeuerwaffe Sprint: Waffe senkrecht, Lauf am oberen Rand, Körper 62–70 % B, hoch rechts (Motiongen '
+                            'destiny2:562/467); Lage E, gerechnet Mündung 68,4/10,8 %, Körper 66–72 % B'),
+            reload=dict(pos=(-0.07, -0.37, -0.15), aim=(0.6, -1.2, 1.0), roll=10,
+                        src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben '
+                            '(gerechnet 47,3/27,6 %), linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der '
+                            'erste Entwurf (Stützhand verdeckte das halbe Bild)'),
+        ),
+        frames=dict(aim_in=3, aim_out=2.4, draw=18),
+        frames_src='M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) '
+                   '→ wie die MP 3 und 2,4 Bilder bei 30/s (gleiche Umrechnung mit dem Zielen-Nachlauf, Entscheidungsliste 4d); Ziehen Bad News '
+                   '16 Bilder bei 60/s bis hüftähnlich + 19 bis ruhig (Motiongen wechsel:51) = 0,58 s → 18 Bilder (Automatik 25)',
+        bob=dict(amp=(0.0068, 0.0234),
+                 src='M Destiny-Handfeuerwaffe Sprint-Hub ≈ 13 % H / 4 % B bei 3,16 Hz (Motiongen destiny2:467): Automatik 0.022/0.018 m ergab '
+                     '13 % B / 10 % H → seitlich × 4/13, senkrecht × 13/10'),
+        actions=dict(
+            reload_tactical=dict(
+                de='Nachladen (Trommel: ausschwenken, auswerfen, laden, zuklappen)', frames=36,
+                weapon=[(0, 'hip'), (2, ('hip', dict(roll=-3, up=-0.004))), (5, 'reload'), (8, ('reload', dict(pitch=8, up=0.012))),
+                        (11, 'reload'), (19, ('reload', dict(roll=3))), (21, ('reload', dict(up=0.006, pitch=-2))),
+                        (24, ('reload', dict(roll=-16, yaw=6))), (26, 'reload'), (31, ('hip', dict(roll=-2, up=-0.003))), (36, 'hip')],
+                L=[(0, 'support'), (2, 'support'), (4, 'charge'), (6, 'mag'), (8, ('mag', (-25, 0, 4))), (10, OFF_L), (14, OFF_L),
+                   (19, ('mag', (35, 0, 6))), (21, 'mag'), (23, 'mag'), (25, ('mag', (0, 0, 12))), (29, 'support'), (36, 'support')],
+                fL=[(0, 'underhand'), (3, 'open'), (4, 'pinch'), (6, 'mag_hold'), (9, 'open'), (11, 'relaxed'), (16, 'open'),
+                    (19, 'mag_hold'), (24, 'open'), (29, 'underhand')],
+                mech={'cylinder_latch': [(0, 0), (4, 0), (5, 1), (7, 1), (9, 0)], 'crane': [(0, 0), (5, 0), (7, 1), (22, 1), (24, 0)]},
+                events=[(2, 'HandOff'), (7, 'MagOut'), (8, 'Eject'), (21, 'MagIn'), (24, 'Chamber'), (29, 'HandOn'), (33, 'Ready')],
+                src='M Destiny-Revolver aus der Hüfte 1,0 s: Hochdrehen 0,13, Trommel 0,62, Schließen 0,2 s, Zähler bei ≈ 70 % (Motiongen '
+                    'destiny2:492; älterer Clip Munition 1,4 s, ausgefedert 2,1 s, destiny2:119) → 36 Bilder, MagIn bei 21; Ablauf E '
+                    '(Riegel mit dem Daumen der Stützhand, Kran ausschwenken, Auswerfen mit Hochreißen, Laden von vorn, Zuklappen mit '
+                    'Handgelenkschwung); Hülsen beim Auswerfen nicht dargestellt (Entscheidungsliste)'),
+        ),
+        same_reload=True,
+        gameplay=dict(rpm=140, magazine=10, path_up_h=0.017, kick=2.5,
+                      src='S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); '
+                          'gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, '
+                          'ein Schuss je Zug); Bahnstufe 0,017 M: Netto-Rest vor dem Folgeschuss 1,7 pp H (Hochimpuls bis 7,6 pp, Motiongen '
+                          'rueckstoss:106); Kick 2,5 E: Modell ≈ 6 % hoch und 8° gekippt (destiny2:492) gegen Automatik-Kick 3° je Schuss'),
+        src='Ego-Übertrag 0.33 „Armory“ P1: Hüfte, Sprint, Anflug, Ziehen und Nachladen nach Motiongen (Handfeuerwaffe), Trommelablauf E'),
+    'sidearm': dict(
+        # Seitenwaffe (0.33, P1): Pistolengriff wie die Handfeuerwaffe, Magazin im Griff (Nachladen der Bezugsklasse mit Magazin unten),
+        # Durchladen am Schlitten statt am Ladehebel (mech_map, charge_back_mm)
+        poses=dict(
+            hip=dict(pos=(-0.11, -0.448, -0.179), aim=(0.302, -3.401, 0.156), roll=6.0,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/64, 59/67, Visier 66/71, 66/73, Griffhand 67/87, 67/88); Lage '
+                         'E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin '
+                         'nur die Mündung eingestellt, die Griffhand lag 9–12 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. '
+                         'Socket_Reticle, Socket_Hand) Mündung 58,0/65,5 %, Visier 65,8/71,5 %, Griffhand 66,0/96,3 % (Mündung, Visier und Griff '
+                         'nicht zugleich: Griff 8 pp tiefer)'),
+            sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
+                        src='E: Seitenwaffen-Sprint nicht gemessen (Motiongen destiny2:563) → Trageform der Handfeuerwaffe (senkrecht, hoch '
+                            'rechts, destiny2:562), gerechnet Mündung 70,2/31,0 %'),
+            reload=dict(pos=(-0.07, -0.36, -0.14), aim=(0.75, -2.1, 0.45), roll=-40,
+                        src='E wie die Bezugshaltung reload (T Reload roll −20/pitch 12, verstärkt), 2 cm weiter vorn (gestreckte Arme), '
+                            'gerechnet Mündung 55,1/56,4 %'),
+        ),
+        frames=dict(aim_in=2.4, aim_out=2, draw=14, reload_tactical=43, reload_empty=52),
+        frames_src='M Destiny-Seitenwaffe: ADS ein Rattler 6–7 Bilder bei 60/s, Brass Attacks 12 (Motiongen destiny2:585/269) → 2,4 Bilder bei '
+                   '30/s (MP: 8–12 → 3), ADS aus: Zoom 7 Bilder → 2; Ziehen Minimum Distance 12 + 16 Bilder bei 60/s bis ruhig (wechsel:52) → '
+                   '14; Nachladen 1,1–1,2 s (destiny2:491) × TIME_SCALE 1,25 → 43 Bilder, leer E +0,3 s Durchladen am Schlitten → 52 '
+                   '(Destiny: taktisch gegen leer nicht gemessen)',
+        bob=dict(amp=(0.0068, 0.0234), src='E wie die Handfeuerwaffe (Seitenwaffen-Sprint nicht gemessen, Motiongen destiny2:563)'),
+        mech_map=dict(charging_handle='slide'), charge_back_mm=32,
+        gameplay=dict(rpm=360, magazine=15, kick=1.2,
+                      src='E: keine Einzelfeuer-Messung; Mitte des Manifest-Bands 260–491/min, Magazin 12–30 (Motiongen waffenwerte:332-340) '
+                          '→ 360/min, Magazin 15 (Entscheidungsliste); Feuerart aus der Spec (Einzelfeuer); Bahnstufe wie die Automatik, '
+                          'Kick 1,2 E (Welt bis 9,8 pp H nur netto beobachtet, rueckstoss:107)'),
+        src='Ego-Übertrag 0.33 „Armory“ P1: Hüfte und Anflug nach Motiongen (Seitenwaffe), Sprint wie die Handfeuerwaffe, Nachladen der '
+            'Bezugsklasse mit Magazin im Griff und Schlitten'),
+    'sniper_rifle': dict(
+        # Scharfschütze (0.33 „Armory“, P2): Repetierer – nach jedem Schuss repetiert die Stützhand am Kammerknopf links (Klassenaktionen
+        # fire_cycle aus der Hüfte, fire_cycle_ads im Zielen; Unity spielt sie nach dem Schuss, solange Munition da ist); Nachladen mit
+        # Kastenmagazin und Repetieren am Ende wie Far Future
+        poses=dict(
+            hip=dict(pos=(-0.19, -0.42, -0.23), aim=(0.02, -3.0, -0.32), roll=6,
+                     src='M Destiny-Scharfschütze Hüfte: Mündung 56/68 (Motiongen huefte:51), 56/66 (huefte:61), Far Future 56/64 '
+                         '(destiny2:496); Lage E wie die Automatik, Lauf 1,8° tiefer (langer Lauf: Automatik-Hüfte trifft 56,1/61,9), '
+                         'gerechnet Mündung 56,1/65,7 %'),
+            sprint=dict(pos=(-0.20, -0.38, -0.21), aim=(0.5, -2.4, -0.6), roll=-25,
+                        src='O cubeescape-reference destiny2 › Glidepath (Sprint): Scharfschütze „tief unten rechts“ (Sichtung, kein Wippen ≥ 3 '
+                            'pp); eine ältere Zeile (destiny2:483) nennt bei 60/s eine höhere, mittigere Form – widersprüchlich, hier die '
+                            'Glidepath-Sichtung. Lage E wie die Fusion (Trageform tief rechts), gerechnet Mündung 48/77 %, Visier rechts am Rand; '
+                            'bis 0.33 die Automatik-Form (Mündung 19/86 %)'),
+        ),
+        frames=dict(aim_in=6, aim_out=6),
+        frames_src='M Destiny-Scharfschütze Far Future ADS ein 14 Bilder bei 60/s bis stabil (6 Hochziehen + 10 Overlay, Motiongen '
+                   'destiny2:496) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf wie MP 8–12 → 3, Scout 17 → 7, Automatik 20 → 10); '
+                   'ADS aus 0,17–0,25 s → 6 Bilder (0,20 s)',
+        actions=dict(
+            fire_cycle=dict(
+                de='Repetieren nach dem Schuss aus der Hüfte (Kammerstängel links: heben, zurück, vor, senken)', frames=18,
+                weapon=[(0, 'hip'), (4, ('hip', dict(roll=-6, yaw=-3))), (9, ('hip', dict(roll=-9, yaw=-4, back=0.006))),
+                        (13, ('hip', dict(roll=-6, yaw=-3, up=0.003))), (18, 'hip')],
+                L=[(0, 'support'), (2, 'support'), (6, 'charge'), (13, 'charge'), (17, 'support'), (18, 'support')],
+                fL=[(0, 'underhand'), (3, 'open'), (6, 'pinch'), (13, 'pinch'), (15, 'open'), (17, 'underhand')],
+                mech={'bolt_handle': [(0, 0), (6, 0), (8, 1), (12, 1), (14, 0)], 'bolt': [(0, 0), (8, 0), (10, 1), (11, 1), (12, 0)]},
+                events=[(2, 'HandOff'), (10, 'Eject'), (12, 'Chamber'), (17, 'HandOn')],
+                src='E: Repetieren in 0,6 s nach dem Schuss (Kadenz 90/min = 0,67 s je Schuss, Far Future [S]); Stängel links, die Stützhand '
+                    'repetiert (Nutzer 28.10.2026), Hülse beim Zurückziehen (Marker Eject); Destiny zeigt beim Scharfschützen kein '
+                    'eigenes Repetieren (Entscheidungsliste)'),
+            fire_cycle_ads=dict(
+                de='Repetieren nach dem Schuss im Zielen (Waffe bleibt im Anschlag)', frames=18,
+                weapon=[(0, 'ads'), (18, 'ads')],
+                L=[(0, 'support'), (2, 'support'), (6, 'charge'), (13, 'charge'), (17, 'support'), (18, 'support')],
+                fL=[(0, 'underhand'), (3, 'open'), (6, 'pinch'), (13, 'pinch'), (15, 'open'), (17, 'underhand')],
+                mech={'bolt_handle': [(0, 0), (6, 0), (8, 1), (12, 1), (14, 0)], 'bolt': [(0, 0), (8, 0), (10, 1), (11, 1), (12, 0)]},
+                events=[(2, 'HandOff'), (10, 'Eject'), (12, 'Chamber'), (17, 'HandOn')],
+                src='E wie fire_cycle, im Zielen ohne Kippen (Zielfernrohr bleibt vor dem Auge)'),
+            reload_tactical=dict(
+                de='Nachladen (Kastenmagazin tauschen, am Ende repetieren)', frames=65,
+                weapon=[(0, 'hip'), (3, ('hip', dict(roll=-3, up=-0.004))), (9, 'reload'), (14, ('reload', dict(roll=-3))),
+                        (19, ('reload', dict(up=-0.004, pitch=1.5))), (22, ('reload', dict(up=0.009, pitch=-2.5, roll=4))), (25, 'reload'),
+                        (31, ('hip', dict(roll=-6, yaw=-3, up=0.010))), (35, ('hip', dict(roll=-9, yaw=-4, back=0.006, up=0.006))),
+                        (39, ('hip', dict(roll=-6, yaw=-3, up=0.004))), (45, ('hip', dict(roll=-3))),
+                        (58, ('hip', dict(roll=-2, up=-0.003))), (65, 'hip')],
+                L=[(0, 'support'), (3, 'support'), (6, 'mag'), (10, ('mag', (8, -70, 25))), (14, OFF_L), (16, OFF_L),
+                   (19, ('mag', (6, -55, 20))), (21, 'mag'), (23, 'mag'), (29, 'charge'), (41, 'charge'), (48, 'support'), (65, 'support')],
+                fL=[(0, 'underhand'), (4, 'open'), (6, 'mag_hold'), (23, 'mag_hold'), (25, 'open'), (29, 'pinch'), (41, 'pinch'),
+                    (43, 'open'), (48, 'underhand')],
+                carry=[(6, 21)],
+                mech={'mag_release': [(0, 0), (5, 1), (8, 0)], 'bolt_handle': [(0, 0), (30, 0), (32, 1), (39, 1), (41, 0)],
+                      'bolt': [(0, 0), (32, 0), (35, 1), (37, 1), (39, 0)]},
+                events=[(3, 'HandOff'), (8, 'MagOut'), (21, 'MagIn'), (35, 'Eject'), (38, 'Chamber'), (48, 'HandOn'), (62, 'Ready')],
+                src='M Destiny-Scharfschütze Far Future: MagOut +0,28, MagIn +0,70, Kammerstängel +1,2, Hüfte 2,07, ruhig 2,18 s (Motiongen '
+                    'nachladen:58) → Marker bei 8/21/36/62 von 65 Bildern, × TIME_SCALE; Ablauf E wie das Nachladen der Automatik, '
+                    'Repetieren am Kammerknopf links (Nutzer 28.10.2026) aus der Hüfte wie fire_cycle (aus der Nachladehaltung lag der '
+                    'Oberarm groß vor der Kamera); taktisch gegen leer nicht gemessen (Entscheidungsliste)'),
+        ),
+        same_reload=True,
+        gameplay=dict(rpm=90, magazine=4, path_up_h=0.12, recover_delay_s=0.25, recover_hz=1.5, kick=3.0,
+                      src='S Far Future 90/min, Magazin 4 (Menü, Motiongen destiny2:260; A Single Clap 90/min, 5); Feuerart aus der Spec '
+                          '(Repetierer: ein Schuss je Zug, danach fire_cycle); Bahnstufe 0,12 M: im Zielfernrohr steigt die Welt ≈ 18 pp H '
+                          'in 4 Bildern bei 60/s und bleibt ≈ 12 pp H versetzt (Motiongen zielbewegung:73) → Erholung E langsam (ab 0,25 s, '
+                          '1,5 Hz); Kick 3,0 E (schwerer Einzelschuss)'),
+        src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte, Anflug und Nachladen nach Motiongen (Scharfschütze Far Future), Sprint der Automatik, '
+            'Repetieren nach jedem Schuss E'),
+    'trace_rifle': dict(
+        # Spurgewehr (0.33, P2): Dauerstrahl – Dauerfeuer in der Kadenz der Klasse ohne Mündungsfeuer, Hülse und Rückstoß; Fokuslinse und
+        # Scheibenmitte leuchten, solange der Abzug zieht (EGO_LIVE glow). Nachladen der Bezugsklasse mit der Energiezelle (mech_map)
+        poses=dict(
+            hip=dict(pos=(-0.136, -0.417, -0.156), aim=(-0.075, -3.412, -0.315), roll=10.9,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Hollow Denial: Mündung 57,7/59,6, Visieröffnung 66,9/45,6); Lage E: '
+                         'Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur '
+                         'die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, '
+                         'Socket_Hand) Mündung 57,7/61,1 %, Visier 66,6/49,0 % – 12 mm tiefer als die Ausgleichslage: die Gehäusenase lag bei '
+                         '53,4 % H in den Zonenspalten der Freihaltezone (A4, Ecke ab 55 %)'),
+        ),
+        keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Spurgewehr-Sprint nicht gemessen '
+                         '(Motiongen destiny2:570)'),
+        frames=dict(aim_in=4, aim_out=3, reload_tactical=67),
+        frames_src='M Destiny-Spurgewehr Prometheus Lens ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:592) → 4 Bilder bei 30/s (Umrechnung '
+                   'wie Scharfschütze); ADS aus nicht gemessen → E 3 (Verhältnis der MP); Nachladen ≈ 1,6 s bis Hüfte, „kein Klassenwert“ '
+                   '(destiny2:512) × TIME_SCALE = 60 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 67 Bilder gestreckt',
+        mech_map=dict(mag_release='cell_release'),
+        same_reload=True,
+        gameplay=dict(rpm=1000, magazine=94, path_up_h=0.0, kick=0.0, muzzle_flash=False,
+                      src='S Retraced Path 1000/min, 94 (Manifest, Motiongen waffenwerte:363); Feuerart aus der Spec (Dauerstrahl); kein '
+                          'Rückstoß M (destiny2:500/512): Bahnstufe und Kick 0; kein Mündungsfeuer E (Strahl statt Blitz), keine Hülse '
+                          '(Energiezelle, EJECT None)'),
+        src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Anflug nach Motiongen (Spurgewehr), Sprint der Automatik, Nachladen der Bezugsklasse '
+            'mit der Energiezelle (leer wie taktisch, kein Ladehebel)'),
+    'machine_gun': dict(
+        # Maschinengewehr (0.33, P2): Gurtwaffe wie Dauerfeuer (FIRE_ALIAS); Nachladen als Klassenaktion mit Deckel, Kasten und Gurt
+        poses=dict(
+            hip=dict(pos=(-0.114, -0.417, -0.155), aim=(-0.096, -3.411, -0.342), roll=4.8,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Shattered Cipher Mündung 56,1/55,1, Optik 66/39,6; Hammerhead Mündung '
+                         '56,2/64, Reflexöffnung 65,9/48,2); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer '
+                         '31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet '
+                         '(Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 56,1/59,7 %, Visier 66,1/44,9 % – 3 mm tiefer '
+                         'als die Ausgleichslage: der oberste belegte Punkt lag genau auf der Ecke der Freihaltezone (A4, 55 % H; Richter 0.33)'),
+        ),
+        keep=dict(
+            sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-MG-Sprint nicht gemessen (Motiongen '
+                   'destiny2:561)'),
+        frames=dict(draw=28),
+        frames_src='M Destiny-MG ADS ein 20 Bilder bei 60/s (Motiongen destiny2:583) = Automatik (aim_in 10 bei 30/s); Ziehen 18 + 37 Bilder bei '
+                   '60/s bis ruhig (wechsel:56) = 0,92 s → 28 Bilder (Automatik 25)',
+        actions=dict(
+            reload_tactical=dict(
+                de='Nachladen (Deckel auf, Kasten tauschen, Gurt einlegen, Deckel zu, durchladen)', frames=146,
+                weapon=[(0, 'hip'), (3, ('hip', dict(roll=-3, up=-0.004))), (10, 'reload'), (19, ('reload', dict(pitch=2, up=0.004))),
+                        (24, ('reload', dict(back=-0.05))), (31, ('reload', dict(roll=-4, up=-0.006, back=-0.06))),
+                        (40, ('reload', dict(up=0.010, pitch=-3, roll=3, back=-0.05))), (44, ('reload', dict(back=-0.04))),
+                        (51, ('reload', dict(up=-0.004, pitch=1.5, back=-0.02))), (60, 'reload'),
+                        (83, ('reload', dict(up=-0.012, pitch=3))), (88, 'reload'), (96, ('hip', dict(roll=-6, yaw=-3, up=0.010))),
+                        (100, ('hip', dict(roll=-9, yaw=-4, up=0.006))), (106, ('hip', dict(roll=-6, yaw=-3, up=0.004))),
+                        (114, ('hip', dict(roll=-3))), (132, ('hip', dict(roll=-2, up=-0.003))), (146, 'hip')],
+                L=[(0, 'support'), (3, 'support'), (11, 'cover'), (14, 'cover'), (19, ('mag', (50, -10, 15))), (27, 'mag'),
+                   (33, ('mag', (0, -60, 40))),
+                   (38, 'mag'), (42, 'mag'), (48, ('cover', (-40, -30, 26))), (53, ('cover', (-40, -30, 26))), (64, ('cover', (0, 30, 0))),
+                   (72, 'cover'), (83, 'cover'), (90, ('charge', (10, 0, 30))), (96, 'charge'), (100, ('charge', (-70, 0, 0))),
+                   (103, 'charge'), (112, 'support'), (146, 'support')],
+                fL=[(0, 'underhand'), (5, 'open'), (11, 'pinch'), (14, 'pinch'), (17, 'open'), (27, 'mag_hold'), (42, 'mag_hold'),
+                    (45, 'pinch'), (55, 'open'), (72, 'open'), (86, 'open'), (96, 'pinch'), (103, 'pinch'), (106, 'open'),
+                    (112, 'underhand')],
+                mech={'feed_cover': [(0, 0), (12, 0), (19, 1), (72, 1), (83, 0)],
+                      'ammo_box': [(0, 0), (28, 0), (32, 3), (35, 3), (40, 0)],
+                      'charging_handle': [(0, 0), (96, 0), (100, 1), (103, 0)]},
+                events=[(3, 'HandOff'), (19, 'CoverOpen'), (32, 'MagOut'), (40, 'BoxIn'), (51, 'MagIn'), (83, 'CoverClosed'),
+                        (100, 'Chamber'), (112, 'HandOn'), (140, 'Ready')],
+                src='M Destiny-MG Gurtkasten 4,40 s bis Hüfte, 4,87 ruhig: Deckel +0,63, Kasten +1,32, Gurt +1,70, Deckel zu +2,78 s (Motiongen '
+                    'nachladen:60) → Marker bei 19/40/51/83/132 von 146 Bildern, × TIME_SCALE; Ablauf E (Deckel hinten anheben, Kasten nach '
+                    'links unten aus dem Bild und zurück, Gurt in die Zuführschale, Deckel zuschlagen, Ladehebel aus der Hüfte wie der Scharfschütze; '
+                    'der Deckel springt nach dem Entriegeln allein auf, beim Kasten 3–6 cm weiter weg – sonst lag der Arm groß vor der '
+                    'Kamera); Munition voll beim Gurt'),
+        ),
+        same_reload=True,
+        gameplay=dict(rpm=900, magazine=75, kick=1.3,
+                      src='M/S Shattered Cipher 900/min, 75 (Motiongen destiny2:273); Feuerart aus der Spec (Gurt → Dauerfeuer, '
+                          'FIRE_ALIAS); Bahnstufe wie die Automatik: Destiny-MG Hüfte 2,8 pp H, im Zielen bis 12,4 pp H über mehrere Stöße '
+                          '(rueckstoss:110), kein Wert je Schuss; Kick 1,3 E (schwere Waffe)'),
+        src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Sprint der Automatik, Ziehen und Nachladen nach Motiongen (Gurtkasten), Ablauf E'),
+    'shotgun': dict(
+        # Schrotflinte (0.33 „Armory“, P3): Vorderschaftrepetierer – nach jedem Schuss pumpt die Stützhand (Klassenaktionen fire_cycle aus
+        # der Hüfte, fire_cycle_ads im Zielen; die Stützhand liegt auf der Pumpe und folgt ihr, Hülse beim Zurückziehen). Nachladen je
+        # Patrone: reload_tactical (leer ebenso) ist der Einstieg mit der ersten Patrone, reload_shell lädt je eine weitere (Unity schleift
+        # sie bis voll), reload_end führt zurück zur Hüfte, reload_end_pump nach leerem Beginn mit Pumpen. Ein Zug am Abzug bricht ab.
+        # Die Patrone (Griff 'mag', Bauteil shell_round) kommt in der linken Hand von unter dem Bild (carry) und wird durch die Ladeklappe
+        # geschoben (Bewegung load_shell: 1 = unter der Klappe, 0 = im Rohr, verdeckt)
+        poses=dict(
+            reload=dict(pos=(-0.09, -0.36, -0.16), aim=(0.55, -2.4, 0.25), roll=-60,
+                        src='E nach Destiny-Schrotflinte (Einzelladen, Motiongen nachladen:52/53): Waffe vor dem Körper nach rechts gerollt, '
+                            'Ladeklappe zeigt nach links unten zur Stützhand'),
+        ),
+        keep=dict(
+            hip='M Destiny-Schrotflinte Hüfte: Mündung FILO 57/63 (Motiongen huefte:54), ≈ 58/66 (destiny2:495); Lage E wie die Automatik: '
+                'an der Schrotflinte gerechnet Mündung 58,4/64,1 %',
+            sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Schrotflinten-Sprint nicht gemessen '
+                   '(Motiongen destiny2:566)'),
+        frames=dict(aim_in=5, aim_out=3, draw=17),
+        frames_src='M Destiny-Schrotflinte FILO ADS ein ≈ 13 Bilder bei 60/s (Motiongen destiny2:588) → 5 Bilder bei 30/s (Umrechnung mit dem '
+                   'Zielen-Nachlauf wie Spur 12 → 4, Scharfschütze 14 → 6); ADS aus 6–8 Bilder bei 60/s → 3; Ziehen 14 Bilder bei 60/s bis '
+                   'hüftähnlich (wechsel:47) + Ausfedern E wie die Handfeuerwaffe (19) = 0,55 s → 17 Bilder (Automatik 25)',
+        actions=dict(
+            fire_cycle=dict(
+                de='Pumpen nach dem Schuss aus der Hüfte (Pumpe zurück, Hülse, vor)', frames=21,
+                weapon=[(0, 'hip'), (11, 'hip'), (15, ('hip', dict(back=0.008, pitch=-1.5, roll=-2))),
+                        (18, ('hip', dict(back=0.004, up=0.002, roll=-1))), (21, 'hip')],
+                mech={'pump': [(0, 0), (11, 0), (16, 1), (17, 1), (20, 0)], 'bolt': [(0, 0), (11, 0), (16, 1), (17, 1), (20, 0)]},
+                events=[(16, 'Eject'), (20, 'Chamber')],
+                src='M Destiny-Schrotflinte: Pumpen vor dem zweiten Schuss, Hülse rechts 0,63 s nach dem Schuss (Motiongen destiny2:495) → Pumpe '
+                    'hinten bei Bild 16–17 (0,55 s), vorn bei 20, Ende 21 (0,70 s) vor dem nächsten Schuss (80/min = 0,75 s); Ablauf E '
+                    '(Stützhand auf der Pumpe, Waffe ruckt beim Zurückziehen leicht zurück)'),
+            fire_cycle_ads=dict(
+                de='Pumpen nach dem Schuss im Zielen (Waffe bleibt im Anschlag)', frames=21,
+                weapon=[(0, 'ads'), (11, 'ads'), (15, ('ads', dict(back=0.005))), (18, ('ads', dict(back=0.002))), (21, 'ads')],
+                mech={'pump': [(0, 0), (11, 0), (16, 1), (17, 1), (20, 0)], 'bolt': [(0, 0), (11, 0), (16, 1), (17, 1), (20, 0)]},
+                events=[(16, 'Eject'), (20, 'Chamber')],
+                src='E wie fire_cycle, im Zielen ohne Kippen (Kimme und Korn bleiben vor dem Auge, nur ein kleiner Ruck zurück)'),
+            reload_tactical=dict(
+                de='Nachladen: Einstieg mit der ersten Patrone (Waffe kippen, Patrone holen, durch die Ladeklappe schieben)', frames=18,
+                weapon=[(0, 'hip'), (2, ('hip', dict(roll=-3, up=-0.004))), (6, 'reload'), (13, 'reload'),
+                        (15, ('reload', dict(up=0.004, pitch=-1))), (18, 'reload')],
+                L=[(0, 'support'), (2, 'support'), (6, OFF_L), (11, 'mag'), (14, 'mag'), (16, ('mag', (0, -25, 0))), (18, ('mag', (0, -25, 0)))],
+                fL=[(0, 'underhand'), (3, 'open'), (6, 'pinch'), (14, 'pinch'), (16, 'open')],
+                carry=[(6, 11)], mech={'shell_round': [(0, 0), (6, 0), (7, 1), (11, 1), (15, 0)]},
+                events=[(2, 'HandOff'), (15, 'ShellIn')],
+                src='M Destiny-Schrotflinte Einzelladen: erste Patrone 0,57–0,60 s nach Beginn (Motiongen nachladen:109) → ShellIn bei 15 von '
+                    '18 Bildern (× TIME_SCALE: 0,63 s); Ablauf E (Stützhand verlässt die Pumpe, holt die Patrone unter dem Bild, schiebt sie '
+                    'von unten durch die Ladeklappe); taktisch gegen leer nicht gemessen: ein Einstieg, nach leerem Beginn Pumpen am Ende'),
+            reload_shell=dict(
+                de='Nachladen: eine weitere Patrone (Unity wiederholt bis voll)', frames=19,
+                weapon=[(0, 'reload'), (14, 'reload'), (16, ('reload', dict(up=0.004, pitch=-1))), (19, 'reload')],
+                L=[(0, ('mag', (0, -25, 0))), (3, ('mag', (-10, -70, 10))), (7, OFF_L), (12, 'mag'), (15, 'mag'), (17, ('mag', (0, -25, 0))),
+                   (19, ('mag', (0, -25, 0)))],
+                fL=[(0, 'open'), (6, 'pinch'), (15, 'pinch'), (17, 'open')],
+                carry=[(7, 12)], mech={'shell_round': [(0, 0), (7, 0), (8, 1), (12, 1), (16, 0)]},
+                events=[(16, 'ShellIn')],
+                src='M Destiny-Schrotflinte Einzelladen 0,617–0,633 s je Patrone (Hawthorne, Motiongen nachladen:52; Baligant 0,85–0,87, :53) → '
+                    '19 Bilder (× TIME_SCALE 0,79 s); Ablauf E wie der Einstieg'),
+            reload_end=dict(
+                de='Nachladen: zurück zur Hüfte (voll oder durch Feuer abgebrochen)', frames=8,
+                weapon=[(0, 'reload'), (6, 'hip'), (8, 'hip')],
+                L=[(0, ('mag', (0, -25, 0))), (3, ('support', (0, -40, 0))), (6, 'support'), (8, 'support')],
+                fL=[(0, 'open'), (4, 'open'), (6, 'underhand')],
+                events=[(6, 'HandOn'), (8, 'Ready')],
+                src='E: Rückweg kurz (0,33 s), damit ein Zug am Abzug während des Nachladens bald schießt (Destiny bricht das Einzelladen '
+                    'mit Feuer ab, nicht gemessen)'),
+            reload_end_pump=dict(
+                de='Nachladen nach leerem Beginn: zurück zur Hüfte und pumpen', frames=16,
+                weapon=[(0, 'reload'), (6, 'hip'), (10, ('hip', dict(back=0.008, pitch=-1.5, roll=-2))),
+                        (13, ('hip', dict(back=0.004, up=0.002, roll=-1))), (16, 'hip')],
+                L=[(0, ('mag', (0, -25, 0))), (3, ('support', (0, -40, 0))), (6, 'support'), (16, 'support')],
+                fL=[(0, 'open'), (4, 'open'), (6, 'underhand')],
+                mech={'pump': [(0, 0), (7, 0), (10, 1), (11, 1), (13, 0)], 'bolt': [(0, 0), (7, 0), (10, 1), (11, 1), (13, 0)]},
+                events=[(6, 'HandOn'), (13, 'Chamber'), (16, 'Ready')],
+                src='M Destiny-Schrotflinte: einmal Repetieren am Ende des Einzelladens (Motiongen nachladen:109); Ablauf E wie fire_cycle'),
+        ),
+        same_reload=True,
+        gameplay=dict(rpm=80, magazine=6, path_up_h=0.03, recover_delay_s=0.2, recover_hz=3.0, kick=3.0,
+                      src='S Hawthorne 80/min, Magazin 7 (Menü, Motiongen destiny2:258; Baligant 55/min, 5) → 80/min, Magazin 6 E (Röhrenmagazin '
+                          'des Modells „hält sechs Patronen“); Feuerart aus der Spec (Pumpe: ein Schuss je Zug, danach fire_cycle); Bahnstufe '
+                          '0,03 M: Ring 1–2 Bilder ≈ 3 % H hoch, nach 0,10 s zurück (destiny2:495) → Erholung E ab 0,2 s mit 3 Hz; Kick 3,0 E '
+                          '(schwerer Einzelschuss wie der Scharfschütze)'),
+        src='Ego-Übertrag 0.33 „Armory“ P3: Hüfte und Sprint der Automatik, Anflug und Ziehen nach Motiongen (Schrotflinte), Pumpen nach '
+            'jedem Schuss und Einzelladen E nach den Destiny-Zeiten'),
+    'fusion_rifle': dict(
+        # Fusionsgewehr (0.33, P3): Aufladen → Salve. Abzug halten lädt in charge_s (Glutkern und Ladebalken leuchten mit der Ladung,
+        # EGO_LIVE glow), bei voller Ladung schießt die Salve von selbst; Loslassen vorher bricht ab (Ladung fällt in charge_fade_s).
+        # Gehalten Salve um Salve im Takt rpm. Nachladen der Bezugsklasse mit der Energiezelle (mech_map, leer wie taktisch)
+        poses=dict(
+            hip=dict(pos=(-0.17, -0.42, -0.215), aim=(0.10, -3.0, -0.25), roll=6,
+                     src='M Destiny-Fusion Hüfte: Mündung 59/68 (Motiongen huefte:57), 58/66 (destiny2:499); Lage E, gerechnet Mündung '
+                         '59,0/67,3 % (Automatik-Hüfte an der kurzen Fusion: 61,4/68,0), 2 cm weiter zur Mitte, 1,5 cm höher'),
+            sprint=dict(pos=(-0.20, -0.38, -0.21), aim=(0.5, -2.4, -0.6), roll=-25,
+                        src='O cubeescape-reference destiny2 › Glidepath (Sprint): Fusion „groß und tief, Körper ≈ 55–100 % × 62–100 %“ '
+                            '(Sichtung). Lage E, gerechnet Mündung 58/79 %, Visier 91/68 %, Heck rechts aus dem Bild; bis 0.33 die Automatik-Form '
+                            '(Mündung 34/89 %, Körper zu weit links)'),
+        ),
+        frames=dict(aim_in=3, aim_out=2.4, reload_tactical=73),
+        frames_src='M Destiny-Fusion ADS 0,083 s Achse, 0,117 s ruhig (Motiongen destiny2:499) = 7 Bilder bei 60/s → wie die MP 3 Bilder bei 30/s; '
+                   'ADS aus nicht gemessen → E 2,4 (Verhältnis der MP); Nachladen Batterie bis Hüfte 1,72–1,77 s, ruhig 1,92, sitzt +1,0 s '
+                   '(nachladen:54) × TIME_SCALE = 65 Bilder bis Hüfte → Bezugsablauf (Hüfte bei 45/50) auf 73 Bilder gestreckt',
+        mech_map=dict(mag_release='cell_release'),
+        same_reload=True,
+        gameplay=dict(rpm=60, magazine=7, charge_s=0.5, charge_fade_s=0.3, burst_shots=6, burst_rpm=1200, path_up_h=0.004, kick=0.6,
+                      src='S Cartesian Coordinate Laden 500 ms, Magazin 7 (Menü, Motiongen destiny2:254), gemessen 0,517 s (destiny2:499); Salve '
+                          '5–6 Strahlen in 0,25 s → 6 Schuss im Abstand 0,05 s (1200/min); Takt gehalten 60/min E (Aufladen 0,5 + Salve 0,25 + '
+                          'Pause); Feuerart aus der Spec (Aufladen → Salve); Leuchten fällt in 0,3 s (Modul charge_fire: 9 Bilder); Bahnstufe '
+                          '0,004 je Strahl E (Waffe ruhig, Mündung steigt über die Salve, destiny2:254/499), Kick 0,6 je Strahl E'),
+        src='Ego-Übertrag 0.33 „Armory“ P3: Hüfte, Anflug, Aufladen und Nachladen nach Motiongen (Fusion), Sprint der Automatik, Nachladen der '
+            'Bezugsklasse mit der Energiezelle (leer wie taktisch, kein Ladehebel)'),
+    'linear_fusion_rifle': dict(
+        # Lineare Fusion (0.33, P3): Aufladen → ein Schuss (wie die Fusion, ohne Salve; Linearkern leuchtet mit der Ladung). Nachladen der
+        # Bezugsklasse mit der Energiezelle hinter dem Griff
+        poses=dict(
+            hip=dict(pos=(-0.151, -0.417, -0.191), aim=(-0.132, -3.397, -0.536), roll=4.2,
+                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 58/69, 58/68, Visier 73/57, 73/60); Lage E: Ausgleichsrechnung '
+                         'gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung '
+                         'eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) '
+                         'Mündung 57,9/68,5 %, Visier 73,0/58,8 %'),
+        ),
+        keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-lineare-Fusion-Sprint nicht gemessen '
+                         '(Motiongen destiny2:569)'),
+        frames=dict(aim_in=7, aim_out=10, draw=24, reload_tactical=99),
+        frames_src='M Destiny-lineare-Fusion ADS ein 17 Bilder bei 60/s (Motiongen destiny2:591) → 7 Bilder bei 30/s wie der Scout; ADS aus 0,32 s '
+                   '(destiny2:274) → 10; Ziehen 24 + 23 Bilder bei 60/s bis ruhig (wechsel:57) = 0,78 s → 24; Nachladen MagIn +1,53 s, ruhig '
+                   '3,30 s (nachladen:61): Bezugsablauf so gestreckt, dass MagIn trifft (1,53 × 1,25 → Bild 57 von 99); ruhig damit nach '
+                   '2,4 statt 3,3 s (Entscheidungsliste)',
+        mech_map=dict(mag_release='cell_release'),
+        same_reload=True,
+        gameplay=dict(rpm=60, magazine=5, charge_s=0.563, charge_fade_s=0.2, path_up_h=0.065, recover_delay_s=0.25, recover_hz=1.5, kick=3.0,
+                      src='S Laden 563 ms, Magazin 5 (Menü, Motiongen destiny2:274), sichtbar 20 Bilder bei 60/s [M]; Takt gehalten 60/min E; '
+                          'Feuerart aus der Spec (Aufladen → Einzelschuss); Leuchten fällt in 0,2 s (Modul charge_fire: 6 Bilder); Bahnstufe '
+                          '0,065 M: 6,5 pp H je Schuss (rueckstoss:111), Erholung langsam wie der Scharfschütze E; Kick 3,0 E'),
+        src='Ego-Übertrag 0.33 „Armory“ P3: Hüfte, Anflug, Ziehen, Aufladen und Nachladen nach Motiongen (lineare Fusion), Sprint der '
+            'Automatik, Nachladen der Bezugsklasse mit der Energiezelle'),
+    'combat_bow': dict(
+        # Bogen (0.33 „Armory“, P4): Spannen, Halten, Lösen (Feuerart draw_release). Abzug halten spielt die Klassenaktion fire_draw (aus der
+        # Hüfte: Bogen kommt senkrecht hoch in die Haltung 'drawn', die Zughand zieht die Sehne zum Auge; im Zielen fire_draw_ads), am Ende
+        # hält der volle Auszug, solange der Abzug zieht. Loslassen bei vollem Auszug löst (fire_release: Pfeil fliegt, Sehne schnellt vor,
+        # der nächste Pfeil liegt gleich auf); halb gespannt fliegt ein schwacher Pfeil, die Nachladen-Taste entspannt ohne Schuss (let_down).
+        # Kein Magazin (Vorrat unbegrenzt), kein Nachladen, kein Mündungsfeuer, keine Hülse. Wie Destiny hält die linke Hand den Bogen
+        # (hands.swap: Griff grip links), die rechte Zughand (Griff 'support') hängt am Pfeil und folgt dem Auszug.
+        poses=dict(
+            hip=dict(pos=(-0.01, -0.61, -0.18), aim=(-0.01, -3.61, -0.18), roll=-80,
+                     src='M cubeescape-reference huefte.json › hl-destiny-2-imperial-needle (Ultraclocked 0:47,000): linke Griffhand 46,6/84,8 %, '
+                         'Visier 57,3/75,2 %, Bogen breit im unteren Bild (Körper 7,6–100 × 68,6–100 %), rechte Hand an der Nocke 49–64 × '
+                         '91–100 %; destiny2:514 quer gekantet von links unten nach rechts oben, Pfeil zur Mitte. Lage E (Ausgleichsrechnung '
+                         'gegen diese Werte, dann 3 cm nach rechts für die Freihaltezone A4), gerechnet Griff 50/84 %, Nocke 57/93 %, '
+                         'Pfeilspitze 53/67 %, Ring 56/68 %, Wurfarme links unten und rechts oben aus dem Bild'),
+            ads=dict(eye=(0.0, 0.27, 0.0), aim_dir=(0, -1, 0), roll=0,
+                     src='M Destiny-Bogen Imperial Needle im Zielen (Bilder aus Ultraclocked dKNTDzi__Qo 47,75/48,3/67,7 s, Cache '
+                         'CubeEscape/reference/visiere; cubeescape-reference destiny2:105 Ring 50/57, zielbewegung: Zoom 2,2×): Blick durch den '
+                         'Ring, der Riser direkt rechts daneben, die Pfeilspitze unter dem Ring, Wurfarme über die volle Bildhöhe, linke Hand '
+                         'unten Mitte; der Ring ist ≈ 9 % B groß. Lage E: der Bogen steht 27 cm näher an der Kamera als der Ankerpunkt des vollen '
+                         'Auszugs (Socket_Eye 23 cm hinter dem Auge, Sehne und Zughand hinter der Kamera; Nutzer 30.10.2026: „beim Bogen ist das '
+                         'Visier näher am Bild“; mit 23 cm ≈ 6 % B im Bildvergleich), gerechnet Ring 50/50 % mit Ø 52 mm in 0,41 m ≈ 9,8 % B'),
+            drawn=dict(pos=(0.0, -0.49, -0.16), aim=(-0.776, -3.388, 0.101), roll=-65,
+                       src='M Destiny-Bogen Imperial Needle gespannt aus der Hüfte (Bild Ultraclocked dKNTDzi__Qo 45,3 s): weiter quer '
+                           'gekantet, etwas gehoben, Ring ≈ 57/64 %, linke Hand unten ≈ 47/89 %, oberer Wurfarm rechts aus dem Bild, Zughand '
+                           'nicht sichtbar (andere Bögen stehen dabei rechts senkrecht, destiny2:221). Lage E (Ausgleichsrechnung), gerechnet '
+                           'Griff 50/88 %, Ring 57/64 %, voller Auszug hinter der Kamera'),
+            sprint=dict(pos=(-0.12, -0.40, -0.03), aim=(0.0, -2.6, -0.5), roll=-20,
+                        src='O cubeescape-reference destiny2:221 (Sprint, wahrscheinlich): Riser größer und höher, Mitte ≈ 68/55 %, oberes '
+                            'Wurfarmende aus dem Bild, ≈ 20° geneigt; destiny2:231 ohne Pfeil tief rechts. Lage E, gerechnet Griff 69/61 %'),
+            inspect_l=dict(pos=(-0.06, -0.52, -0.14), aim=(1.6, -1.2, 0.0), roll=-60,
+                           src='E: Bogen 1 m hoch – Betrachten weiter weg als die Gewehre, Visierseite zur Kamera (gerechnet Ring 50/59 %); '
+                               'Destiny hat keinen Ego-Inspect'),
+            inspect_r=dict(pos=(-0.10, -0.52, -0.14), aim=(-0.6, -1.4, 0.2), roll=60,
+                           src='E: rechte Seite mit dem Pfeil, Wurfarme quer aus dem Bild (gerechnet Pfeilspitze 71/43 %, Griff 63/81 %)'),
+        ),
+        drop=dict(poses=('reload',), actions=('fire_hip', 'fire_ads', 'reload_tactical', 'reload_empty', 'reload_to_switch'),
+                  src='Bogen ohne Magazin (Vorrat): kein Nachladen; Feuer als Klassenaktionen fire_draw/fire_release/let_down statt fire_hip/fire_ads'),
+        ads_hand=dict(off=OFF_L, src='E: im ungespannten Zielen hängt die Zughand unter dem Bild (an der Nocke, 0,42 m vor dem Auge, lag der rechte '
+                                      'Arm groß rechts im Bild); sie kommt beim Spannen an die Nocke (fire_draw_ads)'),
+        ads_hide=dict(parts=('arrow_shaft', 'arrow_nock', 'fletch_top', 'fletch_l', 'fletch_r'),
+                      src='M Destiny-Bogen im Zielen (Bilder Ultraclocked dKNTDzi__Qo 48,3/67,7 s): vom Pfeil ist nur die Spitze unter dem Ring '
+                          'zu sehen; hier läuft der gespannte Schaft (Seitenvisier: Pfeil 60 mm rechts der Visierlinie) dicht an der Kamera '
+                          'vorbei – Schaft, Nocke und Federn sind im Zielen aus (Regel ADS_HIDE), Spitze und Hülse bleiben'),
+        hands=dict(swap=True, src='M Destiny: Bogenhand links, Zughand rechts (die Sehnenhand liegt beim Halten rechts unten ≈ 85/95 %, '
+                                  'cubeescape-reference destiny2:221/231); Daten: in allen Aktionen tauschen L und R (Griff grip = Bogengriff '
+                                  'links, support = Zughand rechts an der Nocke), Bildpunkte unter dem Bild gespiegelt (Nutzerhinweis 30.10.2026: '
+                                  '„Muss der Bogen nicht in der anderen Hand gehalten werden?“)'),
+        frames=dict(aim_in=6, aim_out=5, draw=14),
+        frames_src='M Destiny-Bogen: Zielen gespannt 0,25 s (Motiongen destiny2:270/508) → 6 Bilder bei 30/s (Umrechnung mit dem Zielen-Nachlauf '
+                   'wie Scharfschütze 14 B60 → 6), aus E 5; Ziehen 6–8 Bilder bei 60/s bis hüftähnlich (wechsel:48/50) + Ausfedern E → 14 '
+                   '(wie die Seitenwaffe)',
+        actions=dict(
+            fire_draw=dict(
+                de='Spannen aus der Hüfte (Bogen senkrecht, Sehne zum Auge)', frames=18,
+                weapon=[(0, 'hip'), (4, 'drawn'), (18, 'drawn')],
+                L=[(0, 'support'), (18, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 0), (4, 0), (18, 1)), events=[(18, 'FullDraw')],
+                src='S/M Destiny-Bogen Imperial Needle Ziehzeit 612 ms, Anlegen → voll ≈ 0,60 s (cubeescape-reference destiny2:271) → voll bei '
+                    'Bild 18 (wie das Modul: Spannzeit 0,60 s); Heben 0,1 s, dann Ziehen (destiny2:231), senkrecht in 4 Bildern (destiny2:185); '
+                    'Spannlicht bei vollem Auszug (Modul draw_hold_release)'),
+            fire_draw_ads=dict(
+                de='Spannen im Zielen (Bogen bleibt im Anschlag)', frames=18,
+                weapon=[(0, 'ads'), (18, 'ads')],
+                L=[(0, OFF_L), (5, 'support'), (18, 'support')], fL=[(0, 'relaxed'), (3, 'open'), (5, 'pinch')],
+                mech=_bow_draw((0, 0), (4, 0), (18, 1)), events=[(18, 'FullDraw')],
+                src='E wie fire_draw, die Waffe bleibt im Zielen (Ringvisier vor dem Auge)'),
+            draw_aim_in=dict(
+                de='Gespannt ins Zielen (Bogen dreht senkrecht vor das Auge, bleibt gespannt)', frames=5,
+                weapon=[(0, 'drawn'), (5, 'ads')], L=[(0, 'support'), (5, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (5, 1)), events=[(5, 'Aimed')],
+                src='M cubeescape-reference destiny2:271: ADS mit gespanntem Bogen, Bogen dreht in ≈ 15 Bildern bei 60/s (0,25 s) senkrecht, '
+                    'Ring und Pfeilspitze mittig → 5 × TIME_SCALE = 7 Bilder bei 30/s'),
+            draw_aim_out=dict(
+                de='Gespannt aus dem Zielen (seitlich, bleibt gespannt)', frames=3,
+                weapon=[(0, 'ads'), (3, 'drawn')], L=[(0, 'support'), (3, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (3, 1)), events=[(3, 'Ready')],
+                src='M cubeescape-reference destiny2:252: ADS-Verlassen ist kein Spannabbruch, 5 Bilder bei 60/s (0,083 s) bis zur seitlichen '
+                    'gezogenen Form → 3 × TIME_SCALE = 4 Bilder'),
+            fire_release=dict(
+                de='Lösen aus der Hüfte (Pfeil fliegt, Bogen ruckt nach rechts unten, neuer Pfeil liegt auf)', frames=10,
+                weapon=[(0, 'drawn'), (2, ('drawn', dict(back=0.012, pitch=-5, roll=-4, right=0.015, up=-0.03))),
+                        (5, ('drawn', dict(up=-0.04, right=0.02, roll=-6))), (10, 'hip')], fire=[0],
+                L=[(0, 'support'), (1, 'nock'), (4, ('nock', (-40, 20, -30))), (8, 'support'), (10, 'support')],
+                fL=[(0, 'pinch'), (1, 'open'), (7, 'pinch')],
+                mech=dict(_bow_draw((0, 1), (2, 0)), arrow_shaft=[(0, 1), (1, -0.5), (3, -6), (6, -6), (6, 0)], draw_light=[(0, 1), (1, 0)]),
+                events=[(0, 'Release'), (6, 'Nocked'), (10, 'Ready')],
+                src='M cubeescape-reference destiny2:231: Lösen → gespannt 0,60 s (0,23 s Fall/Schwingen, 0,10 s Heben, 0,25 s Ziehen), beim '
+                    'Lösen kippt der Bogen ≈ 15 % H nach rechts unten, der nächste Pfeil liegt gleich auf; destiny2:271 Bogen federt und senkt '
+                    'sich 0,35 s → 10 Bilder bis zur Hüfte; Pfeil fliegt in 3 Bildern aus dem Bild (danach weit vorn), Sehne in 2 Bildern vor'),
+            fire_release_ads=dict(
+                de='Lösen im Zielen (zugleich aus dem Zielen, neuer Pfeil liegt auf)', frames=10,
+                weapon=[(0, 'ads'), (1, ('ads', dict(up=-0.05, pitch=-7, right=0.01))), (4, ('drawn', dict(up=-0.04, right=0.02, roll=-6))),
+                        (10, 'hip')], fire=[0],
+                L=[(0, 'support'), (1, 'nock'), (4, ('nock', (-40, 20, -30))), (8, 'support'), (10, 'support')],
+                fL=[(0, 'pinch'), (1, 'open'), (7, 'pinch')],
+                mech=dict(_bow_draw((0, 1), (2, 0)), arrow_shaft=[(0, 1), (1, -0.5), (3, -6), (6, -6), (6, 0)], draw_light=[(0, 1), (1, 0)]),
+                events=[(0, 'Release'), (6, 'Nocked'), (10, 'Ready')],
+                src='M cubeescape-reference destiny2:105: Lösen mit gleichzeitigem ADS-Ausstieg, Ringmitte ≈ 30 pp H nach unten im ersten '
+                    'Lösungsbild (50/57 → 53/87); Unity zielt danach wieder, wenn Rechtsklick gehalten bleibt; Ablauf sonst wie fire_release'),
+            let_down=dict(
+                de='Entspannen ohne Schuss (Nachladen-Taste beim Spannen)', frames=4,
+                weapon=[(0, 'drawn'), (2, ('hip', dict(roll=-45, up=-0.05, right=0.02))), (4, 'hip')],
+                L=[(0, 'support'), (4, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (3, 0)), events=[(4, 'Ready')],
+                src='M cubeescape-reference destiny2:253: Spann-Reset ohne Schuss 9 Bilder bei 60/s (0,150 s), der Bogen rollt nach rechts in eine '
+                    'fast waagerechte tiefe Haltung, der Pfeil bleibt; „Use while drawn to cancel the shot“ (Nachladen-Taste) → 4 × TIME_SCALE = '
+                    '5 Bilder; Unity blendet vom erreichten Auszug über'),
+            let_down_ads=dict(
+                de='Entspannen ohne Schuss im Zielen', frames=4,
+                weapon=[(0, 'ads'), (2, ('hip', dict(roll=-45, up=-0.05, right=0.02))), (4, 'hip')],
+                L=[(0, 'support'), (4, 'support')], fL=[(0, 'pinch')],
+                mech=_bow_draw((0, 1), (3, 0)), events=[(4, 'Ready')], src='E wie let_down, aus dem Zielen'),
+        ),
+        gameplay=dict(rpm=60, magazine=0, path_up_h=0.0, kick=1.5, muzzle_flash=False,
+                      src='Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen '
+                          'destiny2:270); Takt E 60/min (begrenzt nicht: Lösen, Auflegen und Spannen dauern 1,3 s, Destiny Lösen → Lösen 1,45 s); '
+                          'keine Bahnstufe (die Welt steigt nicht, der Bogen ruckt), Kick 1,5 E (Wurfarme-Ruck, destiny2:498); kein '
+                          'Mündungsfeuer, keine Hülse'),
+        src='Ego-Übertrag 0.33 „Armory“ P4: Hüfte, Spannhaltung, Sprint und Zeiten nach Motiongen (Bogen Imperial Needle), Ablauf E'),
+    'grenade_launcher': dict(
+        # Granatwerfer (0.33 „Armory“, P4): Trommel mit sechs Kammern (Spec v2.1 semi_auto, Nutzerwahl „Trommel statt Kipplauf“). Nach jedem
+        # Schuss dreht die Trommel eine Kammer weiter (Klassenaktion fire_cycle). Nachladen je Kammer wie die Schrotflinte: reload_tactical
+        # (Klappenknopf, Ladeklappe auf, Hülse fällt, erste Granate) ist der Einstieg, reload_shell lädt je eine weitere (Unity bis voll),
+        # reload_end schließt die Klappe; ein Zug am Abzug bricht ab. Die Granate (Griff 'mag', Bauteil grenade) kommt in der linken Hand
+        # von unter dem Bild und wird von hinten in die Ladekammer geschoben; die Hülse fällt beim Marker Eject (Modul EJECT on='reload')
+        poses=dict(
+            hip=dict(pos=(-0.17, -0.42, -0.22), aim=(0.10, -3.0, -0.14), roll=6,
+                     src='M Destiny-Granatwerfer Hüfte: Mündung ≈ 58/67 (Motiongen destiny2:509), 56/63 (huefte:68); Lage E, gerechnet Mündung '
+                         '60/64 % (Automatik-Hüfte am Werfer: 62/66), 2 cm weiter zur Mitte, 1 cm höher'),
+            reload=dict(pos=(-0.12, -0.43, -0.19), aim=(0.9, -2.0, 0.20), roll=-50,
+                        src='E: Waffe vor dem Körper nach rechts gerollt, die Ladeklappe hinten links zeigt zur Kamera; 6 cm weiter weg als der '
+                            'erste Entwurf (der linke Unterarm an der Granate deckte die linke Bildhälfte, Still 0.33 P4)'),
+        ),
+        keep=dict(sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Granatwerfer-Sprint nicht gemessen '
+                         '(Motiongen destiny2:571)'),
+        frames=dict(aim_in=5, aim_out=4),
+        frames_src='M Destiny-Granatwerfer ADS ein ≈ 12 Bilder bei 60/s (Motiongen destiny2:593; 19 B60 destiny2:271) → 5 Bilder bei 30/s '
+                   '(Umrechnung wie Schrotflinte 13 → 5); ADS aus nicht gemessen → E 4',
+        actions=dict(
+            fire_cycle=dict(
+                de='Trommel eine Kammer weiter nach dem Schuss (Hüfte)', frames=9,
+                weapon=[(0, 'hip'), (9, 'hip')], mech={'drum': [(0, 0), (2, 0), (8, 1), (8, 0)]}, events=[(8, 'Chamber')],
+                src='E wie das Modul (fire: Trommel 60° in 6 Bildern, danach zurück – sechsfache Teilung); 0,3 s vor dem nächsten Schuss '
+                    '(90/min = 0,67 s)'),
+            fire_cycle_ads=dict(
+                de='Trommel eine Kammer weiter nach dem Schuss (Zielen)', frames=9,
+                weapon=[(0, 'ads'), (9, 'ads')], mech={'drum': [(0, 0), (2, 0), (8, 1), (8, 0)]}, events=[(8, 'Chamber')],
+                src='E wie fire_cycle'),
+            reload_tactical=dict(
+                de='Nachladen: Einstieg (Klappe auf, Hülse fällt, erste Granate von hinten einschieben)', frames=26,
+                weapon=[(0, 'hip'), (2, ('hip', dict(roll=-3, up=-0.004))), (7, 'reload'), (20, 'reload'),
+                        (22, ('reload', dict(up=0.005, pitch=-1.5))), (26, 'reload')],
+                L=[(0, 'support'), (2, 'support'), (5, 'gate'), (7, 'gate'), (9, ('gate', (-30, -20, 25))), (12, OFF_L), (14, OFF_L),
+                   (19, ('mag', (-90, 0, 0))), (21, 'mag'), (23, ('mag', (-30, 0, 15))), (26, ('mag', (-60, -20, 20)))],
+                fL=[(0, 'underhand'), (3, 'open'), (5, 'pinch'), (8, 'open'), (12, 'mag_hold'), (23, 'open')],
+                drop=(11, 11), carry=[(14, 21)],
+                mech={'gate_button': [(0, 0), (5, 0), (6, 1), (8, 1), (9, 0)], 'load_gate': [(0, 0), (6, 0), (10, 1), (26, 1)],
+                      'drum': [(0, 0), (22, 0), (25, 1), (25, 0)]},
+                events=[(2, 'HandOff'), (10, 'GateOpen'), (11, 'Eject'), (21, 'ShellIn')],
+                src='M Destiny-Granatwerfer: Granate ein +0,69 s, Schließen +1,17, Hüfte +2,42 s (Motiongen destiny2:271/509, Einzellader) → '
+                    'ShellIn bei 21 von 26 Bildern (× TIME_SCALE 0,88 s); Ablauf E nach dem Modul (reload: Klappenknopf, Klappe, je Kammer '
+                    'Hülse aus, Granate ein, Trommel weiter); Trommel-Nachladen bei Destiny nicht gemessen'),
+            reload_shell=dict(
+                de='Nachladen: eine weitere Granate (Unity wiederholt bis voll)', frames=22,
+                weapon=[(0, 'reload'), (16, 'reload'), (18, ('reload', dict(up=0.005, pitch=-1.5))), (22, 'reload')],
+                L=[(0, ('mag', (-60, -20, 20))), (3, OFF_L), (6, OFF_L), (14, ('mag', (-90, 0, 0))), (16, 'mag'), (18, ('mag', (-30, 0, 15))),
+                   (22, ('mag', (-60, -20, 20)))],
+                fL=[(0, 'open'), (4, 'mag_hold'), (18, 'open')],
+                drop=(1, 1), carry=[(6, 16)],
+                mech={'load_gate': [(0, 1), (22, 1)], 'drum': [(0, 0), (17, 0), (20, 1), (20, 0)]},
+                events=[(1, 'Eject'), (16, 'ShellIn')],
+                src='E wie der Einstieg (Hülse aus, Granate holen und einschieben, Trommel weiter), 22 Bilder (× TIME_SCALE 0,92 s) je Kammer'),
+            reload_end=dict(
+                de='Nachladen: Klappe zu, zurück zur Hüfte (voll oder durch Feuer abgebrochen)', frames=10,
+                weapon=[(0, 'reload'), (8, 'hip'), (10, 'hip')],
+                L=[(0, ('mag', (-60, -20, 20))), (2, ('gate', (40, -30, 0))), (4, ('gate', (40, -30, 0))), (8, 'support'), (10, 'support')],
+                fL=[(0, 'open'), (6, 'underhand')],
+                mech={'load_gate': [(0, 1), (2, 1), (4, 0)]},
+                events=[(4, 'GateClosed'), (8, 'HandOn'), (10, 'Ready')],
+                src='E: Klappe mit der Stützhand zuschlagen, Rückweg kurz wie die Schrotflinte (ein Zug am Abzug soll bald schießen)'),
+        ),
+        same_reload=True,
+        gameplay=dict(rpm=90, magazine=6, path_up_h=0.04, recover_delay_s=0.2, recover_hz=1.7, kick=2.5, flash_scale=0.9,
+                      src='S Destiny-Granatwerfer 90/min (Motiongen destiny2:271-272, Einzellader mit Magazin 1); Magazin 6 E (Trommel des Modells, '
+                          'Spec v2.1 semi_auto); Feuerart aus der Spec (Einzelfeuer, danach dreht die Trommel); Bahnstufe 0,04 E: Waffe schlägt '
+                          'hoch zur Kamera, Rückkehr ≈ 0,6 s (destiny2:509) → Erholung ab 0,2 s mit 1,7 Hz; Kick 2,5 E; Blitz 0,9 E (die '
+                          'D-Linse W1 lag bei 20,3 % > 20 %, 5.3 A)'),
+        src='Ego-Übertrag 0.33 „Armory“ P4: Hüfte, Anflug und Ladezeiten nach Motiongen (Granatwerfer), Sprint der Automatik, Trommel und '
+            'Nachladen je Kammer E nach dem Modul'),
+    'rocket_launcher': dict(
+        # Raketenwerfer (0.33 „Armory“, P4): Einzelschuss (Spec single_shot), Magazin 1. Nach jedem Schuss lädt Unity sofort nach (Klassenaktion
+        # reload_tactical, leer ebenso): die Rakete verlässt das Rohr in den ersten Bildern, die Waffe kommt von der Schulter quer vor den
+        # Körper, Heckklappe auf, die linke Hand holt die nächste Rakete unter dem Bild und schiebt sie von hinten ein (Griffe 'mag' an der
+        # Rakete, 'push' an ihrem Heck), Klappe zu, Bereitschaftsanzeige an
+        poses=dict(
+            hip=dict(pos=(-0.23, -0.50, -0.16), aim=(-0.01, -3.489, 0.616), roll=0,
+                     src='M cubeescape-reference huefte.json (Hoosegow: Körper 60–100 × 0–100 %, Optik 65/68; Blue Shift: Körper 60–100 × '
+                         '17–100 %, Optik 68/57) und destiny2:501 (Mündung ≈ 60/40): das Rohr steht rechts über die volle Bildhöhe, vorn oben, '
+                         'das Heck rechts unten unter dem Arm – nicht auf der Schulter (bis zum Abgleich aller Waffen mit huefte.json, 0.33 P4). '
+                         'Lage E (Ausgleichsrechnung, dann 5 cm nach rechts: das Rohr lag bis 56 % B in der Freihaltezone, A4; Destiny-Körper '
+                         'ab 60 % B; dann 1 cm weiter für die letzte Pixelspalte, 127 → 0 px), gerechnet Mündung 63,8/41,5 %, Visier 73,0/62,5 %, Rohr 13° steigend'),
+            sprint=dict(pos=(-0.16, -0.36, -0.28), aim=(0.3, -2.4, -1.3), roll=-20,
+                        src='E: Destiny-Raketenwerfer-Sprint nicht gemessen (Motiongen destiny2:572); Rohr von der Schulter gesenkt, Mündung '
+                            'nach vorn unten'),
+            reload=dict(pos=(-0.22, -0.52, -0.12), aim=(-2.9, -1.7, -0.5), roll=10,
+                        src='E: Rohr quer vor dem Körper, Mündung nach rechts aus dem Bild, das Heck links im Bild (gerechnet Heckring 26/37 %, '
+                            'Griff 78/77 %)'),
+        ),
+        frames=dict(aim_in=6, aim_out=5, draw=14),
+        frames_src='M Destiny-Raketenwerfer ADS ein 14 Bilder bei 60/s (Motiongen destiny2:594) → 6 Bilder bei 30/s (wie Scharfschütze); ADS '
+                   'aus nicht gemessen → E 5; Ziehen 0,18 s bis Hüfte (destiny2:481) + Ausfedern E → 14',
+        actions=dict(
+            reload_tactical=dict(
+                de='Nachladen nach dem Schuss (Heckklappe auf, Rakete von hinten einschieben, Klappe zu)', frames=84,
+                weapon=[(0, 'hip'), (3, ('hip', dict(back=0.02, pitch=3))), (14, 'reload'), (44, 'reload'),
+                        (56, ('reload', dict(right=-0.01, up=0.004))), (62, ('reload', dict(right=-0.015))), (66, 'reload'), (72, 'reload'),
+                        (80, ('hip', dict(up=-0.004))), (84, 'hip')],
+                L=[(0, 'support'), (4, 'support'), (12, 'cap'), (14, 'cap'), (18, OFF_L), (24, OFF_L), (44, 'mag'), (52, 'mag'),
+                   (55, 'push'), (60, 'push'), (64, ('cap', (-25, -20, 30))), (68, ('cap', (-10, -10, 25))), (72, ('cap', (0, 0, 20))),
+                   (80, 'support'), (84, 'support')],
+                fL=[(0, 'foregrip'), (5, 'open'), (12, 'pinch'), (15, 'open'), (20, 'mag_hold'), (53, 'open'), (64, 'open'), (78, 'foregrip')],
+                drop=(2, 2), carry=[(24, 44)],
+                mech={'rocket': [(0, 0), (2, -3), (30, -3), (30, 0.5), (44, 0.5), (52, 0.25), (60, 0)],
+                      'cap_release': [(0, 0), (12, 0), (13, 1), (15, 1), (16, 0)], 'breech_cap': [(0, 0), (14, 0), (20, 1), (64, 1), (72, 0)],
+                      'ready_light': [(0, 1), (1, 0), (72, 0), (76, 1)]},
+                events=[(0, 'Launch'), (4, 'HandOff'), (20, 'BreechOpen'), (60, 'MagIn'), (72, 'BreechClosed'), (80, 'HandOn'), (82, 'Ready')],
+                src='M Destiny-Raketenwerfer Nachladen ≈ 2,8 s (Eyes of Tomorrow, Motiongen destiny2:276/513) → 84 Bilder (× TIME_SCALE 3,5 s), '
+                    'Rakete sitzt bei 60; Ablauf E nach dem Modul (reload: Klappenknopf, Heckklappe, Rakete von hinten, Klappe, Anzeige); die '
+                    'Rakete fliegt in 2 Bildern aus dem Rohr (danach verdeckt), die Hand holt die nächste unter dem Bild'),
+        ),
+        same_reload=True,
+        gameplay=dict(rpm=20, magazine=1, path_up_h=0.0, recover_hz=1.5, kick=4.0, flash_scale=0.7,
+                      src='S Destiny-Raketenwerfer 20/min, Magazin 1 (Motiongen destiny2:276); Feuerart aus der Spec (Einzelschuss, danach sofort '
+                          'nachladen); keine Bahnstufe, Kick 4,0 E: Schub zur Kamera, Linse 10 → 25 % H in 3–4 Bildern (destiny2:501); '
+                          'Mündungsfeuer 0,7 der Familie E (das Seitenvisier W2 liegt nah am Rohr: mit 1,0 deckte der Blitz 33,6 % der Öffnung, '
+                          'Regel ≤ 20 %, 5.3 A; Destiny-Weißblende 0,10–0,15 s offen)'),
+        src='Ego-Übertrag 0.33 „Armory“ P4: Schulterhaltung, Anflug, Ziehen und Nachladezeit nach Motiongen (Raketenwerfer), Ablauf E'),
     'portal_cannon': dict(
         # Werkzeug (0.17 „Gateway“): nur Hüfte, kein Visier (kein Socket_Eye), kein Magazin – ohne Zielen und Nachladen; diese Haltungen
         # und Aktionen fehlen in den Daten (drop), Unity schaltet danach (nicht nach der Waffen-ID)
@@ -563,14 +1207,33 @@ CLASSES = {
 # META fire der spielbaren Waffen → Feuerart in Unity (gameplay.fire_mode). burst_N (0.22): Salve zu N Schuss je Zug, gehalten Salve um
 # Salve; single (Werkzeug): ein Schuss je Klick, bei zwei Portalen je Taste
 FIRE_MODES = {'full_auto': 'Dauerfeuer', 'semi_auto': 'Einzelfeuer (ein Schuss je Zug)', 'burst': 'Salve (n Schuss je Zug)',
-              'single': 'Einzelschuss je Klick (Werkzeug)'}
+              'single': 'Einzelschuss je Klick (Werkzeug)',
+              'bolt_action': 'Repetierer (ein Schuss je Zug, danach Kammerstängel als Klassenaktion fire_cycle/fire_cycle_ads)',
+              'continuous_beam': 'Dauerstrahl (Dauerfeuer ohne Mündungsfeuer, Leuchtteile EGO_LIVE glow an, solange der Abzug zieht)',
+              'pump_action': 'Vorderschaftrepetierer (ein Schuss je Zug, danach Pumpe als Klassenaktion fire_cycle/fire_cycle_ads; Nachladen '
+                             'je Patrone reload_shell, ein Zug am Abzug bricht ab)',
+              'charge_burst': 'Aufladen → Salve (Abzug halten lädt in charge_s, bei voller Ladung burst_shots Schuss; Loslassen bricht ab; '
+                              'gehalten Zyklus um Zyklus im Takt rpm)',
+              'charge_single': 'Aufladen → Einzelschuss (wie charge_burst mit einem Schuss)',
+              'draw_release': 'Bogen (Abzug halten spannt – Klassenaktion fire_draw/fire_draw_ads –, voller Auszug hält, Loslassen löst – '
+                              'fire_release/fire_release_ads –, vorher entspannt der Bogen ohne Schuss – let_down/let_down_ads)',
+              'single_shot': 'Einzelschuss mit Magazin 1 (ein Schuss je Zug, danach sofort Nachladen als Klassenaktion reload_tactical)'}
+# Feuerarten mit einem Schuss je Zug (Abzug je Schuss gezogen und gelöst; ego_build und Unity EgoData.Semi)
+SEMI_MODES = ('semi_auto', 'single', 'bolt_action', 'pump_action', 'single_shot')
+# Feuerarten mit Aufladen (0.33): gameplay.charge_s/charge_fade_s, Leuchtteile folgen der Ladung (charge_level, Unity EgoData.Charge)
+CHARGE_MODES = ('charge_burst', 'charge_single')
+
+
+# Feuerarten der Spec, die im Spiel wie eine vorhandene laufen (0.33): der Spannabzug der Trommel schießt wie Einzelfeuer, der Hahn ist
+# Live-Teil (EGO_LIVE bolt); das Gurt-MG schießt wie Dauerfeuer, der Gurt ist Teil des Nachladens (Klassenaktion)
+FIRE_ALIAS = {'semi_auto_double_action': 'semi_auto', 'full_auto_belt': 'full_auto'}
 
 
 def fire_spec(fire):
-    """Feuerart und Salvenlänge aus META fire: 'burst_3' → ('burst', 3), sonst (fire, 0)."""
+    """Feuerart und Salvenlänge aus META fire: 'burst_3' → ('burst', 3), FIRE_ALIAS aufgelöst, sonst (fire, 0)."""
     if fire.startswith('burst_'):
         return 'burst', int(fire.split('_')[1])
-    return fire, 0
+    return FIRE_ALIAS.get(fire, fire), 0
 # Live-Teile der Pilotwaffe (Abzug, Verschluss, Auswurfklappe im laufenden Feuer); andere Waffen nennen ihre im Modul-Feld EGO_LIVE
 LIVE = dict(trigger='trigger', bolt='bolt_carrier', port='port_cover')
 _PROFILES = {}
@@ -593,8 +1256,12 @@ def profile(W):
     fire_mode, burst = fire_spec(W.META.get('fire', 'full_auto'))
     if fire_mode not in FIRE_MODES:
         raise KeyError(f'{wid}: Feuerart {fire_mode} nicht spielbar (ego.FIRE_MODES)')
-    if (fire_mode == 'burst') != ('burst_rpm' in C['gameplay']):
+    if (fire_mode in ('burst', 'charge_burst')) != ('burst_rpm' in C['gameplay']):
         raise KeyError(f'{wid}: Salve braucht burst_rpm in der Klasse {t} (und nur sie)')
+    if (fire_mode in CHARGE_MODES) != ('charge_s' in C['gameplay']):
+        raise KeyError(f'{wid}: Aufladen braucht charge_s in der Klasse {t} (und nur sie)')
+    if fire_mode == 'charge_burst':                  # Salvenlänge der Ladewaffe aus der Klasse (die Spec nennt nur charge_burst)
+        burst = C['gameplay']['burst_shots']
     drop = C.get('drop', {})
     poses = {k: dict(v) for k, v in POSES.items() if k not in drop.get('poses', ())}
     for k, note in C.get('keep', {}).items():      # Haltung der Automatik übernommen, Herkunft für diese Klasse
@@ -606,20 +1273,58 @@ def profile(W):
             if k not in C['poses']:
                 poses[k] = _follow(poses['hip'], POSES['hip'], POSES[k])
     actions = {k: copy.deepcopy(A) for k, A in ACTIONS.items() if k not in drop.get('actions', ())}
-    for k, A in C.get('actions', {}).items():        # Aktionen der Klasse (Werkzeug: fire_a/fire_b), Feuerzeit wie fire_hip (KEEP_TIME)
-        actions[k] = copy.deepcopy(A)
-        _retime(actions[k], 1.0)
+    mmap, back = C.get('mech_map', {}), C.get('charge_back_mm')
+    for A in actions.values():                       # Bauteile der Bezugswaffe → Bauteile der Klasse (Pistole: Schlitten statt Ladehebel)
+        if mmap and 'mech' in A:
+            A['mech'] = {mmap.get(pid, pid): v for pid, v in A['mech'].items()}
+        if back is not None and 'L' in A:            # Durchladeweg der Stützhand am Griff 'charge' (Bezug 58 mm Ladehebel)
+            A['L'] = [(f, ('charge', (-back, 0, 0)) if isinstance(k, tuple) and k[0] == 'charge' else k) for f, k in A['L']]
+    for k, A in C.get('actions', {}).items():        # Aktionen der Klasse (Werkzeug: fire_a/fire_b, Trommel: Nachladen); Feuer in
+        actions[k] = copy.deepcopy(A)                 # Originalzeit wie fire_hip (KEEP_TIME), alles andere mit TIME_SCALE wie ACTIONS
+        _retime(actions[k], 1.0 if k in KEEP_TIME or k.startswith('fire') else TIME_SCALE)
     grips = getattr(W, 'EGO_GRIPS', None) or GRIPS
     # Stützhand: Fingerstellung des Griffs statt underhand (Pilotwaffe: underhand), dazu die Ersetzungen des Griffs (finger_map)
     fmap = dict(grips['support'].get('finger_map', {}), underhand=grips['support']['fingers_pose'])
     for A in actions.values():
         A['fL'] = [(f, fmap.get(p, p)) for f, p in A.get('fL', [(0, 'underhand')])]
+    if 'ads_hand' in C:                              # Stützhand im Zielen frei (Bogen, 0.33 P4): in den Bezugsaktionen, die ins Zielen führen
+        off = C['ads_hand']['off']
+        for k, A in actions.items():
+            if k in C.get('actions', {}) or 'ads' not in [w[1] if isinstance(w[1], str) else w[1][0] for w in A['weapon']]:
+                continue
+            ws = [(f, w if isinstance(w, str) else w[0]) for f, w in A['weapon']]
+            a_in = next(f for f, w in ws if w == 'ads')                          # erstes Bild im Zielen
+            a_out = max((f for f, w in ws if w != 'ads' and f > a_in), default=None)
+            L = A.get('L', [(0, 'support')])
+            if a_out is None:                                                    # endet im Zielen: Hand geht unter das Bild
+                A['L'] = [k_ for k_ in L if k_[0] < a_in * 0.6] + [(round(a_in * 0.6, 6), 'support'), (a_in, off)]
+            else:                                                                # beginnt im Zielen (aim_out): Hand kommt an die Nocke
+                A['L'] = [(0, off), (a_out, 'support')]
+            A['fL'] = [(f, p) for f, p in A['fL'] if f < a_in * 0.6] + [(a_in, 'relaxed')] if a_out is None else [(0, 'relaxed'), (a_out, A['fL'][-1][1])]
+    if C.get('hands', {}).get('swap'):               # Bogenhand links (Bogen, 0.33 P4): L und R tauschen, Bildpunkte gespiegelt (x links)
+        def mirror(keys, default):
+            return [(f, ('cam', (-k[1][0],) + tuple(k[1][1:])) if isinstance(k, tuple) and k[0] == 'cam' else k) for f, k in keys or default]
+        for A in actions.values():
+            L, R = A.get('L', [(0, 'support')]), A.get('R', [(0, 'grip')])
+            fL, fR = A['fL'], A.get('fR', [(0, 'trigger')])
+            A['L'], A['R'] = mirror(R, None), mirror(L, None)
+            A['fL'], A['fR'] = fR, fL
+    gpose = grips['grip'].get('fingers_pose', 'trigger')
+    if gpose != 'trigger':                           # Haupthand ohne Abzugsfinger (Bogen, 0.33 P4): Fingerstellung des Griffs statt trigger
+        ch = 'fL' if C.get('hands', {}).get('swap') else 'fR'
+        for A in actions.values():
+            A[ch] = [(f, gpose if p == 'trigger' else p) for f, p in A.get(ch, [(0, 'trigger')])]
+    if 'bob' in C:                                  # Sprint-Hub der Klasse (Handfeuerwaffe: schmal und hoch)
+        actions['sprint']['bob'] = dict(actions['sprint']['bob'], amp=C['bob']['amp'])
+        actions['sprint']['src'] = f"{actions['sprint']['src']}; Klasse {t}: Hub {C['bob']['amp']} ({C['bob']['src']})"
     for k, n in C['frames'].items():
         A = actions[k]
         old = A['frames']
         _retime(A, n / old)
         A['frames'] = int(math.ceil(n - 1e-9))
         A['src'] = f"{A['src']}; Klasse {t}: {old} → {n:g} Bilder ({C['frames_src']})"
+    if C.get('same_reload'):                       # leer wie taktisch (Trommel, Repetierer, Energiezelle, Gurt): ein Ablauf, nach dem Strecken
+        actions['reload_empty'] = dict(copy.deepcopy(actions['reload_tactical']), de=actions['reload_tactical']['de'] + ', auch leer')
     G = dict(C['gameplay'])
     for k in ('path_up_h', 'recover_delay_s', 'recover_hz'):   # Bahn je Klasse (0.22), sonst gemeinsam (ego.RECOIL)
         G.setdefault(k, RECOIL[k])
@@ -633,7 +1338,15 @@ def profile(W):
     for k, A in actions.items():                # Schussbilder der Feueraktionen in der Kadenz der Klasse (Clips wie Unity: gameplay.rpm)
         if not A.get('fire') or k in C.get('actions', {}):
             continue
-        if burst:
+        if fire_mode == 'draw_release':           # Bogen (0.33 P4): geschossen wird nur in fire_release (Klassenaktion), sprint_to_fire ohne Schuss
+            A.pop('fire')
+            A.pop('kick', None)
+            A['src'] = f"{A['src']}; Klasse {t}: ohne Schuss (Bogen: Spannen beginnt nach dem Marker Fire)"
+            continue
+        if fire_mode in CHARGE_MODES:             # Ladewaffe (0.33): Abzug ab dem ersten Schussbild der Bezugsaktion, Schüsse nach dem Aufladen
+            A['fire'] = shots_charge(A['fire'][0], A['frames'], G['charge_s'] * FPS, rpm, burst or 1, G.get('burst_rpm', 0))
+            A['de'] = A['de'].replace('Dauerfeuer', 'Aufladen und Salve' if burst else 'Aufladen und Schuss')
+        elif burst:
             A['fire'] = shots_burst(A['fire'][0], A['fire'][-1], burst, G['burst_rpm'], rpm)
             A['de'] = A['de'].replace('Dauerfeuer', 'Salven')
         elif rpm != 720:
@@ -643,6 +1356,9 @@ def profile(W):
         A['src'] = f"{A['src']}; Klasse {t}: {rpm}/min, {FIRE_MODES[fire_mode]} (Schussbilder {A['fire']})"
     live = getattr(W, 'EGO_LIVE', None) or LIVE
     P = dict(type=t, poses=poses, actions=actions, grips=grips, live=live, gameplay=G, src=C['src'],
-             frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop)
+             frames_src=C.get('frames_src', ''), fire_mode=fire_mode, drop=drop,
+             mag=grips.get('mag', {}).get('part', 'magazine'),   # Bauteil, das das Nachladen trägt (carry/drop): Magazin, Energiezelle (0.33)
+             hands_swap=bool(C.get('hands', {}).get('swap')),     # Bogenhand links (0.33 P4)
+             ads_hide=tuple(C.get('ads_hide', {}).get('parts', ())))   # Teile, die im Zielen aus sind, je Klasse (0.33 P4, Bogen)
     _PROFILES[wid] = P
     return P

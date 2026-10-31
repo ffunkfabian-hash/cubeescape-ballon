@@ -21,7 +21,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Oberbrücke geht aus dem Gehäuse in das Joch über (ein Rahmen); Trommelachse in Stoßplatte und Joch gelagert; Lauf stößt mit Fuge 1 mm an das Joch |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Trommel vor dem Abzugsbügel (Nachladen links wie Kammerstängel 09 und MG-Kasten 15: die Stützhand öffnet die Ladeklappe hinten links, die Granate gleitet in der Ladeschale in die Kammer; Nutzer 28.10.2026 „Müsste das Granatwerfer nachladen nicht auf die linke seite“), Halbschale unter dem Lauf für die Stützhand |
 
-Visier: W1 „D-Linse“ (Baukasten v3, visier-konzept › 6a; `sight_kit.d_linse`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
+Visier: W1 „D-Linse“ (Baukasten v3, visier-konzept › 6a; `common.d_linse`), Visier-Standard 3 Typ `lens_chevron` (Reflex):
 D-Haube aus Flachprofil 2,4 mm mit oranger Kerbmarke oben, drei Fallmarken links innen (Haltepunkte für den Bogenschuss);
 Größe M (Glas 26 mm, 18,9 % der Bildbreite); Absehen gezeichnet (Hüftform `circle_cross` flach im Glas); Weltzoom der Klasse
 1,4 (reticles.CLASS_ZOOM, ohne Visierbonus wie Destiny). W3 Leiter nur als Variante im Katalog (`sight_kit_more.launcher_ladder`).
@@ -40,7 +40,7 @@ import math
 
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, stock_s2, R_MID, R_SMALL, R_FINE)
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Trommel ohne feine Kratzer)
-from basic.pilot.optics.sight_kit import d_linse
+from basic.common import d_linse
 from basic.weapons import w13_grenade_launcher as V1
 
 META = dict(V1.META, variant='v2.1', name='Trommel v2.1', nick='Familie v2.1', type_de='Granatwerfer (Trommel)',
@@ -215,10 +215,24 @@ ANCHORS = {
 ANCHORS.update(SIGHT_ANCHORS)
 # Auswurf (Daten, kein Anker): beim Nachladen fällt je Kammer die leere Hülse aus der offenen Ladeklappe nach hinten links unten, nicht
 # beim Schuss (Trommel: die Hülse bleibt in der Kammer).
-EJECT_CASES = {'grenade_40': dict(len_mm=35, r_mm=21, segs=16)}
+# Hülsenform grenade_40 in ego.EJECT.cases (seit dem Ego-Übertrag 0.33 „Armory“ P4)
 EJECT = dict(at=(GATE_F[0], round(GATE_C[0], 1), round(GATE_C[1], 1)), dir=(-0.4, -0.6, 0.7), case='grenade_40', on='reload',
              event='case_out', src='E: aus der Ladekammer durch die offene Ladeklappe, nach links unten (Stützhand-Seite, Waffe beim Nachladen abgesenkt); '
                                     'nur beim Nachladen')
+# Ego-Griffe (0.33 „Armory“ P4, ego.profile)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(291, 76.5, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter der Halbschale (Socket_SupportHand, Unterkante u 78), Lage wie die Pilotwaffe'),
+    'mag':     dict(part='grenade', contact=(165, GATE_C[0], round(GATE_C[1] + 21, 1)), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.3, 0.0),
+                    fingers_pose='mag_hold', src='E links an der Ladegranate (Ruhelage in der Ladekammer), schiebt sie von hinten ein'),
+    'gate':    dict(contact=(34, 126, W_REC / 2 + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
+                    src='E am Klappenknopf links über der Ladeschale'),
+    'charge':  dict(contact=(34, 126, W_REC / 2 + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
+                    src='E wie gate (vom Nachladen nicht genutzt)'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss; die Trommel dreht fire_cycle
 _idx = [22 + 14 * k for k in range(6)]          # Kammerwechsel beim Laden
 ACTIONS = {
     'fire': dict(de='Schuss, Trommel eine Kammer weiter', frames=18, step=1, keys={

@@ -18,7 +18,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Zellentrichter im Unteren Gehäuse angeformt; Haube und Handschutz enden im Emitterblock (Fuge 1 mm) |
 | Ergonomie | Griff BGM-1 in v2.1-Form (Familie), Energiezelle vor dem Griff wie ein Magazin, Griffpolster unter dem Handschutz |
 
-Visier: F1 „Bögen“ (Baukasten v3, visier-konzept › 6a; `sight_kit.boegen`): versetzte Bögen mit S-Öffnung und Stegen, Ladebalken auf
+Visier: F1 „Bögen“ (Baukasten v3, visier-konzept › 6a; `common.boegen`): versetzte Bögen mit S-Öffnung und Stegen, Ladebalken auf
 dem Gehäuse; Absehen gezeichnet (Hüftform `corners` flach im Glas). Größe M mit Glas Ø 26 (18,9 %, Standard 12–20 %). F2 Doppelring
 nur als Variante im Katalog.
 Schlichtheitsbudget: Leuchten 3 Funktionen (Ladung: Glutkern und Ladebalken im Visier · Munition: Ladefenster der Zelle · Visier:
@@ -29,7 +29,7 @@ unten heraus (`reload`), Zellenhalter. Energiewaffe: **kein Hülsenauswurf** (`E
 Status: Maße entworfen (Länge kürzer als v1, an Destiny H/L angelehnt; gemessene Werte im Spec), Formprinzipien abgeleitet.
 """
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, stock_s2, R_BODY, R_MID, R_SMALL, R_FINE)
-from basic.pilot.optics.sight_kit import boegen
+from basic.common import boegen
 from basic.pilot.energy_roles import CHARGE_ROLES  # noqa: F401  (registriert die Rolle charge_core in Blender)
 from basic.weapons import w10_fusion_rifle as V1
 
@@ -167,3 +167,18 @@ EXPLODE = {'sight': (0, 110, 0), 'ammo': (0, -140, 0), 'stock': (-110, 0, 0), 'b
            'support': (60, -60, 0), 'grip_controls': (-10, -80, 0), 'receiver': (0, 0, 0)}
 SIGHT_ID = 'F1'    # Visier des Baukastens v3 (visier-konzept › 6a); test_sights prüft dessen Pflichtteile und Merkmale
 EJECT = None    # Energiewaffe: keine Hülse (Daten statt Sonderlogik; check: Energiezelle BEC-1 → EJECT None)
+# Ego-Griffe (0.33 „Armory“ P3, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe; 'mag' an der Energiezelle
+# (das Nachladen der Bezugsklasse trägt das Bauteil des Griffs 'mag'), 'charge' am Zellenhalter (kein Ladehebel; leer wie taktisch)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(265, 55.0, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter der Ladekammer auf dem Griffpolster (handguard_grip f 200–330, Unterkante u 56,5, Socket_SupportHand), Lage wie '
+                        'die Pilotwaffe'),
+    'mag':     dict(part='energy_cell', contact=(100, -10, 12.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.2, 0.0), fingers_pose='mag_hold',
+                    src='E links an der Energiezelle (Breite 24, f 86–126), Hand greift von unten hinten (wie die Pilotwaffe)'),
+    'charge':  dict(part='cell_release', contact=(76, 54, 23.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Zellenhalter links (kein Ladehebel; vom Nachladen nicht genutzt, leer wie taktisch)'),
+}
+# Abzug je Ladung; Glutkern und Ladebalken leuchten mit der Ladung (Feuerart charge_burst, Bewegung glow 0 → 1)
+EGO_LIVE = dict(trigger='trigger', bolt='', port='', glow=('ember_core', 'sight_emitter'))

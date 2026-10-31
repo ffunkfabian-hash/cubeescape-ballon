@@ -15,7 +15,7 @@
   Lichtspalt zwischen Korn und Kerbe je Seite ≥ 0,25° (≈ 4 px bei 1280 px), Kornpunkt in der Kerbe, Kimmen- und Kornfuß liegen
   auf dem Träger auf.
 - Scharfschütze Z3 (0.25, BASIC-09): Vollbild-Typ zur Klasse, Visierhöhe 66 ± 4, Augenpunkt 90 mm hinter dem Ring, Ring ohne Wulst,
-  gezeichnetes Absehen; Vollbild-Zielbild: Linse auf der Visierlinie, Kreis 80–83 % H, Duplex mit freier Mitte (`sight_kit.FULLSCREEN`).
+  gezeichnetes Absehen; Vollbild-Zielbild: Linse auf der Visierlinie, Kreis 80–83 % H, Duplex mit freier Mitte (`common.FULLSCREEN`).
   Kimme/Korn K2 (BASIC-08): wie K1, Kerbe als Lücke des Hörner-Querprofils auf der Visierlinie.
 - Bauteil-Hash des Unity-Exports (`export_unity.parts_sha`) ist bei 1 ulp Abweichung gleich (Mac und Linux-CI).
 - Mündungsfeuer im Zielen an der MP-Pille: in der Kontur gezählt (kleiner als im umschließenden Rechteck) und ≤ 20 % (5.3 A).
@@ -129,7 +129,7 @@ def iron_picture(parts, anchors):
 
 def check_iron(W):
     """Kimme/Korn einer Familienwaffe (Visier-Standard 3, Erweiterung 0.21; gebaut 0.24): Fehlerliste."""
-    from basic.pilot.optics.sight_kit import IRON_EYE_MM
+    from basic.common import IRON_EYE_MM
     bad, e, t = [], W.ANCHORS['Socket_Eye'], W.META['type']
     if t not in RT.SIGHT['line_exempt']['iron'] or RT.SIGHT_KIND.get(t) != 'irons_brackets':
         bad.append(f'Kimme/Korn passt nicht zur Klasse {t} (Visier-Standard 3: {RT.SIGHT_KIND.get(t)})')
@@ -155,7 +155,7 @@ def check_fullscreen(W):
     """Scharfschützen-Zielfernrohr Z3 (Visier-Standard 3 Typ `fullscreen`, 0.25): Klasse passt, Visierhöhe 66 ± 4 mm, Augenpunkt 90 mm
     hinter dem Objektivring (Sitz wie Z1), Ring ohne Wulst, gezeichnetes Hüft-Absehen auf der Linse; Vollbild-Zielbild: Linse und
     Augenpunkt auf der Visierlinie, Kreis im Destiny-Band, Duplex mit Lücke um die Mitte. Fehlerliste."""
-    from basic.pilot.optics.sight_kit import FULLSCREEN
+    from basic.common import FULLSCREEN
     bad, e, t = [], W.ANCHORS['Socket_Eye'], W.META['type']
     if RT.SIGHT_KIND.get(t) != 'fullscreen' or RT.SIGHT['types']['fullscreen']['ads_view'] != 'overlay':
         bad.append(f'Vollbild passt nicht zur Klasse {t} (Visier-Standard 3: {RT.SIGHT_KIND.get(t)})')
@@ -224,7 +224,7 @@ def check_pins(W):
     Pinkopf in der Bildmitte; Pin-Abstände (gleiche Stufen, ≥ pin_gap_min_deg) und Köpfe (≥ pin_head_min_px, nach unten kleiner,
     ganz im Ring); Sichtfeld: lichter Ring im Band, Pins nur von rechts (linke Ringhälfte frei), Fensterbogen des Mittelstücks
     verdeckt den Ring nicht."""
-    from basic.pilot.optics.sight_kit import PINS_LINE, PINS_T
+    from basic.common import PINS_LINE, PINS_T
     T = RT.SIGHT['types']['pins']
     bad, e, t = [], W.ANCHORS['Socket_Eye'], W.META['type']
     P = {p['id']: p for p in W.PARTS}
@@ -674,7 +674,7 @@ def main():
             bad += [f'{wid}: {b}' for b in check_iron(W)]
             continue
         if e.get('sight_type') == 'fullscreen':
-            from basic.pilot.optics.sight_kit import FULLSCREEN
+            from basic.common import FULLSCREEN
             n += 1
             print(f"[test_sights] {wid}: Vollbild (Z3), Visierhöhe {e['at'][1] - W.BORE:g} mm, Auge "
                   f"{W.ANCHORS['Socket_Objective']['at'][0] - e['at'][0]:g} mm hinter dem Ring, Ring {ring_ratio(W.PARTS):.3f}, "

@@ -18,8 +18,9 @@ namespace Ballon.Ego
         public float camPitch;
         public float trigger, bolt, port;   // Mechanik beim Feuern, < 0 = aus der Aktion
         public float ring;                  // 0.22: Ringdrehung des Werkzeugs in Dritteln (live), NaN = aus der Aktion
+        public float glow;                  // 0.33: Leuchtteile weapon.live.glow (Dauerstrahl, Ladung) 0 … 1, < 0 = aus der Aktion
 
-        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN };
+        public static Layers None => new Layers { rot = Matrix4x4.identity, trigger = -1, bolt = -1, port = -1, ring = float.NaN, glow = -1 };
     }
 
     public sealed class EgoOutput
@@ -84,7 +85,7 @@ namespace Ballon.Ego
             foreach (var p in d.weapon.parts)
                 if (p.move.kind != "none" && !string.IsNullOrEmpty(p.parent)) _movers.Add(p);
             foreach (var p in _movers)
-                if (p.move.kind != "translate" && p.move.kind != "rotate" && p.move.kind != "glow")
+                if (p.move.kind != "translate" && p.move.kind != "rotate" && p.move.kind != "glow" && p.move.kind != "segment")
                     throw new NotSupportedException($"Bewegungsart {p.move.kind} an {p.id}");
             for (int i = 0; i < d.arm.segments.Length; i++) _seg[d.arm.segments[i]] = i;
             _fingerSeg = new int[d.arm.finger_x.Length, d.arm.finger_links.Length];
@@ -99,15 +100,21 @@ namespace Ballon.Ego
                 _ejVel = V(d.weapon.eject.dir).normalized * d.motion.eject.speed_mps;
                 _spin = V(d.motion.eject.spin_axis).normalized;
             }
-            if (d.HasPart("magazine"))   // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
-                _magRelLocal = GripHand("mag", _ => Matrix4x4.identity, Vector3.zero).inverse * Rest("magazine");
+            MagPart = d.MagPart;         // 0.33: Bauteil des Griffs 'mag' (Magazin, Energiezelle)
+            if (d.HasPart(MagPart))      // ego_build: rel = Hm⁻¹ · (WM · rest); WM kürzt sich heraus
+                _magRelLocal = GripHand("mag", _ => Matrix4x4.identity, Vector3.zero).inverse * Rest(MagPart);
         }
 
         public List<EgoPart> Movers => _movers;
+        /// <summary>Bauteil, das das Nachladen trägt (EgoFile.MagPart).</summary>
+        public readonly string MagPart;
 
         /// <summary>Zielfernrohr (ego.ADS_HIDE, 0.20): Teile mit ads_hide aus, solange Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf,
         /// ohne Live-Ebenen) näher als motion.ads_hide.eye_m an der Kamera liegt – wie ego_build.evaluate.</summary>
-        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && D.HasAnchor("Socket_Eye") && baseW.MultiplyPoint3x4(_eyeLocal).magnitude < D.motion.ads_hide.eye_m;
+        public bool AdsHidden(Matrix4x4 baseW) => D.motion.ads_hide != null && D.HasAnchor("Socket_Eye")
+                                                   && (baseW.MultiplyPoint3x4(_eyeLocal) - AdsEye).magnitude < D.motion.ads_hide.eye_m;
+        /// <summary>Lage von Socket_Eye im Zielen (Haltung ads › eye; Kamera bei den Gewehren, beim Bogen 0.33 P4 hinter der Kamera).</summary>
+        public Vector3 AdsEye => D.CanAim ? V(D.Pose("ads").eye) : Vector3.zero;
         public int SegmentIndex(string s) => _seg[s];
         public EgoOutput NewOutput() => new EgoOutput { segL = new Matrix4x4[D.arm.segments.Length], segR = new Matrix4x4[D.arm.segments.Length],
                                                         shells = new Matrix4x4[D.motion.eject.max_live], shellIds = new int[D.motion.eject.max_live] };
@@ -150,7 +157,7 @@ namespace Ballon.Ego
             if (fire == null || fire.Length == 0) return;
             int i = D.gameplay.muzzle_flash ? FlashVisible(fire, f) : -1;     // Werkzeug (0.22): ohne Mündungsfeuer
             if (i >= 0) { o.flashOn = true; o.flashShot = i; o.flash = FlashMatrix(WM, i); }
-            if (!Ejects) return;
+            if (!Ejects || D.weapon.eject.on == "reload") return;     // Trommel (0.33 P4): Hülsen nur beim Nachladen (Marker Eject)
             if (st.shotWM == null || st.shotWM.Length != fire.Length) { st.shotWM = new Matrix4x4[fire.Length]; st.shotSet = new bool[fire.Length]; }
             for (int k = 0; k < fire.Length; k++)
                 if (fire[k] <= f && !st.shotSet[k]) { st.shotWM[k] = WM; st.shotSet[k] = true; }
@@ -308,6 +315,7 @@ namespace Ballon.Ego
                 float a = av.magnitude * h;
                 if (a > 1e-12f) q = Quaternion.AngleAxis(a * Mathf.Rad2Deg, av.normalized) * q;
             }
+            q = Quaternion.Normalize(q);   // 0.33: ohne Normieren wächst |q| über lange Abläufe (MG-Nachladen 6 s: 1,00001 → Unity-Assert in TRS)
         }
 
         /// <summary>ego_build.secondary: Waffe folgt ihrer Kurve über Federn (ganze Bilder, wie die Blender-Auswertung).</summary>
@@ -381,7 +389,11 @@ namespace Ballon.Ego
                 L.camPitch = st.recCx.x;
                 L.pos += R.MultiplyVector(new Vector3(0, st.recX.x, 0));
                 L.rot = L.rot * RotX(Rad(-(st.recX.y + climb)));          // Mündung steigt
-                L.trigger = TriggerOn(A.fire, f, D.gameplay.Semi) ? 1 : 0;
+                var G = D.gameplay;
+                float chargeF = G.Charge ? G.charge_s * fps : 0;           // Ladewaffe (0.33 P3): Abzug ab dem Aufladen
+                L.trigger = TriggerOn(A.fire, f, G.Semi, chargeF) ? 1 : 0;
+                if (G.Beam) L.glow = L.trigger;                            // Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht
+                if (G.Charge) L.glow = ChargeLevel(A.fire, f, chargeF, Mathf.Max(1, G.burst_shots), G.charge_fade_s * fps);
                 L.bolt = (n > 0 && f - last < 1.5f) ? 1 : 0;
                 L.port = n > 0 ? 1 : 0;
             }
@@ -389,13 +401,29 @@ namespace Ballon.Ego
         }
 
         /// <summary>ego.trigger_on: Dauerfeuer vom Bild vor dem ersten bis nach dem letzten Schuss gezogen; Einzelfeuer (0.20) je Schuss ein
-        /// Bild davor bis ein Bild danach.</summary>
-        public static bool TriggerOn(int[] fire, float f, bool semi)
+        /// Bild davor bis ein Bild danach; lead (0.33 P3, Ladewaffe): schon lead Bilder vor dem ersten Schuss (Aufladen).</summary>
+        public static bool TriggerOn(int[] fire, float f, bool semi, float lead = 0)
         {
             if (fire == null || fire.Length == 0) return false;
-            if (!semi) return fire[0] - 1 <= f && f <= fire[fire.Length - 1] + 1;
+            if (!semi) return fire[0] - 1 - lead <= f && f <= fire[fire.Length - 1] + 1;
             foreach (var s in fire) if (s - 1 <= f && f <= s + 1) return true;
             return false;
+        }
+
+        /// <summary>ego.charge_level (0.33 P3): Ladung 0 … 1 im Bild f einer Feueraktion – je Zyklus aus n Schuss linear in chargeF Bildern
+        /// vor dem ersten Schuss auf 1, bis zum letzten Schuss gehalten, danach in fadeF Bildern auf 0.</summary>
+        public static float ChargeLevel(int[] fire, float f, float chargeF, int n, float fadeF)
+        {
+            float lv = 0;
+            if (fire == null) return 0;
+            for (int g = 0; g < fire.Length; g += n)
+            {
+                float s0 = fire[g], s1 = fire[Mathf.Min(g + n, fire.Length) - 1];
+                if (s0 - chargeF <= f && f < s0) lv = Mathf.Max(lv, (f - (s0 - chargeF)) / chargeF);
+                else if (s0 <= f && f <= s1) lv = 1;
+                else if (f > s1) lv = Mathf.Max(lv, 1 - (f - s1) / fadeF);
+            }
+            return Mathf.Clamp01(lv);
         }
 
         public static Matrix4x4 Apply(Matrix4x4 baseW, Layers L)
@@ -410,13 +438,36 @@ namespace Ballon.Ego
             if (A.mech != null)
                 foreach (var tr in A.mech) mech[tr.part] = ValueAt(tr.keys, f);
             var live = D.weapon.live;                       // Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE, 0.18)
-            if (L.trigger >= 0) mech[live.trigger] = L.trigger;
+            if (L.trigger >= 0 && !string.IsNullOrEmpty(live.trigger)) mech[live.trigger] = L.trigger;   // Bogen (0.33 P4): ohne Abzug
             if (L.bolt >= 0 && !string.IsNullOrEmpty(live.bolt)) mech[live.bolt] = L.bolt;      // Werkzeug (0.22): ohne Verschluss
             if (L.port >= 0 && !string.IsNullOrEmpty(live.port)) mech[live.port] = L.port;      // und ohne Auswurfklappe
             if (!float.IsNaN(L.ring) && !string.IsNullOrEmpty(live.ring)) mech[live.ring] = L.ring;
+            if (L.glow >= 0 && live.glow != null) foreach (var g in live.glow) mech[g] = L.glow;   // Dauerstrahl, Ladewaffe (0.33)
         }
 
         public Matrix4x4 Rest(string pid) => T(V(D.Part(pid).rest));
+
+        /// <summary>blender_build.move_matrix › segment: Drehung von d0 (festes Ende → Nockpunkt, move.axis) nach d1 = d0 + vec · t mal
+        /// Streckung um |d1|/|d0| längs d0 – um das feste Ende (rest).</summary>
+        public static Matrix4x4 SegmentRS(EgoPart p, float t)
+        {
+            var d0 = V(p.move.axis);
+            var d1 = d0 + V(p.move.vec) * t;
+            var n = d0.normalized;
+            float kf = d1.magnitude / d0.magnitude;
+            var S = Matrix4x4.identity;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++) S[i, j] += (kf - 1) * n[i] * n[j];
+            return Matrix4x4.Rotate(Quaternion.FromToRotation(d0, d1)) * S;
+        }
+
+        /// <summary>Streckung einer Sehnenhälfte bei Anteil t (|d1|/|d0|, 1 bei anderen Teilen) – EgoRig setzt sie als Skalierung längs d0.</summary>
+        public static float SegmentStretch(EgoPart p, float t)
+        {
+            if (p.move.kind != "segment") return 1;
+            var d0 = V(p.move.axis);
+            return (d0 + V(p.move.vec) * t).magnitude / d0.magnitude;
+        }
 
         /// <summary>tools/blender_build.move_matrix: Lage des Teils im Waffenrahmen bei Anteil t.</summary>
         public Matrix4x4 MoveMatrix(EgoPart p, float t)
@@ -429,6 +480,8 @@ namespace Ballon.Ego
                 case "rotate":
                     var piv = V(p.rest);
                     return T(piv) * Rot(Rad(m.a0 + (m.a1 - m.a0) * t), V(m.axis)) * T(-piv) * rest;
+                case "segment":                                  // Sehnenhälfte (0.33 P4): festes Ende rest, Nockpunkt folgt vec · t
+                    return T(V(p.rest)) * SegmentRS(p, t);
                 default: return rest;
             }
         }
@@ -455,7 +508,7 @@ namespace Ballon.Ego
         /// <summary>Aktuelle Weltmatrix eines Teils (bewegt oder der Hierarchie folgend).</summary>
         public Matrix4x4 World(EgoOutput o, string pid)
         {
-            if (pid == "magazine" && o.magOverride) return o.magWorld;
+            if (pid == MagPart && o.magOverride) return o.magWorld;
             if (o.movers.TryGetValue(pid, out var m)) return m;
             var p = D.Part(pid);
             if (!string.IsNullOrEmpty(p.parent)) return World(o, p.parent) * Rest(p.parent).inverse * Rest(pid);
@@ -575,7 +628,7 @@ namespace Ballon.Ego
             if (A.drop != null && A.drop.a >= 0 && hasCarry && A.drop.a <= f && f < A.carry[0].a)
             {
                 float t = (f - A.drop.a) / fps;
-                var mag0 = o.weapon * Rest("magazine");
+                var mag0 = o.weapon * Rest(MagPart);
                 o.magOverride = true;
                 if (f >= A.drop.b)
                 {
@@ -626,17 +679,26 @@ namespace Ballon.Ego
         public EgoAction StillAction(string pose)
         {
             HandKey Grip(string g) => new HandKey { f = 0, kind = "grip", grip = g, point = new float[3], offset = new float[3] };
+            var I = D.Action(pose == "ads" ? "aim_in" : "idle_hip");
+            HandKey At0(HandKey k) => new HandKey { f = 0, kind = k.kind, grip = k.grip, point = k.point, offset = k.offset };   // Zielen wie am Ende von aim_in (0.33 P4, Bogen)
             var A = new EgoAction
             {
                 name = "still:" + pose, frames = 0, time_scale = 1,
                 weapon = new[] { new WeaponKey { f = 0, pose = pose } },
-                L = new[] { Grip("support") }, R = new[] { Grip("grip") },
-                fL = new[] { new FingerKey { f = 0, pose = D.Grip("support").fingers_pose } }, fR = new[] { new FingerKey { f = 0, pose = "trigger" } },
+                L = new[] { At0(I.L[I.L.Length - 1]) }, R = new[] { At0(I.R[I.R.Length - 1]) },   // Hände wie in Ruhe (0.33 P4: beim Bogen
+                fL = new[] { new FingerKey { f = 0, pose = I.fL[I.fL.Length - 1].pose } },                 // Bogenhand links)
+                fR = new[] { new FingerKey { f = 0, pose = I.fR[I.fR.Length - 1].pose } },
                 mech = new MechTrack[0], carry = new FrameRange[0], drop = new FrameRange { a = -1, b = -1 }, fire = new int[0],
                 kick = 1, bob = new Bob { enabled = false, amp = new float[2] }, events = new Marker[0],
             };
-            if (pose == "inspect_r")      // linke Hand unter dem Bild wie in der Aktion inspect (ego.OFF_L)
-                A.L = new[] { Array.Find(D.Action("inspect").L, k => k.kind == "cam") };
+            if (pose == "inspect_r")      // Stützhand unter dem Bild wie in der Aktion inspect (ego.OFF_L; Bogen: Zughand rechts)
+            {
+                var In = D.Action("inspect");
+                var cl = Array.Find(In.L, k => k.kind == "cam");
+                var cr = Array.Find(In.R, k => k.kind == "cam");
+                if (cl != null) A.L = new[] { cl };
+                if (cr != null) A.R = new[] { cr };
+            }
             if (pose == "reload")
             {
                 A.L = new[] { Grip("mag") };

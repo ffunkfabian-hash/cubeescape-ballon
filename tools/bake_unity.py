@@ -37,7 +37,7 @@ def bakeable(ob):
 
 
 def apply_modifiers(obs):
-    """Modifikatoren anwenden (Bevel, Weighted Normal), damit UVs und Backen auf dem endgültigen Netz liegen."""
+    """Modifikatoren anwenden (Bevel mit harden_normals; seit 0.32 ohne Weighted Normal, A6), damit UVs und Backen auf dem endgültigen Netz liegen."""
     dg = bpy.context.evaluated_depsgraph_get()
     for ob in obs:
         if not ob.modifiers:

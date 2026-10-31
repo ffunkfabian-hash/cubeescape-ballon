@@ -23,7 +23,7 @@ from tools.paths import OUT, EVIDENCE  # noqa: E402
 from tools.sight_options import HFOV, RES, FONT, drawn_reticle, ground  # noqa: E402
 
 DST = os.path.join(OUT, 'sight_catalog')
-from basic.pilot.optics.sight_kit import FULLSCREEN as FS  # noqa: E402
+from basic.common import FULLSCREEN as FS  # noqa: E402
 FULLSCREEN = FS['circle_h']     # Kreis im Vollbild als Anteil der Bildhöhe (Destiny 80–83 %, Motiongen visiere.md › 7)
 
 

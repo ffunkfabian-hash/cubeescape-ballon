@@ -43,7 +43,7 @@ namespace Ballon.Ego
             dst.Clear();
             foreach (var (id, mn, mx) in _parts)
             {
-                if (id == "magazine" && o.magHidden) continue;
+                if (id == S.MagPart && o.magHidden) continue;
                 Box(S.World(o, id), mn, mx, o.camPitch, dst);
             }
             if (!arms) return;

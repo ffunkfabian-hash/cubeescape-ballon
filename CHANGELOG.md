@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.33.0 „Armory“ – Ego-Übertrag der übrigen Grundtypen, HUD und Waffenmenü (Branch `claude/ballon-0.33-armory`)
+
+- Visier-Umzug nach `basic/common.py`, bitgleich; Skins nur bei Bedarf (`export_unity.SKIN_WEAPONS`).
+- Alle 16 Waffen spielbar: P1 Handfeuerwaffe, Seitenwaffe; P2 Scharfschütze (Repetierer), Spurgewehr (Dauerstrahl), MG (Gurtkasten); P3
+  Schrotflinte (Pumpe, Einzelladen), Fusion und lineare Fusion (Aufladen); P4 Bogen wie Destiny (linke Bogenhand, Spannen/Halten/Lösen,
+  gespannt zielen, Zielen durch den Ring, R entspannt), Granatwerfer (Trommel, Nachladen je Kammer), Raketenwerfer (Magazin 1, sofort
+  nachladen). Werte nach cubeescape-reference ([armory-klassenwerte.md](docs/armory-klassenwerte.md)), Abgleich aller Hüftlagen mit
+  `huefte.json` im Bericht.
+- HUD (Symbol, Klasse, Munition) und Waffenmenü (Tab/Mausrad, Pfeile, Enter/Klick, Esc); Symbole aus den Silhouetten (`tools/make_icons.py`).
+- Bericht [docs/versions/0.33-armory.md](docs/versions/0.33-armory.md).
+
 ## 0.32.0 „Softgrip“ – Blueprint-Regeln Teil 2: A5, A6, A9 und Patch ego_build (Branch `claude/ballon-0.32-softgrip`)
 
 - A5: Fasenstufe `common.R_SOFT` 6,5 mm am Griff der Haupthand in Gummi (16 Waffen, Specs neu; übrige Gummiteile bewusst ausgenommen, Begründung im Bericht),

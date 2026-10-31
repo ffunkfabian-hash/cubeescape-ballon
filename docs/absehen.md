@@ -17,6 +17,10 @@ Eine Quelle für Blender (`basic/common.drawn_reticle`, Visier-Baukasten v3 in `
 | `corners` | Eckklammern | Vier Winkel zeigen die Streuung, gehen diagonal auf | ja |
 | `brackets` | Klammern | Zwei eckige Klammern um einen Punkt; Klammern wandern seitlich nach außen | ja |
 | `caret` | Dach | Kleines „^“, Spitze am Zielpunkt; die Schenkel gehen seitlich auseinander | ja |
+| `arcs_ladder` | Bögen mit Leiter | Zwei offene Bögen gehen seitlich auf; drei Striche darunter als Fallmarken | ja |
+| `ring_corners` | Ring mit Eckmarken | Kleiner Ring in der Mitte, vier Eckwinkel gehen diagonal auf | ja |
+| `gl_brackets` | Werferklammern | Zwei Eckklammern gehen seitlich auf; Mittenstrich und tieferer Strich als Fallmarke | ja |
+| `none` | ohne | Kein Hüftzeichen (Raketenwerfer, Destiny) | nein |
 
 Jede Form gibt es in jeder Farbe und jeder Linienstärke.
 
@@ -90,28 +94,28 @@ Profil `charge`: während des Aufladens schrumpft die Spreizung von `charge_from
 
 ## Hüft-Fadenkreuz
 
-Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px breit). Aus bei: ads, sprint, reload, draw, holster, inspect, lowered – beim Zielen schon im ersten Bild. Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. Entscheidungsliste 4.1 A und 4.2 A.
+Nur in der Hüfte sichtbar, weiß, Linienstärke fein (Linien mindestens 1.2 px breit). Aus bei: ads, sprint, reload, draw, holster, inspect, lowered – beim Zielen schon im ersten Bild. Beim Schießen geht es nach dem Aufgehprofil auf; die Sprintform geht nicht auf. Größe = sichtbares Außenmaß der Form bei Spreizung 0 mit Linienstärke (größere Seite des Rahmens) als Anteil der Bildhöhe; Glidepath = Motiongen `destiny2.md` › Glidepath. Entscheidungsliste 4.1 A und 4.2 A. Sonderklassen (0.33 „Armory“, `reticles.HUD_HIP`): das HUD zeigt die gemessene Glidepath-Form, das gezeichnete Absehen im Visierglas behält die Form der Spalte „Glas“ (Teil des Waffenmodells).
 
-| Typ | Hüfte | Größe (% H) | Außenmaß | Status | Sprint |
-|---|---|---|---|---|---|
-| `auto_rifle` | `ring_dot` | 3.2 | 5.91 mm | gemessen (Glidepath) | `caret` 1.5 % H |
-| `pulse_rifle` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus |
-| `scout_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `hand_cannon` | `brackets` | 6.0 | 10.39 mm | gemessen (Glidepath, ≈ 6 % H) | aus |
-| `sidearm` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `submachine_gun` | `circle_cross` | 6.1 | 15.19 mm | gemessen (Glidepath, 5,9–6,3 % H) | aus |
-| `shotgun` | `corners` | 4.5 | 10.39 mm | entworfen | aus |
-| `sniper_rifle` | `caret` | 1.0 | 4.39 mm | gemessen (Glidepath, ≈ 1 % H) | aus |
-| `fusion_rifle` | `corners` | 4.5 | 10.39 mm | entworfen | aus |
-| `linear_fusion_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `trace_rifle` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
-| `grenade_launcher` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
-| `rocket_launcher` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus |
-| `machine_gun` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus |
-| `combat_bow` | `chevron` | 4.5 | 6.79 mm | entworfen | aus |
-| `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus |
-| `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus |
-| `portal_cannon` | `ring_dot` | 4.5 | 5.91 mm | entworfen (Werkzeug, Portal 2 / Cube Escape) | aus |
+| Typ | Hüfte (HUD) | Größe (% H) | Außenmaß | Status | Sprint | Glas |
+|---|---|---|---|---|---|---|
+| `auto_rifle` | `ring_dot` | 3.2 | 5.91 mm | gemessen (Glidepath) | `caret` 1.5 % H | wie Hüfte |
+| `pulse_rifle` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus | wie Hüfte |
+| `scout_rifle` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
+| `hand_cannon` | `brackets` | 6.0 | 10.39 mm | gemessen (Glidepath, ≈ 6 % H) | aus | wie Hüfte |
+| `sidearm` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
+| `submachine_gun` | `circle_cross` | 6.1 | 15.19 mm | gemessen (Glidepath, 5,9–6,3 % H) | aus | wie Hüfte |
+| `shotgun` | `corners` | 4.5 | 10.39 mm | entworfen | aus | wie Hüfte |
+| `sniper_rifle` | `caret` | 1.0 | 4.39 mm | gemessen (Glidepath, ≈ 1 % H) | aus | wie Hüfte |
+| `fusion_rifle` | `ring_corners` | 5.5 | 10.39 mm | gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H) | aus | `corners` 4.5 % H |
+| `linear_fusion_rifle` | `ring_corners` | 12.5 | 10.39 mm | gemessen (Glidepath, 12–13 % H) | aus | `cross` 4.5 % H |
+| `trace_rifle` | `circle_cross` | 4.5 | 15.19 mm | entworfen | aus | wie Hüfte |
+| `grenade_launcher` | `gl_brackets` | 11.2 | 10.39 mm | gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H) | aus | `circle_cross` 4.5 % H |
+| `rocket_launcher` | `none` | 0.0 | 0 mm | gemessen (Glidepath, kein Mittenzeichen, 1 Clip) | aus | `circle_cross` 4.5 % H |
+| `machine_gun` | `ring_dot` | 3.2 | 5.91 mm | übertragen (Automatik) | aus | wie Hüfte |
+| `combat_bow` | `arcs_ladder` | 4.6 | 8.05 mm | gemessen (Glidepath, Ø 4,6 % H) | aus | Pins (kein gezeichnetes Absehen) |
+| `sword` | `dot` | 4.5 | 1.65 mm | entworfen | aus | wie Hüfte |
+| `glaive` | `cross` | 4.5 | 14.39 mm | entworfen | aus | wie Hüfte |
+| `portal_cannon` | `ring_dot` | 4.5 | 5.91 mm | entworfen (Werkzeug, Portal 2 / Cube Escape) | aus | wie Hüfte |
 
 ## Visier-Standard
 
@@ -145,13 +149,13 @@ Weltzoom der Klasse = Grundzoom + Bonus des Visiers, das der Typ trägt (fett); 
 | `submachine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.45 | gemessen (Glidepath) | **×1.45** | ×1.45 |
 | `shotgun` | Kimme und Korn mit leuchtenden Klammern | ×1.25 | beobachtet | **×1.25** | ×1.25 |
 | `grenade_launcher` | runde Linse mit Winkel | ×1.4 | beobachtet | **×1.4** | ×1.4 |
-| `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×5.5 | beobachtet | **×5.5** | ×5.5 |
+| `sniper_rifle` | Zielfernrohr außen, im Zielen Vollbild | ×4.0 | beobachtet | **×4.0** | ×4.0 |
 | `fusion_rifle` | Ring oder Doppelring | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `linear_fusion_rifle` | kurzes Ring-Zielfernrohr, Sattel hinter dem Auge, Fuß unter dem Objektiv | ×3.0 | entworfen | ×3.3 | **×3.8** |
 | `trace_rifle` | offenes Holo (abgerundetes Rechteck) | ×1.5 | entworfen | **×1.8** | ×2.3 |
 | `rocket_launcher` | runde Linse mit Winkel | ×2.5 | entworfen | **×2.8** | ×3.3 |
 | `machine_gun` | offenes Holo (abgerundetes Rechteck) | ×1.6 | entworfen | **×1.9** | ×2.4 |
-| `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.5 | entworfen | **×1.8** | ×2.3 |
+| `combat_bow` | Pinvisier: drei Leuchtpins im Ring (B1) | ×1.9 | entworfen | **×2.2** | ×2.7 |
 | `sword` | kein Visier | ×1.0 | entworfen | **×1.3** | ×1.8 |
 | `glaive` | kein Visier | ×1.25 | entworfen | **×1.55** | ×2.05 |
 

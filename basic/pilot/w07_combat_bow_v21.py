@@ -23,7 +23,7 @@ Formsprache-Checkliste (stilhandbuch §3):
 | Übergänge | Fensterbogen als Kröpfung aus einem Stück mit dem Mittelstück; Wurfarme stecken in den Aufnahmen (Fuge), Rollen zwischen den Zinken der gespaltenen Arme |
 | Ergonomie | Griffstück mit Handballenwölbung, Pfeilauflage direkt über der Hand, Zughand am Nockpunkt |
 
-Visier: B1 „Pins“ (Baukasten v3, visier-konzept › 6a; `sight_kit.pins`): drei Leuchtpins von der Pinschiene rechts sind das Absehen,
+Visier: B1 „Pins“ (Baukasten v3, visier-konzept › 6a; `common.pins`): drei Leuchtpins von der Pinschiene rechts sind das Absehen,
 Ring Ø 52 auf einer kurzen H0-Plattform; die Plattform klemmt auf einer Schiene BRI-22 am Visierträger **links neben** dem
 Fensterbogen (Seitenvisier, Ringmitte 60 mm links und 27,5 mm über dem Pfeil – der Ringrand bleibt auch vor der Vorderkante
 des Fensterbogens frei, Richter 0.29; Nutzer 28.10.2026: „das visier muss nach links, nicht nach rechts“ – Wahl „ganz zur linken
@@ -49,7 +49,7 @@ import math
 
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, band, R_BODY, R_MID, R_SMALL, R_FINE, R_SOFT)
 from basic.pilot import energy_roles  # noqa: F401  (Leuchtrollen pin_glow, draw_light)
-from basic.pilot.optics.sight_kit import pins, side_mount, PINS_SIZES, PINS_LINE
+from basic.common import pins, side_mount, PINS_SIZES, PINS_LINE
 from basic.reticles import SIGHT
 from basic.weapons import w07_combat_bow as V1
 
@@ -216,4 +216,18 @@ EXPLODE = {'arrow': (0, 0, -90), 'string': (-40, 0, 0), 'limbs': (0, 0, 0), 'sig
            'riser': (0, 0, 0)}
 HERO = V1.HERO
 SIGHT_ID = 'B1'    # Visier des Baukastens v3 (visier-konzept › 6a); test_sights prüft dessen Pflichtteile, Pinabstände und Sichtfeld
+# Ego-Griffe (0.33 „Armory“ P4, ego.profile): Bogenhand links im Griffstück, Zughand rechts am Pfeil (folgt dem Auszug; der nächste Pfeil
+# liegt nach dem Lösen gleich auf wie bei Destiny, ohne Griff 'mag'), Griff 'nock' am
+# Nockpunkt bei vollem Auszug (fest an der Waffe: dort lässt die Zughand beim Lösen los)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-8, -26, 17.5), palm=(0.15, 0.0, -1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='foregrip',
+                    src='E: Bogenhand links (wie Destiny, ego.CLASSES › hands.swap) links am Griffstück, Finger nach vorn um das Griffstück, Faust '
+                        'wie am Vordergriff der MP (BASIC-06 support); Handmitte 26 mm unter der Griffachse, Zeigefinger und Daumen unter '
+                        'der Pfeilauflage (Nutzer 30.10.2026: „die linke Hand greift zu hoch am Bogen“)'),
+    'support': dict(part='arrow_shaft', contact=(-158, 40, -8), palm=(0.0, 0.0, 1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
+                    src='E: Zughand rechts am Nockpunkt (Socket_Nock), Daumen und Zeigefinger fassen Nocke und Sehne; folgt dem Pfeil beim Auszug'),
+    'nock':    dict(contact=(-578, 40, -8), palm=(0.0, 0.0, 1.0), fingers=(0.25, -0.97, 0.0), fingers_pose='pinch',
+                    src='E: Nockpunkt bei vollem Auszug (Socket_DrawFull), fest an der Waffe – Ort des Lösens'),
+}
+EGO_LIVE = dict(trigger='', bolt='', port='')     # kein Abzug, kein Verschluss: Auszug und Lösen laufen als Klassenaktionen
 EJECT = None       # Bogen: kein Magazin, kein Hülsenauswurf (Daten statt Sonderlogik; check: fire 'draw_release' → EJECT None)

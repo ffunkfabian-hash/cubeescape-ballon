@@ -25,6 +25,11 @@ namespace Ballon.Ego.Tests
 
         static EgoIntent Idle => new EgoIntent { grounded = true };
 
+        /// <summary>Waffe einer Klasse aus der Szene (0.33 „Armory“: Klassen nach Waffentyp statt eigener Felder).</summary>
+        static EgoFile Class(string type) =>
+            Object.FindAnyObjectByType<Bootstrap>().Solvers.Select(x => x.D).FirstOrDefault(d => d.gameplay.weapon_type == type)
+            ?? throw new AssertionException($"Klasse {type} fehlt in ego.json");
+
         static EgoController Ready(List<(string, string)> markers = null)
         {
             var c = new EgoController(new EgoSolver(D));
@@ -649,6 +654,50 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(0, p.arsenal.Active);
         }
 
+        /// <summary>Hüftzeichen der Sonderklassen (0.33 „Armory“, ./check pinnt dieselben Werte): Form des Absehens im Glas, Form im HUD.</summary>
+        static readonly Dictionary<string, (string glass, string hud)> SonderHuefte = new Dictionary<string, (string, string)>
+        {
+            ["combat_bow"] = ("chevron", "arcs_ladder"), ["fusion_rifle"] = ("corners", "ring_corners"),
+            ["linear_fusion_rifle"] = ("cross", "ring_corners"), ["grenade_launcher"] = ("circle_cross", "gl_brackets"),
+            ["rocket_launcher"] = ("circle_cross", "none"),
+        };
+
+        /// <summary>0.33 „Armory“: Glas- und HUD-Form der Sonderklassen getrennt (gameplay.sight_form gegen gameplay.hip); der Raketenwerfer
+        /// zeigt in der Hüfte kein Mittenzeichen (Glidepath) – unsichtbar mit Grund „none“, Außenmaß 0 (Aufnahme-Protokoll), im Sprint aus.</summary>
+        [UnityTest]
+        public IEnumerator Sonderklassen_Hueftzeichen_HUD_und_Glas()
+        {
+            foreach (var kv in SonderHuefte)
+            {
+                var G = Class(kv.Key).gameplay;
+                Assert.AreEqual(kv.Value.glass, G.SightHip.kind, $"{kv.Key}: Glasform");
+                Assert.AreEqual(kv.Value.hud, G.hip.kind, $"{kv.Key}: HUD-Form");
+            }
+            var RL = Class("rocket_launcher");
+            var hip = new HipReticle(RL.gameplay.hip);
+            var c = new EgoController(new EgoSolver(RL));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            hip.See(c);
+            Assert.AreEqual("idle_hip", c.ActionName);
+            Assert.IsFalse(hip.Visible, "Raketenwerfer: kein Hüftzeichen");
+            Assert.AreEqual("none", hip.Reason);
+            Assert.AreEqual(0f, hip.ExtentPx(720), "Außenmaß 0 statt Rahmen ohne Grundelemente");
+            Run(c, new EgoIntent { grounded = true, sprint = true, move = new Vector2(0, 1), speed01 = 1.6f }, 0.6f);
+            hip.See(c);
+            Assert.AreEqual(EgoController.Stance.Sprint, c.CurrentStance);
+            Assert.IsFalse(hip.Visible, "im Sprint aus");
+            var GL = new HipReticle(Class("grenade_launcher").gameplay.hip);   // Gegenprobe: Granatwerfer zeigt seine Klammern
+            var g = new EgoController(new EgoSolver(Class("grenade_launcher")));
+            g.ReadyNow();
+            Run(g, Idle, 0.3f);
+            GL.See(g);
+            Assert.IsTrue(GL.Visible, "Granatwerfer: Hüftzeichen sichtbar");
+            Assert.AreEqual("hip", GL.Reason);
+            Assert.Greater(GL.ExtentPx(720), 0f);
+            yield return null;
+        }
+
         /// <summary>Nutzerwunsch 26.10.2026 („lieber etwas Gezeichnetes als Grafik … im Bestfall das Fadenkreuz vom Hüftfeuer im Visier“): das
         /// Absehen aller drei Waffen ist im Spiel gezeichnet, nicht das Modellteil – im Zielen die Hüftform der Klasse in der Farbe des
         /// Modell-Absehens an der Bildlage von Socket_Reticle (auf der Mitte), ohne Aufgehen; in der Hüfte und beim Nachladen aus; das
@@ -668,8 +717,20 @@ namespace Ballon.Ego.Tests
                     Assert.IsNull(L.sight, $"{p.C.S.D.weapon.id}: ohne Visier kein gezeichnetes Absehen");
                     continue;
                 }
+                if (!p.C.S.D.weapon.parts.Any(q => q.role.StartsWith("reticle")))   // Kimme/Korn (0.33): Zielpunkt ist der Kornpunkt
+                {
+                    Assert.IsNull(L.sight, $"{p.C.S.D.weapon.id}: Kimme/Korn ohne gezeichnetes Absehen");
+                    continue;
+                }
                 Assert.IsNotNull(L.sight, $"{p.C.S.D.weapon.id}: gezeichnetes Absehen");
-                Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
+                var type = p.C.S.D.gameplay.weapon_type;
+                if (SonderHuefte.TryGetValue(type, out var want2))       // 0.33: Glas behält die Modellform, das HUD zeigt Glidepath
+                {
+                    Assert.AreEqual(want2.glass, L.sight.Kind, $"{type}: Absehen im Glas wie vor 0.33 (reticles.hip)");
+                    Assert.AreEqual(want2.hud, L.hip.Kind, $"{type}: HUD-Hüftzeichen nach Glidepath (reticles.HUD_HIP)");
+                }
+                else
+                    Assert.AreEqual(L.hip.Kind, L.sight.Kind, "Form wie das Hüft-Fadenkreuz");
                 var role = p.C.S.D.weapon.parts.First(q => q.role.StartsWith("reticle"));
                 Assert.IsFalse(L.rig.Part(role.id).GetComponent<Renderer>().enabled, "Modell-Absehen aus");
                 ColorUtility.TryParseHtmlString(p.C.S.D.Role(role.role).color, out var want);
@@ -1096,7 +1157,8 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
-            Assert.AreEqual(5, p.loadouts.Length, "fünf Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone)");
+            Assert.AreEqual(16, p.loadouts.Length, "sechzehn Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone, 0.33: Handfeuerwaffe, "
+                                                  + "Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion, Bogen, Granatwerfer, Raketenwerfer)");
             p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
@@ -2285,6 +2347,651 @@ namespace Ballon.Ego.Tests
                                   $"{cut * 100f / Mathf.Max(mask, 1):0.00} %");
             Assert.Greater(mask, shots[0].Length / 50, "Waffe und Arme im Bild");
             Assert.Less(cut, mask / 200 + 1, "nahe Wand verdeckt das Viewmodel");
+        }
+            // ---------------------------------------------------------------- 0.33 „Armory“ P2: Scharfschütze, Spurgewehr, MG
+        /// <summary>Feuerart bolt_action (Scharfschütze BASIC-09): ein Schuss je Zug, danach repetiert die Stützhand (fire_cycle, im Zielen
+        /// fire_cycle_ads) – der Kammerstängel hebt sich, der Verschluss läuft zurück, die Hülse fliegt beim Zurückziehen (Marker Eject);
+        /// ein Zug während des Repetierens schießt nicht. Der letzte Schuss repetiert nicht. Bis 0.32 kannte der Controller die Feuerart nicht
+        /// (Einzelfeuer ohne Repetieren: kein fire_cycle, Hülse beim Schuss).</summary>
+        [Test]
+        public void Repetierer_repetiert_nach_jedem_Schuss()
+        {
+            var SN = Class("sniper_rifle");
+            Assert.AreEqual("bolt_action", SN.gameplay.fire_mode);
+            var c = new EgoController(new EgoSolver(SN));
+            var marks = new List<(string, string)>();
+            c.Marker += (a, m) => marks.Add((a, m));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            float handle = 0, bolt = 0;
+            long shells0 = c.shellsEjected;
+            c.Tick(Dt, fire);
+            Assert.AreEqual(1, c.shots, "ein Schuss je Zug");
+            Assert.AreEqual(shells0, c.shellsEjected, "keine Hülse beim Schuss (Repetierer: beim Zurückziehen)");
+            Assert.AreEqual("fire_cycle", c.ActionName, "nach dem Schuss repetieren");
+            Assert.IsTrue(c.Busy, "Repetieren sperrt den nächsten Schuss");
+            for (int j = 0; j < 20; j++)
+            {
+                c.Tick(Dt, j < 6 || (j >= 10 && j < 14) ? fire : Idle);   // gehalten und erneut gezogen während des Repetierens
+                c.output.mech.TryGetValue("bolt_handle", out float h);
+                c.output.mech.TryGetValue("bolt", out float b);
+                handle = Mathf.Max(handle, h);
+                bolt = Mathf.Max(bolt, b);
+            }
+            Assert.AreEqual(1, c.shots, "kein Schuss während des Repetierens");
+            Run(c, Idle, 0.6f);
+            Assert.AreEqual(1, c.shots, "der Zug im Repetieren verfällt (wartet höchstens 0,4 s)");
+            TestContext.WriteLine($"Scharfschütze: Stängel max {handle:0.00}, Verschluss max {bolt:0.00}, Hülsen {c.shellsEjected - shells0}, " +
+                                  $"Marker {string.Join(" ", marks.Where(m => m.Item1.StartsWith("fire_cycle")).Select(m => m.Item2))}");
+            Assert.Greater(handle, 0.95f, "Kammerstängel hebt sich");
+            Assert.Greater(bolt, 0.95f, "Verschluss läuft zurück");
+            Assert.AreEqual(1, c.shellsEjected - shells0, "eine Hülse beim Zurückziehen");
+            CollectionAssert.IsSubsetOf(new[] { "Eject", "Chamber" }, marks.Where(m => m.Item1 == "fire_cycle").Select(m => m.Item2).ToArray());
+            Assert.AreEqual("idle_hip", c.ActionName, "danach bereit an der Hüfte");
+            // im Zielen: fire_cycle_ads, die Waffe bleibt im Anschlag
+            var aim = new EgoIntent { grounded = true, aim = true };
+            Run(c, aim, 0.6f);
+            Assert.AreEqual(EgoController.Stance.Ads, c.CurrentStance);
+            var aimFire = aim;
+            aimFire.fire = true;
+            c.Tick(Dt, aimFire);
+            Assert.AreEqual(2, c.shots);
+            Assert.AreEqual("fire_cycle_ads", c.ActionName, "im Zielen repetieren");
+            Run(c, aim, 0.7f);
+            Assert.AreEqual(EgoController.Stance.Ads, c.CurrentStance, "nach dem Repetieren weiter im Zielen");
+            Assert.Greater(c.adsWeight, 0.99f, "Zoom bleibt");
+            // Magazin leer schießen: der letzte Schuss repetiert nicht
+            while (c.ammo > 1) { c.Tick(Dt, aimFire); Run(c, aim, 0.8f); }
+            c.Tick(Dt, aimFire);
+            Assert.AreEqual(0, c.ammo);
+            Assert.IsFalse(c.Busy, "letzter Schuss ohne Repetieren (das Nachladen repetiert)");
+        }
+
+        /// <summary>Feuerart continuous_beam (Spurgewehr BASIC-12): Dauerfeuer in der Kadenz der Klasse, ohne Mündungsfeuer, Hülse und
+        /// Rückstoß; Fokuslinse und Scheibenmitte (weapon.live.glow) leuchten genau, solange der Abzug zieht und Munition da ist – im
+        /// Controller (mech) und am Modell (EgoRig.GlowLevel). Bis 0.32 gab es keine Leuchtteile beim Feuern.</summary>
+        [UnityTest]
+        public IEnumerator Dauerstrahl_leuchtet_solange_der_Abzug_zieht()
+        {
+            var TR = Class("trace_rifle");
+            Assert.AreEqual("continuous_beam", TR.gameplay.fire_mode);
+            CollectionAssert.AreEquivalent(new[] { "focus_lens", "disc_lens" }, TR.weapon.live.glow, "Leuchtteile aus EGO_LIVE");
+            var c = new EgoController(new EgoSolver(TR));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            foreach (var g in TR.weapon.live.glow)
+            {
+                c.output.mech.TryGetValue(g, out float v0);
+                Assert.AreEqual(0f, v0, $"{g}: in Ruhe aus");
+            }
+            var fire = new EgoIntent { grounded = true, fire = true };
+            bool flash = false;
+            float pitch = 0;
+            for (int j = 0; j < 60; j++)
+            {
+                c.Tick(Dt, fire);
+                flash |= c.output.flashOn;
+                pitch = Mathf.Max(pitch, Mathf.Abs(c.output.worldPitch));
+                foreach (var g in TR.weapon.live.glow) Assert.AreEqual(1f, c.output.mech[g], $"{g}: an im Strahl (Bild {j})");
+            }
+            TestContext.WriteLine($"Spurgewehr: 1 s Strahl → {c.shots} Schüsse ({TR.gameplay.rpm}/min), Blitz {flash}, Hülsen {c.shellsEjected}, " +
+                                  $"Welt max {pitch:0.000}°");
+            Assert.AreEqual(TR.gameplay.rpm / 60f, c.shots, 1.5f, "Kadenz der Klasse");
+            Assert.IsFalse(flash, "kein Mündungsfeuer");
+            Assert.AreEqual(0, c.shellsEjected, "keine Hülse");
+            Assert.Less(pitch, 0.01f, "kein Rückstoß");
+            c.Tick(Dt, Idle);
+            foreach (var g in TR.weapon.live.glow) Assert.AreEqual(0f, c.output.mech[g], $"{g}: aus nach dem Loslassen");
+            c.ammo = 0;
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true, reload = false });
+            foreach (var g in TR.weapon.live.glow)
+            {
+                c.output.mech.TryGetValue(g, out float v);
+                Assert.AreEqual(0f, v, $"{g}: leer kein Strahl");
+            }
+            // am Modell: Spieler mit dem Spurgewehr
+            var p = Object.FindAnyObjectByType<Bootstrap>().Player;
+            int k = System.Array.FindIndex(p.loadouts, l => l.rig.S.D == TR);
+            Assert.GreaterOrEqual(k, 0, "Spurgewehr in der Szene");
+            p.UseWeapon(k);
+            p.C.ReadyNow();
+            p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
+            p.input = new ScriptedInput().Add(0, 0.3f).Add(0.3f, 1.0f, hold: "fire").Add(1.0f, 1.4f);
+            p.deltaOverride = () => 1f / 30f;
+            float on = 0, off = 1;
+            for (int f = 0; f < 42; f++)
+            {
+                yield return null;
+                float gl = p.rig.GlowLevel("focus_lens");
+                if (f >= 14 && f <= 26) on = Mathf.Max(on, gl);
+                if (f >= 36) off = Mathf.Min(off, gl);
+            }
+            p.deltaOverride = null;
+            p.UseWeapon(0);
+            TestContext.WriteLine($"Spurgewehr am Modell: Fokuslinse im Strahl {on:0.00}, danach {off:0.00}");
+            Assert.AreEqual(1f, on, 1e-3f, "Fokuslinse leuchtet im Strahl");
+            Assert.AreEqual(0f, off, 1e-3f, "… und geht danach aus (wie Blender: Graphit ohne Leuchten)");
+        }
+
+        /// <summary>MG BASIC-15 (Gurt als Dauerfeuer, ego.FIRE_ALIAS): 900/min; Nachladen als Klassenaktion – Deckel auf, Kasten aus dem Bild
+        /// und zurück, Gurt (Munition voll beim Marker MagIn), Deckel zu, Ladehebel; leer wie taktisch. Bis 0.32 fehlte die Klasse.</summary>
+        [Test]
+        public void MG_Gurtkasten_nachladen()
+        {
+            var MG = Class("machine_gun");
+            Assert.AreEqual("full_auto", MG.gameplay.fire_mode);
+            var c = new EgoController(new EgoSolver(MG));
+            var marks = new List<string>();
+            c.Marker += (a, m) => { if (a.StartsWith("reload")) marks.Add(m); };
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            for (int j = 0; j < 60; j++) c.Tick(Dt, fire);
+            Assert.AreEqual(MG.gameplay.rpm / 60f, c.shots, 1.5f, "Dauerfeuer 900/min");
+            c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            Assert.AreEqual("reload_tactical", c.ActionName);
+            float cover = 0, box = 0;
+            int ammoAtCoverClosed = -1;
+            c.Marker += (a, m) => { if (m == "CoverClosed") ammoAtCoverClosed = c.ammo; };
+            for (int j = 0; j < 400 && c.Busy; j++)
+            {
+                c.Tick(Dt, Idle);
+                c.output.mech.TryGetValue("feed_cover", out float cv);
+                c.output.mech.TryGetValue("ammo_box", out float bx);
+                cover = Mathf.Max(cover, cv);
+                box = Mathf.Max(box, bx);
+            }
+            TestContext.WriteLine($"MG: Nachladen {MG.Action("reload_tactical").frames / 30f:0.00} s, Deckel max {cover:0.00}, Kasten max {box:0.00}, " +
+                                  $"Marker {string.Join(" ", marks)}");
+            CollectionAssert.AreEqual(new[] { "HandOff", "CoverOpen", "MagOut", "BoxIn", "MagIn", "CoverClosed", "Chamber", "HandOn", "Ready" },
+                                      marks.ToArray(), "Ablauf Deckel, Kasten, Gurt, Deckel, Ladehebel");
+            Assert.Greater(cover, 0.99f, "Deckel öffnet");
+            Assert.Greater(box, 2.9f, "Kasten fährt aus dem Bild");
+            Assert.AreEqual(MG.gameplay.magazine, ammoAtCoverClosed, "voll ab dem Gurt");
+            Assert.AreEqual(MG.gameplay.magazine, c.ammo);
+            Assert.AreEqual(MG.Action("reload_tactical").frames, MG.Action("reload_empty").frames, "leer wie taktisch");
+        }
+
+            // ---------------------------------------------------------------- 0.33 „Armory“ P3: Schrotflinte, Fusion, lineare Fusion
+        /// <summary>Feuerart pump_action (Schrotflinte BASIC-08): ein Schuss je Zug, danach pumpt die Stützhand (fire_cycle) – Pumpe und
+        /// Verschluss laufen zurück, die Hülse fliegt beim Zurückziehen. Nachladen je Patrone: Einstieg mit der ersten Patrone, reload_shell je
+        /// weitere bis voll, reload_end; ein Zug am Abzug bricht ab und schießt nach dem kurzen Rückweg; nach leerem Beginn endet es mit
+        /// Pumpen (reload_end_pump). Bis 0.32 kannte der Controller weder die Pumpe noch den Marker ShellIn.</summary>
+        [Test]
+        public void Pumpe_pumpt_und_laedt_je_Patrone()
+        {
+            var SG = Class("shotgun");
+            Assert.AreEqual("pump_action", SG.gameplay.fire_mode);
+            Assert.IsTrue(SG.ShellReload, "Nachladen je Patrone (reload_shell)");
+            var c = new EgoController(new EgoSolver(SG));
+            var marks = new List<(string, string)>();
+            c.Marker += (a, m) => marks.Add((a, m));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            long shells0 = c.shellsEjected;
+            c.Tick(Dt, fire);
+            Assert.AreEqual(1, c.shots, "ein Schuss je Zug");
+            Assert.AreEqual("fire_cycle", c.ActionName, "nach dem Schuss pumpen");
+            Assert.IsTrue(c.Busy, "Pumpen sperrt den nächsten Schuss");
+            Assert.AreEqual(shells0, c.shellsEjected, "keine Hülse beim Schuss (beim Zurückziehen der Pumpe)");
+            float pump = 0;
+            for (int j = 0; j < 50 && c.Busy; j++)
+            {
+                c.Tick(Dt, Idle);
+                c.output.mech.TryGetValue("pump", out float v);
+                pump = Mathf.Max(pump, v);
+            }
+            Assert.Greater(pump, 0.95f, "Pumpe läuft zurück");
+            Assert.AreEqual(1, c.shellsEjected - shells0, "eine Hülse beim Pumpen");
+            CollectionAssert.IsSubsetOf(new[] { "Eject", "Chamber" }, marks.Where(m => m.Item1 == "fire_cycle").Select(m => m.Item2).ToArray());
+            Run(c, Idle, 0.2f);
+
+            // Nachladen je Patrone bis voll
+            List<string> Reload(EgoController ctl, int ammo, System.Func<int, EgoIntent> input, int maxTicks = 900)
+            {
+                ctl.ammo = ammo;
+                var seq = new List<string>();
+                ctl.Tick(Dt, new EgoIntent { grounded = true, reload = ammo > 0, fire = ammo == 0 });
+                float last = float.MaxValue;
+                for (int j = 0; j < maxTicks && ctl.Busy; j++)
+                {
+                    if (seq.Count == 0 || seq[seq.Count - 1] != ctl.ActionName || ctl.Frame < last) seq.Add(ctl.ActionName);   // neue Spur
+                    last = ctl.Frame;
+                    ctl.Tick(Dt, input(j));
+                }
+                return seq;
+            }
+            marks.Clear();
+            var seq1 = Reload(c, 2, _ => Idle);
+            int shellIns = marks.Count(m => m.Item2 == "ShellIn");
+            TestContext.WriteLine($"Schrotflinte: Nachladen 2 → {c.ammo}: {string.Join(" ", seq1)}; ShellIn {shellIns}");
+            Assert.AreEqual(SG.gameplay.magazine, c.ammo, "voll nach dem Einzelladen");
+            Assert.AreEqual(SG.gameplay.magazine - 2, shellIns, "eine Patrone je ShellIn");
+            CollectionAssert.AreEqual(new[] { "reload_tactical", "reload_shell", "reload_shell", "reload_shell", "reload_end" }, seq1.ToArray(),
+                                      "Einstieg, je weitere Patrone, zurück");
+            Assert.AreEqual("idle_hip", c.ActionName);
+
+            // Abbruch durch einen Zug am Abzug: nach der zweiten Patrone, der Schuss fällt nach dem Rückweg
+            long shots0 = c.shots;
+            int pull = -1;
+            var seq2 = Reload(c, 1, j =>
+            {
+                if (pull < 0 && c.ActionName == "reload_shell" && c.Frame > 4) pull = j;
+                return new EgoIntent { grounded = true, fire = pull >= 0 && j - pull < 3 };
+            });
+            int ticks = 0;
+            while (c.shots == shots0 && ticks++ < 30) c.Tick(Dt, Idle);
+            TestContext.WriteLine($"Schrotflinte: Abbruch {string.Join(" ", seq2)}; Schuss {ticks} Bilder nach dem Rückweg, Munition {c.ammo}");
+            CollectionAssert.AreEqual(new[] { "reload_tactical", "reload_shell", "reload_end", "fire_cycle" }, seq2.ToArray(),
+                                      "Abbruch in der zweiten Patrone, Schuss gleich nach dem Rückweg, dann pumpen");
+            Assert.AreEqual(shots0 + 1, c.shots, "der Zug schießt nach dem Rückweg");
+            Assert.LessOrEqual(ticks, 3, "… sofort");
+            Run(c, Idle, 1.0f);
+            Assert.AreEqual(1, c.ammo, "zwei geladen (1 + 1), einer verschossen");
+
+            // leer: Abzug lädt selbst nach, am Ende pumpen
+            marks.Clear();
+            Run(c, Idle, 1.0f);
+            var seq3 = Reload(c, 0, _ => Idle);
+            TestContext.WriteLine($"Schrotflinte: leer {string.Join(" ", seq3)}");
+            Assert.AreEqual("reload_empty", seq3[0], "leer: Einstieg reload_empty");
+            Assert.AreEqual("reload_end_pump", seq3[seq3.Count - 1], "nach leerem Beginn pumpen");
+            Assert.IsTrue(marks.Any(m => m.Item1 == "reload_end_pump" && m.Item2 == "Chamber"));
+            Assert.AreEqual(SG.gameplay.magazine, c.ammo);
+        }
+
+        /// <summary>Feuerart charge_burst (Fusion BASIC-10): gehaltener Abzug lädt in charge_s (Glutkern und Ladebalken leuchten mit der
+        /// Ladung), bei voller Ladung die Salve aus burst_shots Strahlen für eine Patrone; Loslassen vorher bricht ab, ohne Schuss, die Ladung
+        /// fällt; gehalten Salve um Salve im Takt rpm. Bis 0.32 fehlte die Feuerart (ego.profile brach ab).</summary>
+        [Test]
+        public void Fusion_laedt_auf_und_schiesst_die_Salve()
+        {
+            var FR = Class("fusion_rifle");
+            Assert.AreEqual("charge_burst", FR.gameplay.fire_mode);
+            Assert.IsTrue(FR.gameplay.Charge && FR.gameplay.Burst);
+            CollectionAssert.AreEquivalent(new[] { "ember_core", "sight_emitter" }, FR.weapon.live.glow, "Leuchtteile aus EGO_LIVE");
+            var G = FR.gameplay;
+            var c = new EgoController(new EgoSolver(FR));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            // abbrechen: halb geladen loslassen
+            Run(c, fire, 0.6f * G.charge_s);
+            float half = c.ChargeLevel;
+            Assert.AreEqual(0.6f, half, 0.05f, "Ladung steigt in charge_s");
+            Assert.AreEqual(half, c.output.mech["ember_core"], 1e-4f, "Glutkern leuchtet mit der Ladung");
+            Run(c, Idle, G.charge_fade_s + 0.05f);
+            Assert.AreEqual(0, c.shots, "losgelassen: kein Schuss");
+            Assert.AreEqual(0f, c.ChargeLevel, 1e-4f, "Ladung fällt");
+            Assert.AreEqual(0f, c.output.mech["ember_core"], 1e-4f);
+            // voll laden: Salve
+            int ammo0 = c.ammo;
+            float tShot = -1;
+            for (float t = 0; t < 1.0f; t += Dt)
+            {
+                c.Tick(Dt, fire);
+                if (tShot < 0 && c.shots > 0) tShot = t + Dt;
+                if (t < 0.24f) continue;
+                if (t > 0.9f) break;
+            }
+            Run(c, Idle, 0.4f);
+            TestContext.WriteLine($"Fusion: erster Strahl nach {tShot:0.000} s (charge_s {G.charge_s}), {c.shots} Strahlen, Munition {ammo0} → {c.ammo}");
+            Assert.AreEqual(G.charge_s, tShot, 1.5f * Dt, "erster Strahl nach charge_s");
+            Assert.AreEqual(G.burst_shots, c.shots, "eine Salve");
+            Assert.AreEqual(ammo0 - 1, c.ammo, "eine Patrone je Ladung");
+            // gehalten: Salve um Salve im Takt rpm
+            long s0 = c.shots;
+            Run(c, fire, 2.0f);
+            Run(c, Idle, 0.5f);
+            TestContext.WriteLine($"Fusion: 2 s gehalten → {c.shots - s0} Strahlen ({G.rpm}/min)");
+            Assert.AreEqual(2 * G.burst_shots, c.shots - s0, "zwei Salven in 2 s bei 60/min");
+        }
+
+        /// <summary>Feuerart charge_single (lineare Fusion BASIC-11): Aufladen in charge_s, dann ein Schuss (eine Patrone); der Linearkern
+        /// leuchtet mit der Ladung und fällt nach dem Schuss in charge_fade_s. Bis 0.32 fehlte die Feuerart.</summary>
+        [Test]
+        public void Lineare_Fusion_laedt_auf_und_schiesst_einmal()
+        {
+            var LF = Class("linear_fusion_rifle");
+            Assert.AreEqual("charge_single", LF.gameplay.fire_mode);
+            Assert.IsFalse(LF.gameplay.Burst);
+            var G = LF.gameplay;
+            var c = new EgoController(new EgoSolver(LF));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            float tShot = -1, glowAtShot = -1;
+            for (float t = 0; t < 0.9f; t += Dt)
+            {
+                c.Tick(Dt, fire);
+                if (tShot < 0 && c.shots > 0) { tShot = t + Dt; glowAtShot = c.output.mech["linear_core"]; }
+            }
+            c.Tick(Dt, Idle);
+            Run(c, Idle, G.charge_fade_s + 0.05f);
+            TestContext.WriteLine($"lineare Fusion: Schuss nach {tShot:0.000} s (charge_s {G.charge_s}), Kern beim Schuss {glowAtShot:0.00}, " +
+                                  $"danach {c.output.mech["linear_core"]:0.00}");
+            Assert.AreEqual(G.charge_s, tShot, 1.5f * Dt, "Schuss nach charge_s");
+            Assert.AreEqual(1, c.shots, "ein Schuss je Ladung");
+            Assert.AreEqual(G.magazine - 1, c.ammo);
+            Assert.AreEqual(1f, glowAtShot, 1e-4f, "Kern voll beim Schuss");
+            Assert.AreEqual(0f, c.output.mech["linear_core"], 1e-4f, "Kern danach aus");
+        }
+
+        // ---------------------------------------------------------------- 0.33 „Armory“ Ziel 2: Waffenmenü
+        /// <summary>Waffenmenü über alle Waffen von ego.json: Mausrad öffnet mit der nächsten Waffe markiert, Pfeile laufen im Raster um,
+        /// Esc schließt ohne Wahl, Enter wählt – die Wahl wechselt wie eine Zifferntaste (holster, leere Sicht, draw); im Nachladen bricht
+        /// sie mit reload_to_switch ab. Waffen jenseits der Taste 0 (11 … 16) sind nur über das Menü erreichbar. Bis 0.32 gab es kein Menü.</summary>
+        [Test]
+        public void Waffenmenue_waehlt_und_wechselt()
+        {
+            var all = Object.FindAnyObjectByType<Bootstrap>().Solvers.Select(x => x.D).ToArray();
+            var A = new EgoArsenal(all.Select(d => new EgoController(new EgoSolver(d))).ToArray());
+            var M = new EgoMenu(A.C.Length);
+            Assert.AreEqual(16, M.count, "alle Waffen im Menü");
+            Assert.AreEqual(4, M.Rows, "Raster 4 × 4");
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            // Mausrad öffnet, nächste Waffe markiert; Esc schließt ohne Wahl
+            Assert.AreEqual(0, M.Step(new MenuInput { wheel = 1 }, A.Active));
+            Assert.IsTrue(M.IsOpen);
+            Assert.AreEqual(1, M.Index, "Rad: nächste Waffe");
+            Assert.AreEqual(0, M.Step(new MenuInput { wheel = -1 }, A.Active));
+            Assert.AreEqual(0, M.Index);
+            Assert.AreEqual(0, M.Step(new MenuInput { wheel = -1 }, A.Active));
+            Assert.AreEqual(15, M.Index, "läuft am Anfang um");
+            Assert.AreEqual(0, M.Step(new MenuInput { cancel = true }, A.Active));
+            Assert.IsFalse(M.IsOpen, "Esc schließt ohne Wahl");
+            // Tab öffnet bei der aktiven Waffe, Pfeil nach unten = eine Reihe weiter, Pfeil nach oben aus der ersten Reihe = letzte Reihe
+            M.Step(new MenuInput { toggle = true }, A.Active);
+            Assert.AreEqual(0, M.Index);
+            M.Step(new MenuInput { arrows = new Vector2Int(0, 1) }, A.Active);
+            Assert.AreEqual(4, M.Index);
+            M.Step(new MenuInput { arrows = new Vector2Int(0, -1) }, A.Active);
+            M.Step(new MenuInput { arrows = new Vector2Int(0, -1) }, A.Active);
+            Assert.AreEqual(12, M.Index, "oben aus der ersten Reihe: letzte Reihe");
+            M.Step(new MenuInput { arrows = new Vector2Int(3, 0) }, A.Active);
+            Assert.AreEqual(15, M.Index, "Raketenwerfer (Waffe 16, ohne Taste)");
+            int pick = M.Step(new MenuInput { confirm = true }, A.Active);
+            Assert.AreEqual(16, pick, "Enter wählt Taste 16");
+            Assert.IsFalse(M.IsOpen);
+            // Wahl wechselt wie eine Zifferntaste
+            var seq = new List<string>();
+            A.Tick(Dt, Idle, pick);
+            for (int t = 0; t < 90 && (A.Switching || A.Current.Busy); t++)
+            {
+                if (seq.Count == 0 || seq[seq.Count - 1] != $"{A.Active}:{A.Current.ActionName}") seq.Add($"{A.Active}:{A.Current.ActionName}");
+                A.Tick(Dt, Idle);
+            }
+            TestContext.WriteLine("Menü → 16: " + string.Join(" ", seq));
+            Assert.AreEqual(15, A.Active, "Raketenwerfer aktiv");
+            CollectionAssert.IsSubsetOf(new[] { "0:holster", "15:draw" }, seq.ToArray(), "wegstecken, ziehen");
+            // im Nachladen: Wahl bricht mit reload_to_switch ab
+            Run(A, 0.4f);
+            A.Tick(Dt, new EgoIntent { grounded = true, fire = true });                 // Schuss, sofort Nachladen
+            Assert.AreEqual("reload_empty", A.Current.ActionName);
+            for (int t = 0; t < 10; t++) A.Tick(Dt, Idle);
+            M.Step(new MenuInput { toggle = true }, A.Active);
+            Assert.AreEqual(15, M.Index, "Menü öffnet bei der aktiven Waffe");
+            M.Step(new MenuInput { wheel = 1 }, A.Active);
+            pick = M.Step(new MenuInput { confirm = true }, A.Active);
+            Assert.AreEqual(1, pick, "nach der letzten: wieder Waffe 1");
+            A.Tick(Dt, Idle, pick);
+            Assert.AreEqual("reload_to_switch", A.Current.ActionName, "Nachladen bricht ab wie beim Wechsel");
+            for (int t = 0; t < 90 && (A.Switching || A.Current.Busy); t++) A.Tick(Dt, Idle);
+            Assert.AreEqual(0, A.Active);
+            Assert.AreEqual(0, A.C[15].ammo, "Rakete nicht geladen (Abbruch vor MagIn)");
+        }
+
+        /// <summary>Abbruchpfade (Richter 0.33, 4a/4b): (1) Waffenwechsel beim gespannten Bogen steckt ohne Schuss weg, Sehne und Pfeil
+        /// danach in Ruhe; (2) das Waffenmenü bei gespanntem Bogen entspannt (EgoMenu.Filter: let_down) statt zu lösen; (3) Wechsel im
+        /// Einzelladen (reload_shell) der Schrotflinte und des Granatwerfers bricht mit reload_to_switch ab, geladene Patronen bzw. Granaten
+        /// bleiben, die angefangene verfällt.</summary>
+        [Test]
+        public void Abbruch_beim_Spannen_und_Einzelladen()
+        {
+            var BW = Class("combat_bow");
+            var fire = new EgoIntent { grounded = true, fire = true };
+            // (1) Wechsel beim Spannen
+            var A = new EgoArsenal(new EgoController(new EgoSolver(BW)), new EgoController(new EgoSolver(D)));
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            for (int t = 0; t < 50; t++) A.Tick(Dt, fire);
+            Assert.IsTrue(A.C[0].IsDrawing, "gespannt");
+            A.Tick(Dt, fire, 2);
+            for (int t = 0; t < 90 && A.Switching; t++) A.Tick(Dt, fire);
+            Assert.AreEqual(1, A.Active, "gewechselt");
+            Assert.AreEqual(0, A.C[0].shots, "Wechsel beim Spannen: kein Schuss");
+            Assert.IsTrue(A.C[0].Holstered);
+            A.Tick(Dt, Idle, 1);
+            for (int t = 0; t < 120 && (A.Switching || A.Current.Busy); t++) A.Tick(Dt, Idle);
+            Assert.AreEqual(0, A.Active);
+            Assert.AreEqual(0f, A.C[0].output.mech.TryGetValue("string_top", out float st) ? st : 0f, 1e-3f, "Sehne nach dem Ziehen in Ruhe");
+            Assert.AreEqual(0, A.C[0].shots);
+            // (2) Menü beim gespannten Bogen
+            var c = new EgoController(new EgoSolver(BW));
+            c.ReadyNow();
+            c.Tick(Dt, Idle);
+            for (int t = 0; t < 50; t++) c.Tick(Dt, fire);
+            var r = new RawInput { fire = true };
+            EgoMenu.Filter(ref r, c.IsDrawing);
+            Assert.IsFalse(r.fire, "die Maus bedient das Menü");
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = r.fire, reload = r.reload });
+            Assert.AreEqual("let_down", c.ActionName, "Menü beim Spannen: entspannen");
+            Run(c, Idle, 0.5f);
+            Assert.AreEqual(0, c.shots, "Menü beim Spannen: kein Schuss");
+            // (3) Wechsel im Einzelladen
+            foreach (var type in new[] { "shotgun", "grenade_launcher" })
+            {
+                var X = new EgoArsenal(new EgoController(new EgoSolver(Class(type))), new EgoController(new EgoSolver(D)));
+                X.C[0].ReadyNow();
+                X.Tick(Dt, Idle);
+                X.C[0].ammo = 1;
+                X.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+                for (int t = 0; t < 400 && X.C[0].ActionName != "reload_shell"; t++) X.Tick(Dt, Idle);
+                Assert.AreEqual("reload_shell", X.C[0].ActionName, $"{type}: Einzelladen läuft");
+                int loaded = X.C[0].ammo;
+                Assert.AreEqual(2, loaded, $"{type}: Einstieg hat eine geladen");
+                X.Tick(Dt, Idle, 2);
+                Assert.AreEqual("reload_to_switch", X.C[0].ActionName, $"{type}: Wechsel bricht das Einzelladen ab");
+                for (int t = 0; t < 120 && X.Switching; t++) X.Tick(Dt, Idle);
+                Assert.AreEqual(1, X.Active, $"{type}: gewechselt");
+                Assert.AreEqual(loaded, X.C[0].ammo, $"{type}: geladene bleiben, die angefangene verfällt");
+                X.Tick(Dt, Idle, 1);
+                for (int t = 0; t < 120 && (X.Switching || X.Current.Busy); t++) X.Tick(Dt, Idle);
+                Assert.AreEqual(0, X.Active);
+                Assert.AreEqual("idle_hip", X.Current.ActionName, $"{type}: wieder bereit, nicht im Nachladen");
+            }
+        }
+
+        static void Run(EgoArsenal A, float s)
+        {
+            for (float t = 0; t < s; t += Dt) A.Tick(Dt, Idle);
+        }
+
+        // ---------------------------------------------------------------- 0.33 „Armory“ P4: Bogen, Granatwerfer, Raketenwerfer
+        /// <summary>Feuerart draw_release (Bogen BASIC-07) wie Destiny (cubeescape-reference destiny2:82/231/252/253/271): gehaltener Abzug
+        /// spannt (fire_draw: Sehne, Rollen und Pfeil laufen mit dem Auszug), der volle Auszug hält ohne Schuss; gespannt ins Zielen und
+        /// zurück, ohne das Spannen abzubrechen; Loslassen löst – auch halb gespannt (schwacher Pfeil); im Zielen zugleich aus dem Zielen; die
+        /// Nachladen-Taste entspannt ohne Schuss; nach dem Lösen liegt der nächste Pfeil gleich auf (Lösen → gespannt ≈ 0,8 s). Kein Magazin.
+        /// Bis 0.32 fehlte die Feuerart (ego.profile brach ab), der Controller kannte keine Spannaktion.</summary>
+        [Test]
+        public void Bogen_spannt_haelt_und_loest()
+        {
+            var BW = Class("combat_bow");
+            Assert.AreEqual("draw_release", BW.gameplay.fire_mode);
+            Assert.IsTrue(BW.gameplay.Draw && BW.gameplay.Unlimited && !BW.CanReload, "Vorrat ohne Nachladen");
+            Assert.AreEqual(2.2f, BW.gameplay.world_zoom, 1e-3f, "Weltzoom Imperial Needle ≈ 2,2× (destiny2:104)");
+            var c = new EgoController(new EgoSolver(BW));
+            var marks = new List<(string, string)>();
+            c.Marker += (a, m) => marks.Add((a, m));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            var fire = new EgoIntent { grounded = true, fire = true };
+            // halb gespannt: Nachladen-Taste entspannt ohne Schuss
+            Run(c, fire, 0.3f);
+            Assert.AreEqual("fire_draw", c.ActionName, "Abzug halten spannt");
+            float half = c.DrawLevel;
+            Assert.That(half, Is.InRange(0.2f, 0.6f), "Auszug nach 0,3 s (die Zughand kommt in 4 Bildern an die Nocke)");
+            Assert.AreEqual(half, c.output.mech["string_top"], 0.02f, "Sehne folgt dem Auszug");
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true, reload = true });
+            Assert.AreEqual("let_down", c.ActionName, "Nachladen-Taste: entspannen");
+            Run(c, Idle, 0.5f);
+            Assert.AreEqual(0, c.shots, "kein Schuss beim Entspannen");
+            Assert.AreEqual("idle_hip", c.ActionName);
+            // halb gespannt loslassen: schwacher Pfeil
+            Run(c, fire, 0.3f);
+            c.Tick(Dt, Idle);
+            Assert.AreEqual(1, c.shots, "halb gespannt losgelassen: ein Pfeil (Destiny: minimal/teilweise gespannt)");
+            Assert.AreEqual("fire_release", c.ActionName);
+            Run(c, Idle, 0.6f);
+            // voll spannen und halten
+            long s0 = c.shots;
+            float tFull = -1;
+            for (float t = 0; t < 1.2f; t += Dt)
+            {
+                c.Tick(Dt, fire);
+                if (tFull < 0 && c.DrawLevel >= 1) tFull = t + Dt;
+            }
+            TestContext.WriteLine($"Bogen: voll nach {tFull:0.000} s, gehalten bis 1,2 s ohne Schuss");
+            Assert.AreEqual(0.6f, tFull, 2 * Dt, "voller Auszug nach 0,6 s (Ziehzeit 612 ms)");
+            Assert.AreEqual(s0, c.shots, "gehalten: kein Schuss");
+            Assert.AreEqual(1f, c.output.mech["arrow_shaft"], 1e-3f, "Pfeil voll zurück");
+            Assert.AreEqual(1f, c.output.mech["draw_light"], 1e-3f, "Spannlicht bei vollem Auszug");
+            Assert.IsTrue(marks.Any(m => m.Item1 == "fire_draw" && m.Item2 == "FullDraw"));
+            // gespannt ins Zielen und zurück, ohne Schuss
+            var fireAim = new EgoIntent { grounded = true, fire = true, aim = true };
+            c.Tick(Dt, fireAim);
+            Assert.AreEqual("draw_aim_in", c.ActionName, "gespannt ins Zielen");
+            Run(c, fireAim, 0.4f);
+            Assert.AreEqual(EgoController.Stance.Ads, c.CurrentStance);
+            Assert.Greater(c.adsWeight, 0.9f, "im Zielen (Zoom)");
+            Assert.AreEqual(1f, c.DrawLevel, 1e-3f, "bleibt gespannt");
+            c.Tick(Dt, fire);
+            Assert.AreEqual("draw_aim_out", c.ActionName, "Zielen verlassen bricht das Spannen nicht ab");
+            Run(c, fire, 0.3f);
+            Assert.AreEqual(1f, c.DrawLevel, 1e-3f);
+            Run(c, fireAim, 0.4f);
+            Assert.AreEqual(s0, c.shots, "kein Schuss beim Wechsel");
+            // im Zielen lösen: Schuss, zugleich aus dem Zielen, neuer Pfeil, wieder spannbar ab Nocked
+            c.Tick(Dt, new EgoIntent { grounded = true, aim = true });
+            Assert.AreEqual(s0 + 1, c.shots, "Loslassen löst");
+            Assert.AreEqual("fire_release_ads", c.ActionName, "Lösen im Zielen");
+            Assert.AreEqual(EgoController.Stance.Hip, c.CurrentStance, "Lösen = Ausstieg aus dem Zielen");
+            float minArrow = 1;
+            int tNock = -1;
+            var seqR = new List<string>();
+            for (int j = 0; j < 30; j++)
+            {
+                c.Tick(Dt, Idle);
+                if (j < 14) seqR.Add($"{c.ActionName}:{c.Frame:0}");
+                if (c.output.mech.TryGetValue("arrow_shaft", out float av)) minArrow = Mathf.Min(minArrow, av);
+                if (tNock < 0 && marks.Any(m => m.Item1 == "fire_release_ads" && m.Item2 == "Nocked")) tNock = j + 1;
+            }
+            Assert.Less(minArrow, -1f, "Pfeil fliegt nach vorn");
+            Assert.That(tNock * Dt, Is.InRange(0.15f, 0.25f), $"neuer Pfeil liegt nach ≈ 0,2 s auf ({tNock} Takte; {string.Join(" ", seqR)})");
+            Assert.AreEqual(BW.gameplay.magazine, c.ammo, "kein Magazin");
+            // Lösen → gespannt: neu spannen gleich nach Nocked
+            Run(c, Idle, 0.3f);
+            c.Tick(Dt, fire);
+            Run(c, fire, 0.1f);
+            c.Tick(Dt, Idle);
+            long s1 = c.shots;
+            int k = 0;
+            while (k < 12) { c.Tick(Dt, Idle); k++; }                     // 0,2 s bis Nocked
+            c.Tick(Dt, fire);
+            Assert.AreEqual("fire_draw", c.ActionName, "nach dem Auflegen sofort wieder spannen (Destiny Lösen → gespannt 0,60 s)");
+            Assert.AreEqual(s1, c.shots);
+        }
+
+        /// <summary>Granatwerfer BASIC-13 (Spec v2.1 semi_auto, Trommel): nach jedem Schuss dreht die Trommel eine Kammer weiter (fire_cycle),
+        /// keine Hülse beim Schuss; Nachladen je Kammer wie die Schrotflinte (Einstieg, reload_shell bis voll, reload_end ohne Pumpen), je
+        /// Kammer fällt eine Hülse (EJECT on='reload', Marker Eject). Bis 0.32 kannte das Ego-System die Klasse nicht.</summary>
+        [Test]
+        public void Granatwerfer_Trommel_dreht_und_laedt_je_Kammer()
+        {
+            var GL = Class("grenade_launcher");
+            Assert.AreEqual("semi_auto", GL.gameplay.fire_mode);
+            Assert.IsTrue(GL.gameplay.Cycles && GL.ShellReload, "Trommel: fire_cycle und Nachladen je Kammer");
+            Assert.AreEqual("reload", GL.weapon.eject.on, "Hülsen nur beim Nachladen");
+            var c = new EgoController(new EgoSolver(GL));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            long shells0 = c.shellsEjected;
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            Assert.AreEqual(1, c.shots);
+            Assert.AreEqual("fire_cycle", c.ActionName, "Trommel dreht nach dem Schuss");
+            float drum = 0;
+            for (int j = 0; j < 30 && c.Busy; j++)
+            {
+                c.Tick(Dt, Idle);
+                if (c.output.mech.TryGetValue("drum", out float v)) drum = Mathf.Max(drum, v);
+            }
+            Assert.Greater(drum, 0.9f, "eine Kammer weiter");
+            Assert.AreEqual(shells0, c.shellsEjected, "keine Hülse beim Schuss");
+            Run(c, Idle, 0.3f);
+            // Nachladen 3 → 6
+            c.ammo = 3;
+            var seq = new List<string>();
+            c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            float last = float.MaxValue;
+            for (int j = 0; j < 900 && c.Busy; j++)
+            {
+                if (seq.Count == 0 || seq[seq.Count - 1] != c.ActionName || c.Frame < last) seq.Add(c.ActionName);
+                last = c.Frame;
+                c.Tick(Dt, Idle);
+            }
+            TestContext.WriteLine($"Granatwerfer: Nachladen 3 → {c.ammo}: {string.Join(" ", seq)}; Hülsen {c.shellsEjected - shells0}");
+            CollectionAssert.AreEqual(new[] { "reload_tactical", "reload_shell", "reload_shell", "reload_end" }, seq.ToArray());
+            Assert.AreEqual(GL.gameplay.magazine, c.ammo);
+            Assert.AreEqual(3, c.shellsEjected - shells0, "eine Hülse je geladener Kammer");
+            // leer: Ende ohne Pumpen
+            c.ammo = 0;
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            string end = "";
+            for (int j = 0; j < 1500 && c.Busy; j++) { end = c.ActionName; c.Tick(Dt, Idle); }
+            Assert.AreEqual("reload_end", end, "Trommel: kein reload_end_pump");
+            Assert.AreEqual(GL.gameplay.magazine, c.ammo);
+        }
+
+        /// <summary>Feuerart single_shot (Raketenwerfer BASIC-14): Magazin 1, nach dem Schuss sofort Nachladen (reload_empty = Klassenaktion):
+        /// die Rakete fliegt in den ersten Bildern aus dem Rohr, ist verdeckt, bis die linke Hand die nächste bringt, und sitzt bei MagIn;
+        /// danach wieder schussbereit. Bis 0.32 fehlte die Feuerart.</summary>
+        [Test]
+        public void Raketenwerfer_laedt_nach_jedem_Schuss()
+        {
+            var RL = Class("rocket_launcher");
+            Assert.AreEqual("single_shot", RL.gameplay.fire_mode);
+            Assert.AreEqual(1, RL.gameplay.magazine);
+            var c = new EgoController(new EgoSolver(RL));
+            var marks = new List<(string, string)>();
+            c.Marker += (a, m) => marks.Add((a, m));
+            c.ReadyNow();
+            Run(c, Idle, 0.3f);
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            Assert.AreEqual(1, c.shots);
+            Assert.AreEqual(0, c.ammo);
+            Assert.AreEqual("reload_empty", c.ActionName, "sofort nachladen");
+            float minRocket = 0;
+            bool hidden = false;
+            float tIn = -1;
+            for (float t = 0; t < 4f && c.Busy; t += Dt)
+            {
+                c.Tick(Dt, Idle);
+                minRocket = Mathf.Min(minRocket, c.output.mech.TryGetValue("rocket", out float v) ? v : 0);
+                hidden |= c.output.magHidden;
+                if (tIn < 0 && c.ammo == 1) tIn = t + Dt;
+            }
+            TestContext.WriteLine($"Raketenwerfer: Rakete sitzt nach {tIn:0.00} s, Nachladen {RL.Action("reload_empty").frames / 30f:0.00} s");
+            Assert.Less(minRocket, -1f, "Rakete fliegt aus dem Rohr");
+            Assert.IsTrue(hidden, "verdeckt, bis die Hand die nächste bringt");
+            Assert.IsTrue(marks.Any(m => m.Item1 == "reload_empty" && m.Item2 == "MagIn"));
+            Assert.AreEqual(1, c.ammo, "geladen");
+            Run(c, Idle, 0.3f);
+            Assert.AreEqual("idle_hip", c.ActionName);
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            Assert.AreEqual(2, c.shots, "wieder schussbereit");
         }
     }
 }

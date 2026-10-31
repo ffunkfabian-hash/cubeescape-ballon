@@ -496,9 +496,10 @@ def fx_eval(sc, A, f, state):
     i = EG.flash_visible(fire, f) if sc.P['gameplay'].get('muzzle_flash', True) else None   # Werkzeug (0.22): ohne Mündungsfeuer
     if i is not None:
         mz = vdir(sc.W.ANCHORS['Socket_Muzzle']['at']) * MM
-        now['flash'] = sc.WM @ Matrix.Translation(mz) @ Matrix.Rotation(math.radians(EG.flash_roll(i)), 4, 'Y')
+        now['flash'] = sc.WM @ Matrix.Translation(mz) @ Matrix.Rotation(math.radians(EG.flash_roll(i)), 4, 'Y') @ \
+            Matrix.Scale(sc.P['gameplay'].get('flash_scale', 1.0), 4)            # Blitzmaßstab je Klasse (0.33 P4, Werfer)
     ej = eject_data(sc.W)
-    if ej and fire:
+    if ej and fire and sc.W.EJECT.get('on') != 'reload':   # Trommel (0.33 P4, EJECT on='reload'): Hülsen nur beim Nachladen (Unity: Marker Eject)
         W0s = state.setdefault('shot_wm', {})
         for k, s in enumerate(fire):
             if s <= f and k not in W0s:
@@ -583,7 +584,7 @@ class Scene:
                 M = ob.matrix_world.copy()
                 BB.apply_move(ob, p['move'], t)
                 ob.matrix_world = M
-        mag = self.objs.get('magazine')
+        mag = self.objs.get(self.P['mag'])        # Bauteil des Griffs 'mag' (Magazin, Energiezelle; 0.33)
         if mag is not None and carry is not None:
             mag.matrix_world = carry
         if mag is not None and drop is not None:
@@ -596,15 +597,34 @@ class Scene:
         bpy.context.view_layer.update()
 
 
+def still_action(P, name):
+    """Standbild einer Haltung (Stills, Export-Referenz; Unity EgoSolver.StillAction): Hände wie in Ruhe (idle_hip), im Zielen wie am Ende
+    von aim_in (0.33 P4: Bogen mit Bogenhand links, Zughand im ungespannten Zielen unter dem Bild), inspect_r mit der Hand unter dem Bild
+    wie in der Aktion inspect, reload mit der Hand am Magazin."""
+    I = P['actions']['aim_in' if name == 'ads' else 'idle_hip']
+    A = dict(L=I.get('L', [(0, 'support')])[-1:], R=I.get('R', [(0, 'grip')])[-1:], fL=I['fL'][-1:], fR=I.get('fR', [(0, 'trigger')])[-1:])
+    A = {k: [(0, v[0][1])] for k, v in A.items()}
+    A['weapon'] = [(0, name)]
+    if name == 'inspect_r':
+        for ch in ('L', 'R'):
+            cam = [k for k in P['actions']['inspect'].get(ch, []) if isinstance(k[1], tuple) and k[1][0] == 'cam']
+            if cam:
+                A[ch] = [(0, cam[0][1])]
+    if name == 'reload':
+        A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
+    return A
+
+
 def evaluate(sc, A, f, report, state):
     W = sc.W
     R, pos = weapon_at(W, A['weapon'], f)
     R, pos = secondary(R, pos, f, state, EG.ends_in_ads(A))
     # Zielfernrohr (0.20, EG.ADS_HIDE): Teile mit ads_hide aus, solange der Augenpunkt der Grundhaltung nah an der Kamera liegt
     eye = pos + R @ kit.to_xyz(*W.ANCHORS['Socket_Eye']['at']) if 'Socket_Eye' in W.ANCHORS else None
-    hidden = eye is not None and eye.length < EG.ADS_HIDE['eye_m']
+    ads_eye = Vector(sc.P['poses'].get('ads', {}).get('eye', (0, 0, 0)))   # 0.33 P4: Ziellage des Augenpunkts (Bogen: hinter der Kamera)
+    hidden = eye is not None and (eye - ads_eye).length < EG.ADS_HIDE['eye_m']
     for p in W.PARTS:
-        if p.get('ads_hide') and p['id'] in sc.objs:
+        if (p.get('ads_hide') or p['id'] in sc.P['ads_hide']) and p['id'] in sc.objs:
             sc.objs[p['id']].hide_render = hidden
     report['ads_hidden'] = sc.ads_hidden = hidden
     off_pos, off_rot = Vector(), Matrix.Identity(3)
@@ -646,7 +666,14 @@ def evaluate(sc, A, f, report, state):
         off_pos += R @ Vector((0, rc['x'].x, 0))
         off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
-        mech[live['trigger']] = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in ('semi_auto', 'single')) else 0.0   # je Schuss
+        G = sc.P['gameplay']
+        charge_f = G['charge_s'] * EG.FPS if sc.P['fire_mode'] in EG.CHARGE_MODES else 0.0   # Ladewaffe (0.33): Abzug ab dem Aufladen
+        trig = 1.0 if EG.trigger_on(A['fire'], f, sc.P['fire_mode'] in EG.SEMI_MODES, lead=charge_f) else 0.0   # je Schuss
+        if live.get('trigger'):              # Bogen (0.33 P4): ohne Abzug
+            mech[live['trigger']] = trig
+        for g in live.get('glow', ()):       # Dauerstrahl (0.33): Leuchtteile an, solange der Abzug zieht; Ladewaffe: mit der Ladung
+            mech[g] = EG.charge_level(A['fire'], f, charge_f, G.get('burst_shots') or 1, G['charge_fade_s'] * EG.FPS) if charge_f \
+                else trig
         if live.get('bolt'):                 # Werkzeug (0.22): ohne Verschluss und Auswurfklappe
             mech[live['bolt']] = 1.0 if shots and f - shots[-1] < 1.5 else 0.0
         if live.get('port'):
@@ -663,7 +690,7 @@ def evaluate(sc, A, f, report, state):
     HR = blend_hand(Rkeys, f, pw)
     if A.get('drop') and A['drop'][0] <= f < A['carry'][0][0]:
         t = (f - A['drop'][0]) / FPS_F
-        mag0 = sc.WM @ Matrix(sc.objs['magazine']['rest'])
+        mag0 = sc.WM @ Matrix(sc.objs[sc.P['mag']]['rest'])
         drop = Matrix.Translation(Vector((0.02 * t, -0.05 * t, -0.5 * 9.81 * t * t - 0.3 * t))) @ mag0 @ \
             Matrix.Rotation(math.radians(-140 * t), 4, 'X')
         if f >= A['drop'][1]:
@@ -672,7 +699,7 @@ def evaluate(sc, A, f, report, state):
         if c0 <= f <= c1:
             if 'rel' not in state:
                 Hm, _ = grip_hand('mag', lambda pid: sc.WM if pid is None else sc.WM)
-                state['rel'] = Hm.inverted() @ (sc.WM @ Matrix(sc.objs['magazine']['rest']))
+                state['rel'] = Hm.inverted() @ (sc.WM @ Matrix(sc.objs[sc.P['mag']]['rest']))
             carry = HL @ state['rel']
     if carry is not None or drop is not None:
         sc.set_weapon(R2, pos2, mech, report, carry=carry, drop=drop)
@@ -708,9 +735,7 @@ def main():
         for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch')
                      if k in sc.P['poses'] and (not o['poses'] or k in o['poses'])]:
             rep = {}
-            A = dict(weapon=[(0, name)], L=[(0, EG.OFF_L if name == 'inspect_r' else 'support')], R=[(0, 'grip')])   # wie Aktion inspect
-            if name == 'reload':
-                A.update(L=[(0, 'mag')], fL=[(0, 'mag_hold')])
+            A = still_action(sc.P, name)
             evaluate(sc, A, 0, rep, {})
             for camname, cam in (('ego', sc.cam), ('out', sc.out_cam)):
                 scn.camera = cam

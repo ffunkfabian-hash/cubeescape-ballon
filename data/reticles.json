@@ -541,6 +541,414 @@
      ]
     }
    ]
+  },
+  "arcs_ladder": {
+   "de": "Bögen mit Leiter",
+   "en": "Arcs and ladder",
+   "use": "Zwei offene Bögen gehen seitlich auf; drei Striche darunter als Fallmarken",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      2.57,
+      -3.06
+     ],
+     "b": [
+      3.83,
+      -1.17
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      3.83,
+      -1.17
+     ],
+     "b": [
+      3.83,
+      1.17
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      3.83,
+      1.17
+     ],
+     "b": [
+      2.57,
+      3.06
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -2.57,
+      -3.06
+     ],
+     "b": [
+      -3.83,
+      -1.17
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -3.83,
+      -1.17
+     ],
+     "b": [
+      -3.83,
+      1.17
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -3.83,
+      1.17
+     ],
+     "b": [
+      -2.57,
+      3.06
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -0.9,
+      -1.2
+     ],
+     "b": [
+      0.9,
+      -1.2
+     ],
+     "d": [
+      0,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -0.7,
+      -2.1
+     ],
+     "b": [
+      0.7,
+      -2.1
+     ],
+     "d": [
+      0,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -0.5,
+      -3.0
+     ],
+     "b": [
+      0.5,
+      -3.0
+     ],
+     "d": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "ring_corners": {
+   "de": "Ring mit Eckmarken",
+   "en": "Ring and corners",
+   "use": "Kleiner Ring in der Mitte, vier Eckwinkel gehen diagonal auf",
+   "prims": [
+    {
+     "t": "ring",
+     "r": 1.6,
+     "ri": 1.2,
+     "grow": 0
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      5
+     ],
+     "b": [
+      5,
+      3.4
+     ],
+     "d": [
+      0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      -5
+     ],
+     "b": [
+      5,
+      -3.4
+     ],
+     "d": [
+      0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      5
+     ],
+     "b": [
+      -5,
+      3.4
+     ],
+     "d": [
+      -0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -5
+     ],
+     "b": [
+      -5,
+      -3.4
+     ],
+     "d": [
+      -0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      5
+     ],
+     "b": [
+      3.4,
+      5
+     ],
+     "d": [
+      0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      -5
+     ],
+     "b": [
+      3.4,
+      -5
+     ],
+     "d": [
+      0.7071067811865475,
+      -0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      5
+     ],
+     "b": [
+      -3.4,
+      5
+     ],
+     "d": [
+      -0.7071067811865475,
+      0.7071067811865475
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -5
+     ],
+     "b": [
+      -3.4,
+      -5
+     ],
+     "d": [
+      -0.7071067811865475,
+      -0.7071067811865475
+     ]
+    }
+   ]
+  },
+  "gl_brackets": {
+   "de": "Werferklammern",
+   "en": "Launcher brackets",
+   "use": "Zwei Eckklammern gehen seitlich auf; Mittenstrich und tieferer Strich als Fallmarke",
+   "prims": [
+    {
+     "t": "line",
+     "a": [
+      5,
+      -2.5
+     ],
+     "b": [
+      5,
+      2.5
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -2.5
+     ],
+     "b": [
+      -5,
+      2.5
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      2.5
+     ],
+     "b": [
+      4.0,
+      2.5
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      5,
+      -2.5
+     ],
+     "b": [
+      4.0,
+      -2.5
+     ],
+     "d": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      2.5
+     ],
+     "b": [
+      -4.0,
+      2.5
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -5,
+      -2.5
+     ],
+     "b": [
+      -4.0,
+      -2.5
+     ],
+     "d": [
+      -1,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -0.9,
+      0
+     ],
+     "b": [
+      0.9,
+      0
+     ],
+     "d": [
+      0,
+      0
+     ]
+    },
+    {
+     "t": "line",
+     "a": [
+      -0.6,
+      -2.5
+     ],
+     "b": [
+      0.6,
+      -2.5
+     ],
+     "d": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "none": {
+   "de": "ohne",
+   "en": "None",
+   "use": "Kein Hüftzeichen (Raketenwerfer, Destiny)",
+   "prims": []
   }
  },
  "colors": {
@@ -967,13 +1375,13 @@
   "submachine_gun": 1.45,
   "shotgun": 1.25,
   "grenade_launcher": 1.4,
-  "sniper_rifle": 5.5,
+  "sniper_rifle": 4.0,
   "fusion_rifle": 1.5,
   "linear_fusion_rifle": 3.0,
   "trace_rifle": 1.5,
   "rocket_launcher": 2.5,
   "machine_gun": 1.6,
-  "combat_bow": 1.5,
+  "combat_bow": 1.9,
   "sword": 1.0,
   "glaive": 1.25
  },
@@ -1011,8 +1419,8 @@
    "scope": 1.4
   },
   "sniper_rifle": {
-   "reflex": 5.5,
-   "scope": 5.5
+   "reflex": 4.0,
+   "scope": 4.0
   },
   "fusion_rifle": {
    "reflex": 1.8,
@@ -1035,8 +1443,8 @@
    "scope": 2.4
   },
   "combat_bow": {
-   "reflex": 1.8,
-   "scope": 2.3
+   "reflex": 2.2,
+   "scope": 2.7
   },
   "sword": {
    "reflex": 1.3,
@@ -1056,13 +1464,13 @@
   "submachine_gun": 1.45,
   "shotgun": 1.25,
   "grenade_launcher": 1.4,
-  "sniper_rifle": 5.5,
+  "sniper_rifle": 4.0,
   "fusion_rifle": 1.8,
   "linear_fusion_rifle": 3.8,
   "trace_rifle": 1.8,
   "rocket_launcher": 2.8,
   "machine_gun": 1.9,
-  "combat_bow": 1.8,
+  "combat_bow": 2.2,
   "sword": 1.3,
   "glaive": 1.55
  },
@@ -1150,19 +1558,19 @@
     "sprint": null
    },
    "fusion_rifle": {
-    "kind": "corners",
-    "share_h": 0.045,
+    "kind": "ring_corners",
+    "share_h": 0.055,
     "extent_mm": 10.39,
     "spread": "charge",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, Quadrat 5,5 % H, Ring Ø 1,7 % H)",
     "sprint": null
    },
    "linear_fusion_rifle": {
-    "kind": "cross",
-    "share_h": 0.045,
-    "extent_mm": 14.39,
+    "kind": "ring_corners",
+    "share_h": 0.125,
+    "extent_mm": 10.39,
     "spread": "charge",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, 12–13 % H)",
     "sprint": null
    },
    "trace_rifle": {
@@ -1174,19 +1582,19 @@
     "sprint": null
    },
    "grenade_launcher": {
-    "kind": "circle_cross",
-    "share_h": 0.045,
-    "extent_mm": 15.19,
+    "kind": "gl_brackets",
+    "share_h": 0.112,
+    "extent_mm": 10.39,
     "spread": "explosive",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, 6,3 % B × 5,6 % H = 11,2 × 5,6 % H)",
     "sprint": null
    },
    "rocket_launcher": {
-    "kind": "circle_cross",
-    "share_h": 0.045,
-    "extent_mm": 15.19,
+    "kind": "none",
+    "share_h": 0.0,
+    "extent_mm": 0.0,
     "spread": "explosive",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, kein Mittenzeichen, 1 Clip)",
     "sprint": null
    },
    "machine_gun": {
@@ -1198,11 +1606,11 @@
     "sprint": null
    },
    "combat_bow": {
-    "kind": "chevron",
-    "share_h": 0.045,
-    "extent_mm": 6.79,
+    "kind": "arcs_ladder",
+    "share_h": 0.046,
+    "extent_mm": 8.05,
     "spread": "charge",
-    "status": "entworfen",
+    "status": "gemessen (Glidepath, Ø 4,6 % H)",
     "sprint": null
    },
    "sword": {
@@ -1229,7 +1637,14 @@
     "status": "entworfen (Werkzeug, Portal 2 / Cube Escape)",
     "sprint": null
    }
-  }
+  },
+  "sight_form_by_type": {
+   "fusion_rifle": "corners",
+   "linear_fusion_rifle": "cross",
+   "grenade_launcher": "circle_cross",
+   "rocket_launcher": "circle_cross"
+  },
+  "sight_form": "Form des gezeichneten Absehens im Visierglas, wo sie vom HUD-Hüftzeichen abweicht (reticles.HUD_HIP, 0.33)"
  },
  "sight_kind": {
   "auto_rifle": "holo",

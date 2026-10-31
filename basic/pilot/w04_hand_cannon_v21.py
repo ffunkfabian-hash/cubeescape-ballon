@@ -28,7 +28,7 @@ Formprinzipien abgeleitet aus den Bildreferenzen.
 import math
 
 from basic.common import part, prof, box, cyl, cut_box, grip_v21, R_BODY, R_MID, R_SMALL, R_FINE
-from basic.pilot.optics.sight_kit import klammer
+from basic.common import klammer
 from basic.weapons import w04_hand_cannon as V1
 
 META = dict(V1.META, variant='v2.1', name='Trommel v2.1', nick='Familie v2.1',
@@ -112,6 +112,22 @@ ANCHORS = {
 }
 ANCHORS.update(SIGHT_ANCHORS)
 EJECT = None    # Trommel: keine Hülse beim Schuss (Daten statt Sonderlogik); die Hülsen fallen beim Nachladen (reload › eject)
+# Ego-Griffe (0.33 „Armory“, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. contact = Mitte der
+# Handfläche auf der Oberfläche, palm = Richtung in das Bauteil, fingers = Fingerrichtung; part = Bauteil, an dem der Griff hängt.
+# Pistolengriff beidhändig: die Stützhand legt sich links an Griff und Griffhand (Socket_SupportHand); 'mag' ist die Trommel (folgt dem
+# Kran), 'charge' der Trommelriegel (Daumen links).
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(contact=(-2, -34, 19), palm=(0.1, 0.0, -1.0), fingers=(0.75, -0.66, 0.0), fingers_pose='grip',
+                    src='E links an Griff und Griffhand (Socket_SupportHand), Finger schräg nach vorn unten um die Griffhand '
+                        '(beidhändiger Pistolengriff, Destiny-Handfeuerwaffe)'),
+    'mag':     dict(part='cylinder', contact=(48, CYL_U, CYL_R + 1.5), palm=(0.0, 0.0, -1.0), fingers=(1.0, 0.25, 0.0),
+                    fingers_pose='mag_hold', src='E links an der Trommel, folgt dem Kran beim Ausschwenken (Laden, Auswerfen, Schließen)'),
+    'charge':  dict(part='cylinder_latch', contact=(4, 62, FR_W / 2 + 3.5), palm=(0.0, 0.0, -1.0), fingers=(0.6, 0.8, 0.0),
+                    fingers_pose='pinch', src='E am Trommelriegel links (Daumen der Stützhand)'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='hammer', port='')     # Abzug, Hahn (zuckt beim Schuss, Spannabzug), keine Auswurfklappe
 ACTIONS = {k: dict(A) for k, A in V1.ACTIONS.items()}
 EXPLODE = {'sight': (0, 90, 0), 'ammo': (0, 0, 80), 'barrel': (110, 0, 0), 'grip_controls': (-10, -80, 0), 'mechanism': (0, 0, 60),
            'receiver': (0, 0, 0)}

@@ -24,13 +24,13 @@ bleibt Variante (nur dokumentiert, `sight_kit_more.iron_ghost`).
 Schlichtheitsbudget: Leuchten 1 Funktion (Munitionsanzeige) · Grafik 1 Band · Schrift 1 · Orange 3 (Pumpenriegel, Klemmhebel der
 Kimme, Kornkopf) · Schrauben keine.
 Bewegung: Pumpe 72 mm zurück, Verschluss mit ihr (Aktion `fire_pump`); Patrone von unten durch die Ladeklappe (`load_shell`).
-Hülse: eigene Form `shotshell` (EJECT_CASES, Maße der Patrone `shell_round`) aus dem Auswurffenster rechts; die Form liegt im Modul,
-solange `basic/arms/ego.py` im Unity-Quellenhash steht (Umzug nach `ego.EJECT.cases` mit dem Ego-Übertrag).
+Hülse: eigene Form `shotshell` (Maße der Patrone `shell_round`, seit dem Ego-Übertrag 0.33 in `ego.EJECT.cases`) aus dem
+Auswurffenster rechts.
 Status: Maße entworfen (Länge an Toolgen 0,904 m angelehnt, Verhältnis H/L an Destiny 0,29; gemessene Werte im Spec),
 Formprinzipien abgeleitet aus den Bildreferenzen.
 """
 from basic.common import part, prof, box, cyl, cut_box, rail, grip_v21, stock_s1, R_MID, R_SMALL, R_FINE
-from basic.pilot.optics.sight_kit import hoerner
+from basic.common import hoerner
 from basic.weapons import w08_shotgun as V1
 
 META = dict(V1.META, variant='v2.1', name='Streuer v2.1', nick='Familie v2.1',
@@ -146,8 +146,7 @@ ANCHORS = {
     'Socket_LoadingGate': dict(at=(122, 32, 0), part='loading_gate', note='Patronen einzeln von unten'),
 }
 ANCHORS.update(SIGHT_ANCHORS)
-# Hülsenauswurf: eigene Form (Maße der Patrone); im Modul, solange ego.py im Unity-Quellenhash steht
-EJECT_CASES = {'shotshell': dict(len_mm=50, r_mm=9.5, segs=14)}
+# Hülsenauswurf: eigene Form shotshell (Maße der Patrone, ego.EJECT.cases seit 0.33 „Armory“ P3)
 EJECT = dict(at=(55, BORE, -UP_W / 2), dir=(0.15, 0.55, -1.0), case='shotshell',
              src='E: Auswurffenster rechts im Oberen Gehäuse beim Zurückziehen der Pumpe, Hülse nach rechts, etwas hoch und vorn')
 ACTIONS = {
@@ -158,3 +157,17 @@ ACTIONS = {
 }
 EXPLODE = {'sight': (0, 90, 0), 'ammo': (0, -120, 0), 'stock': (-110, 0, 0), 'barrel': (150, 0, 0), 'support': (0, 0, 0),
            'grip_controls': (-10, -80, 0), 'mechanism': (40, -60, 0), 'receiver': (0, 0, 0)}
+# Ego-Griffe (0.33 „Armory“ P3, basic/arms/ego.profile): Autorenmaß dieser Waffe wie ego.GRIPS der Pilotwaffe. 'support' unter der Pumpe
+# (folgt ihr beim Pumpen: ego.CLASSES shotgun › fire_cycle), 'mag' an der Patrone (unter dem Boden, Hand von unten; die Patrone folgt beim
+# Laden der Hand, carry), 'charge' am Pumpenriegel (vom Nachladen nicht genutzt)
+EGO_GRIPS = {
+    'grip':    dict(contact=(-3, -6, -16.5), palm=(0.15, 0.0, 1.0), fingers=(1.0, -0.06, 0.0), fingers_pose='trigger',
+                    src='E wie die Pilotwaffe (Griff BGM-1 v2.1, gleiche Lage zu Socket_Hand)'),
+    'support': dict(part='pump', contact=(310, 44.5, -2), palm=(0.0, 1.0, -0.25), fingers=(0.08, 0.15, -1.0), fingers_pose='underhand',
+                    src='E unter der Pumpe (Unterkante u 46, f 240–380, Socket_SupportHand), Lage wie die Pilotwaffe; folgt der Pumpe'),
+    'mag':     dict(part='shell_round', contact=(126, 39.5, 0), palm=(0.0, 1.0, 0.0), fingers=(1.0, 0.0, 0.0), fingers_pose='pinch',
+                    src='E unter der Patrone (Ruhelage im Ladeschacht, Boden u 40,5), Hand von unten, schiebt sie durch die Ladeklappe'),
+    'charge':  dict(part='pump_release', contact=(74, 62, LO_W / 2 + 2.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
+                    fingers_pose='pinch', src='E am Pumpenriegel links (vom Nachladen nicht genutzt)'),
+}
+EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss; Pumpe und Verschluss bewegt fire_cycle

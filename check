@@ -399,6 +399,17 @@ for k, (kind, sh) in {'auto_rifle': ('ring_dot', 0.032), 'pulse_rifle': ('ring_d
     h = RT.hip(k)
     if (h['kind'], h['share_h']) != (kind, sh):
         fail(f"Hüft-Fadenkreuz {k}: {h['kind']} {h['share_h']} statt {kind} {sh} (Entscheidungsliste 4.2 A)")
+# 0.33 „Armory“: Sonderklassen zeigen im HUD die Glidepath-Form (reticles.HUD_HIP), das Absehen im Glas behält die Modellform (hip)
+for k, (glass, hud, sh) in {'combat_bow': ('chevron', 'arcs_ladder', 0.046), 'fusion_rifle': ('corners', 'ring_corners', 0.055),
+                            'linear_fusion_rifle': ('cross', 'ring_corners', 0.125), 'grenade_launcher': ('circle_cross', 'gl_brackets', 0.112),
+                            'rocket_launcher': ('circle_cross', 'none', 0.0)}.items():
+    h, g = RT.hud_hip(k), RT.hip(k)
+    if (g['kind'], h['kind'], h['share_h']) != (glass, hud, sh) or (h['extent_mm'] > 0) != (hud != 'none'):
+        fail(f"Hüftzeichen {k}: Glas {g['kind']}, HUD {h['kind']} {h['share_h']} ({h['extent_mm']} mm) statt {glass}, {hud} {sh} (0.33 HUD_HIP)")
+if any(RT.hud_hip(k) != RT.hip(k) for k in RT.DEFAULTS if k not in RT.HUD_HIP) or set(RT.HUD_HIP) - set(RT.DEFAULTS):
+    fail('Hüftzeichen: HUD und Glas weichen nur bei den Klassen in reticles.HUD_HIP ab')
+if set(RT.HUD_ONLY) & set(RT.SETTINGS['kind']['values']) or any(RT.hip(k)['kind'] in RT.HUD_ONLY for k in RT.DEFAULTS):
+    fail('Hüftzeichen: reine HUD-Formen (reticles.HUD_ONLY) weder als Spieleroption noch als Glasform')
 if (RT.HIP['color'], RT.HIP['weight']) != ('white', 'fine') or {k: v['kind'] for k, v in RT.HIP['sprint'].items()} != {'auto_rifle': 'caret'}:
     fail('Hüft-Fadenkreuz: weiß, fein, im Sprint nur die Automatik mit „^“ (Entscheidungsliste 4.1 A)')
 from basic.arms import ego as EG   # Entscheidungsliste 5.3 A: Mündungsfeuer 1 Bild bei 30/s, im Zielen ≤ 20 % der Holo-Öffnung
@@ -410,6 +421,10 @@ for _m in _XU.WEAPONS:              # jede spielbare Waffe mit Visier (0.18; Wer
             fail(f'{_m}: ohne Visier weder Mündungsfeuer noch Zielen (Werkzeug, 0.22)')
         continue
     _cov = EG.flash_cover_ads(_W)
+    if _cov is None:                # Kimme/Korn (0.33): keine Öffnung, nur die Blitzdauer gilt
+        if abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
+            fail(f'Mündungsfeuer {_m}: nicht genau 1 Bild bei 30/s')
+        continue
     if _cov > 0.20 or abs(EG.FLASH['dur_s'] * EG.FPS - 1) > 1e-9:
         fail(f'Mündungsfeuer {_m}: Öffnung im Zielen zu {_cov * 100:.1f} % bedeckt (≤ 20 %) oder nicht genau 1 Bild bei 30/s')
     elif _W.META['type'] == 'pulse_rifle':
@@ -417,6 +432,9 @@ for _m in _XU.WEAPONS:              # jede spielbare Waffe mit Visier (0.18; Wer
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_icons.py'), '--check'], capture_output=True, text=True)   # 0.33 Ziel 2
+if r.returncode:
+    fail('Waffensymbole veraltet: python3 tools/make_icons.py (' + r.stdout.strip() + ')')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_texture_store.py')], capture_output=True, text=True)   # 0.20: 97 A
 if r.returncode:
     fail('Texturablage: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
