@@ -310,8 +310,8 @@ Nutzerbefunde aus Testbuild 0.33 und Motiongen REF 0.35 „Backblast“ / REF 0.
 | 10g | Weltzoom | Scout 3,0, Scharfschütze 4,7, Werfer 3,3 (Verdict D) | übernommen | M |
 | 10h | Granatwerfer-Ladefolge | nicht gemessen | Gegendrehung je Granate, beim Schließen vor (Kammern in Schussfolge; ersetzt das Umordnen aus 9n) | E |
 | 10i | Revolver nachladen | Hochdrehen, Trommel zur Kamera (destiny2:492) | Trommelrückseite zur Kamera (cos 0,32 → 0,64), Stützhand vor der Trommel | M/E |
-| 10j | Bildanteil Zielen (Nutzerentscheid 193 B) | 2,7–9,5 %, Median 5,8 (Backblast F) | **Ausblenden wie Destiny** (`ego.ADS_STRIP`): im Zielen nur Visier und Mündung, Arme aus, Kamera je Klasse 0–50 mm hinter Socket_Eye; 2,7–9,2 %, Median 5,2 | Nutzer „So wie Destiny“ (31.10.2026) |
-| 10k | Raketenwerfer Zielen (Nutzerentscheid 194) | Hoosegow x 81–100, 16,6 % | Startrohr bis auf die Mündung aus, 50,1 → 11,2 % | Nutzer „So wie Destiny“ (E: kleiner als Hoosegow, Visier seitlich) |
+| 10j | Bildanteil Zielen (Nutzerentscheid 193 B) | 2,7–9,5 %, Median 5,8 (Backblast F) | **Ausblenden wie Destiny** (`ego.ADS_STRIP`): im Zielen nur Visier und Mündung, Arme aus, Kamera je Klasse 0–50 mm hinter Socket_Eye; 2,7–9,2 %, Median 5,2 | Nutzer „So wie Destiny“ (31.10.2026); **seit 0.35.1 zurückgestellt (208 A)**: Regel aus, Waffe und Arme im Zielen wieder sichtbar, Neuentscheid mit Bildvergleich |
+| 10k | Raketenwerfer Zielen (Nutzerentscheid 194) | Hoosegow x 81–100, 16,6 % | Startrohr bis auf die Mündung aus, 50,1 → 11,2 % | Nutzer „So wie Destiny“ (E: kleiner als Hoosegow, Visier seitlich); **0.35.1 (208 A): bleibt** – nur die Heckteile (Heckrohr, Kegel, Heck, Schulterauflage) sind aus, das Startrohr ist im Zielen wieder da (`ads_hide` der Klasse, nicht ADS_STRIP) |
 
 **193 B / 194 (31.10.2026, Etappe 2):** gemessen mit `tools/bildanteil.py`: Viewmodel-Bildwinkel im Zielen 75 → 100° (Fläche rechnerisch
 × 0,41) brachte Automatik 13,3 → 12,9 %, Raketenwerfer 50 → 48 %; Kamera 8 cm hinter dem Augenpunkt Automatik 13,3 → 11,3 %, Scout
@@ -321,6 +321,11 @@ Wege sind zurückgenommen (das Visier wurde nur kleiner); Frage an den Nutzer ü
 Zielen ausblenden oder (B) zurückstellen. **Entscheid (Nutzer über Sightline, 31.10.2026): „So wie Destiny“ – (A).** Umgesetzt als
 `ego.ADS_STRIP` (gemeinsame Regel: Visier, Mündung; Schiene, Visierfuß und Klemmen aus; Arme aus) und `ego.ADS_STRIP_CLASS` (Kamera je
 Klasse hinter Socket_Eye, Seitenwaffe und Schrot mit Lauf); Blender und Unity rechnen dieselbe Regel ADS_HIDE.
+
+**208 A (Nutzer über Sightline, 31.10.2026, Testbuild 0.35: „Die Waffen werden beim Zoom komplett ausgeblendet“):** `ego.ADS_STRIP_ON = False` –
+im Zielen sind Waffe und Arme wieder sichtbar wie in 0.34 (Kamera ohne die Klassenwerte `back_m`); Zielfernrohr-Regel ADS_HIDE (0.20) und
+Raketenwerfer-Heck (194) bleiben. Bei Destiny bleibt die Waffe im Zielen sichtbar; **193 B ist zurückgestellt, Neuentscheid mit
+Bildvergleich** (Code und Klassenwerte stehen, `ADS_STRIP_ON = True` schaltet ihn wieder ein).
 
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)
 

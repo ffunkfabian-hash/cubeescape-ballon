@@ -276,7 +276,8 @@ AIM = dict(range_m=60.0, src='E: Nutzerbefund Testbuild 0.33 Bogen „Schuss geh
 # Stützarm unter dem Visier) – dieselbe Regel ADS_HIDE in Blender und Unity (Teile mit ads_hide, Augenpunkt nah an der
 # Ziellage). Bildwinkel und Augenabstand senkten den Bildanteil nachweislich nicht (Bericht 0.35 › 193 B / 194); Destiny erreicht 2,7–9,5 %
 # nur ohne die Waffe unter dem Visier (Motiongen REF 0.35 Backblast › F, z-bb-bildanteil). Je Klasse: CLASSES[...]['ads_strip']
-# (keep_asm, keep_parts; False = aus).
+# (keep_asm, keep_parts; False = aus). Seit 0.35.1 steht die Regel still (ADS_STRIP_ON = False, Nutzerentscheid 208 A).
+ADS_STRIP_ON = False      # 0.35.1 (Nutzerentscheid 208 A, 31.10.2026): Regel aus – im Zielen sind Waffe und Arme wieder sichtbar wie in 0.34; 193 B ruht bis zum Neuentscheid
 ADS_STRIP = dict(keep_asm=('sight',), keep_iface=('BMZ',), keep_anchors=('Socket_Muzzle',), arms=True,
                  drop_iface=('BRI-22',), drop_parts=('sight_clamp', 'scope_keel'),   # Visierfuß, Klemme, Kiel: unter dem Glas, nah an der Kamera
                  src='Nutzerentscheid 193 B „So wie Destiny“ (31.10.2026): Destiny-Zielbild 2,7–9,5 % je Klasse (Backblast › F); Visier, '
@@ -296,7 +297,7 @@ ADS_STRIP_CLASS = {
 
 def ads_strip_rule(W, C):
     """Regel ADS_STRIP für die Waffe W (Klasse C): gemeinsamer Satz, Klassensatz ADS_STRIP_CLASS, Klassenwert ads_strip; None = aus."""
-    if C.get('ads_strip') is False:
+    if not ADS_STRIP_ON or C.get('ads_strip') is False:
         return None
     return dict(ADS_STRIP, **ADS_STRIP_CLASS.get(W.META['type'], {}), **(C.get('ads_strip') or {}))
 

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.35.1 Patch „ads-visible“ – Waffe im Zielen wieder sichtbar (Branch `claude/ballon-patch-ads-visible`)
+
+- Nutzerbefund Testbuild 0.35 („Waffen beim Zoom komplett ausgeblendet“), Entscheidung 208 A: `ego.ADS_STRIP_ON = False` – im Zielen sind Waffe und
+  Arme wieder sichtbar wie in 0.34 (Kamera ohne `back_m`); Zielfernrohr-Regel und Raketenwerfer-Heck (194) bleiben, 193 B ruht bis zum Neuentscheid.
+- Bildanteil Zielen (tools/bildanteil.py) wieder 8,3–16,9 %, Median 14,0 (15 Waffen mit Zielen; Raketenwerfer 50,4: Startrohr wieder da, nur Heck aus). Neuer PlayMode-Test: Arm- und Waffen-Renderer im Zielen und an der Hüfte an, alle 16 Waffen.
+- Entscheidung 209 A: steckender Pfeil (und Löcher, Brandflecken, Lachen) hing per `SetParent(…, true)` an ungleich skalierten Flächen und wurde zu meterlangen schrägen Strichen verzerrt; neu über einen Maßstab ausgleichenden Halter (`WeaponFx.Attach`), Test mit Scheibe und Wand, Gegenprobe rot.
+
 ## 0.35.0 „Stance“ – Ego-Haltungen, Abläufe, Laufen/Sprint, Bildanteil (Branch `claude/ballon-0.35-stance`)
 
 - Haltungen nach Motiongen REF 0.35 „Backblast“ / REF 0.37 „Verdict“: Hüfte MG/Spur/LFR, Raketenwerfer über der Schulter, Sprint je Klasse,
