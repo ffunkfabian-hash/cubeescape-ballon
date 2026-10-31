@@ -97,6 +97,8 @@ namespace Ballon.Ego
         public float tracer_mps, tracer_m, tracer_w_m;
         public float muzzle_glow_s, trail_step_m, trail_life_s, spark_hz;   // Mündungslicht, Spur der Projektile, Funken am Dauerstrahl
         public int scorch_every;                         // Dauerstrahl: Brandfleck je n. Takt
+        public int shot_impacts;                         // 0.34.1: sichtbare Einschläge je Streuschuss (0 = je Kugel)
+        public float pulse_hz;                           // 0.34.1: Pulsen des Dauerstrahls; 0 (älterer Export) = 6
         public float cone_deg, cone_ads, speed_mps, gravity_mps2, life_s, radius_m, smoke_s, width_m, length_m, beam_s, stick_s, muzzle_glow_m;
         public bool Projectile => kind == "projectile" || kind == "arrow";
         public bool Explodes => impact == "explosion";
@@ -280,7 +282,22 @@ namespace Ballon.Ego
     /// <summary>Gemeinsame Werte der Wirkung (0.34, ego.DECAL, IMPACTS, EXPLOSION, MUZZLE_SMOKE).</summary>
     [Serializable] public class EgoPayload { public EgoDecal decal; public EgoImpact[] impacts; public EgoExplosion explosion; public EgoSmoke muzzle_smoke; }
     [Serializable] public class EgoDecal { public float size_m, life_s, fade_s, scorch_m; public int max, variants, scorch_max; public string src; }
-    [Serializable] public class EgoImpact { public string name, decal, src; public int sparks, dust; public float spark_mps, spark_s, dust_m, dust_s, glow_m, glow_s; }
+    [Serializable]
+    public class EgoImpact
+    {
+        public string name, decal, src, dust_color;      // dust_color (0.34.1): Staub bzw. dunkle Säule; leer = Grau
+        public int sparks, dust; public float spark_mps, spark_s, dust_m, dust_s, glow_m, glow_s, dust_rise_mps;
+        [NonSerialized] Color _dust; [NonSerialized] bool _hasDust;
+        /// <summary>Farbe des Staubs (einmal gelesen, kein Speicher je Einschlag).</summary>
+        public Color DustColor
+        {
+            get
+            {
+                if (!_hasDust) { _dust = ColorUtility.TryParseHtmlString(dust_color ?? "", out var c) ? c : new Color(0.62f, 0.62f, 0.62f); _hasDust = true; }
+                return _dust;
+            }
+        }
+    }
     [Serializable]
     public class EgoExplosion { public float flash_s, flash_k, ring_s, ring_k, spark_mps, spark_s, smoke_s, smoke_k, light_s, light_k;
                                 public int sparks, smoke, fire; public float fire_s, fire_k;   // fire: Feuerkugeln (Anzahl, Dauer, Größe zum Radius)
@@ -509,6 +526,7 @@ namespace Ballon.Ego
                 gameplay.fx = new EgoFx { kind = gameplay.HasPortals ? "none" : "hitscan", impact = gameplay.HasPortals ? "" : "bullet", cone_ads = 1,
                                           trail = "", color = "", tracer_color = "", src = "vor 0.34" };
             if (weapon.eject != null && weapon.eject.speed_k <= 0) weapon.eject.speed_k = 1;
+            if (gameplay.fx.pulse_hz <= 0) gameplay.fx.pulse_hz = 6;
             if (weapon.eject != null && weapon.eject.life_k <= 0) weapon.eject.life_k = 1;
             if (weapon.eject != null && weapon.eject.links == null) weapon.eject.links = new WeaponEjectLinks();
             if (weapon.eject?.links != null && weapon.eject.links.enabled && (weapon.eject.links.verts == null || weapon.eject.links.verts.Length == 0))

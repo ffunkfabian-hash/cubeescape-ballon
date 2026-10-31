@@ -342,11 +342,12 @@ namespace Ballon.Ego
                 ep.startColor = sc;
                 _sparks.Emit(ep, 1);
             }
-            var dc = new Color(0.62f, 0.62f, 0.62f, 0.75f);
-            for (int k = 0; k < I.dust; k++)
+            var dc = I.DustColor;
+            dc.a = 0.75f;
+            for (int k = 0; k < I.dust; k++)                              // Staub bzw. dunkle Säule (steigt mit dust_rise_mps, 0.34.1)
             {
-                ep.position = point + normal * R(0.02f, 0.06f);
-                ep.velocity = Hemi(normal, 0.5f) * R(0.3f, 0.9f);
+                ep.position = point + normal * R(0.02f, 0.06f) + Vector3.up * I.dust_m * k * 0.5f;
+                ep.velocity = Hemi(normal, 0.5f) * R(0.3f, 0.9f) * (I.dust_rise_mps > 0 ? 0.3f : 1f) + Vector3.up * I.dust_rise_mps * R(0.7f, 1.2f);
                 ep.startLifetime = I.dust_s * R(0.7f, 1.2f);
                 ep.startSize = I.dust_m * R(0.6f, 1.1f);
                 ep.startColor = dc;
@@ -716,7 +717,7 @@ namespace Ballon.Ego
             var fxA = _p.loadouts[active].rig.S.D.gameplay.fx;
             if (beamOn && fxA.kind == "beam")
             {
-                _beamFlicker += dt * 37f;
+                _beamFlicker += dt * 2 * Mathf.PI * fxA.pulse_hz;           // Pulsen des Kontakts (REF 0.36: 12/s)
                 float fl = 0.82f + 0.18f * Mathf.Sin(_beamFlicker) * Mathf.Sin(_beamFlicker * 0.37f + 1.3f);
                 _beam.SetPosition(0, MuzzleWorld(active));
                 _beam.SetPosition(1, _beamEnd);
@@ -835,6 +836,7 @@ namespace Ballon.Ego
                 ep.startColor = new Color(1f, 0.6f, 0.3f) * 4f;
                 _glow.Emit(ep, 1);
             }
+            if (fx.trail_life_s <= 0) { _projTrail[j] = 0; return; }       // ohne Spur (0.34.1: Destiny ohne Schweif/Rauchzopf)
             for (; _projTrail[j] >= step; _projTrail[j] -= step)
             {
                 float back = _projTrail[j] - step;

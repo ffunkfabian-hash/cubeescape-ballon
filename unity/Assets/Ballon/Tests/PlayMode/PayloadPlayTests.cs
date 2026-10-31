@@ -123,10 +123,10 @@ namespace Ballon.Ego.Tests
             finally { Done(p, wall); }
         }
 
-        /// <summary>Raketenwerfer: die Rakete fliegt gerade (Fall 0) mit Rauchspur, aus dem Rohr steigt Rauch, an der Wand (15 m) die
-        /// Explosion; Rauch aus dem Rohr länger als beim Granatwerfer (smoke_s).</summary>
+        /// <summary>Raketenwerfer: die Rakete fliegt gerade (Fall 0) als Glühpunkt ohne Rauchzopf (0.34.1, REF 0.36), aus dem Rohr steigt
+        /// Rauch, an der Wand (15 m) die Explosion.</summary>
         [UnityTest]
-        public IEnumerator Raketenwerfer_Rakete_gerade_mit_Rauchspur_und_Explosion()
+        public IEnumerator Raketenwerfer_Rakete_gerade_ohne_Rauchzopf_und_Explosion()
         {
             var p = Setup("rocket_launcher", 15f, out var wall);
             var F = p.C.S.D.gameplay.fx;
@@ -142,7 +142,8 @@ namespace Ballon.Ego.Tests
                 for (int f = 0; f < 5; f++) yield return null;
                 Assert.IsTrue(p.fx.FirstProjectile(out _, out var v1), "Rakete fliegt noch");
                 Assert.AreEqual(v0.y, v1.y, 1e-3f, "gerade Bahn");
-                Assert.Greater(p.fx.Smoke, smoke0, "Rauchspur");
+                Assert.AreEqual(0, p.fx.Smoke, "kein Rauchzopf (trail_life_s 0)");
+                Assert.Greater(p.fx.Glow, 0, "Glühpunkt am Heck");
                 Assert.Greater(p.fx.MuzzleSmoke(p.arsenal.Active), 0, "Rauch aus dem Rohr");
                 for (int f = 0; f < 30 && p.fx.explosions == 0; f++) yield return null;
                 Assert.AreEqual(1, p.fx.explosions);
@@ -251,32 +252,46 @@ namespace Ballon.Ego.Tests
         }
 
         // ------------------------------------------------------------------------------------------------ Einschläge
-        /// <summary>Schrotflinte: ein Schuss = gameplay.fx.pellets Einschläge und Löcher an der Wand (8 m), alle im Streukegel (cone_deg
-        /// plus Hüftstreuung), das Muster breiter als die Hälfte des Kegels (kein Punkt).</summary>
+        /// <summary>Schrotflinte (0.34.1, REF 0.36: im Bild ein Einschlag je Schuss, Nutzerentscheid 181): ein Schuss zeigt EINEN dichten
+        /// Einschlag (Funkenball, Rauchball) mit einem Loch; die 12 Kugeln liegen im Streukegel (cone_deg), gestreut statt in einem Punkt,
+        /// und treffen (eine Scheibe neben der Mitte zählt als Treffer).</summary>
         [UnityTest]
-        public IEnumerator Schrot_Streuschuss_mit_mehreren_Einschlaegen()
+        public IEnumerator Schrot_ein_Einschlag_je_Schuss_Kugeln_im_Kegel()
         {
             var p = Setup("shotgun", 8f, out var wall);
             var F = p.C.S.D.gameplay.fx;
+            GameObject side = null;
             try
             {
                 Assert.AreEqual(12, F.pellets);
+                Assert.AreEqual(1, F.shot_impacts, "ein sichtbarer Einschlag je Schuss");
+                var cam = p.worldCam.transform;
+                float widest = 0;
+                for (int i = 1; i < F.pellets; i++)
+                    widest = Mathf.Max(widest, Vector3.Angle(cam.forward, EgoPlayer.PelletDir(cam.forward, cam.up, cam.right, i, F.pellets, F.cone_deg, 17f)));
+                Assert.LessOrEqual(widest, F.cone_deg + 1e-3f, "Kugeln im Kegel");
+                Assert.Greater(widest, 0.5f * F.cone_deg, "gestreut, nicht ein Punkt");
+                // Scheibe neben der Mitte (außerhalb der mittleren Kugel, im äußeren Ring): nur die Kugeln treffen sie
+                side = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                side.transform.SetPositionAndRotation(cam.position + cam.forward * 6f + cam.right * 0.36f, cam.rotation);
+                side.transform.localScale = new Vector3(0.28f, 1.2f, 0.05f);   // x 0,22–0,50 m: äußerer Ring (0,31 m), nicht die Mitte
+                side.AddComponent<RangeTarget>();
+                Physics.SyncTransforms();
                 yield return null;
-                int holes0 = wall.transform.childCount;
+                int holes0 = wall.transform.childCount, hits0 = p.hits;
                 p.input = new ScriptedInput().Add(0, 0.1f, hold: "fire").Add(0.1f, 1000);
                 for (int f = 0; f < 60 && p.fx.impacts == 0; f++) yield return null;
-                Assert.AreEqual(F.pellets, p.fx.impacts, $"ein Einschlag je Kugel (Schüsse {p.C.shots}, Löcher {wall.transform.childCount - holes0})");
-                Assert.AreEqual(F.pellets, wall.transform.childCount - holes0, "ein Loch je Kugel");
-                var cam = p.worldCam.transform.position;
-                float lim = F.cone_deg + p.C.S.D.motion.recoil.spread_hip_deg + 0.5f;
-                var dirs = Enumerable.Range(0, wall.transform.childCount).Select(i => (wall.transform.GetChild(i).position - cam).normalized).ToList();
-                var mean = dirs.Aggregate(Vector3.zero, (a, b) => a + b).normalized;
-                float widest = dirs.Max(d => Vector3.Angle(d, mean));
-                TestContext.WriteLine($"Schrot: {dirs.Count} Löcher, weitester Abstand zur Mitte {widest:0.00}° (Kegel {F.cone_deg}°)");
-                Assert.LessOrEqual(widest, lim, "im Streukegel");
-                Assert.Greater(widest, 0.5f * F.cone_deg, "gestreut, nicht ein Punkt");
+                TestContext.WriteLine($"Schrot: {p.fx.impacts} Einschlag, {wall.transform.childCount - holes0} Loch, Funken {p.fx.Sparks}, Treffer {p.hits - hits0}");
+                Assert.AreEqual(1, p.fx.impacts, "ein Einschlag je Schuss");
+                Assert.AreEqual(1, wall.transform.childCount - holes0, "ein Loch");
+                Assert.GreaterOrEqual(p.fx.Sparks, 20, "dichter Funkenball");
+                Assert.AreEqual(1, p.hits - hits0, "die Kugeln treffen die Scheibe neben der Mitte (einmal gezählt)");
             }
-            finally { Done(p, wall); }
+            finally
+            {
+                if (side != null) side.SetActive(false);
+                Done(p, wall);
+            }
         }
 
         /// <summary>Einschlag je Kugelklasse (Automatik, Scout, MP, Impuls, Handfeuerwaffe, Seitenwaffe, Scharfschütze, MG): Funken,

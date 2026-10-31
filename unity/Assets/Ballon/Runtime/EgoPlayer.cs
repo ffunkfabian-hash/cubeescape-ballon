@@ -425,10 +425,10 @@ namespace Ballon.Ego
                 float cone = F.cone_deg * Mathf.Lerp(1, F.cone_ads, C.adsWeight);
                 float turn = (float)(_rng.NextDouble() * 360);
                 bool any = false;
-                for (int i = 0; i < F.pellets; i++)
+                for (int i = 0; i < F.pellets; i++)             // shot_impacts 1 (0.34.1): alle Kugeln treffen, sichtbar nur die mittlere
                 {
                     var d = PelletDir(dir, cam.up, cam.right, i, F.pellets, cone, turn);
-                    any |= Bullet(d, range, F, k, i == 0 || !any);
+                    any |= Bullet(d, range, F, k, i == 0 || !any, F.shot_impacts <= 0 || i < F.shot_impacts);
                 }
                 return;
             }
@@ -450,8 +450,9 @@ namespace Ballon.Ego
         }
 
         /// <summary>Ein Strahl ohne Flugzeit (Kugel, Schrotkugel, Strahl, Bolzen): Treffer an der Scheibe, Einschlag, je Klasse der Strahl
-        /// oder Bolzen dazu. count = Treffer zählen (Schrot: einmal je Schuss). true, wenn eine Scheibe getroffen wurde.</summary>
-        bool Bullet(Vector3 dir, float range, EgoFx F, int k, bool count)
+        /// oder Bolzen dazu. count = Treffer zählen (Schrot: einmal je Schuss); visible = Einschlag zeigen (Schrot 0.34.1: nur die mittlere
+        /// Kugel). true, wenn eine Scheibe getroffen wurde.</summary>
+        bool Bullet(Vector3 dir, float range, EgoFx F, int k, bool count, bool visible = true)
         {
             var G = C.S.D.gameplay;
             var cam = worldCam.transform;
@@ -489,7 +490,7 @@ namespace Ballon.Ego
                 if (count) hits++;
                 _hitX = AdsFeedback.HitXMinS;
             }
-            if (fx != null && F.kind != "bolts" && F.kind != "none")     // Bolzen schlagen erst bei der Ankunft ein (WeaponFx)
+            if (fx != null && visible && F.kind != "bolts" && F.kind != "none")     // Bolzen schlagen erst bei der Ankunft ein (WeaponFx)
             {
                 var I = C.S.D.Impact(F.impact);
                 if (F.kind == "beam" && F.scorch_every > 1 && C.shots % F.scorch_every != 0)                 // Dauerstrahl: Brand je n. Schuss
