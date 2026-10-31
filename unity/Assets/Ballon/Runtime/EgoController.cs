@@ -321,7 +321,8 @@ namespace Ballon.Ego
                     if (m.name == "ShellIn") ammo = Mathf.Min(magSize, ammo + 1);              // Einzelladen (0.33 P3): eine Patrone
                     if (m.name == "Nocked" && S.D.gameplay.Draw) _t.busy = false;               // Bogen (0.33 P4): Pfeil liegt auf, neu spannen
                     if (m.name == "Eject" && S.Ejects && S.D.weapon.eject.on == "reload")       // Trommel (0.33 P4, 0.34): beim Nachladen je
-                        _pendingReload += WeaponFx.Off ? (S.D.gameplay.Cycles ? 1 : 0) : ReloadShells;                                          // verschossene Kammer eine Hülse
+                        _pendingReload += WeaponFx.Off ? (S.D.gameplay.Cycles ? 1 : 0) : ReloadShells;   // Gegenprobe: wie bis 0.33 (Trommel des
+                                                                                                          // Granatwerfers eine je Eject)                                          // verschossene Kammer eine Hülse
                     else if (m.name == "Eject" && S.Ejects && S.D.gameplay.Cycles) _pendingShells++;  // Repetierer, Pumpe: Hülse beim Zurückziehen
                     Marker?.Invoke(_t.A.name, m.name);
                 }
@@ -968,8 +969,9 @@ namespace Ballon.Ego
         /// <summary>Füllstand (0.34, weapon.live.rounds) für das Modell: Gurt (line) Satz i an, solange mehr als i Patronen da sind; Trommel
         /// (drum) je Kammer – ein Schuss leert die Laufkammer, eine geladene Patrone füllt die Ladekammer, springt die Trommel zurück
         /// (fire_cycle, Laden), rückt der Zustand eine Kammer weiter (k → k + 1). Weicht die Zahl geladener Kammern von der Munition ab
-        /// (Test setzt ammo, Abbruch), wird in Schussfolge aufgefüllt bzw. von hinten geleert. Beim Nachladen ist die Ladekammer immer zu
-        /// sehen (die Granate kommt in der Hand). Kein Speicher je Bild.</summary>
+        /// (Test setzt ammo, Abbruch), wird in Schussfolge aufgefüllt bzw. von hinten geleert; beim Zurückspringen nach dem Schuss (fire_cycle)
+        /// werden die Kammern in Schussfolge geordnet (nach teilweisem Nachladen). Beim Nachladen ist die Ladekammer immer zu sehen (die
+        /// Granate kommt in der Hand). Kein Speicher je Bild.</summary>
         void Rounds(EgoOutput o)
         {
             var R = S.D.weapon.live.rounds;
@@ -980,19 +982,28 @@ namespace Ballon.Ego
                 for (int k = 0; k < n; k++) o.roundOn[k] = S.D.gameplay.Unlimited || ammo > k;
                 return;
             }
-            if (_roundsAmmo < 0) { for (int k = 0; k < n; k++) _chamber[k] = k < ammo; _roundsAmmo = ammo; }
+            if (_roundsAmmo < 0) { InFiringOrder(); _roundsAmmo = ammo; }
             _mech.TryGetValue(R.drum, out float drum);
             if (_drumPrev > 0.5f && drum < 0.5f)                        // Trommel springt zurück: Inhalt eine Kammer weiter
             {
                 bool last = _chamber[n - 1];
                 for (int k = n - 1; k > 0; k--) _chamber[k] = _chamber[k - 1];
                 _chamber[0] = last;
+                // Nach dem Schuss (fire_cycle) in Schussfolge ordnen: nach vollem Nachladen und Schüssen ändert das nichts; nach einem
+                // teilweisen Nachladen (das Laden dreht in Schussrichtung, die geladenen Kammern liegen dann nicht in Schussfolge) fällt
+                // der Wechsel in die Drehung, danach leert jeder Schuss sichtbar die Laufkammer
+                if (_t.A.name.StartsWith("fire_cycle", StringComparison.Ordinal)) InFiringOrder();
             }
             _drumPrev = drum;
             for (; _roundsAmmo > ammo; _roundsAmmo--) Take(R.barrel, -1, false);   // Schuss: Laufkammer, sonst die nächste in Schussfolge
             for (; _roundsAmmo < ammo; _roundsAmmo++) Take(R.gate, -1, true);      // Laden: Ladekammer, sonst die nächste davor
-            bool loading = _t.A.name.StartsWith("reload");
+            bool loading = _t.A.name.StartsWith("reload", StringComparison.Ordinal);
             for (int k = 0; k < n; k++) o.roundOn[k] = _chamber[k] || (loading && k == R.gate);
+
+            void InFiringOrder()                                         // geladen: die ammo Kammern, die als nächste in den Lauf kommen
+            {
+                for (int k = 0; k < n; k++) _chamber[k] = ((R.barrel - k) % n + n) % n < ammo;
+            }
 
             void Take(int start, int dir, bool fill)
             {

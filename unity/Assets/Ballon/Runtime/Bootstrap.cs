@@ -221,6 +221,7 @@ namespace Ballon.Ego
         public void RemoveScene(int i)
         {
             if (CurrentScene == i) ShowScene(-1);
+            Player.fx?.Clear();                                     // Löcher, Brandflecken, Pfeile hängen evtl. an der Szene (0.34)
             if (_scenes[i].loaded != null) Destroy(_scenes[i].loaded.root.gameObject);
             _scenes.RemoveAt(i);
             if (CurrentScene > i) CurrentScene--;
@@ -251,6 +252,7 @@ namespace Ballon.Ego
         {
             if (i < -1 || i >= _scenes.Count) throw new ArgumentOutOfRangeException(nameof(i), $"Szene {i} (von {_scenes.Count})");
             if (i == CurrentScene) return;
+            Player.fx?.Clear();                                     // 0.34: Wirkung bleibt nicht in der verlassenen Szene hängen
             if (CurrentScene >= 0 && _scenes[CurrentScene].loaded != null) _scenes[CurrentScene].loaded.root.gameObject.SetActive(false);
             CurrentScene = i;
             var cam = Player.worldCam;

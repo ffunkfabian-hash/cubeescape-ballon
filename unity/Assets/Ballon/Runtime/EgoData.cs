@@ -95,6 +95,8 @@ namespace Ballon.Ego
         public string kind, impact, trail, color, tracer_color, src;
         public int pellets, tracer_every;                // tracer_every: jeder n-te Schuss mit Leuchtspur (0 = keine)
         public float tracer_mps, tracer_m, tracer_w_m;
+        public float muzzle_glow_s, trail_step_m, trail_life_s, spark_hz;   // Mündungslicht, Spur der Projektile, Funken am Dauerstrahl
+        public int scorch_every;                         // Dauerstrahl: Brandfleck je n. Takt
         public float cone_deg, cone_ads, speed_mps, gravity_mps2, life_s, radius_m, smoke_s, width_m, length_m, beam_s, stick_s, muzzle_glow_m;
         public bool Projectile => kind == "projectile" || kind == "arrow";
         public bool Explodes => impact == "explosion";
@@ -509,6 +511,8 @@ namespace Ballon.Ego
             if (weapon.eject != null && weapon.eject.speed_k <= 0) weapon.eject.speed_k = 1;
             if (weapon.eject != null && weapon.eject.life_k <= 0) weapon.eject.life_k = 1;
             if (weapon.eject != null && weapon.eject.links == null) weapon.eject.links = new WeaponEjectLinks();
+            if (weapon.eject?.links != null && weapon.eject.links.enabled && (weapon.eject.links.verts == null || weapon.eject.links.verts.Length == 0))
+                weapon.eject.links.enabled = false;
             var L = weapon.live;
             if (L.index == null) L.index = new string[0];
             if (L.fill == null) L.fill = new string[0];
@@ -516,12 +520,13 @@ namespace Ballon.Ego
             if (L.rounds.sets == null) L.rounds.sets = new EgoRoundSet[0];
             if (motion.index == null || motion.index.frames <= 0) motion.index = new EgoIndex { frames = 3, share = 0.8f, src = "vor 0.34" };
             var P = motion.payload ??= new EgoPayload();
-            P.decal ??= new EgoDecal { size_m = 0.05f, max = 80, life_s = 1e9f, fade_s = 1, variants = 1, scorch_m = 1.4f, scorch_max = 8, src = "vor 0.34" };
+            // JsonUtility legt fehlende Klassenfelder als leere Objekte an, nicht als null: nach Werten prüfen (Richter 0.34)
+            if (P.decal == null || P.decal.max <= 0) P.decal = new EgoDecal { size_m = 0.05f, max = 80, life_s = 1e9f, fade_s = 1, variants = 1, scorch_m = 1.4f, scorch_max = 8, src = "vor 0.34" };
             P.impacts ??= new EgoImpact[0];
-            P.explosion ??= new EgoExplosion { flash_s = 0.12f, flash_k = 1.3f, fire = 10, fire_s = 0.45f, fire_k = 0.75f, ring_s = 0.35f, ring_k = 0.9f, sparks = 40, spark_mps = 14, spark_s = 0.7f,
+            if (P.explosion == null || P.explosion.sparks <= 0) P.explosion = new EgoExplosion { flash_s = 0.12f, flash_k = 1.3f, fire = 10, fire_s = 0.45f, fire_k = 0.75f, ring_s = 0.35f, ring_k = 0.9f, sparks = 40, spark_mps = 14, spark_s = 0.7f,
                                                smoke = 14, smoke_s = 2.6f, smoke_k = 0.55f, light_s = 0.18f, light_k = 4, core_color = "#FFF2D6",
                                                fire_color = "#FF8A3C", smoke_color = "#5A5D63", ring_color = "#FFE2B8" };
-            P.muzzle_smoke ??= new EgoSmoke { rate_hz = 9, puff_m = 0.05f, grow = 3, rise_mps = 0.1f, life_s = 1.3f, alpha = 0.35f, color = "#C9CCD1" };
+            if (P.muzzle_smoke == null || P.muzzle_smoke.rate_hz <= 0) P.muzzle_smoke = new EgoSmoke { rate_hz = 9, puff_m = 0.05f, grow = 3, rise_mps = 0.1f, life_s = 1.3f, alpha = 0.35f, color = "#C9CCD1" };
         }
 
         /// <summary>Einschlagstil nach Namen (motion.payload.impacts), null ohne.</summary>

@@ -470,8 +470,7 @@ namespace Ballon.Ego
                               hitSome ? hit.collider.transform : null, false);
                 }
                 else if (F.tracer_every > 0 && C.shots % F.tracer_every == 0)   // Leuchtspur jeder n-te Schuss
-                    fx.Streak(muzzle, end, nrm, F.tracer_mps, F.tracer_m, F.tracer_w_m,
-                              ColorUtility.TryParseHtmlString(F.tracer_color, out var tc) ? tc : Color.white, null, null, true);
+                    fx.Streak(muzzle, end, nrm, F.tracer_mps, F.tracer_m, F.tracer_w_m, fx.Tracer(k), null, null, true);
             }
             if (!hitSome) return false;
             if (G.HasPortals && C.LastPortal >= 0)
@@ -493,14 +492,15 @@ namespace Ballon.Ego
             if (fx != null && F.kind != "bolts" && F.kind != "none")     // Bolzen schlagen erst bei der Ankunft ein (WeaponFx)
             {
                 var I = C.S.D.Impact(F.impact);
-                if (F.kind == "beam" && C.shots % 3 != 0) fx.Impact(I, hit.point, hit.normal, dir, energy, true, null);   // Dauerstrahl: Brand je 3. Schuss
+                if (F.kind == "beam" && F.scorch_every > 1 && C.shots % F.scorch_every != 0)                 // Dauerstrahl: Brand je n. Schuss
+                    fx.Impact(I, hit.point, hit.normal, dir, energy, true, null);
                 else fx.Impact(I, hit.point, hit.normal, dir, energy, I != null && I.decal == "scorch", hit.collider.transform);
             }
             return t != null;
         }
 
-        /// <summary>Dauerstrahl läuft (Spurgewehr, 0.34): Abzug gezogen und der letzte Schuss liegt weniger als 0,15 s zurück.</summary>
-        public bool BeamOn => C.S.D.gameplay.Beam && C.TriggerHeld && C.SinceShot < 0.15f && C.shots > 0;
+        /// <summary>Dauerstrahl läuft (Spurgewehr, 0.34): Abzug gezogen und der letzte Schuss liegt weniger als gameplay.fx.beam_s zurück.</summary>
+        public bool BeamOn => C.S.D.gameplay.Beam && C.TriggerHeld && C.SinceShot < C.S.D.gameplay.fx.beam_s && C.shots > 0;
 
         /// <summary>Treffer eines Projektils oder einer Explosion an einer Scheibe (WeaponFx): zählt wie ein Treffer mit Treffer-X.</summary>
         public void ProjectileHit()
@@ -513,6 +513,9 @@ namespace Ballon.Ego
         /// <summary>Kantenlänge des Einschusslochs in m und Größe des Pools (motion.payload.decal, WeaponFx setzt sie beim Start).</summary>
         public static float DecalSize = 0.05f;
         public static int DecalMax = 96;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatics() { DecalSize = 0.05f; DecalMax = 96; }   // ohne Domain-Reload (Richter 0.34)
 
         public void Teleport(Vector3 pos, float yaw, float pitch = 0)
         {

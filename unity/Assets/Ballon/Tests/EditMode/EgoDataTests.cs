@@ -425,6 +425,9 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("vor 0.34", o.gameplay.fx.src, "älterer Export: Wirkung aus dem Leser");
             Assert.AreEqual(o.gameplay.HasPortals ? "none" : "hitscan", o.gameplay.fx.kind);
             Assert.AreEqual(0, o.weapon.live.index.Length + o.weapon.live.fill.Length + o.weapon.live.rounds.sets.Length, "ohne Schrittteile, Füllstand");
+            Assert.Greater(o.motion.payload.decal.max, 0, "Rückfall der Löcher (JsonUtility legt leere Objekte an, Richter 0.34)");
+            Assert.Greater(o.motion.payload.explosion.sparks, 0, "Rückfall der Explosion");
+            Assert.Greater(o.motion.payload.muzzle_smoke.rate_hz, 0, "Rückfall des Laufrauchs");
             o.gameplay.fx = n.gameplay.fx;
             o.motion.index = n.motion.index;
             o.motion.payload = n.motion.payload;

@@ -266,9 +266,13 @@ Datenexport laufen lassen (`BALLON_EXPORT_DATA_ONLY=1`, ohne Backen).
 | 9m | Revolver-Hülsen | Revolver werfen beim Nachladen aus (Wingman, .357, Annual Skate) [O] | Handfeuerwaffe: beim Marker Eject je verschossene Kammer eine Hülse aus der ausgeschwenkten Trommel; Trommel dreht nach jedem Schuss eine Kammer (0,1 s) | Drehzeitpunkt (Schuss oder Spannen) |
 | 9n | Füllstand | – | Granatwerfer: Kopf je Kammer an/aus (Hülse bleibt); MG: Gurt leert sich von unten (4 Patronen), Zählfenster 5 Zellen, Gurtglied je Schuss, Gurtvorschub je Schuss | – |
 
-Bekannte Grenze (9n): Das Nachladen des Granatwerfers dreht die Trommel in Schussrichtung weiter; nach einem **teilweisen** Nachladen liegen
-die geladenen Kammern deshalb nicht in Schussfolge. Unity leert dann beim Schuss die nächste geladene Kammer in Schussfolge statt der
-Laufkammer (sichtbar nur im Kammerfenster). Abhilfe wäre ein Nachladeablauf mit Gegendrehung – Animationsthema für 0.35 „Stance“.
+Granatwerfer nach **teilweisem** Nachladen (9n): Das Laden dreht die Trommel in Schussrichtung weiter, die geladenen Kammern liegen dann
+nicht in Schussfolge (physikalisch stimmig nur beim vollen Nachladen). Unity ordnet die Kammern beim ersten Weiterdrehen nach dem Schuss
+(`fire_cycle`) in Schussfolge – der Wechsel fällt in die Drehung, danach leert jeder Schuss sichtbar die Laufkammer (Test). Ein Ablauf mit
+Gegendrehung bleibt ein Animationsthema für 0.35 „Stance“.
+Revolver-Hülsen (9m): die Nachladehaltung der Handfeuerwaffe liegt 5 cm höher (E), damit Trommelende und Hülsen im Bild liegen.
+Weitere Daten (Richter 0.34): Spur der Projektile `trail_step_m`/`trail_life_s` (Rakete 0,18 m / 1,8 s, Granate 0,30 m / 0,65 s, Pfeil
+0,35 m / 0,18 s), Dauerstrahl `beam_s` 0,15 s, Brandfleck je 3. Takt, Funken 40/s, Mündungslicht 0,10 s – alle E.
 
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)
 

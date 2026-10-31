@@ -8,6 +8,10 @@
   vier Formen, Ausblenden, Pool 96); MG-Leuchtspur.
 - Modell: Trommel der Handfeuerwaffe dreht je Schuss, Hülsen beim Nachladen; MG-Gurtglied und Gurtvorschub je Schuss, Gurt und
   Zählfenster zeigen den Füllstand; Granatwerfer-Kammern geladen/leer (neue Teile in w13/w15, nur diese neu gebacken).
+- Abnehmer der Specs: `grenades`/`grenade_bands` sind jetzt nur Kammer 0 (Kammern 1–4: `grenade_k1–4`, `grenade_band_k1–4`),
+  `grenade_cases` hängt an `drum`; `belt`/`belt_links` sind nur die oberste Patrone (`belt_round_2–4`, `belt_link_2–4`); `box_counter`
+  ist Graphit (Leuchtzellen `counter_cell_1–5`). Keine ID umbenannt.
+- Handfeuerwaffe: Nachladehaltung 5 cm höher (Hülsen im Bild).
 - Alle Werte als Daten in `basic/arms/ego.py` (PAYLOAD, IMPACTS, DECAL, EXPLOSION, MUZZLE_SMOKE, INDEX) → `ego.json`, Entwurf E,
   Entscheidungsliste Block 9; Bericht [docs/versions/0.34-payload.md](docs/versions/0.34-payload.md).
 

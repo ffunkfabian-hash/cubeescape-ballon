@@ -495,7 +495,10 @@ MUZZLE_SMOKE = dict(rate_hz=9.0, puff_m=0.05, grow=3.0, rise_mps=0.10, life_s=1.
 # (ein scharfer Strahl je Schuss), none. color '' = Leuchtfarbe der Waffe (erste Rolle von EGO_LIVE glow).
 PAYLOAD_DEFAULTS = dict(kind='hitscan', impact='bullet', pellets=0, cone_deg=0.0, cone_ads=1.0, speed_mps=0.0, gravity_mps2=0.0,
                         life_s=0.0, radius_m=0.0, smoke_s=0.0, trail='', width_m=0.0, length_m=0.0, beam_s=0.0, stick_s=0.0,
-                        muzzle_glow_m=0.0, color='', tracer_every=0, tracer_mps=0.0, tracer_m=0.0, tracer_w_m=0.0, tracer_color='')
+                        muzzle_glow_m=0.0, muzzle_glow_s=0.10, color='', tracer_every=0, tracer_mps=0.0, tracer_m=0.0, tracer_w_m=0.0,
+                        tracer_color='', trail_step_m=0.0, trail_life_s=0.0, scorch_every=1, spark_hz=0.0)
+# Spur hinter Projektilen (trail_step_m Abstand der Ballen, trail_life_s ihre Dauer); Dauerstrahl: beam_s = Strahl hält nach dem letzten
+# Takt, scorch_every = Brandfleck je n. Takt, spark_hz = Funken je Sekunde am Kontakt; muzzle_glow_s = Dauer des Mündungslichts
 # Leuchtspur (hitscan): jeder tracer_every-te Schuss zeigt einen Strich (tracer_m lang, tracer_mps schnell) von der Mündung zum Einschlag
 TRACER_MG = dict(tracer_every=3, tracer_mps=320.0, tracer_m=2.4, tracer_w_m=0.018, tracer_color='#FFC27A')
 PAYLOAD = {
@@ -512,15 +515,15 @@ PAYLOAD = {
                     src='E: 12 Kugeln gleichmäßig im Kegel 3,0° (halber Öffnungswinkel; Zielen × 0,75), ein Ring um die Mitte; Destiny-Schrot '
                         '12 Kugeln (Community-Wert, nicht gemessen), Pelletmuster offen (Motiongen destiny2 › Methode 16)'),
     'grenade_launcher': dict(kind='projectile', impact='explosion', speed_mps=42.0, gravity_mps2=7.0, life_s=4.0, radius_m=3.0, smoke_s=1.4,
-                             trail='grenade', width_m=0.045, length_m=0.07,
+                             trail='grenade', width_m=0.045, length_m=0.07, trail_step_m=0.30, trail_life_s=0.65,
                              src='E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), Explosion Radius 3 m, Rauch aus dem Lauf 1,4 s; '
                                  'Destiny: Geschoss sichtbar 3 Bilder bei 60/s, Einschlag 0,13 s nach dem Blitz (FalloutPlays, destiny2 › 2: '
                                  'Granatwerfer 2 Schuss), Ignition Code sichtbare Spur 6 Bilder – keine reine Flugzeit'),
     'rocket_launcher': dict(kind='projectile', impact='explosion', speed_mps=34.0, gravity_mps2=0.0, life_s=5.0, radius_m=4.5, smoke_s=2.0,
-                            trail='rocket', width_m=0.07, length_m=0.42,
+                            trail='rocket', width_m=0.07, length_m=0.42, trail_step_m=0.18, trail_life_s=1.8,
                             src='E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m, Rauchspur, Rauch aus dem Rohr 2 s; '
                                 'Destiny: große Explosion 0,45 s nach dem Blitz (Motiongen destiny2 › z-ballista-blue-shift), keine reine Flugzeit'),
-    'trace_rifle': dict(kind='beam', impact='energy', width_m=0.045, muzzle_glow_m=0.05,
+    'trace_rifle': dict(kind='beam', impact='energy', width_m=0.045, muzzle_glow_m=0.05, beam_s=0.15, scorch_every=3, spark_hz=40.0,
                         src='E: durchgehender Strahl 4,5 cm vom Lauf zum Einschlag, solange der Abzug zieht, flackernd; Destiny Prometheus Lens: '
                             'Strahl ≈ 9–12 % B, Mündungslicht ≈ 8 %, Strahl und Kontakt beginnen gemeinsam (destiny2 › z-ballista-prometheus-lens)'),
     'fusion_rifle': dict(kind='bolts', impact='energy', speed_mps=110.0, width_m=0.05, length_m=2.5, muzzle_glow_m=0.06,
@@ -530,7 +533,7 @@ PAYLOAD = {
                                 src='E: ein scharfer Strahl je Schuss, 0,22 s sichtbar und schmaler werdend; Destiny Threaded Needle: diffuse '
                                     'Ring-/Aufhellungsphase ohne isolierten Kern (Motiongen muendung › 7)'),
     'combat_bow': dict(kind='arrow', impact='arrow', speed_mps=70.0, gravity_mps2=4.0, life_s=3.0, stick_s=4.0, width_m=0.008, length_m=0.70,
-                       muzzle_glow_m=0.05,
+                       muzzle_glow_m=0.05, trail_step_m=0.35, trail_life_s=0.18,
                        src='E: Pfeil 70 m/s mit leichter Fallkurve, steckt 4 s, Leuchtspur; beim Lösen ein Lichtpuls an der Auflage; Destiny '
                            'Imperial Needle: blauer Entladefächer 2 Bilder ≈ 22 % beim Lösen (destiny2 › z-ballista-imperial-needle), Pfeilfall '
                            'und Steckdauer offen'),
@@ -701,10 +704,10 @@ CLASSES = {
             sprint=dict(pos=(-0.10, -0.36, -0.15), aim=(-0.02, -0.8, 1.6), roll=0,
                         src='M Destiny-Handfeuerwaffe Sprint: Waffe senkrecht, Lauf am oberen Rand, Körper 62–70 % B, hoch rechts (Motiongen '
                             'destiny2:562/467); Lage E, gerechnet Mündung 68,4/10,8 %, Körper 66–72 % B'),
-            reload=dict(pos=(-0.07, -0.37, -0.15), aim=(0.6, -1.2, 1.0), roll=10,
-                        src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben '
-                            '(gerechnet 47,3/27,6 %), linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der '
-                            'erste Entwurf (Stützhand verdeckte das halbe Bild)'),
+            reload=dict(pos=(-0.07, -0.37, -0.10), aim=(0.6, -1.2, 1.05), roll=10,
+                        src='M Destiny-Revolver: Hochdrehen 0,13 s, Trommel zur Kamera (Motiongen destiny2:492); Lage E: Mündung nach links oben, '
+                            'linke Seite mit der ausgeschwenkten Trommel zeigt zur Kamera; 4 cm weiter weg als der erste Entwurf (Stützhand '
+                            'verdeckte das halbe Bild); 0.34: 5 cm höher, damit das Trommelende und die fallenden Hülsen im Bild liegen'),
         ),
         frames=dict(aim_in=3, aim_out=2.4, draw=18),
         frames_src='M Destiny-Handfeuerwaffe: ADS ein 10 Bilder bei 60/s erste Bewegung → Ruhe, aus 9–10 (The Last Word, Motiongen destiny2:584) '

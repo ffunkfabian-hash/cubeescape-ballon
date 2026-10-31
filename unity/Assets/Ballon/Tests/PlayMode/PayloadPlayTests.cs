@@ -113,6 +113,8 @@ namespace Ballon.Ego.Tests
                 Assert.Greater(p.fx.Sparks, 10, "Funken");
                 Assert.Greater(p.fx.Smoke, 5, "Rauch");
                 Assert.Greater(p.fx.Glow, 0, "Blitz und Feuer");
+                Assert.That(() => p.fx.Tick(Dt, p.arsenal.Active, false, ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer)),
+                            Is.Not.AllocatingGCMemory(), "Ring, Licht, Rauch, Brandfleck ohne Speicher");
                 for (int f = 0; f < 20; f++) yield return null;
                 Assert.AreEqual(0, p.fx.RingsShown, "Ring nach ring_s aus");
                 Assert.AreEqual(0, p.fx.LightsShown, "Licht nach light_s aus");
@@ -169,6 +171,8 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(wall.transform.position.z - 0.1f, p.fx.BeamEnd.z, 0.05f, "Strahl endet an der Wand");
                 Assert.Greater(p.fx.Glow, 0, "Licht am Einschlag");
                 Assert.Greater(p.fx.MuzzleGlow(p.arsenal.Active), 0, "Mündungslicht");
+                Assert.That(() => p.fx.Tick(Dt, p.arsenal.Active, true, ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer)),
+                            Is.Not.AllocatingGCMemory(), "Dauerstrahl ohne Speicher je Bild");
                 for (int f = 0; f < 12; f++) yield return null;
                 Assert.IsFalse(p.fx.BeamShown, "losgelassen: kein Strahl");
             }
@@ -297,19 +301,22 @@ namespace Ballon.Ego.Tests
                     var hp = p.fx.HoleTransform(0).parent;
                     Assert.IsTrue(hp == wall.transform, $"{type}: Loch an der Wand (hängt an {(hp != null ? hp.name : "nichts")}, Schüsse {p.C.shots})");
                     Assert.AreEqual(1f, p.fx.HoleAlpha(0), 1e-4f, $"{type}: Loch deckt");
+                    if (type == "machine_gun")                      // Ausblenden vor dem Aufräumen (Clear blendet alle Löcher aus)
+                    {
+                        var q = p;
+                        var Dc = q.C.S.D.motion.payload.decal;
+                        int mask = ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer);
+                        for (float t = 0; t < Dc.life_s - Dc.fade_s * 0.5f; t += 0.25f) q.fx.Tick(0.25f, 0, false, mask);
+                        float mid = q.fx.HoleAlpha(0);
+                        for (float t = 0; t < Dc.fade_s; t += 0.25f) q.fx.Tick(0.25f, 0, false, mask);
+                        TestContext.WriteLine($"Loch: nach {Dc.life_s - Dc.fade_s * 0.5f:0.0} s Deckung {mid:0.00}, nach {Dc.life_s + Dc.fade_s * 0.5f:0.0} s {q.fx.HoleAlpha(0):0.00}");
+                        Assert.That(mid, Is.InRange(0.2f, 0.8f), "blendet aus");
+                        Assert.AreEqual(0, q.fx.HoleAlpha(0), "ausgeblendet");
+                        Assert.LessOrEqual(q.fx.HoleCount, Dc.max, "Pool hält die Obergrenze");
+                    }
                 }
                 finally { Done(p, wall); }
             }
-            var q = Boot.Player;
-            var Dc = q.C.S.D.motion.payload.decal;
-            int mask = ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer);
-            for (float t = 0; t < Dc.life_s - Dc.fade_s * 0.5f; t += 0.25f) q.fx.Tick(0.25f, 0, false, mask);
-            float mid = q.fx.HoleAlpha(0);
-            for (float t = 0; t < Dc.fade_s; t += 0.25f) q.fx.Tick(0.25f, 0, false, mask);
-            TestContext.WriteLine($"Loch: nach {Dc.life_s - Dc.fade_s * 0.5f:0.0} s Deckung {mid:0.00}, nach {Dc.life_s + Dc.fade_s * 0.5f:0.0} s {q.fx.HoleAlpha(0):0.00}");
-            Assert.That(mid, Is.InRange(0.2f, 0.8f), "blendet aus");
-            Assert.AreEqual(0, q.fx.HoleAlpha(0), "ausgeblendet");
-            Assert.LessOrEqual(q.fx.HoleCount, Dc.max, "Pool hält die Obergrenze");
         }
 
         // ------------------------------------------------------------------------------------------------ Modell: Hülsen, Füllstand
@@ -424,6 +431,8 @@ namespace Ballon.Ego.Tests
             c.Tick(Dt, Fire);
             c.Tick(Dt, Idle);
             Assert.IsFalse(c.output.roundOn[0], "Laufkammer nach dem Schuss leer");
+            Assert.That(() => { for (int k = 0; k < 12; k++) c.Tick(Dt, Idle); }, Is.Not.AllocatingGCMemory(),
+                        "Trommel dreht weiter, Füllstand rückt mit – ohne Speicher");
             for (int k = 0; k < 30 && c.Busy; k++) c.Tick(Dt, Idle);
             Assert.IsFalse(c.output.roundOn[1], "nach dem Zurückspringen: leere Kammer eine weiter");
             Assert.IsTrue(c.output.roundOn[0], "nächste Granate im Lauf");
@@ -450,6 +459,33 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(grew, "Füllstand sinkt beim Nachladen nicht");
             Assert.AreEqual(c.magSize, c.ammo);
             Assert.IsTrue(c.output.roundOn.All(b => b), "voll nachgeladen");
+            // teilweises Nachladen (3 → 4, Abbruch mit dem Abzug), danach schießen: nach dem ersten Weiterdrehen liegen die geladenen
+            // Kammern in Schussfolge, jeder weitere Schuss leert die Laufkammer
+            for (int s = 0; s < 3; s++)
+            {
+                for (int k = 0; k < 15; k++) c.Tick(Dt, Idle);
+                c.Tick(Dt, Fire);
+                for (int k = 0; k < 30 && c.Busy; k++) c.Tick(Dt, Idle);
+            }
+            Assert.AreEqual(3, c.ammo);
+            c.Tick(Dt, new EgoIntent { grounded = true, reload = true });
+            for (int k = 0; k < 400 && c.ammo < 4; k++) c.Tick(Dt, Idle);
+            Assert.AreEqual(4, c.ammo, "eine Granate geladen");
+            for (int k = 0; k < 400 && c.Busy; k++) c.Tick(Dt, k % 2 == 0 ? Fire : Idle);   // Abbruch mit dem Abzug
+            for (int k = 0; k < 400 && c.Busy; k++) c.Tick(Dt, Idle);
+            int R(int k) => ((GL.weapon.live.rounds.barrel - k) % 6 + 6) % 6;
+            for (int s = 0; s < 3 && c.ammo > 0; s++)
+            {
+                for (int k = 0; k < 15; k++) c.Tick(Dt, Idle);
+                int before = c.ammo;
+                c.Tick(Dt, Fire);
+                if (c.ammo == before) { c.Tick(Dt, Fire); }
+                c.Tick(Dt, Idle);
+                if (s > 0) Assert.IsFalse(c.output.roundOn[GL.weapon.live.rounds.barrel], $"Schuss {s + 1}: Laufkammer leer");
+                for (int k = 0; k < 30 && c.Busy; k++) c.Tick(Dt, Idle);
+                for (int k = 0; k < 6; k++)
+                    Assert.AreEqual(R(k) < c.ammo, c.output.roundOn[k], $"nach Schuss {s + 1} (Munition {c.ammo}): Kammer {k} in Schussfolge");
+            }
         }
     }
 }

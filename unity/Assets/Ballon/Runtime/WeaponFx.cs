@@ -16,9 +16,14 @@ namespace Ballon.Ego
 
         /// <summary>Gegenprobe (BALLON_PAYLOAD_OFF=1): ohne Wirkung, Schrittteile, Füllstand, Glieder und Hülsen beim Nachladen – die
         /// PlayMode-Tests von 0.34 müssen dann scheitern.</summary>
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         public static readonly bool Off = System.Environment.GetEnvironmentVariable("BALLON_PAYLOAD_OFF") == "1";
+#else
+        public const bool Off = false;                               // Auslieferung: ohne Gegenprobe-Schalter
+#endif
 
-        public const int ProjectilePool = 8, LinePool = 24, RingPool = 4, LightPool = 2, ScorchPool = 8, MaxHits = 32;
+        public const int ProjectilePool = 8, LinePool = 24, RingPool = 4, LightPool = 2, MaxHits = 32;
+        readonly int ScorchPool;                                     // motion.payload.decal.scorch_max
 
         readonly EgoPlayer _p;
         readonly Mats _m;
@@ -26,7 +31,8 @@ namespace Ballon.Ego
         readonly ParticleSystem _sparks, _dust, _smoke, _glow;
         readonly ParticleSystem[] _vmSmoke, _vmGlow;               // je Waffe in der Viewmodel-Ebene (Raum der Waffe)
         readonly float[] _vmSmokeLeft, _vmSmokeAcc;
-        readonly Color[] _energy;                                   // Leuchtfarbe je Waffe
+        readonly Color[] _energy, _tracer;                          // Leuchtfarbe und Leuchtspurfarbe je Waffe
+        readonly Color _smokeColor, _exCore, _exFire, _exSmoke;      // aus motion.payload, einmal gelesen
         readonly MaterialPropertyBlock _mpb = new MaterialPropertyBlock();
         readonly Collider[] _overlap = new Collider[MaxHits];
         readonly RangeTarget[] _hitOnce = new RangeTarget[MaxHits];
@@ -103,12 +109,18 @@ namespace Ballon.Ego
             _vmSmokeLeft = new float[n];
             _vmSmokeAcc = new float[n];
             _energy = new Color[n];
+            _tracer = new Color[n];
+            _smokeColor = Hex(P.muzzle_smoke.color, Color.white);
+            _exCore = Hex(P.explosion.core_color, Color.white);
+            _exFire = Hex(P.explosion.fire_color, new Color(1f, 0.54f, 0.24f));
+            _exSmoke = Hex(P.explosion.smoke_color, Color.gray);
             for (int k = 0; k < n; k++)
             {
                 var rig = p.loadouts[k].rig;
                 _vmSmoke[k] = Ps("Muendungsrauch", m.smoke, 96, rig.space, Bootstrap.ViewmodelLayer, false, rig.S.D.motion.payload.muzzle_smoke.grow, 0);
                 _vmGlow[k] = Ps("Muendungslicht", m.glow, 32, rig.space, Bootstrap.ViewmodelLayer, false, 0.6f, 0);
                 _energy[k] = EnergyColor(rig.S.D);
+                _tracer[k] = Hex(rig.S.D.gameplay.fx.tracer_color, Color.white);
             }
             int hn = P.decal.max;
             _holes = new Transform[hn];
@@ -116,6 +128,13 @@ namespace Ballon.Ego
             _holeAge = new float[hn];
             _holeSeed = new float[hn];
             _holeScorch = new bool[hn];
+            for (int k = 0; k < hn; k++)                               // alle Löcher beim Start (kein Anlegen beim Schuss)
+            {
+                _holes[k] = Quad("Einschlag", m.decal, _root, out _holeR[k]);
+                _holeAge[k] = 1e9f;
+            }
+            _holeCount = hn;
+            ScorchPool = Mathf.Max(1, P.decal.scorch_max);
             _scorch = new Transform[ScorchPool];
             _scorchR = new Renderer[ScorchPool];
             _scorchAge = new float[ScorchPool];
@@ -349,11 +368,8 @@ namespace Ballon.Ego
         {
             int k = _holeNext;
             _holeNext = (_holeNext + 1) % _holes.Length;
-            if (_holes[k] == null)
-            {
-                _holes[k] = Quad("Einschlag", _m.decal, null, out _holeR[k]);
-                _holeCount++;
-            }
+            if (_holes[k] == null)                                       // Träger samt Loch zerstört (Szene entladen ohne Clear)
+                _holes[k] = Quad("Einschlag", _m.decal, _root, out _holeR[k]);
             var t = _holes[k];
             t.SetParent(null, false);
             t.SetPositionAndRotation(point + normal * 0.004f, Quaternion.LookRotation(-normal) * Quaternion.Euler(0, 0, R(0, 360)));
@@ -375,7 +391,7 @@ namespace Ballon.Ego
             r.SetPropertyBlock(_mpb);
         }
 
-        /// <summary>Löcher im Pool (angelegt), höchstens motion.payload.decal.max.</summary>
+        /// <summary>Löcher im Pool (beim Start angelegt), motion.payload.decal.max.</summary>
         public int HoleCount => _holeCount;
         /// <summary>Deckung des Lochs, das zuletzt entstand (Tests: Ausblenden).</summary>
         public float HoleAlpha(int ageRank)
@@ -400,7 +416,7 @@ namespace Ballon.Ego
         public void MuzzleShot(int k, EgoFx fx)
         {
             if (fx.smoke_s > 0) { _vmSmokeLeft[k] = fx.smoke_s; _vmSmokeAcc[k] = 1; }      // erster Ballen gleich im Schussbild
-            if (fx.muzzle_glow_m > 0) VmGlow(k, fx.muzzle_glow_m * 2.2f, 0.10f);
+            if (fx.muzzle_glow_m > 0) VmGlow(k, fx.muzzle_glow_m * 2.2f, fx.muzzle_glow_s);
         }
 
         void VmGlow(int k, float size, float life)
@@ -541,9 +557,9 @@ namespace Ballon.Ego
         {
             var X = D.motion.payload.explosion;
             explosions++;
-            var core = Hex(X.core_color, Color.white);
-            var fire = Hex(X.fire_color, new Color(1f, 0.54f, 0.24f));
-            var smoke = Hex(X.smoke_color, Color.gray);
+            var core = _exCore;
+            var fire = _exFire;
+            var smoke = _exSmoke;
             var ep = new ParticleSystem.EmitParams();
             ep.position = p + n * radius * 0.15f;
             ep.velocity = Vector3.zero;
@@ -711,7 +727,7 @@ namespace Ballon.Ego
                 VmGlow(active, fxA.muzzle_glow_m * 2 * fl, 0.06f);
                 if (_beamHit)
                 {
-                    _beamSparkAcc += dt * 40f;
+                    _beamSparkAcc += dt * fxA.spark_hz;
                     var ep = new ParticleSystem.EmitParams { position = _beamEnd + _beamNormal * 0.03f, velocity = Vector3.zero, startLifetime = 0.06f,
                                                              startSize = 0.22f * fl, startColor = _energy[active] * 3f };
                     _glow.Emit(ep, 1);
@@ -738,7 +754,7 @@ namespace Ballon.Ego
                     _vmSmokeAcc[k] += dt * Sm.rate_hz * (0.4f + 0.6f * strength);
                     var rig = _p.loadouts[k].rig;
                     var at = rig.space.InverseTransformPoint(rig.AnchorWorld("Socket_Muzzle"));
-                    var col = Hex(Sm.color, Color.white);
+                    var col = _smokeColor;
                     for (; _vmSmokeAcc[k] >= 1; _vmSmokeAcc[k]--)
                     {
                         var ep = new ParticleSystem.EmitParams
@@ -806,7 +822,7 @@ namespace Ballon.Ego
         {
             var fx = _projFx[j];
             var ep = new ParticleSystem.EmitParams();
-            float step = fx.trail == "rocket" ? 0.18f : fx.kind == "arrow" ? 0.35f : 0.30f;
+            float step = Mathf.Max(0.05f, fx.trail_step_m);
             _projTrail[j] += (p1 - p0).magnitude;
             var dir = (p1 - p0).normalized;
             var col = _energy[_projWeapon[j]];
@@ -827,7 +843,7 @@ namespace Ballon.Ego
                 ep.rotation = R(0, 360);
                 if (fx.trail == "rocket")
                 {
-                    ep.startLifetime = R(1.4f, 2.2f);
+                    ep.startLifetime = fx.trail_life_s * R(0.8f, 1.2f);
                     ep.startSize = R(0.18f, 0.28f);
                     ep.startColor = new Color(0.78f, 0.79f, 0.81f, R(0.35f, 0.5f));
                     _smoke.Emit(ep, 1);
@@ -835,14 +851,14 @@ namespace Ballon.Ego
                 else if (fx.kind == "arrow")
                 {
                     ep.velocity = Vector3.zero;
-                    ep.startLifetime = 0.18f;
+                    ep.startLifetime = fx.trail_life_s;
                     ep.startSize = 0.05f;
                     ep.startColor = col * 1.8f;
                     _glow.Emit(ep, 1);
                 }
                 else
                 {
-                    ep.startLifetime = R(0.5f, 0.8f);
+                    ep.startLifetime = fx.trail_life_s * R(0.8f, 1.2f);
                     ep.startSize = R(0.06f, 0.1f);
                     ep.startColor = new Color(0.85f, 0.86f, 0.88f, 0.28f);
                     _smoke.Emit(ep, 1);
@@ -871,12 +887,16 @@ namespace Ballon.Ego
         public int ScorchShown { get { int n = 0; foreach (var r in _scorchR) if (r.enabled) n++; return n; } }
         public int ProjectilesStuck { get { int n = 0; for (int i = 0; i < ProjectilePool; i++) if (_projOn[i] && _projStuck[i] >= 0) n++; return n; } }
         public Color Energy(int k) => _energy[k];
+        public Color Tracer(int k) => _tracer[k];
 
         /// <summary>Alles sofort aus und Messwerte auf 0 (Szenenwechsel, Tests).</summary>
         public void Clear()
         {
             explosions = impacts = launched = bolts = rails = tracers = explosionHits = 0;
             for (int j = 0; j < ProjectilePool; j++) { _projOn[j] = false; _projR[j].enabled = false; _proj[j].SetParent(_root, false); }
+            for (int k = 0; k < _holes.Length; k++)                     // Löcher und Brandflecken zurück an die Wurzel (Szene wird entladen)
+                if (_holes[k] != null) { _holes[k].SetParent(_root, false); _holeR[k].enabled = false; _holeAge[k] = 1e9f; }
+            for (int k = 0; k < ScorchPool; k++) { _scorch[k].SetParent(_root, false); _scorchR[k].enabled = false; }
             for (int k = 0; k < LinePool; k++) { _lineKind[k] = LineKind.Off; _lineImpact[k] = null; _lines[k].enabled = false; }
             _beam.enabled = false;
             for (int k = 0; k < RingPool; k++) _ringR[k].enabled = false;
