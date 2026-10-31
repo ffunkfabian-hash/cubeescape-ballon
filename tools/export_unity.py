@@ -250,10 +250,14 @@ def payload_data():
     Namen), Explosion, Mündungsrauch. Je Klasse steht die Art der Wirkung in gameplay.fx."""
     def num(d):
         return {k: (r6(v) if isinstance(v, float) else v) for k, v in d.items()}
-    X = dict(EG.EXPLOSION)
-    colors = X.pop('colors')
+    def boom(name, X):
+        X = dict(X)
+        colors = X.pop('colors')
+        return dict(num(X), name=name, **{f'{k}_color': v for k, v in colors.items()})
     return dict(decal=num(EG.DECAL), impacts=[dict(num(v), name=k) for k, v in EG.IMPACTS.items()],
-                explosion=dict(num(X), **{f'{k}_color': v for k, v in colors.items()}), muzzle_smoke=num(EG.MUZZLE_SMOKE))
+                explosion=boom('rocket', EG.EXPLOSION),                                   # bis 0.34.1 die einzige (ältere Leser)
+                explosions=[boom(k, v) for k, v in EG.EXPLOSIONS.items()],               # 0.34.2: je Art (PAYLOAD explosion)
+                muzzle_smoke=num(EG.MUZZLE_SMOKE))
 
 
 def flash_data():

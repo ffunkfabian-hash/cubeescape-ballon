@@ -489,13 +489,25 @@ IMPACTS = dict(
                glow_m=0.20, glow_s=0.08, decal='scorch',
                src='E: Pfeil: kleiner Lichtpunkt in der Leuchtfarbe, wenig Staub; der Pfeil steckt stick_s (Destiny-Pfeil im Flug unsichtbar)'),
 )
-# Explosion (Granatwerfer, Raketenwerfer): Blitz, Druckring, Funken, Rauch, kurzes Licht; Größen mit radius_m der Klasse skaliert
-EXPLOSION = dict(flash_s=0.17, flash_k=1.3, fire=10, fire_s=0.75, fire_k=0.75, ring_s=0.10, ring_k=0.9, sparks=40, spark_mps=14.0,
-                 spark_s=0.7, smoke=16, smoke_s=1.0, smoke_k=0.7, light_s=0.15, light_k=4.0,
-                 colors=dict(core='#FCECDE', fire='#E9B268', smoke='#020C08', ring='#FFE2B8'),
-                 src='M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): Kern 0,12–0,22 s (flash_s = Kern), Ring 0,07–0,13 s, '
-                     'Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, Rauch #020C08; bildweiter Blitz '
-                     '0,02–0,03 s nicht umgesetzt; Granatwerfer (Kern 0,12–0,13 s, kein Feuerball) teilt die Explosion – offen; Ringfarbe, Größen E')
+# Explosion je Art (0.34.2 „impact-nachtrag“, PAYLOAD explosion): Kern (flash_s), bildweiter Blitz (screen_s, screen_k = Deckung), Feuerkugeln,
+# Druckring, Funken, Rauch, kurzes Licht; Größen mit radius_m der Klasse skaliert (E). Farbe leer = Leuchtfarbe der Waffe (Elementfarbe).
+EXPLOSIONS = dict(
+    rocket=dict(flash_s=0.17, flash_k=1.3, screen_s=0.025, screen_k=0.3, fire=10, fire_s=0.75, fire_k=0.75, ring_s=0.10, ring_k=0.9,
+                sparks=40, spark_mps=14.0, spark_s=0.7, smoke=16, smoke_s=1.0, smoke_k=0.7, light_s=0.15, light_k=4.0,
+                colors=dict(core='#FCECDE', fire='#E9B268', smoke='#020C08', ring='#FFE2B8'),
+                src='M Rakete (Blue Shift, Hoosegow, Mos Epoch; REF 0.36 z-im-blue-shift): bildweiter Blitz 0,02–0,03 s getrennt vom Kern '
+                    '0,12–0,22 s, Ring 0,07–0,13 s, Feuer 0,5–1,0 s, Rauch 0,75–1,2 s, Licht 0,15 s, Kern #FCECDE, Feuer #E9B268 → #CA774A, '
+                    'Rauch #020C08; Deckung des Blitzes, Ringfarbe und Größen E'),
+    grenade=dict(flash_s=0.125, flash_k=1.1, screen_s=0.0, screen_k=0.0, fire=5, fire_s=0.35, fire_k=0.55, ring_s=0.10, ring_k=0.8,
+                 sparks=24, spark_mps=10.0, spark_s=0.4, smoke=0, smoke_s=0.0, smoke_k=0.0, light_s=0.15, light_k=3.0,
+                 colors=dict(core='#EEFEFE', fire='#F3AF62', smoke='', ring=''),
+                 src='M Granatwerfer (Velocity Baton, Chill Inhibitor, Witherhoard, Forbearance; REF 0.36 z-im-velocity-baton, '
+                     'z-im-chill-inhibitor): Kern 0,12–0,13 s, kein bildweiter Blitz gemessen, kein Rauch; Kern #EEFEFE (Chill Inhibitor), '
+                     'Ring in der Leuchtfarbe der Waffe (Element nicht gemessen). Feuerball: Destiny zeigt keinen (Elementeffekt) – '
+                     'Nutzerentscheid 184 B: kleiner und kürzer als bei der Rakete (5 Kugeln, 0,35 s, × 0,55, #F3AF62 aus der Impact-Palette), '
+                     'E; Ring, Funken, Größen E; Lache ≈ 5,6 s nicht umgesetzt'),
+)
+EXPLOSION = EXPLOSIONS['rocket']    # bis 0.34.1 eine gemeinsame Explosion (motion.payload.explosion, ältere Leser)
 # Rauchschwaden aus der Mündung der Werfer nach dem Schuss (Viewmodel-Ebene, steigt und wird breiter)
 MUZZLE_SMOKE = dict(rate_hz=9.0, puff_m=0.05, grow=3.0, rise_mps=0.10, life_s=1.3, color='#C9CCD1', alpha=0.35,
                     src='E: nach dem Schuss weiße Schwaden aus dem Rohr (Nutzerbefund 0.33; CoD MW .357: heller Rauchpuff vor dem Lauf, '
@@ -506,7 +518,9 @@ MUZZLE_SMOKE = dict(rate_hz=9.0, puff_m=0.05, grow=3.0, rise_mps=0.10, life_s=1.
 PAYLOAD_DEFAULTS = dict(kind='hitscan', impact='bullet', pellets=0, cone_deg=0.0, cone_ads=1.0, speed_mps=0.0, gravity_mps2=0.0,
                         life_s=0.0, radius_m=0.0, smoke_s=0.0, trail='', width_m=0.0, length_m=0.0, beam_s=0.0, stick_s=0.0,
                         muzzle_glow_m=0.0, muzzle_glow_s=0.10, color='', tracer_every=0, tracer_mps=0.0, tracer_m=0.0, tracer_w_m=0.0,
-                        tracer_color='', trail_step_m=0.0, trail_life_s=0.0, scorch_every=1, spark_hz=0.0, shot_impacts=0, pulse_hz=6.0)
+                        tracer_color='', trail_step_m=0.0, trail_life_s=0.0, scorch_every=1, spark_hz=0.0, shot_impacts=0, pulse_hz=6.0,
+                        explosion='')
+# explosion (0.34.2): Name in EXPLOSIONS (Granatwerfer grenade, Raketenwerfer rocket), leer = keine
 # shot_impacts (0.34.1): sichtbare Einschläge je Schuss beim Streuschuss (0 = je Kugel); pulse_hz: Pulsen des Dauerstrahls
 # Spur hinter Projektilen (trail_step_m Abstand der Ballen, trail_life_s ihre Dauer); Dauerstrahl: beam_s = Strahl hält nach dem letzten
 # Takt, scorch_every = Brandfleck je n. Takt, spark_hz = Funken je Sekunde am Kontakt; muzzle_glow_s = Dauer des Mündungslichts
@@ -525,16 +539,18 @@ PAYLOAD = {
     'shotgun': dict(kind='pellets', impact='shotgun', pellets=12, cone_deg=3.0, cone_ads=0.75, shot_impacts=1,
                     src='S 12 Kugeln, feste Muster (Destiny 6.3.0); im Bild EIN Einschlag je Schuss (M, REF 0.36 z-im-python) → die Kugeln '
                         'treffen (Scheiben), gezeigt wird ein Einschlag mit einem Loch an der mittleren Kugel (Nutzerentscheid 181); Kegel 3,0° E'),
-    'grenade_launcher': dict(kind='projectile', impact='explosion', speed_mps=42.0, gravity_mps2=7.0, life_s=4.0, radius_m=3.0, smoke_s=0.2,
+    'grenade_launcher': dict(kind='projectile', impact='explosion', explosion='grenade', speed_mps=42.0, gravity_mps2=7.0, life_s=4.0,
+                             radius_m=3.0, smoke_s=0.2,
                              trail='grenade', width_m=0.045, length_m=0.07, trail_step_m=0.30, trail_life_s=0.0,
                              src='M Laufeffekt 0,05–0,2 s → 0,2 s (Nutzerentscheid 182), kein Schweif, Flug nah 0,17–0,22 s (REF 0.36 '
                                  'z-im-velocity-baton, z-im-chill-inhibitor); E: Granate 42 m/s mit Fallkurve (25 m: 0,6 s, 1,2 m Fall), '
                                  'Explosion Radius 3 m'),
-    'rocket_launcher': dict(kind='projectile', impact='explosion', speed_mps=34.0, gravity_mps2=0.0, life_s=5.0, radius_m=4.5, smoke_s=2.0,
+    'rocket_launcher': dict(kind='projectile', impact='explosion', explosion='rocket', speed_mps=34.0, gravity_mps2=0.0, life_s=5.0,
+                            radius_m=4.5, smoke_s=0.0,
                             trail='rocket', width_m=0.07, length_m=0.42, trail_step_m=0.18, trail_life_s=0.0,
                             src='M Glühpunkt ohne Rauchzopf, Flug 0,32–0,65 s (REF 0.36 z-im-blue-shift): Flamme am Heck, keine Rauchspur; '
-                                'E: Rakete 34 m/s gerade (15 m: 0,44 s), Explosion Radius 4,5 m; Rauch aus dem Rohr 2 s (Nutzerwunsch 0.33, '
-                                'Destiny zeigt keinen – offen)'),
+                                'kein Rohrrauch sichtbar (REF 0.36 › 7; 0.34.2, vorher 2 s nach Nutzerwunsch 0.33); E: Rakete 34 m/s gerade '
+                                '(15 m: 0,44 s), Explosion Radius 4,5 m'),
     'trace_rifle': dict(kind='beam', impact='energy', width_m=0.045, muzzle_glow_m=0.05, beam_s=0.15, scorch_every=3, spark_hz=40.0,
                         color='#D0D8FF', pulse_hz=12.0,
                         src='M Kern #D0D8FF, Rand #5060E0, Kontaktpunkt pulsiert 12/s (REF 0.36 z-im-agers); E: durchgehender Strahl 4,5 cm '

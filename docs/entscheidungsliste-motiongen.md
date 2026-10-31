@@ -284,6 +284,12 @@ sichtbare Fusionsbolzen und Pfeile (Destiny im Bild unsichtbar), fester Strahl d
 Explosion für Granatwerfer (Destiny ohne Feuerball, Elementfarbe), bildweiter Blitz der Rakete, MG-Leuchtspur (nicht gemessen); alle
 Meterwerte bleiben E.
 
+**Stand 0.34.2 (Patch „impact-nachtrag“):** Explosion je Art (`ego.EXPLOSIONS`, `PAYLOAD explosion`). Rakete: bildweiter Blitz 0,025 s
+getrennt vom Kern (Deckung 0,3 E), kein Rohrrauch (wie Destiny). Granatwerfer: Kern 0,125 s, kein Rauch, kein Bildblitz, Ring/Funken in der
+Waffenfarbe nach REF 0.36; Feuerball klein und kurz (5 Kugeln, 0,35 s) – **Nutzerentscheid 184 B** (Destiny: Elementeffekt statt
+Feuerball). Fusionsbolzen und Pfeile bleiben sichtbar (E): REF 0.36 hat sie nicht gemessen (einschlag.md › 8 offen), der Nutzerwunsch 0.33
+nennt sie.
+
 [einschlag]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/d0181c7/docs/einschlag.md
 
 ## Widersprüche in Motiongen REF 0.24 (dort zu klären)

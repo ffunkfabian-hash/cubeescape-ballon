@@ -77,8 +77,9 @@ namespace Ballon.Ego.Tests
 
         // ------------------------------------------------------------------------------------------------ Projektile und Explosionen
         /// <summary>Granatwerfer: ein Schuss startet eine sichtbare Granate an der Mündung, die mit gameplay.fx.speed_mps fliegt und mit
-        /// gravity_mps2 fällt; an der Wand (12 m) explodiert sie: Blitz und Feuer (Licht), Druckring, Licht, Funken, Rauch, Brandfleck. Aus
-        /// dem Lauf steigt Rauch. Weiterrechnen der Wirkung (Flug, Partikel) ohne Speicher je Bild.</summary>
+        /// gravity_mps2 fällt; an der Wand (12 m) explodiert sie (0.34.2, Explosion grenade): Kern nach REF 0.36, kleiner Feuerball
+        /// (Nutzerentscheid 184 B), Druckring, Licht, Funken, Brandfleck – kein Rauch, kein bildweiter Blitz. Aus dem Lauf kurz Rauch (0,2 s). Weiterrechnen
+        /// der Wirkung (Flug, Partikel) ohne Speicher je Bild.</summary>
         [UnityTest]
         public IEnumerator Granatwerfer_Granate_fliegt_im_Bogen_und_explodiert()
         {
@@ -111,20 +112,22 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(1, p.fx.LightsShown, "Licht");
                 Assert.AreEqual(1, p.fx.ScorchShown, "Brandfleck");
                 Assert.Greater(p.fx.Sparks, 10, "Funken");
-                Assert.Greater(p.fx.Smoke, 5, "Rauch");
-                Assert.Greater(p.fx.Glow, 0, "Blitz und Feuer");
+                Assert.AreEqual(0, p.fx.Smoke, "kein Rauch (Explosion grenade, REF 0.36)");
+                Assert.Greater(p.fx.Glow, 1, "Kern und Feuerball (184 B)");
+                Assert.IsFalse(p.fx.ScreenFlashShown, "kein bildweiter Blitz beim Granatwerfer");
+                Assert.AreEqual("grenade", F.explosion);
                 Assert.That(() => p.fx.Tick(Dt, p.arsenal.Active, false, ~(1 << EgoPlayer.PlayerLayer | 1 << Bootstrap.ViewmodelLayer)),
                             Is.Not.AllocatingGCMemory(), "Ring, Licht, Rauch, Brandfleck ohne Speicher");
                 for (int f = 0; f < 20; f++) yield return null;
                 Assert.AreEqual(0, p.fx.RingsShown, "Ring nach ring_s aus");
                 Assert.AreEqual(0, p.fx.LightsShown, "Licht nach light_s aus");
-                Assert.Greater(p.fx.Smoke, 0, "Rauch hält länger");
             }
             finally { Done(p, wall); }
         }
 
-        /// <summary>Raketenwerfer: die Rakete fliegt gerade (Fall 0) als Glühpunkt ohne Rauchzopf (0.34.1, REF 0.36), aus dem Rohr steigt
-        /// Rauch, an der Wand (15 m) die Explosion.</summary>
+        /// <summary>Raketenwerfer: die Rakete fliegt gerade (Fall 0) als Glühpunkt ohne Rauchzopf (0.34.1, REF 0.36), kein Rauch aus dem
+        /// Rohr (0.34.2); an der Wand (15 m) die Explosion (rocket) mit Feuer, Rauch und bildweitem Blitz für screen_s (mindestens ein Bild,
+        /// bei 30/s genau eins).</summary>
         [UnityTest]
         public IEnumerator Raketenwerfer_Rakete_gerade_ohne_Rauchzopf_und_Explosion()
         {
@@ -144,10 +147,14 @@ namespace Ballon.Ego.Tests
                 Assert.AreEqual(v0.y, v1.y, 1e-3f, "gerade Bahn");
                 Assert.AreEqual(0, p.fx.Smoke, "kein Rauchzopf (trail_life_s 0)");
                 Assert.Greater(p.fx.Glow, 0, "Glühpunkt am Heck");
-                Assert.Greater(p.fx.MuzzleSmoke(p.arsenal.Active), 0, "Rauch aus dem Rohr");
+                Assert.AreEqual(0, p.fx.MuzzleSmoke(p.arsenal.Active), "kein Rauch aus dem Rohr (REF 0.36)");
                 for (int f = 0; f < 30 && p.fx.explosions == 0; f++) yield return null;
                 Assert.AreEqual(1, p.fx.explosions);
                 Assert.AreEqual(1, p.fx.RingsShown);
+                Assert.IsTrue(p.fx.ScreenFlashShown, "bildweiter Blitz im Bild der Explosion");
+                Assert.Greater(p.fx.Smoke, 5, "Rauch der Explosion");
+                yield return null;
+                Assert.IsFalse(p.fx.ScreenFlashShown, "Blitz nur ein Bild (screen_s 0,025 s bei 30/s)");
             }
             finally { Done(p, wall); }
         }

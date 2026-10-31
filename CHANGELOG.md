@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.34.2 Patch „impact-nachtrag“ – offene Punkte aus 0.34.1 (Branch `claude/ballon-patch-impact-nachtrag`)
+
+- Explosion je Art (`ego.EXPLOSIONS`): Rakete mit bildweitem Blitz 0,025 s getrennt vom Kern, kein Rohrrauch mehr; Granatwerfer mit Kern
+  0,125 s nach REF 0.36, ohne Rauch, Ring in der Waffenfarbe, kleiner Feuerball (Nutzerentscheid 184 B).
+- Fusionsbolzen und sichtbare Pfeile bleiben E (Impact ohne Messung, einschlag.md › 8); Tabelle im PR-Bericht.
+
 ## 0.34.1 Patch „impact“ – Wirkungswerte nach REF 0.36 „Impact“ (Branch `claude/ballon-patch-impact`)
 
 - Zeiten und Farben aus Motiongen `einschlag.md › 7` (main d0181c7) in `ego.py`: Funken 0,1 s, dunkle Säule, Explosion (Kern, Ring, Feuer, Rauch,
