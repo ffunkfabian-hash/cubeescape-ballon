@@ -14,6 +14,11 @@
   Shader (bis 366 ms, einmalig); Aufwärmversuche ohne Erfolg, Folgeaufgabe. Messung `unity_run.py ruckeln`, Bericht
   [docs/versions/0.37-steadyframe.md](docs/versions/0.37-steadyframe.md).
 
+## 0.36.1 Patch „doku-panorama“ – veraltete Doku nach Panorama 5 (Branch `claude/ballon-patch-doku-panorama`)
+
+- Standardbranch `main` statt `claude/basic-first-light` (AGENTS), README und PROJEKT nicht mehr „lokal, kein Remote“, Nexogen-Eintrag vermerkt.
+- `docs/unity.md`: Format `ballon-ego/10` (Code), Lesbarkeit `/9`–`/7`, Stufe 10 ergänzt. Nur Markdown.
+
 ## 0.36.0 „Holdfast“ – Hüfthaltungen und Zielhilfen nach Testbuild-Befunden (Branch `claude/ballon-0.36-holdfast`)
 
 - Hüfte Impuls und Scout zeigen nicht mehr nach unten: Fluchtpunkt der Laufachse 44,6/59,7 → 45/50 bzw. 51,1/57,0 → 45/50 (Automatik

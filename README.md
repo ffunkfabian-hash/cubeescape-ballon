@@ -3,7 +3,7 @@
 Die schlichte Waffenreihe **BASIC** für Cube Escape: 17 Grundtypen als echte 3D-Baugruppen in Blender, mit gemessenen Specs,
 Konzept- und Baugruppenblättern, Explosionsansichten und Bewegungsvorschauen der Mechanik.
 
-Stand **0.1.0 „First Light“** (24.10.2026) · lokales Repo, kein Remote · Einstieg für Agenten: [AGENTS.md](AGENTS.md).
+Gegründet mit **0.1.0 „First Light“** (24.10.2026) · öffentliches Repo (Stand und Version: `.ce-repo.json`, [CHANGELOG.md](CHANGELOG.md)) · Einstieg für Agenten: [AGENTS.md](AGENTS.md).
 
 ## Inhalt
 

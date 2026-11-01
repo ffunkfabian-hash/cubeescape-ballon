@@ -2,7 +2,7 @@
 
 Zentraler Einstieg: [Nexogen](https://github.com/ffunkfabian-hash/cubeescape-nexogen) (`~/Claude/cubeescape-nexogen`), globale Regeln
 dort (`~/.claude/CLAUDE.md`). Öffentliches Repo [ffunkfabian-hash/cubeescape-ballon](https://github.com/ffunkfabian-hash/cubeescape-ballon), Standardbranch
-`claude/basic-first-light` (Entscheidung des Nutzers 25.10.2026, nach kurzem „bleibt lokal“: „Darf ruhig public sein!“). Der Eintrag in
+`main` (öffentlich seit 25.10.2026 auf Wunsch des Nutzers; der frühere Standardbranch `claude/basic-first-light` ist abgelöst). Der Eintrag in
 Nexogens `repos.json` macht Sightline. Merges laufen über Sightline oder den Nutzer.
 
 ## Was hier liegt
