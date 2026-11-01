@@ -745,6 +745,7 @@ namespace Ballon.Ego
         float _hitW = -1;
         readonly Dictionary<(int, string), string> _suffixText = new Dictionary<(int, string), string>(PairKey.Instance);
         string _suffixScene, _suffixLight;
+        int _suffixLights = -1;
         /// <summary>Statuszeile wie bis 0.36 „Waffe Name · Aktion Bild  ·  Marker“ (Tests; baut einen Text, nicht je Bild aufrufen).</summary>
         public string HudStateText => _statePrefix + " " + _stateFrame + "  " + _stateMarker;
         int _hAmmo = -1, _hHits = -1, _hWeapon = -1;
@@ -791,11 +792,12 @@ namespace Ballon.Ego
             if (!_prefixText.TryGetValue((arsenal.Active, C.ActionName), out var pre))
                 _prefixText[(arsenal.Active, C.ActionName)] = pre = $"{arsenal.Active + 1} {C.S.D.weapon.name} · {C.ActionName}";
             _statePrefix = pre;
-            if (!ReferenceEquals(sceneLabel, _suffixScene) || !ReferenceEquals(lightLabel, _suffixLight))
+            if (!ReferenceEquals(sceneLabel, _suffixScene) || !ReferenceEquals(lightLabel, _suffixLight) || _lightCount != _suffixLights)
             {
                 _suffixText.Clear();                               // Szene oder Licht gewechselt: Zusätze neu
                 _suffixScene = sceneLabel;
                 _suffixLight = lightLabel;
+                _suffixLights = _lightCount;
             }
             string skinName = skinNames != null && skinNames.Length > 0 ? skinNames[skin] : null;
             if (!_suffixText.TryGetValue((arsenal.Active, skinName), out var suf))

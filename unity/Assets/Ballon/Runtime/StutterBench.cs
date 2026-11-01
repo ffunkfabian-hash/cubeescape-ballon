@@ -51,7 +51,7 @@ namespace Ballon.Ego
         ProfilerRecorder _gcRec, _mainRec;
         readonly int[] _meta = new int[4];
 
-        public static StutterBench Start(Bootstrap b, string csv, string profileDir)
+        public static StutterBench Begin(Bootstrap b, string csv, string profileDir)   // nicht „Start“: Unity-Nachricht
         {
             var s = b.gameObject.AddComponent<StutterBench>();
             s._b = b;
@@ -206,13 +206,20 @@ namespace Ballon.Ego
                   .Append(_b.Solvers[_weapon[i] - 1].D.gameplay.weapon_type).Append(',').Append(Events[_ev[i]]).Append(',')
                   .Append(_dt[i].ToString("0.000", I)).Append(',').Append(_main[i].ToString("0.000", I)).Append(',')
                   .Append(_alloc[i]).Append(',').Append(_collect[i]).Append('\n');
-            File.WriteAllText(_csv, sb.ToString());
-            File.WriteAllText(Path.ChangeExtension(_csv, ".json"), string.Format(I,
-                "{{\"frames\": {0}, \"width\": {1}, \"height\": {2}, \"gpu\": \"{3}\", \"refresh_hz\": {4:0.0}, \"vsync\": {5}, \"target_fps\": {6}, " +
-                "\"profiler\": {7}, \"development\": {8}, \"unity\": \"{9}\", \"not_recorded\": {10}}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
-                Screen.currentResolution.refreshRateRatio.value, QualitySettings.vSyncCount, Application.targetFrameRate,
-                _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion, _overflow));
-            if (_overflow > 0) Debug.LogWarning($"[Ballon] Ruckelmessung: {_overflow} Bilder über {Capacity} nicht aufgezeichnet");
+            try
+            {
+                File.WriteAllText(_csv, sb.ToString());
+                File.WriteAllText(Path.ChangeExtension(_csv, ".json"), string.Format(I,
+                    "{{\"frames\": {0}, \"width\": {1}, \"height\": {2}, \"gpu\": \"{3}\", \"refresh_hz\": {4:0.0}, \"vsync\": {5}, \"target_fps\": {6}, " +
+                    "\"profiler\": {7}, \"development\": {8}, \"unity\": \"{9}\", \"not_recorded\": {10}}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
+                    Screen.currentResolution.refreshRateRatio.value, QualitySettings.vSyncCount, Application.targetFrameRate,
+                    _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion, _overflow));
+                if (_overflow > 0) Debug.LogWarning($"[Ballon] Ruckelmessung: {_overflow} Bilder über {Capacity} nicht aufgezeichnet");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Ballon] Ruckelmessung: {_csv} nicht schreibbar – {e.Message}");
+            }
             Debug.Log($"[Ballon] Ruckelmessung: {_n} Bilder → {_csv}");
             Application.Quit();
         }

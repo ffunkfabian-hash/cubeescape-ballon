@@ -1242,6 +1242,7 @@ namespace Ballon.Ego.Tests
             p.UpdateHudText();
             Assert.AreNotSame(suf, p.HudHitSuffix, "Waffenwechsel: Zusatz der anderen Waffe (Skin)");
             StringAssert.Contains("Treffer", p.HudHitText);
+            StringAssert.EndsWith(p.HudHitSuffix, p.HudHitText, "Zusatz der neuen Waffe in der Trefferzeile");
             p.UseWeapon(0);
             p.deltaOverride = null;
         }

@@ -73,7 +73,7 @@ def main(argv):
         if m.get('refresh_hz', 0) > 0:
             FRAME_MS = 1000 / m['refresh_hz']
         print(f"Läufe: {', '.join(os.path.basename(d.rstrip('/')) for d in dirs)} · {m['width']}×{m['height']}, {m['gpu']}, "
-              f"{m['refresh_hz']:.0f} Hz, VSync {m['vsync']}, Ziel {m['target_fps']}/s, Profiler {m['profiler']}, Unity {m['unity']}\n")
+              f"{m.get('refresh_hz', 0):.0f} Hz, VSync {m['vsync']}, Ziel {m['target_fps']}/s, Profiler {m['profiler']}, Unity {m['unity']}\n")
     for p, title in (('1', 'Durchgang 1 – erster Einsatz'), ('2', 'Durchgang 2 – Wiederholung')):
         print(f'### {title}\n')
         table([r for r in rows if r['pass'] == p], ev_name, 'Ereignis')

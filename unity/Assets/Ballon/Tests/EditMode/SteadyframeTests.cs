@@ -31,23 +31,26 @@ namespace Ballon.Ego.Tests
             {
                 forms++;
                 var R = new HipReticle(hip);
-                foreach (float h in new[] { 720f, 1080f, 1664f })
-                    foreach (float f in new[] { 0f, 0.5f, 1f })
-                    {
-                        R.spread = UnityEngine.Mathf.Lerp(hip.spread.@base, hip.spread.max, f);
-                        var fast = R.MaskPixels(h, false);
-                        var slow = R.MaskPixels(h, true);
-                        Assert.AreEqual(slow.Length, fast.Length, name);
-                        for (int i = 0; i < fast.Length; i++)
+                try
+                {
+                    foreach (float h in new[] { 720f, 1080f, 1664f })
+                        foreach (float f in new[] { 0f, 0.5f, 1f })
                         {
-                            int da = System.Math.Abs(fast[i].a - slow[i].a);
-                            if (da > 1 || fast[i].r != slow[i].r)
-                                Assert.Fail($"{name}, Höhe {h}, Spreizung {R.spread:0.00} mm: Pixel {i} Deckung {fast[i].a} statt {slow[i].a}");
-                            if (da == 1) lsb++;
+                            R.spread = UnityEngine.Mathf.Lerp(hip.spread.@base, hip.spread.max, f);
+                            var fast = R.MaskPixels(h, false);
+                            var slow = R.MaskPixels(h, true);
+                            Assert.AreEqual(slow.Length, fast.Length, name);
+                            for (int i = 0; i < fast.Length; i++)
+                            {
+                                int da = System.Math.Abs(fast[i].a - slow[i].a);
+                                if (da > 1 || fast[i].r != slow[i].r)
+                                    Assert.Fail($"{name}, Höhe {h}, Spreizung {R.spread:0.00} mm: Pixel {i} Deckung {fast[i].a} statt {slow[i].a}");
+                                if (da == 1) lsb++;
+                            }
+                            pixels += fast.Length;
                         }
-                        pixels += fast.Length;
-                    }
-                R.Release();
+                }
+                finally { R.Release(); }                    // Texturen auch nach einem Fehlschlag freigeben
             }
             TestContext.WriteLine($"{forms} Formen, {pixels} Pixel gleich, davon {lsb} um 1/255 gerundet (Gleitkomma-Reihenfolge)");
             Assert.Greater(forms, 10);
@@ -72,8 +75,8 @@ namespace Ballon.Ego.Tests
                     R.Mask(1080);
                 }
                 double ms = sw.Elapsed.TotalMilliseconds / n;
-                if (ms > worstMs) { worstMs = ms; worst = name; }
                 R.Release();
+                if (ms > worstMs) { worstMs = ms; worst = name; }
             }
             TestContext.WriteLine($"teuerstes Raster: {worst} {worstMs:0.000} ms");
             Assert.Less(worstMs, 2.0, $"{worst}: {worstMs:0.00} ms je Raster");

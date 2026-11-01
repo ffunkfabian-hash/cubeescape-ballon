@@ -75,18 +75,18 @@ namespace Ballon.Ego.Tests
             var run = Cycle(b, out _);
             int steps = Mathf.CeilToInt(sec / Dt);
             var fx = p.fx;
-            int shots0 = fx != null ? fx.launched : 0, hits0 = p.hits;
-            long markers0 = 0;
+            Assert.IsNotNull(fx, "Wirkung der Waffen (WeaponFx) angelegt");
+            int shots0 = fx.launched, hits0 = p.hits;
             p.deltaOverride = () => Dt;
             p.input = warm;
             for (int i = 0; i < steps; i++) { p.Step(Dt); p.UpdateHudText(); }   // Aufwärmen: Übersetzung, Texte, Tabellen, Pools
             p.Teleport(Bootstrap.ParcoursStart, 0f);                           // zweiter Lauf aus dem Endzustand des ersten (wie gemessen)
             p.input = Cycle(b, out _);
             for (int i = 0; i < steps; i++) { p.Step(Dt); p.UpdateHudText(); }
-            markers0 = p.log.Count;
+            long markers0 = p.log.Count;
             p.Teleport(Bootstrap.ParcoursStart, 0f);
             p.input = run;
-            int ex0 = fx != null ? fx.explosions : 0, imp0 = fx != null ? fx.impacts : 0;
+            int ex0 = fx.explosions, imp0 = fx.impacts;
             try
             {
                 NUnit.Framework.Assert.That(() => { for (int i = 0; i < steps; i++) { p.Step(Dt); p.UpdateHudText(); } },
@@ -97,14 +97,14 @@ namespace Ballon.Ego.Tests
                 Where(p, Cycle(b, out _), steps);              // Fundstellen nennen: Schritte mit Speicher, Waffe und Aktion
                 throw;
             }
-            TestContext.WriteLine($"{b.Solvers.Length} Waffen, {steps} Schritte: {(fx != null ? fx.explosions - ex0 : 0)} Explosionen, " +
-                                  $"{(fx != null ? fx.impacts - imp0 : 0)} Einschläge, {(fx != null ? fx.launched - shots0 : 0)} Projektile (beide Läufe), " +
+            TestContext.WriteLine($"{b.Solvers.Length} Waffen, {steps} Schritte: {fx.explosions - ex0} Explosionen, " +
+                                  $"{fx.impacts - imp0} Einschläge, {fx.launched - shots0} Projektile (beide Läufe), " +
                                   $"{p.hits - hits0} Treffer, Protokoll {p.log.Count} Einträge");
             Assert.AreEqual(0, p.arsenal.Active, "Ablauf endet bei Waffe 1");
-            Assert.Greater(fx != null ? fx.explosions - ex0 : 1, 0, "Explosionen im gemessenen Lauf");
-            Assert.Greater(fx != null ? fx.impacts - imp0 : 1, 0, "Einschläge im gemessenen Lauf");
+            Assert.Greater(fx.explosions - ex0, 0, "Explosionen im gemessenen Lauf");
+            Assert.Greater(fx.impacts - imp0, 0, "Einschläge im gemessenen Lauf");
             Assert.LessOrEqual(p.log.Count, EgoPlayer.LogMax, "Protokoll begrenzt");
-            Assert.Greater(markers0, 0);
+            Assert.Greater(markers0, 0, "Protokoll nach dem Aufwärmen nicht leer");
             p.input = new ScriptedInput().Add(0, 1000);
             p.deltaOverride = null;
             yield return null;
