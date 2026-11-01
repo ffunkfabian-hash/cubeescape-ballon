@@ -1,6 +1,6 @@
 # Projekt cubeescape-ballon: Bedarf, Zuständigkeit, Schnittstellen
 
-Stand 24.10.2026 · Version 0.1.0 „First Light“ · lokales Repo ohne Remote (Remote, Push und Veröffentlichung sind nicht beauftragt).
+Gegründet 24.10.2026 mit Version 0.1.0 „First Light“; öffentliches Repo [ffunkfabian-hash/cubeescape-ballon](https://github.com/ffunkfabian-hash/cubeescape-ballon), aktuelle Version in `.ce-repo.json`.
 
 ## Bedarf
 
@@ -33,7 +33,7 @@ Stand 24.10.2026 · Version 0.1.0 „First Light“ · lokales Repo ohne Remote 
 | Toolgen-Import | Toolgen liest heute `cubeescape-design/geometry-spec` v1 mit Herkunftsnachweis (`concept_spec.py`, `data/concepts/provenance.json`) | **offen**: Export `BASIC-NN.geo.json` in diesem Format fehlt; Netze sind vorhanden |
 | Anker-Namen | `Socket_Hand`, `Socket_SupportHand`, `Socket_Muzzle`, `Socket_CenterOfMass`, `Socket_Sight`, `Socket_Reticle`, `Socket_Eye` (Toolgen Vertrag 4/5); Bogen `Socket_Nock`, `Socket_ArrowTip` | übernommen |
 | Clipnamen | Toolgen `<Name>_Use` und Ego-Suffixe (Idle, Fire, Reload …) | nicht erzeugt; Bewegungen hier sind Mechanik-Vorschauen |
-| Nexogen-Register | `repos.json` kennt dieses Projekt noch nicht | **offen**, Änderung in Nexogen braucht Freigabe |
+| Nexogen-Register | `repos.json` führt dieses Projekt als `ballon` | **eingetragen** |
 
 ## Datenfluss
 
