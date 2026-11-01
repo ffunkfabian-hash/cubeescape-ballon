@@ -19,6 +19,7 @@ namespace Ballon.Ego
         public Material[] roleMaterials;         // Namen „Role_<rolle>“
         public Material floor, wall, cover, target, targetRing, flash, post, decal, backdrop;
         public Material fxSpark, fxGlow, fxSmoke, fxRing, fxBeam;   // 0.34 „Payload“: Welteffekte (Shader Ballon/Fx); decal = Einschussloch
+        public UnityEngine.Rendering.GraphicsStateCollection shaderWarmup;   // 0.38 „Prewarm“: aufgezeichnete Shader-Zustände (ShaderWarmup.AssetPath)
         public TextAsset[] sceneJson;            // Szenen (ballon-scene/2), von BallonSetup aus Generated/Scenes/*/scene_*.json gesetzt;
         public GameObject[] scenePrefabs;        // gleiche Reihenfolge: FBX der Umgebung
         public Material[] sceneMaterials;        // Unlit-Vorlage (je Zone entsteht eine Kopie)
@@ -47,6 +48,7 @@ namespace Ballon.Ego
 
         void Awake()
         {
+            ShaderWarmup.Begin(shaderWarmup);                // zuerst: übersetzt auf Arbeitsthreads, während die Welt entsteht
             Application.targetFrameRate = 120;
             QualitySettings.vSyncCount = 1;
             var all = EgoFile.ParseAll(egoJson.text);
@@ -106,7 +108,7 @@ namespace Ballon.Ego
             string courseDir = Arg(args, "-ballonCourse");
             if (courseDir != null) { StartCoroutine(CourseCapture(courseDir, Arg(args, "-ballonScene") ?? "hangar", Arg(args, "-ballonLighting"))); return; }
             string stutter = Arg(args, "-ballonStutter");               // 0.37: Ruckelmessung je Waffe und Ereignis
-            if (stutter != null) { StutterBench.Begin(this, stutter, Arg(args, "-ballonProfile")); return; }
+            if (stutter != null) { StutterBench.Begin(this, stutter, Arg(args, "-ballonProfile"), int.TryParse(Arg(args, "-ballonStutterPasses"), out var sp) ? sp : 2); return; }
             string bench = Arg(args, "-ballonBench");
             if (bench != null) StartCoroutine(Bench(bench, Arg(args, "-ballonScene")));
             else if (cap != null) StartCoroutine(Capture(cap));
@@ -321,6 +323,7 @@ namespace Ballon.Ego
 
         void Update()
         {
+            _ = ShaderWarmup.Done;                           // hält das Ende des Aufwärmens fest
             var k = Keyboard.current;
             if (k == null) return;
             if (k.lKey.wasPressedThisFrame && _scenes.Count > 0) NextScene();

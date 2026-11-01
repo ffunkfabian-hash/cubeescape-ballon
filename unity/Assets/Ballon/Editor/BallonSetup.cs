@@ -1,6 +1,7 @@
 // Projekt einrichten und bauen (Stapelbetrieb):
 //   Unity -batchmode -quit -projectPath unity -executeMethod Ballon.Ego.Editor.BallonSetup.Run      (URP, Ebene, Eingabe, Materialien, Szene)
 //   Unity -batchmode -quit -projectPath unity -executeMethod Ballon.Ego.Editor.BallonSetup.BuildMac (Entwicklungsbuild macOS)
+//   Unity -batchmode -quit -projectPath unity -executeMethod Ballon.Ego.Editor.BallonSetup.AttachWarmup (Shader-Zustände in die Szene, 0.38)
 // Alles hier ist erzeugt; Daten kommen aus Assets/Ballon/Generated (tools/export_unity.py).
 using System.Collections.Generic;
 using System.IO;
@@ -533,6 +534,7 @@ namespace Ballon.Ego.Editor
             b.fxSmoke = mats["fx_smoke"];
             b.fxRing = mats["fx_ring"];
             b.fxBeam = mats["fx_beam"];
+            b.shaderWarmup = Warmup();
             var scenes = SceneAssets();
             b.sceneJson = scenes.Select(x => x.json).ToArray();
             b.scenePrefabs = scenes.Select(x => x.prefab).ToArray();
@@ -541,6 +543,28 @@ namespace Ballon.Ego.Editor
             Debug.Log($"[Ballon] {scenes.Count} Szene(n) in {ScenePath}: {string.Join(", ", scenes.Select(x => x.json.name))}");
             EditorSceneManager.SaveScene(sc, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
+        }
+
+        /// <summary>Aufgezeichnete Shader-Zustände (tools/unity_run.py aufwaermen); fehlen sie, startet die Build ohne Aufwärmen.</summary>
+        static GraphicsStateCollection Warmup()
+        {
+            AssetDatabase.ImportAsset(ShaderWarmup.AssetPath, ImportAssetOptions.ForceUpdate);
+            var g = AssetDatabase.LoadAssetAtPath<GraphicsStateCollection>(ShaderWarmup.AssetPath);
+            if (g == null) Debug.LogWarning($"[Ballon] {ShaderWarmup.AssetPath} fehlt – Build ohne Shader-Aufwärmen (python3 tools/unity_run.py aufwaermen)");
+            else Debug.Log($"[Ballon] Aufwärmen: {g.variantCount} Varianten, {g.totalGraphicsStateCount} Zustände ({g.graphicsDeviceType}, {g.runtimePlatform}, {g.qualityLevelName})");
+            return g;
+        }
+
+        /// <summary>Nur die Sammlung in die vorhandene Szene setzen (ohne den vollen Aufbau von Run).</summary>
+        public static void AttachWarmup()
+        {
+            var sc = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var b = Object.FindFirstObjectByType<Bootstrap>();
+            var g = Warmup();
+            if (b == null || g == null) { Debug.LogError("[Ballon] Aufwärmen: Bootstrap oder Sammlung fehlt"); EditorApplication.Exit(1); return; }
+            b.shaderWarmup = g;
+            EditorUtility.SetDirty(b);
+            EditorSceneManager.SaveScene(sc);
         }
 
         [MenuItem("Ballon/macOS-Build")]

@@ -41,6 +41,8 @@ python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf
 python3 tools/unity_run.py ruckeln vorher [profil]   # Ruckelmessung (0.37): je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen
 BALLON_UNITY_APP=<Pfad>.app python3 tools/unity_run.py ruckeln nachher   # andere Build messen (vorher/nachher abwechselnd)
 python3 tools/stutter_report.py <EV>/ruckeln/vorher_1 <EV>/ruckeln/vorher_2 --weapons   # Tabelle je Ereignis (und je Waffe)
+python3 tools/unity_run.py ruckeln kalt_mit kalt einmal   # erster Start einer neuen Build (eigene Bundle-ID), nur Durchgang 1 (0.38)
+python3 tools/unity_run.py aufwaermen                    # Shader-Zustände neu aufzeichnen, in die Szene, neue Build (0.38)
 python3 tools/unity_run.py scenes           # je Szene und Lichtszene Bild vom Start gegen <szene>_<licht>_ref.png (SSIM/PSNR)
 python3 tools/unity_run.py course tag       # Vorführlauf durch den Hangar-Parcours als MP4 + Kontaktbogen (Lichtszene wählbar)
 open unity/Build/BallonFirstfeel.app        # spielen
@@ -220,6 +222,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Handfeuerwaffe_Stuetzhand_schwingt_beim_Huefschuss_nicht`, `Bogen_Hueftzeichen_bleibt_beim_Spannen`, `Bogen_Weltzoom_stetig_gespannt_ins_Zielen` (PlayMode, 0.36) | Stützhand beim Hüftschuss ≤ 1,5 pp H (Waffe kippt weiter), im Zielen folgt sie; Bogen-Hüftzeichen beim Spannen an, schließt mit dem Auszug, im Zielen aus; Weltzoom gespannt/ungespannt ≤ 1,2× je Bild, über `zoom_in_min_s` |
 | `Kein_GC_Speicher_je_Schuss_und_Wechsel_nach_dem_Aufwaermen`, `Fadenkreuz_Aufgehen_ohne_Speicher` (PlayMode, 0.37) | Ablauf der Ruckelmessung über `EgoPlayer.Step` und `UpdateHudText` für alle 16 Waffen (wählen, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen; 15 000 Schritte) nach zwei Aufwärmläufen ohne GC-Speicher; Fadenkreuz beim Aufgehen ohne Speicher. Gegenprobe `BALLON_STEADYFRAME_OFF=1` rot |
 | `Fadenkreuz_Raster_gleich_dem_vollen_Quadrat`, `Fadenkreuz_Aufgehen_je_Bild_unter_2_ms` (EditMode, 0.37) | neuer Rasterweg (nur Rahmen der Formteile, Ringband) gleich dem bisherigen vollen Quadrat (Deckung ± 1/255) für 32 Formen × 3 Höhen × 3 Spreizungen; je Raster < 2 ms (gemessen 0,12 ms, alter Weg 17,7 ms) |
+| `Aufwaermen_Sammlung_deckt_alle_Shader_der_Welt` (PlayMode, 0.38) | Szene trägt die Shader-Zustände (`ShaderWarmup.AssetPath`) für Metal/macOS-Spieler mit Zuständen; jeder Shader der Renderer beim Start (Waffen, Arme, Parcours) und der Welteffekte steht darin. Gegenprobe: Sammlung aus der Szene genommen bzw. Shader entfernt → rot mit Shadername |
 | `Klassen_vollstaendig_in_ego_json` (0.33) | alle 16 Waffen in Tastenreihenfolge mit Klasse und Feuerart, Herkunft, Spielwerte, Griffe, Live-Teile, Atlanten |
 | `Repetierer_repetiert_nach_jedem_Schuss`, `Dauerstrahl_leuchtet_solange_der_Abzug_zieht`, `MG_Gurtkasten_nachladen` (0.33 P2) | Kammerstängel nach dem Schuss, Strahl-Leuchtteile, Gurtkasten-Nachladen |
 | `Pumpe_pumpt_und_laedt_je_Patrone`, `Fusion_laedt_auf_und_schiesst_die_Salve`, `Lineare_Fusion_laedt_auf_und_schiesst_einmal` (0.33 P3) | Pumpe, Einzelladen mit Abbruch durch Feuer, Aufladen |
@@ -387,6 +390,38 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
   schrieb dabei `GraphicsSettings`/`QualitySettings` um und legte zwei Einstellungsdateien an – danach `git status` prüfen und zurücksetzen).
 - **Tabelle** (`tools/stutter_report.py`): je Durchgang und Ereignis p50/p95/p99/max, GC-Speicher je Bild, GC-Läufe, Bilder
   > 25 ms und Anteil der Bilder neben dem 60-Hz-Takt (± 2 ms). Werte im Versionsbericht [0.37](versions/0.37-steadyframe.md).
+
+### Shader-Aufwärmen (0.38 „Prewarm“)
+
+- **Problem:** Unity übersetzt unter Metal Shader samt Pipeline-Zustand (Netzformat, Renderziele, Blend) erst beim ersten Zeichnen.
+  macOS hält das Ergebnis je Bundle-ID im Metal-Zwischenspeicher, also hängt nur der erste Start einer neuen Build (0.37: erster
+  MP-Wechsel 366 ms). `Shader.WarmupAllShaders` kennt die Zustände unter Metal nicht (0.37: +14,4 s Laden, Rest 150 ms).
+- **Sammlung** (`Assets/Ballon/Warmup/ballon_mac_metal.graphicsstate`, `GraphicsStateCollection`): im Spieler aufgezeichnet mit
+  `python3 tools/unity_run.py aufwaermen` (Ruckelmessung mit `-ballonGscRecord`, beide Durchgänge, dann `BallonSetup.AttachWarmup`
+  und neue Build). `Bootstrap.Awake` beginnt als Erstes `ShaderWarmup.Begin`: `WarmUp` läuft auf Arbeitsthreads, während die Welt
+  entsteht (kalt ≈ 1,4 s, warm 0,2 s, beide vor dem ersten Bild fertig).
+- **Pass-Familien** (`tools/gsc_complete.py`, in `aufwaermen` und `./check`): URP fasst die Durchgänge der Weltkamera je nach
+  Bildinhalt zu verschiedenen nativen Renderpässen zusammen. Die Aufzeichnung sieht eine Variante nur in dem Pass, in dem sie zufällig
+  gezeichnet wurde; im nächsten Lauf kam sie im anderen Pass als Hänger wieder (MP-Wechsel 67–100 ms). Pässe mit gleichem ersten Ziel
+  bilden eine Familie, jeder Zustand wird für alle Pässe seiner Familie ergänzt (35 → 45 Zustände).
+- **Neu aufzeichnen** nach Änderungen an Shadern, Materialien, Effekten oder Renderer-Einstellungen. Einen neuen Shader meldet
+  `PrewarmPlayTests.Aufwaermen_Sammlung_deckt_alle_Shader_der_Welt`; neue Varianten bestehender Shader zeigt erst die kalte Messung
+  (Bild > 50 ms beim ersten Einsatz). Unitys Fehlzugriff-Zählung (`frames.json › warmup_misses`, Spalte „neue Zustände“ je Bild,
+  `frames_misses.txt`) zeigt, wo zur Laufzeit erstmals ein Zustand angelegt wird. Sie ist ein Wegweiser, kein Beweis: in den glatten
+  Läufen meldete sie weiter 9 Zustände, die alle in der Sammlung stehen.
+- **Messen** (`unity_run.py ruckeln <name> kalt [einmal]`): Kopie der Build mit eigener Bundle-ID = leerer Metal-Zwischenspeicher;
+  Kopie, ihr Zwischenspeicher und ihre PlayerPrefs werden danach gelöscht. Gegenprobe in derselben Build:
+  `BALLON_PLAYER_EXTRA=-ballonNoWarmup`. `-ballonShaderLog` schreibt jede Übersetzung ins Spielerprotokoll. Die Tabelle nennt je
+  Lauf das erste Bild (Ladezeit), das Ende des Aufwärmens und die Fehlzugriffe.
+- **Rest (offen):** Nach dem Aufwärmen übersetzt der Spieler keine Shader mehr (Protokoll), beim ersten MP-Wechsel/-Schuss bleiben
+  aber 50–115 ms: Pipeline-Zustände, die URP in einer Pass-Form anlegt, die `WarmUp` nicht trifft (Unity meldet sie als Fehlzugriff,
+  obwohl sie in der Sammlung stehen; der Hauptthread wartet in `Gfx.WaitForPresentOnGfxThread`). Jede Waffe beim ersten Start einmal
+  unter einer Ladeblende zu zeigen, drückte den MP-Wechsel auf 45–60 ms, kostete ≈ 1 s und half beim Wiederziehen nicht – auf
+  Nutzerentscheid nicht übernommen ([0.38](versions/0.38-prewarm.md)).
+- Im Editor wärmt `ShaderWarmup` nicht auf (der Editor übersetzt selbst im Hintergrund).
+- **Bildzeit:** Die Messung schreibt seit 0.38 zusätzlich `real_ms` (Echtzeit zwischen zwei Bildern), `stutter_report.py` rechnet
+  damit. `Time.unscaledDeltaTime` stand in Läufen bei gesperrtem Bildschirm zu 87–100 % auf dem Ersatzwert 16,667 ms und verbarg
+  Hänger von 66–82 ms Hauptthread; die Tabelle nennt den Anteil („Bildzeit aus“).
 
 ## Material, Licht und Tonwerte wie Blender (0.7)
 

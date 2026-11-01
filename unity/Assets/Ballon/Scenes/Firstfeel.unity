@@ -337,6 +337,7 @@ MonoBehaviour:
   fxSmoke: {fileID: 2100000, guid: caaeff194956648e09fd09298dffdea7, type: 2}
   fxRing: {fileID: 2100000, guid: 0cdafd4ac81f94777ad939e39d73e660, type: 2}
   fxBeam: {fileID: 2100000, guid: 707946d5f791b4a77bf26ddc9132b34e, type: 2}
+  shaderWarmup: {fileID: -6766982352335285333, guid: d0c1709d5537d47a38a648dddcfe62e0, type: 3}
   sceneJson:
   - {fileID: 4900000, guid: b775ad8cc1a964a98bbe297310c86d3d, type: 3}
   scenePrefabs:
