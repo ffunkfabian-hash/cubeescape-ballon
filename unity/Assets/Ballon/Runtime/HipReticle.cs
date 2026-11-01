@@ -34,8 +34,7 @@ namespace Ballon.Ego
         }
 
         /// <summary>Vor dem Feuern dieses Bilds: Abklingen zur Basis (+ Laufen) mit recover_s, wie reticles.simulate; `open` 0 … 1 öffnet
-        /// zusätzlich um charge_from (0.36, Bogen: 1 − Auszug – ungespannt offen, voll gespannt geschlossen; reticles.simulate kennt den
-        /// Öffnungsanteil noch nicht).</summary>
+        /// zusätzlich um charge_from (0.36, Bogen: 1 − Auszug – ungespannt offen, voll gespannt geschlossen; reticles.simulate open_at).</summary>
         public void Decay(float dt, float speed01, float open = 0)
         {
             var S = H.spread;

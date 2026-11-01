@@ -707,6 +707,10 @@ def _bow_draw(*keys):
     return {p: list(k) for p in ('arrow_shaft', 'string_top', 'string_bottom', 'cam_top', 'cam_bottom')} | {'draw_light': light}
 
 
+# hip_level (0.36, Richter Runde 4): Klassen, deren Hüfte waagerecht wie die Automatik zeigt – ./check misst den Fluchtpunkt der
+# Laufachse (tools/bildlage.py, Motiongen Methode 30) und erlaubt höchstens 3 pp (Messgenauigkeit ± 3 pp) unter dem der Automatik.
+# Ohne Kennzeichnung (eigene Lage mit E): lineare Fusion 45/52 (höher als Man O' War), Scharfschütze 44,7/54 (Far Future),
+# Handfeuerwaffe/Seitenwaffe (Kurzwaffen), Bogen, Raketenwerfer (50/56 „leicht nach unten“, Nutzerwunsch).
 CLASSES = {
     'auto_rifle': dict(
         poses={}, frames={},
@@ -734,6 +738,7 @@ CLASSES = {
                           '750–900/min [S]), Clip fire_hip wie die Automatik alle 2,5 Bilder; Magazin 30 E (Destiny-MP 26–30 [S])'),
         src='Entscheidungsliste Schritt 6, erste übertragene Klasse (Nutzer 26.10.2026): Hüfte 2b/2.1 A, Sprint 3b/3.2 A, Anflug 4d'),
     'scout_rifle': dict(
+        hip_level='Nutzerbefund Testbuild 0.35 „Scout schaut nach unten im Vergleich zur Automatik“ (0.36)',
         # Sprint wie die Automatik (lange Waffe, Gewehr); eigene Hüfte nach cubeescape-reference huefte.json (0.33, Abgleich aller Waffen)
         poses=dict(
             hip=dict(pos=(-0.177, -0.428, -0.218), aim=(0.052, -3.419, -0.218), roll=9.9,
@@ -767,6 +772,7 @@ CLASSES = {
         src='Entscheidungsliste Schritt 6, zweite übertragene Klasse (0.20 „Spotter“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, '
             'Zielfernrohr nach Visier-Standard 3'),
     'pulse_rifle': dict(
+        hip_level='Nutzerbefund Testbuild 0.35 „Impuls schaut nach unten im Vergleich zur Automatik“ (0.36)',
         # Hüfte E an der Automatik ausgerichtet: deren Haltung trifft am Impuls x 59,7 / y 65,6 % (über dem Band 54–59), die kürzere
         # Kammer liegt weiter rechts; Hüfte seit 0.33 nach cubeescape-reference huefte.json (Visier 73–74/55 %)
         poses=dict(
@@ -968,6 +974,7 @@ CLASSES = {
         src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte, Anflug und Nachladen nach Motiongen (Scharfschütze Far Future), Sprint der Automatik, '
             'Repetieren nach jedem Schuss E'),
     'trace_rifle': dict(
+        hip_level='Nutzerbefund Testbuild 0.33 „Spurgewehr-Hüfte zu tief“, 0.35 auf 45/50 wie die Automatik',
         # Spurgewehr (0.33, P2): Dauerstrahl – Dauerfeuer in der Kadenz der Klasse ohne Mündungsfeuer, Hülse und Rückstoß; Fokuslinse und
         # Scheibenmitte leuchten, solange der Abzug zieht (EGO_LIVE glow). Nachladen der Bezugsklasse mit der Energiezelle (mech_map)
         poses=dict(
@@ -995,6 +1002,7 @@ CLASSES = {
         src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Anflug nach Motiongen (Spurgewehr), Sprint der Automatik, Nachladen der Bezugsklasse '
             'mit der Energiezelle (leer wie taktisch, kein Ladehebel)'),
     'machine_gun': dict(
+        hip_level='Nutzerbefund Testbuild 0.33 „MG-Hüfte zu tief“, 0.35 Laufachse waagerecht (Fluchtpunkt 40/50, Seite sichtbar)',
         # Maschinengewehr (0.33, P2): Gurtwaffe wie Dauerfeuer (FIRE_ALIAS); Nachladen als Klassenaktion mit Deckel, Kasten und Gurt
         poses=dict(
             hip=dict(pos=(-0.182, -0.431, -0.185), aim=(0.273, -3.396, -0.185), roll=4.8,
@@ -1135,6 +1143,7 @@ CLASSES = {
         src='Ego-Übertrag 0.33 „Armory“ P3: Hüfte und Sprint der Automatik, Anflug und Ziehen nach Motiongen (Schrotflinte), Pumpen nach '
             'jedem Schuss und Einzelladen E nach den Destiny-Zeiten'),
     'fusion_rifle': dict(
+        hip_level='Nutzer 0.35: Automatik und Fusion sind die „richtige“ Hüfte (Bezug)',
         # Fusionsgewehr (0.33, P3): Aufladen → Salve. Abzug halten lädt in charge_s (Glutkern und Ladebalken leuchten mit der Ladung,
         # EGO_LIVE glow), bei voller Ladung schießt die Salve von selbst; Loslassen vorher bricht ab (Ladung fällt in charge_fade_s).
         # Gehalten Salve um Salve im Takt rpm. Nachladen der Bezugsklasse mit der Energiezelle (mech_map, leer wie taktisch)

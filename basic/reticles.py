@@ -327,14 +327,16 @@ def prims_at(kind, spread=0.0, center_dot=True):
     return out
 
 
-def simulate(spread_id, shots_s, t_end, fps=30, moving=False, ads=False):
-    """Spreizung je Bild für Schusszeiten (s): Impuls je Schuss, Begrenzung, exponentielles Abklingen (wie die Laufzeit)."""
+def simulate(spread_id, shots_s, t_end, fps=30, moving=False, ads=False, open_at=None):
+    """Spreizung je Bild für Schusszeiten (s): Impuls je Schuss, Begrenzung, exponentielles Abklingen (wie die Laufzeit).
+    open_at(t) 0 … 1 öffnet das Ziel um charge_from (0.36, Bogen: 1 − Auszug, wie Unity HipReticle.Decay mit EgoController.DrawLevel)."""
     S = SPREAD[spread_id]
     s, out, k = S['base'], [], 0
     shots = sorted(shots_s)
     for i in range(int(round(t_end * fps)) + 1):
         t = i / fps
-        tgt = S['base'] + (S['move'] if moving else 0.0)
+        op = min(1.0, max(0.0, open_at(t))) if open_at else 0.0
+        tgt = S['base'] + (S['move'] if moving else 0.0) + S.get('charge_from', 0.0) * op
         s = tgt + (s - tgt) * math.exp(-(1 / fps) / S['recover_s'])
         while k < len(shots) and shots[k] <= t:
             s = min(S['max'], s + S['per_shot'])

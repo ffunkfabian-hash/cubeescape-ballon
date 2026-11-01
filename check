@@ -411,11 +411,16 @@ for k, (glass, hud, sh) in {'combat_bow': ('chevron', 'arcs_ladder', 0.046), 'fu
 # 0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35 „Impuls und Scout schauen an der Hüfte nach unten im Vergleich zur Automatik“): der
 # Fluchtpunkt der Laufachse (tools/bildlage.py, Motiongen Methode 30) liegt bei den langen Gewehren höchstens 3 pp unter dem der Automatik
 import tools.bildlage as _BL
+from basic.arms import ego as EG
+import tools.export_unity as _XU
 _ref = _BL.measure(importlib.import_module('basic.pilot.w01_auto_rifle_v21'), 'hip')['flucht']
 if _ref is None:
     fail('Automatik: Lauf zeigt in der Hüfte nicht nach vorn (kein Fluchtpunkt, tools/bildlage.py)')
-for _m in ('w02_pulse_rifle', 'w03_scout_rifle', 'w12_trace_rifle'):
-    _fl = _BL.measure(importlib.import_module(f'basic.pilot.{_m}_v21'), 'hip')['flucht']
+_lvl = [_m for _m in _XU.WEAPONS if EG.CLASSES.get(importlib.import_module(f'basic.{_m}').META['type'], {}).get('hip_level')]
+if len(_lvl) < 5:
+    fail(f'Hüfte waagerecht: nur {len(_lvl)} Klassen mit ego.CLASSES hip_level (Impuls, Scout, Spurgewehr, MG, Fusion)')
+for _m in _lvl:                     # Kennzeichnung je Klasse in ego.CLASSES (hip_level), keine feste Modulliste
+    _fl = _BL.measure(importlib.import_module(f'basic.{_m}'), 'hip')['flucht']
     if _ref is not None and (_fl is None or _fl[1] > _ref[1] + 3.0):   # 3 pp = Messgenauigkeit Motiongen (± 3 pp)
         fail(f'{_m}: Hüfte zeigt nach unten – Fluchtpunkt {_fl} gegen Automatik {_ref} (> 3 pp tiefer, 0.36)')
 # 0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35 „Raketenwerfer im Zielen: man sieht rechts das Innere“): ein im Zielen sichtbares Rohr mit
@@ -439,6 +444,10 @@ for _m in _XU0.WEAPONS:
         if not any(c is not q and c.get('c') == q.get('c') and c['r'] >= q['r_in'] - _FIT_MM and (c.get('r_in') or 0) < 1
                    and min(c['a0'], c['a1']) <= a0 + _SEAT_MM and max(c['a0'], c['a1']) >= a0 for c in _cyl):
             fail(f"{_m}: im Zielen offenes Rohrende {q['id']} bei f {a0:g} (dahinter ausgeblendet) – Rohrboden fehlt (0.36)")
+# 0.36: Bogen-Hüftzeichen ungespannt offen (charge_from), beim Spannen (0,6 s) geschlossen – Python-Referenz wie Unity HipReticle.Decay
+_draw = RT.simulate('charge', [], 3.0, open_at=lambda t: 1.0 if t < 1.0 else max(0.0, 1 - (t - 1.0) / 0.6))
+if abs(_draw[29] - RT.SPREAD['charge']['charge_from']) > 0.15 or _draw[-1] > 0.05 or RT.simulate('charge', [], 1.0)[-1] != RT.SPREAD['charge']['base']:
+    fail(f"Hüftzeichen Bogen: offen {_draw[29]:.2f} mm (≈ charge_from), gespannt {_draw[-1]:.2f} mm (≈ base); ohne open_at unverändert")
 if not {'fire_draw', 'fire_release'} <= set(RT.HIP['shown_in']) or set(RT.HIP['shown_in']) & set(RT.HIP['hidden_in']):
     fail('Hüftzeichen: beim Spannen und Lösen des Bogens an (reticles.HIP shown_in, 0.36), nie zugleich in hidden_in')
 if any(RT.hud_hip(k) != RT.hip(k) for k in RT.DEFAULTS if k not in RT.HUD_HIP) or set(RT.HUD_HIP) - set(RT.DEFAULTS):

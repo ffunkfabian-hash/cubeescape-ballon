@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "a96c69792d0489a280f9b8e9a1aef4a64f6edf34aa1d905b688b3ba29970acc0"
+    "sha256": "79fa32510330f2a3c8c131ee43f23068d551d5ded9b8958d632270fe0a84a9cf"
    },
    {
     "path": "tools/ego_build.py",
