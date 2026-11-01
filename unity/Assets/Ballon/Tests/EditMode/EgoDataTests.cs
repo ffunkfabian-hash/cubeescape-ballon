@@ -492,8 +492,10 @@ namespace Ballon.Ego.Tests
             Assert.IsTrue(o.gameplay.hip.shown_in == null || o.gameplay.hip.shown_in.Length == 0 ||
                           o.gameplay.hip.shown_in.SequenceEqual(n.gameplay.hip.shown_in), $"{o.weapon.id}: vor 0.36 ohne shown_in");
             o.gameplay.hip.shown_in = n.gameplay.hip.shown_in;
-            Assert.AreEqual(n.gameplay.hip.spread.charge_from, o.gameplay.hip.spread.charge_from, 1e-6f, "charge_from nur beim Bogen");
-            Assert.AreEqual(n.gameplay.zoom_in_min_s, o.gameplay.zoom_in_min_s, 1e-6f, "zoom_in_min_s nur beim Bogen");
+            Assert.AreEqual(0f, o.gameplay.hip.spread.charge_from, "vor 0.36 ohne charge_from");
+            Assert.AreEqual(0f, o.gameplay.zoom_in_min_s, "vor 0.36 ohne zoom_in_min_s");
+            o.gameplay.hip.spread.charge_from = n.gameplay.hip.spread.charge_from;
+            o.gameplay.zoom_in_min_s = n.gameplay.zoom_in_min_s;
         }
 
         // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 0.22 (Schritt 6)

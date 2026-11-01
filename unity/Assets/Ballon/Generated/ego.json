@@ -22,7 +22,7 @@
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "f364fad5a2c01d4ea7de67fad4cf391fb557e1730abe878863a161ca89cfc3bf"
+    "sha256": "8a3d84988f2333f812f0277e27fad9472a36d8a642ebcb66fd9da2a851682b17"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "c6d6948b349f3ac3db20e82bd38681deb6dcbb15470bb359e1298b2195ac0d21"
+    "sha256": "151f3b7250e524e1db87b711a072dcfe56c0a6683b17810a028ade5e248afddf"
    },
    {
     "path": "tools/bake_unity.py",

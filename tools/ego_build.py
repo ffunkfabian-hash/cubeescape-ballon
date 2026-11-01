@@ -676,6 +676,7 @@ def evaluate(sc, A, f, report, state):
     for pid, keys in A.get('mech', {}).items():
         mech[pid] = BB.value_at(keys, f)
     shots = [s for s in A.get('fire', []) if s <= f]
+    still, rec_pos, rec_deg = 0.0, Vector(), 0.0     # 0.36: Stützhand (support_still) nur mit Rückstoß
     if A.get('fire'):                        # EG.RECOIL: Impuls je Schuss in gedämpfte Federn (Waffe zurück/hoch, Kamera getrennt)
         k, Rc, dt = A.get('kick', 1.0), sc.P['recoil'], 1.0 / EG.FPS   # 0.35: Rückstoßsatz der Klasse (ego.profile)
         # Zielen (5.1 A): kleiner Modellkick, kein Hochziehen, der Kamera-Ruck geht nur in die Welt (hier ohne Welt: Kamera steht)
@@ -722,7 +723,7 @@ def evaluate(sc, A, f, report, state):
     Rkeys = A.get('R', [(0, 'grip')])
     HL = blend_hand(Lkeys, f, pw)
     HR = blend_hand(Rkeys, f, pw)
-    if A.get('fire') and still > 0:          # 0.36: linke Hand an der Waffe ohne Rückstoß (Unity EgoController.SupportStill)
+    if still > 0:                            # 0.36: linke Hand an der Waffe ohne Rückstoß (Unity EgoController.SupportStill)
         WM = Matrix.Translation(pos2) @ R2.to_4x4()
         WN = Matrix.Translation(pos2 - rec_pos) @ (R2 @ Matrix.Rotation(math.radians(-rec_deg), 3, 'X')).to_4x4()
         HS = WN @ WM.inverted() @ HL
