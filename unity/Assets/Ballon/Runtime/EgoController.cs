@@ -902,7 +902,7 @@ namespace Ballon.Ego
             // 0.36: aus einer Haltung näher an der Kamera als die Hüfte (Bogen gespannt) beginnt der Weg beim Abstand dieses Bilds – mit
             // dem Hüftabstand sprang der Zoom des Bogens beim Wechsel gespannt → Zielen im ersten Bild um 40 % (Nutzerbefund Testbuild 0.35);
             // mitten im Verlassen (Zoom noch da) bleibt der Hüftabstand, damit der Zoom stetig weiterläuft
-            if (aiming && !_aimPrev) _d0 = adsWeight > 0 ? Mathf.Max(_dHip, d) : d;
+            if (aiming && !_aimPrev) _d0 = adsWeight > 0 ? Mathf.Max(_dHip, d) : Mathf.Max(d, 1e-4f);
             if (!aiming && _aimPrev) { _leaving = true; _leaveT = 0; }
             _aimPrev = aiming;
             float target = 0;
