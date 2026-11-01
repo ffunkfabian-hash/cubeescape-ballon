@@ -29,6 +29,21 @@ namespace Ballon.Ego
         public static double DoneAt { get; private set; } = -1;
         public static bool Recording => _trace != null;
 
+        /// <summary>Statischen Zustand zurücksetzen (Editor ohne Domain Reload): laufendes Aufwärmen abschließen, Aufzeichnung abmelden.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void Reset()
+        {
+            if (Active != null && !_job.IsCompleted) _job.Complete();
+            Application.quitting -= SaveTrace;
+            if (_trace != null) _trace.EndTrace();
+            _trace = null;
+            _tracePath = null;
+            _off = false;
+            _job = default;
+            Active = null;
+            StartedAt = DoneAt = -1;
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Init()
         {
@@ -92,7 +107,7 @@ namespace Ballon.Ego
         /// <summary>Fehlzugriffe als Text: Shader, Pass (Subshader.Pass), Schlüsselwörter, Zahl der Zustände.</summary>
         public static void WriteMisses(string path)
         {
-            var miss = Active?.cacheMissCollection;
+            var miss = Active != null ? Active.cacheMissCollection : null;
             if (miss == null) return;
             var list = new System.Collections.Generic.List<GraphicsStateCollection.ShaderVariant>();
             miss.GetVariants(list);

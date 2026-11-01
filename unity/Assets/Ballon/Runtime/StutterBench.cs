@@ -205,9 +205,11 @@ namespace Ballon.Ego
         void Finish()
         {
             enabled = false;
-            ShaderWarmup.SaveTrace();
-            bool warmDone = ShaderWarmup.Done;
             string warm = ShaderWarmup.Active != null ? "on" : ShaderWarmup.Recording ? "record" : _b.shaderWarmup != null ? "off" : "none";
+            ShaderWarmup.SaveTrace();                                           // danach ist Recording falsch: Zustand vorher lesen
+            bool warmDone = ShaderWarmup.Done;
+            var gsc = ShaderWarmup.Active;
+            int states = gsc != null ? gsc.totalGraphicsStateCount : 0, variants = gsc != null ? gsc.variantCount : 0;
             if (_profile != null)
             {
                 Profiler.enabled = false;
@@ -232,8 +234,8 @@ namespace Ballon.Ego
                     "\"warmup_misses\": {18}}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
                     Screen.currentResolution.refreshRateRatio.value, QualitySettings.vSyncCount, Application.targetFrameRate,
                     _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion, _overflow, _passes, _firstFrame,
-                    warm, ShaderWarmup.StartedAt, warmDone ? ShaderWarmup.DoneAt : -1, ShaderWarmup.Active?.totalGraphicsStateCount ?? 0,
-                    ShaderWarmup.Active?.variantCount ?? 0, ShaderWarmup.CacheMisses));
+                    warm, ShaderWarmup.StartedAt, warmDone ? ShaderWarmup.DoneAt : -1, states,
+                    variants, ShaderWarmup.CacheMisses));
                 if (ShaderWarmup.CacheMisses > 0) ShaderWarmup.WriteMisses(Path.ChangeExtension(_csv, null) + "_misses.txt");
                 if (_overflow > 0) Debug.LogWarning($"[Ballon] Ruckelmessung: {_overflow} Bilder über {Capacity} nicht aufgezeichnet");
             }
