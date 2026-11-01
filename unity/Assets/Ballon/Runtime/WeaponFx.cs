@@ -563,6 +563,7 @@ namespace Ballon.Ego
             var rig = _p.loadouts[k].rig;
             var F = rig.S.D.gameplay.fx;
             var rings = _chRing[k];
+            var Q = rig.S.D.motion.payload.charge_glow;                     // Form (ego.CHARGE_GLOW)
             float g = C != null ? Mathf.Clamp01(C.ChargeGlowLevel) : 0, ch = C != null ? Mathf.Clamp01(C.ChargeLevel) : 0;
             var node = _chRoot[k];
             if (g <= 0.001f && ch <= 0.001f && (!node.activeSelf || _chArcs[k].particleCount == 0))
@@ -585,14 +586,14 @@ namespace Ballon.Ego
                 var r = _chRingR[k][i];
                 if (on <= 0.001f) { if (r.enabled) r.enabled = false; continue; }
                 lit++;
-                float br = on * (0.35f + 0.65f * g) * R(0.85f, 1f);       // Flackern wie die Ladebögen
+                float br = on * (Q.ring_base + (1 - Q.ring_base) * g) * R(1 - Q.flicker, 1f);   // Flackern wie die Ladebögen
                 light += br;
                 var t = rings[i];
                 t.localPosition = Vector3.Lerp(a, b, (i + 0.5f) / n);
                 t.localRotation = rot;
-                t.localScale = Vector3.one * (F.charge_ring_m * F.charge_ring_k * (0.85f + 0.15f * on) * ads / 0.82f);   // Ring bei 0,82 der Quadbreite (Ballon/Fx)
+                t.localScale = Vector3.one * (F.charge_ring_m * F.charge_ring_k * (1 - Q.ring_grow + Q.ring_grow * on) * ads / 0.82f);   // Ring bei 0,82 der Quadbreite (Ballon/Fx)
                 r.GetPropertyBlock(_mpb);
-                _mpb.SetColor("_BaseColor", _energy[k] * (6f * br));
+                _mpb.SetColor("_BaseColor", _energy[k] * (Q.ring_glow * br));
                 _mpb.SetFloat("_Alpha", 1);
                 r.SetPropertyBlock(_mpb);
                 r.enabled = true;
@@ -604,9 +605,9 @@ namespace Ballon.Ego
                 var ct = _chCore[k];
                 ct.localPosition = rig.WeaponLocal(rig.S.D.Anchor("Socket_Muzzle").pos);
                 ct.rotation = Quaternion.LookRotation(ct.position - _p.viewCam.transform.position);
-                ct.localScale = Vector3.one * (F.charge_core_m * 2.2f * core * core * ads);
+                ct.localScale = Vector3.one * (F.charge_core_m * Q.core_k * core * core * ads);
                 cr.GetPropertyBlock(_mpb);
-                _mpb.SetColor("_BaseColor", _energy[k] * (5f * core));
+                _mpb.SetColor("_BaseColor", _energy[k] * (Q.core_glow * core));
                 _mpb.SetFloat("_Alpha", 1);
                 cr.SetPropertyBlock(_mpb);
                 cr.enabled = true;
@@ -622,18 +623,18 @@ namespace Ballon.Ego
                 var side = Vector3.Cross(axis, Mathf.Abs(axis.y) < 0.9f ? Vector3.up : Vector3.right).normalized;
                 var up = Vector3.Cross(side, axis);
                 float rad = F.charge_ring_m * F.charge_ring_k * 0.5f * ads;
-                for (; _chArcAcc[k] >= 1; _chArcAcc[k]--)                   // ein Bogen = drei Funken quer um die Achse
+                for (; _chArcAcc[k] >= 1; _chArcAcc[k]--)                   // ein Bogen = arc_sparks Funken quer um die Achse
                 {
                     var p0 = Vector3.Lerp(a, b, R(0, 1));
                     float ang = R(0, 2 * Mathf.PI);
                     var radial = side * Mathf.Cos(ang) + up * Mathf.Sin(ang);
                     var tang = Vector3.Cross(axis, radial);
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < Q.arc_sparks; j++)
                     {
                         var ep = new ParticleSystem.EmitParams
                         {
                             position = p0 + radial * rad * R(0.8f, 1.1f), velocity = tang * R(0.6f, 1.4f) + axis * R(-0.4f, 0.4f),
-                            startLifetime = R(0.04f, 0.08f), startSize = R(0.004f, 0.007f), startColor = _energy[k] * 5f,
+                            startLifetime = R(Q.arc_life_s[0], Q.arc_life_s[1]), startSize = R(Q.arc_m[0], Q.arc_m[1]), startColor = _energy[k] * Q.arc_glow,
                         };
                         ps.Emit(ep, 1);
                     }

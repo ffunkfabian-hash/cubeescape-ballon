@@ -569,6 +569,13 @@ IMPACT_SURFACES = dict(
                    'z-am-range-metall); Schrot auf Blech Funkenbündel ≥ 8 Bilder, kein Rauch (z-am-condfin-funken-blech). spark_s 0,2 s → '
                    'längster Funke 0,24 s = 14 Bilder; Anzahl × 1,5 und Farbe #E4ECFF E (Vergleich mit Fels/Beton nicht belegt)'),
 )
+# Ladeleuchten, gemeinsame Form (0.39 „Scatter“, Richter Runde 1: Werte aus dem Code in die Daten): Helligkeit der Ringe (Leuchtfarbe
+# × ring_glow × Leuchten, Grundhelligkeit ring_base bei beginnender Ladung), Flackern (× 1 − flicker … 1 je Bild), Ringgröße beim
+# Angehen (ring_grow: × 1 − ring_grow … 1), Mündungskern (Quad × core_k, Helligkeit core_glow), Ladebogen aus arc_sparks Funken
+# (Lebensdauer arc_life_s, Größe arc_m, Helligkeit arc_glow). Alles E (Größe, Farbe, Helligkeit nicht gemessen).
+CHARGE_GLOW = dict(ring_glow=6.0, ring_base=0.35, flicker=0.15, ring_grow=0.15, core_glow=5.0, core_k=2.2, arc_sparks=3,
+                   arc_life_s=(0.04, 0.08), arc_m=(0.004, 0.007), arc_glow=5.0,
+                   src='E: Ringe weiß glühend mit Rand in der Leuchtfarbe (Belegbild 0.39), Bogen = drei kurze Funken quer zur Achse')
 # Explosion je Art (0.34.2 „impact-nachtrag“, PAYLOAD explosion): Kern (flash_s), bildweiter Blitz (screen_s, screen_k = Deckung), Feuerkugeln,
 # Druckring, Funken, Rauch, kurzes Licht; Lache (pool_s Dauer, pool_k Radius zum Explosionsradius, pool_hz aufsteigende Glut je Sekunde,
 # pool_fade_s Ausblenden; 0 = keine); Größen mit radius_m der Klasse skaliert (E). Farbe leer = Leuchtfarbe der Waffe (Elementfarbe).

@@ -18,7 +18,7 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "a5f3a002f4836e62981458284996315aae58938e7e531f08321f88d097a9a5d9"
+    "sha256": "459e70b2dfbc340b2beebb283894b90e50835bbaa9bca7e9b332a969808761a0"
    },
    {
     "path": "tools/ego_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "a36e28778f7e7b02f293f114303e55f2cba1e53022031a0baeae37a59bfb836d"
+    "sha256": "b774533f308aab36001b9e5f3d488eff3e9cbd9254a885168909696867b18fa0"
    },
    {
     "path": "tools/bake_unity.py",
@@ -536,6 +536,25 @@
      "name": "metal"
     }
    ],
+   "charge_glow": {
+    "ring_glow": 6.0,
+    "ring_base": 0.35,
+    "flicker": 0.15,
+    "ring_grow": 0.15,
+    "core_glow": 5.0,
+    "core_k": 2.2,
+    "arc_sparks": 3,
+    "arc_life_s": [
+     0.04,
+     0.08
+    ],
+    "arc_m": [
+     0.004,
+     0.007
+    ],
+    "arc_glow": 5.0,
+    "src": "E: Ringe weiß glühend mit Rand in der Leuchtfarbe (Belegbild 0.39), Bogen = drei kurze Funken quer zur Achse"
+   },
    "explosion": {
     "flash_s": 0.17,
     "flash_k": 1.3,

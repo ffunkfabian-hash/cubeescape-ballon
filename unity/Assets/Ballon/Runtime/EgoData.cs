@@ -301,7 +301,18 @@ namespace Ballon.Ego
     [Serializable]
     public class EgoPayload { public EgoDecal decal; public EgoImpact[] impacts; public EgoExplosion explosion; public EgoSmoke muzzle_smoke;
                               public EgoExplosion[] explosions;      // 0.34.2: je Art (gameplay.fx.explosion); explosion = bis 0.34.1 die einzige
-                              public EgoSurface[] surfaces; }        // 0.39: Untergrund (Szene colliders[].surface)
+                              public EgoSurface[] surfaces;          // 0.39: Untergrund (Szene colliders[].surface)
+                              public EgoChargeGlow charge_glow; }    // 0.39: Form des Ladeleuchtens (ego.CHARGE_GLOW)
+    /// <summary>Form des Ladeleuchtens (0.39 „Scatter“, ego.CHARGE_GLOW): Helligkeiten, Flackern, Ringgröße beim Angehen, Mündungskern,
+    /// Ladebogen; die Lage je Klasse steht in gameplay.fx charge_*. Ab BALLON 0.39; ältere Dateien bekommen die Werte von 0.39.</summary>
+    [Serializable]
+    public class EgoChargeGlow
+    {
+        public float ring_glow, ring_base, flicker, ring_grow, core_glow, core_k, arc_glow;
+        public int arc_sparks;
+        public float[] arc_life_s, arc_m;
+        public string src;
+    }
     /// <summary>Untergrund (0.39 „Scatter“, ego.IMPACT_SURFACES): ändert jeden Einschlagstil auf Flächen dieser Art.</summary>
     [Serializable]
     public class EgoSurface
@@ -595,6 +606,10 @@ namespace Ballon.Ego
             if (P.decal == null || P.decal.max <= 0) P.decal = new EgoDecal { size_m = 0.05f, max = 80, life_s = 1e9f, fade_s = 1, variants = 1, scorch_m = 1.4f, scorch_max = 8, src = "vor 0.34" };
             P.impacts ??= new EgoImpact[0];
             P.surfaces ??= new EgoSurface[0];                                            // vor 0.39: ohne Untergrund
+            if (P.charge_glow == null || P.charge_glow.arc_sparks <= 0 || P.charge_glow.arc_life_s == null || P.charge_glow.arc_life_s.Length < 2)
+                P.charge_glow = new EgoChargeGlow { ring_glow = 6, ring_base = 0.35f, flicker = 0.15f, ring_grow = 0.15f, core_glow = 5, core_k = 2.2f,
+                                                    arc_sparks = 3, arc_life_s = new[] { 0.04f, 0.08f }, arc_m = new[] { 0.004f, 0.007f }, arc_glow = 5,
+                                                    src = "vor 0.39 (Werte von 0.39)" };
             if (P.explosion == null || P.explosion.sparks <= 0) P.explosion = new EgoExplosion { flash_s = 0.12f, flash_k = 1.3f, fire = 10, fire_s = 0.45f, fire_k = 0.75f, ring_s = 0.35f, ring_k = 0.9f, sparks = 40, spark_mps = 14, spark_s = 0.7f,
                                                smoke = 14, smoke_s = 2.6f, smoke_k = 0.55f, light_s = 0.18f, light_k = 4, core_color = "#FFF2D6",
                                                fire_color = "#FF8A3C", smoke_color = "#5A5D63", ring_color = "#FFE2B8" };

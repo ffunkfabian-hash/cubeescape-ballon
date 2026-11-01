@@ -1568,6 +1568,13 @@ namespace Ballon.Ego.Tests
             Assert.GreaterOrEqual(metal.spark_s_min * 1.2f * 60f, 12f, "längster Funke ≥ 12 Bilder bei 60/s");
             Assert.IsTrue(metal.SparkColor(out _), "Funkenfarbe auf Metall");
             Assert.IsNull(D.Surface(""), "ohne Untergrund: Stil unverändert");
+            var Q = P.charge_glow;
+            Assert.IsNotNull(Q, "Form des Ladeleuchtens (ego.CHARGE_GLOW)");
+            Assert.Greater(Q.ring_glow, 0);
+            Assert.Greater(Q.arc_sparks, 0);
+            Assert.AreEqual(2, Q.arc_life_s.Length);
+            Assert.That(Q.flicker, Is.InRange(0f, 0.5f));
+            StringAssert.DoesNotStartWith("vor 0.39", Q.src, "aus dem Export, nicht der Rückfall");
             int charge = 0;
             foreach (var d in All)
             {

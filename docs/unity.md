@@ -192,10 +192,17 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
   Scheiben im Radius zählen), `arrow` (Pfeil mit Fall, steckt), `beam` (Dauerstrahl), `bolts` (Bolzen je Strahl der Salve, Einschlag bei
   Ankunft), `rail` (scharfer Strahl, blendet aus), `none` (Werkzeug). Strahlen und Projektile beginnen an `Socket_Muzzle`, durch die
   Viewmodel-Kamera auf denselben Bildpunkt der Weltkamera gerechnet. An der Waffe: Rauch aus dem Rohr (Werfer) und Mündungslicht
-  (Energie, Bogen) in der Viewmodel-Ebene. Alles in festen Pools (Löcher 96, Projektile 8, Linien 24, Ringe 4, Lichter 2,
+  (Energie, Bogen) in der Viewmodel-Ebene. Alles in festen Pools (Löcher 192 seit 0.39, Projektile 8, Linien 24, Ringe 4, Lichter 2,
   Brandflecken 8, Partikel je System fest); die Partikel sind angehalten und laufen mit der Spielzeit (`Simulate`), damit Tests und
   Aufnahmen mit virtueller Zeit dieselben Bilder sehen. Gegenprobe: `BALLON_PAYLOAD_OFF=1` schaltet die Wirkung samt Schrittteilen,
   Füllstand, Gliedern und Nachlade-Hülsen ab.
+- **Schrot, Untergrund, Ladeleuchten (0.39 „Scatter“):** Schrot zeigt jede Kugel mit Loch (`shot_impacts` Bursts, übrige Kugeln im
+  Stil `pellet_impact`, Loch × `IMPACTS hole_k`); Untergrund aus `colliders[].surface` (`FxSurface`, `motion.payload.surfaces`); an
+  Ladewaffen Ringe, Ladefunken und Mündungskern unter dem Knoten „Ladeleuchten“ von `weaponRoot` (ohne Ladung inaktiv; Lage aus
+  `gameplay.fx charge_*`, Form aus `motion.payload.charge_glow`). Halter der Löcher entstehen beim Laden von Parcours und Szene
+  (`WeaponFx.PrepareHolders`), nicht beim Schuss. **Abnehmer:** den vollen Umfang liest BALLON ab 0.39; ältere Leser übergehen die
+  Felder (gleiches `ballon-ego/10`, `ballon-scene/2`), 0.39 liest ältere Dateien mit Rückfällen (ohne Untergrund, ohne Ladeleuchten,
+  Loch × 1, Form von 0.39).
 - **Schrittteile, Füllstand, Glieder (0.34):** `EGO_LIVE index` (Trommel der Handfeuerwaffe, Gurtvorschub des MG) läuft nach jedem Schuss
   in `ego.index_frames` Bildern von 0 auf 1 – Blender (`ego_build`) und Unity gleich. `EGO_LIVE rounds` zeigt den Füllstand nur im Spiel
   (Clips voll): MG-Gurt (`line`, Satz i an bei mehr als i Patronen), Granatwerfer-Trommel (`drum`, je Kammer; der Zustand rückt mit, wenn
