@@ -10,7 +10,8 @@
 - Fusion und lineare Fusion (Nutzerbefund „im Hüftmodus fehlt ein sichtbares Aufladen“): Leuchtringe über den Spulen gehen mit der
   Ladung von hinten nach vorn an und werden heller, Ladefunken am Lauf, Mündungskern ab 80 % Ladung; im Zielen größer, damit sie um
   das Gehäuse ins Visierbild ragen. Spanne und Durchmesser aus der Spec, Zeiten nach Motiongen (Cartesian Coordinate).
-  Bericht [docs/versions/0.39-scatter.md](docs/versions/0.39-scatter.md).
+  Ruckelmessung gegen 0.38 (sechs Läufe): Schrot-Dauerfeuer und GC unverändert, Fusion mit einzelnen Spitzen (bis 100 ms, Ursache
+  offen). Bericht [docs/versions/0.39-scatter.md](docs/versions/0.39-scatter.md).
 
 ## 0.38.0 „Prewarm“ – Shader-Hänger beim ersten Start einer neuen Build verkleinert, nicht beseitigt (Branch `claude/ballon-0.38-prewarm`)
 
