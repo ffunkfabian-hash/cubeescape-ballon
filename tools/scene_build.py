@@ -81,7 +81,8 @@ def data(S):
         if not p['collide']:
             continue
         lo, hi = SC.bounds(p)
-        cols.append(dict(name=p['id'], center=r6([(a + b) / 2 for a, b in zip(lo, hi)]), size=r6([b - a for a, b in zip(lo, hi)])))
+        cols.append(dict(name=p['id'], center=r6([(a + b) / 2 for a, b in zip(lo, hi)]), size=r6([b - a for a, b in zip(lo, hi)]),
+                         surface=SC.surface_of(S, p)))     # 0.39: Untergrund für Einschläge ('' = keiner)
     sp = S.SPAWN['pos']
     R = S.REFERENCE
     C = S.COURSE
@@ -127,6 +128,9 @@ def check():
     for name in scene_names():
         S = load(name)
         e = SC.validate(S)
+        from basic.arms import ego as EG                    # 0.39: Untergründe der Szene kennt die Wirkung (ego.IMPACT_SURFACES)
+        e += [f'Untergrund {k} fehlt in ego.IMPACT_SURFACES' for k in sorted({SC.surface_of(S, p) for p in S.PARTS if p['collide']} - {''})
+              if k not in EG.IMPACT_SURFACES]
         if e:
             bad.append(f'{name}: ' + '; '.join(e[:3]))
             continue

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Ballon.Ego
 {
     public sealed class SceneZone { public string name; public string[] objects; public int size; public float texel_m; }
-    public sealed class SceneCollider { public string name; public float[] center, size; }
+    public sealed class SceneCollider { public string name, surface; public float[] center, size; }   // surface (0.39): Untergrund für Einschläge, "" = keiner
     public sealed class SceneSpawn { public float[] pos; public float yaw_deg; }
     public sealed class SceneSky { public string color; public float strength; }
     public sealed class SceneLight
@@ -211,7 +211,8 @@ namespace Ballon.Ego
                 for (int i = 0; i < f.colliders.Length; i++)
                 {
                     if (!(ca[i] is Dictionary<string, object> co)) throw Bad($"colliders[{i}]", "ist kein Objekt");
-                    f.colliders[i] = new SceneCollider { name = Str(co, "name", $"colliders[{i}].", false), center = Vec3(co, "center", $"colliders[{i}]."), size = Vec3(co, "size", $"colliders[{i}].") };
+                    f.colliders[i] = new SceneCollider { name = Str(co, "name", $"colliders[{i}].", false), center = Vec3(co, "center", $"colliders[{i}]."), size = Vec3(co, "size", $"colliders[{i}]."),
+                                                         surface = co.TryGetValue("surface", out var sv) && sv is string ss ? ss : "" };   // 0.39: "" = keiner, fehlt in älteren Szenen
                 }
 
                 var so = Obj(d, "spawn", "");

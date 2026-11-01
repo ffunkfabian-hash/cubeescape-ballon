@@ -264,6 +264,8 @@ namespace Ballon.Ego
 
         /// <summary>Weltlage eines Ankers (Blender-Waffenrahmen → Unity über axes.to_unity, nach dem letzten Apply).</summary>
         public Vector3 AnchorWorld(string id) => weaponRoot.TransformPoint(_axes.MultiplyPoint3x4(V(S.D.Anchor(id).pos)));
+        /// <summary>Punkt im Blender-Waffenrahmen (Meter, wie die Anker) im Raum von weaponRoot (0.39: Ladeleuchten am Lauf).</summary>
+        public Vector3 WeaponLocal(float[] b) => _axes.MultiplyPoint3x4(V(b));
         public Transform SegR(string s) => _segR[S.SegmentIndex(s)];
         public Transform SegL(string s) => _segL[S.SegmentIndex(s)];
 

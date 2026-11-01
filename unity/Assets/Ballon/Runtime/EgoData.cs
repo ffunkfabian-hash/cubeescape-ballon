@@ -103,7 +103,14 @@ namespace Ballon.Ego
         public float tracer_mps, tracer_m, tracer_w_m;
         public float muzzle_glow_s, trail_step_m, trail_life_s, spark_hz;   // Mündungslicht, Spur der Projektile, Funken am Dauerstrahl
         public int scorch_every;                         // Dauerstrahl: Brandfleck je n. Takt
-        public int shot_impacts;                         // 0.34.1: sichtbare Einschläge je Streuschuss (0 = je Kugel)
+        public int shot_impacts;                         // 0.34.1: Einschläge im Stil impact je Streuschuss (0 = jede Kugel)
+        public string pellet_impact;                     // 0.39: Stil der übrigen Kugeln (jede mit Loch); leer = keiner (bis 0.38)
+        // Ladeleuchten (0.39 „Scatter“, ego.PAYLOAD charge_*): Ringe zwischen charge_a (hinten) und charge_b (vorn) auf der Kernachse
+        // (Blender-Meter wie die Anker), Ø charge_ring_m × charge_ring_k; Funken charge_arcs_hz × Ladung; Mündungskern ab charge_core_from
+        public int charge_rings;
+        public float[] charge_a, charge_b;
+        public float charge_ring_m, charge_ring_k, charge_arcs_hz, charge_core_m, charge_core_from, charge_ads_k;
+        public bool ChargeFx => charge_rings > 0 && charge_ring_m > 0;
         public float pulse_hz;                           // 0.34.1: Pulsen des Dauerstrahls; 0 (älterer Export) = 6
         public string explosion;                         // 0.34.2: Name in motion.payload.explosions; leer = die gemeinsame
         public float cone_deg, cone_ads, speed_mps, gravity_mps2, life_s, radius_m, smoke_s, width_m, length_m, beam_s, stick_s, muzzle_glow_m;
@@ -293,13 +300,31 @@ namespace Ballon.Ego
     /// <summary>Gemeinsame Werte der Wirkung (0.34, ego.DECAL, IMPACTS, EXPLOSION, MUZZLE_SMOKE).</summary>
     [Serializable]
     public class EgoPayload { public EgoDecal decal; public EgoImpact[] impacts; public EgoExplosion explosion; public EgoSmoke muzzle_smoke;
-                              public EgoExplosion[] explosions; }    // 0.34.2: je Art (gameplay.fx.explosion); explosion = bis 0.34.1 die einzige
-    [Serializable] public class EgoDecal { public float size_m, life_s, fade_s, scorch_m; public int max, variants, scorch_max; public string src; }
+                              public EgoExplosion[] explosions;      // 0.34.2: je Art (gameplay.fx.explosion); explosion = bis 0.34.1 die einzige
+                              public EgoSurface[] surfaces; }        // 0.39: Untergrund (Szene colliders[].surface)
+    /// <summary>Untergrund (0.39 „Scatter“, ego.IMPACT_SURFACES): ändert jeden Einschlagstil auf Flächen dieser Art.</summary>
+    [Serializable]
+    public class EgoSurface
+    {
+        public string name, spark_color, src;
+        public float dust_k, sparks_k, spark_s_min;
+        [NonSerialized] Color _spark; [NonSerialized] bool _hasSpark, _sparkSet;
+        /// <summary>Farbe der Funken und des Lichts, sonst false (einmal gelesen, kein Speicher je Einschlag).</summary>
+        public bool SparkColor(out Color c)
+        {
+            if (!_hasSpark) { _sparkSet = ColorUtility.TryParseHtmlString(spark_color ?? "", out _spark); _hasSpark = true; }
+            c = _spark;
+            return _sparkSet;
+        }
+    }
+    [Serializable] public class EgoDecal { public float size_m, life_s, fade_s, scorch_m, min_life_s; public int max, variants, scorch_max; public string src; }   // min_life_s 0.39: Lochgruppe hält bei Dauerfeuer
     [Serializable]
     public class EgoImpact
     {
         public string name, decal, src, dust_color;      // dust_color (0.34.1): Staub bzw. dunkle Säule; leer = Grau
         public int sparks, dust; public float spark_mps, spark_s, dust_m, dust_s, glow_m, glow_s, dust_rise_mps;
+        public float hole_k;                             // 0.39: Loch × k (Schrot); 0 (älterer Export) = 1
+        public float HoleK => hole_k > 0 ? hole_k : 1f;
         [NonSerialized] Color _dust; [NonSerialized] bool _hasDust;
         /// <summary>Farbe des Staubs (einmal gelesen, kein Speicher je Einschlag).</summary>
         public Color DustColor
@@ -569,6 +594,7 @@ namespace Ballon.Ego
             // JsonUtility legt fehlende Klassenfelder als leere Objekte an, nicht als null: nach Werten prüfen (Richter 0.34)
             if (P.decal == null || P.decal.max <= 0) P.decal = new EgoDecal { size_m = 0.05f, max = 80, life_s = 1e9f, fade_s = 1, variants = 1, scorch_m = 1.4f, scorch_max = 8, src = "vor 0.34" };
             P.impacts ??= new EgoImpact[0];
+            P.surfaces ??= new EgoSurface[0];                                            // vor 0.39: ohne Untergrund
             if (P.explosion == null || P.explosion.sparks <= 0) P.explosion = new EgoExplosion { flash_s = 0.12f, flash_k = 1.3f, fire = 10, fire_s = 0.45f, fire_k = 0.75f, ring_s = 0.35f, ring_k = 0.9f, sparks = 40, spark_mps = 14, spark_s = 0.7f,
                                                smoke = 14, smoke_s = 2.6f, smoke_k = 0.55f, light_s = 0.18f, light_k = 4, core_color = "#FFF2D6",
                                                fire_color = "#FF8A3C", smoke_color = "#5A5D63", ring_color = "#FFE2B8" };
@@ -587,6 +613,14 @@ namespace Ballon.Ego
         public EgoImpact Impact(string name)
         {
             if (motion.payload?.impacts != null) foreach (var i in motion.payload.impacts) if (i.name == name) return i;
+            return null;
+        }
+
+        /// <summary>Untergrund nach Namen (motion.payload.surfaces, 0.39), sonst null (Einschlag unverändert).</summary>
+        public EgoSurface Surface(string name)
+        {
+            if (string.IsNullOrEmpty(name) || motion.payload?.surfaces == null) return null;
+            foreach (var s in motion.payload.surfaces) if (s.name == name) return s;
             return null;
         }
 

@@ -1553,6 +1553,52 @@ namespace Ballon.Ego.Tests
             Assert.Greater(P.muzzle_smoke.rate_hz, 0);
         }
 
+        /// <summary>0.39 „Scatter“ (REF 0.38 Aftermath): Schrot zeigt je Schuss Bursts (shot_impacts) und für jede übrige Kugel einen
+        /// Einschlag mit Loch (pellet_impact); der Lochpool hält bei Dauerfeuer jeder Streuschuss-Klasse min_life_s ≥ 9 s; Untergrund
+        /// metal ohne Staub mit Funken ≥ 12 Bildern bei 60/s; Ladewaffen mit Ladeleuchten hinter der Mündung auf der Kernachse.</summary>
+        [Test]
+        public void Scatter_Schrot_Untergrund_Ladeleuchten_in_ego_json()
+        {
+            var P = D.motion.payload;
+            Assert.GreaterOrEqual(P.decal.min_life_s, 9f, "Lochgruppe ≥ 9 s (z-am-condfin-loecher)");
+            Assert.GreaterOrEqual(P.decal.life_s, P.decal.min_life_s);
+            var metal = D.Surface("metal");
+            Assert.IsNotNull(metal, "Untergrund metal");
+            Assert.AreEqual(0f, metal.dust_k, "kein Staub, keine Säule auf Metall");
+            Assert.GreaterOrEqual(metal.spark_s_min * 1.2f * 60f, 12f, "längster Funke ≥ 12 Bilder bei 60/s");
+            Assert.IsTrue(metal.SparkColor(out _), "Funkenfarbe auf Metall");
+            Assert.IsNull(D.Surface(""), "ohne Untergrund: Stil unverändert");
+            int charge = 0;
+            foreach (var d in All)
+            {
+                var F = d.gameplay.fx;
+                if (F.kind == "pellets")
+                {
+                    Assert.Greater(F.shot_impacts, 0, $"{d.weapon.id}: Bursts je Schuss");
+                    Assert.Less(F.shot_impacts, F.pellets, d.weapon.id);
+                    Assert.IsNotNull(d.Impact(F.pellet_impact), $"{d.weapon.id}: Stil der übrigen Kugeln {F.pellet_impact}");
+                    Assert.AreEqual("hole", d.Impact(F.pellet_impact).decal, "jede Kugel ein Loch");
+                    Assert.Greater(d.Impact(F.pellet_impact).HoleK, 1f, "Schrotloch größer als das Kugelloch (≈ 1,2 % B, hole_k)");
+                    Assert.AreEqual(d.Impact(F.pellet_impact).HoleK, d.Impact(F.impact).HoleK, "Burst und Kugel gleich große Löcher");
+                    Assert.GreaterOrEqual(F.pellets, 9, "Lochgruppe ≈ 9–12 Löcher");
+                    Assert.GreaterOrEqual(P.decal.max, F.pellets * d.gameplay.rpm / 60f * P.decal.min_life_s,
+                                          $"{d.weapon.id}: Pool reicht bei Dauerfeuer min_life_s");
+                }
+                Assert.AreEqual(d.gameplay.Charge && F.charge_rings > 0, F.ChargeFx, $"{d.weapon.id}: Ladeleuchten nur mit Ringen und Spanne");
+                if (!F.ChargeFx) continue;
+                charge++;
+                Assert.IsTrue(d.gameplay.Charge, $"{d.weapon.id}: Ladeleuchten nur an Ladewaffen");
+                var mz = d.Anchor("Socket_Muzzle").pos;
+                Assert.Greater(F.charge_a[1], F.charge_b[1], $"{d.weapon.id}: charge_a hinten (vorn −Y)");
+                Assert.Greater(F.charge_b[1], mz[1], $"{d.weapon.id}: Spanne hinter der Mündung");
+                Assert.AreEqual(mz[2], F.charge_a[2], 1e-5f, "auf der Kernachse");
+                Assert.Greater(F.charge_ring_m, 0.01f, d.weapon.id);
+                Assert.That(F.charge_core_from, Is.InRange(0f, 1f));
+                Assert.That(F.charge_ads_k, Is.InRange(0.5f, 2.5f), "im Zielen um das Modell (0.39)");
+            }
+            Assert.AreEqual(2, charge, "Fusion und lineare Fusion");
+        }
+
         // ---------------------------------------------------------------- Referenz
         /// <summary>0.35 „Stance“: eigener Rückstoßsatz der Handfeuerwaffe (Motiongen REF 0.35 › E: Spitze +5…+10, Unterschwingen +25…+32,
         /// Rückkehr ≤ +47 Bilder bei 60/s; Kamera im Zielen ≈ 22 pp H nach 0,17 s), die übrigen Klassen mit motion.recoil; Raketenwerfer

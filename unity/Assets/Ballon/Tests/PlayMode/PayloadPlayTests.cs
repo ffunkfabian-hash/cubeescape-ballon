@@ -361,13 +361,15 @@ namespace Ballon.Ego.Tests
         }
 
         // ------------------------------------------------------------------------------------------------ Einschläge
-        /// <summary>Schrotflinte (0.34.1, REF 0.36: im Bild ein Einschlag je Schuss, Nutzerentscheid 181): ein Schuss zeigt EINEN dichten
-        /// Einschlag (Funkenball, Rauchball) mit einem Loch; die 12 Kugeln liegen im Streukegel (cone_deg), gestreut statt in einem Punkt,
-        /// und treffen (eine Scheibe neben der Mitte zählt als Treffer). Hüftstreuung im Test 0 und 2 s Ruhe vor dem Ausrichten (0.35): die
-        /// Zufallsstreuung verschob die Kegelmitte bis 11 cm, die Scheibe beginnt bei 22 cm, und die Weltkamera erholte sich noch vom Rückstoß
-        /// des Tests davor – je nach Zufallsfolge und Takt fiel der Treffer aus.</summary>
+        /// <summary>Schrotflinte (0.39 „Scatter“, Nutzerbefund „kein Streuschuss sichtbar“, Entscheid 211 B hebt 181 auf; REF 0.38 Aftermath:
+        /// auf Blech eine bleibende Lochgruppe ≈ 9–12 Löcher und 2 Bursts je Schuss): ein Schuss auf die Wand zeigt jede Kugel als Einschlag
+        /// mit Loch – die Löcher liegen im Streukegel (cone_deg) und als Gruppe statt in einem Punkt, zwei davon als dichter Burst; die Kugeln
+        /// treffen (eine Scheibe neben der Mitte zählt einmal). Gegenprobe: mit dem Stand 0.38 (shot_impacts 1, nur die mittlere Kugel
+        /// sichtbar) scheitert der Test an der Zahl der Einschläge und Löcher. Hüftstreuung im Test 0 und 2 s Ruhe vor dem Ausrichten (0.35):
+        /// die Zufallsstreuung verschob die Kegelmitte bis 11 cm, die Scheibe beginnt bei 22 cm, und die Weltkamera erholte sich noch vom
+        /// Rückstoß des Tests davor.</summary>
         [UnityTest]
-        public IEnumerator Schrot_ein_Einschlag_je_Schuss_Kugeln_im_Kegel()
+        public IEnumerator Schrot_Lochgruppe_je_Schuss_im_Kegel()
         {
             var p = Setup("shotgun", 8f, out var wall);
             var F = p.C.S.D.gameplay.fx;
@@ -379,7 +381,6 @@ namespace Ballon.Ego.Tests
                 Rc.spread_hip_deg = 0;
                 for (int f = 0; f < 60; f++) yield return null;   // Rückstoß aus Tests davor (Raketenwerfer, Kick 4) abklingen lassen
                 Assert.AreEqual(12, F.pellets);
-                Assert.AreEqual(1, F.shot_impacts, "ein sichtbarer Einschlag je Schuss");
                 var cam = p.worldCam.transform;
                 float widest = 0;
                 for (int i = 1; i < F.pellets; i++)
@@ -393,13 +394,31 @@ namespace Ballon.Ego.Tests
                 side.AddComponent<RangeTarget>();
                 Physics.SyncTransforms();
                 yield return null;
-                int holes0 = wall.transform.childCount, hits0 = p.hits;
+                int hits0 = p.hits;
+                var eye = cam.position;
+                var fwd = cam.forward;
                 p.input = new ScriptedInput().Add(0, 0.1f, hold: "fire").Add(0.1f, 1000);
                 for (int f = 0; f < 60 && p.fx.impacts == 0; f++) yield return null;
-                TestContext.WriteLine($"Schrot: {p.fx.impacts} Einschlag, {wall.transform.childCount - holes0} Loch, Funken {p.fx.Sparks}, Treffer {p.hits - hits0}");
-                Assert.AreEqual(1, p.fx.impacts, "ein Einschlag je Schuss");
-                Assert.AreEqual(1, wall.transform.childCount - holes0, "ein Loch");
-                Assert.GreaterOrEqual(p.fx.Sparks, 20, "dichter Funkenball");
+                int holes = 0;
+                float maxAng = 0, sumAng = 0;
+                for (int r = 0; r < p.fx.HoleCount && p.fx.HoleAlpha(r) > 0; r++)
+                {
+                    float ang = Vector3.Angle(fwd, p.fx.HoleTransform(r).position - eye);
+                    holes++;
+                    maxAng = Mathf.Max(maxAng, ang);
+                    sumAng += ang;
+                }
+                TestContext.WriteLine($"Schrot: {p.fx.impacts} Einschläge, {holes} Löcher (Winkel größter {maxAng:0.00}°, Mittel {sumAng / Mathf.Max(1, holes):0.00}°, " +
+                                      $"Kegel {F.cone_deg}°), Funken {p.fx.Sparks}, Treffer {p.hits - hits0}");
+                Assert.AreEqual(F.pellets, p.fx.impacts, "jede Kugel ein Einschlag (Gegenprobe 0.38: 1)");
+                Assert.GreaterOrEqual(holes, 9, "Lochgruppe ≥ 9 Löcher je Schuss (Aftermath 9–12; Gegenprobe 0.38: 1)");
+                Assert.LessOrEqual(holes, F.pellets);
+                float want = EgoPlayer.DecalSize * p.C.S.D.Impact(F.pellet_impact).HoleK;
+                Assert.AreEqual(want, p.fx.HoleTransform(0).lossyScale.x, want * 0.02f, "Schrotloch × hole_k");
+                Assert.LessOrEqual(maxAng, F.cone_deg + 0.3f, "Löcher im Streukegel");
+                Assert.Greater(maxAng, 0.5f * F.cone_deg, "Löcher als Gruppe, nicht in einem Punkt");
+                int burst = Mathf.RoundToInt(p.C.S.D.Impact(F.impact).sparks * 0.8f);
+                Assert.GreaterOrEqual(p.fx.Sparks, F.shot_impacts * burst, $"{F.shot_impacts} dichte Bursts");
                 Assert.AreEqual(1, p.hits - hits0, "die Kugeln treffen die Scheibe neben der Mitte (einmal gezählt)");
             }
             finally
@@ -407,6 +426,104 @@ namespace Ballon.Ego.Tests
                 Rc.spread_hip_deg = s0;
                 if (side != null) side.SetActive(false);
                 Done(p, wall);
+            }
+        }
+
+        /// <summary>Untergrund Metall (0.39, REF 0.38 z-am-range-metall): auf einer Fläche mit FxSurface „metal“ zeigt der Einschlag
+        /// keinen Staub und keine Säule, mehr Funken mit ≥ 12 Bildern bei 60/s und weiß-blaue Farbe; ohne Untergrund bleibt der Stil
+        /// unverändert. (Hangar: ScenePlayTests.Hangar_Untergrund_Metall – nach dem Aufwärmtest, der nur Parcours-Shader kennt.)</summary>
+        [UnityTest]
+        public IEnumerator Metall_Einschlag_ohne_Staub_mit_langen_Funken()
+        {
+            var p = Setup("auto_rifle", 4f, out var wall);
+            try
+            {
+                var I = p.C.S.D.Impact("bullet");
+                Assert.Greater(I.dust, 0, "Kugel-Stil hat Staub (Beton)");
+                p.input = new ScriptedInput().Add(0, 0.05f, hold: "fire").Add(0.05f, 1000);
+                for (int f = 0; f < 30 && p.fx.impacts == 0; f++) yield return null;
+                Assert.Greater(p.fx.impacts, 0);
+                Assert.IsNull(p.fx.LastSurface, "Testwand ohne Untergrund");
+                Assert.AreEqual(I.dust, p.fx.LastDust, "Staub wie im Stil");
+                Assert.AreEqual(I.spark_s, p.fx.LastSparkS, 1e-6f);
+                wall.AddComponent<FxSurface>().kind = "metal";
+                p.fx.Clear();
+                for (int f = 0; f < 20; f++) yield return null;
+                p.input = new ScriptedInput().Add(0, 0.05f, hold: "fire").Add(0.05f, 1000);
+                for (int f = 0; f < 30 && p.fx.impacts == 0; f++) yield return null;
+                Assert.Greater(p.fx.impacts, 0);
+                Assert.IsNotNull(p.fx.LastSurface, "Untergrund metal gelesen");
+                Assert.AreEqual("metal", p.fx.LastSurface.name);
+                Assert.AreEqual(0, p.fx.LastDust, "kein Staub, keine Säule auf Metall");
+                Assert.Greater(p.fx.LastSparks, I.sparks, "mehr Funken auf Metall");
+                Assert.GreaterOrEqual(p.fx.LastSparkS * 1.2f * 60f, 12f, "längster Funke ≥ 12 Bilder bei 60/s");
+                TestContext.WriteLine($"Metall: Funken {p.fx.LastSparks} (Stil {I.sparks}), Dauer {p.fx.LastSparkS:0.00} s, Staub {p.fx.LastDust}");
+            }
+            finally { Done(p, wall); }
+        }
+
+        // ------------------------------------------------------------------------------------------------ Ladeleuchten
+        /// <summary>Ladeleuchten (0.39 „Scatter“, Nutzerbefund „im Hüftmodus fehlt ein sichtbares Aufladen“): Fusion und lineare Fusion
+        /// zeigen beim Aufladen Ringe auf der Kernachse hinter der Mündung (Viewmodel-Ebene); mit der Ladung gehen mehr Ringe an und das
+        /// Leuchten wächst (¼ &lt; ½ &lt; fast voll), ohne Ladung ist alles aus; im Zielen dieselbe Ladung, die Ringe × charge_ads_k
+        /// (größer: sie ragen um das Gehäuse ins Visierbild); Loslassen vor dem Schuss löscht es (charge_fade_s). Gegenprobe: ohne Ladeleuchten (Stand 0.38) gibt es keine Ringe.</summary>
+        [UnityTest]
+        public IEnumerator Ladeleuchten_waechst_mit_der_Ladung_Huefte_und_Zielen()
+        {
+            foreach (var type in new[] { "fusion_rifle", "linear_fusion_rifle" })
+            {
+                var p = Setup(type, 8f, out var wall);
+                int k = Slot(type);
+                var F = p.C.S.D.gameplay.fx;
+                try
+                {
+                    Assert.IsTrue(F.ChargeFx, $"{type}: Ladeleuchten in den Daten");
+                    for (int f = 0; f < 30; f++) yield return null;     // Nachleuchten aus Tests davor fällt (charge_fade_s)
+                    Assert.AreEqual(0f, p.fx.ChargeLight(k), 1e-6f, $"{type}: ohne Ladung dunkel");
+                    foreach (bool aim in new[] { false, true })
+                    {
+                        p.input = new ScriptedInput().Add(0, 1000, hold: aim ? "aim" : "");
+                        for (int f = 0; f < 30; f++) yield return null;   // Zielen anfliegen bzw. Ruhe
+                        p.input = new ScriptedInput().Add(0, 1000, hold: aim ? "aim fire" : "fire");
+                        float l25 = -1, l50 = -1, l95 = -1;
+                        int r25 = 0, r50 = 0, r95 = 0;
+                        float ringScale = 0;
+                        Renderer[] rings = null;
+                        for (int f = 0; f < 60 && rings == null; f++)          // bei voller Ladung fällt der Schuss (Ladung → 0): vorher messen
+                        {
+                            yield return null;
+                            float c = p.C.ChargeLevel;
+                            if (l25 < 0 && c >= 0.22f) { l25 = p.fx.ChargeLight(k); r25 = p.fx.ChargeRingsLit(k); }
+                            if (l50 < 0 && c >= 0.5f) { l50 = p.fx.ChargeLight(k); r50 = p.fx.ChargeRingsLit(k); }
+                            if (c < 0.85f) continue;
+                            l95 = p.fx.ChargeLight(k);
+                            r95 = p.fx.ChargeRingsLit(k);
+                            rings = p.rig.weaponRoot.GetComponentsInChildren<Renderer>().Where(r => r.name == "Ladering" && r.enabled).ToArray();
+                        }
+                        Assert.IsNotNull(rings, $"{type}: Ladung erreicht 0,85");
+                        Assert.AreEqual(r95, rings.Length, $"{type}: leuchtende Ringe sichtbar");
+                        var muzzle = p.rig.AnchorWorld("Socket_Muzzle");
+                        foreach (var r in rings)
+                        {
+                            Assert.AreEqual(Bootstrap.ViewmodelLayer, r.gameObject.layer, "Viewmodel-Ebene");
+                            Assert.Less(Vector3.Distance(r.transform.position, muzzle), 0.8f, $"{type}: Ring am Lauf");
+                            ringScale = Mathf.Max(ringScale, r.transform.lossyScale.x);
+                        }
+                        TestContext.WriteLine($"{type} {(aim ? "Zielen" : "Hüfte")}: Leuchten ¼ {l25:0.00} ({r25} Ringe) · ½ {l50:0.00} ({r50}) · " +
+                                              $"fast voll {l95:0.00} ({r95}), Ring {ringScale * 1000:0} mm");
+                        Assert.Greater(l25, 0f, $"{type}: Leuchten ab dem Ladebeginn");
+                        Assert.Greater(l50, l25 * 1.3f, $"{type}: Leuchten wächst (¼ → ½)");
+                        Assert.Greater(l95, l50 * 1.3f, $"{type}: Leuchten wächst (½ → fast voll)");
+                        Assert.That(r25, Is.LessThanOrEqualTo(r50));
+                        Assert.Less(r50, r95, $"{type}: mehr Ringe mit der Ladung");
+                        Assert.AreEqual(F.charge_rings, r95, $"{type}: fast voll alle Ringe");
+                        if (aim) Assert.Greater(p.C.adsWeight, 0.9f, "im Zielen geladen");
+                        p.input = new ScriptedInput().Add(0, 1000);
+                        for (int f = 0; f < 45; f++) yield return null;     // Loslassen bricht ab, das Leuchten fällt
+                        Assert.AreEqual(0f, p.fx.ChargeLight(k), 1e-6f, $"{type}: nach dem Schuss wieder dunkel");
+                    }
+                }
+                finally { Done(p, wall); }
             }
         }
 

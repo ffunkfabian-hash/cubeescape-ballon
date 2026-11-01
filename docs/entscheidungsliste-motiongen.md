@@ -292,6 +292,15 @@ Waffenfarbe, Radius 0,5 × Explosionsradius, aufsteigende Glut 8/s, letzte 1,0 s
 Fusionsbolzen und Pfeile bleiben sichtbar (E): REF 0.36 hat sie nicht gemessen (einschlag.md › 8 offen), der Nutzerwunsch 0.33
 nennt sie.
 
+**Stand 0.39 „Scatter“ (01.11.2026):** REF 0.38 „Aftermath“ (einschlag.md › 11) übernommen, Übernahmetabelle in
+[versions/0.39-scatter.md](versions/0.39-scatter.md). **Nutzerentscheid 211 B** (hebt 181 auf): Schrot zeigt je Schuss jede Kugel als
+Einschlag mit Loch (Lochgruppe 12, im Kegel), zwei Bursts (`shot_impacts` 2), die übrigen Kugeln Stil `pellet`; Schrotloch × 3
+(`hole_k`, Loch mit Rand ≈ 1,2 % B in 3 m, E); Lochpool 192, Lochgruppe hält bei Dauerfeuer ≥ 9 s (`DECAL min_life_s`). Untergrund
+`metal` aus der Szene (`colliders[].surface`): kein Staub, Funken × 1,5 und ≥ 0,2 s, #E4ECFF (Anzahl und Farbe E). Ladeleuchten der
+Fusion und linearen Fusion (Nutzerbefund „Hüfte ohne sichtbares Aufladen“): Ringe über den Spulen, Ladefunken, Mündungskern ab 0,8
+(Cartesian Coordinate); Größen, Farbe, Helligkeit und × 1,5 im Zielen E. Unverändert, weil nicht belegt und ohne Nutzerbefund:
+Handfeuerwaffe auf Wand, Pfeil-Steckdauer, Spurgewehr legendär, MG-Leuchtspur.
+
 [einschlag]: https://github.com/ffunkfabian-hash/cubeescape-motiongen/blob/d0181c7/docs/einschlag.md
 
 ## Block 10 – Haltungen und Abläufe (BALLON 0.35 „Stance“)

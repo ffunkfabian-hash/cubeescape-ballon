@@ -16,6 +16,8 @@
   python3 tools/unity_run.py holdfast  → Beleg 0.36: Hüfte Automatik/Impuls/Scout, Handfeuerwaffe Schuss, Raketenwerfer Zielen, Bogen
       Spannen/Zielen (zoom.csv: Weltzoom je Bild, feedback.csv: Hüftzeichen sichtbar/Grund)
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
+  python3 tools/unity_run.py scatter [szene] → Beleg 0.39: Schrot-Lochgruppen (BALLON_CAPTURE_FACE=cont_a_col mit Szene hangar: vor den
+      Container); ladung → Fusion-Ladeleuchten Hüfte/Zielen
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py ruckeln <name> [profil] → Ruckelmessung 0.37: je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen,
       zwei Durchgänge (erster Einsatz/Wiederholung), Spieleinstellungen (VSync); <EV>/ruckeln/<name>/frames.csv + Tabelle
@@ -151,7 +153,9 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'strahlen': 'BALLON 0.34 Payload · Unity · Spurgewehr (Dauerstrahl) → Fusion (Bolzen) → lineare Fusion (Strahl) → Bogen (Pfeil)',
          'streuschuss': 'BALLON 0.34 Payload · Unity · Schrot (Streukegel, Hüfte/Zielen) → Automatik → Handfeuerwaffe: Einschläge, Löcher',
          'fuellstand': 'BALLON 0.34 Payload · Unity · MG (Glieder, Gurt, Zählfenster) → Granatwerfer (Kammern) → Handfeuerwaffe (Trommel, Hülsen)',
-         'holdfast': 'BALLON 0.36 Holdfast · Unity · Hüfte Automatik/Impuls/Scout, Handfeuerwaffe Schuss, Raketenwerfer Zielen, Bogen Spannen/Zielen'}
+         'holdfast': 'BALLON 0.36 Holdfast · Unity · Hüfte Automatik/Impuls/Scout, Handfeuerwaffe Schuss, Raketenwerfer Zielen, Bogen Spannen/Zielen',
+         'scatter': 'BALLON 0.39 Scatter · Unity · Schrot auf Metall: Lochgruppe je Schuss (12 Löcher, 2 Bursts), Hüfte und Zielen',
+         'ladung': 'BALLON 0.39 Scatter · Unity · Fusion: Ladeleuchten am Lauf – Hüfte (Salve, Abbruch), Zielen (Salve)'}
 WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1', 4: 'BASIC-02-v2.1', 5: 'BASIC-T01-v2.1', 6: 'BASIC-04-v2.1',
            7: 'BASIC-05-v2.1', 8: 'BASIC-09-v2.1', 9: 'BASIC-12-v2.1', 10: 'BASIC-15-v2.1', 11: 'BASIC-08-v2.1', 12: 'BASIC-10-v2.1',
            13: 'BASIC-11-v2.1', 14: 'BASIC-07-v2.1', 15: 'BASIC-13-v2.1', 16: 'BASIC-14-v2.1'}   # Waffe n → ID (tools/export_unity.WEAPONS;
@@ -162,7 +166,9 @@ def capture(scene=None, demo=None):
     extra = os.environ.get('BALLON_CAPTURE_EXTRA', '').split()   # Messläufe: z. B. "-ballonFps 60 -ballonKey 1" (eigener Ordner, _mess)
     d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '') + ('_mess' if extra else '')
     shutil.rmtree(d, ignore_errors=True)
-    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []) + (['-ballonDemo', demo] if demo else []) + extra,
+    face = os.environ.get('BALLON_CAPTURE_FACE')                   # 0.39: in der Szene vor diesen Collider stellen (scatter)
+    rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []) + (['-ballonDemo', demo] if demo else [])
+                + (['-ballonFace', face] if face and scene else []) + extra,
                 os.path.join(EV, 'capture.log'))
     frames = sorted(glob.glob(os.path.join(d, '[0-9]*.png')))
     if rc or not frames:

@@ -256,7 +256,13 @@ def payload_data():
         X = dict(X)
         colors = X.pop('colors')
         return dict(num(X), name=name, **{f'{k}_color': v for k, v in colors.items()})
+    need = {t: P['pellets'] * EG.CLASSES[t]['gameplay']['rpm'] / 60 * EG.DECAL['min_life_s'] for t, P in
+            ((t, EG.payload(t)) for t in EG.PAYLOAD) if P['pellets'] > 0 and t in EG.CLASSES}
+    short = {t: n for t, n in need.items() if n > EG.DECAL['max']}
+    if short:                                       # 0.39: Löcher einer Lochgruppe halten bei Dauerfeuer min_life_s (Aftermath ≥ 9 s)
+        raise ValueError(f'DECAL max {EG.DECAL["max"]} reicht nicht für min_life_s {EG.DECAL["min_life_s"]} s: {short}')
     return dict(decal=num(EG.DECAL), impacts=[dict(num(v), name=k) for k, v in EG.IMPACTS.items()],
+                surfaces=[dict(num(v), name=k) for k, v in EG.IMPACT_SURFACES.items()],          # 0.39: Untergrund (colliders[].surface)
                 explosion=boom('rocket', EG.EXPLOSION),                                   # bis 0.34.1 die einzige (ältere Leser)
                 explosions=[boom(k, v) for k, v in EG.EXPLOSIONS.items()],               # 0.34.2: je Art (PAYLOAD explosion)
                 muzzle_smoke=num(EG.MUZZLE_SMOKE))
@@ -271,6 +277,22 @@ def flash_data():
     _, ft = mesh(V, flame)
     return dict(dur_s=r6(F['dur_s']), verts=vs, core_tris=ct, flame_tris=ft, roll_deg=r6(F['roll_deg']), core_role=F['core']['role'],
                 flame_role=F['tongues']['role'], src=F['src'])
+
+
+def charge_span(wid, part, muzzle):
+    """Ladeleuchten (0.39, ego.PAYLOAD charge_part): Spanne des Teils auf der Kernachse durch Socket_Muzzle (Blender-Meter wie die
+    Anker; charge_a hinten, charge_b vorn) und sein Durchmesser charge_ring_m, gemessen aus der Spec (data/specs). Ohne Teil: Nullen."""
+    if not part:
+        return dict(charge_a=[0.0, 0.0, 0.0], charge_b=[0.0, 0.0, 0.0], charge_ring_m=0.0)
+    spec = json.load(open(os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json'), encoding='utf-8'))
+    b = next((q['bounds_m'] for q in spec['parts'] if q['id'] == part), None)
+    if b is None:
+        raise KeyError(f'{wid}: charge_part {part} fehlt in der Spec')
+    m = xyz(*muzzle)
+    if not (b['min'][1] <= b['max'][1] <= 0 and m[1] < b['min'][1]):
+        raise ValueError(f'{wid}: charge_part {part} liegt nicht hinter Socket_Muzzle auf der Laufachse (vorn −Y)')
+    return dict(charge_a=r6([m[0], b['max'][1], m[2]]), charge_b=r6([m[0], b['min'][1], m[2]]),
+                charge_ring_m=r6(max(b['max'][0] - b['min'][0], b['max'][2] - b['min'][2])))
 
 
 def weapon_files(W):
@@ -301,6 +323,7 @@ def weapon_entry(W):
     profile = dict(type=P['type'], src=P['src'], poses=sorted(C['poses']), frames=[dict(action=k, frames=r6(v)) for k, v in C['frames'].items()],
                    frames_src=P['frames_src'])
     fx = {k: (r6(v) if isinstance(v, float) else v) for k, v in EG.payload(P['type']).items()}   # 0.34: Wirkung der Klasse
+    fx.update(charge_span(wid, fx['charge_part'], W.ANCHORS['Socket_Muzzle']['at']))                # 0.39: Ladeleuchten
     return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type'], P['gameplay']), fire_mode=P['fire_mode'], fx=fx), weapon=weapon, poses=poses, grips=grips,
                 actions=[action(k, A) for k, A in P['actions'].items()], atlas=ATLAS_KEY.get(wid, f'weapon_{wid}'),
                 reference=f'ego_reference_{wid}.json',

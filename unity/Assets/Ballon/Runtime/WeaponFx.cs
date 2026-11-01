@@ -32,6 +32,16 @@ namespace Ballon.Ego
         readonly ParticleSystem[] _vmSmoke, _vmGlow;               // je Waffe in der Viewmodel-Ebene (Raum der Waffe)
         readonly float[] _vmSmokeLeft, _vmSmokeAcc;
         readonly Color[] _energy, _tracer;                          // Leuchtfarbe und Leuchtspurfarbe je Waffe
+        // Ladeleuchten je Ladewaffe (0.39 „Scatter“, gameplay.fx charge_*): Ringe auf der Kernachse, Mündungskern, Ladefunken; Kinder von
+        // weaponRoot in der Viewmodel-Ebene (folgen der Waffe), null ohne Ladeleuchten
+        readonly GameObject[] _chRoot;                              // Knoten „Ladeleuchten“, ohne Ladung inaktiv
+        readonly Transform[][] _chRing;
+        readonly Renderer[][] _chRingR;
+        readonly Transform[] _chCore;
+        readonly Renderer[] _chCoreR;
+        readonly ParticleSystem[] _chArcs;
+        readonly float[] _chArcAcc, _chLight;
+        readonly int[] _chLit;
         readonly Color _smokeColor;                                  // aus motion.payload, einmal gelesen
         readonly MaterialPropertyBlock _mpb = new MaterialPropertyBlock();
         readonly Collider[] _overlap = new Collider[MaxHits];
@@ -122,9 +132,36 @@ namespace Ballon.Ego
             _energy = new Color[n];
             _tracer = new Color[n];
             _smokeColor = Hex(P.muzzle_smoke.color, Color.white);
+            _chRoot = new GameObject[n];
+            _chRing = new Transform[n][];
+            _chRingR = new Renderer[n][];
+            _chCore = new Transform[n];
+            _chCoreR = new Renderer[n];
+            _chArcs = new ParticleSystem[n];
+            _chArcAcc = new float[n];
+            _chLight = new float[n];
+            _chLit = new int[n];
             for (int k = 0; k < n; k++)
             {
                 var rig = p.loadouts[k].rig;
+                var cf = rig.S.D.gameplay.fx;
+                if (cf.ChargeFx && rig.S.D.gameplay.Charge)                 // alles beim Start angelegt, je Bild nur Lage, Farbe, Sichtbarkeit
+                {
+                    var cr = new GameObject("Ladeleuchten") { layer = Bootstrap.ViewmodelLayer }.transform;
+                    cr.SetParent(rig.weaponRoot, false);
+                    _chRoot[k] = cr.gameObject;
+                    _chRing[k] = new Transform[cf.charge_rings];
+                    _chRingR[k] = new Renderer[cf.charge_rings];
+                    for (int i = 0; i < cf.charge_rings; i++)
+                    {
+                        _chRing[k][i] = Quad("Ladering", m.ring, cr, out _chRingR[k][i]);
+                        _chRing[k][i].gameObject.layer = Bootstrap.ViewmodelLayer;
+                    }
+                    _chCore[k] = Quad("Ladekern", m.glow, cr, out _chCoreR[k]);
+                    _chCore[k].gameObject.layer = Bootstrap.ViewmodelLayer;
+                    _chArcs[k] = Ps("Ladefunken", m.spark, 64, cr, Bootstrap.ViewmodelLayer, true, 0.6f, 0);
+                    _chRoot[k].SetActive(false);
+                }
                 _vmSmoke[k] = Ps("Muendungsrauch", m.smoke, 96, rig.space, Bootstrap.ViewmodelLayer, false, rig.S.D.motion.payload.muzzle_smoke.grow, 0);
                 _vmGlow[k] = Ps("Muendungslicht", m.glow, 32, rig.space, Bootstrap.ViewmodelLayer, false, 0.6f, 0);
                 _energy[k] = EnergyColor(rig.S.D);
@@ -352,27 +389,43 @@ namespace Ballon.Ego
 
         // ------------------------------------------------------------------------------------------------ Einschläge
         /// <summary>Einschlag nach Stil (motion.payload.impacts): Funken, Staub, Lichtpunkt und – an Flächen – ein Loch bzw. Brandfleck.
-        /// energy färbt Funken und Licht in der Leuchtfarbe der Waffe. hitT: Träger des Lochs (Collider), null = ohne Loch.</summary>
-        public void Impact(EgoImpact I, Vector3 point, Vector3 normal, Vector3 incoming, Color energy, bool energyColor, Transform hitT)
+        /// energy färbt Funken und Licht in der Leuchtfarbe der Waffe. hitT: Träger des Lochs (Collider), null = ohne Loch;
+        /// surface (0.39): Fläche für den Untergrund, wenn hitT null ist (Brand des Dauerstrahls ohne Loch).</summary>
+        public void Impact(EgoImpact I, Vector3 point, Vector3 normal, Vector3 incoming, Color energy, bool energyColor, Transform hitT,
+                           Transform surface = null)
         {
             if (I == null) return;
             impacts++;
+            var S = SurfaceOf(hitT != null ? hitT : surface);              // 0.39: Untergrund ändert den Stil (ego.IMPACT_SURFACES)
+            int sparks = I.sparks, dust = I.dust;
+            float sparkS = I.spark_s;
             var refl = Vector3.Reflect(incoming.normalized, normal);
             var warm = new Color(1f, 0.78f, 0.45f);
             var sc = energyColor ? energy * 4f : warm * 5f;
+            if (S != null)
+            {
+                sparks = Mathf.RoundToInt(I.sparks * S.sparks_k);
+                dust = Mathf.RoundToInt(I.dust * S.dust_k);
+                sparkS = Mathf.Max(sparkS, S.spark_s_min);
+                if (!energyColor && S.SparkColor(out var mc)) sc = mc * 5f;
+            }
+            LastSurface = S;
+            LastSparks = sparks;
+            LastDust = dust;
+            LastSparkS = sparkS;
             var ep = new ParticleSystem.EmitParams();
-            for (int k = 0; k < I.sparks; k++)
+            for (int k = 0; k < sparks; k++)
             {
                 ep.position = point + normal * 0.01f;
                 ep.velocity = Hemi(Vector3.Lerp(normal, refl, 0.6f).normalized, 0.9f) * I.spark_mps * R(0.45f, 1.2f);
-                ep.startLifetime = I.spark_s * R(0.6f, 1.2f);
+                ep.startLifetime = sparkS * R(0.6f, 1.2f);
                 ep.startSize = R(0.02f, 0.035f);
                 ep.startColor = sc;
                 _sparks.Emit(ep, 1);
             }
             var dc = I.DustColor;
             dc.a = 0.75f;
-            for (int k = 0; k < I.dust; k++)                              // Staub bzw. dunkle Säule (steigt mit dust_rise_mps, 0.34.1)
+            for (int k = 0; k < dust; k++)                                // Staub bzw. dunkle Säule (steigt mit dust_rise_mps, 0.34.1)
             {
                 ep.position = point + normal * R(0.02f, 0.06f) + Vector3.up * I.dust_m * k * 0.5f;
                 ep.velocity = Hemi(normal, 0.5f) * R(0.3f, 0.9f) * (I.dust_rise_mps > 0 ? 0.3f : 1f) + Vector3.up * I.dust_rise_mps * R(0.7f, 1.2f);
@@ -388,8 +441,17 @@ namespace Ballon.Ego
             ep.startSize = I.glow_m;
             ep.startColor = sc;
             _glow.Emit(ep, 1);
-            if (hitT != null && I.decal != "") Hole(point, normal, hitT, I.decal == "scorch");
+            if (hitT != null && I.decal != "") Hole(point, normal, hitT, I.decal == "scorch", I.HoleK);
         }
+
+        /// <summary>Untergrund der Fläche t (FxSurface am Collider, 0.39), sonst null.</summary>
+        EgoSurface SurfaceOf(Transform t) =>
+            t != null && t.TryGetComponent<FxSurface>(out var f) ? _p.loadouts[0].rig.S.D.Surface(f.kind) : null;
+
+        /// <summary>Untergrund und Werte des letzten Einschlags (Tests 0.39).</summary>
+        public EgoSurface LastSurface;
+        public int LastSparks, LastDust;
+        public float LastSparkS;
 
         /// <summary>Träger für angehängte Wirkungen (Pfeil, Loch, Brandfleck, Lache; 0.35.1, Nutzerbefund 209 A): unter einem ungleich skalierten
         /// Eltern-Objekt (Scheibe: Zylinder 2r × 0,02 × 2r um 90° gedreht, Wand: Box) würde ein gedrehtes Kind verzerrt (Pfeil: meterlange schräge
@@ -412,12 +474,21 @@ namespace Ballon.Ego
             return h;
         }
 
+        /// <summary>Halter aller Collider unter root vorab anlegen (0.39 „Scatter“): seit jede Schrotkugel ein Loch hinterlässt, trifft ein
+        /// Schuss Flächen, die vorher keiner traf – der Halter entstand dann beim Schuss (GC-Speicher, Steadyframe-Test). Aufruf beim Bau des
+        /// Parcours und beim ersten Laden einer Szene.</summary>
+        public void PrepareHolders(Transform root)
+        {
+            if (root == null) return;
+            foreach (var c in root.GetComponentsInChildren<Collider>(true)) Holder(c.transform);
+        }
+
         /// <summary>Wirkung t an die getroffene Fläche hängen und Weltlage und -maße behalten.</summary>
         static void Attach(Transform t, Transform surface) => t.SetParent(Holder(surface), true);
 
         /// <summary>Einschussloch bzw. Brandfleck aus dem Pool (der älteste wird wiederverwendet): erst lösen, dann Lage und Größe in
-        /// Weltmaßen, dann an den Träger hängen (Patch einschuss: sonst galt die Größe im Maßstab des alten Trägers).</summary>
-        public void Hole(Vector3 point, Vector3 normal, Transform hitT, bool scorch)
+        /// Weltmaßen (DECAL size_m × sizeK), dann an den Träger hängen (Patch einschuss: sonst galt die Größe im Maßstab des alten Trägers).</summary>
+        public void Hole(Vector3 point, Vector3 normal, Transform hitT, bool scorch, float sizeK = 1f)
         {
             int k = _holeNext;
             _holeNext = (_holeNext + 1) % _holes.Length;
@@ -426,7 +497,7 @@ namespace Ballon.Ego
             var t = _holes[k];
             t.SetParent(null, false);
             t.SetPositionAndRotation(point + normal * 0.004f, Quaternion.LookRotation(-normal) * Quaternion.Euler(0, 0, R(0, 360)));
-            t.localScale = Vector3.one * EgoPlayer.DecalSize;
+            t.localScale = Vector3.one * (EgoPlayer.DecalSize * sizeK);     // sizeK: Stil (IMPACTS hole_k, 0.39 Schrot)
             Attach(t, hitT);
             _holeAge[k] = 0;
             _holeSeed[k] = Mathf.Floor(R(0, _p.loadouts[0].rig.S.D.motion.payload.decal.variants)) + 0.37f;
@@ -482,6 +553,102 @@ namespace Ballon.Ego
             };
             _vmGlow[k].Emit(ep, 1);
         }
+
+        /// <summary>Ladeleuchten der Waffe k (0.39 „Scatter“, Nutzerbefund „Hüfte ohne sichtbares Aufladen“): Ring i von n (von hinten) geht
+        /// zwischen dem Leuchten i/n und (i+1)/n an und wird mit ihm heller; Ladefunken am Lauf (charge_arcs_hz × Leuchten); Mündungskern
+        /// wächst ab der Ladung charge_core_from; im Zielen alles × charge_ads_k. C null = Waffe nicht aktiv (alles aus). Maße im Raum von
+        /// weaponRoot (Modellmeter, wie das Modell skaliert).</summary>
+        void ChargeTick(int k, EgoController C, float dt)
+        {
+            var rig = _p.loadouts[k].rig;
+            var F = rig.S.D.gameplay.fx;
+            var rings = _chRing[k];
+            float g = C != null ? Mathf.Clamp01(C.ChargeGlowLevel) : 0, ch = C != null ? Mathf.Clamp01(C.ChargeLevel) : 0;
+            var node = _chRoot[k];
+            if (g <= 0.001f && ch <= 0.001f && (!node.activeSelf || _chArcs[k].particleCount == 0))
+            {
+                if (node.activeSelf) node.SetActive(false);           // ohne Ladung kein Knoten unter der Waffe (Sichtbarkeitstests)
+                _chLight[k] = 0;
+                _chLit[k] = 0;
+                return;
+            }
+            if (!node.activeSelf) node.SetActive(true);
+            float ads = C != null ? Mathf.Lerp(1, F.charge_ads_k, C.adsWeight) : 1;
+            var a = rig.WeaponLocal(F.charge_a);
+            var b = rig.WeaponLocal(F.charge_b);
+            var rot = Quaternion.LookRotation((b - a).normalized);
+            int n = rings.Length, lit = 0;
+            float light = 0;
+            for (int i = 0; i < n; i++)
+            {
+                float on = Mathf.Clamp01((g - (float)i / n) * n);
+                var r = _chRingR[k][i];
+                if (on <= 0.001f) { if (r.enabled) r.enabled = false; continue; }
+                lit++;
+                float br = on * (0.35f + 0.65f * g) * R(0.85f, 1f);       // Flackern wie die Ladebögen
+                light += br;
+                var t = rings[i];
+                t.localPosition = Vector3.Lerp(a, b, (i + 0.5f) / n);
+                t.localRotation = rot;
+                t.localScale = Vector3.one * (F.charge_ring_m * F.charge_ring_k * (0.85f + 0.15f * on) * ads / 0.82f);   // Ring bei 0,82 der Quadbreite (Ballon/Fx)
+                r.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", _energy[k] * (6f * br));
+                _mpb.SetFloat("_Alpha", 1);
+                r.SetPropertyBlock(_mpb);
+                r.enabled = true;
+            }
+            float core = F.charge_core_from < 1 ? Mathf.Clamp01((ch - F.charge_core_from) / (1 - F.charge_core_from)) : 0;
+            var cr = _chCoreR[k];
+            if (core > 0.001f)
+            {
+                var ct = _chCore[k];
+                ct.localPosition = rig.WeaponLocal(rig.S.D.Anchor("Socket_Muzzle").pos);
+                ct.rotation = Quaternion.LookRotation(ct.position - _p.viewCam.transform.position);
+                ct.localScale = Vector3.one * (F.charge_core_m * 2.2f * core * core * ads);
+                cr.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", _energy[k] * (5f * core));
+                _mpb.SetFloat("_Alpha", 1);
+                cr.SetPropertyBlock(_mpb);
+                cr.enabled = true;
+                light += core;
+            }
+            else if (cr.enabled) cr.enabled = false;
+            var ps = _chArcs[k];
+            if (C != null)
+            {
+                _chArcAcc[k] += dt * F.charge_arcs_hz * g;
+                if (g > 0.001f && _chArcAcc[k] < 1 && ch > 0 && ch < 2f * dt / Mathf.Max(1e-3f, rig.S.D.gameplay.charge_s)) _chArcAcc[k] = 1;   // erster Bogen beim Ladebeginn (Cartesian)
+                var axis = (b - a).normalized;
+                var side = Vector3.Cross(axis, Mathf.Abs(axis.y) < 0.9f ? Vector3.up : Vector3.right).normalized;
+                var up = Vector3.Cross(side, axis);
+                float rad = F.charge_ring_m * F.charge_ring_k * 0.5f * ads;
+                for (; _chArcAcc[k] >= 1; _chArcAcc[k]--)                   // ein Bogen = drei Funken quer um die Achse
+                {
+                    var p0 = Vector3.Lerp(a, b, R(0, 1));
+                    float ang = R(0, 2 * Mathf.PI);
+                    var radial = side * Mathf.Cos(ang) + up * Mathf.Sin(ang);
+                    var tang = Vector3.Cross(axis, radial);
+                    for (int j = 0; j < 3; j++)
+                    {
+                        var ep = new ParticleSystem.EmitParams
+                        {
+                            position = p0 + radial * rad * R(0.8f, 1.1f), velocity = tang * R(0.6f, 1.4f) + axis * R(-0.4f, 0.4f),
+                            startLifetime = R(0.04f, 0.08f), startSize = R(0.004f, 0.007f), startColor = _energy[k] * 5f,
+                        };
+                        ps.Emit(ep, 1);
+                    }
+                }
+                ps.Simulate(dt, false, false, false);
+            }
+            else if (ps.particleCount > 0) ps.Clear(false);
+            _chLight[k] = light;
+            _chLit[k] = lit;
+        }
+
+        /// <summary>Ladeleuchten der Waffe k im letzten Bild (Tests 0.39): Summe der Ringhelligkeiten und des Mündungskerns, Zahl der
+        /// leuchtenden Ringe; −1 ohne Ladeleuchten.</summary>
+        public float ChargeLight(int k) => _chRing[k] != null ? _chLight[k] : -1;
+        public int ChargeRingsLit(int k) => _chRing[k] != null ? _chLit[k] : -1;
 
         /// <summary>Dauerstrahl (Spurgewehr): Ende des Strahls in diesem Schuss; der Strahl selbst läuft in Tick, solange der Abzug zieht.</summary>
         public void BeamShot(Vector3 end, Vector3 normal, bool hit)
@@ -828,6 +995,8 @@ namespace Ballon.Ego
                 }
             }
             else if (_beam.enabled) _beam.enabled = false;
+            for (int k = 0; k < _chRing.Length; k++)                     // Ladeleuchten (0.39): nur die aktive Ladewaffe
+                if (_chRing[k] != null) ChargeTick(k, k == active ? _p.C : null, dt);
             // Mündungsrauch je Waffe (Werfer nach dem Schuss)
             var Sm = D0.muzzle_smoke;
             for (int k = 0; k < _vmSmoke.Length; k++)

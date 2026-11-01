@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.39.0 „Scatter“ – Schrot-Lochgruppen, Metall-Untergrund, Ladeleuchten der Fusion (Branch `claude/ballon-0.39-scatter`)
+
+- Schrot (Nutzerbefund „kein Streuschuss sichtbar“, Entscheid 211 B hebt 181 auf; REF 0.38 Aftermath): jede der 12 Kugeln schlägt
+  ein und hinterlässt ein Loch, zwei davon als dichter Burst – eine Lochgruppe je Schuss im Streukegel. Lochpool 96 → 192, der Export
+  prüft, dass Lochgruppen bei Dauerfeuer ≥ 9 s halten (`DECAL min_life_s`). Kein GC je Schuss (Steadyframe-Test).
+- Untergrund: Szenen schreiben `colliders[].surface` (Hangar: Blech, Stahl, Container, Fässer … = metal); auf Metall kein Staub und
+  keine Säule, mehr und längere Funken (≥ 12 Bilder bei 60/s), weiß-blau (`ego.IMPACT_SURFACES`). Schießstand unverändert.
+- Fusion und lineare Fusion (Nutzerbefund „im Hüftmodus fehlt ein sichtbares Aufladen“): Leuchtringe über den Spulen gehen mit der
+  Ladung von hinten nach vorn an und werden heller, Ladefunken am Lauf, Mündungskern ab 80 % Ladung; im Zielen größer, damit sie um
+  das Gehäuse ins Visierbild ragen. Spanne und Durchmesser aus der Spec, Zeiten nach Motiongen (Cartesian Coordinate).
+  Bericht [docs/versions/0.39-scatter.md](docs/versions/0.39-scatter.md).
+
 ## 0.38.0 „Prewarm“ – Shader-Hänger beim ersten Start einer neuen Build verkleinert, nicht beseitigt (Branch `claude/ballon-0.38-prewarm`)
 
 - Bei kaltem Metal-Zwischenspeicher übersetzte der Spieler beim ersten Einsatz URP/Lit-Varianten (Emission, Transparent,

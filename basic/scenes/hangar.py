@@ -77,6 +77,11 @@ ROLES = {
     'beacon_blue':   dict(color='#4A86FF', rough=0.3, spec=0.4, de='Rollweg-Randfeuer blau (Linse)'),
     'extinguisher':  dict(color='#B3261E', rough=0.4, spec=0.45, wear=0.3, wear_color='#D8D2C4', de='Feuerlöscher rot'),
 }
+# Untergrund für Einschläge (0.39 „Scatter“, ego.IMPACT_SURFACES): Rollen aus Stahl und Blech → metal; Beton, Holz, Gummi, Glas und
+# Leuchten ohne (Einschlag unverändert). Reine Kollisionsquader nennen ihren Untergrund selbst (solid surface=…: Container, Bürocontainer,
+# Geländer, Absperrgitter); Kisten bleiben ohne (Material der Transportkisten nicht festgelegt).
+SURFACES = dict(metal=('sheet', 'sheet_roof', 'steel', 'steel_dark', 'steel_light', 'galv', 'accent', 'hazard', 'pipe_green', 'container_teal',
+                       'container_rust', 'barrel_blue', 'barrel_orange', 'grating', 'extinguisher'))
 
 # ------------------------------------------------------------------ Bildmasken (DECALS)
 # Je Blatt: Ursprung (Weltpunkt der Ecke u = v = 0), Achsen u, v (Einheitsvektoren), Größe (m), Auflösung px_m (m je Pixel),
@@ -567,7 +572,7 @@ def barrier(pid, x, y0, y1, group='Parcours'):
         for m, yy in enumerate((a + 0.02, b - 0.02)):
             out.append(box(f'{q}_foot{m}', 'Gitterfuß', group, 'hazard', (x - 0.3, yy - 0.03, 0), (x + 0.3, yy + 0.03, 0.06), collide=False,
                            bev=0.0))
-    out.append(solid(pid + '_col', 'Absperrgitter (Kollision)', (x - 0.025, y0, 0.0), (x + 0.025, y1, 1.1)))
+    out.append(solid(pid + '_col', 'Absperrgitter (Kollision)', (x - 0.025, y0, 0.0), (x + 0.025, y1, 1.1), surface='metal'))
     return out
 
 
@@ -594,9 +599,9 @@ def railing(pid, group, a, b, z0, open_=None):
         out.append(cyl(f'{pid}_post{k}', 'Geländerpfosten', group, 'accent', 'z', (px, py, z0 + 0.5), 0.022, 1.0, segs=8, collide=False,
                        bev=0.0))
     if alongx:
-        out.append(solid(pid + '_col', 'Geländer (Kollision)', (min(xa, xb), ya - 0.03, z0), (max(xa, xb), ya + 0.03, z0 + 1.0)))
+        out.append(solid(pid + '_col', 'Geländer (Kollision)', (min(xa, xb), ya - 0.03, z0), (max(xa, xb), ya + 0.03, z0 + 1.0), surface='metal'))
     else:
-        out.append(solid(pid + '_col', 'Geländer (Kollision)', (xa - 0.03, min(ya, yb), z0), (xa + 0.03, max(ya, yb), z0 + 1.0)))
+        out.append(solid(pid + '_col', 'Geländer (Kollision)', (xa - 0.03, min(ya, yb), z0), (xa + 0.03, max(ya, yb), z0 + 1.0), surface='metal'))
     return out
 
 
@@ -677,7 +682,7 @@ CX0, CX1 = -16.9, -14.46
 def container(pid, y0, y1, mat, door_end):
     """20-Fuß-Seecontainer (6,06 × 2,44 × 2,59 m): Eckpfosten, Rahmen, Wände als Trapezblech, Türseite mit Verriegelung."""
     G = 'Ducken'
-    out = [solid(pid + '_col', 'Container (Kollision)', (CX0, y0, 0), (CX1, y1, 2.59))]
+    out = [solid(pid + '_col', 'Container (Kollision)', (CX0, y0, 0), (CX1, y1, 2.59), surface='metal')]
     for m, (x, y) in enumerate(((CX0, y0), (CX1 - 0.15, y0), (CX0, y1 - 0.15), (CX1 - 0.15, y1 - 0.15))):
         out.append(box(f'{pid}_cp{m}', 'Eckpfosten', G, mat, (x, y, 0), (x + 0.15, y + 0.15, 2.59), collide=False, bev=0.01))
         for zc in (0.0, 2.47):
@@ -759,7 +764,7 @@ for s, x in (('w', SX0 + 0.025), ('e', SX1 - 0.025)):
     P.append(beam(f'stair_rail_{s}', 'Treppenhandlauf', 'Geruest', 'accent', (x, SY, 1.0), (x, Y_P1, GZ + 1.0), 0.05, 0.05, bev=0.0))
     P.append(beam(f'stair_mid_{s}', 'Treppenknieleiste', 'Geruest', 'accent', (x, SY, 0.5), (x, Y_P1, GZ + 0.5), 0.035, 0.035, bev=0.0))
     P.append(cyl(f'stair_post_{s}', 'Treppenpfosten', 'Geruest', 'accent', 'z', (x, SY + 0.05, 0.5), 0.022, 1.0, segs=8, collide=False, bev=0.0))
-    P.append(solid(f'stair_rail_{s}_col', 'Treppengeländer (Kollision)', (x - 0.03, SY, 0.0), (x + 0.03, Y_P1, GZ + 1.0)))
+    P.append(solid(f'stair_rail_{s}_col', 'Treppengeländer (Kollision)', (x - 0.03, SY, 0.0), (x + 0.03, Y_P1, GZ + 1.0), surface='metal'))
 P1 = (9.0, 13.0, Y_P1, -18.4)
 P += deck('p1', 'Geruest', P1[0], P1[1], P1[2], P1[3], GZ, [(9.06, P1[2] + 0.06), (12.94, P1[2] + 0.06), (9.06, P1[3] - 0.06), (12.94, P1[3] - 0.06)])
 CW = (11.4, 12.6, -18.4, 2.0)
@@ -832,7 +837,7 @@ for b in range(NBAY):
 OX0, OX1, OY0, OY1, OZ = -19.3, -13.3, 26.8, 29.6, 2.9
 G = 'Buero'
 P.append(box('office', 'Bürocontainer', G, 'steel_light', (OX0 + 0.06, OY0 + 0.06, 0.12), (OX1 - 0.06, OY1 - 0.06, OZ - 0.12), collide=False, bev=0.0))
-P.append(solid('office_col', 'Bürocontainer (Kollision)', (OX0, OY0, 0), (OX1, OY1, OZ)))
+P.append(solid('office_col', 'Bürocontainer (Kollision)', (OX0, OY0, 0), (OX1, OY1, OZ), surface='metal'))
 for m, (x, y) in enumerate(((OX0, OY0), (OX1 - 0.14, OY0), (OX0, OY1 - 0.14), (OX1 - 0.14, OY1 - 0.14))):
     P.append(box(f'office_post{m}', 'Eckpfosten', G, 'steel_dark', (x, y, 0), (x + 0.14, y + 0.14, OZ), collide=False, bev=0.01))
 for nm, (z0, z1) in (('bot', (0.0, 0.14)), ('top', (OZ - 0.14, OZ))):
