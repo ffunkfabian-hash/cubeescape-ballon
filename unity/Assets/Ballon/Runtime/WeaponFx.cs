@@ -398,7 +398,7 @@ namespace Ballon.Ego
         {
             if (surface == null) return null;
             var s = surface.lossyScale;
-            if (Mathf.Min(Mathf.Abs(s.x), Mathf.Abs(s.y), Mathf.Abs(s.z)) < 1e-6f) return surface;
+            if (Mathf.Min(Mathf.Abs(s.x), Mathf.Min(Mathf.Abs(s.y), Mathf.Abs(s.z))) < 1e-6f) return surface;   // 0.37: ohne params-Feld (Speicher je Einschlag)
             if (Mathf.Abs(s.x - s.y) < 1e-4f && Mathf.Abs(s.y - s.z) < 1e-4f) return surface;     // gleichmäßig: keine Verzerrung
             var h = surface.Find("FxHalter");
             if (h == null)

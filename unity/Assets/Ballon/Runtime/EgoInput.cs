@@ -118,6 +118,19 @@ namespace Ballon.Ego
             return r;
         }
 
+        /// <summary>Zahl aus den Ziffern ab Stelle i (0.37: ohne Substring – kein Speicher je Taste), −1 ohne Ziffern.</summary>
+        static int Digits(string s, int i)
+        {
+            int n = 0;
+            if (i >= s.Length) return -1;
+            for (; i < s.Length; i++)
+            {
+                if (s[i] < '0' || s[i] > '9') return -1;
+                n = n * 10 + (s[i] - '0');
+            }
+            return n;
+        }
+
         static void Set(ref RawInput r, string k)
         {
             switch (k)
@@ -137,7 +150,7 @@ namespace Ballon.Ego
                 case "weapon3": r.select = 3; break;
                 case "weapon4": r.select = 4; break;
                 case "weapon5": r.select = 5; break;
-                case var w when w.StartsWith("weapon") && int.TryParse(w.Substring(6), out int wn): r.select = wn; break;   // 0.34: alle Waffen
+                case var w when w.StartsWith("weapon", System.StringComparison.Ordinal) && Digits(w, 6) > 0: r.select = Digits(w, 6); break;   // 0.34: alle Waffen
                 case "menu": r.menu.toggle = true; break;          // 0.33 Ziel 2: Waffenmenü (Aufnahme, Tests)
                 case "menu_next": r.menu.wheel = 1; break;
                 case "menu_prev": r.menu.wheel = -1; break;

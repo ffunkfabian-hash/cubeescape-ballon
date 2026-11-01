@@ -105,6 +105,8 @@ namespace Ballon.Ego
             if (skinsDir != null) { StartCoroutine(SkinSheet(skinsDir)); return; }
             string courseDir = Arg(args, "-ballonCourse");
             if (courseDir != null) { StartCoroutine(CourseCapture(courseDir, Arg(args, "-ballonScene") ?? "hangar", Arg(args, "-ballonLighting"))); return; }
+            string stutter = Arg(args, "-ballonStutter");               // 0.37: Ruckelmessung je Waffe und Ereignis
+            if (stutter != null) { StutterBench.Begin(this, stutter, Arg(args, "-ballonProfile")); return; }
             string bench = Arg(args, "-ballonBench");
             if (bench != null) StartCoroutine(Bench(bench, Arg(args, "-ballonScene")));
             else if (cap != null) StartCoroutine(Capture(cap));
