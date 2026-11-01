@@ -82,6 +82,7 @@ namespace Ballon.Ego
             roles.TryGetValue("dark_metal", out var body);
             if (!WeaponFx.Off) Player.fx = new WeaponFx(Player, new WeaponFx.Mats { spark = fxSpark, glow = fxGlow, smoke = fxSmoke, ring = fxRing, decal = decal,
                                                                  beam = fxBeam, body = body });
+            Player.fx?.PrepareHolders(RangeRoot);                    // 0.39: Halter der Löcher vorab (Schrot trifft viele Flächen, kein GC je Schuss)
             for (int k = 0; k < Solvers.Length; k++)
             {
                 Player.loadouts[k].skins = weapons[k].skins;
@@ -275,7 +276,12 @@ namespace Ballon.Ego
                 return;
             }
             var e = _scenes[i];
-            var L = e.loaded ?? (e.loaded = SceneLoader.Build(e.data, e.prefab, e.mat, e.atlases, backdrop, _targetMats));
+            if (e.loaded == null)
+            {
+                e.loaded = SceneLoader.Build(e.data, e.prefab, e.mat, e.atlases, backdrop, _targetMats);
+                Player.fx?.PrepareHolders(e.loaded.root);            // 0.39: wie im Parcours
+            }
+            var L = e.loaded;
             RangeRoot.gameObject.SetActive(false);
             Sun.enabled = false;
             L.root.gameObject.SetActive(true);
@@ -565,6 +571,31 @@ namespace Ballon.Ego
             .Add(7.9f, 7.95f, hold: "fire")
             .Add(7.95f, 9.0f);
 
+        /// <summary>Beleg 0.39 „Scatter“ (Schrot auf Metall): Hüftschuss, Pause (Lochgruppe steht), Schuss im Zielen daneben, Lochgruppen
+        /// bleiben stehen; 6 s.</summary>
+        public static ScriptedInput ScatterScript() => new ScriptedInput()
+            .Add(0.0f, 0.8f)
+            .Add(0.8f, 0.85f, hold: "fire")
+            .Add(0.85f, 2.4f)
+            .Add(2.4f, 2.8f, hold: "aim", lookPerS: new Vector2(14f, 0f))
+            .Add(2.8f, 3.3f, hold: "aim")
+            .Add(3.3f, 3.35f, hold: "aim fire")
+            .Add(3.35f, 4.6f, hold: "aim")
+            .Add(4.6f, 6.0f);
+
+        /// <summary>Beleg 0.39 „Scatter“ (Ladeleuchten): Fusion aus der Hüfte laden und Salve, nochmals laden und loslassen (Abbruch),
+        /// dann im Zielen laden und Salve; 7 s.</summary>
+        public static ScriptedInput ChargeScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)
+            .Add(0.6f, 1.5f, hold: "fire")
+            .Add(1.5f, 2.6f)
+            .Add(2.6f, 2.95f, hold: "fire")
+            .Add(2.95f, 3.6f)
+            .Add(3.6f, 4.2f, hold: "aim")
+            .Add(4.2f, 5.1f, hold: "aim fire")
+            .Add(5.1f, 6.2f, hold: "aim")
+            .Add(6.2f, 7.0f);
+
         /// <summary>Beleg 0.34 (Füllstände und Hülsen): MG mit 9 Patronen – Stoß (Hülsen und Glieder), betrachten mit Restmunition (Gurt
         /// von unten leer, Zählfenster), leer schießen, nachladen; Granatwerfer drei Schuss (Kammern leer), nachladen (Hülsen fallen, Kammern füllen sich); Handfeuerwaffe drei Schuss
         /// (Trommel dreht), nachladen (Hülsen fallen aus der Trommel); 30 s.</summary>
@@ -599,6 +630,23 @@ namespace Ballon.Ego
             .Add(26.6f, 26.65f, hold: "reload")
             .Add(26.65f, 30.4f);
 
+        /// <summary>Beleg in einer Szene (0.39): Spieler d Meter vor eine Seite des Colliders („name@-x“, +x, -z, +z; ohne Angabe die
+        /// Seite zum Startpunkt), Blick waagerecht auf seine Mitte.</summary>
+        void FaceCollider(LoadedScene L, string face, float d)
+        {
+            int at = face.IndexOf('@');
+            string name = at < 0 ? face : face.Substring(0, at), side = at < 0 ? "" : face.Substring(at + 1);
+            var c = L.colliders.Find(x => x.name == name);
+            if (c == null) { Debug.LogWarning($"Beleg: Collider {name} fehlt"); return; }
+            var b = c.bounds;
+            var away = L.spawnPos - b.center;
+            var dir = side == "-x" ? Vector3.left : side == "+x" ? Vector3.right : side == "-z" ? Vector3.back : side == "+z" ? Vector3.forward
+                    : Mathf.Abs(away.x) > Mathf.Abs(away.z) ? new Vector3(Mathf.Sign(away.x), 0, 0) : new Vector3(0, 0, Mathf.Sign(away.z));
+            var pos = b.center + dir * (Vector3.Scale(b.extents, dir).magnitude + d);
+            pos.y = L.spawnPos.y;
+            Player.Teleport(pos, Mathf.Atan2(-dir.x, -dir.z) * Mathf.Rad2Deg, 0f);
+        }
+
         IEnumerator Capture(string dir)
         {
             Directory.CreateDirectory(dir);
@@ -608,11 +656,13 @@ namespace Ballon.Ego
                      : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript()
                     : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : dn == "volley" ? VolleyScript()
                     : dn == "projektil" ? ProjectileScript() : dn == "strahlen" ? BeamScript() : dn == "streuschuss" ? SpreadScript()
-                    : dn == "fuellstand" ? FillScript() : dn == "holdfast" ? HoldfastScript() : DemoScript();
-            bool payload = dn == "projektil" || dn == "strahlen" || dn == "streuschuss" || dn == "fuellstand";   // 0.34
+                    : dn == "fuellstand" ? FillScript() : dn == "holdfast" ? HoldfastScript() : dn == "scatter" ? ScatterScript()
+                    : dn == "ladung" ? ChargeScript() : DemoScript();
+            bool payload = dn == "projektil" || dn == "strahlen" || dn == "streuschuss" || dn == "fuellstand" || dn == "scatter" || dn == "ladung";   // 0.34, 0.39
             if (payload)                                                    // erste Waffe des Belegs nach Klasse
             {
-                string first = dn == "projektil" ? "grenade_launcher" : dn == "strahlen" ? "trace_rifle" : dn == "streuschuss" ? "shotgun" : "machine_gun";
+                string first = dn == "projektil" ? "grenade_launcher" : dn == "strahlen" ? "trace_rifle" : dn == "streuschuss" || dn == "scatter" ? "shotgun"
+                             : dn == "ladung" ? "fusion_rifle" : "machine_gun";
                 Player.UseWeapon(Array.FindIndex(Solvers, x => x.D.gameplay.weapon_type == first));
             }
             Player.input = demo;
@@ -630,10 +680,12 @@ namespace Ballon.Ego
                 for (int k = 0; k < 10; k++) yield return null;
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
+                string face = Arg(Environment.GetCommandLineArgs(), "-ballonFace");      // 0.39: vor einen Collider der Szene stellen
+                if (face != null) FaceCollider(L, face, 4f);
             }
             else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw" || dn == "volley" || dn == "holdfast" || payload) Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
-            if (payload && dn != "fuellstand")                // 0.34: Wand vor dem Schützen, damit Einschläge und Löcher im Bild lesbar sind
+            if (payload && dn != "fuellstand" && si < 0)      // 0.34: Wand vor dem Schützen, damit Einschläge und Löcher im Bild lesbar sind
             {
                 float d = dn == "projektil" ? 14f : dn == "strahlen" ? 8f : 5f;
                 var cam = Player.worldCam.transform;

@@ -307,6 +307,25 @@
                 "graphicsStateInfoSet": [
                     {
                         "vertexLayout": 10401213214819577891,
+                        "renderPass": 8253690249081979630,
+                        "renderState": 940461690185343709,
+                        "subPassIndex": 0,
+                        "topology": 0,
+                        "forceCullMode": -1,
+                        "shadingRateCombinerPrimitive": 0,
+                        "shadingRateCombinerFragment": 0,
+                        "baseShadingRate": 0,
+                        "depthBias": 0.0,
+                        "slopeDepthBias": 0.0,
+                        "userBackface": false,
+                        "appBackface": false,
+                        "wireframe": false,
+                        "invertProjectionMatrix": true,
+                        "unfilterableTextureBindings": 0,
+                        "nonfilteringSamplerBindings": 0
+                    },
+                    {
+                        "vertexLayout": 10401213214819577891,
                         "renderPass": 15034995325729770884,
                         "renderState": 11094720390271811279,
                         "subPassIndex": 0,
@@ -420,9 +439,9 @@
                         "nonfilteringSamplerBindings": 0
                     },
                     {
-                        "vertexLayout": 10401213214819577891,
+                        "vertexLayout": 11876421558531108630,
                         "renderPass": 8253690249081979630,
-                        "renderState": 18166471288122944885,
+                        "renderState": 1828994688622256377,
                         "subPassIndex": 0,
                         "topology": 0,
                         "forceCullMode": -1,
@@ -439,9 +458,9 @@
                         "nonfilteringSamplerBindings": 0
                     },
                     {
-                        "vertexLayout": 11876421558531108630,
-                        "renderPass": 8253690249081979630,
-                        "renderState": 1828994688622256377,
+                        "vertexLayout": 10401213214819577891,
+                        "renderPass": 15034995325729770884,
+                        "renderState": 940461690185343709,
                         "subPassIndex": 0,
                         "topology": 0,
                         "forceCullMode": -1,
@@ -478,6 +497,25 @@
                     },
                     {
                         "vertexLayout": 12942693649073953960,
+                        "renderPass": 8253690249081979630,
+                        "renderState": 18166471288122944885,
+                        "subPassIndex": 0,
+                        "topology": 0,
+                        "forceCullMode": -1,
+                        "shadingRateCombinerPrimitive": 0,
+                        "shadingRateCombinerFragment": 0,
+                        "baseShadingRate": 0,
+                        "depthBias": 0.0,
+                        "slopeDepthBias": 0.0,
+                        "userBackface": false,
+                        "appBackface": false,
+                        "wireframe": false,
+                        "invertProjectionMatrix": true,
+                        "unfilterableTextureBindings": 0,
+                        "nonfilteringSamplerBindings": 0
+                    },
+                    {
+                        "vertexLayout": 10401213214819577891,
                         "renderPass": 8253690249081979630,
                         "renderState": 18166471288122944885,
                         "subPassIndex": 0,
@@ -8700,6 +8738,118 @@
                     "depthState": {
                         "depthWrite": 0,
                         "depthFunc": 8
+                    },
+                    "stencilState": {
+                        "stencilEnable": 0,
+                        "readMask": 255,
+                        "writeMask": 255,
+                        "padding": 0,
+                        "stencilFuncFront": 8,
+                        "stencilPassOpFront": 0,
+                        "stencilFailOpFront": 0,
+                        "stencilZFailOpFront": 0,
+                        "stencilFuncBack": 8,
+                        "stencilPassOpBack": 0,
+                        "stencilFailOpBack": 0,
+                        "stencilZFailOpBack": 0
+                    },
+                    "stencilRef": 0,
+                    "mask": 15
+                }
+            }
+        },
+        {
+            "first": 940461690185343709,
+            "second": {
+                "renderState": {
+                    "blendState": {
+                        "rt": [
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 1,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 1,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            },
+                            {
+                                "writeMask": 15,
+                                "srcBlend": 1,
+                                "dstBlend": 0,
+                                "srcBlendAlpha": 1,
+                                "dstBlendAlpha": 0,
+                                "blendOp": 0,
+                                "blendOpAlpha": 0
+                            }
+                        ],
+                        "separateMRTBlend": 0,
+                        "alphaToMask": 0
+                    },
+                    "rasterState": {
+                        "cullMode": 0,
+                        "depthBias": -1,
+                        "slopeScaledDepthBias": -1.0,
+                        "depthClip": 1,
+                        "conservative": 0
+                    },
+                    "depthState": {
+                        "depthWrite": 0,
+                        "depthFunc": 4
                     },
                     "stencilState": {
                         "stencilEnable": 0,

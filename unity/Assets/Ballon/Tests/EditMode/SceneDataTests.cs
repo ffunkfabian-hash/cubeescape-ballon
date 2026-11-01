@@ -207,6 +207,27 @@ namespace Ballon.Ego.Tests
             Assert.IsFalse(SceneConvert.TryColor(null, out _));
         }
 
+        /// <summary>0.39 „Scatter“: colliders[].surface ist optional – fehlt (ältere Szenen) oder leer = kein Untergrund, sonst der Name
+        /// (ego.IMPACT_SURFACES). Die exportierte Hangar-Szene nennt Container und Trapezblech metal, den Hallenboden nicht.</summary>
+        [Test]
+        public void Untergrund_der_Kollider_optional()
+        {
+            var f = F;
+            Assert.AreEqual("", f.colliders[0].surface, "fehlt in der Fixture: kein Untergrund");
+            var g = SceneFile.Parse(First(Json, "\"name\": \"Kiste\",", "\"name\": \"Kiste\", \"surface\": \"metal\","));
+            Assert.AreEqual("metal", g.colliders[1].surface);
+            Assert.AreEqual("", g.colliders[0].surface);
+            var h = SceneFile.Parse(First(Json, "\"name\": \"Kiste\",", "\"name\": \"Kiste\", \"surface\": \"\","));
+            Assert.AreEqual("", h.colliders[1].surface, "leer = kein Untergrund");
+            const string Hangar = "Assets/Ballon/Generated/Scenes/hangar/scene_hangar.json";
+            if (!File.Exists(Hangar)) Assert.Ignore("Hangar nicht exportiert");
+            var hg = SceneFile.Parse(File.ReadAllText(Hangar));
+            string Surf(string n) => Array.Find(hg.colliders, c => c.name == n).surface;
+            Assert.AreEqual("metal", Surf("cont_a_col"), "Container (Kollisionsquader mit Angabe)");
+            Assert.AreEqual("metal", Surf("wall_w_1_lo"), "Trapezblech (Rolle sheet)");
+            Assert.AreEqual("", Surf("floor_00"), "Hallenboden Beton");
+        }
+
         [Test]
         public void Zielscheiben_Radius_wie_im_Parcours()
         {

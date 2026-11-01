@@ -112,6 +112,7 @@ namespace Ballon.Ego
                 g.transform.localPosition = SceneConvert.Point(c.center);
                 var b = g.AddComponent<BoxCollider>();
                 b.size = SceneConvert.Size(c.size);
+                if (!string.IsNullOrEmpty(c.surface)) g.AddComponent<FxSurface>().kind = c.surface;   // 0.39: Untergrund für Einschläge
                 L.colliders.Add(b);
                 var cb = new Bounds(g.transform.localPosition, b.size);
                 if (haveBounds) bounds.Encapsulate(cb); else { bounds = cb; haveBounds = true; }

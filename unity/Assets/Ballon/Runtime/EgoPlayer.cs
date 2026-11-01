@@ -451,11 +451,12 @@ namespace Ballon.Ego
             {
                 float cone = F.cone_deg * Mathf.Lerp(1, F.cone_ads, C.adsWeight);
                 float turn = (float)(_rng.NextDouble() * 360);
-                bool any = false;
-                for (int i = 0; i < F.pellets; i++)             // shot_impacts 1 (0.34.1): alle Kugeln treffen, sichtbar nur die mittlere
-                {
+                bool any = false, rest = !string.IsNullOrEmpty(F.pellet_impact);
+                for (int i = 0; i < F.pellets; i++)             // 0.39 (Entscheid 211 B): die ersten shot_impacts Kugeln im Stil impact
+                {                                               // (Burst), die übrigen im Stil pellet_impact; jede mit Loch
                     var d = PelletDir(dir, cam.up, cam.right, i, F.pellets, cone, turn);
-                    any |= Bullet(d, range, F, k, i == 0 || !any, F.shot_impacts <= 0 || i < F.shot_impacts);
+                    bool burst = F.shot_impacts <= 0 || i < F.shot_impacts;
+                    any |= Bullet(d, range, F, k, i == 0 || !any, burst || rest, burst ? F.impact : F.pellet_impact);
                 }
                 return;
             }
@@ -477,9 +478,9 @@ namespace Ballon.Ego
         }
 
         /// <summary>Ein Strahl ohne Flugzeit (Kugel, Schrotkugel, Strahl, Bolzen): Treffer an der Scheibe, Einschlag, je Klasse der Strahl
-        /// oder Bolzen dazu. count = Treffer zählen (Schrot: einmal je Schuss); visible = Einschlag zeigen (Schrot 0.34.1: nur die mittlere
-        /// Kugel). true, wenn eine Scheibe getroffen wurde.</summary>
-        bool Bullet(Vector3 dir, float range, EgoFx F, int k, bool count, bool visible = true)
+        /// oder Bolzen dazu. count = Treffer zählen (Schrot: einmal je Schuss); visible = Einschlag zeigen; impact = Stil (null = der der
+        /// Klasse; Schrot 0.39: Burst oder Kugel). true, wenn eine Scheibe getroffen wurde.</summary>
+        bool Bullet(Vector3 dir, float range, EgoFx F, int k, bool count, bool visible = true, string impact = null)
         {
             var G = C.S.D.gameplay;
             var cam = worldCam.transform;
@@ -519,9 +520,9 @@ namespace Ballon.Ego
             }
             if (fx != null && visible && F.kind != "bolts" && F.kind != "none")     // Bolzen schlagen erst bei der Ankunft ein (WeaponFx)
             {
-                var I = C.S.D.Impact(F.impact);
+                var I = C.S.D.Impact(impact ?? F.impact);
                 if (F.kind == "beam" && F.scorch_every > 1 && C.shots % F.scorch_every != 0)                 // Dauerstrahl: Brand je n. Schuss
-                    fx.Impact(I, hit.point, hit.normal, dir, energy, true, null);
+                    fx.Impact(I, hit.point, hit.normal, dir, energy, true, null, hit.collider.transform);
                 else fx.Impact(I, hit.point, hit.normal, dir, energy, I != null && I.decal == "scorch", hit.collider.transform);
             }
             return t != null;

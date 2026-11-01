@@ -135,6 +135,8 @@ namespace Ballon.Ego
         float _charge, _chargePost, _sinceCharge = 99f;
         /// <summary>Ladung der Ladewaffe 0 … 1 (Messwert für Tests); 0 bei anderen Waffen.</summary>
         public float ChargeLevel => _charge;
+        /// <summary>Leuchten der Ladewaffe (Ladung, nach dem Schuss das Nachleuchten bis zum Salvenende; 0.39: Ladeleuchten am Lauf).</summary>
+        public float ChargeGlowLevel => ChargeGlow;
         readonly Matrix4x4[] _shW;
         readonly float[] _shAge;
         readonly int[] _shId;

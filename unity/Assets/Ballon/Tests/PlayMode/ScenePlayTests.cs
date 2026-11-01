@@ -240,6 +240,37 @@ namespace Ballon.Ego.Tests
             }
         }
 
+        // ------------------------------------------------------------------------------------------------ Untergrund (0.39)
+        /// <summary>0.39 „Scatter“: in der exportierten Hangar-Szene tragen Container und Trapezblech den Untergrund metal (FxSurface am
+        /// Collider aus colliders[].surface), der Hallenboden keinen; ein Einschlag auf dem Container zeigt keinen Staub.</summary>
+        [UnityTest]
+        public IEnumerator Hangar_Untergrund_Metall()
+        {
+            var b = B;
+            int hi = -1;
+            for (int i = 0; i < b.SceneCount; i++) if (b.SceneDataAt(i).name == "hangar") hi = i;
+            if (hi < 0) Assert.Ignore("Hangar nicht exportiert");
+            b.ShowScene(hi);
+            yield return null;
+            var L = b.LoadedSceneAt(hi);
+            int metal = 0, none = 0;
+            foreach (var c in L.colliders)
+                if (c.TryGetComponent<FxSurface>(out var fs)) { Assert.AreEqual("metal", fs.kind, c.name); metal++; } else none++;
+            TestContext.WriteLine($"Hangar: {metal} Kollider Metall, {none} ohne Untergrund");
+            var cont = L.colliders.Find(c => c.name == "cont_a_col");
+            Assert.IsTrue(cont.TryGetComponent<FxSurface>(out _), "Container ist Metall");
+            Assert.IsTrue(L.colliders.Find(c => c.name == "wall_w_1_lo").TryGetComponent<FxSurface>(out _), "Trapezblech ist Metall");
+            Assert.IsFalse(L.colliders.Find(c => c.name == "floor_00").TryGetComponent<FxSurface>(out _), "Hallenboden ohne Untergrund");
+            Assert.Greater(metal, 100);
+            Assert.Greater(none, 100);
+            var fx = b.Player.fx;
+            var I = b.Player.C.S.D.Impact("bullet");
+            fx.Impact(I, cont.bounds.center, Vector3.left, Vector3.right, Color.cyan, false, cont.transform);
+            Assert.AreEqual("metal", fx.LastSurface?.name, "Einschlag liest den Untergrund am Collider");
+            Assert.AreEqual(0, fx.LastDust, "kein Staub auf dem Container");
+            fx.Clear();
+        }
+
         // ------------------------------------------------------------------------------------------------ Lader
         [UnityTest]
         public IEnumerator Szene_laden_Zonen_Lichtszenen_Parcours_und_Start()

@@ -89,7 +89,8 @@
     10.0,
     10.5,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_01",
@@ -102,7 +103,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_02",
@@ -115,7 +117,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_03",
@@ -128,7 +131,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_04",
@@ -141,7 +145,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_05",
@@ -154,7 +159,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_10",
@@ -167,7 +173,8 @@
     10.0,
     10.5,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_11",
@@ -180,7 +187,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_12",
@@ -193,7 +201,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_13",
@@ -206,7 +215,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_14",
@@ -219,7 +229,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_15",
@@ -232,7 +243,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_20",
@@ -245,7 +257,8 @@
     10.0,
     10.5,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_21",
@@ -258,7 +271,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_22",
@@ -271,7 +285,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_23",
@@ -284,7 +299,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_24",
@@ -297,7 +313,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_25",
@@ -310,7 +327,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_30",
@@ -323,7 +341,8 @@
     10.0,
     10.5,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_31",
@@ -336,7 +355,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_32",
@@ -349,7 +369,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_33",
@@ -362,7 +383,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_34",
@@ -375,7 +397,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "floor_35",
@@ -388,7 +411,8 @@
     10.0,
     10.0,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "plinth_w0",
@@ -401,7 +425,8 @@
     0.3,
     59.5,
     1.25
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "wall_w_0_lo",
@@ -414,7 +439,8 @@
     0.035,
     2.5,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_0_hi",
@@ -427,7 +453,8 @@
     0.035,
     2.5,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_1_lo",
@@ -440,7 +467,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_1_hi",
@@ -453,7 +481,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_2_lo",
@@ -466,7 +495,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_2_hi",
@@ -479,7 +509,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_3_lo",
@@ -492,7 +523,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_3_hi",
@@ -505,7 +537,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_4_lo",
@@ -518,7 +551,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_4_hi",
@@ -531,7 +565,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_5_lo",
@@ -544,7 +579,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_5_hi",
@@ -557,7 +593,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_6_lo",
@@ -570,7 +607,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_6_hi",
@@ -583,7 +621,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_7_lo",
@@ -596,7 +635,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_7_hi",
@@ -609,7 +649,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_8_lo",
@@ -622,7 +663,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_8_hi",
@@ -635,7 +677,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_9_lo",
@@ -648,7 +691,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_9_hi",
@@ -661,7 +705,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_10_lo",
@@ -674,7 +719,8 @@
     0.035,
     3.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_w_10_hi",
@@ -687,7 +733,8 @@
     0.035,
     3.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "plinth_e0",
@@ -700,7 +747,8 @@
     0.3,
     26.75,
     1.25
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "plinth_e1",
@@ -713,7 +761,8 @@
     0.3,
     31.25,
     1.25
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "wall_e_0_lo",
@@ -726,7 +775,8 @@
     0.035,
     2.5,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_0_hi",
@@ -739,7 +789,8 @@
     0.035,
     2.5,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_1_lo",
@@ -752,7 +803,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_1_hi",
@@ -765,7 +817,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_2_lo",
@@ -778,7 +831,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_2_hi",
@@ -791,7 +845,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_3_lo",
@@ -804,7 +859,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_3_hi",
@@ -817,7 +873,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_4_lo",
@@ -830,7 +887,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_4_hi",
@@ -843,7 +901,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_5_lo",
@@ -856,7 +915,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_5_hi",
@@ -869,7 +929,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_6_lo",
@@ -882,7 +943,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_6_hi",
@@ -895,7 +957,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_7_lo",
@@ -908,7 +971,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_7_hi",
@@ -921,7 +985,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_8_lo",
@@ -934,7 +999,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_8_hi",
@@ -947,7 +1013,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_9_lo",
@@ -960,7 +1027,8 @@
     0.035,
     6.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_9_hi",
@@ -973,7 +1041,8 @@
     0.035,
     6.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_10_lo",
@@ -986,7 +1055,8 @@
     0.035,
     3.0,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_e_10_hi",
@@ -999,7 +1069,8 @@
     0.035,
     3.0,
     3.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "plinth_n0",
@@ -1012,7 +1083,8 @@
     25.55,
     0.3,
     1.25
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "plinth_n1",
@@ -1025,7 +1097,8 @@
     12.35,
     0.3,
     1.25
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "wall_n_0_lo",
@@ -1038,7 +1111,8 @@
     6.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_0_hi",
@@ -1051,7 +1125,8 @@
     6.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_1_lo",
@@ -1064,7 +1139,8 @@
     6.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_1_hi",
@@ -1077,7 +1153,8 @@
     6.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_2_lo",
@@ -1090,7 +1167,8 @@
     6.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_2_hi",
@@ -1103,7 +1181,8 @@
     6.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_3_lo",
@@ -1116,7 +1195,8 @@
     6.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_3_hi",
@@ -1129,7 +1209,8 @@
     6.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_4_lo",
@@ -1142,7 +1223,8 @@
     6.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_4_hi",
@@ -1155,7 +1237,8 @@
     6.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_5_lo",
@@ -1168,7 +1251,8 @@
     6.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_5_hi",
@@ -1181,7 +1265,8 @@
     6.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_6_lo",
@@ -1194,7 +1279,8 @@
     4.0,
     0.035,
     7.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_n_6_hi",
@@ -1207,7 +1293,8 @@
     4.0,
     0.035,
     5.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "corner_w",
@@ -1220,7 +1307,8 @@
     0.45,
     0.45,
     14.1
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "corner_e",
@@ -1233,7 +1321,8 @@
     0.45,
     0.45,
     14.1
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "door_n",
@@ -1246,7 +1335,8 @@
     1.2,
     0.075,
     2.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "door_e",
@@ -1259,7 +1349,8 @@
     0.075,
     1.2,
     2.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_w_fl_in_lo",
@@ -1272,7 +1363,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_w_fl_in",
@@ -1285,7 +1377,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_w_fl_out",
@@ -1298,7 +1391,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_w_web",
@@ -1311,7 +1405,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_e_fl_in_lo",
@@ -1324,7 +1419,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_e_fl_in",
@@ -1337,7 +1433,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_e_fl_out",
@@ -1350,7 +1447,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_0_e_web",
@@ -1363,7 +1461,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_w_fl_in_lo",
@@ -1376,7 +1475,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_w_fl_in",
@@ -1389,7 +1489,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_w_fl_out",
@@ -1402,7 +1503,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_w_web",
@@ -1415,7 +1517,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_e_fl_in_lo",
@@ -1428,7 +1531,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_e_fl_in",
@@ -1441,7 +1545,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_e_fl_out",
@@ -1454,7 +1559,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_1_e_web",
@@ -1467,7 +1573,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_w_fl_in_lo",
@@ -1480,7 +1587,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_w_fl_in",
@@ -1493,7 +1601,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_w_fl_out",
@@ -1506,7 +1615,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_w_web",
@@ -1519,7 +1629,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_e_fl_in_lo",
@@ -1532,7 +1643,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_e_fl_in",
@@ -1545,7 +1657,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_e_fl_out",
@@ -1558,7 +1671,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_2_e_web",
@@ -1571,7 +1685,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_w_fl_in_lo",
@@ -1584,7 +1699,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_w_fl_in",
@@ -1597,7 +1713,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_w_fl_out",
@@ -1610,7 +1727,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_w_web",
@@ -1623,7 +1741,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_e_fl_in_lo",
@@ -1636,7 +1755,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_e_fl_in",
@@ -1649,7 +1769,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_e_fl_out",
@@ -1662,7 +1783,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_3_e_web",
@@ -1675,7 +1797,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_w_fl_in_lo",
@@ -1688,7 +1811,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_w_fl_in",
@@ -1701,7 +1825,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_w_fl_out",
@@ -1714,7 +1839,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_w_web",
@@ -1727,7 +1853,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_e_fl_in_lo",
@@ -1740,7 +1867,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_e_fl_in",
@@ -1753,7 +1881,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_e_fl_out",
@@ -1766,7 +1895,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_4_e_web",
@@ -1779,7 +1909,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_w_fl_in_lo",
@@ -1792,7 +1923,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_w_fl_in",
@@ -1805,7 +1937,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_w_fl_out",
@@ -1818,7 +1951,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_w_web",
@@ -1831,7 +1965,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_e_fl_in_lo",
@@ -1844,7 +1979,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_e_fl_in",
@@ -1857,7 +1993,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_e_fl_out",
@@ -1870,7 +2007,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_5_e_web",
@@ -1883,7 +2021,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_w_fl_in_lo",
@@ -1896,7 +2035,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_w_fl_in",
@@ -1909,7 +2049,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_w_fl_out",
@@ -1922,7 +2063,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_w_web",
@@ -1935,7 +2077,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_e_fl_in_lo",
@@ -1948,7 +2091,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_e_fl_in",
@@ -1961,7 +2105,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_e_fl_out",
@@ -1974,7 +2119,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_6_e_web",
@@ -1987,7 +2133,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_w_fl_in_lo",
@@ -2000,7 +2147,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_w_fl_in",
@@ -2013,7 +2161,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_w_fl_out",
@@ -2026,7 +2175,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_w_web",
@@ -2039,7 +2189,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_e_fl_in_lo",
@@ -2052,7 +2203,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_e_fl_in",
@@ -2065,7 +2217,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_e_fl_out",
@@ -2078,7 +2231,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_7_e_web",
@@ -2091,7 +2245,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_w_fl_in_lo",
@@ -2104,7 +2259,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_w_fl_in",
@@ -2117,7 +2273,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_w_fl_out",
@@ -2130,7 +2287,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_w_web",
@@ -2143,7 +2301,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_e_fl_in_lo",
@@ -2156,7 +2315,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_e_fl_in",
@@ -2169,7 +2329,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_e_fl_out",
@@ -2182,7 +2343,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_8_e_web",
@@ -2195,7 +2357,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_w_fl_in_lo",
@@ -2208,7 +2371,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_w_fl_in",
@@ -2221,7 +2385,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_w_fl_out",
@@ -2234,7 +2399,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_w_web",
@@ -2247,7 +2413,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_e_fl_in_lo",
@@ -2260,7 +2427,8 @@
     0.024,
     0.3,
     1.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_e_fl_in",
@@ -2273,7 +2441,8 @@
     0.024,
     0.3,
     12.5
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_e_fl_out",
@@ -2286,7 +2455,8 @@
     0.024,
     0.3,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "column_9_e_web",
@@ -2299,7 +2469,8 @@
     0.352,
     0.016,
     14.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "cabinet_e",
@@ -2312,7 +2483,8 @@
     0.6,
     2.2,
     1.9
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "cabinet_n",
@@ -2325,7 +2497,8 @@
     2.0,
     0.6,
     1.9
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_post_w_low",
@@ -2338,7 +2511,8 @@
     3.0,
     1.0,
     2.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_post_w",
@@ -2351,7 +2525,8 @@
     3.0,
     1.0,
     9.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_leaf_w0",
@@ -2364,7 +2539,8 @@
     0.1,
     3.75,
     10.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_leaf_w1",
@@ -2377,7 +2553,8 @@
     0.1,
     3.75,
     10.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_leaf_w2",
@@ -2390,7 +2567,8 @@
     0.1,
     3.75,
     10.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_post_e_low",
@@ -2403,7 +2581,8 @@
     3.0,
     1.0,
     2.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_post_e",
@@ -2416,7 +2595,8 @@
     3.0,
     1.0,
     9.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_leaf_e0",
@@ -2429,7 +2609,8 @@
     0.1,
     3.75,
     10.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_leaf_e1",
@@ -2442,7 +2623,8 @@
     0.1,
     3.75,
     10.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_leaf_e2",
@@ -2455,7 +2637,8 @@
     0.1,
     3.75,
     10.7
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_header",
@@ -2468,7 +2651,8 @@
     40.0,
     1.0,
     3.1
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_header_band",
@@ -2481,7 +2665,8 @@
     40.0,
     1.0,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "portal_start_post0",
@@ -2494,7 +2679,8 @@
     0.24,
     0.24,
     3.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "portal_start_post1",
@@ -2507,7 +2693,8 @@
     0.24,
     0.24,
     3.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "portal_finish_post0",
@@ -2520,7 +2707,8 @@
     0.24,
     0.24,
     3.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "portal_finish_post1",
@@ -2533,7 +2721,8 @@
     0.24,
     0.24,
     3.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrier_w_col",
@@ -2546,7 +2735,8 @@
     0.05,
     24.0,
     1.1
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrier_e_col",
@@ -2559,7 +2749,8 @@
     0.05,
     24.0,
     1.1
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "slalom_0a_col",
@@ -2572,7 +2763,8 @@
     2.2925,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_0b_col",
@@ -2585,7 +2777,8 @@
     1.8775,
     1.23,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_0c_col",
@@ -2598,7 +2791,8 @@
     1.23,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_1a_col",
@@ -2611,7 +2805,8 @@
     2.2925,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_1b_col",
@@ -2624,7 +2819,8 @@
     1.8775,
     1.23,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_1c_col",
@@ -2637,7 +2833,8 @@
     1.23,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_2a_col",
@@ -2650,7 +2847,8 @@
     2.2925,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_2b_col",
@@ -2663,7 +2861,8 @@
     1.8775,
     1.23,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_2c_col",
@@ -2676,7 +2875,8 @@
     1.23,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_3a_col",
@@ -2689,7 +2889,8 @@
     2.2925,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_3b_col",
@@ -2702,7 +2903,8 @@
     1.8775,
     1.23,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "slalom_3c_col",
@@ -2715,7 +2917,8 @@
     1.23,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "wall_low",
@@ -2728,7 +2931,8 @@
     6.94,
     0.35,
     0.55
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "wall_low_cap",
@@ -2741,7 +2945,8 @@
     6.94,
     0.39,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "step_a0_col",
@@ -2754,7 +2959,8 @@
     2.31,
     1.23,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "step_b0_col",
@@ -2767,7 +2973,8 @@
     2.31,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "step_a1_col",
@@ -2780,7 +2987,8 @@
     2.33,
     1.23,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "step_b1_col",
@@ -2793,7 +3001,8 @@
     2.33,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "step_a2_col",
@@ -2806,7 +3015,8 @@
     2.31,
     1.23,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "step_b2_col",
@@ -2819,7 +3029,8 @@
     2.31,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "cont_a_col",
@@ -2832,7 +3043,8 @@
     2.44,
     6.06,
     2.59
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "cont_b_col",
@@ -2845,7 +3057,8 @@
     2.44,
     6.06,
     2.59
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_0",
@@ -2858,7 +3071,8 @@
     6.77,
     0.3,
     0.3
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_0_riser",
@@ -2871,7 +3085,8 @@
     0.3,
     0.3,
     12.65
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_1",
@@ -2884,7 +3099,8 @@
     6.77,
     0.34,
     0.34
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_1_riser",
@@ -2897,7 +3113,8 @@
     0.34,
     0.34,
     12.65
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_2",
@@ -2910,7 +3127,8 @@
     6.77,
     0.3,
     0.3
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_2_riser",
@@ -2923,7 +3141,8 @@
     0.3,
     0.3,
     12.65
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_post_0s",
@@ -2936,7 +3155,8 @@
     0.12,
     0.12,
     1.23
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_post_0n",
@@ -2949,7 +3169,8 @@
     0.12,
     0.12,
     1.23
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_post_1s",
@@ -2962,7 +3183,8 @@
     0.12,
     0.12,
     1.23
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_post_1n",
@@ -2975,7 +3197,8 @@
     0.12,
     0.12,
     1.23
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_post_2s",
@@ -2988,7 +3211,8 @@
     0.12,
     0.12,
     1.23
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "pipe_post_2n",
@@ -3001,7 +3225,8 @@
     0.12,
     0.12,
     1.23
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "wall_gate",
@@ -3014,7 +3239,8 @@
     0.35,
     5.0,
     0.55
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "wall_gate_cap",
@@ -3027,7 +3253,8 @@
     0.39,
     5.0,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gate_stack_1_col",
@@ -3040,7 +3267,8 @@
     1.23,
     1.63,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "gate_stack_2_col",
@@ -3053,7 +3281,8 @@
     1.23,
     1.23,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "stair_step_01",
@@ -3066,7 +3295,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_02",
@@ -3079,7 +3309,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_03",
@@ -3092,7 +3323,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_04",
@@ -3105,7 +3337,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_05",
@@ -3118,7 +3351,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_06",
@@ -3131,7 +3365,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_07",
@@ -3144,7 +3379,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_08",
@@ -3157,7 +3393,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_09",
@@ -3170,7 +3407,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_10",
@@ -3183,7 +3421,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_step_11",
@@ -3196,7 +3435,8 @@
     1.1,
     0.3,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_rail_w_col",
@@ -3209,7 +3449,8 @@
     0.06,
     3.3,
     4.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "stair_rail_e_col",
@@ -3222,7 +3463,8 @@
     0.06,
     3.3,
     4.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p1",
@@ -3235,7 +3477,8 @@
     4.0,
     3.2,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p1_post0",
@@ -3248,7 +3491,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p1_post1",
@@ -3261,7 +3505,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p1_post2",
@@ -3274,7 +3519,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p1_post3",
@@ -3287,7 +3533,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk",
@@ -3300,7 +3547,8 @@
     1.2,
     20.4,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post0",
@@ -3313,7 +3561,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post1",
@@ -3326,7 +3575,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post2",
@@ -3339,7 +3589,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post3",
@@ -3352,7 +3603,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post4",
@@ -3365,7 +3617,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post5",
@@ -3378,7 +3631,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post6",
@@ -3391,7 +3645,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post7",
@@ -3404,7 +3659,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post8",
@@ -3417,7 +3673,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "walk_post9",
@@ -3430,7 +3687,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p2",
@@ -3443,7 +3701,8 @@
     4.0,
     3.0,
     0.05
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p2_post0",
@@ -3456,7 +3715,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p2_post1",
@@ -3469,7 +3729,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p2_post2",
@@ -3482,7 +3743,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "p2_post3",
@@ -3495,7 +3757,8 @@
     0.12,
     0.12,
     2.73
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p1_s_col",
@@ -3508,7 +3771,8 @@
     2.8,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p1_w_col",
@@ -3521,7 +3785,8 @@
     0.06,
     3.2,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p1_e_col",
@@ -3534,7 +3799,8 @@
     0.06,
     3.2,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p1_nw_col",
@@ -3547,7 +3813,8 @@
     2.4,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p1_ne_col",
@@ -3560,7 +3827,8 @@
     0.4,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_walk_w_col",
@@ -3573,7 +3841,8 @@
     0.06,
     20.4,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_walk_e_col",
@@ -3586,7 +3855,8 @@
     0.06,
     20.4,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p2_sw_col",
@@ -3599,7 +3869,8 @@
     1.4,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p2_se_col",
@@ -3612,7 +3883,8 @@
     1.4,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p2_w_col",
@@ -3625,7 +3897,8 @@
     0.06,
     3.0,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p2_e_col",
@@ -3638,7 +3911,8 @@
     0.06,
     3.0,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p2_nw_col",
@@ -3651,7 +3925,8 @@
     1.4,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rail_p2_ne_col",
@@ -3664,7 +3939,8 @@
     1.4,
     0.06,
     1.0
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "drop_1_col",
@@ -3677,7 +3953,8 @@
     2.03,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "drop_2_col",
@@ -3690,7 +3967,8 @@
     2.03,
     1.23,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_s00_col",
@@ -3703,7 +3981,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_n00_col",
@@ -3716,7 +3995,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_s01_col",
@@ -3729,7 +4009,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_n01_col",
@@ -3742,7 +4023,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_w00_col",
@@ -3755,7 +4037,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_e00_col",
@@ -3768,7 +4051,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_w01_col",
@@ -3781,7 +4065,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_e01_col",
@@ -3794,7 +4079,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_s10_col",
@@ -3807,7 +4093,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_n10_col",
@@ -3820,7 +4107,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_s11_col",
@@ -3833,7 +4121,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_n11_col",
@@ -3846,7 +4135,8 @@
     2.51,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_w10_col",
@@ -3859,7 +4149,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_e10_col",
@@ -3872,7 +4163,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_w11_col",
@@ -3885,7 +4177,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_e11_col",
@@ -3898,7 +4191,8 @@
     1.23,
     2.81,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_pal_col",
@@ -3911,7 +4205,8 @@
     1.2,
     1.0,
     0.145
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "fort_barrel0",
@@ -3924,7 +4219,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "fort_barrel1",
@@ -3937,7 +4233,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "cover_t02_col",
@@ -3950,7 +4247,8 @@
     0.73,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_up_0f",
@@ -3963,7 +4261,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_0b",
@@ -3976,7 +4275,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_0",
@@ -3989,7 +4289,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_1f",
@@ -4002,7 +4303,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_1b",
@@ -4015,7 +4317,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_1",
@@ -4028,7 +4331,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_2f",
@@ -4041,7 +4345,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_2b",
@@ -4054,7 +4359,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_2",
@@ -4067,7 +4373,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_3f",
@@ -4080,7 +4387,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_3b",
@@ -4093,7 +4401,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_3",
@@ -4106,7 +4415,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_4f",
@@ -4119,7 +4429,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_4b",
@@ -4132,7 +4443,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_4",
@@ -4145,7 +4457,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_5f",
@@ -4158,7 +4471,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_5b",
@@ -4171,7 +4485,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_5",
@@ -4184,7 +4499,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_6f",
@@ -4197,7 +4513,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_up_6b",
@@ -4210,7 +4527,8 @@
     0.1,
     0.1,
     6.2
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_guard_6",
@@ -4223,7 +4541,8 @@
     0.1,
     0.2,
     0.4
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_beam_0f",
@@ -4236,7 +4555,8 @@
     0.12,
     16.2,
     0.15
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_beam_0b",
@@ -4249,7 +4569,8 @@
     0.12,
     16.2,
     0.15
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_deck_0",
@@ -4262,7 +4583,8 @@
     1.0,
     16.2,
     0.03
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_beam_1f",
@@ -4275,7 +4597,8 @@
     0.12,
     16.2,
     0.15
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_beam_1b",
@@ -4288,7 +4611,8 @@
     0.12,
     16.2,
     0.15
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_deck_1",
@@ -4301,7 +4625,8 @@
     1.0,
     16.2,
     0.03
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_beam_2f",
@@ -4314,7 +4639,8 @@
     0.12,
     16.2,
     0.15
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_beam_2b",
@@ -4327,7 +4653,8 @@
     0.12,
     16.2,
     0.15
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_deck_2",
@@ -4340,7 +4667,8 @@
     1.0,
     16.2,
     0.03
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "rack_crate_0_0_0_col",
@@ -4353,7 +4681,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_0_0_1_col",
@@ -4366,7 +4695,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_0_1_0_col",
@@ -4379,7 +4709,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_0_1_1_col",
@@ -4392,7 +4723,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_0_2_0_col",
@@ -4405,7 +4737,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_0_3_0_col",
@@ -4418,7 +4751,8 @@
     0.98,
     1.13,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_0_3_1_col",
@@ -4431,7 +4765,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_0_0_col",
@@ -4444,7 +4779,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_0_1_col",
@@ -4457,7 +4793,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_1_0_col",
@@ -4470,7 +4807,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_1_1_col",
@@ -4483,7 +4821,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_2_1_col",
@@ -4496,7 +4835,8 @@
     0.98,
     1.13,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_3_0_col",
@@ -4509,7 +4849,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_1_3_1_col",
@@ -4522,7 +4863,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_0_0_col",
@@ -4535,7 +4877,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_0_1_col",
@@ -4548,7 +4891,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_1_0_col",
@@ -4561,7 +4905,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_2_0_col",
@@ -4574,7 +4919,8 @@
     0.98,
     1.13,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_2_1_col",
@@ -4587,7 +4933,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_3_0_col",
@@ -4600,7 +4947,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_2_3_1_col",
@@ -4613,7 +4961,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_0_0_col",
@@ -4626,7 +4975,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_0_1_col",
@@ -4639,7 +4989,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_1_1_col",
@@ -4652,7 +5003,8 @@
     0.98,
     1.13,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_2_0_col",
@@ -4665,7 +5017,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_2_1_col",
@@ -4678,7 +5031,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_3_0_col",
@@ -4691,7 +5045,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_3_3_1_col",
@@ -4704,7 +5059,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_0_0_col",
@@ -4717,7 +5073,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_1_0_col",
@@ -4730,7 +5087,8 @@
     0.98,
     1.13,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_1_1_col",
@@ -4743,7 +5101,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_2_0_col",
@@ -4756,7 +5115,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_2_1_col",
@@ -4769,7 +5129,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_3_0_col",
@@ -4782,7 +5143,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_4_3_1_col",
@@ -4795,7 +5157,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_5_0_1_col",
@@ -4808,7 +5171,8 @@
     0.98,
     1.13,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_5_1_0_col",
@@ -4821,7 +5185,8 @@
     0.98,
     1.13,
     1.1
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_5_1_1_col",
@@ -4834,7 +5199,8 @@
     0.98,
     1.13,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_5_2_0_col",
@@ -4847,7 +5213,8 @@
     0.98,
     1.13,
     1.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_5_2_1_col",
@@ -4860,7 +5227,8 @@
     0.98,
     1.13,
     0.9
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "rack_crate_5_3_0_col",
@@ -4873,7 +5241,8 @@
     0.98,
     1.13,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "office_col",
@@ -4886,7 +5255,8 @@
     6.0,
     2.8,
     2.9
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "office_step",
@@ -4899,7 +5269,8 @@
     1.4,
     0.5,
     0.18
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gen_body",
@@ -4912,7 +5283,8 @@
     2.8,
     1.6,
     1.33
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "gen_top",
@@ -4925,7 +5297,8 @@
     2.6,
     1.4,
     0.1
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "gen_wheel_0",
@@ -4938,7 +5311,8 @@
     0.6,
     0.2,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "gen_wheel_1",
@@ -4951,7 +5325,8 @@
     0.6,
     0.2,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "gen_wheel_2",
@@ -4964,7 +5339,8 @@
     0.6,
     0.2,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "gen_wheel_3",
@@ -4977,7 +5353,8 @@
     0.6,
     0.2,
     0.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "gen_drawbar",
@@ -4990,7 +5367,8 @@
     1.21694,
     0.08,
     0.338186
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "crate_nw1_col",
@@ -5003,7 +5381,8 @@
     2.43,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_nw2_col",
@@ -5016,7 +5395,8 @@
     1.23,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_nw3_col",
@@ -5029,7 +5409,8 @@
     1.23,
     1.63,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_nw4_col",
@@ -5042,7 +5423,8 @@
     1.63,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "pallet_w1_col",
@@ -5055,7 +5437,8 @@
     1.2,
     1.2,
     0.145
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "barrel_w1_0",
@@ -5068,7 +5451,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_w1_1",
@@ -5081,7 +5465,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_w1_2",
@@ -5094,7 +5479,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_w1_3",
@@ -5107,7 +5493,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_w2",
@@ -5120,7 +5507,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_w3",
@@ -5133,7 +5521,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "crate_w7_col",
@@ -5146,7 +5535,8 @@
     2.43,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_w8_col",
@@ -5159,7 +5549,8 @@
     1.23,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_w9_col",
@@ -5172,7 +5563,8 @@
     1.23,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_e1_col",
@@ -5185,7 +5577,8 @@
     2.43,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_e2_col",
@@ -5198,7 +5591,8 @@
     2.43,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_e3_col",
@@ -5211,7 +5605,8 @@
     1.23,
     1.23,
     1.2
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_e4_col",
@@ -5224,7 +5619,8 @@
     1.63,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "pallet_e1_col",
@@ -5237,7 +5633,8 @@
     1.2,
     1.2,
     0.145
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "barrel_e1_0",
@@ -5250,7 +5647,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_e1_1",
@@ -5263,7 +5661,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_e1_2",
@@ -5276,7 +5675,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_e1_3",
@@ -5289,7 +5689,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "barrel_e2",
@@ -5302,7 +5703,8 @@
     0.58,
     0.58,
     0.88
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "crate_m1_col",
@@ -5315,7 +5717,8 @@
     1.63,
     1.23,
     1.0
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "crate_m2_col",
@@ -5328,7 +5731,8 @@
     1.03,
     1.03,
     0.8
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_00",
@@ -5341,7 +5745,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_01",
@@ -5354,7 +5759,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_10",
@@ -5367,7 +5773,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_11",
@@ -5380,7 +5787,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_20",
@@ -5393,7 +5801,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_21",
@@ -5406,7 +5815,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_30",
@@ -5419,7 +5829,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "apron_31",
@@ -5432,7 +5843,8 @@
     10.0,
     10.75,
     0.3
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "edge_light_w0",
@@ -5445,7 +5857,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_w1",
@@ -5458,7 +5871,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_w2",
@@ -5471,7 +5885,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_w3",
@@ -5484,7 +5899,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_w4",
@@ -5497,7 +5913,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_w5",
@@ -5510,7 +5927,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_e0",
@@ -5523,7 +5941,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_e1",
@@ -5536,7 +5955,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_e2",
@@ -5549,7 +5969,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_e3",
@@ -5562,7 +5983,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_e4",
@@ -5575,7 +5997,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "edge_light_e5",
@@ -5588,7 +6011,8 @@
     0.18,
     0.18,
     0.22
-   ]
+   ],
+   "surface": "metal"
   },
   {
    "name": "twall_s00",
@@ -5601,7 +6025,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s00_foot",
@@ -5614,7 +6039,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s01",
@@ -5627,7 +6053,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s01_foot",
@@ -5640,7 +6067,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s02",
@@ -5653,7 +6081,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s02_foot",
@@ -5666,7 +6095,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s03",
@@ -5679,7 +6109,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s03_foot",
@@ -5692,7 +6123,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s04",
@@ -5705,7 +6137,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s04_foot",
@@ -5718,7 +6151,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s05",
@@ -5731,7 +6165,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s05_foot",
@@ -5744,7 +6179,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s06",
@@ -5757,7 +6193,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s06_foot",
@@ -5770,7 +6207,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s07",
@@ -5783,7 +6221,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s07_foot",
@@ -5796,7 +6235,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s08",
@@ -5809,7 +6249,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s08_foot",
@@ -5822,7 +6263,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s09",
@@ -5835,7 +6277,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s09_foot",
@@ -5848,7 +6291,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s10",
@@ -5861,7 +6305,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s10_foot",
@@ -5874,7 +6319,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s11",
@@ -5887,7 +6333,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s11_foot",
@@ -5900,7 +6347,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s12",
@@ -5913,7 +6361,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s12_foot",
@@ -5926,7 +6375,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s13",
@@ -5939,7 +6389,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s13_foot",
@@ -5952,7 +6403,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s14",
@@ -5965,7 +6417,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s14_foot",
@@ -5978,7 +6431,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s15",
@@ -5991,7 +6445,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s15_foot",
@@ -6004,7 +6459,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s16",
@@ -6017,7 +6473,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s16_foot",
@@ -6030,7 +6487,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s17",
@@ -6043,7 +6501,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s17_foot",
@@ -6056,7 +6515,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s18",
@@ -6069,7 +6529,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s18_foot",
@@ -6082,7 +6543,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s19",
@@ -6095,7 +6557,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s19_foot",
@@ -6108,7 +6571,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s20",
@@ -6121,7 +6585,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s20_foot",
@@ -6134,7 +6599,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s21",
@@ -6147,7 +6613,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s21_foot",
@@ -6160,7 +6627,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s22",
@@ -6173,7 +6641,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s22_foot",
@@ -6186,7 +6655,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s23",
@@ -6199,7 +6669,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s23_foot",
@@ -6212,7 +6683,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s24",
@@ -6225,7 +6697,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s24_foot",
@@ -6238,7 +6711,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s25",
@@ -6251,7 +6725,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s25_foot",
@@ -6264,7 +6739,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s26",
@@ -6277,7 +6753,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s26_foot",
@@ -6290,7 +6767,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s27",
@@ -6303,7 +6781,8 @@
     1.47,
     0.35,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_s27_foot",
@@ -6316,7 +6795,8 @@
     1.47,
     0.6,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w00",
@@ -6329,7 +6809,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w00_foot",
@@ -6342,7 +6823,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e00",
@@ -6355,7 +6837,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e00_foot",
@@ -6368,7 +6851,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w01",
@@ -6381,7 +6865,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w01_foot",
@@ -6394,7 +6879,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e01",
@@ -6407,7 +6893,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e01_foot",
@@ -6420,7 +6907,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w02",
@@ -6433,7 +6921,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w02_foot",
@@ -6446,7 +6935,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e02",
@@ -6459,7 +6949,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e02_foot",
@@ -6472,7 +6963,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w03",
@@ -6485,7 +6977,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w03_foot",
@@ -6498,7 +6991,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e03",
@@ -6511,7 +7005,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e03_foot",
@@ -6524,7 +7019,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w04",
@@ -6537,7 +7033,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w04_foot",
@@ -6550,7 +7047,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e04",
@@ -6563,7 +7061,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e04_foot",
@@ -6576,7 +7075,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w05",
@@ -6589,7 +7089,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w05_foot",
@@ -6602,7 +7103,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e05",
@@ -6615,7 +7117,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e05_foot",
@@ -6628,7 +7131,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w06",
@@ -6641,7 +7145,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w06_foot",
@@ -6654,7 +7159,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e06",
@@ -6667,7 +7173,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e06_foot",
@@ -6680,7 +7187,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w07",
@@ -6693,7 +7201,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w07_foot",
@@ -6706,7 +7215,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e07",
@@ -6719,7 +7229,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e07_foot",
@@ -6732,7 +7243,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w08",
@@ -6745,7 +7257,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w08_foot",
@@ -6758,7 +7271,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e08",
@@ -6771,7 +7285,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e08_foot",
@@ -6784,7 +7299,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w09",
@@ -6797,7 +7313,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w09_foot",
@@ -6810,7 +7327,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e09",
@@ -6823,7 +7341,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e09_foot",
@@ -6836,7 +7355,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w10",
@@ -6849,7 +7369,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w10_foot",
@@ -6862,7 +7383,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e10",
@@ -6875,7 +7397,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e10_foot",
@@ -6888,7 +7411,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w11",
@@ -6901,7 +7425,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w11_foot",
@@ -6914,7 +7439,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e11",
@@ -6927,7 +7453,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e11_foot",
@@ -6940,7 +7467,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w12",
@@ -6953,7 +7481,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w12_foot",
@@ -6966,7 +7495,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e12",
@@ -6979,7 +7509,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e12_foot",
@@ -6992,7 +7523,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w13",
@@ -7005,7 +7537,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_w13_foot",
@@ -7018,7 +7551,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e13",
@@ -7031,7 +7565,8 @@
     0.35,
     1.47,
     3.6
-   ]
+   ],
+   "surface": ""
   },
   {
    "name": "twall_e13_foot",
@@ -7044,7 +7579,8 @@
     0.6,
     1.47,
     0.35
-   ]
+   ],
+   "surface": ""
   }
  ],
  "spawn": {
@@ -9443,15 +9979,15 @@
  "sources": [
   {
    "path": "basic/scenes/__init__.py",
-   "sha256": "f7ad1a5aacc9404ea1e17965bd215b2961989ce6053731f92d4bdff29a423c12"
+   "sha256": "edcab64b5c9edae428d942c0f616895c6ec51c6021fe85e026079f6e33a73cea"
   },
   {
    "path": "basic/scenes/hangar.py",
-   "sha256": "ee51b993da3c15743923c28e21cf95a86de0e24c7c631d5da6b3a4375a326554"
+   "sha256": "813a52a9b64c9197a75ca6869c58a888fe3ffcde89228d962ed372640d0f96e8"
   },
   {
    "path": "tools/scene_build.py",
-   "sha256": "1d1b2404fab4db54bfa1919af2bf048f4b088c10f6375ada79b13145731d34b6"
+   "sha256": "d374a0b13967aa844f0bfe013ae7b8fb46f0a3c71be9f424b7a178758ae770a9"
   }
  ]
 }

@@ -59,11 +59,21 @@ def corr(pid, de, group, mat, n, side, at, u, u0, u1, v0, v1, prof, collide=True
                  u0=float(min(u0, u1)), u1=float(max(u0, u1)), v0=float(min(v0, v1)), v1=float(max(v0, v1)), prof=dict(prof))
 
 
-def solid(pid, de, a, b):
-    """Nur Kollisionsquader (kein Netz)."""
+def solid(pid, de, a, b, surface=''):
+    """Nur Kollisionsquader (kein Netz). `surface` (0.39): Untergrund für Einschläge (ego.IMPACT_SURFACES), sonst keiner."""
     p = box(pid, de, '-', '-', a, b)
     p['mesh'] = False
+    if surface:
+        p['surface'] = surface
     return p
+
+
+def surface_of(S, p):
+    """Untergrund eines Teils für Einschläge (0.39 „Scatter“): am Teil angegeben (Kollisionsquader), sonst aus seiner Materialrolle
+    (S.SURFACES: Art → Rollen); '' = keiner (der Einschlag gilt unverändert)."""
+    if p.get('surface'):
+        return p['surface']
+    return next((k for k, roles in getattr(S, 'SURFACES', {}).items() if p['mat'] in roles), '')
 
 
 def bevel_of(p):
@@ -260,6 +270,8 @@ def validate(S):
     for r, R in S.ROLES.items():
         if R.get('decal') and R['decal'] not in S.DECALS:
             err.append(f'Rolle {r}: Bildmaske {R["decal"]} fehlt in DECALS')
+    for k, roles in getattr(S, 'SURFACES', {}).items():
+        err += [f'Untergrund {k}: Rolle {r} fehlt in ROLES' for r in roles if r not in S.ROLES]
     for L in S.LIGHTINGS:
         for lt in L['lights']:
             if lt['kind'] not in ('area', 'sun', 'point', 'spot'):

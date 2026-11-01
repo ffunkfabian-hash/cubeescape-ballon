@@ -43,6 +43,8 @@ BALLON_UNITY_APP=<Pfad>.app python3 tools/unity_run.py ruckeln nachher   # ander
 python3 tools/stutter_report.py <EV>/ruckeln/vorher_1 <EV>/ruckeln/vorher_2 --weapons   # Tabelle je Ereignis (und je Waffe)
 python3 tools/unity_run.py ruckeln kalt_mit kalt einmal   # erster Start einer neuen Build (eigene Bundle-ID), nur Durchgang 1 (0.38)
 python3 tools/unity_run.py aufwaermen                    # Shader-Zustände neu aufzeichnen, in die Szene, neue Build (0.38)
+BALLON_CAPTURE_FACE=cont_a_col@-x python3 tools/unity_run.py scatter hangar   # Beleg Schrot-Lochgruppen auf dem Container (0.39)
+python3 tools/unity_run.py ladung                         # Beleg Ladeleuchten der Fusion, Hüfte und Zielen (0.39)
 python3 tools/unity_run.py scenes           # je Szene und Lichtszene Bild vom Start gegen <szene>_<licht>_ref.png (SSIM/PSNR)
 python3 tools/unity_run.py course tag       # Vorführlauf durch den Hangar-Parcours als MP4 + Kontaktbogen (Lichtszene wählbar)
 open unity/Build/BallonFirstfeel.app        # spielen
@@ -190,10 +192,17 @@ ersetzt der Controller die geskripteten Ebenen durch live gerechnete:
   Scheiben im Radius zählen), `arrow` (Pfeil mit Fall, steckt), `beam` (Dauerstrahl), `bolts` (Bolzen je Strahl der Salve, Einschlag bei
   Ankunft), `rail` (scharfer Strahl, blendet aus), `none` (Werkzeug). Strahlen und Projektile beginnen an `Socket_Muzzle`, durch die
   Viewmodel-Kamera auf denselben Bildpunkt der Weltkamera gerechnet. An der Waffe: Rauch aus dem Rohr (Werfer) und Mündungslicht
-  (Energie, Bogen) in der Viewmodel-Ebene. Alles in festen Pools (Löcher 96, Projektile 8, Linien 24, Ringe 4, Lichter 2,
+  (Energie, Bogen) in der Viewmodel-Ebene. Alles in festen Pools (Löcher 192 seit 0.39, Projektile 8, Linien 24, Ringe 4, Lichter 2,
   Brandflecken 8, Partikel je System fest); die Partikel sind angehalten und laufen mit der Spielzeit (`Simulate`), damit Tests und
   Aufnahmen mit virtueller Zeit dieselben Bilder sehen. Gegenprobe: `BALLON_PAYLOAD_OFF=1` schaltet die Wirkung samt Schrittteilen,
   Füllstand, Gliedern und Nachlade-Hülsen ab.
+- **Schrot, Untergrund, Ladeleuchten (0.39 „Scatter“):** Schrot zeigt jede Kugel mit Loch (`shot_impacts` Bursts, übrige Kugeln im
+  Stil `pellet_impact`, Loch × `IMPACTS hole_k`); Untergrund aus `colliders[].surface` (`FxSurface`, `motion.payload.surfaces`); an
+  Ladewaffen Ringe, Ladefunken und Mündungskern unter dem Knoten „Ladeleuchten“ von `weaponRoot` (ohne Ladung inaktiv; Lage aus
+  `gameplay.fx charge_*`, Form aus `motion.payload.charge_glow`). Halter der Löcher entstehen beim Laden von Parcours und Szene
+  (`WeaponFx.PrepareHolders`), nicht beim Schuss. **Abnehmer:** den vollen Umfang liest BALLON ab 0.39; ältere Leser übergehen die
+  Felder (gleiches `ballon-ego/10`, `ballon-scene/2`), 0.39 liest ältere Dateien mit Rückfällen (ohne Untergrund, ohne Ladeleuchten,
+  Loch × 1, Form von 0.39).
 - **Schrittteile, Füllstand, Glieder (0.34):** `EGO_LIVE index` (Trommel der Handfeuerwaffe, Gurtvorschub des MG) läuft nach jedem Schuss
   in `ego.index_frames` Bildern von 0 auf 1 – Blender (`ego_build`) und Unity gleich. `EGO_LIVE rounds` zeigt den Füllstand nur im Spiel
   (Clips voll): MG-Gurt (`line`, Satz i an bei mehr als i Patronen), Granatwerfer-Trommel (`drum`, je Kammer; der Zustand rückt mit, wenn
@@ -217,7 +226,10 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 |---|---|
 | `Granatwerfer_Granate_fliegt_im_Bogen_und_explodiert`, `Raketenwerfer_Rakete_gerade_mit_Rauchspur_und_Explosion` (PlayMode, 0.34) | Start an der Mündung (Bildlage), Geschwindigkeit, Fallkurve bzw. gerade Bahn, Rauch aus dem Lauf, Rauchspur; Explosion mit Ring, Licht, Brandfleck, Funken, Rauch; Flug und Partikel ohne Speicher je Bild |
 | `Spurgewehr_Dauerstrahl_vom_Lauf_zum_Einschlag`, `Fusion_Salve_aus_Bolzen`, `Lineare_Fusion_ein_scharfer_Strahl`, `Bogen_Pfeil_loest_fliegt_und_steckt` (PlayMode, 0.34) | Strahl von der Mündung (± 1 % des Bilds) bis zur Wand, Mündungslicht; ein Bolzen je Strahl, Einschlag bei Ankunft; Strahl `beam_s`; Pfeil fliegt, steckt `stick_s` |
-| `Schrot_Streuschuss_mit_mehreren_Einschlaegen`, `Einschlag_Funken_Staub_Loch_und_Ausblenden` (PlayMode, 0.34) | 12 Einschläge und Löcher im Kegel; je Kugelklasse Funken, Staub, Loch (Stil bullet/heavy), Ausblenden nach `life_s`, Pool-Obergrenze |
+| `Schrot_Lochgruppe_je_Schuss_im_Kegel`, `Einschlag_Funken_Staub_Loch_und_Ausblenden` (PlayMode, 0.34/0.39) | Schrot (0.39, Entscheid 211 B): je Schuss jede Kugel ein Einschlag mit Loch (≥ 9, im Kegel, als Gruppe), zwei dichte Bursts, ein Treffer je Schuss; Gegenprobe Stand 0.38 rot (1 Einschlag, 1 Loch). Je Kugelklasse Funken, Staub, Loch (Stil bullet/heavy), Ausblenden nach `life_s`, Pool-Obergrenze |
+| `Metall_Einschlag_ohne_Staub_mit_langen_Funken`, `Hangar_Untergrund_Metall` (PlayMode, 0.39) | Fläche mit `FxSurface` metal: kein Staub, mehr Funken, längster Funke ≥ 12 Bilder bei 60/s; ohne Untergrund Stil unverändert; Hangar (in `ScenePlayTests`, nach dem Aufwärmtest): Container und Blech metal, Boden ohne, Einschlag am Container ohne Staub |
+| `Ladeleuchten_waechst_mit_der_Ladung_Huefte_und_Zielen` (PlayMode, 0.39) | Fusion und lineare Fusion: Ringe auf der Kernachse hinter der Mündung (Viewmodel-Ebene), Leuchten wächst mit der Ladung (¼ < ½ < fast voll, 1 → n Ringe), Hüfte und Zielen, Loslassen löscht |
+| `Scatter_Schrot_Untergrund_Ladeleuchten_in_ego_json` (EditMode, 0.39) | Bursts und Kugelstil mit Loch, Lochpool hält bei Dauerfeuer `min_life_s` ≥ 9 s, Untergrund metal (kein Staub, Funken ≥ 12 Bilder), Ladespanne hinter der Mündung auf der Kernachse |
 | `Handfeuerwaffe_Trommel_dreht_je_Schuss_Huelsen_beim_Nachladen`, `MG_Glieder_Gurtvorschub_und_Fuellstand`, `Granatwerfer_Trommel_zeigt_geladene_und_leere_Kammern` (PlayMode, 0.34) | Trommel eine Kammer je Schuss, Hülsen beim Nachladen je verschossene Kammer; Glied je Hülse, Gurtvorschub, Gurt leert sich von unten, Zählzellen, Modell; Kammern leer nach dem Schuss, rücken mit der Trommel, füllen sich beim Nachladen |
 | `Handfeuerwaffe_Stuetzhand_schwingt_beim_Huefschuss_nicht`, `Bogen_Hueftzeichen_bleibt_beim_Spannen`, `Bogen_Weltzoom_stetig_gespannt_ins_Zielen` (PlayMode, 0.36) | Stützhand beim Hüftschuss ≤ 1,5 pp H (Waffe kippt weiter), im Zielen folgt sie; Bogen-Hüftzeichen beim Spannen an, schließt mit dem Auszug, im Zielen aus; Weltzoom gespannt/ungespannt ≤ 1,2× je Bild, über `zoom_in_min_s` |
 | `Kein_GC_Speicher_je_Schuss_und_Wechsel_nach_dem_Aufwaermen`, `Fadenkreuz_Aufgehen_ohne_Speicher` (PlayMode, 0.37) | Ablauf der Ruckelmessung über `EgoPlayer.Step` und `UpdateHudText` für alle 16 Waffen (wählen, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen; 15 000 Schritte) nach zwei Aufwärmläufen ohne GC-Speicher; Fadenkreuz beim Aufgehen ohne Speicher. Gegenprobe `BALLON_STEADYFRAME_OFF=1` rot |
@@ -317,7 +329,9 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
   `.gamma` (Materialfarben sind Gamma-Werte; Atlas = Licht / `scale`). Jeder Renderer des FBX bekommt das Material der Zone, deren
   `objects` seinen Knotennamen (oder den eines Elternknotens) nennen; ohne Treffer gilt Zone 1 mit einer Warnung im Log. Alle Renderer
   ohne Schatten und ohne Sondenspiegelung, der FBX braucht die Atlas-UVs im ersten UV-Satz. Kollision kommt nur aus `colliders`
-  (Quader, Blender → Unity wie `axes.to_unity`: Mitte (−x, z, −y), Kantenlängen (x, z, y)), nicht aus dem FBX.
+  (Quader, Blender → Unity wie `axes.to_unity`: Mitte (−x, z, −y), Kantenlängen (x, z, y)), nicht aus dem FBX. Optional (0.39)
+  `colliders[].surface`: Untergrund für Einschläge (`metal`; leer bzw. fehlend = keiner), der Lader hängt `FxSurface` an den
+  Collider, `WeaponFx.Impact` ändert den Einschlagstil nach `motion.payload.surfaces` (`ego.IMPACT_SURFACES`).
 - **Spieler:** Start an `spawn.pos` (Füße, 2 cm Spiel), Blick nach `spawn.yaw_deg`. Blender dreht gegen den Uhrzeigersinn positiv,
   Unity im Uhrzeigersinn, daher Unity-Gier = −`yaw_deg`. Zurück im Parcours steht der Spieler wieder am Start (0 / 0,01 / 1,5).
 - **Himmel und Umgebungslicht:** `sky` = Kamerahintergrund und Hintergrund der Reflexionssonde (Farbe × Stärke, linear gerechnet, als
