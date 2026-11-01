@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.38.0 „Prewarm“ – Shader-Hänger beim ersten Start einer neuen Build verkleinert, nicht beseitigt (Branch `claude/ballon-0.38-prewarm`)
+
+- Bei kaltem Metal-Zwischenspeicher übersetzte der Spieler beim ersten Einsatz URP/Lit-Varianten (Emission, Transparent,
+  Normal-/Spec-Map, je 120–190 ms) und legte Pipeline-Zustände an. Jetzt wärmt `ShaderWarmup` beim Laden eine im Spieler
+  aufgezeichnete `GraphicsStateCollection` (`Assets/Ballon/Warmup/`, 20 Varianten, 45 Zustände) auf Arbeitsthreads auf; danach
+  übersetzt das Spiel keine Shader mehr (Protokoll). Kalt: erster MP-Wechsel 366–456 → 100–115 ms, MP-Hüftschuss 183–218 → 48–84 ms.
+  Offen (Folgeaufgabe): Pipeline-Zustände in einer URP-Pass-Form, die `WarmUp` nicht trifft.
+- Laden: kalt erscheint das erste Bild ≈ 1,2 s später, dauert aber nicht mehr 1,1–1,5 s (bis spielbereit ≈ gleich); warm kein
+  Unterschied (2,27 s, Aufwärmen 0,2 s vor dem ersten Bild fertig). Waffen beim ersten Start zu zeigen (≈ 1 s Ladeblende) wurde
+  gemessen und auf Nutzerentscheid nicht übernommen.
+- Messung: `real_ms` (Echtzeit je Bild); `Time.unscaledDeltaTime` stand bei gesperrtem Bildschirm auf dem Ersatzwert 16,667 ms und
+  verbarg Hänger. Neu: `unity_run.py aufwaermen`, `ruckeln <name> kalt|einmal|laden`, `tools/gsc_complete.py` (Zustände je
+  Pass-Familie, in `./check`), Gegenprobe `-ballonNoWarmup`, `-ballonShaderLog`. Bericht
+  [docs/versions/0.38-prewarm.md](docs/versions/0.38-prewarm.md).
+
 ## 0.37.0 „Steadyframe“ – Ruckeln bei Schuss, Wechsel und Bewegen gemessen und behoben (Branch `claude/ballon-0.37-steadyframe`)
 
 - Ursache (Profiler im Development-Build, 60 Hz/VSync): ausgelassene Bilder (33 ms) statt großer Spitzen – `HipReticle.Mask` rasterte

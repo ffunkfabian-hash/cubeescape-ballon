@@ -487,6 +487,11 @@ elif 'Hinweis' in r.stdout:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'scene_build.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Szenen: ' + r.stdout.strip())
+# 0.38 „Prewarm“: Shader-Zustände für das Aufwärmen je Pass-Familie vollständig (sonst kommt eine Variante im anderen Pass als Hänger)
+_gsc = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Warmup', 'ballon_mac_metal.graphicsstate')
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'gsc_complete.py'), _gsc, '--check'], capture_output=True, text=True)
+if r.returncode:
+    fail('Aufwärmen: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
 # Regeln aus Motiongen REF 0.30 „Blueprint“ (0.30 „Rulebook“, Nutzer 29.10.2026: „Alle wie empfohlen“; stilhandbuch › 2, › 12):
 # A1 Seitensilhouetten paarweise IoU < 0,85 (Fehler), A2 Dreiecksbudget, A4 Freihaltezone im Hüftbild, F Figuren (Warnungen)
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_rules.py')], capture_output=True, text=True)

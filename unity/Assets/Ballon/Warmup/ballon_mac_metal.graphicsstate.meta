@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d0c1709d5537d47a38a648dddcfe62e0
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 12391, guid: 0000000000000000e000000000000000, type: 0}
+  runtimePlatform: 1
+  graphicsDeviceType: 16
+  version: 0
+  qualityLevelName: Ultra
+  shaderVariantCount: 20
+  graphicsStateCount: 35

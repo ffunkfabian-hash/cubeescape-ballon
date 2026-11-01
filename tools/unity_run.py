@@ -19,7 +19,12 @@
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
   python3 tools/unity_run.py ruckeln <name> [profil] → Ruckelmessung 0.37: je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen,
       zwei Durchgänge (erster Einsatz/Wiederholung), Spieleinstellungen (VSync); <EV>/ruckeln/<name>/frames.csv + Tabelle
-      (tools/stutter_report.py); „profil“: Profiler-Protokoll je Waffe, Ursachen der Spitzen ≥ 25 ms in spikes.json
+      (tools/stutter_report.py); „profil“: Profiler-Protokoll je Waffe, Ursachen der Spitzen ≥ 25 ms in spikes.json;
+      „kalt“ (0.38): Kopie der Build mit eigener Bundle-ID = leerer Metal-Shader-Zwischenspeicher wie beim ersten Start einer
+      neuen Build (Kopie und ihr Zwischenspeicher werden danach gelöscht); „einmal“: nur Durchgang 1; „laden“: nur Laden und
+      3 s Ruhe (Ladezeit, ≈ 15 s)
+  python3 tools/unity_run.py aufwaermen → Shader-Zustände für das Aufwärmen aufzeichnen (0.38): Ruckelmessung mit -ballonGscRecord,
+      Sammlung nach Assets/Ballon/Warmup/, in die Szene, neue Build (nach Änderungen an Shadern, Materialien, Effekten)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
   python3 tools/unity_run.py fov        → Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
 """
@@ -94,6 +99,33 @@ def tests():
                 if lines:
                     print('  ✓', c.get('name'), '–', lines[-1][:200])
     return rc
+
+
+def cold_copy(app, name):
+    """Kopie der Build mit eigener Bundle-ID: macOS legt den Metal-Shader-Zwischenspeicher je Bundle-ID an, die Kopie startet also
+    so kalt wie der erste Start einer neuen Build (0.37/0.38). APFS-Klon, neu signiert (ad hoc)."""
+    bid = f'local.ballon.kalt.{name.lower().replace("_", "-")}.{os.getpid()}'
+    dst = os.path.join(EV, 'kalt', f'{name}.app')
+    shutil.rmtree(dst, ignore_errors=True)
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    subprocess.run(['cp', '-cR', app, dst], check=True)
+    subprocess.run(['plutil', '-replace', 'CFBundleIdentifier', '-string', bid, os.path.join(dst, 'Contents', 'Info.plist')], check=True)
+    subprocess.run(['codesign', '--force', '--deep', '-s', '-', dst], check=True, capture_output=True)
+    print('kalt:', bid)
+    return dst, bid
+
+
+def cold_cleanup(app, bid):
+    """Kopie und den Zwischenspeicher ihrer Bundle-ID löschen (nur die eigene, eindeutige ID)."""
+    shutil.rmtree(app, ignore_errors=True)
+    cache = subprocess.run(['getconf', 'DARWIN_USER_CACHE_DIR'], capture_output=True, text=True).stdout.strip()
+    if not bid.startswith('local.ballon.kalt.'):
+        return
+    for c in (os.path.join(cache, bid), os.path.expanduser(f'~/Library/Caches/{bid}')):
+        shutil.rmtree(c, ignore_errors=True)
+    prefs = os.path.expanduser(f'~/Library/Preferences/{bid}.plist')   # PlayerPrefs der Kopie
+    if os.path.exists(prefs):
+        os.remove(prefs)
 
 
 def player(args, log):
@@ -357,20 +389,41 @@ if __name__ == '__main__':
         rc = player(['-ballonBench', f] + (['-ballonScene', sc] if sc else []), os.path.join(EV, 'bench.log'))
         print(open(f).read() if os.path.exists(f) else 'keine Messung')
         sys.exit(rc)
-    if a == 'ruckeln':                     # ruckeln <name> [profil]: Ruckelmessung (0.37), mit „profil“ Profiler-Protokoll + Ursachen
-        name = sys.argv[2] if len(sys.argv) > 2 else 'messung'
+    if a in ('ruckeln', 'aufwaermen'):     # ruckeln <name> [profil] [kalt] [einmal]: Ruckelmessung (0.37), mit „profil“ Profiler-Protokoll
+        rec = a == 'aufwaermen'            # + Ursachen; aufwaermen: dieselbe Messung zeichnet die Shader-Zustände auf (0.38)
+        name = 'aufwaermen' if rec else sys.argv[2] if len(sys.argv) > 2 else 'messung'
         if not name.replace('_', '').replace('-', '').isalnum():
             sys.exit(f'ruckeln: Name nur aus Buchstaben, Ziffern, _ und - ({name!r})')
-        prof = 'profil' in sys.argv[3:]
+        flags = sys.argv[2:] if rec else sys.argv[3:]
+        prof = 'profil' in flags
         d = os.path.join(EV, 'ruckeln', name)                   # nur dieser Messordner wird ersetzt
         shutil.rmtree(d, ignore_errors=True)
         os.makedirs(d)
-        exe = os.path.join(APP, 'Contents', 'MacOS', 'BALLON Firstfeel')
+        app = APP
+        if 'kalt' in flags:
+            app, bid = cold_copy(APP, name)
+        exe = os.path.join(app, 'Contents', 'MacOS', 'BALLON Firstfeel')
         log = os.path.join(d, 'player.log')
-        args = ['-ballonStutter', os.path.join(d, 'frames.csv')] + (['-ballonProfile', os.path.join(d, 'raw')] if prof else [])
-        rc = locked(['caffeinate', '-di', exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0',
-                     '-logFile', log] + args + os.environ.get('BALLON_PLAYER_EXTRA', '').split(), log)   # Bildschirm wach; Fenster wie
-        # im Testbuild (1280 × 720); BALLON_PLAYER_EXTRA: weitere Argumente der Build
+        gsc = os.path.join(d, 'ballon_mac_metal.graphicsstate')
+        args = (['-ballonStutter', os.path.join(d, 'frames.csv')] + (['-ballonProfile', os.path.join(d, 'raw')] if prof else [])
+                + (['-ballonStutterPasses', '1'] if 'einmal' in flags else ['-ballonStutterPasses', '0'] if 'laden' in flags else [])
+                + (['-ballonGscRecord', gsc] if rec else []))
+        try:
+            rc = locked(['caffeinate', '-di', exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0',
+                         '-logFile', log] + args + os.environ.get('BALLON_PLAYER_EXTRA', '').split(), log)   # Bildschirm wach; Fenster
+            # wie im Testbuild (1280 × 720); BALLON_PLAYER_EXTRA: weitere Argumente der Build
+        finally:
+            if app != APP:
+                cold_cleanup(app, bid)
+        if not rc and rec:
+            if not os.path.exists(gsc):
+                sys.exit(f'aufwaermen: keine Sammlung geschrieben ({log})')
+            dst = os.path.join(PROJ, 'Assets', 'Ballon', 'Warmup', os.path.basename(gsc))
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copyfile(gsc, dst)
+            print('Sammlung →', dst)
+            subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'gsc_complete.py'), dst], check=True)   # je Pass-Familie ergänzen
+            rc = editor('Ballon.Ego.Editor.BallonSetup.AttachWarmup', 'aufwaermen') or editor('Ballon.Ego.Editor.BallonSetup.BuildMac', 'build')
         if not rc and prof:
             rc = locked([UNITY, '-batchmode', '-quit', '-projectPath', PROJ, '-executeMethod', 'Ballon.Ego.Editor.ProfileSpikes.Run',
                          '-ballonRawDir', os.path.join(d, 'raw'), '-ballonOut', os.path.join(d, 'spikes.json'),

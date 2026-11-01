@@ -3,6 +3,7 @@
 // Einsatz nach dem Start, 2 = Wiederholung. Dazu je Waffe 3 s Bewegung (gehen, seitwärts, drehen; Nutzerbefund „auch beim Bewegen“). Je Bild Bildzeit, Hauptthread-Zeit, GC-Speicher und GC-Läufe in vorab angelegte Felder
 // (die Messung selbst erzeugt keinen Speicher), CSV am Ende. Mit -ballonProfile <Ordner> zusätzlich das Profiler-Binärprotokoll je
 // Durchgang und Waffe, jedes Bild mit Metadaten (Bildnummer, Durchgang, Waffe, Ereignis) für BallonSetup.ProfileSpikes im Editor.
+// 0.38: -ballonStutterPasses 1 nur der erste Einsatz, 0 nur Laden; im JSON Ladezeit (erstes Bild) und Shader-Aufwärmen (ShaderWarmup).
 using System;
 using System.IO;
 using System.Text;
@@ -43,20 +44,22 @@ namespace Ballon.Ego
         Seg[] _plan;
         int _seg = -1;
         float _t;
-        int _n, _lastEv, _lastPass, _lastWeapon, _gc0, _overflow;
-        float[] _dt, _main;
+        int _n, _lastEv, _lastPass, _lastWeapon, _gc0, _overflow, _passes = 2;
+        double _firstFrame, _lastReal;
+        float[] _dt, _main, _real;
         long[] _alloc;
-        int[] _frame, _collect;
+        int[] _frame, _collect, _miss;
         short[] _pass, _weapon, _ev;
         ProfilerRecorder _gcRec, _mainRec;
         readonly int[] _meta = new int[4];
 
-        public static StutterBench Begin(Bootstrap b, string csv, string profileDir)   // nicht „Start“: Unity-Nachricht
+        public static StutterBench Begin(Bootstrap b, string csv, string profileDir, int passes = 2)   // nicht „Start“: Unity-Nachricht
         {
             var s = b.gameObject.AddComponent<StutterBench>();
             s._b = b;
             s._csv = csv;
             s._profile = profileDir;
+            s._passes = Mathf.Clamp(passes, 0, 2);                               // 0: nur Laden und 3 s Ruhe (Ladezeit)
             return s;
         }
 
@@ -64,9 +67,11 @@ namespace Ballon.Ego
         {
             _dt = new float[Capacity];
             _main = new float[Capacity];
+            _real = new float[Capacity];
             _alloc = new long[Capacity];
             _frame = new int[Capacity];
             _collect = new int[Capacity];
+            _miss = new int[Capacity];
             _pass = new short[Capacity];
             _weapon = new short[Capacity];
             _ev = new short[Capacity];
@@ -95,7 +100,7 @@ namespace Ballon.Ego
             }
             int nw = _b.Solvers.Length;
             Add(0, 0, 0, 3f);                                                  // Ruhe nach dem Laden
-            for (int pass = 0; pass < 2; pass++)
+            for (int pass = 0; pass < _passes; pass++)
                 for (int w = 0; w < nw; w++)
                 {
                     var g = _b.Solvers[w].D.gameplay;
@@ -107,7 +112,7 @@ namespace Ballon.Ego
                     Add(pass, w, 5, 3.0f);                                        // Nachladen
                     Add(pass, w, 6, 3.0f, walk: true);                            // Bewegen: hin und zurück, seitwärts, drehen
                 }
-            Add(1, nw - 1, 7, 1f);
+            Add(Mathf.Max(0, _passes - 1), nw - 1, 7, 1f);
             _plan = plan.ToArray();
         }
 
@@ -115,6 +120,7 @@ namespace Ballon.Ego
         {
             if (_plan == null)
             {
+                _firstFrame = _lastReal = Time.realtimeSinceStartupAsDouble;   // Ladezeit: Programmstart bis zum ersten Bild
                 BuildPlan();
                 P.input = _pad;
                 P.hud = true;
@@ -165,6 +171,8 @@ namespace Ballon.Ego
             if (s.ev == 1) _pad.select = s.weapon + 1;
             if (s.ev == 2 || s.ev == 3) c.ammo = c.magSize;                  // jeder Schuss soll fallen (nicht das Nachladen messen)
             if (s.ev == 5) _pad.reload = true;
+            if (UnityEngine.Rendering.GraphicsSettings.logWhenShaderIsCompiled)   // -ballonShaderLog: Übersetzungen den Ereignissen zuordnen
+                Debug.Log($"[Ballon] Ereignis D{s.pass + 1} W{s.weapon + 1} {Events[s.ev]} Bild {Time.frameCount}");
             if (_profile != null && (_seg == 0 || s.pass != prev.pass || s.weapon != prev.weapon))
             {
                 Profiler.enabled = false;
@@ -178,12 +186,16 @@ namespace Ballon.Ego
         {
             if (_n >= Capacity) { _overflow++; return; }
             _dt[_n] = Time.unscaledDeltaTime * 1000f;
+            double now = Time.realtimeSinceStartupAsDouble;                     // 0.38: Echtzeit je Bild – unscaledDeltaTime fiel bei
+            _real[_n] = (float)((now - _lastReal) * 1000.0);                    // verdecktem Fenster auf den Ersatzwert 16,667 ms
+            _lastReal = now;
             _main[_n] = _mainRec.Valid ? _mainRec.LastValue * 1e-6f : -1f;
             _alloc[_n] = _gcRec.Valid ? _gcRec.LastValue : -1;
             int gc = GC.CollectionCount(0);
             _collect[_n] = gc - _gc0;
             _gc0 = gc;
             _frame[_n] = Time.frameCount - 1;
+            _miss[_n] = ShaderWarmup.CacheMisses;                              // Zustände außerhalb der Sammlung bis hier (0.38)
             _pass[_n] = (short)(_lastPass + 1);
             _weapon[_n] = (short)(_lastWeapon + 1);
             _ev[_n] = (short)_lastEv;
@@ -193,6 +205,9 @@ namespace Ballon.Ego
         void Finish()
         {
             enabled = false;
+            ShaderWarmup.SaveTrace();
+            bool warmDone = ShaderWarmup.Done;
+            string warm = ShaderWarmup.Active != null ? "on" : ShaderWarmup.Recording ? "record" : _b.shaderWarmup != null ? "off" : "none";
             if (_profile != null)
             {
                 Profiler.enabled = false;
@@ -200,20 +215,26 @@ namespace Ballon.Ego
                 Profiler.logFile = "";
             }
             var I = System.Globalization.CultureInfo.InvariantCulture;
-            var sb = new StringBuilder("frame,pass,weapon,type,event,dt_ms,main_ms,gc_alloc_b,gc_collect\n");
+            var sb = new StringBuilder("frame,pass,weapon,type,event,dt_ms,main_ms,gc_alloc_b,gc_collect,warmup_miss,real_ms\n");
             for (int i = 0; i < _n; i++)
                 sb.Append(_frame[i]).Append(',').Append(_pass[i]).Append(',').Append(_weapon[i]).Append(',')
                   .Append(_b.Solvers[_weapon[i] - 1].D.gameplay.weapon_type).Append(',').Append(Events[_ev[i]]).Append(',')
                   .Append(_dt[i].ToString("0.000", I)).Append(',').Append(_main[i].ToString("0.000", I)).Append(',')
-                  .Append(_alloc[i]).Append(',').Append(_collect[i]).Append('\n');
+                  .Append(_alloc[i]).Append(',').Append(_collect[i]).Append(',').Append(_miss[i]).Append(',')
+                  .Append(_real[i].ToString("0.000", I)).Append('\n');
             try
             {
                 File.WriteAllText(_csv, sb.ToString());
                 File.WriteAllText(Path.ChangeExtension(_csv, ".json"), string.Format(I,
                     "{{\"frames\": {0}, \"width\": {1}, \"height\": {2}, \"gpu\": \"{3}\", \"refresh_hz\": {4:0.0}, \"vsync\": {5}, \"target_fps\": {6}, " +
-                    "\"profiler\": {7}, \"development\": {8}, \"unity\": \"{9}\", \"not_recorded\": {10}}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
+                    "\"profiler\": {7}, \"development\": {8}, \"unity\": \"{9}\", \"not_recorded\": {10}, \"passes\": {11}, \"first_frame_s\": {12:0.000}, " +
+                    "\"warmup\": \"{13}\", \"warmup_started_s\": {14:0.000}, \"warmup_done_s\": {15:0.000}, \"warmup_states\": {16}, \"warmup_variants\": {17}, " +
+                    "\"warmup_misses\": {18}}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
                     Screen.currentResolution.refreshRateRatio.value, QualitySettings.vSyncCount, Application.targetFrameRate,
-                    _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion, _overflow));
+                    _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion, _overflow, _passes, _firstFrame,
+                    warm, ShaderWarmup.StartedAt, warmDone ? ShaderWarmup.DoneAt : -1, ShaderWarmup.Active?.totalGraphicsStateCount ?? 0,
+                    ShaderWarmup.Active?.variantCount ?? 0, ShaderWarmup.CacheMisses));
+                if (ShaderWarmup.CacheMisses > 0) ShaderWarmup.WriteMisses(Path.ChangeExtension(_csv, null) + "_misses.txt");
                 if (_overflow > 0) Debug.LogWarning($"[Ballon] Ruckelmessung: {_overflow} Bilder über {Capacity} nicht aufgezeichnet");
             }
             catch (Exception e)

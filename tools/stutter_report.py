@@ -21,8 +21,13 @@ def load(dirs):
     rows = []
     for d in dirs:
         with open(os.path.join(d, 'frames.csv')) as f:
+            miss = 0
             for r in csv.DictReader(f):
-                r['dt_ms'] = float(r['dt_ms'])
+                m = int(r.get('warmup_miss') or 0)       # 0.38: Zustände außerhalb der Aufwärm-Sammlung, kumuliert
+                r['miss_new'] = m - miss
+                miss = m
+                r['dt_unity'] = float(r['dt_ms'])
+                r['dt_ms'] = float(r['real_ms']) if r.get('real_ms') else r['dt_unity']   # 0.38: Echtzeit je Bild, sonst Unitys Wert
                 r['gc_alloc_b'] = int(r['gc_alloc_b'])
                 r['gc_collect'] = int(r['gc_collect'])
                 r['run'] = os.path.basename(d.rstrip('/'))
@@ -62,6 +67,34 @@ def ev_name(r):
     return e
 
 
+def runs(dirs, rows):
+    """Je Lauf: Ladezeit bis zum ersten Bild, Shader-Aufwärmen (0.38) und die großen Bilder."""
+    print('### Je Lauf\n')
+    print('| Lauf | Bildzeit aus | erstes Bild s | Ruhe max ms | Aufwärmen | fertig s (Dauer) | Zustände | Fehlzugriffe | > 25 ms | > 50 ms | max ms |')
+    print('|---|---|---:|---:|---|---:|---:|---:|---:|---:|---:|')
+    for d in dirs:
+        run = os.path.basename(d.rstrip('/'))
+        f = os.path.join(d, 'frames.json')
+        m = json.load(open(f)) if os.path.exists(f) else {}
+        dt = [r['dt_ms'] for r in rows if r['run'] == run and r['event'] != 'start']    # ab dem ersten Ereignis
+        rest = [r['dt_ms'] for r in rows if r['run'] == run and r['event'] == 'start']  # 3 s Ruhe nach dem Laden (erstes Bild inbegriffen)
+        warm = m.get('warmup', '–')
+        took = m.get('warmup_done_s', -1) - m.get('warmup_started_s', -1)
+        done = f"{m['warmup_done_s']:.2f} (+{took:.2f})" if warm == 'on' and m.get('warmup_done_s', -1) >= 0 else '–'
+        mine = [r for r in rows if r['run'] == run]
+        hz = m.get('refresh_hz', 60) or 60
+        stuck = sum(abs(r['dt_unity'] - 1000 / hz) < 0.0005 for r in mine) / max(1, len(mine))   # Unitys Ersatzwert (Fenster verdeckt)
+        src = 'Echtzeit' if mine and mine[0].get('real_ms') else 'Unity'
+        if stuck > 0.5:
+            src += f' (Unity {stuck:.0%} Ersatzwert{"" if src.startswith("Echt") else " – ungültig"})'
+        med = sorted(r['dt_ms'] for r in mine)[len(mine) // 2] if mine else 0
+        if med > 1.3 * 1000 / hz:                    # Fenster verdeckt oder Bildschirm gesperrt: macOS drosselt das Spiel (0.38: 38 ms im Mittel)
+            src += f' – gedrosselt (Median {med:.0f} ms), ungültig'
+        print(f"| {run} | {src} | {m.get('first_frame_s', float('nan')):.2f} | {max(rest, default=0):.0f} | {warm} | {done} | {m.get('warmup_states', 0)} | "
+              f"{m.get('warmup_misses', 0)} | {sum(x > SPIKE_MS for x in dt)} | {sum(x > 50 for x in dt)} | {max(dt, default=0):.0f} |")
+    print()
+
+
 def main(argv):
     per_weapon = '--weapons' in argv
     dirs = [a for a in argv if not a.startswith('--')]
@@ -74,7 +107,10 @@ def main(argv):
             FRAME_MS = 1000 / m['refresh_hz']
         print(f"Läufe: {', '.join(os.path.basename(d.rstrip('/')) for d in dirs)} · {m['width']}×{m['height']}, {m['gpu']}, "
               f"{m.get('refresh_hz', 0):.0f} Hz, VSync {m['vsync']}, Ziel {m['target_fps']}/s, Profiler {m['profiler']}, Unity {m['unity']}\n")
+    runs(dirs, rows)
     for p, title in (('1', 'Durchgang 1 – erster Einsatz'), ('2', 'Durchgang 2 – Wiederholung')):
+        if not any(r['pass'] == p for r in rows):     # „einmal“: nur Durchgang 1 (0.38)
+            continue
         print(f'### {title}\n')
         table([r for r in rows if r['pass'] == p], ev_name, 'Ereignis')
         print()
@@ -86,11 +122,11 @@ def main(argv):
             print()
     top = sorted(rows, key=lambda r: -r['dt_ms'])[:10]
     print('### Größte Bilder\n')
-    print('| ms | Durchgang | Waffe | Ereignis | GC KB | GC-Lauf | Bild | Lauf |')
-    print('|---:|---:|---|---|---:|---:|---:|---|')
+    print('| ms | Durchgang | Waffe | Ereignis | GC KB | GC-Lauf | neue Zustände | Bild | Lauf |')
+    print('|---:|---:|---|---|---:|---:|---:|---:|---|')
     for r in top:
         print(f"| {r['dt_ms']:.1f} | {r['pass']} | {int(r['weapon']):02d} {r['type']} | {r['event']} | {r['gc_alloc_b'] / 1024:.1f} | "
-              f"{r['gc_collect']} | {r['frame']} | {r['run']} |")
+              f"{r['gc_collect']} | {r['miss_new']} | {r['frame']} | {r['run']} |")
     for d in dirs:
         f = os.path.join(d, 'spikes.json')
         if not os.path.exists(f):
