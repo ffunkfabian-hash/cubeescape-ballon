@@ -2971,11 +2971,9 @@ namespace Ballon.Ego.Tests
             TestContext.WriteLine($"Bogen gespannt → Zielen: größter Schritt {sd:0.000}, erster Zoom im Bild {fd}, Verlauf " +
                                   string.Join(" ", zd.Take(12).Select(v => v.ToString("0.000"))));
             TestContext.WriteLine($"Bogen ungespannt → Zielen: größter Schritt {su:0.000}, Verlauf " + string.Join(" ", zu.Take(12).Select(v => v.ToString("0.000"))));
-            float ref_ = 1;
-            foreach (var t in new[] { "auto_rifle", "scout_rifle", "pulse_rifle", "hand_cannon", "rocket_launcher" })
+            foreach (var t in new[] { "auto_rifle", "scout_rifle", "pulse_rifle", "hand_cannon", "rocket_launcher" })   // nur Protokoll (Vergleich)
             {
                 ZoomSteps(Class(t), Idle, 0.6f, aim, out float s, out _);
-                ref_ = Mathf.Max(ref_, s);
                 TestContext.WriteLine($"{t} Hüfte → Zielen: größter Schritt {s:0.000}");
             }
             Assert.AreEqual(1f, zd[0], 1e-4f, "gespannt an der Hüfte: kein Zoom");
