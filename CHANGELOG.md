@@ -7,9 +7,9 @@
   nur im Rahmen der Formteile bzw. auf dem Ringband (gleich bis ± 1/255, 0,12 statt 17,7 ms je Raster). Bilder > 25 ms je Lauf
   (abwechselnd gemessen) 49–262 → 2–20, beim Bewegen 122 → 2, Dauerfeuer 127 → 7.
 - Kein GC-Speicher je Schuss, Wechsel, Zielen, Nachladen und Bewegen nach dem Aufwärmen (PlayMode-Test über `EgoPlayer.Step` und
-  Anzeige, alle 16 Waffen, Gegenprobe `BALLON_STEADYFRAME_OFF=1` rot): Markertexte und Protokoll (256 Einträge), Munition, Statuszeile
-  und Trefferzusatz aus Tabellen, Tupel-Schlüssel mit eigenem Vergleicher (Mono boxte), `useGUILayout = false`; je Bild 4,9 → 2,2 KB
-  (Rest: IMGUI-Textnetze).
+  Anzeige, alle 16 Waffen, Gegenprobe `BALLON_STEADYFRAME_OFF=1` rot): Markertexte und Protokoll, Munition, Statuszeile und
+  Trefferzusatz aus Tabellen (`EgoPlayer.log` jetzt „aktion marker“ ohne Bildnummer, höchstens 256 Einträge), Tupel-Schlüssel mit
+  eigenem Vergleicher (Mono boxte), `useGUILayout = false`; je Bild 4,9 → 2,2 KB (Rest: IMGUI-Textnetze).
 - Offen: bei kaltem Metal-Zwischenspeicher (erster Start einer neuen Build) übersetzt der Renderthread beim ersten MP-Wechsel/-Schuss
   Shader (bis 366 ms, einmalig); Aufwärmversuche ohne Erfolg, Folgeaufgabe. Messung `unity_run.py ruckeln`, Bericht
   [docs/versions/0.37-steadyframe.md](docs/versions/0.37-steadyframe.md).

@@ -17,7 +17,7 @@
       Spannen/Zielen (zoom.csv: Weltzoom je Bild, feedback.csv: Hüftzeichen sichtbar/Grund)
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
-  python3 tools/unity_run.py ruckeln <name> [profil] → Ruckelmessung 0.37: je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen,
+  python3 tools/unity_run.py ruckeln <name> [profil] → Ruckelmessung 0.37: je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen,
       zwei Durchgänge (erster Einsatz/Wiederholung), Spieleinstellungen (VSync); <EV>/ruckeln/<name>/frames.csv + Tabelle
       (tools/stutter_report.py); „profil“: Profiler-Protokoll je Waffe, Ursachen der Spitzen ≥ 25 ms in spikes.json
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
@@ -359,8 +359,10 @@ if __name__ == '__main__':
         sys.exit(rc)
     if a == 'ruckeln':                     # ruckeln <name> [profil]: Ruckelmessung (0.37), mit „profil“ Profiler-Protokoll + Ursachen
         name = sys.argv[2] if len(sys.argv) > 2 else 'messung'
+        if not name.replace('_', '').replace('-', '').isalnum():
+            sys.exit(f'ruckeln: Name nur aus Buchstaben, Ziffern, _ und - ({name!r})')
         prof = 'profil' in sys.argv[3:]
-        d = os.path.join(EV, 'ruckeln', name)
+        d = os.path.join(EV, 'ruckeln', name)                   # nur dieser Messordner wird ersetzt
         shutil.rmtree(d, ignore_errors=True)
         os.makedirs(d)
         exe = os.path.join(APP, 'Contents', 'MacOS', 'BALLON Firstfeel')

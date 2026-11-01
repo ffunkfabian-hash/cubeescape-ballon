@@ -1,6 +1,6 @@
 """Tabelle der Ruckelmessung (0.37 „Steadyframe“) aus `unity_run.py ruckeln`: je Durchgang (1 = erster Einsatz, 2 = Wiederholung)
 und Ereignis Bildzeit p50/p95/p99/max, GC-Speicher je Bild, GC-Läufe, Bilder > 25 ms und Anteil der Bilder neben dem
-60-Hz-Takt (±2 ms: ungleichmäßige Bewegung); dazu die zehn größten Spitzen mit Waffe.
+Anzeigetakt (±2 ms: ungleichmäßige Bewegung); dazu die zehn größten Spitzen mit Waffe.
 Mit spikes.json (Lauf mit „profil“) je Spitze die teuersten Proben und Speicherquellen.
 
   python3 tools/stutter_report.py <Ordner> [<Ordner> …]      # mehrere Ordner: Läufe zusammengefasst (abwechselnde Messung)
@@ -12,7 +12,7 @@ import os
 import sys
 
 SPIKE_MS = 25.0
-FRAME_MS = 1000 / 60      # Bildtakt des Messrechners (60 Hz, VSync)
+FRAME_MS = 1000 / 60      # Bildtakt des Messrechners (VSync); main() setzt ihn aus frames.json › refresh_hz, 60 Hz ist der Rückfallwert
 EVENTS = ['start', 'wechsel', 'huefte', 'dauerfeuer', 'zielen', 'nachladen', 'bewegen']
 PROJECTILE = {'grenade_launcher', 'rocket_launcher', 'combat_bow'}
 
@@ -69,6 +69,9 @@ def main(argv):
     meta = [json.load(open(os.path.join(d, 'frames.json'))) for d in dirs if os.path.exists(os.path.join(d, 'frames.json'))]
     if meta:
         m = meta[0]
+        global FRAME_MS
+        if m.get('refresh_hz', 0) > 0:
+            FRAME_MS = 1000 / m['refresh_hz']
         print(f"Läufe: {', '.join(os.path.basename(d.rstrip('/')) for d in dirs)} · {m['width']}×{m['height']}, {m['gpu']}, "
               f"{m['refresh_hz']:.0f} Hz, VSync {m['vsync']}, Ziel {m['target_fps']}/s, Profiler {m['profiler']}, Unity {m['unity']}\n")
     for p, title in (('1', 'Durchgang 1 – erster Einsatz'), ('2', 'Durchgang 2 – Wiederholung')):
