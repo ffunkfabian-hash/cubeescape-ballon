@@ -102196,7 +102196,7 @@
     "files": [
      {
       "path": "basic/pilot/w14_rocket_launcher_v21.py",
-      "sha256": "17f8fa682d8db44fc2ff181eb7c2fd61a0fef25657b72082de007ddd1c98ebbf"
+      "sha256": "28f7dcb745035710339000f214eb282d1aee0315c82a9e58f9d7d9f649f4daf7"
      },
      {
       "path": "basic/weapons/w14_rocket_launcher.py",

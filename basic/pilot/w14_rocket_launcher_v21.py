@@ -82,7 +82,7 @@ P += [
         cuts=[cut_box(*WIN[:2], *WIN[2:], 30, x=R_F - 6), cut_box(SLOT[0], SLOT[1], BORE + 6, BORE + R_F + 4, 2 * SLOT[2])]),
     # 0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35: „im Zielen sieht man rechts durch den Zoom das Innere des Werfers“): im Zielen sind
     # Heckrohr und Kegel aus (Entscheidung 194), das offene Ende des Startrohrs lag 54 mm vor dem Auge – die Bohrung Ø 56 war zu sehen.
-    # Der Rohrboden schließt sie bündig mit der Stirn; hinter Heckrohr und Kegel liegt er sonst verdeckt
+    # Der Rohrboden schließt sie 0,5 mm hinter der Stirn (keine Deckungsgleichheit mit der Stirnfläche); hinter Heckrohr und Kegel liegt er sonst verdeckt
     cyl('bore_plug', 'Rohrboden', 'Bore plug', 'barrel', 'graphite', 'Schließt die Bohrung des Startrohrs hinten (Trennscheibe zum Heckrohr)',
         'in das Startrohr eingepresst', 'f', (BORE, 0), CONE[1] + 0.5, CONE[1] + 4.5, R_IN, segs=48, bevel=R_FINE, smooth=True),
     cyl('window_rim', 'Fensterrahmen', 'Window rim', 'barrel', 'dark_metal', 'Dunkler Rahmen in der Fensterlaibung',

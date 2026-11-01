@@ -2981,14 +2981,14 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(1f, zd[0], 1e-4f, "gespannt an der Hüfte: kein Zoom");
             Assert.AreEqual(BW.gameplay.world_zoom, zd[zd.Count - 1], 1e-3f, "Klassenzoom erreicht");
             Assert.GreaterOrEqual(fd, 1, "Zoom beginnt mit dem Modell, nicht vor dem ersten Bild");
-            Assert.Less(zd[1], 1.25f, "kein Sprung im ersten Bild (bis 0.35: 1,40)");
             Assert.AreEqual(BW.gameplay.world_zoom, zu[zu.Count - 1], 1e-3f, "ungespannt: Klassenzoom erreicht");
-            Assert.LessOrEqual(sd, 1.2f, "gespannt → Zielen: höchstens 1,2× je Bild (bis 0.35: 1,40 im ersten Bild)");
+            Assert.LessOrEqual(sd, 1.2f, "gespannt → Zielen: höchstens 1,2× je Bild, auch im ersten (bis 0.35: 1,40 im ersten Bild)");
             Assert.LessOrEqual(su, 1.2f, "ungespannt → Zielen: höchstens 1,2× je Bild (bis 0.35: 1,34)");
             int nd = zd.FindIndex(v => v >= BW.gameplay.world_zoom - 1e-3f), nu = zu.FindIndex(v => v >= BW.gameplay.world_zoom - 1e-3f);
             TestContext.WriteLine($"Bogen: Klassenzoom nach {nd} (gespannt) bzw. {nu} Bildern (Destiny Imperial Needle ≈ 7,5 Bilder bei 30/s)");
-            Assert.That(nd, Is.InRange(7, 11), "gespannt: Zoom über ≈ 0,25–0,35 s");
-            Assert.That(nu, Is.InRange(7, 11), "ungespannt: Zoom über ≈ 0,25–0,35 s");
+            int n0 = Mathf.CeilToInt(BW.gameplay.zoom_in_min_s * 30 - 1e-3f);   // Mindestdauer in Bildern, + bis 3 Bilder Anlauf mit dem Modell
+            Assert.That(nd, Is.InRange(n0, n0 + 3), "gespannt: Zoom über die Mindestdauer");
+            Assert.That(nu, Is.InRange(n0, n0 + 3), "ungespannt: Zoom über die Mindestdauer");
         }
 
         // ---------------------------------------------------------------- 0.33 „Armory“ P4: Bogen, Granatwerfer, Raketenwerfer
