@@ -17,6 +17,7 @@ namespace Ballon.Ego
         public EgoZoom[] zoom_table;                    // Weltzoom je Waffentyp (Katalog basic/reticles.py)
         public EgoHip hip;                              // Hüft-Fadenkreuz (4.1 A / 4.2 A)
         public float zoom_start;                        // 9 (0.20): Anteil des Augenwegs, ab dem der Weltzoom beginnt (1d); 0 = 0,05
+        public float zoom_in_min_s;                     // 0.36: kürzeste Dauer des Weltzooms ins Zielen (Bogen 0,25 s); 0 = folgt nur dem Modell
         public string fire_mode;                        // 9 (0.20): Feuerart aus der Spec (META fire): full_auto, semi_auto; leer (/7, /8) = full_auto
                                                         // 10 (0.22): burst (Salve), single (Werkzeug: ein Schuss je Klick)
         public int burst_shots, burst_rpm;              // 10: Salvenlänge (Spec burst_N) und Takt in der Salve; 0 = keine Salve
@@ -118,7 +119,7 @@ namespace Ballon.Ego
     /// ring r/ri mit grow, dot r.</summary>
     [Serializable] public class EgoPrim { public string t; public float[] a, b, d; public float r, ri, grow; }
 
-    [Serializable] public class EgoSpread { public string id; public float @base, per_shot, max, recover_s, move; }
+    [Serializable] public class EgoSpread { public string id; public float @base, per_shot, max, recover_s, move, charge_from; }   // charge_from 0.36 (Bogen: offen ungespannt)
 
     [Serializable] public class EgoHipForm { public string kind; public float share_h, extent_mm; public EgoPrim[] prims; }
 
@@ -130,6 +131,7 @@ namespace Ballon.Ego
         public EgoPrim[] prims;
         public EgoSpread spread;
         public EgoHipForm sprint;                       // kind leer: im Sprint aus
+        public string[] shown_in;                       // 0.36: Aktionen, die blockieren, in denen das Hüftzeichen aber an bleibt (Bogen spannen)
     }
 
     [Serializable]
@@ -262,6 +264,7 @@ namespace Ballon.Ego
         public float recover_delay_s, recover_hz;
         public int burst_shots, burst_rpm;              // bis /9 (immer 0); seit /10 je Klasse in gameplay
         public float spread_hip_deg, spread_ads_deg;
+        public float support_still;                     // 0.36: Stützhand folgt dem Modellkick in der Hüfte nicht (fehlt = 0, folgt)
     }
 
     /// <summary>Waffenwechsel (ego.SWITCH, 6.1 A): Pause ohne Waffe zwischen Wegstecken und Ziehen.</summary>

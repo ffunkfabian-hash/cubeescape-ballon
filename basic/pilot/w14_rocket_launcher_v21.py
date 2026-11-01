@@ -80,6 +80,11 @@ P += [
     cyl('tube', 'Startrohr', 'Launch tube', 'barrel', 'shell', 'Dickes Rohr; führt die Rakete; Sichtfenster links',
         'am Heckrohr verschraubt, Fuge 1 mm', 'f', (BORE, 0), CONE[1], FRONT1, R_F, r_in=R_IN, segs=48, bevel=R_SMALL, smooth=True,
         cuts=[cut_box(*WIN[:2], *WIN[2:], 30, x=R_F - 6), cut_box(SLOT[0], SLOT[1], BORE + 6, BORE + R_F + 4, 2 * SLOT[2])]),
+    # 0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35: „im Zielen sieht man rechts durch den Zoom das Innere des Werfers“): im Zielen sind
+    # Heckrohr und Kegel aus (Entscheidung 194), das offene Ende des Startrohrs lag 54 mm vor dem Auge – die Bohrung Ø 56 war zu sehen.
+    # Der Rohrboden schließt sie 0,5 mm hinter der Stirn (keine Deckungsgleichheit mit der Stirnfläche); hinter Heckrohr und Kegel liegt er sonst verdeckt
+    cyl('bore_plug', 'Rohrboden', 'Bore plug', 'barrel', 'graphite', 'Schließt die Bohrung des Startrohrs hinten (Trennscheibe zum Heckrohr)',
+        'in das Startrohr eingepresst', 'f', (BORE, 0), CONE[1] + 0.5, CONE[1] + 4.5, R_IN, segs=48, bevel=R_FINE, smooth=True),
     cyl('window_rim', 'Fensterrahmen', 'Window rim', 'barrel', 'dark_metal', 'Dunkler Rahmen in der Fensterlaibung',
         'in das Startrohr eingesetzt', 'f', (BORE, 0), WIN[0] - 4, WIN[1] + 4, R_IN + 4, r_in=R_IN, segs=48, bevel=R_FINE, smooth=True,
         cuts=[cut_box(WIN[0] + 3, WIN[1] - 3, WIN[2] + 3, WIN[3] - 3, 30, x=R_F - 6),

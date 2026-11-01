@@ -26,7 +26,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 
-FORMAT = 'ballon-ego/10'   # 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/10'   # 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 # Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 … (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
 # 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“, Impuls BASIC-02 und Portalkanone BASIC-T01 seit 0.22 „Volley“, Handfeuerwaffe BASIC-04
 # und Seitenwaffe BASIC-05 seit 0.33 „Armory“ P1, Scharfschütze BASIC-09, Spurgewehr BASIC-12 und MG BASIC-15 seit P2: Tasten 8, 9, 0;
@@ -84,7 +84,8 @@ def prim(q):
 
 # Felder von gameplay, die nicht jede Klasse nennt (0.22): ohne Salve, mit Mündungsfeuer, ohne Portale
 GAMEPLAY_DEFAULTS = dict(burst_shots=0, burst_rpm=0, muzzle_flash=True, ring_turn_s=0.0, portals=[], range_m=0.0, charge_s=0.0, charge_fade_s=0.0,
-                         flash_scale=1.0)   # 0.33 P4: Maßstab des Mündungsfeuers je Klasse (Werfer: Öffnung ≤ 20 %)
+                         flash_scale=1.0,   # 0.33 P4: Maßstab des Mündungsfeuers je Klasse (Werfer: Öffnung ≤ 20 %)
+                         zoom_in_min_s=0.0)  # 0.36: kürzeste Dauer des Weltzooms ins Zielen je Klasse (0 = folgt nur dem Modell)
 
 
 def gameplay(weapon_type, G=None):
@@ -103,7 +104,8 @@ def gameplay(weapon_type, G=None):
                color=RT.COLORS[RT.HIP['color']][1], weight=RT.WEIGHTS[RT.HIP['weight']][1], line_r_mm=RT.LINE_R,
                opacity=RT.SETTINGS['opacity']['default'], min_line_px=RT.HIP['min_line_px'],
                prims=[prim(q) for q in RT.RETICLES[H['kind']]['prims']],
-               spread=dict(id=H['spread'], **{k: S[k] for k in ('base', 'per_shot', 'max', 'recover_s', 'move')}), sprint=sprint,
+               spread=dict(id=H['spread'], **{k: S[k] for k in ('base', 'per_shot', 'max', 'recover_s', 'move')},
+                           charge_from=S.get('charge_from', 0.0)), sprint=sprint, shown_in=list(RT.HIP['shown_in']),
                src='basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)')
     sighted = RT.SIGHT_KIND[weapon_type] is not None
     return dict(GAMEPLAY, weapon_type=weapon_type, sight=RT.sight_type(weapon_type) if sighted else 'none',

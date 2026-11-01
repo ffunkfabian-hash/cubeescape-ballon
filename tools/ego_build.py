@@ -676,6 +676,7 @@ def evaluate(sc, A, f, report, state):
     for pid, keys in A.get('mech', {}).items():
         mech[pid] = BB.value_at(keys, f)
     shots = [s for s in A.get('fire', []) if s <= f]
+    still, rec_pos, rec_deg = 0.0, Vector(), 0.0     # 0.36: Stützhand (support_still) nur mit Rückstoß
     if A.get('fire'):                        # EG.RECOIL: Impuls je Schuss in gedämpfte Federn (Waffe zurück/hoch, Kamera getrennt)
         k, Rc, dt = A.get('kick', 1.0), sc.P['recoil'], 1.0 / EG.FPS   # 0.35: Rückstoßsatz der Klasse (ego.profile)
         # Zielen (5.1 A): kleiner Modellkick, kein Hochziehen, der Kamera-Ruck geht nur in die Welt (hier ohne Welt: Kamera steht)
@@ -691,8 +692,10 @@ def evaluate(sc, A, f, report, state):
         rc['f'] = f
         climb = Rc['climb_deg'] * k * kl * len(shots) * math.exp(-max(0, f - A['fire'][-1]) / 8)
         cam_pitch = rc['cx'].x
-        off_pos += R @ Vector((0, rc['x'].x, 0))
-        off_rot = off_rot @ Matrix.Rotation(math.radians(-(rc['x'].y + climb)), 3, 'X')   # Mündung steigt
+        rec_pos, rec_deg = R @ Vector((0, rc['x'].x, 0)), -(rc['x'].y + climb)
+        off_pos += rec_pos
+        off_rot = off_rot @ Matrix.Rotation(math.radians(rec_deg), 3, 'X')   # Mündung steigt
+        still = 0.0 if EG.ends_in_ads(A) else Rc.get('support_still', 0.0)   # 0.36: Stützhand folgt dem Kick nicht (Hüfte)
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
         G = sc.P['gameplay']
         charge_f = G['charge_s'] * EG.FPS if sc.P['fire_mode'] in EG.CHARGE_MODES else 0.0   # Ladewaffe (0.33): Abzug ab dem Aufladen
@@ -720,6 +723,12 @@ def evaluate(sc, A, f, report, state):
     Rkeys = A.get('R', [(0, 'grip')])
     HL = blend_hand(Lkeys, f, pw)
     HR = blend_hand(Rkeys, f, pw)
+    if still > 0:                            # 0.36: linke Hand an der Waffe ohne Rückstoß (Unity EgoController.SupportStill)
+        WM = Matrix.Translation(pos2) @ R2.to_4x4()
+        WN = Matrix.Translation(pos2 - rec_pos) @ (R2 @ Matrix.Rotation(math.radians(-rec_deg), 3, 'X')).to_4x4()
+        HS = WN @ WM.inverted() @ HL
+        HL = Matrix.Translation(HL.translation.lerp(HS.translation, still)) @ \
+            HL.to_quaternion().slerp(HS.to_quaternion(), still).to_matrix().to_4x4()
     if A.get('drop') and A['drop'][0] <= f < A['carry'][0][0]:
         t = (f - A['drop'][0]) / FPS_F
         mag0 = sc.WM @ Matrix(sc.objs[sc.P['mag']]['rest'])

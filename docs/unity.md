@@ -31,6 +31,7 @@ python3 tools/unity_run.py projektil    # MP4 (0.34): Granatwerfer, Raketenwerfe
 python3 tools/unity_run.py strahlen      # MP4 (0.34): Spurgewehr, Fusion, lineare Fusion, Bogen
 python3 tools/unity_run.py streuschuss  # MP4 (0.34): Schrot, Automatik, Handfeuerwaffe (Einschläge)
 python3 tools/unity_run.py fuellstand   # MP4 (0.34): MG, Granatwerfer, Handfeuerwaffe (Hülsen, Füllstand)
+python3 tools/unity_run.py holdfast     # MP4 (0.36): Hüfte Impuls/Scout, Handfeuerwaffe Schuss, Werfer Zielen, Bogen Spannen/Zoom
 BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1" python3 tools/unity_run.py feel   # Messlauf: 60/s, Waffe und Arme auf Magenta, ohne Fadenkreuz (…_mess)
 BALLON_TEST_FILTER="Name1|Name2" python3 tools/unity_run.py test   # nur diese Tests (Gegenproben, 0.32)
 open unity/Build/BallonFirstfeel.app --args -ballonFov 100   # Welt-Bildwinkel 100° waagrecht (50–120); Waffe und Arme bleiben bei 75° (A9, 0.32)
@@ -212,6 +213,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Spurgewehr_Dauerstrahl_vom_Lauf_zum_Einschlag`, `Fusion_Salve_aus_Bolzen`, `Lineare_Fusion_ein_scharfer_Strahl`, `Bogen_Pfeil_loest_fliegt_und_steckt` (PlayMode, 0.34) | Strahl von der Mündung (± 1 % des Bilds) bis zur Wand, Mündungslicht; ein Bolzen je Strahl, Einschlag bei Ankunft; Strahl `beam_s`; Pfeil fliegt, steckt `stick_s` |
 | `Schrot_Streuschuss_mit_mehreren_Einschlaegen`, `Einschlag_Funken_Staub_Loch_und_Ausblenden` (PlayMode, 0.34) | 12 Einschläge und Löcher im Kegel; je Kugelklasse Funken, Staub, Loch (Stil bullet/heavy), Ausblenden nach `life_s`, Pool-Obergrenze |
 | `Handfeuerwaffe_Trommel_dreht_je_Schuss_Huelsen_beim_Nachladen`, `MG_Glieder_Gurtvorschub_und_Fuellstand`, `Granatwerfer_Trommel_zeigt_geladene_und_leere_Kammern` (PlayMode, 0.34) | Trommel eine Kammer je Schuss, Hülsen beim Nachladen je verschossene Kammer; Glied je Hülse, Gurtvorschub, Gurt leert sich von unten, Zählzellen, Modell; Kammern leer nach dem Schuss, rücken mit der Trommel, füllen sich beim Nachladen |
+| `Handfeuerwaffe_Stuetzhand_schwingt_beim_Huefschuss_nicht`, `Bogen_Hueftzeichen_bleibt_beim_Spannen`, `Bogen_Weltzoom_stetig_gespannt_ins_Zielen` (PlayMode, 0.36) | Stützhand beim Hüftschuss ≤ 1,5 pp H (Waffe kippt weiter), im Zielen folgt sie; Bogen-Hüftzeichen beim Spannen an, schließt mit dem Auszug, im Zielen aus; Weltzoom gespannt/ungespannt ≤ 1,2× je Bild, über `zoom_in_min_s` |
 | `Klassen_vollstaendig_in_ego_json` (0.33) | alle 16 Waffen in Tastenreihenfolge mit Klasse und Feuerart, Herkunft, Spielwerte, Griffe, Live-Teile, Atlanten |
 | `Repetierer_repetiert_nach_jedem_Schuss`, `Dauerstrahl_leuchtet_solange_der_Abzug_zieht`, `MG_Gurtkasten_nachladen` (0.33 P2) | Kammerstängel nach dem Schuss, Strahl-Leuchtteile, Gurtkasten-Nachladen |
 | `Pumpe_pumpt_und_laedt_je_Patrone`, `Fusion_laedt_auf_und_schiesst_die_Salve`, `Lineare_Fusion_laedt_auf_und_schiesst_einmal` (0.33 P3) | Pumpe, Einzelladen mit Abbruch durch Feuer, Aufladen |

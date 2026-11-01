@@ -255,7 +255,10 @@ RECOIL = dict(
     # CLASSES[...]['gameplay'] (burst_shots aus der Spec, burst_rpm), Bahnstufe je Schuss path_up_h je Klasse (Vorgabe hier)
     recover_delay_s=0.12, recover_hz=2.0,
     # Streuung um den Zielpunkt (Zufall, getrennt von der Bahn); bis 0.14 als MoveTuning in Unity
-    spread_hip_deg=1.1, spread_ads_deg=0.12)
+    spread_hip_deg=1.1, spread_ads_deg=0.12,
+    # Stützhand (0.36): Anteil des Modellkicks (Rückstoß und Hochziehen), dem die linke Hand in der Hüfte NICHT folgt – 0 = sie hängt
+    # ganz an der Waffe; 1 = sie bleibt an der Waffe ohne Rückstoß (die Waffe kippt in der Schusshand). Im Zielen immer 0 (stützt)
+    support_still=0.0)
 # Zielfernrohr im Zielen (0.20, Visier-Standard 3: eine Kamera, Modell ungezoomt; Entscheidungsliste 1d): Teile mit `ads_hide` (Rohr,
 # Okular, Türme, Spannband) sind aus, solange der Augenpunkt Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf, ohne Wippen und
 # Rückstoß) näher als eye_m an der Kamera liegt. Vorher wächst das Okular sichtbar heran wie bei Destiny (Scharfschütze: Okular füllt
@@ -704,6 +707,10 @@ def _bow_draw(*keys):
     return {p: list(k) for p in ('arrow_shaft', 'string_top', 'string_bottom', 'cam_top', 'cam_bottom')} | {'draw_light': light}
 
 
+# hip_level (0.36, Richter Runde 4): Klassen, deren Hüfte waagerecht wie die Automatik zeigt – ./check misst den Fluchtpunkt der
+# Laufachse (tools/bildlage.py, Motiongen Methode 30) und erlaubt höchstens 3 pp (Messgenauigkeit ± 3 pp) unter dem der Automatik.
+# Ohne Kennzeichnung (eigene Lage mit E): lineare Fusion 45/52 (höher als Man O' War), Scharfschütze 44,7/54 (Far Future),
+# Handfeuerwaffe/Seitenwaffe (Kurzwaffen), Bogen, Raketenwerfer (50/56 „leicht nach unten“, Nutzerwunsch).
 CLASSES = {
     'auto_rifle': dict(
         poses={}, frames={},
@@ -731,13 +738,18 @@ CLASSES = {
                           '750–900/min [S]), Clip fire_hip wie die Automatik alle 2,5 Bilder; Magazin 30 E (Destiny-MP 26–30 [S])'),
         src='Entscheidungsliste Schritt 6, erste übertragene Klasse (Nutzer 26.10.2026): Hüfte 2b/2.1 A, Sprint 3b/3.2 A, Anflug 4d'),
     'scout_rifle': dict(
+        hip_level='Nutzerbefund Testbuild 0.35 „Scout schaut nach unten im Vergleich zur Automatik“ (0.36)',
         # Sprint wie die Automatik (lange Waffe, Gewehr); eigene Hüfte nach cubeescape-reference huefte.json (0.33, Abgleich aller Waffen)
         poses=dict(
-            hip=dict(pos=(-0.136, -0.42, -0.181), aim=(-0.188, -3.414, -0.362), roll=9.9,
-                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone '
-                         'Patrol, Call to Serve); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 '
-                         '„Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, '
-                         'Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,5/63,2 %, Visier 68,4/56,0 %'),
+            hip=dict(pos=(-0.177, -0.428, -0.218), aim=(0.052, -3.419, -0.218), roll=9.9,
+                     src='Nutzerbefund Testbuild 0.35 (31.10.2026): „Scout-Hüfte schaut nach unten im Vergleich zur Automatik“ – gemessen '
+                         '(tools/bildlage.py, Fluchtpunkt der Laufachse wie Motiongen Methode 30) 51,1/57,0, Automatik 44,7/48,7. 0.36 E '
+                         '(tools/bildlage.py --fit): Fluchtpunkt 45/50 wie Automatik, Impuls und Spurgewehr (mit 48/50 endete die Kontur '
+                         'bei 97,7 % B, Destiny-Scout reicht bis an den rechten Rand), Mündung 56,0/62,5 %, Okular 76,4/68,2 %, Absehen 69,1/64,0 % '
+                         '(Mündung 1,5 pp links von 57,5: dort stand der linke Ellbogen beim Senken 7 cm vor dem Schulteranker, die Oberarmlage '
+                         'wich in Unity 0,6 mm von Blender ab; mit 9,7 cm ruhig) '
+                         '(Destiny Call to Serve/Tone Patrol Mündung 58/61, 57/65, Visieröffnung 72/52, Motiongen huefte.md; der Nutzer nimmt '
+                         'die BALLON-Automatik als Bezug). Bis 0.35: huefte.json-Ausgleich (Mündung 57,5/63,2, Visier 68,4/56,0 %)'),
         ),
         keep=dict(
             sprint='E nach 3.2 A „Gewehre tief und quer wie heute“: Trageform der Automatik; Destiny-Scout-Sprint nicht gemessen (Motiongen '
@@ -760,14 +772,17 @@ CLASSES = {
         src='Entscheidungsliste Schritt 6, zweite übertragene Klasse (0.20 „Spotter“): Hüfte 2.1 A (lange Waffe), Sprint 3.2 A, Anflug 4d, '
             'Zielfernrohr nach Visier-Standard 3'),
     'pulse_rifle': dict(
+        hip_level='Nutzerbefund Testbuild 0.35 „Impuls schaut nach unten im Vergleich zur Automatik“ (0.36)',
         # Hüfte E an der Automatik ausgerichtet: deren Haltung trifft am Impuls x 59,7 / y 65,6 % (über dem Band 54–59), die kürzere
         # Kammer liegt weiter rechts; Hüfte seit 0.33 nach cubeescape-reference huefte.json (Visier 73–74/55 %)
         poses=dict(
-            hip=dict(pos=(-0.183, -0.42, -0.18), aim=(0.066, -3.399, -0.43), roll=11.2,
-                     src='M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung '
-                         'gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung '
-                         'eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) '
-                         'Mündung 58,4/65,5 %, Visier 73,4/55,2 %'),
+            hip=dict(pos=(-0.179, -0.426, -0.207), aim=(0.05, -3.417, -0.207), roll=11.2,
+                     src='Nutzerbefund Testbuild 0.35 (31.10.2026): „Impuls-Hüfte schaut nach unten im Vergleich zur Automatik“ – gemessen '
+                         '(tools/bildlage.py, Fluchtpunkt der Laufachse wie Motiongen Methode 30) 44,6/59,7, Automatik 44,7/48,7. 0.36 E '
+                         '(tools/bildlage.py --fit): Fluchtpunkt 45/50 wie Automatik und Spurgewehr, Mündung 58,4/63,5 %, Visier 73,4/62,9 % '
+                         '(Destiny Swift Ride/Eystein-D Mündung 59/67, 58/64, Visier 73–74/55, Motiongen huefte.md; Destiny-Automatik zeigt '
+                         '≈ 9 pp unter die Mitte, Backblast › C – der Nutzer nimmt die BALLON-Automatik als Bezug). Bis 0.35: '
+                         'huefte.json-Ausgleich (Mündung 58,4/65,5, Visier 73,4/55,2 %)'),
             sprint=dict(pos=(-0.12, -0.34, -0.22), aim=(0.8, -1.8, -0.95), roll=-30,
                         src='M Motiongen REF 0.37 Verdict › C/G (z-v37-sprint, Die Abgenutzte Spitze): fast aus dem Bild gesenkt, Hülle '
                             'x 46–100 / y 66–100, Visier 56–65 / 67–80, Fadenkreuz „^“; Lage E. Bis 0.34 die Trageform der Automatik'),
@@ -835,7 +850,7 @@ CLASSES = {
                     'Trommel (45 mm vor dem Griff an der Trommelseite), damit sie die Trommel nicht verdeckt'),
         ),
         same_reload=True,
-        recoil=dict(freq_hz=1.56, zeta=0.4, back_mps=0.5, pitch_dps=800.0, ads_pitch=0.2,
+        recoil=dict(freq_hz=1.56, zeta=0.4, back_mps=0.5, pitch_dps=800.0, ads_pitch=0.2, support_still=1.0,
                     cam_freq_hz=0.94, cam_zeta=1.0, cam_dps=48.0, ads_cam=3.0,
                     src='M Motiongen REF 0.35 Backblast › E (z-bb-hc-rueckstoss, Annual Skate/Kindled Orchid, 60/s): Hüftschuss Spitze '
                         '+5…+10 Bilder (Median +7) mit ≈ +55° Kippen, Modell kommt zur Kamera, Unterschwingen bis +25…+32 (25–54 % der '
@@ -845,7 +860,11 @@ CLASSES = {
                         'nach +28…+32 → ads_pitch 0,2 (≈ 10°, E). Kamera (Verdict › B/E2, z-v37-hc-kick): ≈ 22 pp H in 0,17 s, nach '
                         '0,40 s noch 14 pp → kritisch gedämpft 0,94 Hz (Spitze nach 1/ω = 0,17 s, bei 0,40 s 61 %); Hüfte 5–9 pp H [O] '
                         '→ 48 °/s ≈ 3°, im Zielen × 3,0 bei Weltzoom 1,15 ≈ 22 pp H („großen senkrechten Kick testen“, keine '
-                        'Stabilitätsregel). Bis 0.34: gemeinsame Federn (5 Hz, ζ 0,5) mit Kick 2,5 ≈ 5° ohne sichtbares Unterschwingen'),
+                        'Stabilitätsregel). Bis 0.34: gemeinsame Federn (5 Hz, ζ 0,5) mit Kick 2,5 ≈ 5° ohne sichtbares Unterschwingen. '
+                        'support_still 1 (0.36): Nutzerbefund Testbuild 0.35 „linker Arm schwingt sehr stark mit“ – die Stützhand hing am '
+                        'Griffende, beim Kippen und Unterschwingen pendelte sie 94,5–107 % H und der Unterarm kam bei jedem Schuss von unten '
+                        'ins Bild; Destiny zeigt die linke Hand an der Hüfte nicht (nur beim Nachladen und im Zielen, Motiongen destiny2 › 3 '
+                        'Handfeuerwaffe) → sie folgt dem Kick nicht, die Waffe kippt in der Schusshand'),
         gameplay=dict(rpm=140, magazine=10, path_up_h=0.017, kick=1.0,
                       src='S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); '
                           'gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, '
@@ -955,6 +974,7 @@ CLASSES = {
         src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte, Anflug und Nachladen nach Motiongen (Scharfschütze Far Future), Sprint der Automatik, '
             'Repetieren nach jedem Schuss E'),
     'trace_rifle': dict(
+        hip_level='Nutzerbefund Testbuild 0.33 „Spurgewehr-Hüfte zu tief“, 0.35 auf 45/50 wie die Automatik',
         # Spurgewehr (0.33, P2): Dauerstrahl – Dauerfeuer in der Kadenz der Klasse ohne Mündungsfeuer, Hülse und Rückstoß; Fokuslinse und
         # Scheibenmitte leuchten, solange der Abzug zieht (EGO_LIVE glow). Nachladen der Bezugsklasse mit der Energiezelle (mech_map)
         poses=dict(
@@ -982,6 +1002,7 @@ CLASSES = {
         src='Ego-Übertrag 0.33 „Armory“ P2: Hüfte und Anflug nach Motiongen (Spurgewehr), Sprint der Automatik, Nachladen der Bezugsklasse '
             'mit der Energiezelle (leer wie taktisch, kein Ladehebel)'),
     'machine_gun': dict(
+        hip_level='Nutzerbefund Testbuild 0.33 „MG-Hüfte zu tief“, 0.35 Laufachse waagerecht (Fluchtpunkt 40/50, Seite sichtbar)',
         # Maschinengewehr (0.33, P2): Gurtwaffe wie Dauerfeuer (FIRE_ALIAS); Nachladen als Klassenaktion mit Deckel, Kasten und Gurt
         poses=dict(
             hip=dict(pos=(-0.182, -0.431, -0.185), aim=(0.273, -3.396, -0.185), roll=4.8,
@@ -1122,6 +1143,7 @@ CLASSES = {
         src='Ego-Übertrag 0.33 „Armory“ P3: Hüfte und Sprint der Automatik, Anflug und Ziehen nach Motiongen (Schrotflinte), Pumpen nach '
             'jedem Schuss und Einzelladen E nach den Destiny-Zeiten'),
     'fusion_rifle': dict(
+        hip_level='Nutzer 0.35: Automatik und Fusion sind die „richtige“ Hüfte (Bezug)',
         # Fusionsgewehr (0.33, P3): Aufladen → Salve. Abzug halten lädt in charge_s (Glutkern und Ladebalken leuchten mit der Ladung,
         # EGO_LIVE glow), bei voller Ladung schießt die Salve von selbst; Loslassen vorher bricht ab (Ladung fällt in charge_fade_s).
         # Gehalten Salve um Salve im Takt rpm. Nachladen der Bezugsklasse mit der Energiezelle (mech_map, leer wie taktisch)
@@ -1301,11 +1323,15 @@ CLASSES = {
                 L=[(0, 'support'), (4, 'support')], fL=[(0, 'pinch')],
                 mech=_bow_draw((0, 1), (3, 0)), events=[(4, 'Ready')], src='E wie let_down, aus dem Zielen'),
         ),
-        gameplay=dict(rpm=60, magazine=0, path_up_h=0.0, kick=1.5, muzzle_flash=False,
+        gameplay=dict(rpm=60, magazine=0, path_up_h=0.0, kick=1.5, muzzle_flash=False, zoom_in_min_s=0.25,
                       src='Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen '
                           'destiny2:270); Takt E 60/min (begrenzt nicht: Lösen, Auflegen und Spannen dauern 1,3 s, Destiny Lösen → Lösen 1,45 s); '
                           'keine Bahnstufe (die Welt steigt nicht, der Bogen ruckt), Kick 1,5 E (Wurfarme-Ruck, destiny2:498); kein '
-                          'Mündungsfeuer, keine Hülse'),
+                          'Mündungsfeuer, keine Hülse. zoom_in_min_s 0,25 (0.36): Nutzerbefund Testbuild 0.35 „Wechsel Visier → Zielen, die '
+                          'Welt springt“ – gemessen (Unity, 30/s) gespannt → Zielen 1,40× im ersten Bild, ungespannt bis 1,34× je Bild '
+                          '(Raketenwerfer 1,21, Automatik 1,15); Destiny Imperial Needle dreht in ≈ 15 Bildern bei 60/s = 0,25 s ins Zielen, '
+                          'Endmaßstab 2,2× (Motiongen zielbewegung › 5, Methode 29: Weltzoom als Bildmaßstab) → der Weltzoom wächst über '
+                          'mindestens 0,25 s (≤ 1,16× je Bild); E: er endet bis 2 Bilder nach dem Modell (Destiny-Holo endet mit ihm)'),
         src='Ego-Übertrag 0.33 „Armory“ P4: Hüfte, Spannhaltung, Sprint und Zeiten nach Motiongen (Bogen Imperial Needle), Ablauf E'),
     'grenade_launcher': dict(
         # Granatwerfer (0.33 „Armory“, P4): Trommel mit sechs Kammern (Spec v2.1 semi_auto, Nutzerwahl „Trommel statt Kipplauf“). Nach jedem

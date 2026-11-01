@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "ba69b0b602b4e3c21bdcdaf0121233b8f09b8062fb3d9cabad91c4a5cf979196"
+    "sha256": "79fa32510330f2a3c8c131ee43f23068d551d5ded9b8958d632270fe0a84a9cf"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "5bb99072200e645d2c589201e13ffe7e8dcccbf0d2b55a6979abe2cd79100f06"
+    "sha256": "8a3d84988f2333f812f0277e27fad9472a36d8a642ebcb66fd9da2a851682b17"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "1ffbbdccd59542285fecc2a2fd78b09354abc6b5b20fc6630618b6e5adfa8438"
+    "sha256": "151f3b7250e524e1db87b711a072dcfe56c0a6683b17810a028ade5e248afddf"
    },
    {
     "path": "tools/bake_unity.py",
@@ -119,7 +119,8 @@
    "recover_delay_s": 0.12,
    "recover_hz": 2.0,
    "spread_hip_deg": 1.1,
-   "spread_ads_deg": 0.12
+   "spread_ads_deg": 0.12,
+   "support_still": 0.0
   },
   "switch": {
    "empty_s": 0.03,
@@ -1606,6 +1607,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 720,
     "magazine": 30,
     "src": "M 720/min (Chroma Rush, Motiongen waffenwerte › 4; Frage 7.1 A), Clip fire_hip seit 0.15 ebenso (alle 2,5 Bilder); Magazin 30 E (Entwurf, Vorschlag Übergabe 0.4)",
@@ -1715,7 +1717,8 @@
       "per_shot": 0.9,
       "max": 5.0,
       "recover_s": 0.28,
-      "move": 1.5
+      "move": 1.5,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "caret",
@@ -1754,6 +1757,11 @@
        }
       ]
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -8883,6 +8891,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 720,
     "magazine": 30,
     "src": "M 720/min (Destiny-MP PvP, Dauerfeuer im Zielen ≈ 5 Bilder Abstand bei 60/s, Motiongen REF destiny2; Menüs 750–900/min [S]), Clip fire_hip wie die Automatik alle 2,5 Bilder; Magazin 30 E (Destiny-MP 26–30 [S])",
@@ -9052,7 +9061,8 @@
       "per_shot": 0.9,
       "max": 5.0,
       "recover_s": 0.28,
-      "move": 1.5
+      "move": 1.5,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -9060,6 +9070,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -15286,6 +15301,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 180,
     "magazine": 15,
     "zoom_start": 0.2,
@@ -15450,7 +15466,8 @@
       "per_shot": 2.2,
       "max": 3.5,
       "recover_s": 0.18,
-      "move": 1.0
+      "move": 1.0,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -15458,6 +15475,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -17509,16 +17531,16 @@
      "name": "hip",
      "ads": false,
      "roll": 9.9,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 57/65, 58/61, hintere Kimme 65/60, Visieröffnung 72/52 (Tone Patrol, Call to Serve); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 57,5/63,2 %, Visier 68,4/56,0 %",
+     "src": "Nutzerbefund Testbuild 0.35 (31.10.2026): „Scout-Hüfte schaut nach unten im Vergleich zur Automatik“ – gemessen (tools/bildlage.py, Fluchtpunkt der Laufachse wie Motiongen Methode 30) 51,1/57,0, Automatik 44,7/48,7. 0.36 E (tools/bildlage.py --fit): Fluchtpunkt 45/50 wie Automatik, Impuls und Spurgewehr (mit 48/50 endete die Kontur bei 97,7 % B, Destiny-Scout reicht bis an den rechten Rand), Mündung 56,0/62,5 %, Okular 76,4/68,2 %, Absehen 69,1/64,0 % (Mündung 1,5 pp links von 57,5: dort stand der linke Ellbogen beim Senken 7 cm vor dem Schulteranker, die Oberarmlage wich in Unity 0,6 mm von Blender ab; mit 9,7 cm ruhig) (Destiny Call to Serve/Tone Patrol Mündung 58/61, 57/65, Visieröffnung 72/52, Motiongen huefte.md; der Nutzer nimmt die BALLON-Automatik als Bezug). Bis 0.35: huefte.json-Ausgleich (Mündung 57,5/63,2, Visier 68,4/56,0 %)",
      "pos": [
-      -0.136,
-      -0.42,
-      -0.181
+      -0.177,
+      -0.428,
+      -0.218
      ],
      "aim": [
-      -0.188,
-      -3.414,
-      -0.362
+      0.052,
+      -3.419,
+      -0.218
      ],
      "eye": [
       0.0,
@@ -17589,14 +17611,14 @@
      "roll": 13.9,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.116,
-      -0.38,
-      -0.201
+      -0.157,
+      -0.388,
+      -0.238
      ],
      "aim": [
-      0.192,
-      -2.414,
-      -1.362
+      0.432,
+      -2.419,
+      -1.218
      ],
      "eye": [
       0.0,
@@ -17615,14 +17637,14 @@
      "roll": 12.9,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.126,
-      -0.41,
-      -0.196
+      -0.167,
+      -0.418,
+      -0.233
      ],
      "aim": [
-      -0.188,
-      -3.414,
-      -0.412
+      0.052,
+      -3.419,
+      -0.268
      ],
      "eye": [
       0.0,
@@ -17641,14 +17663,14 @@
      "roll": 7.9,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.136,
-      -0.42,
-      -0.166
+      -0.177,
+      -0.428,
+      -0.203
      ],
      "aim": [
-      -0.188,
-      -3.414,
-      -0.292
+      0.052,
+      -3.419,
+      -0.148
      ],
      "eye": [
       0.0,
@@ -22042,6 +22064,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 540,
     "magazine": 36,
     "path_up_h": 0.0133,
@@ -22151,7 +22174,8 @@
       "per_shot": 1.2,
       "max": 4.5,
       "recover_s": 0.22,
-      "move": 1.4
+      "move": 1.4,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -22159,6 +22183,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -24120,16 +24149,16 @@
      "name": "hip",
      "ads": false,
      "roll": 11.2,
-     "src": "M cubeescape-reference huefte.json (Destiny 2, Mündung 59/67, 58/64, Visier 73/55, 74/55); Lage E: Ausgleichsrechnung gegen diese Werte (0.33, Abgleich aller Waffen; Nutzer 31.10.2026 „Ja, nachziehen“ – bis dahin nur die Mündung eingestellt, das Visier lag 10–19 pp zu tief), gerechnet (Socket_Muzzle, Socket_Sight bzw. Socket_Reticle, Socket_Hand) Mündung 58,4/65,5 %, Visier 73,4/55,2 %",
+     "src": "Nutzerbefund Testbuild 0.35 (31.10.2026): „Impuls-Hüfte schaut nach unten im Vergleich zur Automatik“ – gemessen (tools/bildlage.py, Fluchtpunkt der Laufachse wie Motiongen Methode 30) 44,6/59,7, Automatik 44,7/48,7. 0.36 E (tools/bildlage.py --fit): Fluchtpunkt 45/50 wie Automatik und Spurgewehr, Mündung 58,4/63,5 %, Visier 73,4/62,9 % (Destiny Swift Ride/Eystein-D Mündung 59/67, 58/64, Visier 73–74/55, Motiongen huefte.md; Destiny-Automatik zeigt ≈ 9 pp unter die Mitte, Backblast › C – der Nutzer nimmt die BALLON-Automatik als Bezug). Bis 0.35: huefte.json-Ausgleich (Mündung 58,4/65,5, Visier 73,4/55,2 %)",
      "pos": [
-      -0.183,
-      -0.42,
-      -0.18
+      -0.179,
+      -0.426,
+      -0.207
      ],
      "aim": [
-      0.066,
-      -3.399,
-      -0.43
+      0.05,
+      -3.417,
+      -0.207
      ],
      "eye": [
       0.0,
@@ -24200,14 +24229,14 @@
      "roll": 15.2,
      "src": "wie E, an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.163,
-      -0.38,
-      -0.2
+      -0.159,
+      -0.386,
+      -0.227
      ],
      "aim": [
-      0.446,
-      -2.399,
-      -1.43
+      0.43,
+      -2.417,
+      -1.207
      ],
      "eye": [
       0.0,
@@ -24226,14 +24255,14 @@
      "roll": 14.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.173,
-      -0.41,
-      -0.195
+      -0.169,
+      -0.416,
+      -0.222
      ],
      "aim": [
-      0.066,
-      -3.399,
-      -0.48
+      0.05,
+      -3.417,
+      -0.257
      ],
      "eye": [
       0.0,
@@ -24252,14 +24281,14 @@
      "roll": 9.2,
      "src": "wie E (wie hip versetzt, 0.15 mit hip gesenkt), an der Klassen-Hüfte (FOLLOW_HIP)",
      "pos": [
-      -0.183,
-      -0.42,
-      -0.165
+      -0.179,
+      -0.426,
+      -0.192
      ],
      "aim": [
-      0.066,
-      -3.399,
-      -0.36
+      0.05,
+      -3.417,
+      -0.137
      ],
      "eye": [
       0.0,
@@ -28661,6 +28690,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 240,
     "magazine": 0,
     "path_up_h": 0.0,
@@ -28770,7 +28800,8 @@
       "per_shot": 0.0,
       "max": 0.0,
       "recover_s": 0.2,
-      "move": 0.0
+      "move": 0.0,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -28778,6 +28809,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -32041,6 +32077,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 140,
     "magazine": 10,
     "path_up_h": 0.017,
@@ -32086,7 +32123,8 @@
      "recover_delay_s": 0.12,
      "recover_hz": 2.0,
      "spread_hip_deg": 1.1,
-     "spread_ads_deg": 0.12
+     "spread_ads_deg": 0.12,
+     "support_still": 1.0
     },
     "weapon_type": "hand_cannon",
     "sight": "reflex",
@@ -32273,7 +32311,8 @@
       "per_shot": 2.2,
       "max": 3.5,
       "recover_s": 0.18,
-      "move": 1.0
+      "move": 1.0,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -32281,6 +32320,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -37383,6 +37427,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 360,
     "magazine": 15,
     "kick": 1.2,
@@ -37546,7 +37591,8 @@
       "per_shot": 0.9,
       "max": 5.0,
       "recover_s": 0.28,
-      "move": 1.5
+      "move": 1.5,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -37554,6 +37600,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -42748,6 +42799,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 90,
     "magazine": 4,
     "path_up_h": 0.12,
@@ -42877,7 +42929,8 @@
       "per_shot": 2.2,
       "max": 3.5,
       "recover_s": 0.18,
-      "move": 1.0
+      "move": 1.0,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -42885,6 +42938,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -49641,6 +49699,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 1000,
     "magazine": 94,
     "path_up_h": 0.0,
@@ -49810,7 +49869,8 @@
       "per_shot": 0.9,
       "max": 5.0,
       "recover_s": 0.28,
-      "move": 1.5
+      "move": 1.5,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -49818,6 +49878,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -55710,6 +55775,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 900,
     "magazine": 75,
     "kick": 1.3,
@@ -55819,7 +55885,8 @@
       "per_shot": 0.9,
       "max": 5.0,
       "recover_s": 0.28,
-      "move": 1.5
+      "move": 1.5,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -55827,6 +55894,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -63738,6 +63810,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 80,
     "magazine": 6,
     "path_up_h": 0.03,
@@ -63961,7 +64034,8 @@
       "per_shot": 2.5,
       "max": 6.0,
       "recover_s": 0.35,
-      "move": 1.0
+      "move": 1.0,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -63969,6 +64043,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -70390,6 +70469,7 @@
     "charge_s": 0.5,
     "charge_fade_s": 0.3,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 60,
     "magazine": 7,
     "path_up_h": 0.004,
@@ -70615,7 +70695,8 @@
       "per_shot": 1.5,
       "max": 4.0,
       "recover_s": 0.25,
-      "move": 1.2
+      "move": 1.2,
+      "charge_from": 4.0
      },
      "sprint": {
       "kind": "",
@@ -70623,6 +70704,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -76349,6 +76435,7 @@
     "charge_s": 0.563,
     "charge_fade_s": 0.2,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.0,
     "rpm": 60,
     "magazine": 5,
     "path_up_h": 0.065,
@@ -76574,7 +76661,8 @@
       "per_shot": 1.5,
       "max": 4.0,
       "recover_s": 0.25,
-      "move": 1.2
+      "move": 1.2,
+      "charge_from": 4.0
      },
      "sprint": {
       "kind": "",
@@ -76582,6 +76670,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -82581,11 +82674,12 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 1.0,
+    "zoom_in_min_s": 0.25,
     "rpm": 60,
     "magazine": 0,
     "path_up_h": 0.0,
     "kick": 1.5,
-    "src": "Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen destiny2:270); Takt E 60/min (begrenzt nicht: Lösen, Auflegen und Spannen dauern 1,3 s, Destiny Lösen → Lösen 1,45 s); keine Bahnstufe (die Welt steigt nicht, der Bogen ruckt), Kick 1,5 E (Wurfarme-Ruck, destiny2:498); kein Mündungsfeuer, keine Hülse",
+    "src": "Feuerart aus der Spec (draw_release: Spannen, Halten, Lösen); kein Magazin (Vorrat, magazine 0 = unbegrenzt, Motiongen destiny2:270); Takt E 60/min (begrenzt nicht: Lösen, Auflegen und Spannen dauern 1,3 s, Destiny Lösen → Lösen 1,45 s); keine Bahnstufe (die Welt steigt nicht, der Bogen ruckt), Kick 1,5 E (Wurfarme-Ruck, destiny2:498); kein Mündungsfeuer, keine Hülse. zoom_in_min_s 0,25 (0.36): Nutzerbefund Testbuild 0.35 „Wechsel Visier → Zielen, die Welt springt“ – gemessen (Unity, 30/s) gespannt → Zielen 1,40× im ersten Bild, ungespannt bis 1,34× je Bild (Raketenwerfer 1,21, Automatik 1,15); Destiny Imperial Needle dreht in ≈ 15 Bildern bei 60/s = 0,25 s ins Zielen, Endmaßstab 2,2× (Motiongen zielbewegung › 5, Methode 29: Weltzoom als Bildmaßstab) → der Weltzoom wächst über mindestens 0,25 s (≤ 1,16× je Bild); E: er endet bis 2 Bilder nach dem Modell (Destiny-Holo endet mit ihm)",
     "recover_delay_s": 0.12,
     "recover_hz": 2.0,
     "ads_hide_arms": false,
@@ -82815,7 +82909,8 @@
       "per_shot": 1.5,
       "max": 4.0,
       "recover_s": 0.25,
-      "move": 1.2
+      "move": 1.2,
+      "charge_from": 4.0
      },
      "sprint": {
       "kind": "",
@@ -82823,6 +82918,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -89035,6 +89135,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 0.9,
+    "zoom_in_min_s": 0.0,
     "rpm": 90,
     "magazine": 6,
     "path_up_h": 0.04,
@@ -89254,7 +89355,8 @@
       "per_shot": 1.8,
       "max": 4.0,
       "recover_s": 0.5,
-      "move": 0.8
+      "move": 0.8,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -89262,6 +89364,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -96484,6 +96591,7 @@
     "charge_s": 0.0,
     "charge_fade_s": 0.0,
     "flash_scale": 0.7,
+    "zoom_in_min_s": 0.0,
     "rpm": 20,
     "magazine": 1,
     "path_up_h": 0.0,
@@ -96566,23 +96674,95 @@
      }
     ],
     "hip": {
-     "kind": "none",
-     "share_h": 0.0,
-     "extent_mm": 0.0,
-     "status": "gemessen (Glidepath, kein Mittenzeichen, 1 Clip)",
+     "kind": "circle_cross",
+     "share_h": 0.05,
+     "extent_mm": 15.19,
+     "status": "E (0.36): Nutzerbefund Testbuild 0.35 „an der Hüfte kein Fadenkreuz, man zielt blind“; Form des Absehens im Werferglas, Größe zwischen Automatik (3,2 % H) und Granatwerfer (5,6 % H); Destiny zeigt keins (Glidepath, 1 Clip, Motiongen z-gp-rl-fadenkreuz) – bis 0.35 „none“",
      "color": "#EEF2F5",
      "weight": 0.65,
      "line_r_mm": 0.3,
      "opacity": 0.9,
      "min_line_px": 0.6,
-     "prims": [],
+     "prims": [
+      {
+       "t": "ring",
+       "r": 4.6,
+       "ri": 4.0,
+       "grow": 1.0
+      },
+      {
+       "t": "line",
+       "a": [
+        5.4,
+        0.0
+       ],
+       "b": [
+        7.4,
+        0.0
+       ],
+       "d": [
+        1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        -5.4,
+        0.0
+       ],
+       "b": [
+        -7.4,
+        0.0
+       ],
+       "d": [
+        -1.0,
+        0.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        5.4
+       ],
+       "b": [
+        0.0,
+        7.4
+       ],
+       "d": [
+        0.0,
+        1.0
+       ]
+      },
+      {
+       "t": "line",
+       "a": [
+        0.0,
+        -5.4
+       ],
+       "b": [
+        0.0,
+        -7.4
+       ],
+       "d": [
+        0.0,
+        -1.0
+       ]
+      },
+      {
+       "t": "dot",
+       "r": 0.6
+      }
+     ],
      "spread": {
       "id": "explosive",
       "base": 0.5,
       "per_shot": 1.8,
       "max": 4.0,
       "recover_s": 0.5,
-      "move": 0.8
+      "move": 0.8,
+      "charge_from": 0.0
      },
      "sprint": {
       "kind": "",
@@ -96590,6 +96770,11 @@
       "extent_mm": 0.0,
       "prims": []
      },
+     "shown_in": [
+      "fire_draw",
+      "fire_release",
+      "let_down"
+     ],
      "src": "basic/reticles.py › HIP, DEFAULTS, SPREAD (Entscheidungsliste 4.1 A, 4.2 A; Glidepath)"
     },
     "sight_form": {
@@ -96769,6 +96954,33 @@
       "id": "tube",
       "asm": "barrel",
       "role": "shell",
+      "parent": "",
+      "rest": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "move": {
+       "kind": "none",
+       "vec": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "axis": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "a0": 0.0,
+       "a1": 0.0
+      },
+      "ads_hide": false
+     },
+     {
+      "id": "bore_plug",
+      "asm": "barrel",
+      "role": "graphite",
       "parent": "",
       "rest": [
        0.0,
@@ -101984,20 +102196,21 @@
     "files": [
      {
       "path": "basic/pilot/w14_rocket_launcher_v21.py",
-      "sha256": "1bf73e6d8c4ce0a29252dadefb1050b2dfacc69d116767c7ca5b62ee676bd4d1"
+      "sha256": "28f7dcb745035710339000f214eb282d1aee0315c82a9e58f9d7d9f649f4daf7"
      },
      {
       "path": "basic/weapons/w14_rocket_launcher.py",
       "sha256": "ee0a9600fd049fb2ef69717741fa2e2e9d38715279ab0df61747a7461902b971"
      }
     ],
-    "parts_sha256": "8f712e4f3de2d43bb967a47b322b0b306f98a88773cc16a0c180f93af1a10916"
+    "parts_sha256": "3f24c212ba98136c07504d939d7537d9bb6df662b90933d541bbee9adbbc26ac"
    },
    "textures": {
     "weapon": {
      "size": 4096,
      "objects": [
       "band_ring",
+      "bore_plug",
       "breech_cap",
       "cap_release",
       "cap_rim",
@@ -102127,6 +102340,20 @@
        0.157902
       ],
       "tris": 1832
+     },
+     {
+      "name": "bore_plug",
+      "min": [
+       -0.02794,
+       -0.0105,
+       0.08406
+      ],
+      "max": [
+       0.02794,
+       -0.0065,
+       0.13994
+      ],
+      "tris": 572
      },
      {
       "name": "window_rim",

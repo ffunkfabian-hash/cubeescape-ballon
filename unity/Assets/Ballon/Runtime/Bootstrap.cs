@@ -476,6 +476,38 @@ namespace Ballon.Ego
             .Add(4.6f, 5.5f, hold: "aim fire")
             .Add(7.0f, 7.4f);
 
+        /// <summary>Beleg 0.36 (Holdfast, Testbuild-Befunde 0.35): Hüfte Automatik → Impuls → Scout (Laufneigung), Handfeuerwaffe drei
+        /// Hüftschüsse und Laufen (linker Arm), Raketenwerfer Hüfte → Zielen (Fadenkreuz, Rohr), Bogen Spannen an der Hüfte, gespannt ins
+        /// Zielen, ungespannt ins Zielen und dort spannen (Fadenkreuz, Weltzoom); 24 s. Bilder je Abschnitt: tools/unity_run.py holdfast.</summary>
+        public static ScriptedInput HoldfastScript() => new ScriptedInput()
+            .Add(0.0f, 1.0f)
+            .Add(1.0f, 1.05f, press: "weapon4")
+            .Add(1.05f, 2.8f)
+            .Add(2.8f, 2.85f, press: "weapon3")
+            .Add(2.85f, 4.6f)
+            .Add(4.6f, 4.65f, press: "weapon6")
+            .Add(4.65f, 5.8f)
+            .Add(5.8f, 5.85f, hold: "fire")
+            .Add(6.6f, 6.65f, hold: "fire")
+            .Add(7.4f, 7.45f, hold: "fire")
+            .Add(7.45f, 8.6f)
+            .Add(8.6f, 9.6f, move: new Vector2(0, 1))
+            .Add(9.6f, 10.0f)
+            .Add(10.0f, 10.05f, press: "weapon16")
+            .Add(10.05f, 12.2f)
+            .Add(12.2f, 14.2f, hold: "aim")
+            .Add(14.2f, 15.0f)
+            .Add(15.0f, 15.05f, press: "weapon14")
+            .Add(15.05f, 16.0f)
+            .Add(16.0f, 17.4f, hold: "fire")
+            .Add(17.4f, 18.6f, hold: "fire aim")
+            .Add(18.6f, 18.8f, hold: "aim")
+            .Add(18.8f, 19.8f)
+            .Add(19.8f, 21.0f, hold: "aim")
+            .Add(21.0f, 22.6f, hold: "aim fire")
+            .Add(22.6f, 23.0f, hold: "aim")
+            .Add(23.0f, 24.0f);
+
         /// <summary>Beleg 0.34 (Projektil und Explosion): Granatwerfer zwei Schuss auf die 10-m-Mitte (Granate im Bogen, Explosion, Rauch
         /// aus dem Lauf), Wechsel zum Raketenwerfer, ein Schuss (gerade Rakete mit Rauchspur, große Explosion); 8,4 s.</summary>
         public static ScriptedInput ProjectileScript() => new ScriptedInput()
@@ -571,7 +603,7 @@ namespace Ballon.Ego
                      : dn == "sprint" ? SprintScript() : dn == "wechsel" ? SwitchScript() : dn == "rueckstoss" ? RecoilScript() : dn == "feuer" ? FireScript()
                     : dn == "quickdraw" ? QuickdrawScript() : dn == "spotter" ? SpotterScript() : dn == "volley" ? VolleyScript()
                     : dn == "projektil" ? ProjectileScript() : dn == "strahlen" ? BeamScript() : dn == "streuschuss" ? SpreadScript()
-                    : dn == "fuellstand" ? FillScript() : DemoScript();
+                    : dn == "fuellstand" ? FillScript() : dn == "holdfast" ? HoldfastScript() : DemoScript();
             bool payload = dn == "projektil" || dn == "strahlen" || dn == "streuschuss" || dn == "fuellstand";   // 0.34
             if (payload)                                                    // erste Waffe des Belegs nach Klasse
             {
@@ -594,7 +626,7 @@ namespace Ballon.Ego
                 var L = LoadedSceneAt(si);
                 Player.Teleport(L.spawnPos, L.spawnYaw, 1.5f);
             }
-            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw" || dn == "volley" || payload) Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
+            else if (dn == "sway" || dn == "treffer" || dn == "huefte" || dn == "rueckstoss" || dn == "wechsel" || dn == "feuer" || dn == "quickdraw" || dn == "volley" || dn == "holdfast" || payload) Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);   // vor die 10-m-Mitte
             else Player.Teleport(new Vector3(0.6f, 0.01f, 1.6f), -4f, 1.5f);
             if (payload && dn != "fuellstand")                // 0.34: Wand vor dem Schützen, damit Einschläge und Löcher im Bild lesbar sind
             {

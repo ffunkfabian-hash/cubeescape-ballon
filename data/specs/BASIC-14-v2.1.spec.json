@@ -53,6 +53,7 @@
    "en": "Barrel / emitter",
    "parts": [
     "tube",
+    "bore_plug",
     "window_rim",
     "muzzle",
     "muzzle_crown",
@@ -260,6 +261,47 @@
    ],
    "triangles": 1832,
    "volume_cm3": 1624.68,
+   "moving": null,
+   "removable": false
+  },
+  {
+   "id": "bore_plug",
+   "name_de": "Rohrboden",
+   "name_en": "Bore plug",
+   "assembly": "barrel",
+   "function_de": "Schließt die Bohrung des Startrohrs hinten (Trennscheibe zum Heckrohr)",
+   "attachment_de": "in das Startrohr eingepresst",
+   "material_role": "graphite",
+   "material_de": "Griffpolymer / Graphit",
+   "interface": null,
+   "parent_part": null,
+   "shape": "cyl",
+   "bevel_mm": 0.8,
+   "blender_object": "bore_plug",
+   "origin_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bounds_m": {
+    "min": [
+     -0.02794,
+     -0.0105,
+     0.08406
+    ],
+    "max": [
+     0.02794,
+     -0.0065,
+     0.13994
+    ]
+   },
+   "size_mm": [
+    55.9,
+    4.0,
+    55.9
+   ],
+   "triangles": 572,
+   "volume_cm3": 9.76,
    "moving": null,
    "removable": false
   },
@@ -2264,8 +2306,8 @@
   "Socket_CenterOfMass": {
    "position_m": [
     0.00283,
-    -0.09946,
-    0.10127
+    -0.0992,
+    0.10131
    ],
    "part": null,
    "note": "abgeleitet: Volumenschwerpunkt, homogene Dichte, ohne Glas",
@@ -2292,8 +2334,8 @@
   "note": "gemessen am gebauten Modell mit Bevel, Visier montiert, Ruhelage"
  },
  "counts": {
-  "parts": 48,
-  "triangles": 32076,
+  "parts": 49,
+  "triangles": 32648,
   "assemblies": 8
  },
  "actions": {
