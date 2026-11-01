@@ -85,7 +85,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 
 | Teil | Datei | Aufgabe |
 |---|---|---|
-| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX je Waffe (Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/8`), `ego_reference_<Waffe>.json`; gebacken wird nur, was sich geändert hat (Waffe mit gleicher Form behält Atlanten, Netzgrenzen und FBX) |
+| Export | [`tools/export_unity.py`](../tools/export_unity.py) | FBX je Waffe (Wurzel → `ASM_*` → Teile, Anker als Leerknoten; Arme: `R_`/`L_`-Segmente → Teile), `ego.json` (`ballon-ego/10`), `ego_reference_<Waffe>.json`; gebacken wird nur, was sich geändert hat (Waffe mit gleicher Form behält Atlanten, Netzgrenzen und FBX) |
 | Daten | `Runtime/EgoData.cs` | JsonUtility-Klassen, Prüfung des Formats |
 | Rechnen | `Runtime/BMath.cs`, `Runtime/EgoSolver.cs`, `Runtime/EgoScreen.cs` (Bildlage, Silhouette; Tests und Messung) | Blender-Kameraraum; `pose_matrix`, Hermite-Kurven, Feder-Nachlauf, Griffe, Zwei-Knochen-Arm mit Drehgelenk, Finger, Magazin, Rückstoßfeder |
 | Zustand | `Runtime/EgoController.cs` | Spuren mit Markern, Haltungen (Hüfte, Zielen, Sprint, Ducken, Luft, gesenkt), Übergänge, Überblendung, Live-Ebenen |
@@ -94,7 +94,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/9`. Der Abnehmer ist `unity/` ab 0.20; `EgoFile.ParseAll` liest `/8` und `/7` weiter. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/10` (`EgoFile.Format`). `EgoFile.ParseAll` liest `/9`, `/8` und `/7` weiter. Die Stufen:
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
@@ -109,6 +109,7 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 - 7 (0.16): `motion.flash` (Mündungsfeuer, 5.3 A: Dauer `dur_s` = 1/30 s, Netz relativ zu `Socket_Muzzle`, Kern- und Flammendreiecke,
   Drehfolge `roll_deg`), `motion.eject` (Hülsenbahn, 5.4 A: Geschwindigkeit, Schwerkraft, Drehung, `life_s`, `max_live`, `delay_frames`),
   `weapon.eject` (je Waffe aus dem Modul-Feld `EJECT`: `enabled`, Startlage, Richtung, Hülsennetz) und die Rollen `flash_core`/`flash_flame`.
+- 10 (0.22): `gameplay.burst_shots`/`burst_rpm` (Salve je Klasse) und `path_up_h` (Bahnstufe je Schuss), `gameplay.muzzle_flash`, `portals`/`ring_turn_s`, `weapon.live.ring` (Werkzeug), `gameplay.sight` `none` ohne Visier; später ohne neues Format ergänzt (fehlt = Verhalten wie zuvor): `weapon.live.glow`, `gameplay.charge_s`/`charge_fade_s` (0.33), `gameplay.zoom_in_min_s`, `hip.shown_in`, `hip.spread.charge_from`, `recoil.support_still` (0.36). Quelle: `FORMAT` in `tools/export_unity.py`.
 - 9 (0.20): `gameplay.fire_mode` (Feuerart aus der Spec: `full_auto`, `semi_auto`), `weapon.parts[].ads_hide` und `motion.ads_hide`
   (`eye_m`: Teile mit `ads_hide` sind aus, solange `Socket_Eye` der Grundhaltung näher an der Kamera liegt), `weapons[].textures.store`
   und `limit_mb` (Ablage der Atlanten je Kanal, siehe „Texturen“); die Referenz trägt je Stichprobe `ads_hidden`. `EgoFile.ParseAll`
@@ -219,7 +220,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Pumpe_pumpt_und_laedt_je_Patrone`, `Fusion_laedt_auf_und_schiesst_die_Salve`, `Lineare_Fusion_laedt_auf_und_schiesst_einmal` (0.33 P3) | Pumpe, Einzelladen mit Abbruch durch Feuer, Aufladen |
 | `Bogen_spannt_haelt_und_loest`, `Granatwerfer_Trommel_dreht_und_laedt_je_Kammer`, `Raketenwerfer_laedt_nach_jedem_Schuss` (0.33 P4) | Spannen/Halten/Lösen, gespannt zielen, R entspannt, Zoom 2,2×; Trommel und Nachladen je Kammer, Hülse je Kammer; Sofort-Nachladen |
 | `Waffenmenue_waehlt_und_wechselt`, `Abbruch_beim_Spannen_und_Einzelladen` (0.33 Ziel 2) | Menü (Rad, Pfeile, Esc, Enter → Wechsel, Nachladen bricht ab); Wechsel beim Spannen ohne Schuss, Menü entspannt, Wechsel im Einzelladen |
-| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/8` mit zwei Waffen (`/1` bis `/6` und `/9` abgelehnt, `/7` gelesen), je Waffe 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
+| `Format_und_Umfang`, `Falsches_Format_wird_abgelehnt` | JSON-Import: Format `ballon-ego/10` (`/1` bis `/6` und `/11` abgelehnt, `/7` bis `/9` gelesen), je Waffe 10 Haltungen, 4 Griffe, 19 Aktionen, 72 Teile (Visier v2 aus 0.6), vier Finger, sortierte Schlüssel |
 | `Achsumrechnung_Blender_nach_Unity` | Determinante −1, vorn/oben/rechts, Mündung vorn oben, Drehsinn bleibt erhalten |
 | `FBX_Import_passt_zur_Achsumrechnung` | Netzgrenzen jedes der 206 Netzobjekte = umgerechnete Blender-Grenzen (≤ 0,5 mm), Maßstab 1 |
 | `FBX_Ruhelagen_und_Anker_wie_in_den_Daten` | Lage aller Teile und Anker im importierten Modell |
