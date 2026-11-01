@@ -1234,12 +1234,14 @@ namespace Ballon.Ego.Tests
             p.deltaOverride = () => 1f / 30f;
             yield return null;
             p.UpdateHudText();
-            var hit = p.HudHitText;
+            string hit = p.HudHitMain, suf = p.HudHitSuffix;          // 0.37: Treffer und Zusatz (Skin, Szene, Licht) getrennt gespeichert
             for (int k = 0; k < 10; k++) { yield return null; p.UpdateHudText(); }
-            Assert.AreSame(hit, p.HudHitText, "gleiche Werte: Treffertext nicht neu gebaut, obwohl die Aktionsbilder weiterlaufen");
+            Assert.AreSame(hit, p.HudHitMain, "gleiche Werte: Treffertext nicht neu gebaut, obwohl die Aktionsbilder weiterlaufen");
+            Assert.AreSame(suf, p.HudHitSuffix, "gleiche Werte: Zusatz nicht neu gebaut");
             p.UseWeapon(1);
             p.UpdateHudText();
-            Assert.AreNotSame(hit, p.HudHitText, "Waffenwechsel: neu gebaut (Skin der anderen Waffe)");
+            Assert.AreNotSame(suf, p.HudHitSuffix, "Waffenwechsel: Zusatz der anderen Waffe (Skin)");
+            StringAssert.Contains("Treffer", p.HudHitText);
             p.UseWeapon(0);
             p.deltaOverride = null;
         }

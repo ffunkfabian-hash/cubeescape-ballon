@@ -110,7 +110,12 @@ namespace Ballon.Ego
         public int hits;
         /// <summary>Portalschüsse des Werkzeugs mit Treffermarke (Fläche in Reichweite, 0.22).</summary>
         public int portalHits;
-        public readonly List<string> log = new List<string>();
+        /// <summary>Marker der letzten Aktionen als „aktion marker“ (Tests), höchstens LogMax Einträge (0.37: bis 0.36 unbegrenzt und je
+        /// Marker neu formatiert, mit Bildnummer).</summary>
+        public readonly List<string> log = new List<string>(LogMax);
+        public const int LogMax = 256;
+        readonly Dictionary<(string, string), (string hud, string log, string gui)> _markerText = new Dictionary<(string, string), (string, string, string)>(PairKey.Instance);
+        string _markerGui = "·";                       // Marker in der Statuszeile („·  aktion › marker“)
         public bool hud = true;
         public Func<float> deltaOverride;          // Aufnahme: feste Zeitschritte
         public HipReticle hipReticle => Current.hip;   // Hüft-Fadenkreuz der aktiven Waffe (Entscheidungsliste 4.1 A / 4.2 A)
@@ -180,6 +185,7 @@ namespace Ballon.Ego
             var go = new GameObject("Player") { layer = PlayerLayer };   // Strahlen für Wandnähe und Treffer übergehen den eigenen Collider
             go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
             var p = go.AddComponent<EgoPlayer>();
+            p.useGUILayout = false;                       // 0.37: OnGUI ohne GUILayout – kein Layout-Durchgang (halbiert IMGUI-Aufrufe und -Speicher)
             p._yaw = yaw;
             p._cc = go.AddComponent<CharacterController>();
             p._cc.height = p.move.height;
@@ -216,7 +222,7 @@ namespace Ballon.Ego
                 var sp = new GameObject("Weapon_" + Ss[k].D.weapon.id).transform;      // eigener Raum je Waffe: nur die aktive ist sichtbar
                 sp.SetParent(vmSpace, false);
                 cs[k] = new EgoController(Ss[k]);
-                cs[k].Marker += (a, m) => { p.lastMarker = $"{a} › {m}"; p.lastMarkerTime = Time.time; p.log.Add($"{Time.frameCount} {a} {m}"); };
+                cs[k].Marker += p.OnMarker;
                 cs[k].Shot += p.OnShot;
                 var rig = new EgoRig(Ss[k], sp, weaponModels[k], armsModel, roles, vmLayer);
                 p.loadouts[k] = new Loadout { rig = rig, hip = new HipReticle(Ss[k].D.gameplay.hip) };
@@ -234,6 +240,26 @@ namespace Ballon.Ego
                 p.loadouts[to].rig.space.gameObject.SetActive(true);
             };
             return p;
+        }
+
+        /// <summary>Marker einer Aktion: Anzeige und Protokoll; die Texte je (Aktion, Marker) einmal gebaut, das Protokoll als Fenster der
+        /// letzten LogMax Einträge (0.37 „Steadyframe“: kein Speicher je Schuss).</summary>
+        void OnMarker(string a, string m)
+        {
+            if (HipReticle.Off)                                   // Gegenprobe: Weg bis 0.36
+            {
+                lastMarker = $"{a} › {m}";
+                _markerGui = "·  " + lastMarker;
+                lastMarkerTime = Time.time;
+                log.Add($"{Time.frameCount} {a} {m}");
+                return;
+            }
+            if (!_markerText.TryGetValue((a, m), out var t)) _markerText[(a, m)] = t = ($"{a} › {m}", $"{a} {m}", $"·  {a} › {m}");
+            lastMarker = t.hud;
+            _markerGui = t.gui;
+            lastMarkerTime = Time.time;
+            if (log.Count >= LogMax) log.RemoveAt(0);
+            log.Add(t.log);
         }
 
         /// <summary>Waffe k (0-basiert) sofort aktiv, ohne Wechselablauf (Aufnahme, Vergleich): Modell umschalten, Anzeige neu.</summary>
@@ -564,8 +590,14 @@ namespace Ballon.Ego
             UpdateHudText();
             WeaponHud(big);
             small.normal.textColor = new Color(1, 1, 1, 0.85f);
-            GUI.Label(new Rect(16, 12, 900, 22), _stateText, small);
+            StateGui(small);
+            if (_hitW < 0)
+            {
+                _measure.text = _hitText;
+                _hitW = small.CalcSize(_measure).x;
+            }
             GUI.Label(new Rect(16, 32, 900, 22), _hitText, small);
+            GUI.Label(new Rect(16 + _hitW, 32, 900, 22), _hitSuffix, small);
             if (course != null)
             {
                 var tm = _time ?? (_time = new GUIStyle(GUI.skin.label) { fontSize = 26, fontStyle = FontStyle.Bold });
@@ -698,11 +730,50 @@ namespace Ballon.Ego
             }
         }
 
-        // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild)
-        string _ammoText = "", _stateText = "", _hitText = "";
-        public string HudHitText => _hitText;
-        int _hAmmo = -1, _hFrame = -1, _hHits = -1, _hWeapon = -1;
-        string _hAction, _hMarker;
+        // Anzeigetexte nur bei geänderten Werten neu bauen (kein Speicher je Bild). 0.37 „Steadyframe“: die Statuszeile (Waffe · Aktion
+        // Bild · Marker) baute bei jedem Aktionswechsel und in jedem Bild einer Aktion einen neuen Text – jetzt drei Stücke aus Tabellen:
+        // „Waffe · Aktion“ je Paar einmal, Bildnummer aus einer Zahlentabelle, Marker je Paar einmal (OnMarker). Munition aus einer
+        // Tabelle je Waffe. Die Trefferzeile baut bei einem Treffer neu, höchstens alle HudHitS (Dauerfeuer trifft je Schuss).
+        public const float HudHitS = 0.25f;
+        string _ammoText = "", _hitText = "", _statePrefix = "", _stateFrame = "", _stateMarker = "";
+        /// <summary>Trefferzeile wie bis 0.36 (Tests; baut einen Text): Treffer und Ziele, dann Skin, Szene, Licht.</summary>
+        public string HudHitText => _hitText + _hitSuffix;
+        /// <summary>Gespeicherte Stücke der Trefferzeile (Tests: nur bei Änderung neu gebaut).</summary>
+        public string HudHitMain => _hitText;
+        public string HudHitSuffix => _hitSuffix;
+        string _hitSuffix = "";                            // Skin, Szene, Licht: je (Waffe, Skin, Szene, Licht) einmal gebaut
+        float _hitW = -1;
+        readonly Dictionary<(int, string), string> _suffixText = new Dictionary<(int, string), string>(PairKey.Instance);
+        string _suffixScene, _suffixLight;
+        /// <summary>Statuszeile wie bis 0.36 „Waffe Name · Aktion Bild  ·  Marker“ (Tests; baut einen Text, nicht je Bild aufrufen).</summary>
+        public string HudStateText => _statePrefix + " " + _stateFrame + "  " + _stateMarker;
+        int _hAmmo = -1, _hHits = -1, _hWeapon = -1;
+        float _hHitT = -1;
+        string[][] _ammoTexts;
+        readonly Dictionary<(int, string), string> _prefixText = new Dictionary<(int, string), string>(PairKey.Instance);
+        static readonly string[] FrameText = Numbers(1000);
+        readonly Dictionary<string, float> _prefixWidth = new Dictionary<string, float>();
+        readonly GUIContent _measure = new GUIContent();
+
+        static string[] Numbers(int n)
+        {
+            var t = new string[n];
+            for (int i = 0; i < n; i++) t[i] = i.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return t;
+        }
+
+        /// <summary>Statuszeile oben links aus drei Stücken (kein Text je Bild); Breite des ersten Stücks nur bei dessen Wechsel gemessen.</summary>
+        void StateGui(GUIStyle small)
+        {
+            if (!_prefixWidth.TryGetValue(_statePrefix, out float w))
+            {
+                _measure.text = _statePrefix;
+                _prefixWidth[_statePrefix] = w = small.CalcSize(_measure).x;
+            }
+            GUI.Label(new Rect(16, 12, 900, 22), _statePrefix, small);
+            GUI.Label(new Rect(16 + w, 12, 60, 22), _stateFrame, small);
+            GUI.Label(new Rect(16 + w + 34, 12, 900, 22), _stateMarker, small);
+        }
 
         /// <summary>Anzeigetexte aktualisieren; baut nur bei geänderten Werten neu (öffentlich für den GC-Test).</summary>
         public void UpdateHudText()
@@ -710,25 +781,53 @@ namespace Ballon.Ego
             if (C.ammo != _hAmmo || arsenal.Active != _hWeapon)
             {
                 _hAmmo = C.ammo;
-                _ammoText = C.S.D.gameplay.Unlimited ? "∞" : $"{C.ammo} / {C.magSize}";   // Werkzeug ohne Magazin (0.22)
+                _ammoText = C.S.D.gameplay.Unlimited ? "∞" : AmmoText(arsenal.Active, C.ammo);   // Werkzeug ohne Magazin (0.22)
             }
-            string mk = Time.time - lastMarkerTime < 1.2f ? lastMarker : "";
+            _stateMarker = Time.time - lastMarkerTime < 1.2f ? _markerGui : "·";
             int fr = (int)C.Frame;
-            if (arsenal.Active != _hWeapon) _hHits = -1;          // Waffenwechsel: Skin-Name der neuen Waffe
-            if (fr != _hFrame || !ReferenceEquals(C.ActionName, _hAction) || !ReferenceEquals(mk, _hMarker) || arsenal.Active != _hWeapon)
+            _stateFrame = fr >= 0 && fr < FrameText.Length && !HipReticle.Off ? FrameText[fr] : fr.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            float now = Time.unscaledTime;
+            _hWeapon = arsenal.Active;
+            if (!_prefixText.TryGetValue((arsenal.Active, C.ActionName), out var pre))
+                _prefixText[(arsenal.Active, C.ActionName)] = pre = $"{arsenal.Active + 1} {C.S.D.weapon.name} · {C.ActionName}";
+            _statePrefix = pre;
+            if (!ReferenceEquals(sceneLabel, _suffixScene) || !ReferenceEquals(lightLabel, _suffixLight))
             {
-                _hFrame = fr; _hAction = C.ActionName; _hMarker = mk; _hWeapon = arsenal.Active;
-                _stateText = $"{arsenal.Active + 1} {C.S.D.weapon.name} · {C.ActionName} {fr}  ·  {mk}";
+                _suffixText.Clear();                               // Szene oder Licht gewechselt: Zusätze neu
+                _suffixScene = sceneLabel;
+                _suffixLight = lightLabel;
             }
-            if (hits != _hHits)
+            string skinName = skinNames != null && skinNames.Length > 0 ? skinNames[skin] : null;
+            if (!_suffixText.TryGetValue((arsenal.Active, skinName), out var suf))
             {
-                _hHits = hits;
-                string sk = skinNames != null && skinNames.Length > 0 ? $"   Skin {skinNames[skin]} (K)" : "";
+                string sk = skinName != null ? $"   Skin {skinName} (K)" : "";
                 string sz = sceneLabel != null ? $"   Szene {sceneLabel} (L)" : "";
                 string lt = lightLabel != null ? (_lightCount > 1 ? $"   Licht {lightLabel} (N)" : $"   Licht {lightLabel}") : "";
-                string rs = course == null && range != null ? range.Summary() : "";          // mit Parcours zählt die Lauf-Anzeige die Ziele
-                _hitText = $"Treffer {hits}   {rs}{sk}{sz}{lt}";
+                _suffixText[(arsenal.Active, skinName)] = suf = sk + sz + lt;
             }
+            _hitSuffix = suf;
+            if (hits != _hHits && (_hHits < 0 || now - _hHitT >= HudHitS))
+            {
+                _hHits = hits;
+                _hHitT = now;
+                string rs = course == null && range != null ? range.Summary() : "";          // mit Parcours zählt die Lauf-Anzeige die Ziele
+                _hitText = $"Treffer {hits}   {rs}";
+                _hitW = -1;
+            }
+        }
+
+        /// <summary>„n / Magazin“ aus der Tabelle der Waffe k (einmal je Waffe gebaut, 0 … Magazin; darüber frei formatiert).</summary>
+        string AmmoText(int k, int ammo)
+        {
+            _ammoTexts ??= new string[arsenal.C.Length][];
+            int mag = arsenal.C[k].magSize;
+            var t = _ammoTexts[k];
+            if (t == null || t.Length != mag + 1)
+            {
+                t = _ammoTexts[k] = new string[mag + 1];
+                for (int i = 0; i <= mag; i++) t[i] = $"{i} / {mag}";
+            }
+            return ammo >= 0 && ammo <= mag && !HipReticle.Off ? t[ammo] : $"{ammo} / {mag}";
         }
 
         static void Mark(Texture2D tex, float cx, float cy, float size, Color c)
@@ -745,5 +844,16 @@ namespace Ballon.Ego
             if (k != null && k.hKey.wasPressedThisFrame) hud = !hud;
             if (k != null && k.kKey.wasPressedThisFrame) SetSkin(skin + 1);
         }
+    }
+
+    /// <summary>Vergleicher für Tupel-Schlüssel (0.37): Unitys Mono vergleicht ValueTuple-Schlüssel mit dem Standardvergleicher über
+    /// object (Boxing, 2 Speicheranforderungen je Nachschlagen, gemessen in SteadyframePlayTests); dieser vergleicht die Felder direkt.</summary>
+    sealed class PairKey : IEqualityComparer<(string, string)>, IEqualityComparer<(int, string)>
+    {
+        public static readonly PairKey Instance = new PairKey();
+        public bool Equals((string, string) a, (string, string) b) => string.Equals(a.Item1, b.Item1) && string.Equals(a.Item2, b.Item2);
+        public int GetHashCode((string, string) k) => (k.Item1?.GetHashCode() ?? 0) * 31 + (k.Item2?.GetHashCode() ?? 0);
+        public bool Equals((int, string) a, (int, string) b) => a.Item1 == b.Item1 && string.Equals(a.Item2, b.Item2);
+        public int GetHashCode((int, string) k) => k.Item1 * 31 + (k.Item2?.GetHashCode() ?? 0);
     }
 }

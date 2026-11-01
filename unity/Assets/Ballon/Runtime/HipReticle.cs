@@ -9,6 +9,13 @@ namespace Ballon.Ego
     public sealed class HipReticle
     {
         public readonly EgoHip H;
+        /// <summary>Gegenprobe 0.37 „Steadyframe“ (BALLON_STEADYFRAME_OFF=1, nur im Editor): bisherige Wege – volles Neuraster des Fadenkreuzes,
+        /// Marker- und Munitionstexte je Ereignis neu formatiert, Markerprotokoll unbegrenzt. Die Tests von 0.37 müssen dann scheitern.</summary>
+#if UNITY_EDITOR
+        public static readonly bool Off = System.Environment.GetEnvironmentVariable("BALLON_STEADYFRAME_OFF") == "1";
+#else
+        public const bool Off = false;
+#endif
         public float spread;                       // mm auf der Scheibe (reticles.SPREAD), wie reticles.simulate
         public bool Visible { get; private set; }
         public bool SprintForm { get; private set; }
@@ -20,7 +27,7 @@ namespace Ballon.Ego
         readonly EgoHipForm _hipForm;
         readonly string _sprintReason;
         readonly Color32 _color;
-        sealed class Raster { public Texture2D tex; public Color32[] px; public float s = -1, h = -1; }
+        sealed class Raster { public Texture2D tex; public Color32[] px, empty; public float s = -1, h = -1; }   // empty: leere Vorlage (Alpha 0)
         readonly Raster _rHip = new Raster(), _rSpr = new Raster();      // je Form eine Textur: Sprintwechsel legt nichts neu an
 
         public HipReticle(EgoHip h)
@@ -125,35 +132,142 @@ namespace Ballon.Ego
                 R.tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
                 R.px = new Color32[n * n];
             }
+            if (R.empty == null || R.empty.Length != n * n)
+            {
+                R.empty = new Color32[n * n];
+                for (int i = 0; i < R.empty.Length; i++) R.empty[i] = new Color32(255, 255, 255, 0);
+            }
             float lw = Mathf.Max(H.line_r_mm * w * k, minPx);
             byte op = (byte)Mathf.RoundToInt(255 * H.opacity);
-            for (int y = 0; y < n; y++)
-                for (int x = 0; x < n; x++)
-                {
-                    float px = x + 0.5f - half, py = y + 0.5f - half;       // Pixel rechts/oben von der Mitte
-                    float d = 1e9f;
-                    foreach (var p in Form.prims)
-                    {
-                        if (p.t == "line")                                 // x der Scheibe zeigt nach links
-                        {
-                            float ax = -(p.a[0] + sp * p.d[0]) * k, ay = (p.a[1] + sp * p.d[1]) * k;
-                            float bx = -(p.b[0] + sp * p.d[0]) * k, by = (p.b[1] + sp * p.d[1]) * k;
-                            d = Mathf.Min(d, Segment(px, py, ax, ay, bx, by) - lw);
-                        }
-                        else if (p.t == "ring")
-                        {
-                            float inner = (p.ri + sp * p.grow) * k, outer = Radius(p, sp, k);
-                            d = Mathf.Min(d, Mathf.Abs(Mathf.Sqrt(px * px + py * py) - (inner + outer) / 2) - (outer - inner) / 2);
-                        }
-                        else d = Mathf.Min(d, Mathf.Sqrt(px * px + py * py) - Radius(p, sp, k));
-                    }
-                    float a = Mathf.Clamp01(0.5f - d);
-                    R.px[y * n + x] = new Color32(255, 255, 255, (byte)(op * a));
-                }
+            if (Off) RasterizeReference(R.px, n, half, sp, k, lw, op);     // Gegenprobe: bisheriger Weg
+            else
+            {
+                System.Array.Copy(R.empty, R.px, n * n);
+                Rasterize(R.px, n, half, sp, k, lw, op);
+            }
             R.tex.SetPixels32(R.px);
             R.tex.Apply(false);                    // lesbar lassen: die Aufnahme stempelt per GetPixelBilinear
             R.s = sp; R.h = h;
             return R.tex;
+        }
+
+        /// <summary>Deckung (Alpha) je Pixel wie RasterizeReference, aber je Formteil nur in seinem Rahmen bzw. bei Ringen nur auf dem
+        /// Ringband (0.37 „Steadyframe“: das volle Quadrat über alle Teile kostete beim Aufgehen 13–21 ms je Bild in OnGUI). Das Ergebnis
+        /// ist gleich (Deckung ± 1/255 aus der Rechenreihenfolge, SteadyframeTests): Deckung = Maximum über die Teile, weil op · clamp01(0,5 − d) mit dem Abstand d fällt; außerhalb der Rahmen
+        /// (Rand + 2 px) ist d ≥ 0,5 und die Deckung 0. px muss vorher leer sein (Alpha 0).</summary>
+        void Rasterize(Color32[] px, int n, int half, float sp, float k, float lw, byte op)
+        {
+            foreach (var p in Form.prims)
+            {
+                if (p.t == "line")                                         // x der Scheibe zeigt nach links
+                {
+                    float ax = -(p.a[0] + sp * p.d[0]) * k, ay = (p.a[1] + sp * p.d[1]) * k;
+                    float bx = -(p.b[0] + sp * p.d[0]) * k, by = (p.b[1] + sp * p.d[1]) * k;
+                    float m = lw + 2;
+                    int x0 = Cell(Mathf.Min(ax, bx) - m, half, n), x1 = Cell(Mathf.Max(ax, bx) + m, half, n);
+                    int y0 = Cell(Mathf.Min(ay, by) - m, half, n), y1 = Cell(Mathf.Max(ay, by) + m, half, n);
+                    for (int y = y0; y <= y1; y++)
+                    {
+                        float py = y + 0.5f - half;
+                        for (int x = x0; x <= x1; x++)
+                            Put(px, y * n + x, op, Segment(x + 0.5f - half, py, ax, ay, bx, by) - lw);
+                    }
+                }
+                else if (p.t == "ring")
+                {
+                    float inner = (p.ri + sp * p.grow) * k, outer = Radius(p, sp, k);
+                    float mid = (inner + outer) / 2, hw = (outer - inner) / 2;
+                    float ro = outer + 2, ri = inner - 2;                  // Band mit Rand: außerhalb ist d ≥ 0,5
+                    int y0 = Cell(-ro, half, n), y1 = Cell(ro, half, n);
+                    for (int y = y0; y <= y1; y++)
+                    {
+                        float py = y + 0.5f - half;
+                        float xo = Mathf.Sqrt(Mathf.Max(0, ro * ro - py * py));
+                        float xi = ri > 0 && Mathf.Abs(py) < ri ? Mathf.Sqrt(ri * ri - py * py) : -1;
+                        if (xi < 0) Band(px, n, half, y, py, -xo, xo, mid, hw, op);
+                        else
+                        {
+                            Band(px, n, half, y, py, -xo, -xi, mid, hw, op);
+                            Band(px, n, half, y, py, xi, xo, mid, hw, op);
+                        }
+                    }
+                }
+                else
+                {
+                    float r = Radius(p, sp, k), m = r + 2;
+                    int x0 = Cell(-m, half, n), x1 = Cell(m, half, n), y0 = Cell(-m, half, n), y1 = Cell(m, half, n);
+                    for (int y = y0; y <= y1; y++)
+                    {
+                        float py = y + 0.5f - half;
+                        for (int x = x0; x <= x1; x++)
+                        {
+                            float qx = x + 0.5f - half;
+                            Put(px, y * n + x, op, Mathf.Sqrt(qx * qx + py * py) - r);
+                        }
+                    }
+                }
+            }
+        }
+
+        static void Band(Color32[] px, int n, int half, int y, float py, float xa, float xb, float mid, float hw, byte op)
+        {
+            int x0 = Cell(xa - 1, half, n), x1 = Cell(xb + 1, half, n);
+            for (int x = x0; x <= x1; x++)
+            {
+                float qx = x + 0.5f - half;
+                Put(px, y * n + x, op, Mathf.Abs(Mathf.Sqrt(qx * qx + py * py) - mid) - hw);
+            }
+        }
+
+        /// <summary>Pixelspalte bzw. -zeile zur Lage v (px von der Mitte), auf die Textur begrenzt.</summary>
+        static int Cell(float v, int half, int n) => Mathf.Clamp(Mathf.FloorToInt(v + half - 0.5f), 0, n - 1);
+
+        static void Put(Color32[] px, int i, byte op, float d)
+        {
+            byte v = (byte)(op * Mathf.Clamp01(0.5f - d));
+            if (v > px[i].a) px[i].a = v;
+        }
+
+        /// <summary>Bisheriger Rasterweg bis 0.36 (volles Quadrat, alle Teile je Pixel) – nur für den Gleichheitstest und die Gegenprobe.</summary>
+        void RasterizeReference(Color32[] px, int n, int half, float sp, float k, float lw, byte op)
+        {
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float qx = x + 0.5f - half, py = y + 0.5f - half;     // Pixel rechts/oben von der Mitte
+                    float d = 1e9f;
+                    foreach (var p in Form.prims)
+                    {
+                        if (p.t == "line")
+                        {
+                            float ax = -(p.a[0] + sp * p.d[0]) * k, ay = (p.a[1] + sp * p.d[1]) * k;
+                            float bx = -(p.b[0] + sp * p.d[0]) * k, by = (p.b[1] + sp * p.d[1]) * k;
+                            d = Mathf.Min(d, Segment(qx, py, ax, ay, bx, by) - lw);
+                        }
+                        else if (p.t == "ring")
+                        {
+                            float inner = (p.ri + sp * p.grow) * k, outer = Radius(p, sp, k);
+                            d = Mathf.Min(d, Mathf.Abs(Mathf.Sqrt(qx * qx + py * py) - (inner + outer) / 2) - (outer - inner) / 2);
+                        }
+                        else d = Mathf.Min(d, Mathf.Sqrt(qx * qx + py * py) - Radius(p, sp, k));
+                    }
+                    float a = Mathf.Clamp01(0.5f - d);
+                    px[y * n + x] = new Color32(255, 255, 255, (byte)(op * a));
+                }
+        }
+
+        /// <summary>Test (0.37): Pixel der aktuellen Form bei Bildhöhe h über den neuen (reference = false) oder den alten Rasterweg.</summary>
+        public Color32[] MaskPixels(float h, bool reference)
+        {
+            var t = Mask(h);
+            int n = t.width, half = n / 2;
+            var px = new Color32[n * n];
+            for (int i = 0; i < px.Length; i++) px[i] = new Color32(255, 255, 255, 0);
+            float k = PxPerMm(h), lw = Mathf.Max(H.line_r_mm * H.weight * k, H.min_line_px);
+            byte op = (byte)Mathf.RoundToInt(255 * H.opacity);
+            if (reference) RasterizeReference(px, n, half, Drawn, k, lw, op);
+            else Rasterize(px, n, half, Drawn, k, lw, op);
+            return px;
         }
 
         /// <summary>Texturen freigeben (EgoPlayer.OnDestroy, Tests).</summary>

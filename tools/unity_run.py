@@ -17,6 +17,9 @@
       Spannen/Zielen (zoom.csv: Weltzoom je Bild, feedback.csv: Hüftzeichen sichtbar/Grund)
       (BALLON_CAPTURE_EXTRA="-ballonFps 60 -ballonKey 1": Messlauf mit Schlüsselfarbe in eigenem Ordner …_mess)
   python3 tools/unity_run.py bench      → Bildzeiten im Parcours (ohne VSync, 10 s Vorführablauf)
+  python3 tools/unity_run.py ruckeln <name> [profil] → Ruckelmessung 0.37: je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen,
+      zwei Durchgänge (erster Einsatz/Wiederholung), Spieleinstellungen (VSync); <EV>/ruckeln/<name>/frames.csv + Tabelle
+      (tools/stutter_report.py); „profil“: Profiler-Protokoll je Waffe, Ursachen der Spitzen ≥ 25 ms in spikes.json
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
   python3 tools/unity_run.py fov        → Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
 """
@@ -33,7 +36,7 @@ PROJ = os.path.join(ROOT, 'unity')
 UNITY = os.environ.get('UNITY_EDITOR', '/Applications/Unity/Hub/Editor/6000.6.2f1/Unity.app/Contents/MacOS/Unity')
 LOCK = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
 EV = os.environ.get('BALLON_UNITY_EVIDENCE', os.path.expanduser('~/Library/Caches/CubeEscapeBallon/unity'))
-APP = os.path.join(PROJ, 'Build', 'BallonFirstfeel.app')
+APP = os.environ.get('BALLON_UNITY_APP', os.path.join(PROJ, 'Build', 'BallonFirstfeel.app'))   # andere Build (0.37: vorher/nachher)
 # frische Blender-Stills für den Vergleich (eigener Ausgabeort, damit fremde Renderings unberührt bleiben):
 #   BASIC_OUT=<EV>/blender_out ce lock gpu -- blender -b --factory-startup -P <abs>/tools/ego_build.py -- --stills --gpu
 CE = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
@@ -353,6 +356,25 @@ if __name__ == '__main__':
         f = os.path.join(EV, f'bench_{sc}.json' if sc else 'bench.json')
         rc = player(['-ballonBench', f] + (['-ballonScene', sc] if sc else []), os.path.join(EV, 'bench.log'))
         print(open(f).read() if os.path.exists(f) else 'keine Messung')
+        sys.exit(rc)
+    if a == 'ruckeln':                     # ruckeln <name> [profil]: Ruckelmessung (0.37), mit „profil“ Profiler-Protokoll + Ursachen
+        name = sys.argv[2] if len(sys.argv) > 2 else 'messung'
+        prof = 'profil' in sys.argv[3:]
+        d = os.path.join(EV, 'ruckeln', name)
+        shutil.rmtree(d, ignore_errors=True)
+        os.makedirs(d)
+        exe = os.path.join(APP, 'Contents', 'MacOS', 'BALLON Firstfeel')
+        log = os.path.join(d, 'player.log')
+        args = ['-ballonStutter', os.path.join(d, 'frames.csv')] + (['-ballonProfile', os.path.join(d, 'raw')] if prof else [])
+        rc = locked(['caffeinate', '-di', exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0',
+                     '-logFile', log] + args + os.environ.get('BALLON_PLAYER_EXTRA', '').split(), log)   # Bildschirm wach; Fenster wie
+        # im Testbuild (1280 × 720); BALLON_PLAYER_EXTRA: weitere Argumente der Build
+        if not rc and prof:
+            rc = locked([UNITY, '-batchmode', '-quit', '-projectPath', PROJ, '-executeMethod', 'Ballon.Ego.Editor.ProfileSpikes.Run',
+                         '-ballonRawDir', os.path.join(d, 'raw'), '-ballonOut', os.path.join(d, 'spikes.json'),
+                         '-logFile', os.path.join(d, 'spikes.log')], os.path.join(d, 'spikes.log'))
+        if not rc:
+            subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'stutter_report.py'), d])
         sys.exit(rc)
     if a == 'compare':                     # compare [n] [Zusatzargumente der Build]
         rest = sys.argv[2:]

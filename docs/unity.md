@@ -38,6 +38,9 @@ open unity/Build/BallonFirstfeel.app --args -ballonFov 100   # Welt-Bildwinkel 1
 python3 tools/unity_run.py compare          # Standbilder hip/ads/reload/inspect_r gegen die Blender-Stills, SSIM/PSNR/Helligkeit
 python3 tools/unity_run.py bench            # Bildzeiten im Parcours (ohne VSync)
 python3 tools/unity_run.py bench hangar     # Bildzeiten im Hangar: Vorführlauf durch den Parcours, alle 2,5 s nächste Lichtszene
+python3 tools/unity_run.py ruckeln vorher [profil]   # Ruckelmessung (0.37): je Waffe Wechsel, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen
+BALLON_UNITY_APP=<Pfad>.app python3 tools/unity_run.py ruckeln nachher   # andere Build messen (vorher/nachher abwechselnd)
+python3 tools/stutter_report.py <EV>/ruckeln/vorher_1 <EV>/ruckeln/vorher_2 --weapons   # Tabelle je Ereignis (und je Waffe)
 python3 tools/unity_run.py scenes           # je Szene und Lichtszene Bild vom Start gegen <szene>_<licht>_ref.png (SSIM/PSNR)
 python3 tools/unity_run.py course tag       # Vorführlauf durch den Hangar-Parcours als MP4 + Kontaktbogen (Lichtszene wählbar)
 open unity/Build/BallonFirstfeel.app        # spielen
@@ -214,6 +217,8 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Schrot_Streuschuss_mit_mehreren_Einschlaegen`, `Einschlag_Funken_Staub_Loch_und_Ausblenden` (PlayMode, 0.34) | 12 Einschläge und Löcher im Kegel; je Kugelklasse Funken, Staub, Loch (Stil bullet/heavy), Ausblenden nach `life_s`, Pool-Obergrenze |
 | `Handfeuerwaffe_Trommel_dreht_je_Schuss_Huelsen_beim_Nachladen`, `MG_Glieder_Gurtvorschub_und_Fuellstand`, `Granatwerfer_Trommel_zeigt_geladene_und_leere_Kammern` (PlayMode, 0.34) | Trommel eine Kammer je Schuss, Hülsen beim Nachladen je verschossene Kammer; Glied je Hülse, Gurtvorschub, Gurt leert sich von unten, Zählzellen, Modell; Kammern leer nach dem Schuss, rücken mit der Trommel, füllen sich beim Nachladen |
 | `Handfeuerwaffe_Stuetzhand_schwingt_beim_Huefschuss_nicht`, `Bogen_Hueftzeichen_bleibt_beim_Spannen`, `Bogen_Weltzoom_stetig_gespannt_ins_Zielen` (PlayMode, 0.36) | Stützhand beim Hüftschuss ≤ 1,5 pp H (Waffe kippt weiter), im Zielen folgt sie; Bogen-Hüftzeichen beim Spannen an, schließt mit dem Auszug, im Zielen aus; Weltzoom gespannt/ungespannt ≤ 1,2× je Bild, über `zoom_in_min_s` |
+| `Kein_GC_Speicher_je_Schuss_und_Wechsel_nach_dem_Aufwaermen`, `Fadenkreuz_Aufgehen_ohne_Speicher` (PlayMode, 0.37) | Ablauf der Ruckelmessung über `EgoPlayer.Step` und `UpdateHudText` für alle 16 Waffen (wählen, Hüftschuss, Dauerfeuer, Zielen, Nachladen, Bewegen; 15 000 Schritte) nach zwei Aufwärmläufen ohne GC-Speicher; Fadenkreuz beim Aufgehen ohne Speicher. Gegenprobe `BALLON_STEADYFRAME_OFF=1` rot |
+| `Fadenkreuz_Raster_gleich_dem_vollen_Quadrat`, `Fadenkreuz_Aufgehen_je_Bild_unter_2_ms` (EditMode, 0.37) | neuer Rasterweg (nur Rahmen der Formteile, Ringband) gleich dem bisherigen vollen Quadrat (Deckung ± 1/255) für 32 Formen × 3 Höhen × 3 Spreizungen; je Raster < 2 ms (gemessen 0,12 ms, alter Weg 17,7 ms) |
 | `Klassen_vollstaendig_in_ego_json` (0.33) | alle 16 Waffen in Tastenreihenfolge mit Klasse und Feuerart, Herkunft, Spielwerte, Griffe, Live-Teile, Atlanten |
 | `Repetierer_repetiert_nach_jedem_Schuss`, `Dauerstrahl_leuchtet_solange_der_Abzug_zieht`, `MG_Gurtkasten_nachladen` (0.33 P2) | Kammerstängel nach dem Schuss, Strahl-Leuchtteile, Gurtkasten-Nachladen |
 | `Pumpe_pumpt_und_laedt_je_Patrone`, `Fusion_laedt_auf_und_schiesst_die_Salve`, `Lineare_Fusion_laedt_auf_und_schiesst_einmal` (0.33 P3) | Pumpe, Einzelladen mit Abbruch durch Feuer, Aufladen |
@@ -368,6 +373,19 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
   in Blender nicht gibt) und `<szene>_<licht>_waffe.png`, Vergleich gegen `scenes/<szene>_<licht>_ref.png` aus `scene_build.py`.
 - **Leistung** (`unity_run.py bench hangar`): Vorführlauf durch den Parcours, alle 2,5 s die nächste Lichtszene; Ergebnis in
   `bench_hangar.json` mit Mittel, p95, p99 und Höchstwert. Werte stehen im Versionsbericht [0.9](versions/0.9-parcours.md).
+
+### Ruckelmessung (0.37 „Steadyframe“)
+
+- **Ablauf** (`Runtime/StutterBench.cs`, `-ballonStutter <csv>`): Spieleinstellungen wie im Testbuild (Fenster 1280 × 720, VSync,
+  höchstens 120/s), je Waffe Wechsel 2 s, Hüftschuss 2 s (Bogen 1,2 s spannen, Fusion 1 s laden), Dauerfeuer 3 s, Zielen 2 s,
+  Nachladen 3 s, Bewegen 3 s (vor/seitwärts mit 60°/s Drehung und zurück); zwei Durchgänge im selben Prozess (1 = erster Einsatz,
+  2 = Wiederholung). Je Bild Bildzeit, Hauptthread, GC-Speicher (`GC Allocated In Frame`) und GC-Läufe in vorab angelegte Felder.
+- **Ursachen** (`… profil`): Profiler-Binärprotokoll je Durchgang und Waffe mit Bild-Metadaten (Bildnummer, Durchgang, Waffe,
+  Ereignis); `Editor/ProfileSpikes.Run` schreibt je Bild ≥ 25 ms die teuersten Proben und Speicherquellen nach `spikes.json`,
+  `ProfileSpikes.Shot` macht ein Bildschirmfoto des Profiler-Fensters bei einem Bild (Editor mit Oberfläche; der Editor mit Oberfläche
+  schrieb dabei `GraphicsSettings`/`QualitySettings` um und legte zwei Einstellungsdateien an – danach `git status` prüfen und zurücksetzen).
+- **Tabelle** (`tools/stutter_report.py`): je Durchgang und Ereignis p50/p95/p99/max, GC-Speicher je Bild, GC-Läufe, Bilder
+  > 25 ms und Anteil der Bilder neben dem 60-Hz-Takt (± 2 ms). Werte im Versionsbericht [0.37](versions/0.37-steadyframe.md).
 
 ## Material, Licht und Tonwerte wie Blender (0.7)
 
