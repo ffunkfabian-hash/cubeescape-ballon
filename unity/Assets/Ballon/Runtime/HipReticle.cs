@@ -14,7 +14,7 @@ namespace Ballon.Ego
 #if UNITY_EDITOR
         public static readonly bool Off = System.Environment.GetEnvironmentVariable("BALLON_STEADYFRAME_OFF") == "1";
 #else
-        public const bool Off = false;
+        public static readonly bool Off = false;                    // readonly statt const: kein unerreichbarer Zweig in der Build
 #endif
         public float spread;                       // mm auf der Scheibe (reticles.SPREAD), wie reticles.simulate
         public bool Visible { get; private set; }

@@ -29,6 +29,12 @@ namespace Ballon.Ego.Editor
         public static void Run()
         {
             string dir = Arg("-ballonRawDir"), outFile = Arg("-ballonOut");
+            if (dir == null || outFile == null || !Directory.Exists(dir))
+            {
+                UnityEngine.Debug.LogError("[Ballon] ProfileSpikes.Run: -ballonRawDir <Ordner> und -ballonOut <json> nötig");
+                EditorApplication.Exit(1);
+                return;
+            }
             float spike = float.TryParse(Arg("-ballonSpikeMs") ?? "", NumberStyles.Float, CultureInfo.InvariantCulture, out var s) ? s : 25f;
             var I = CultureInfo.InvariantCulture;
             var sb = new StringBuilder("[\n");
@@ -100,6 +106,12 @@ namespace Ballon.Ego.Editor
         public static void Shot()
         {
             string raw = Arg("-ballonRaw"), png = Arg("-ballonPng");
+            if (raw == null || png == null || !File.Exists(raw))
+            {
+                UnityEngine.Debug.LogError("[Ballon] ProfileSpikes.Shot: -ballonRaw <raw> und -ballonPng <png> nötig");
+                EditorApplication.Exit(1);
+                return;
+            }
             var win = EditorWindow.GetWindow<ProfilerWindow>();
             win.position = new UnityEngine.Rect(40, 60, 1800, 1000);
             win.Show();
@@ -118,6 +130,12 @@ namespace Ballon.Ego.Editor
                         if (hit && v.frameTimeMs > best) { best = v.frameTimeMs; index = f; }
                     }
                 UnityEngine.Debug.Log($"[Ballon] längstes Bild ({ev ?? "alle"}): {index}, {best:0.0} ms");
+                if (index < 0)
+                {
+                    UnityEngine.Debug.LogError($"[Ballon] ProfileSpikes.Shot: kein Bild zum Ereignis {ev}");
+                    EditorApplication.Exit(1);
+                    return;
+                }
             }
             int ticks = 0;
             void Tick()

@@ -43,7 +43,7 @@ namespace Ballon.Ego
         Seg[] _plan;
         int _seg = -1;
         float _t;
-        int _n, _lastEv, _lastPass, _lastWeapon, _gc0;
+        int _n, _lastEv, _lastPass, _lastWeapon, _gc0, _overflow;
         float[] _dt, _main;
         long[] _alloc;
         int[] _frame, _collect;
@@ -176,7 +176,7 @@ namespace Ballon.Ego
 
         void Record()
         {
-            if (_n >= Capacity) return;
+            if (_n >= Capacity) { _overflow++; return; }
             _dt[_n] = Time.unscaledDeltaTime * 1000f;
             _main[_n] = _mainRec.Valid ? _mainRec.LastValue * 1e-6f : -1f;
             _alloc[_n] = _gcRec.Valid ? _gcRec.LastValue : -1;
@@ -209,9 +209,10 @@ namespace Ballon.Ego
             File.WriteAllText(_csv, sb.ToString());
             File.WriteAllText(Path.ChangeExtension(_csv, ".json"), string.Format(I,
                 "{{\"frames\": {0}, \"width\": {1}, \"height\": {2}, \"gpu\": \"{3}\", \"refresh_hz\": {4:0.0}, \"vsync\": {5}, \"target_fps\": {6}, " +
-                "\"profiler\": {7}, \"development\": {8}, \"unity\": \"{9}\"}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
+                "\"profiler\": {7}, \"development\": {8}, \"unity\": \"{9}\", \"not_recorded\": {10}}}\n", _n, Screen.width, Screen.height, SystemInfo.graphicsDeviceName,
                 Screen.currentResolution.refreshRateRatio.value, QualitySettings.vSyncCount, Application.targetFrameRate,
-                _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion));
+                _profile != null ? "true" : "false", Debug.isDebugBuild ? "true" : "false", Application.unityVersion, _overflow));
+            if (_overflow > 0) Debug.LogWarning($"[Ballon] Ruckelmessung: {_overflow} Bilder über {Capacity} nicht aufgezeichnet");
             Debug.Log($"[Ballon] Ruckelmessung: {_n} Bilder → {_csv}");
             Application.Quit();
         }

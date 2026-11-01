@@ -27,6 +27,15 @@ namespace Ballon.Ego.Tests
             }
         }
 
+        [TearDown]
+        public void Zuruecksetzen()                          // auch nach einem Fehlschlag: keine feste Zeit und kein Ablauf für Folgetests
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            if (b == null || b.Player == null) return;
+            b.Player.deltaOverride = null;
+            b.Player.input = new ScriptedInput().Add(0, 1000);
+        }
+
         /// <summary>Ablauf der Ruckelmessung (StutterBench) je Waffe: wählen, Hüftschuss (Bogen spannen, Fusion laden), Dauerfeuer 3 s,
         /// Zielen, Nachladen, Bewegen mit Drehung. Ende bei Waffe 1.</summary>
         static ScriptedInput Cycle(Bootstrap b, out float seconds)
