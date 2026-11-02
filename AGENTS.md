@@ -15,7 +15,8 @@ Schlichtheitsbudget, Materialrollen, Skins, Baukasten, Arbeitsablauf.
 ## Regeln
 
 - **Eine Quelle:** Entwurf nur in `basic/weapons/wNN_*.py` (Bauteile, Baugruppen, Anker, Bewegungen) und `basic/common.py`
-  (gemeinsame Bausteine). `data/specs/`, `docs/abdeckung.md`, `docs/haltungen.md`, `docs/bauteile/`, `data/matrix.json` sind erzeugt.
+  (gemeinsame Bausteine). `data/specs/`, `docs/abdeckung.md`, `docs/haltungen.md`, `docs/bauteile/`, `data/matrix.json`,
+  `packages/ego-arms/` (Arm-Paket, `tools/export_arms.py`) sind erzeugt.
 - **IDs sind stabil:** Waffen `BASIC-NN`, Bauteile englisch snake_case, Anker `Socket_*` (Toolgen-Namen). Umbenennen nur mit
   Spec-Version 2 und Migrationshinweis.
 - **Maße nur aus dem Modell:** Blätter und Doku nennen ausschließlich gemessene Werte aus `spec.json`.

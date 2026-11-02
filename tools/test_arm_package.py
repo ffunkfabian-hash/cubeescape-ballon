@@ -1,0 +1,274 @@
+"""Arm-Paket `ballon-arms/1` (0.40 „Brace“): neu erzeugt = bytegleich, Reimport erhält Teile, Hierarchie, Anker und Ruhelage.
+
+  blender -b --factory-startup -P tools/test_arm_package.py
+
+1. Bezug: die Szene, aus der export_arms die Dateien schreibt (export_arms.build), mit dem Welt-Hüllquader jedes Teilnetzes (nach den
+   Fasen).
+2. arms.glb und arms.fbx aus packages/ego-arms/ einlesen: jeder erwartete Knoten (Wurzel, Segment, Teil, Anker je Seite) ist da, kein
+   fremder; Eltern wie im Manifest; Wurzeln, Segmente und Anker sind Leerknoten, Teile Netze mit ihrer Rolle als Material; Weltlage und
+   Weltdrehung der Wurzeln, Segmentursprünge und Anker wie im Manifest (≤ TOL_MM, ≤ TOL_DEG, Maßstab 1); Hüllquader jedes Teils wie
+   im Bezug (≤ TOL_MM); Dreiecke je Segment wie im Manifest; UV jeder Dreiecksecke wie im Bezug (Dreieck über den Schwerpunkt, Ecke
+   über die Lage zugeordnet, ≤ TOL_UV – unabhängig von Eckenteilung und Reihenfolge, erkennt Spiegelungen); Verknüpfung jedes
+   Rollenmaterials (WIRING): GLB Grundfarbe, Rauheit = ORM G, Metall = ORM B, Verdeckung = ORM R, Normale; FBX Grundfarbe und Normale.
+   Bezug der UVs ist das Unity-arms.fbx (darauf ist der Atlas gebacken), über export_arms.build übernommen.
+3. Paket neu in einen Temp-Ordner erzeugen (tools/export_arms.export_files): arms.glb bytegleich, Dreiecke und Netzmaße wie im
+   Manifest.
+Gegenprobe: falscher Elternknoten, um 1 mm verschobene Hand, um 1° verdrehter Griffpunkt, ein um 1 mm verschobenes Netz, eine um
+ihren Schwerpunkt gespiegelte UV-Insel (GLB) und vertauschte Rauheit/Metall-Verbindung (GLB) müssen gemeldet werden; ein Export mit veraltetem Textur-Fingerabdruck (export_arms.bake_fingerprint) oder geänderter
+Unity-Quelle muss abbrechen, ebenso die UV-Übernahme auf ein Netz mit gleicher Topologie, aber um 1 mm verschobenen Ecken.
+"""
+import copy
+import json
+import math
+import os
+import sys
+import tempfile
+
+import bpy
+from mathutils import Quaternion, Vector
+from mathutils.kdtree import KDTree
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+from basic import kit  # noqa: E402
+import tools.export_arms as XA  # noqa: E402
+
+TOL_MM = 0.05
+TOL_DEG = 0.01
+TOL_UV = 2e-5
+# Verknüpfung je Rollenmaterial nach dem Import: (Ziel-Eingang, Quellknoten, Quellausgang, Bild); Ziel 'Occlusion' am glTF-Ausgabeknoten
+WIRING = {'glb': [('Base Color', 'TEX_IMAGE', 'Color', 'arms_basecolor'), ('Roughness', 'SEPARATE_COLOR', 'Green', 'arms_orm'),
+                  ('Metallic', 'SEPARATE_COLOR', 'Blue', 'arms_orm'), ('Normal', 'NORMAL_MAP', 'Normal', 'arms_normal'),
+                  ('Occlusion', 'SEPARATE_COLOR', 'Red', 'arms_orm')],
+          'fbx': [('Base Color', 'TEX_IMAGE', 'Color', 'arms_basecolor'), ('Normal', 'NORMAL_MAP', 'Normal', 'arms_normal')]}
+
+
+def expected(M):
+    """{Knoten: (Eltern, Art, Rolle oder None, Weltlage m oder None, Weltdrehung wxyz oder None)} für beide Seiten aus dem Manifest."""
+    E = {}
+    for s in XA.SIDES:
+        r = M['rest_pose']['roots'][s]
+        E[f'{s}_arm'] = (None, 'EMPTY', None, r['at_m'], r['rot_wxyz'])
+        for g in M['segments']:
+            E[f"{s}_{g['id']}"] = (f"{s}_{g['parent']}", 'EMPTY', None, g['rest'][s]['world_m'], g['rest'][s]['world_wxyz'])
+        for p in M['parts']:
+            E[f"{s}_{p['id']}"] = (f"{s}_{p['segment']}", 'MESH', p['role'], None, None)
+        for a in M['anchors']:
+            E[a['node'][s]] = (f"{s}_{a['segment']}", 'EMPTY', None, a['world_m'][s], a['world_wxyz'][s])
+    return E
+
+
+def bbox(o, dg):
+    """Welt-Hüllquader des ausgewerteten Netzes (min, max)."""
+    me = o.evaluated_get(dg).to_mesh()
+    P = [o.matrix_world @ v.co for v in me.vertices]
+    o.evaluated_get(dg).to_mesh_clear()
+    return [Vector([min(p[i] for p in P) for i in range(3)]), Vector([max(p[i] for p in P) for i in range(3)])]
+
+
+def corners(o, dg):
+    """Je Dreieck: (Weltschwerpunkt, [(Weltlage, UV)] der drei Ecken); ohne UV-Ebene leer."""
+    me = o.evaluated_get(dg).to_mesh()
+    me.calc_loop_triangles()
+    uv = me.uv_layers.active.data if me.uv_layers else None
+    M, out = o.matrix_world, []
+    for t in me.loop_triangles if uv else ():
+        P = [M @ me.vertices[me.loops[i].vertex_index].co for i in t.loops]
+        out.append(((P[0] + P[1] + P[2]) / 3, [(P[k], Vector(uv[t.loops[k]].uv)) for k in range(3)]))
+    o.evaluated_get(dg).to_mesh_clear()
+    return out
+
+
+def uv_problem(o, dg, ref):
+    """Größte UV-Abweichung einer Dreiecksecke gegen den Bezug, oder Text, wenn ein Dreieck kein Gegenstück hat."""
+    got = corners(o, dg)
+    if len(got) != len(ref):
+        return f'{len(got)} UV-Dreiecke statt {len(ref)}'
+    kd = KDTree(len(ref))
+    for i, (c, _pts) in enumerate(ref):
+        kd.insert(c, i)
+    kd.balance()
+    worst = 0.0
+    for c, pts in got:
+        _co, i, dist = kd.find(c)
+        if dist * 1000 > TOL_MM:
+            return f'Dreieck ohne Gegenstück ({dist * 1000:.3f} mm)'
+        for p, u in pts:
+            q = min(ref[i][1], key=lambda x: (x[0] - p).length)
+            worst = max(worst, (q[1] - u).length)
+    return worst
+
+
+def image_of(sock):
+    """Bildname (ohne Endung) hinter einem Ausgang: direkt am Bildknoten oder über Separate Color / Normal Map."""
+    nd = sock.node
+    if nd.type in ('SEPARATE_COLOR', 'NORMAL_MAP'):
+        ln = nd.inputs['Color'].links
+        nd = ln[0].from_node if ln else None
+    return os.path.splitext(nd.image.name)[0] if nd is not None and nd.type == 'TEX_IMAGE' and nd.image else None
+
+
+def wiring(m, kind):
+    """Fehlende oder falsche Texturverknüpfungen eines importierten Rollenmaterials."""
+    bad = []
+    N = m.node_tree.nodes if m.node_tree else []
+    b = next((nd for nd in N if nd.type == 'BSDF_PRINCIPLED'), None)
+    g = next((nd for nd in N if nd.type == 'GROUP' and nd.node_tree and 'glTF' in nd.node_tree.name), None)
+    for target, src, out, img in WIRING[kind]:
+        host = g if target == 'Occlusion' else b
+        ln = host.inputs[target].links if host is not None and target in host.inputs else []
+        if not ln:
+            bad.append(f'{target} unverbunden')
+            continue
+        f = ln[0].from_socket
+        if f.node.type != src or f.name != out or image_of(f) != img:
+            bad.append(f'{target} ← {f.node.type}.{f.name} ({image_of(f)}) statt {src}.{out} ({img})')
+    return bad
+
+
+def reference():
+    """Hüllquader und UV je Dreiecksecke je Teil in der Szene, aus der export_arms die Dateien schreibt."""
+    arms = XA.build()
+    dg = bpy.context.evaluated_depsgraph_get()
+    return {o.name: (bbox(o, dg), corners(o, dg)) for side in arms.values() for o in side[2].values()}
+
+
+def problems(E, M, REF, label, fmt):
+    bad = []
+    seen = set()
+    obs = {o.name: o for o in bpy.data.objects}
+    bad += [f'{label}: fehlt {n}' for n in E if n not in obs]
+    bad += [f'{label}: fremder Knoten {n}' for n in obs if n not in E]
+    dg = bpy.context.evaluated_depsgraph_get()
+    tri = {s: {g['id']: 0 for g in M['segments']} for s in XA.SIDES}
+    for n, (par, kind, role, at, q) in E.items():
+        o = obs.get(n)
+        if o is None:
+            continue
+        if (o.parent.name if o.parent else None) != par:
+            bad.append(f"{label}: {n} hängt an {o.parent.name if o.parent else '–'} statt {par or '–'}")
+        if o.type != kind:
+            bad.append(f'{label}: {n} ist {o.type} statt {kind}')
+            continue
+        sc = o.matrix_world.to_scale()
+        if max(abs(c - 1.0) for c in sc) > 1e-4:
+            bad.append(f'{label}: {n} hat Weltmaßstab {tuple(round(c, 5) for c in sc)} statt 1')
+        if kind == 'MESH':
+            mat = o.data.materials[0].name.split('.')[0] if o.data.materials else None
+            if mat != role:
+                bad.append(f'{label}: {n} trägt Material {mat} statt {role}')
+            me = o.evaluated_get(dg).to_mesh()
+            me.calc_loop_triangles()
+            tri[n[0]][par[2:]] += len(me.loop_triangles)
+            o.evaluated_get(dg).to_mesh_clear()
+            d = max((a - b).length for a, b in zip(bbox(o, dg), REF[n][0])) * 1000
+            if d > TOL_MM:
+                bad.append(f'{label}: Netz {n} liegt {d:.3f} mm neben dem Bezug')
+            w = uv_problem(o, dg, REF[n][1])
+            if isinstance(w, str) or w > TOL_UV:
+                bad.append(f'{label}: UVs von {n} weichen vom Bezug ab ({w if isinstance(w, str) else f"{w:.2e}"})')
+            m = o.data.materials[0] if o.data.materials else None
+            if m is not None and m.name not in seen:
+                seen.add(m.name)
+                bad += [f'{label}: Material {m.name}: {x}' for x in wiring(m, fmt)]
+            continue
+        d = (o.matrix_world.translation - Vector(at)).length * 1000
+        if d > TOL_MM:
+            bad.append(f'{label}: {n} liegt {d:.3f} mm neben der Ruhelage')
+        ang = math.degrees(o.matrix_world.to_3x3().normalized().to_quaternion().rotation_difference(Quaternion(q)).angle)
+        if ang > TOL_DEG:
+            bad.append(f'{label}: {n} ist um {ang:.3f}° gegen die Ruhelage verdreht')
+    for s in XA.SIDES:
+        for g in M['segments']:
+            if tri[s][g['id']] != g['triangles'][s]:
+                bad.append(f"{label}: {s}_{g['id']} {tri[s][g['id']]} Dreiecke statt {g['triangles'][s]}")
+    return bad
+
+
+def load(kind):
+    kit.reset_scene()
+    path = os.path.join(XA.DST, f'arms.{kind}')
+    if kind == 'glb':
+        bpy.ops.import_scene.gltf(filepath=path)
+    else:
+        bpy.ops.import_scene.fbx(filepath=path)
+    bpy.context.view_layer.update()
+
+
+M = json.load(open(os.path.join(XA.DST, 'manifest.json'), encoding='utf-8'))
+E = expected(M)
+REF = reference()
+bad = []
+hit, KEYS = [], ('R_hand hängt an', 'R_hand liegt', 'R_Socket_Palm ist um', 'Netz R_palm liegt', 'UVs von R_back_plate',
+                 'Material graphite: Roughness')
+for kind in ('glb', 'fbx'):
+    load(kind)
+    bad += problems(E, M, REF, kind, kind)
+    if kind == 'glb':           # Gegenprobe am GLB: UV-Insel um ihren Schwerpunkt gespiegelt, Rauheit und Metall vertauscht
+        uvl = bpy.data.objects['R_back_plate'].data.uv_layers.active.data
+        cu = sum(d.uv[0] for d in uvl) / len(uvl)
+        for d in uvl:
+            d.uv = (2 * cu - d.uv[0], d.uv[1])
+        mg = bpy.data.materials['graphite']
+        L = mg.node_tree.links
+        b = next(nd for nd in mg.node_tree.nodes if nd.type == 'BSDF_PRINCIPLED')
+        r, mt = b.inputs['Roughness'].links[0].from_socket, b.inputs['Metallic'].links[0].from_socket
+        L.new(mt, b.inputs['Roughness'])
+        L.new(r, b.inputs['Metallic'])
+        G1 = problems(E, M, REF, 'gegenprobe', 'glb')
+        hit += [k for k in KEYS[4:] if any(k in x for x in G1)]
+    imgs = {i.name for i in bpy.data.images if i.size[0]}
+    if kind == 'glb' and len(imgs) != 3:                  # Grundfarbe, ORM, Normale eingebettet
+        bad.append(f'glb: {len(imgs)} Texturen statt 3 ({sorted(imgs)})')
+    if kind == 'fbx' and not any(os.path.basename(i.filepath) == 'arms_basecolor.png' for i in bpy.data.images if i.size[0]):
+        bad.append('fbx: Grundfarbe-Textur (textures/arms_basecolor.png) nicht gefunden')
+# Gegenprobe am zuletzt geladenen FBX: falscher Elternknoten, verschobene Hand, verdrehter Griffpunkt, verschobenes Netz
+E2 = copy.deepcopy(E)
+h = E['R_hand']
+E2['R_hand'] = ('R_upper', h[1], h[2], [h[3][0], h[3][1] + 0.001, h[3][2]], h[4])
+p = E['R_Socket_Palm']
+E2['R_Socket_Palm'] = p[:4] + (list(Quaternion((1, 0, 0), math.radians(1.0)) @ Quaternion(p[4])),)
+REF2 = dict(REF, R_palm=([c + Vector((0, 0, 0.001)) for c in REF['R_palm'][0]], REF['R_palm'][1]))
+G = problems(E2, M, REF2, 'gegenprobe', 'fbx')
+hit += [k for k in KEYS[:4] if any(k in x for x in G)]
+bad += [f'Gegenprobe nicht erkannt: {k}' for k in KEYS if k not in hit]
+# veraltete Texturen: anderer Fingerabdruck der kit-Materialien bzw. geänderte Unity-Quelle muss den Export ablehnen
+for what, attr, fake in (('kit-Materialien', 'bake_fingerprint', lambda: 'anders'),
+                         ('Unity-Quelle', 'sha', lambda path, _o=XA.sha: 'anders' if path == XA.UV_SRC else _o(path))):
+    orig = getattr(XA, attr)
+    setattr(XA, attr, fake)
+    try:
+        XA.export_files(tempfile.mkdtemp(prefix='ballon_arms_test_'))
+        bad.append(f'Export mit veralteten Texturen ({what}) nicht abgelehnt')
+    except RuntimeError as e:
+        if 'veraltet' not in str(e):
+            bad.append(f'Export ({what}) abgelehnt, aber aus anderem Grund: {e}')
+    finally:
+        setattr(XA, attr, orig)
+# gleiche Schleifen, aber verschobene Ecken: die Unity-UVs dürfen nicht übernommen werden
+arms = XA.build(materials=False)
+U = XA.unity_uvs()
+pc = arms['R'][2]['R_palm']
+U['R_palm'] = (U['R_palm'][0], U['R_palm'][1], [p + Vector((0, 0, 0.001)) for p in U['R_palm'][2]])
+try:
+    XA.apply_uvs([pc], {'R_palm': U['R_palm']})
+    bad.append('UV-Übernahme trotz verschobener Ecken (gleiche Topologie) nicht abgelehnt')
+except RuntimeError as e:
+    if 'Ecken' not in str(e):
+        bad.append(f'UV-Übernahme abgelehnt, aber aus anderem Grund: {e}')
+# neu erzeugen: GLB bytegleich, Dreiecke wie im Manifest
+tmp = tempfile.mkdtemp(prefix='ballon_arms_test_')
+meas = XA.export_files(tmp)
+same = open(os.path.join(tmp, 'arms.glb'), 'rb').read() == open(os.path.join(XA.DST, 'arms.glb'), 'rb').read()
+if not same:
+    bad.append(f"arms.glb neu erzeugt nicht bytegleich ({meas['glb']['bytes']} B, SHA {meas['glb']['sha256'][:12]} statt "
+               f"{M['files']['glb']['sha256'][:12]}): Paket neu erzeugen")
+ref = XA.measured_from(M)
+for k, de in (('triangles', 'Dreiecke'), ('bounds', 'Netzmaße')):
+    if meas[k] != ref[k]:
+        bad.append(f'{de} beim Neuerzeugen weichen vom Manifest ab')
+print(f"[test_arm_package] {len(E)} Knoten je Datei (GLB, FBX), {len(REF)} Netze mit UV je Ecke und Materialverknüpfung gegen den Bezug, Gegenprobe {len(hit)}/{len(KEYS)}, "
+      f"GLB {'bytegleich' if same else 'abweichend'}: Arm-Paket geprüft")
+for b in bad[:20]:
+    print('[test_arm_package] FEHLER', b)
+sys.exit(1 if bad else 0)
