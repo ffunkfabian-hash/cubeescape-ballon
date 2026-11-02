@@ -376,8 +376,12 @@ if os.path.exists(BL):   # Drehsinn-Test (Blender ohne Szene, ~2 s)
     r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_ego_glow.py')], capture_output=True, text=True)
     if r.returncode or 'Leuchtteil-Lagen geprüft' not in r.stdout:
         fail('Leuchtteile: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln or 'Traceback' in ln) + r.stderr[-300:])
+    # Arm-Paket ballon-arms/1 (0.40): GLB neu erzeugt bytegleich, Reimport GLB/FBX erhält Teile, Hierarchie, Anker, Ruhelage (~1 s)
+    r = subprocess.run([BL, '-b', '--factory-startup', '-P', os.path.join(ROOT, 'tools', 'test_arm_package.py')], capture_output=True, text=True)
+    if r.returncode or 'Arm-Paket geprüft' not in r.stdout:
+        fail('Arm-Paket: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln or 'Traceback' in ln) + r.stderr[-300:])
 elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux: Blender-Stufen bleiben auf dem Mac (check.yml)
-    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test, Visiersitz, Posensatz (Figuren) und Leuchtteile nur auf dem Mac')
+    print('Hinweis: Blender fehlt im PR-Check – Drehsinn-Test, Visiersitz, Posensatz (Figuren), Leuchtteile und Arm-Paket-Reimport nur auf dem Mac')
 else:
     fail('Blender fehlt: Drehsinn-Test nicht ausgeführt (BLENDER setzen)')
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_sights.py')], capture_output=True, text=True)   # 0.21 Baukasten v3
@@ -476,6 +480,11 @@ for _m in _XU.WEAPONS:              # jede spielbare Waffe mit Visier (0.18; Wer
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_arms.py'), '--check'], capture_output=True, text=True)   # 0.40 Arm-Paket
+if r.returncode:
+    fail('Arm-Paket: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
+elif 'Hinweis' in r.stdout:
+    print(r.stdout.strip().splitlines()[0])
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'make_icons.py'), '--check'], capture_output=True, text=True)   # 0.33 Ziel 2
 if r.returncode:
     fail('Waffensymbole veraltet: python3 tools/make_icons.py (' + r.stdout.strip() + ')')

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.40.0 „Brace“ – Ego-Arme: drei Renders und das Arm-Paket `ballon-arms/1` (Branch `claude/ballon-0.40-brace`)
+
+- Nutzerwunsch 02.11.2026: Renders der Ego-Arme und ein Aufbau als Paket. Neu `packages/ego-arms/` aus `tools/export_arms.py`
+  (nur erzeugt): `arms.glb` (bytegleich reproduzierbar) und `arms.fbx` mit der Kette Wurzel `R_arm`/`L_arm` → Segmente → Teile,
+  Anker `Socket_Palm`, `Socket_IndexTip`, `Socket_ThumbTip` als Leerknoten, `manifest.json` (Segmente, Eltern, Längen, Gelenke,
+  Grenzen 45°/55°, Andocken, Fingerposen, Rollen, 11 536 Dreiecke je Seite, Quellhash), README und Kontaktbogen. Prüfung in `./check`:
+  `export_arms.py --check` und `tools/test_arm_package.py` (Reimport GLB/FBX, Gegenprobe). Arm-Geometrie, Rig, `ego.json` und Unity
+  unverändert.
+- `tools/arm_renders.py`: Spielbild (BASIC-01, Hüfte, 75°), Arme allein im Studio, Aufbauansicht mit den Segment-IDs –
+  `docs/bilder/ego-arme-*.jpg`. Befund: der Löser beugt den Ellbogen um Segment-±Y, der Gelenkzylinder liegt auf X (nur gemessen,
+  nicht geändert). Bericht [docs/versions/0.40-brace.md](docs/versions/0.40-brace.md).
+
 ## 0.39.1 Patch „linke Hand“ – Handfeuerwaffe: Stützhand geht mit dem Hüftkick (Branch `claude/ballon-patch-linke-hand`)
 
 - Nutzerbefund Testbuild 0.39 „linke Hand bewegt sich gar nicht“: seit 0.36 folgte die Stützhand dem Kick gar nicht, die Waffe hob sich aus der Hand.
