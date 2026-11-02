@@ -13,7 +13,7 @@
 3. Paket neu in einen Temp-Ordner erzeugen (tools/export_arms.export_files): arms.glb bytegleich, Dreiecke und Netzmaße wie im
    Manifest.
 Gegenprobe: falscher Elternknoten, um 1 mm verschobene Hand, um 1° verdrehter Griffpunkt, ein um 1 mm verschobenes Netz und um 0,001
-verschobene UVs müssen gemeldet werden.
+verschobene UVs müssen gemeldet werden; ein Export mit veraltetem Textur-Fingerabdruck (export_arms.bake_fingerprint) muss abbrechen.
 """
 import copy
 import json
@@ -163,6 +163,17 @@ G = problems(E2, M, REF2, 'gegenprobe')
 KEYS = ('R_hand hängt an', 'R_hand liegt', 'R_Socket_Palm ist um', 'Netz R_palm liegt', 'UVs von R_back_plate')
 hit = [k for k in KEYS if any(k in b for b in G)]
 bad += [f'Gegenprobe nicht erkannt: {k}' for k in KEYS if k not in hit]
+# veraltete Texturen: ein anderer Fingerabdruck der kit-Materialien muss den Export ablehnen
+orig_fp = XA.bake_fingerprint
+XA.bake_fingerprint = lambda: 'anders'
+try:
+    XA.export_files(tempfile.mkdtemp(prefix='ballon_arms_test_'))
+    bad.append('Export mit veralteten Texturen nicht abgelehnt')
+except RuntimeError as e:
+    if 'veraltet' not in str(e):
+        bad.append(f'Export abgelehnt, aber aus anderem Grund: {e}')
+finally:
+    XA.bake_fingerprint = orig_fp
 # neu erzeugen: GLB bytegleich, Dreiecke wie im Manifest
 tmp = tempfile.mkdtemp(prefix='ballon_arms_test_')
 meas = XA.export_files(tmp)

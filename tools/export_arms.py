@@ -12,6 +12,7 @@ Ruhelage des Pakets: beide Arme gestreckt nach vorn (Blender −Y), Handrücken 
 Die Kette rechnet Finger und Daumen mit denselben Formeln wie tools/ego_build.solve_arm, nur ohne Löser: Abnehmer setzen die Gelenke
 selbst. Die Netze baut tools/ego_build.build_arm (dieselben Teile wie arms.fbx im Unity-Ordner); dieser Export ändert dort nichts.
 """
+import ast
 import hashlib
 import json
 import math
@@ -167,6 +168,33 @@ def sha(path):
 
 def sha_abs(path):
     return hashlib.sha256(open(path, 'rb').read()).hexdigest()
+
+
+BAKE_FUNCS = {'basic/kit.py': ('hex_rgba', 'material', 'aaa_nodes', 'add_bevel'),
+              'tools/bake_unity.py': ('apply_modifiers', '_image', '_source', '_link_or_set', '_channel', '_bake', '_joined'),
+              'tools/export_arms.py': ('unity_uvs', 'apply_uvs', 'bake_textures')}
+BAKE_TABLES = ('WEAR', 'WEAR_RADIUS', 'GRIME', 'SCRATCH', 'BUMP')     # kit.py: Abrieb, Schmutz, Kratzer, Relief je Rolle
+
+
+def bake_fingerprint():
+    """Was die gebackenen Texturen bestimmt, ohne Blender: kit-Werte der Armrollen (Material, Abrieb, Schmutz, Kratzer, Relief) und
+    der Quelltext der Material- und Backfunktionen. Weicht er von bake.json ab, sind die Texturen veraltet (--bake)."""
+    roles = sorted({p[4] for p in RA.parts()})
+    mats = kit_materials()
+    fp = dict(materials={r: mats[r] for r in roles}, funcs={})
+    for path, names in BAKE_FUNCS.items():
+        src = open(os.path.join(ROOT, path), encoding='utf-8').read()
+        tree = ast.parse(src)
+        for n in tree.body:
+            if isinstance(n, ast.FunctionDef) and n.name in names:
+                fp['funcs'][f'{path}:{n.name}'] = ast.get_source_segment(src, n)
+            if path == 'basic/kit.py' and isinstance(n, ast.Assign) and getattr(n.targets[0], 'id', '') in BAKE_TABLES:
+                t = ast.literal_eval(n.value)
+                fp[n.targets[0].id] = {r: t[r] for r in roles if r in t}
+    missing = [f'{p}:{f}' for p, names in BAKE_FUNCS.items() for f in names if f'{p}:{f}' not in fp['funcs']]
+    if missing:
+        raise RuntimeError('Fingerabdruck der Texturen: Funktionen fehlen (' + ', '.join(missing) + ')')
+    return hashlib.sha256(json.dumps(fp, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
 
 
 def parts_sha():
@@ -438,8 +466,10 @@ def check():
             bad.append(f"{T['path']} (SHA-256)")
     stale = [x['path'] for x in cur['textures']['bake']['sources'] if not os.path.exists(os.path.join(ROOT, x['path'])) or
              sha(x['path']) != x['sha256']]
+    if cur['textures']['bake'].get('material_sha256') != bake_fingerprint():
+        stale.append('kit-Materialien/Backfunktionen der Arme')
     if stale:
-        print('Arm-Paket: Texturen veraltet, Unity-Arm-Atlas neu gebacken (' + ', '.join(stale) + '): ce lock gpu -- blender -b '
+        print('Arm-Paket: Texturen veraltet (' + ', '.join(stale) + '): ce lock gpu -- blender -b '
               '--factory-startup -P <abs>/tools/export_arms.py -- --bake --gpu')
         return 1
     glb = os.path.join(DST, 'arms.glb')
@@ -657,7 +687,7 @@ def bake_textures(gpu, samples=64):
     used = (al.reshape(-1, 4)[:, :3].max(1) > 0) | (bp.reshape(-1, 4)[:, :3].max(1) > 0)
     d = (np.abs(rec - al).reshape(-1, 4)[:, :3].max(1) * 255)[used]
     info = dict(size=TEX_SIZE, samples=samples, device='GPU (Metal)' if gpu else 'CPU', seconds=round(time.time() - t0),
-                sources=[dict(path=p, sha256=sha(p)) for p in TEX_SOURCES],
+                sources=[dict(path=p, sha256=sha(p)) for p in TEX_SOURCES], material_sha256=bake_fingerprint(),
                 albedo_check=dict(texels=int(used.sum()), mean=round(float(d.mean()), 2), p99=round(float(np.percentile(d, 99)), 1),
                                   max=round(float(d.max()), 1),
                                   de='Grundfarbe · (1 − Metall) gegen den Unity-Diffusatlas, Abweichung je Texel (größter Kanal, 0–255)'),
@@ -698,8 +728,12 @@ def measure(arms):
 
 
 def export_files(dst):
-    """Baut die Szene und schreibt arms.glb und arms.fbx nach dst (Texturen aus DST/textures); gibt die Messwerte zurück."""
+    """Baut die Szene und schreibt arms.glb und arms.fbx nach dst (Texturen aus DST/textures); gibt die Messwerte zurück. Lehnt ab,
+    wenn die Texturen zu anderen kit-Materialien oder Backfunktionen gehören (bake_fingerprint), dann zuerst --bake."""
     import bpy
+    fp = json.load(open(os.path.join(DST, BAKE_JSON), encoding='utf-8')).get('material_sha256')
+    if fp != bake_fingerprint():
+        raise RuntimeError('Arm-Texturen veraltet (kit-Materialien oder Backfunktionen geändert): export_arms.py -- --bake --gpu')
     os.makedirs(dst, exist_ok=True)
     arms = build()
     T, B = measure(arms)

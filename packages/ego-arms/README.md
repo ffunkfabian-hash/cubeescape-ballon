@@ -120,8 +120,8 @@ UVs: Kanal UVMap = die UVs des Unity-Arm-Atlas (unity/Assets/Ballon/Generated/ar
 
 | Datei | Farbraum | Inhalt | Bytes |
 |---|---|---|---|
-| `textures/arms_basecolor.png` | sRGB | Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz) | 1953870 |
-| `textures/arms_orm.png` | linear | R Verdeckung, G Rauheit, B Metall | 3573602 |
+| `textures/arms_basecolor.png` | sRGB | Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz) | 1953815 |
+| `textures/arms_orm.png` | linear | R Verdeckung, G Rauheit, B Metall | 3573641 |
 | `textures/arms_normal.png` | linear | Normale im Tangentenraum (Unity-Atlas, 8 bit) | 3267855 |
 
 Gebacken mit 64 Samples (GPU (Metal)). Grundfarbe, Rauheit, Metall (Emission) und Verdeckung (AO, 32 Samples, 3 cm) aus den kit-AAA-Materialien auf den Unity-UVs, Backszene wie export_unity.bake_arms, aber ohne Waffe (dort steht sie im Ursprung am rechten Oberarm); Normale: Unity-Atlas auf 8 bit. Gegenprobe: Grundfarbe · (1 − Metall) gegen den Unity-Diffusatlas, Abweichung je Texel (größter Kanal, 0–255): Ø 2.07, 99 % ≤ 22.6, höchstens 83.4 über 2632809 Texel (Kantenabrieb ist ein Zufallsverfahren). Die eigene Verdeckung weicht von der Unity-AO im Mittel um 3.0 ab; 2.6 % der Texel um mehr als 30 – dort zeigt die Unity-AO Abdrücke der Waffe.
