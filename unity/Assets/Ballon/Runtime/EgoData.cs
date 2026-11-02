@@ -272,6 +272,7 @@ namespace Ballon.Ego
         public int burst_shots, burst_rpm;              // bis /9 (immer 0); seit /10 je Klasse in gameplay
         public float spread_hip_deg, spread_ads_deg;
         public float support_still;                     // 0.36: Stützhand folgt dem Modellkick in der Hüfte nicht (fehlt = 0, folgt)
+        public float support_still_dip;                 // 0.39.1: dasselbe im Unterschwingen (Mündung unter der Ruhe; fehlt = 0, folgt)
     }
 
     /// <summary>Waffenwechsel (ego.SWITCH, 6.1 A): Pause ohne Waffe zwischen Wegstecken und Ziehen.</summary>

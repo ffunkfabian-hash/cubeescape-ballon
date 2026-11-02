@@ -18,11 +18,11 @@
    },
    {
     "path": "basic/arms/ego.py",
-    "sha256": "459e70b2dfbc340b2beebb283894b90e50835bbaa9bca7e9b332a969808761a0"
+    "sha256": "a9c341278da4d3e0d746afd26a8eaeabf8bb782d4d4cb897993aa7887e2962bb"
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "8a3d84988f2333f812f0277e27fad9472a36d8a642ebcb66fd9da2a851682b17"
+    "sha256": "c1f8cb10974743d1f59ea93affc756975b3de80f5056e1f05b27b91b50d9be66"
    },
    {
     "path": "tools/blender_build.py",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "b774533f308aab36001b9e5f3d488eff3e9cbd9254a885168909696867b18fa0"
+    "sha256": "1da090304905edc94bf7fde120ea17de2fb2163307d7175930987d37c26e4cc2"
    },
    {
     "path": "tools/bake_unity.py",
@@ -120,7 +120,8 @@
    "recover_hz": 2.0,
    "spread_hip_deg": 1.1,
    "spread_ads_deg": 0.12,
-   "support_still": 0.0
+   "support_still": 0.0,
+   "support_still_dip": 0.0
   },
   "switch": {
    "empty_s": 0.03,
@@ -32251,7 +32252,8 @@
      "recover_hz": 2.0,
      "spread_hip_deg": 1.1,
      "spread_ads_deg": 0.12,
-     "support_still": 1.0
+     "support_still": 0.0,
+     "support_still_dip": 1.0
     },
     "weapon_type": "hand_cannon",
     "sight": "reflex",

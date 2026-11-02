@@ -257,8 +257,9 @@ RECOIL = dict(
     # Streuung um den Zielpunkt (Zufall, getrennt von der Bahn); bis 0.14 als MoveTuning in Unity
     spread_hip_deg=1.1, spread_ads_deg=0.12,
     # Stützhand (0.36): Anteil des Modellkicks (Rückstoß und Hochziehen), dem die linke Hand in der Hüfte NICHT folgt – 0 = sie hängt
-    # ganz an der Waffe; 1 = sie bleibt an der Waffe ohne Rückstoß (die Waffe kippt in der Schusshand). Im Zielen immer 0 (stützt)
-    support_still=0.0)
+    # ganz an der Waffe; 1 = sie bleibt an der Waffe ohne Rückstoß (die Waffe kippt in der Schusshand). Im Zielen immer 0 (stützt).
+    # support_still_dip (0.39.1): derselbe Anteil im Unterschwingen (Mündung unter der Ruhe), getrennt vom Kick nach oben
+    support_still=0.0, support_still_dip=0.0)
 # Zielfernrohr im Zielen (0.20, Visier-Standard 3: eine Kamera, Modell ungezoomt; Entscheidungsliste 1d): Teile mit `ads_hide` (Rohr,
 # Okular, Türme, Spannband) sind aus, solange der Augenpunkt Socket_Eye der Grundhaltung (nach dem Feder-Nachlauf, ohne Wippen und
 # Rückstoß) näher als eye_m an der Kamera liegt. Vorher wächst das Okular sichtbar heran wie bei Destiny (Scharfschütze: Okular füllt
@@ -892,7 +893,7 @@ CLASSES = {
                     'Trommel (45 mm vor dem Griff an der Trommelseite), damit sie die Trommel nicht verdeckt'),
         ),
         same_reload=True,
-        recoil=dict(freq_hz=1.56, zeta=0.4, back_mps=0.5, pitch_dps=800.0, ads_pitch=0.2, support_still=1.0,
+        recoil=dict(freq_hz=1.56, zeta=0.4, back_mps=0.5, pitch_dps=800.0, ads_pitch=0.2, support_still=0.0, support_still_dip=1.0,
                     cam_freq_hz=0.94, cam_zeta=1.0, cam_dps=48.0, ads_cam=3.0,
                     src='M Motiongen REF 0.35 Backblast › E (z-bb-hc-rueckstoss, Annual Skate/Kindled Orchid, 60/s): Hüftschuss Spitze '
                         '+5…+10 Bilder (Median +7) mit ≈ +55° Kippen, Modell kommt zur Kamera, Unterschwingen bis +25…+32 (25–54 % der '
@@ -906,7 +907,10 @@ CLASSES = {
                         'support_still 1 (0.36): Nutzerbefund Testbuild 0.35 „linker Arm schwingt sehr stark mit“ – die Stützhand hing am '
                         'Griffende, beim Kippen und Unterschwingen pendelte sie 94,5–107 % H und der Unterarm kam bei jedem Schuss von unten '
                         'ins Bild; Destiny zeigt die linke Hand an der Hüfte nicht (nur beim Nachladen und im Zielen, Motiongen destiny2 › 3 '
-                        'Handfeuerwaffe) → sie folgt dem Kick nicht, die Waffe kippt in der Schusshand'),
+                        'Handfeuerwaffe) → sie folgt dem Kick nicht, die Waffe kippt in der Schusshand. 0.39.1: Nutzerbefund Testbuild '
+                        '0.39 „linke Hand bewegt sich gar nicht“ (die Waffe hob sich aus der stehenden Hand) → support_still 0, '
+                        'support_still_dip 1: die Hand geht mit dem Kick nach oben, im Unterschwingen (das den Unterarm ins Bild '
+                        'brachte) bleibt sie an der Waffe ohne Rückstoß (Nutzer 02.11.2026: „Ja, so umsetzen“)'),
         gameplay=dict(rpm=140, magazine=10, path_up_h=0.017, kick=1.0,
                       src='S Annual Skate 140/min, Magazin 10 (Menü, Motiongen waffenwerte:283, destiny2:94; Rahmen 100–257/min, 8–16 Schuss); '
                           'gemessen Abstand 27 Bilder bei 60/s = 133/min „vereinbar“ (destiny2:94); Feuerart aus der Spec (Spannabzug, '

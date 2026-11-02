@@ -1076,8 +1076,8 @@ namespace Ballon.Ego
             var pf = _pf ?? (_pf = pid => S.PartFrame(output, pid));
             o.handL = S.BlendHand(A.L, f, pf);
             o.handR = S.BlendHand(A.R, f, pf);
-            float still = S.D.gameplay.RecoilOr(S.D.motion.recoil).support_still;      // 0.36: Stützhand folgt dem Kick nicht (Hüfte)
-            o.handL = EgoSolver.SupportStill(o.handL, WM, L, _t.scripted ? S.StillScripted(A) : still * (1 - adsWeight));
+            float still = EgoSolver.StillOf(S.D.gameplay.RecoilOr(S.D.motion.recoil), L);   // 0.36/0.39.1: Stützhand und Kick (Hüfte)
+            o.handL = EgoSolver.SupportStill(o.handL, WM, L, _t.scripted ? S.StillScripted(A, L) : still * (1 - adsWeight));
             if (e < 1)
             {
                 o.handL = Blend(WM * _fromRelL, o.handL, e);
