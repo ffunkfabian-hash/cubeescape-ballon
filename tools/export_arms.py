@@ -216,7 +216,8 @@ def manifest(measured):
     for seg in RA.SEGMENTS:
         par, _, _ = C['R'][seg]
         segs.append(dict(id=seg, de=segment_de(seg), parent=par or 'arm', joint=joint(seg), length_m=r6(length_m(seg)),
-                         rest={s: dict(at_m=r6(C[s][seg][1]), rot_wxyz=r6(C[s][seg][2]), world_m=r6(Wr[s][seg][0])) for s in SIDES},
+                         rest={s: dict(at_m=r6(C[s][seg][1]), rot_wxyz=r6(C[s][seg][2]), world_m=r6(Wr[s][seg][0]),
+                                         world_wxyz=r6(quat(Wr[s][seg][1]))) for s in SIDES},
                          parts=[p[0] for p in P if p[2] == seg],
                          triangles={s: measured['triangles'][s][seg] for s in SIDES}))
     tri = {s: sum(measured['triangles'][s].values()) for s in SIDES}
@@ -236,7 +237,8 @@ def manifest(measured):
                        roots={s: dict(at_m=r6(ROOT_AT[s]), rot_wxyz=r6(ROOT_ROT)) for s in SIDES}),
         segments=segs,
         anchors=[dict(id=aid, segment=seg, de=de, at_mm_R=r6(at('R')), node={s: f'{s}_{aid}' for s in SIDES},
-                      world_m={s: r6(Wr[s][aid][0]) for s in SIDES}) for aid, seg, at, de in ANCHORS],
+                      world_m={s: r6(Wr[s][aid][0]) for s in SIDES}, world_wxyz={s: r6(quat(Wr[s][aid][1])) for s in SIDES})
+                 for aid, seg, at, de in ANCHORS],
         limits=dict(wrist_target_deg=RA.WRIST_TARGET_DEG, wrist_limit_deg=RA.WRIST_LIMIT_DEG, used=finger_range()),
         finger_poses=[dict(name=k, f=[[float(a) for a in row] for row in v['f']], t=[float(a) for a in v['t']])
                       for k, v in EG.FINGER_POSES.items()],
