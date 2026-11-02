@@ -13,7 +13,8 @@
 3. Paket neu in einen Temp-Ordner erzeugen (tools/export_arms.export_files): arms.glb bytegleich, Dreiecke und Netzmaße wie im
    Manifest.
 Gegenprobe: falscher Elternknoten, um 1 mm verschobene Hand, um 1° verdrehter Griffpunkt, ein um 1 mm verschobenes Netz und um 0,001
-verschobene UVs müssen gemeldet werden; ein Export mit veraltetem Textur-Fingerabdruck (export_arms.bake_fingerprint) muss abbrechen.
+verschobene UVs müssen gemeldet werden; ein Export mit veraltetem Textur-Fingerabdruck (export_arms.bake_fingerprint) oder geänderter
+Unity-Quelle muss abbrechen, ebenso die UV-Übernahme auf ein Netz mit gleicher Topologie, aber um 1 mm verschobenen Ecken.
 """
 import copy
 import json
@@ -163,17 +164,30 @@ G = problems(E2, M, REF2, 'gegenprobe')
 KEYS = ('R_hand hängt an', 'R_hand liegt', 'R_Socket_Palm ist um', 'Netz R_palm liegt', 'UVs von R_back_plate')
 hit = [k for k in KEYS if any(k in b for b in G)]
 bad += [f'Gegenprobe nicht erkannt: {k}' for k in KEYS if k not in hit]
-# veraltete Texturen: ein anderer Fingerabdruck der kit-Materialien muss den Export ablehnen
-orig_fp = XA.bake_fingerprint
-XA.bake_fingerprint = lambda: 'anders'
+# veraltete Texturen: anderer Fingerabdruck der kit-Materialien bzw. geänderte Unity-Quelle muss den Export ablehnen
+for what, attr, fake in (('kit-Materialien', 'bake_fingerprint', lambda: 'anders'),
+                         ('Unity-Quelle', 'sha', lambda path, _o=XA.sha: 'anders' if path == XA.UV_SRC else _o(path))):
+    orig = getattr(XA, attr)
+    setattr(XA, attr, fake)
+    try:
+        XA.export_files(tempfile.mkdtemp(prefix='ballon_arms_test_'))
+        bad.append(f'Export mit veralteten Texturen ({what}) nicht abgelehnt')
+    except RuntimeError as e:
+        if 'veraltet' not in str(e):
+            bad.append(f'Export ({what}) abgelehnt, aber aus anderem Grund: {e}')
+    finally:
+        setattr(XA, attr, orig)
+# gleiche Schleifen, aber verschobene Ecken: die Unity-UVs dürfen nicht übernommen werden
+arms = XA.build(materials=False)
+U = XA.unity_uvs()
+pc = arms['R'][2]['R_palm']
+U['R_palm'] = (U['R_palm'][0], U['R_palm'][1], [p + Vector((0, 0, 0.001)) for p in U['R_palm'][2]])
 try:
-    XA.export_files(tempfile.mkdtemp(prefix='ballon_arms_test_'))
-    bad.append('Export mit veralteten Texturen nicht abgelehnt')
+    XA.apply_uvs([pc], {'R_palm': U['R_palm']})
+    bad.append('UV-Übernahme trotz verschobener Ecken (gleiche Topologie) nicht abgelehnt')
 except RuntimeError as e:
-    if 'veraltet' not in str(e):
-        bad.append(f'Export abgelehnt, aber aus anderem Grund: {e}')
-finally:
-    XA.bake_fingerprint = orig_fp
+    if 'Ecken' not in str(e):
+        bad.append(f'UV-Übernahme abgelehnt, aber aus anderem Grund: {e}')
 # neu erzeugen: GLB bytegleich, Dreiecke wie im Manifest
 tmp = tempfile.mkdtemp(prefix='ballon_arms_test_')
 meas = XA.export_files(tmp)

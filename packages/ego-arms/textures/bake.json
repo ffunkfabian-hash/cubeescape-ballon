@@ -2,7 +2,7 @@
  "size": 2048,
  "samples": 64,
  "device": "GPU (Metal)",
- "seconds": 29,
+ "seconds": 27,
  "sources": [
   {
    "path": "unity/Assets/Ballon/Generated/arms.fbx",
@@ -21,7 +21,7 @@
    "sha256": "fbd7abe868662634a98046e09c5d86753cce16b12a6e6be4c4d81ac9d959dbcf"
   }
  ],
- "material_sha256": "fac80773d5fa9f23794356438751c89d194494fba26008b1f3ad48317f5181a0",
+ "material_sha256": "20b3652c32a26e2bd7da2576e9b5ca45fe5f7d8c9f5f2d162a73f00a917dc47f",
  "albedo_check": {
   "texels": 2632809,
   "mean": 2.07,

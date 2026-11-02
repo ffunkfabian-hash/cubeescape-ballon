@@ -43,6 +43,7 @@ ALBEDO_REF = 'unity/Assets/Ballon/Generated/Textures/arms_albedo.png'   # Gegenp
 TEX_SOURCES = [UV_SRC, NORMAL_SRC, AO_SRC, ALBEDO_REF]          # geändert (Arme neu gebacken) → Texturen mit --bake neu
 TEX_FILES = dict(basecolor='textures/arms_basecolor.png', orm='textures/arms_orm.png', normal='textures/arms_normal.png')
 BAKE_JSON = 'textures/bake.json'
+UV_TOL_MM = 0.01                       # Eckenabstand Paketnetz ↔ Unity-arms.fbx, bis zu dem die Unity-UVs gelten
 TEX_DE = dict(basecolor=dict(colorspace='sRGB', de='Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz)'),
               orm=dict(colorspace='linear', de='R Verdeckung, G Rauheit, B Metall'),
               normal=dict(colorspace='linear', de='Normale im Tangentenraum (Unity-Atlas, 8 bit)'))
@@ -174,6 +175,14 @@ BAKE_FUNCS = {'basic/kit.py': ('hex_rgba', 'material', 'aaa_nodes', 'add_bevel')
               'tools/bake_unity.py': ('apply_modifiers', '_image', '_source', '_link_or_set', '_channel', '_bake', '_joined'),
               'tools/export_arms.py': ('unity_uvs', 'apply_uvs', 'bake_textures')}
 BAKE_TABLES = ('WEAR', 'WEAR_RADIUS', 'GRIME', 'SCRATCH', 'BUMP')     # kit.py: Abrieb, Schmutz, Kratzer, Relief je Rolle
+
+
+def texture_staleness(bake):
+    """Warum die Paket-Texturen nicht mehr zu ihren Quellen passen (leer = aktuell): Unity-Atlas/arms.fbx neu oder kit-Materialien."""
+    out = [x['path'] for x in bake['sources'] if not os.path.exists(os.path.join(ROOT, x['path'])) or sha(x['path']) != x['sha256']]
+    if bake.get('material_sha256') != bake_fingerprint():
+        out.append('kit-Materialien/Backfunktionen der Arme')
+    return out
 
 
 def bake_fingerprint():
@@ -464,10 +473,7 @@ def check():
         f = os.path.join(DST, T['path'])
         if os.path.exists(f) and sha_abs(f) != T['sha256']:
             bad.append(f"{T['path']} (SHA-256)")
-    stale = [x['path'] for x in cur['textures']['bake']['sources'] if not os.path.exists(os.path.join(ROOT, x['path'])) or
-             sha(x['path']) != x['sha256']]
-    if cur['textures']['bake'].get('material_sha256') != bake_fingerprint():
-        stale.append('kit-Materialien/Backfunktionen der Arme')
+    stale = texture_staleness(cur['textures']['bake'])
     if stale:
         print('Arm-Paket: Texturen veraltet (' + ', '.join(stale) + '): ce lock gpu -- blender -b '
               '--factory-startup -P <abs>/tools/export_arms.py -- --bake --gpu')
@@ -540,7 +546,8 @@ def unity_uvs():
             uv = o.data.uv_layers['UVMap'].data
             buf = [0.0] * (2 * len(uv))
             uv.foreach_get('uv', buf)
-            U[o.name.split('.')[0]] = (buf, [lp.vertex_index for lp in o.data.loops])
+            M = o.matrix_world                       # Segmente stehen im Unity-arms.fbx im Ursprung: Welt = Segmentrahmen
+            U[o.name.split('.')[0]] = (buf, [lp.vertex_index for lp in o.data.loops], [M @ v.co for v in o.data.vertices])
     for o in new:
         bpy.data.objects.remove(o)
     bpy.data.orphans_purge(do_recursive=True)
@@ -548,13 +555,17 @@ def unity_uvs():
 
 
 def apply_uvs(pieces, U):
-    """Fasen anwenden (wie export_unity.bake_arms) und die Unity-UVs Schleife für Schleife übernehmen; die Netze müssen gleich sein."""
+    """Fasen anwenden (wie export_unity.bake_arms) und die Unity-UVs Schleife für Schleife übernehmen; die Netze müssen gleich sein:
+    gleiche Schleifen und Ecken höchstens UV_TOL_MM von denen im Unity-arms.fbx entfernt (Segmentrahmen)."""
     from tools import bake_unity as BK
     BK.apply_modifiers(pieces)
     for ob in pieces:
-        buf, vidx = U[ob.name]
+        buf, vidx, pos = U[ob.name]
         if [lp.vertex_index for lp in ob.data.loops] != vidx:
             raise RuntimeError(f'{ob.name}: Netz weicht vom Unity-arms.fbx ab (Schleifen) – Unity-Export neu oder Paket prüfen')
+        d = max((v.co - p).length for v, p in zip(ob.data.vertices, pos)) * 1000
+        if d > UV_TOL_MM:
+            raise RuntimeError(f'{ob.name}: Netz weicht vom Unity-arms.fbx ab (Ecken bis {d:.3f} mm) – Unity-Export neu oder Paket prüfen')
         ob.data.uv_layers.new(name='UVMap').data.foreach_set('uv', buf)
 
 
@@ -731,9 +742,9 @@ def export_files(dst):
     """Baut die Szene und schreibt arms.glb und arms.fbx nach dst (Texturen aus DST/textures); gibt die Messwerte zurück. Lehnt ab,
     wenn die Texturen zu anderen kit-Materialien oder Backfunktionen gehören (bake_fingerprint), dann zuerst --bake."""
     import bpy
-    fp = json.load(open(os.path.join(DST, BAKE_JSON), encoding='utf-8')).get('material_sha256')
-    if fp != bake_fingerprint():
-        raise RuntimeError('Arm-Texturen veraltet (kit-Materialien oder Backfunktionen geändert): export_arms.py -- --bake --gpu')
+    stale = texture_staleness(json.load(open(os.path.join(DST, BAKE_JSON), encoding='utf-8')))
+    if stale:
+        raise RuntimeError('Arm-Texturen veraltet (' + ', '.join(stale) + '): export_arms.py -- --bake --gpu')
     os.makedirs(dst, exist_ok=True)
     arms = build()
     T, B = measure(arms)
