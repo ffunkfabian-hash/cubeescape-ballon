@@ -494,8 +494,11 @@ namespace Ballon.Ego
         }
 
         /// <summary>Anteil support_still einer geskripteten Aktion: nur mit Schüssen und nicht im Zielen (wie ego_build.evaluate).</summary>
-        public float StillScripted(EgoAction A) =>
-            A.fire != null && A.fire.Length > 0 && !A.EndsInAds ? D.gameplay.RecoilOr(D.motion.recoil).support_still : 0;
+        public float StillScripted(EgoAction A, Layers L) =>
+            A.fire != null && A.fire.Length > 0 && !A.EndsInAds ? StillOf(D.gameplay.RecoilOr(D.motion.recoil), L) : 0;
+
+        /// <summary>0.39.1: support_still im Kick (Mündung über der Ruhe), support_still_dip im Unterschwingen (L.recDeg > 0).</summary>
+        public static float StillOf(Recoil R, Layers L) => L.recDeg > 0 ? R.support_still_dip : R.support_still;
 
         /// <summary>0.36 (ego.RECOIL support_still, wie ego_build.evaluate): Stützhand an der Waffe ohne Rückstoß – Hand H an der Waffe WM
         /// (mit Rückstoß L.recPos/L.recDeg) zum Anteil still auf dieselbe Stelle der Waffe ohne Rückstoß gezogen.</summary>
@@ -740,7 +743,7 @@ namespace Ballon.Ego
             MechAt(A, f, L, o.mech);
             SetWeapon(o, WM, o.mech);
             Func<string, Matrix4x4> pf = pid => PartFrame(o, pid);
-            o.handL = SupportStill(BlendHand(A.L, f, pf), WM, L, StillScripted(A));
+            o.handL = SupportStill(BlendHand(A.L, f, pf), WM, L, StillScripted(A, L));
             o.handR = BlendHand(A.R, f, pf);
             Magazine(o, A, f, o.handL, st);
             BlendFingers(A.fL, f, o.fingersL);

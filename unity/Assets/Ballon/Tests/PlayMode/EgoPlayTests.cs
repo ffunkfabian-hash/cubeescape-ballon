@@ -2857,40 +2857,49 @@ namespace Ballon.Ego.Tests
 
         /// <summary>0.36 „Holdfast“ (Nutzerbefund Testbuild 0.35, Punkt 3: „Handfeuerwaffe: linker Arm schwingt sehr stark mit“): beim
         /// Hüftschuss kippt die Waffe ≈ 48° und schwingt unter die Ruhe (Backblast › E); die Stützhand hing am Griffende und pendelte
-        /// 94,5–107 % H, der Unterarm kam bei jedem Schuss von unten ins Bild. Mit support_still 1 bleibt sie an der Waffe ohne Rückstoß:
-        /// Hand im Bild ruhig (≤ 1,5 pp H) und nie höher als in Ruhe; die Waffe kippt weiter wie gemessen. Im Zielen stützt sie mit.</summary>
+        /// 94,5–107 % H, der Unterarm kam beim Unterschwingen von unten ins Bild. 0.36 hielt sie ganz still (support_still 1) – Nutzerbefund
+        /// Testbuild 0.39: „linke Hand bewegt sich gar nicht“. Seit 0.39.1 (support_still 0, support_still_dip 1) geht sie mit dem Kick
+        /// (bleibt an der Waffe, solange die Mündung über der Ruhe steht) und folgt dem Unterschwingen nicht: nie höher im Bild als in Ruhe.
+        /// Im Zielen stützt sie mit.</summary>
         [Test]
-        public void Handfeuerwaffe_Stuetzhand_schwingt_beim_Huefschuss_nicht()
+        public void Handfeuerwaffe_Stuetzhand_geht_mit_dem_Kick_ohne_Unterschwingen()
         {
             var HC = Class("hand_cannon");
-            Assert.AreEqual(1f, HC.gameplay.RecoilOr(HC.motion.recoil).support_still, 1e-6f, "Daten: support_still der Handfeuerwaffe");
+            var R = HC.gameplay.RecoilOr(HC.motion.recoil);
+            Assert.AreEqual(0f, R.support_still, 1e-6f, "Daten: support_still der Handfeuerwaffe (Kick)");
+            Assert.AreEqual(1f, R.support_still_dip, 1e-6f, "Daten: support_still_dip der Handfeuerwaffe (Unterschwingen)");
             var scr = new EgoScreen(new EgoSolver(HC));
             var muz = BMath.V(HC.Anchor("Socket_Muzzle").pos);
-            (float lo, float hi, float tilt) Shot(bool ads)
+            (float lo, float hi, float tilt, float offMm) Shot(bool ads)
             {
                 var c = new EgoController(new EgoSolver(HC));
                 c.ReadyNow();
                 var rest = ads ? new EgoIntent { grounded = true, aim = true } : Idle;
                 Run(c, rest, 1.0f);
                 float y0 = scr.ToScreen(BMath.Pos(c.output.handL)).y, m0 = scr.ToScreen(c.output.weapon.MultiplyPoint3x4(muz)).y;
-                float lo = 0, hi = 0, tilt = 0;
+                var rel0 = BMath.Pos(c.output.weapon.inverse * c.output.handL);
+                float lo = 0, hi = 0, tilt = 0, off = 0;
                 c.Tick(Dt, new EgoIntent { grounded = true, fire = true, aim = ads });
                 for (float t = 0; t < 1.2f; t += Dt)
                 {
                     c.Tick(Dt, rest);
                     float y = scr.ToScreen(BMath.Pos(c.output.handL)).y - y0;     // im Viewmodel-Bild (der Kamera-Ruck bewegt alles)
+                    float up = m0 - scr.ToScreen(c.output.weapon.MultiplyPoint3x4(muz)).y;
                     lo = Mathf.Min(lo, y); hi = Mathf.Max(hi, y);
-                    tilt = Mathf.Max(tilt, m0 - scr.ToScreen(c.output.weapon.MultiplyPoint3x4(muz)).y);
+                    tilt = Mathf.Max(tilt, up);
+                    if (up > 1f)                                                   // Kick: Mündung sichtbar über der Ruhe
+                        off = Mathf.Max(off, (BMath.Pos(c.output.weapon.inverse * c.output.handL) - rel0).magnitude * 1000f);
                 }
-                return (lo, hi, tilt);
+                return (lo, hi, tilt, off);
             }
             var h = Shot(false);
             var a = Shot(true);
-            TestContext.WriteLine($"Hüftschuss: Stützhand {h.lo:+0.0;-0.0} … {h.hi:+0.0;-0.0} pp H um die Ruhe, Mündung steigt {h.tilt:0.0} pp H; " +
-                                  $"Zielen: Hand {a.lo:+0.0;-0.0} … {a.hi:+0.0;-0.0} pp H, Mündung {a.tilt:0.0} pp H");
+            TestContext.WriteLine($"Hüftschuss: Stützhand {h.lo:+0.0;-0.0} … {h.hi:+0.0;-0.0} pp H um die Ruhe, an der Waffe im Kick ≤ {h.offMm:0.0} mm, " +
+                                  $"Mündung steigt {h.tilt:0.0} pp H; Zielen: Hand {a.lo:+0.0;-0.0} … {a.hi:+0.0;-0.0} pp H, Mündung {a.tilt:0.0} pp H");
             Assert.Greater(h.tilt, 10f, "die Waffe kippt weiter sichtbar (Backblast › E)");
-            Assert.GreaterOrEqual(h.lo, -1.5f, "Stützhand kommt nicht höher ins Bild (bis 0.35: −2,7 pp beim Unterschwingen)");
-            Assert.LessOrEqual(h.hi - h.lo, 1.5f, "Stützhand pendelt nicht (bis 0.35: ≈ 12 pp H)");
+            Assert.Greater(h.hi - h.lo, 3f, "Stützhand geht sichtbar mit dem Kick (0.36–0.39: ≤ 0,6 pp H, „bewegt sich gar nicht“)");
+            Assert.LessOrEqual(h.offMm, 1f, "im Kick bleibt die Hand an der Waffe (0.36–0.39 hob sich die Waffe aus der Hand)");
+            Assert.GreaterOrEqual(h.lo, -1.5f, "Stützhand kommt im Unterschwingen nicht höher ins Bild (bis 0.35: −2,7 pp H)");
             Assert.Greater(a.hi - a.lo, 0.2f, "im Zielen stützt die Hand die Waffe und folgt dem Kick");
         }
 

@@ -695,7 +695,9 @@ def evaluate(sc, A, f, report, state):
         rec_pos, rec_deg = R @ Vector((0, rc['x'].x, 0)), -(rc['x'].y + climb)
         off_pos += rec_pos
         off_rot = off_rot @ Matrix.Rotation(math.radians(rec_deg), 3, 'X')   # Mündung steigt
-        still = 0.0 if EG.ends_in_ads(A) else Rc.get('support_still', 0.0)   # 0.36: Stützhand folgt dem Kick nicht (Hüfte)
+        # 0.36/0.39.1: Anteil des Kicks, dem die Stützhand in der Hüfte nicht folgt – getrennt für den Kick (Mündung über der Ruhe) und
+        # das Unterschwingen (Mündung unter der Ruhe, rec_deg > 0)
+        still = 0.0 if EG.ends_in_ads(A) else Rc.get('support_still_dip' if rec_deg > 0 else 'support_still', 0.0)
         live = sc.P['live']                  # Live-Teile der Waffe (ego.LIVE bzw. Modul-Feld EGO_LIVE)
         G = sc.P['gameplay']
         charge_f = G['charge_s'] * EG.FPS if sc.P['fire_mode'] in EG.CHARGE_MODES else 0.0   # Ladewaffe (0.33): Abzug ab dem Aufladen

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.39.1 Patch „linke Hand“ – Handfeuerwaffe: Stützhand geht mit dem Hüftkick (Branch `claude/ballon-patch-linke-hand`)
+
+- Nutzerbefund Testbuild 0.39 „linke Hand bewegt sich gar nicht“: seit 0.36 folgte die Stützhand dem Kick gar nicht, die Waffe hob sich aus der Hand.
+  Jetzt geht sie mit dem Kick nach oben und bleibt nur beim Unterschwingen ruhig (neues `RECOIL.support_still_dip`, Blender und Unity gleich),
+  damit der Unterarm nicht wie in 0.35 von unten ins Bild kommt. Test `Handfeuerwaffe_Stuetzhand_geht_mit_dem_Kick_ohne_Unterschwingen`.
+
 ## 0.39.0 „Scatter“ – Schrot-Lochgruppen, Metall-Untergrund, Ladeleuchten der Fusion (Branch `claude/ballon-0.39-scatter`)
 
 - Schrot (Nutzerbefund „kein Streuschuss sichtbar“, Entscheid 211 B hebt 181 auf; REF 0.38 Aftermath): jede der 12 Kugeln schlägt
