@@ -1,0 +1,38 @@
+{
+ "size": 2048,
+ "samples": 64,
+ "device": "GPU (Metal)",
+ "seconds": 28,
+ "sources": [
+  {
+   "path": "unity/Assets/Ballon/Generated/arms.fbx",
+   "sha256": "a57b37d554e293b169b5af2756f375fe0cb8ebf4418493dee9a722476f7a496c"
+  },
+  {
+   "path": "unity/Assets/Ballon/Generated/Textures/arms_normal.png",
+   "sha256": "f8b020d4322b43e1eb03d0ecddb792c431de81ac272a350f5c99afcde0c5f4d0"
+  },
+  {
+   "path": "unity/Assets/Ballon/Generated/Textures/arms_ao.png",
+   "sha256": "1db824e1bca67cc46a25468fea6f917c881624fcd862b722ab9a67ffc64442b3"
+  },
+  {
+   "path": "unity/Assets/Ballon/Generated/Textures/arms_albedo.png",
+   "sha256": "fbd7abe868662634a98046e09c5d86753cce16b12a6e6be4c4d81ac9d959dbcf"
+  }
+ ],
+ "albedo_check": {
+  "texels": 2632809,
+  "mean": 2.07,
+  "p99": 22.6,
+  "max": 83.4,
+  "de": "Grundfarbe · (1 − Metall) gegen den Unity-Diffusatlas, Abweichung je Texel (größter Kanal, 0–255)"
+ },
+ "ao_check": {
+  "mean": 3.0,
+  "p99": 119.5,
+  "over_30": 0.0256,
+  "de": "eigene Verdeckung gegen die Unity-AO (0–255)"
+ },
+ "de": "Grundfarbe, Rauheit, Metall (Emission) und Verdeckung (AO, 32 Samples, 3 cm) aus den kit-AAA-Materialien auf den Unity-UVs, Backszene wie export_unity.bake_arms, aber ohne Waffe (dort steht sie im Ursprung am rechten Oberarm); Normale: Unity-Atlas auf 8 bit"
+}

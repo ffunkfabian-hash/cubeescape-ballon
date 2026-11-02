@@ -2,7 +2,10 @@
 außerhalb von BALLON (Cube Escape, Critic/Roboter). Quelle bleibt robot_arm.py; das Paket entsteht nur hier, nie von Hand.
 
   ce lock blender -- blender -b --factory-startup -P <abs>/tools/export_arms.py   → packages/ego-arms/
-        arms.glb, arms.fbx (Wurzel R_arm/L_arm → Segmentkette → Teile, Anker als Leerknoten), manifest.json, README.md, contact.jpg
+        arms.glb, arms.fbx (Wurzel R_arm/L_arm → Segmentkette → Teile, Anker als Leerknoten), manifest.json, README.md, contact.jpg;
+        Texturen aus packages/ego-arms/textures/ auf den UVs des Unity-Arm-Atlas
+  ce lock gpu -- blender -b --factory-startup -P <abs>/tools/export_arms.py -- --bake --gpu   → zuerst textures/ neu backen (Grundfarbe,
+        ORM, Normale, bake.json), nötig, wenn export_unity die Arme neu gebacken hat (--check meldet es)
   python3 tools/export_arms.py --check   → manifest.json und README.md passen zu robot_arm.py, ego.py, kit.py (ohne Blender, ./check)
 
 Ruhelage des Pakets: beide Arme gestreckt nach vorn (Blender −Y), Handrücken oben, Finger gestreckt, Daumen in seiner Grundrichtung.
@@ -31,6 +34,17 @@ ROOT_ROT = (math.sqrt(0.5), math.sqrt(0.5), 0.0, 0.0)        # +90° um X: Segme
 FORM_SRC = ['basic/arms/robot_arm.py', 'basic/arms/forms.py', 'tools/export_arms.py']   # geändert → Paket neu erzeugen (--check)
 BUILD_SRC = ['tools/ego_build.py', 'basic/kit.py']   # bauen die Netze mit (build_arm, Fasen); geändert → Hinweis, test_arm_package entscheidet
 FINGER_DE = ['Zeigefinger', 'Mittelfinger', 'Ringfinger', 'kleiner Finger']
+TEX_SIZE = 2048
+UV_SRC = 'unity/Assets/Ballon/Generated/arms.fbx'                 # UVs, auf denen der Unity-Arm-Atlas gebacken ist
+NORMAL_SRC = 'unity/Assets/Ballon/Generated/Textures/arms_normal.png'
+AO_SRC = 'unity/Assets/Ballon/Generated/Textures/arms_ao.png'
+ALBEDO_REF = 'unity/Assets/Ballon/Generated/Textures/arms_albedo.png'   # Gegenprobe: Grundfarbe · (1 − Metall) = Unity-Diffus
+TEX_SOURCES = [UV_SRC, NORMAL_SRC, AO_SRC, ALBEDO_REF]          # geändert (Arme neu gebacken) → Texturen mit --bake neu
+TEX_FILES = dict(basecolor='textures/arms_basecolor.png', orm='textures/arms_orm.png', normal='textures/arms_normal.png')
+BAKE_JSON = 'textures/bake.json'
+TEX_DE = dict(basecolor=dict(colorspace='sRGB', de='Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz)'),
+              orm=dict(colorspace='linear', de='R Verdeckung, G Rauheit, B Metall'),
+              normal=dict(colorspace='linear', de='Normale im Tangentenraum (Unity-Atlas, 8 bit)'))
 TOOLGEN_NODES = ['UpperArm_*', 'LowerArm_*', 'Hand_*', 'Fingers_*_0..2', 'Thumb_*', 'Wrist_*', 'GripContact_*']   # Cube Escape FIRST_PERSON_EQUIPMENT.md › 11
 ANCHORS = [
     ('Socket_Palm', 'hand', lambda s: (0.0, -RA.PALM_T / 2, RA.PALM_START + RA.PALM_LEN / 2),
@@ -151,6 +165,10 @@ def sha(path):
     return hashlib.sha256(open(os.path.join(ROOT, path), 'rb').read()).hexdigest()
 
 
+def sha_abs(path):
+    return hashlib.sha256(open(path, 'rb').read()).hexdigest()
+
+
 def parts_sha():
     return hashlib.sha256(json.dumps(_rounded([list(p) for p in RA.parts()]), sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
@@ -259,8 +277,14 @@ def manifest(measured):
         materials=[dict(role=r, color=roles[r]['color'], aaa_color=roles[r].get('aaa_color', roles[r]['color']),
                         rough=roles[r]['rough'], metal=roles[r]['metal'], spec=roles[r].get('spec', 0.5), de=roles[r]['de'])
                    for r in used],
-        material_de='Netze tragen je Teil eine Rolle als Materialname; Farbe in GLB/FBX = aaa_color, keine Texturen. Der gebackene '
-                    'Arm-Atlas liegt nur im Unity-Ordner (unity/Assets/Ballon/Generated/Textures/arms_{albedo,spec,normal,ao}.png)',
+        material_de='Netze tragen je Teil eine Rolle als Materialname. Alle Rollen teilen dieselben Texturen (textures); die Werte hier '
+                    'sind die Ausgangswerte der kit-Materialien, aus denen gebacken wurde. Für das Spezular-Modell (Unity URP Specular) '
+                    'liegt der Original-Atlas im Unity-Ordner (unity/Assets/Ballon/Generated/Textures/arms_{albedo,spec,normal,ao}.png)',
+        textures=dict(size=TEX_SIZE, uv='Kanal UVMap = die UVs des Unity-Arm-Atlas (' + UV_SRC + '), Schleife für Schleife übernommen',
+                      files={k: dict(measured['textures'][k], **TEX_DE[k]) for k in TEX_FILES}, bake=measured['bake'],
+                      de='glTF-Metall-Rauheit: Grundfarbe sRGB; ORM linear (R Verdeckung, G Rauheit, B Metall); Normale linear, '
+                         'Tangentenraum MikkTSpace, +Y oben (OpenGL/glTF). Im GLB eingebettet, im FBX relativ verlinkt (Grundfarbe, Normale). '
+                         'glTF kennt keinen Specular-Wert je Rolle: Graphit (kit spec 0,25, F0 0,02) glänzt dort mit F0 0,04 etwas stärker'),
         parts=[dict(id=pid, de=de, segment=seg, form=kind, role=role) for pid, de, seg, kind, role, _p in P],
         triangles=dict(total=tri, de='nach den Fasen (wie exportiert), je Seite'),
         files=dict(glb=dict(path='arms.glb', **measured['glb']), fbx=dict(path='arms.fbx', de='Bytes nicht stabil (Zeitstempel im FBX)'),
@@ -282,7 +306,9 @@ def readme(M):
          f"Bytes reproduzierbar (SHA-256 im Manifest) |",
          '| `arms.fbx` | dieselbe Hierarchie als FBX (ohne „Apply Transform“) |',
          '| `manifest.json` | Maschinenlesbar: Segmente, Eltern, Längen, Gelenke, Grenzen, Anker, Fingerposen, Rollen, Dreiecke, Quellhash |',
-         '| `contact.jpg` | Kontaktbogen aus dem wieder eingelesenen GLB (Workbench) |', '',
+         f"| `textures/` | {M['textures']['size']}²-Texturen auf `UVMap`: `arms_basecolor.png`, `arms_orm.png`, `arms_normal.png`; "
+         "Herkunft und Gegenprobe in `bake.json` |",
+         '| `contact.jpg` | Kontaktbogen aus dem wieder eingelesenen GLB (Workbench: Grundfarbe; EEVEE: volles Material) |', '',
          '## Aufbau', '',
          'Ein Arm besteht aus **starren Teilen**, die je an genau einem **Segment** hängen. Es gibt kein Skinning und keine Knochen. '
          'Ein Gelenk ist der Ursprung eines Segments, und bewegt wird, indem man die lokale Drehung des Segmentknotens setzt.', '',
@@ -340,6 +366,15 @@ def readme(M):
     for p in M['finger_poses']:
         L.append(f"| `{p['name']}` | " + ' | '.join(str([int(a) if a == int(a) else a for a in row]) for row in p['f']) +
                  f" | {[int(a) if a == int(a) else a for a in p['t']]} |")
+    T = M['textures']
+    L += ['', '## Texturen', '', T['de'] + '.', '', f"UVs: {T['uv']}.", '', '| Datei | Farbraum | Inhalt | Bytes |', '|---|---|---|---|']
+    for k, f in T['files'].items():
+        L.append(f"| `{f['path']}` | {f['colorspace']} | {f['de']} | {f['bytes']} |")
+    A = T['bake']['albedo_check']
+    L += ['', f"Gebacken mit {T['bake']['samples']} Samples ({T['bake']['device']}). {T['bake']['de']}. Gegenprobe: {A['de']}: "
+          f"Ø {A['mean']}, 99 % ≤ {A['p99']}, höchstens {A['max']} über {A['texels']} Texel (Kantenabrieb ist ein Zufallsverfahren). "
+          f"Die eigene Verdeckung weicht von der Unity-AO im Mittel um {T['bake']['ao_check']['mean']} ab; "
+          f"{T['bake']['ao_check']['over_30'] * 100:.1f} % der Texel um mehr als 30 – dort zeigt die Unity-AO Abdrücke der Waffe."]
     L += ['', '## Materialrollen', '', M['material_de'] + '.', '', '| Rolle | Farbe | AAA-Farbe | Rauheit | Metall | Bedeutung |',
           '|---|---|---|---|---|---|']
     for m in M['materials']:
@@ -354,7 +389,8 @@ def readme(M):
           f" ({M['toolgen']['nodes_src']}); eine Namenszuordnung legt dieses Paket nicht fest.",
           '- **Roboter von außen (Critic, Figur):** Die Wurzel `<S>_arm` sitzt im Schultergelenk des Rumpfs. Die Gelenkachsen und Längen '
           'stehen in `segments`. Die Hand greift über `Socket_Palm` wie oben.',
-          '- **Material:** Rolle je Teil (Materialname); eigene Shader sollen die Werte aus `materials` nutzen.', '',
+          '- **Material:** Rolle je Teil (Materialname), alle Rollen auf denselben drei Texturen (`textures/`). Das GLB trägt das '
+          'volle Metall-Rauheit-Material; im FBX sind nur Grundfarbe und Normale verlinkt, die ORM-Textur dort selbst anschließen.', '',
           '## Was ewig ist', '',
           '- Segment-IDs aus `robot_arm.SEGMENTS`: ' + ', '.join(f'`{s["id"]}`' for s in M['segments']) + '.',
           '- Anker-Namen: ' + ', '.join(f"`{a['id']}`" for a in M['anchors']) + '. Knotennamen `<S>_…` mit S = R/L, Wurzel `<S>_arm`.',
@@ -375,7 +411,9 @@ def readme(M):
 def measured_from(M):
     return dict(triangles={s: {x['id']: x['triangles'][s] for x in M['segments']} for s in SIDES},
                 bounds={s: {x['id']: x['mesh_bounds_mm'][s] for x in M['segments']} for s in SIDES},
-                glb={k: M['files']['glb'][k] for k in ('sha256', 'bytes')})
+                glb={k: M['files']['glb'][k] for k in ('sha256', 'bytes')},
+                textures={k: {kk: M['textures']['files'][k][kk] for kk in ('path', 'sha256', 'bytes')} for k in TEX_FILES},
+                bake=M['textures']['bake'])
 
 
 def check():
@@ -391,9 +429,19 @@ def check():
     old = {f['path']: f['sha256'] for f in cur.get('sources', {}).get('files', [])}
     bad += [f['path'] for f in new['sources']['files'] if f['path'] in FORM_SRC and old.get(f['path']) != f['sha256']]
     note = [f['path'] for f in new['sources']['files'] if f['path'] in BUILD_SRC and old.get(f['path']) != f['sha256']]
-    for f in ('arms.glb', 'arms.fbx', 'contact.jpg', 'README.md'):
+    for f in ['arms.glb', 'arms.fbx', 'contact.jpg', 'README.md', BAKE_JSON] + list(TEX_FILES.values()):
         if not os.path.exists(os.path.join(DST, f)):
             bad.append(f)
+    for k, T in cur['textures']['files'].items():
+        f = os.path.join(DST, T['path'])
+        if os.path.exists(f) and sha_abs(f) != T['sha256']:
+            bad.append(f"{T['path']} (SHA-256)")
+    stale = [x['path'] for x in cur['textures']['bake']['sources'] if not os.path.exists(os.path.join(ROOT, x['path'])) or
+             sha(x['path']) != x['sha256']]
+    if stale:
+        print('Arm-Paket: Texturen veraltet, Unity-Arm-Atlas neu gebacken (' + ', '.join(stale) + '): ce lock gpu -- blender -b '
+              '--factory-startup -P <abs>/tools/export_arms.py -- --bake --gpu')
+        return 1
     glb = os.path.join(DST, 'arms.glb')
     if os.path.exists(glb) and hashlib.sha256(open(glb, 'rb').read()).hexdigest() != cur['files']['glb']['sha256']:
         bad.append('arms.glb (SHA-256)')
@@ -412,7 +460,8 @@ def check():
 
 # ------------------------------------------------------------------ Blender-Teil
 def build(materials=True):
-    """Szene mit beiden Armen in der Ruhelage des Pakets: {Seite: (Wurzel, Segmente, Teile, Anker)}."""
+    """Szene mit beiden Armen in der Ruhelage des Pakets: {Seite: (Wurzel, Segmente, Teile, Anker)}. materials: True = Rollen-
+    materialien mit den Paket-Texturen auf den UVs des Unity-Atlas, False = kit-Materialien (Renders)."""
     import bpy
     from mathutils import Matrix, Quaternion, Vector
     from basic import kit
@@ -440,22 +489,192 @@ def build(materials=True):
             e.parent = segs[seg]
             e.matrix_basis = Matrix.Translation(Vector((sx * a[0], a[1], a[2])) * MM)
             anchors[aid] = e
-        if materials:          # einfache Rollenmaterialien (Name = Rolle, aaa_color); kit.material ist ein Knotenbaum für Cycles
-            for ob in pieces.values():
-                role = ob.data.materials[0]['basic_role']
-                if role not in mats:
-                    d = kit.MATERIALS[role]
-                    m = bpy.data.materials.new(role)
-                    m.use_nodes = True
-                    b = m.node_tree.nodes['Principled BSDF']
-                    b.inputs['Base Color'].default_value = kit.hex_rgba(d.get('aaa_color', d['color']))
-                    b.inputs['Roughness'].default_value = d['rough']
-                    b.inputs['Metallic'].default_value = d['metal']
-                    mats[role] = m
-                ob.data.materials[0] = mats[role]
         out[side] = (root, segs, pieces, anchors)
+    if materials:
+        allp = [ob for side in SIDES for ob in out[side][2].values()]
+        apply_uvs(allp, unity_uvs())
+        tex_materials(allp, mats)
     bpy.context.view_layer.update()
     return out
+
+
+def unity_uvs():
+    """UVs je Teil aus dem Unity-arms.fbx (darauf ist der Atlas gebacken): {Teil: (uv flach je Schleife, Eckindex je Schleife)}."""
+    import bpy
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.fbx(filepath=os.path.join(ROOT, UV_SRC))
+    new = [o for o in bpy.data.objects if o not in before]
+    U = {}
+    for o in new:
+        if o.type == 'MESH':
+            uv = o.data.uv_layers['UVMap'].data
+            buf = [0.0] * (2 * len(uv))
+            uv.foreach_get('uv', buf)
+            U[o.name.split('.')[0]] = (buf, [lp.vertex_index for lp in o.data.loops])
+    for o in new:
+        bpy.data.objects.remove(o)
+    bpy.data.orphans_purge(do_recursive=True)
+    return U
+
+
+def apply_uvs(pieces, U):
+    """Fasen anwenden (wie export_unity.bake_arms) und die Unity-UVs Schleife für Schleife übernehmen; die Netze müssen gleich sein."""
+    from tools import bake_unity as BK
+    BK.apply_modifiers(pieces)
+    for ob in pieces:
+        buf, vidx = U[ob.name]
+        if [lp.vertex_index for lp in ob.data.loops] != vidx:
+            raise RuntimeError(f'{ob.name}: Netz weicht vom Unity-arms.fbx ab (Schleifen) – Unity-Export neu oder Paket prüfen')
+        ob.data.uv_layers.new(name='UVMap').data.foreach_set('uv', buf)
+
+
+def tex_materials(pieces, mats):
+    """Rollenmaterialien (Name = Rolle) mit den Paket-Texturen: Grundfarbe, ORM (R Verdeckung, G Rauheit, B Metall), Normale."""
+    import bpy
+    im = {}
+    for k, f in TEX_FILES.items():
+        im[k] = bpy.data.images.load(os.path.join(DST, f), check_existing=True)
+        im[k].colorspace_settings.name = 'sRGB' if k == 'basecolor' else 'Non-Color'
+    grp = bpy.data.node_groups.get('glTF Material Output')
+    if grp is None:                     # vom glTF-Exporter erkannt: Verdeckung (occlusion) aus dem R-Kanal der ORM-Textur
+        grp = bpy.data.node_groups.new('glTF Material Output', 'ShaderNodeTree')
+        grp.interface.new_socket('Occlusion', in_out='INPUT', socket_type='NodeSocketFloat')
+    for ob in pieces:
+        role = ob.data.materials[0]['basic_role']
+        if role not in mats:
+            m = bpy.data.materials.new(role)
+            m.use_nodes = True
+            N, L = m.node_tree.nodes, m.node_tree.links
+            b = N['Principled BSDF']
+            tb, to, tn = (N.new('ShaderNodeTexImage') for _ in range(3))
+            tb.image, to.image, tn.image = im['basecolor'], im['orm'], im['normal']
+            sep, nm, g = N.new('ShaderNodeSeparateColor'), N.new('ShaderNodeNormalMap'), N.new('ShaderNodeGroup')
+            g.node_tree = grp
+            L.new(tb.outputs['Color'], b.inputs['Base Color'])
+            L.new(to.outputs['Color'], sep.inputs['Color'])
+            L.new(sep.outputs['Green'], b.inputs['Roughness'])
+            L.new(sep.outputs['Blue'], b.inputs['Metallic'])
+            L.new(sep.outputs['Red'], g.inputs['Occlusion'])
+            L.new(tn.outputs['Color'], nm.inputs['Color'])
+            L.new(nm.outputs['Normal'], b.inputs['Normal'])
+            m['basic_role'] = role
+            mats[role] = m
+        ob.data.materials[0] = mats[role]
+
+
+def bake_textures(gpu, samples=64):
+    """Paket-Texturen: Grundfarbe, Rauheit und Metall aus den kit-AAA-Materialien auf den Unity-UVs gebacken, in derselben Backszene
+    wie export_unity.bake_arms (Segmente nebeneinander, alle Teile zusammengefügt: Objekt- und Generated-Koordinaten der Abriebmuster
+    gleich); Verdeckung selbst gebacken (ohne Waffe), Normale aus dem Unity-Atlas (8 bit). Schreibt TEX_FILES und BAKE_JSON."""
+    import time
+    import bpy
+    import numpy as np
+    from mathutils import Matrix
+    from basic import kit
+    from tools import bake_unity as BK
+    import tools.ego_build as EB
+    t0 = time.time()
+    kit.reset_scene()
+    built = {s: EB.build_arm(s) for s in SIDES}
+    allp = [o for s in SIDES for o in built[s][1].values()]
+    apply_uvs(allp, unity_uvs())
+    kit.set_mode({o.name: o for o in allp}, 'aaa')
+    for si, s in enumerate(SIDES):
+        for i, e in enumerate(built[s][0].values()):
+            e.matrix_world = Matrix.Translation((i * 0.5, si * 1.0, 0.0))
+    bpy.context.view_layer.update()
+    BK.SKIP_ROLES |= BK._skip_roles()
+    obs = [o for s in SIDES for e in built[s][0].values() for o in [e] + list(e.children) if o.type == 'MESH' and BK.bakeable(o)]
+    sc = bpy.context.scene
+    sc.render.engine = 'CYCLES'
+    if gpu:
+        pr = bpy.context.preferences.addons['cycles'].preferences
+        pr.compute_device_type = 'METAL'
+        pr.get_devices()
+        for d in pr.devices:
+            d.use = d.type == 'METAL'
+        sc.cycles.device = 'GPU'
+    sc.cycles.use_denoising = False
+    sc.world = sc.world or bpy.data.worlds.new('W')
+    sc.world.light_settings.distance = 0.03          # AO-Reichweite wie bake_unity.bake_atlas (3 cm)
+    orig = BK._channel
+
+    def channel(N, L, b, ch, target):            # Grundfarbe ohne Metall-Anteil (bake_unity kennt nur Diffus = Grundfarbe · (1 − Metall))
+        if ch == 'base':
+            BK._link_or_set(N, L, b, 'Base Color', target)
+            return []
+        return orig(N, L, b, ch, target)
+    BK._channel = channel
+    try:
+        jo, tmp = BK._joined(obs, True)
+        mset = {sl.material for o in jo for sl in o.material_slots if sl.material}
+        base = BK._image('arms_basecolor', TEX_SIZE, True)
+        BK._bake(jo, mset, base, 'EMIT', samples, 'base')
+        rough = BK._image('arms_rough', TEX_SIZE, False)
+        BK._bake(jo, mset, rough, 'EMIT', samples, 'rough')
+        metal = BK._image('arms_metal', TEX_SIZE, False)
+        BK._bake(jo, mset, metal, 'EMIT', samples, 'metal')
+        aoi = BK._image('arms_ao_pkg', TEX_SIZE, False)
+        BK._bake(jo, mset, aoi, 'AO', 32)
+    finally:
+        BK._channel = orig
+    n = TEX_SIZE * TEX_SIZE * 4
+
+    def px(img):
+        a = np.empty(n, np.float32)
+        img.pixels.foreach_get(a)
+        return a
+
+    def load(path, srgb):
+        img = bpy.data.images.load(os.path.join(ROOT, path))
+        img.colorspace_settings.name = 'sRGB' if srgb else 'Non-Color'
+        return img
+
+    def save(name, pixels, key):
+        img = bpy.data.images.new(name, TEX_SIZE, TEX_SIZE, alpha=False, float_buffer=False)
+        img.colorspace_settings.name = 'Non-Color'
+        img.pixels.foreach_set(pixels)
+        img.filepath_raw, img.file_format = os.path.join(DST, TEX_FILES[key]), 'PNG'
+        img.save()
+    os.makedirs(os.path.join(DST, 'textures'), exist_ok=True)
+    base.filepath_raw, base.file_format = os.path.join(DST, TEX_FILES['basecolor']), 'PNG'
+    base.save()
+    r, m, orm = px(rough), px(metal), px(aoi)
+    ua = px(load(AO_SRC, False))
+    used_ao = (orm[0::4] > 0) | (ua[0::4] > 0)
+    dao = np.abs(orm[0::4] - ua[0::4])[used_ao] * 255
+    orm[1::4], orm[2::4], orm[3::4] = r[0::4], m[0::4], 1.0
+    save('arms_orm8', orm, 'orm')
+    save('arms_normal8', px(load(NORMAL_SRC, False)), 'normal')
+
+    def lin(c):
+        return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+    def srgb(c):
+        return np.where(c <= 0.0031308, c * 12.92, 1.055 * np.power(np.maximum(c, 0), 1 / 2.4) - 0.055)
+    bp, al = px(bpy.data.images.load(os.path.join(DST, TEX_FILES['basecolor']))), px(load(ALBEDO_REF, True))
+    rec = srgb(lin(bp) * (1.0 - np.repeat(m[0::4], 4)))           # beide Bilder als 8-bit-sRGB gelesen (pixels unverwaltet)
+    used = (al.reshape(-1, 4)[:, :3].max(1) > 0) | (bp.reshape(-1, 4)[:, :3].max(1) > 0)
+    d = (np.abs(rec - al).reshape(-1, 4)[:, :3].max(1) * 255)[used]
+    info = dict(size=TEX_SIZE, samples=samples, device='GPU (Metal)' if gpu else 'CPU', seconds=round(time.time() - t0),
+                sources=[dict(path=p, sha256=sha(p)) for p in TEX_SOURCES],
+                albedo_check=dict(texels=int(used.sum()), mean=round(float(d.mean()), 2), p99=round(float(np.percentile(d, 99)), 1),
+                                  max=round(float(d.max()), 1),
+                                  de='Grundfarbe · (1 − Metall) gegen den Unity-Diffusatlas, Abweichung je Texel (größter Kanal, 0–255)'),
+                ao_check=dict(mean=round(float(dao.mean()), 2), p99=round(float(np.percentile(dao, 99)), 1),
+                              over_30=round(float((dao > 30).mean()), 4), de='eigene Verdeckung gegen die Unity-AO (0–255)'),
+                de='Grundfarbe, Rauheit, Metall (Emission) und Verdeckung (AO, 32 Samples, 3 cm) aus den kit-AAA-Materialien auf den '
+                   'Unity-UVs, Backszene wie export_unity.bake_arms, aber ohne Waffe (dort steht sie im Ursprung am rechten Oberarm); '
+                   'Normale: Unity-Atlas auf 8 bit')
+    with open(os.path.join(DST, BAKE_JSON), 'w', encoding='utf-8') as f:
+        json.dump(info, f, ensure_ascii=False, indent=1)
+        f.write('\n')
+    if tmp is not None:
+        bpy.data.objects.remove(tmp)
+    print(f"[export_arms] Texturen gebacken ({info['seconds']} s, {info['device']}), Diffus-Gegenprobe Ø {info['albedo_check']['mean']} "
+          f"/ p99 {info['albedo_check']['p99']}, AO gegen Unity Ø {info['ao_check']['mean']} / p99 {info['ao_check']['p99']} "
+          f"/ > 30: {info['ao_check']['over_30']} (von 255)", flush=True)
+    return info
 
 
 def measure(arms):
@@ -479,7 +698,7 @@ def measure(arms):
 
 
 def export_files(dst):
-    """Baut die Szene und schreibt arms.glb und arms.fbx nach dst; gibt die Messwerte (Dreiecke, GLB) zurück."""
+    """Baut die Szene und schreibt arms.glb und arms.fbx nach dst (Texturen aus DST/textures); gibt die Messwerte zurück."""
     import bpy
     os.makedirs(dst, exist_ok=True)
     arms = build()
@@ -487,46 +706,48 @@ def export_files(dst):
     glb = os.path.join(dst, 'arms.glb')
     bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', use_selection=False, export_apply=True, export_yup=True,
                               export_materials='EXPORT', export_cameras=False, export_lights=False, export_extras=False,
-                              export_animations=False, export_skins=False, export_morph=False, export_texcoords=False,
-                              export_tangents=False, export_attributes=False)
+                              export_animations=False, export_skins=False, export_morph=False, export_texcoords=True,
+                              export_tangents=False, export_attributes=False, export_image_format='AUTO')
     bpy.ops.export_scene.fbx(filepath=os.path.join(dst, 'arms.fbx'), use_selection=False, object_types={'EMPTY', 'MESH'},
                              use_mesh_modifiers=True, mesh_smooth_type='OFF', use_custom_props=False, add_leaf_bones=False,
                              bake_anim=False, apply_unit_scale=True, apply_scale_options='FBX_SCALE_ALL', bake_space_transform=False,
-                             axis_forward='-Z', axis_up='Y', path_mode='STRIP', embed_textures=False)
+                             axis_forward='-Z', axis_up='Y', path_mode='RELATIVE', embed_textures=False)
     body = open(glb, 'rb').read()
-    return dict(triangles=T, bounds=B, glb=dict(sha256=hashlib.sha256(body).hexdigest(), bytes=len(body)))
+    tex = {k: dict(path=f, sha256=sha_abs(os.path.join(DST, f)), bytes=os.path.getsize(os.path.join(DST, f))) for k, f in TEX_FILES.items()}
+    return dict(triangles=T, bounds=B, glb=dict(sha256=hashlib.sha256(body).hexdigest(), bytes=len(body)), textures=tex,
+                bake=json.load(open(os.path.join(DST, BAKE_JSON), encoding='utf-8')))
 
 
-SHEET = [('beide Arme, vorn oben', (-0.75, -1.55, 0.85), (0.0, -0.45, 0.0), 40),
-         ('rechts, Seite', (-1.6, -0.42, 0.10), (0.0, -0.42, 0.0), 40),
-         ('oben', (0.0, -0.42, 1.7), (0.0, -0.42, 0.0), 40),
-         ('rechte Hand, nah', (-0.42, -0.95, 0.25), (-0.20, -0.70, 0.0), 55)]
+SHEET = [('beide Arme, vorn oben · Grundfarbe (Workbench)', (-0.75, -1.55, 0.85), (0.0, -0.45, 0.0), 40, 'BLENDER_WORKBENCH'),
+         ('rechts, Seite · volles Material (EEVEE)', (-1.6, -0.42, 0.10), (0.0, -0.42, 0.0), 40, 'BLENDER_EEVEE'),
+         ('oben · Grundfarbe (Workbench)', (0.0, -0.42, 1.7), (0.0, -0.42, 0.0), 40, 'BLENDER_WORKBENCH'),
+         ('rechte Hand, nah · volles Material (EEVEE)', (-0.42, -0.95, 0.25), (-0.20, -0.70, 0.0), 55, 'BLENDER_EEVEE')]
 
 
 def contact_sheet(dst):
-    """Kontaktbogen aus dem wieder eingelesenen GLB (Workbench, Materialfarben), vier Ansichten 2 × 2."""
+    """Kontaktbogen aus dem wieder eingelesenen GLB, vier Ansichten 2 × 2: Workbench mit der Grundfarbe-Textur und EEVEE mit dem vollen
+    Material (Grundfarbe, ORM, Normale), so wie der glTF-Import es aufbaut."""
     import bpy
     import tempfile
     from basic import kit
     kit.reset_scene()
     bpy.ops.import_scene.gltf(filepath=os.path.join(dst, 'arms.glb'))
-    sc = bpy.context.scene
-    sc.render.engine = 'BLENDER_WORKBENCH'
+    import tools.blender_build as BB
+    sc = BB.setup_render(960, 16, aaa=True, bloom=False, bg='mid')   # EEVEE-Kacheln: Studiolicht, Hintergrund und AgX wie die Renders
     sc.display.shading.light = 'STUDIO'
-    sc.display.shading.color_type = 'MATERIAL'
+    sc.display.shading.color_type = 'TEXTURE'
     sc.display.shading.show_cavity = True
     sc.display.render_aa = '8'
     sc.render.resolution_x, sc.render.resolution_y = 960, 540
-    sc.render.film_transparent = False
-    sc.world = bpy.data.worlds.new('W')
-    sc.world.color = (0.55, 0.57, 0.60)
+    sc.world.color = (0.55, 0.57, 0.60)                 # Hintergrund der Workbench-Kacheln
     cam = bpy.data.objects.new('Cam', bpy.data.cameras.new('Cam'))
     sc.collection.objects.link(cam)
     sc.camera = cam
     from mathutils import Vector
     tmp = tempfile.mkdtemp(prefix='ballon_arms_sheet_')
     tiles = []
-    for i, (label, pos, at, lens) in enumerate(SHEET):
+    for i, (label, pos, at, lens, engine) in enumerate(SHEET):
+        sc.render.engine = engine
         cam.data.lens = lens
         cam.location = pos
         cam.rotation_euler = (Vector(at) - Vector(pos)).to_track_quat('-Z', 'Y').to_euler()
@@ -535,7 +756,7 @@ def contact_sheet(dst):
         tiles += ['-label', label, sc.render.filepath]
     subprocess.run(['montage', '-font', '/System/Library/Fonts/Supplemental/Arial.ttf', '-pointsize', '20', *tiles,
                     '-tile', '2x2', '-geometry', '+6+6', '-background', '#E9E9E6',
-                    '-title', f'{FORMAT} · Rig v{RA.RIG_VERSION} · wieder eingelesenes arms.glb', '-quality', '86',
+                    '-title', f'{FORMAT} · Rig v{RA.RIG_VERSION} · wieder eingelesenes arms.glb mit Texturen', '-quality', '86',
                     os.path.join(dst, 'contact.jpg')], check=True)
 
 
@@ -550,6 +771,8 @@ def write(dst, measured):
 
 
 def blender_main():
+    if '--bake' in sys.argv:
+        bake_textures('--gpu' in sys.argv)
     measured = export_files(DST)
     M = write(DST, measured)
     contact_sheet(DST)

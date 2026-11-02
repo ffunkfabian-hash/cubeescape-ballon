@@ -11,7 +11,8 @@ Erzeugt von `tools/export_arms.py` (BALLON), nie von Hand bearbeiten. Rig-Versio
 | `arms.glb` | beide Arme, glTF 2.0 binär, 23072 Dreiecke, Bytes reproduzierbar (SHA-256 im Manifest) |
 | `arms.fbx` | dieselbe Hierarchie als FBX (ohne „Apply Transform“) |
 | `manifest.json` | Maschinenlesbar: Segmente, Eltern, Längen, Gelenke, Grenzen, Anker, Fingerposen, Rollen, Dreiecke, Quellhash |
-| `contact.jpg` | Kontaktbogen aus dem wieder eingelesenen GLB (Workbench) |
+| `textures/` | 2048²-Texturen auf `UVMap`: `arms_basecolor.png`, `arms_orm.png`, `arms_normal.png`; Herkunft und Gegenprobe in `bake.json` |
+| `contact.jpg` | Kontaktbogen aus dem wieder eingelesenen GLB (Workbench: Grundfarbe; EEVEE: volles Material) |
 
 ## Aufbau
 
@@ -111,9 +112,23 @@ f: je Finger (Zeige-, Mittel-, Ring-, kleiner Finger) drei Gliedwinkel; t: Daume
 | `foregrip` | [62, 74, 48] | [62, 74, 48] | [62, 74, 48] | [62, 74, 48] | [80, 5, 60] |
 | `foregrip_open` | [4, 4, 3] | [4, 4, 3] | [4, 4, 3] | [4, 4, 3] | [80, 5, 60] |
 
+## Texturen
+
+glTF-Metall-Rauheit: Grundfarbe sRGB; ORM linear (R Verdeckung, G Rauheit, B Metall); Normale linear, Tangentenraum MikkTSpace, +Y oben (OpenGL/glTF). Im GLB eingebettet, im FBX relativ verlinkt (Grundfarbe, Normale). glTF kennt keinen Specular-Wert je Rolle: Graphit (kit spec 0,25, F0 0,02) glänzt dort mit F0 0,04 etwas stärker.
+
+UVs: Kanal UVMap = die UVs des Unity-Arm-Atlas (unity/Assets/Ballon/Generated/arms.fbx), Schleife für Schleife übernommen.
+
+| Datei | Farbraum | Inhalt | Bytes |
+|---|---|---|---|
+| `textures/arms_basecolor.png` | sRGB | Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz) | 1953870 |
+| `textures/arms_orm.png` | linear | R Verdeckung, G Rauheit, B Metall | 3573602 |
+| `textures/arms_normal.png` | linear | Normale im Tangentenraum (Unity-Atlas, 8 bit) | 3267855 |
+
+Gebacken mit 64 Samples (GPU (Metal)). Grundfarbe, Rauheit, Metall (Emission) und Verdeckung (AO, 32 Samples, 3 cm) aus den kit-AAA-Materialien auf den Unity-UVs, Backszene wie export_unity.bake_arms, aber ohne Waffe (dort steht sie im Ursprung am rechten Oberarm); Normale: Unity-Atlas auf 8 bit. Gegenprobe: Grundfarbe · (1 − Metall) gegen den Unity-Diffusatlas, Abweichung je Texel (größter Kanal, 0–255): Ø 2.07, 99 % ≤ 22.6, höchstens 83.4 über 2632809 Texel (Kantenabrieb ist ein Zufallsverfahren). Die eigene Verdeckung weicht von der Unity-AO im Mittel um 3.0 ab; 2.6 % der Texel um mehr als 30 – dort zeigt die Unity-AO Abdrücke der Waffe.
+
 ## Materialrollen
 
-Netze tragen je Teil eine Rolle als Materialname; Farbe in GLB/FBX = aaa_color, keine Texturen. Der gebackene Arm-Atlas liegt nur im Unity-Ordner (unity/Assets/Ballon/Generated/Textures/arms_{albedo,spec,normal,ao}.png).
+Netze tragen je Teil eine Rolle als Materialname. Alle Rollen teilen dieselben Texturen (textures); die Werte hier sind die Ausgangswerte der kit-Materialien, aus denen gebacken wurde. Für das Spezular-Modell (Unity URP Specular) liegt der Original-Atlas im Unity-Ordner (unity/Assets/Ballon/Generated/Textures/arms_{albedo,spec,normal,ao}.png).
 
 | Rolle | Farbe | AAA-Farbe | Rauheit | Metall | Bedeutung |
 |---|---|---|---|---|---|
@@ -129,7 +144,7 @@ Netze tragen je Teil eine Rolle als Materialname; Farbe in GLB/FBX = aaa_color, 
 - **Alle:** `manifest.json` lesen und `format` prüfen (`ballon-arms/1`, sonst abbrechen). Dann `arms.glb` oder `arms.fbx` laden, Knoten über die Namen `<S>_<segment>` und `<S>_<anker>` finden und nie über die Reihenfolge.
 - **Ego-Ansicht (Cube Escape, BALLON-Unity):** Die Wurzel kommt an die Schulter im Kameraraum (`ego.shoulder_m`). Die Hand wird über `Socket_Palm` an den Griff der Waffe gelegt. Der Unterarm folgt der Hand mit dem Knick ≤ 45° (`ego_build.solve_arm`), der Oberarm zeigt zur Schulter. Die Finger kommen aus `finger_poses`. Zum Vergleich die Toolgen-Knoten in Cube Escape: `UpperArm_*`, `LowerArm_*`, `Hand_*`, `Fingers_*_0..2`, `Thumb_*`, `Wrist_*`, `GripContact_*` (Cube Escape Docs/FIRST_PERSON_EQUIPMENT.md › 11); eine Namenszuordnung legt dieses Paket nicht fest.
 - **Roboter von außen (Critic, Figur):** Die Wurzel `<S>_arm` sitzt im Schultergelenk des Rumpfs. Die Gelenkachsen und Längen stehen in `segments`. Die Hand greift über `Socket_Palm` wie oben.
-- **Material:** Rolle je Teil (Materialname); eigene Shader sollen die Werte aus `materials` nutzen.
+- **Material:** Rolle je Teil (Materialname), alle Rollen auf denselben drei Texturen (`textures/`). Das GLB trägt das volle Metall-Rauheit-Material; im FBX sind nur Grundfarbe und Normale verlinkt, die ORM-Textur dort selbst anschließen.
 
 ## Was ewig ist
 
