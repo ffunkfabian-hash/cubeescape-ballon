@@ -3073,7 +3073,7 @@
    },
    {
     "path": "tools/export_arms.py",
-    "sha256": "431d931dc05339afa419568bfa4a32f8e20726ea1f9c57e44f530394e47ad259"
+    "sha256": "cdd50d74c1447d890b8e9d6729208d597d625874166de1515f92aa8ab3170801"
    },
    {
     "path": "tools/ego_build.py",

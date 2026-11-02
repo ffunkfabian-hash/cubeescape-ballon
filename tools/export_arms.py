@@ -440,7 +440,8 @@ def readme(M):
           '## Prüfen', '',
           '- `python3 tools/export_arms.py --check` (in `./check`): Manifest und README passen zu `robot_arm.py`, `ego.py`, `kit.py`.',
           '- `blender -b --factory-startup -P tools/test_arm_package.py` (in `./check`, wenn Blender vorhanden ist): GLB neu erzeugt ist '
-          'bytegleich, die Dreiecke stimmen, und der Reimport von GLB und FBX erhält Teile, Hierarchie, Anker und die Ruhelage.',
+          'bytegleich, die Dreiecke stimmen, und der Reimport von GLB und FBX erhält Teile, Hierarchie, Anker, Ruhelage, die UV jeder '
+          'Dreiecksecke und die Texturverknüpfung jedes Materials.',
           '- Neu erzeugen: `ce lock blender -- blender -b --factory-startup -P <abs>/tools/export_arms.py`.', '']
     return '\n'.join(L)
 
