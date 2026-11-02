@@ -8,7 +8,8 @@
    fremder; Eltern wie im Manifest; Wurzeln, Segmente und Anker sind Leerknoten, Teile Netze mit ihrer Rolle als Material; Weltlage und
    Weltdrehung der Wurzeln, Segmentursprünge und Anker wie im Manifest (≤ TOL_MM, ≤ TOL_DEG, Maßstab 1); Hüllquader jedes Teils wie
    im Bezug (≤ TOL_MM); Dreiecke je Segment wie im Manifest.
-3. Paket neu in einen Temp-Ordner erzeugen (tools/export_arms.export_files): arms.glb bytegleich, Dreiecke gleich dem Manifest.
+3. Paket neu in einen Temp-Ordner erzeugen (tools/export_arms.export_files): arms.glb bytegleich, Dreiecke und Netzmaße wie im
+   Manifest.
 Gegenprobe: falscher Elternknoten, um 1 mm verschobene Hand, um 1° verdrehter Griffpunkt und ein um 1 mm verschobenes Netz müssen
 gemeldet werden.
 """
@@ -140,8 +141,10 @@ same = open(os.path.join(tmp, 'arms.glb'), 'rb').read() == open(os.path.join(XA.
 if not same:
     bad.append(f"arms.glb neu erzeugt nicht bytegleich ({meas['glb']['bytes']} B, SHA {meas['glb']['sha256'][:12]} statt "
                f"{M['files']['glb']['sha256'][:12]}): Paket neu erzeugen")
-if meas['triangles'] != XA.measured_from(M)['triangles']:
-    bad.append('Dreiecke beim Neuerzeugen weichen vom Manifest ab')
+ref = XA.measured_from(M)
+for k, de in (('triangles', 'Dreiecke'), ('bounds', 'Netzmaße')):
+    if meas[k] != ref[k]:
+        bad.append(f'{de} beim Neuerzeugen weichen vom Manifest ab')
 print(f"[test_arm_package] {len(E)} Knoten je Datei (GLB, FBX), {len(REF)} Netze gegen den Bezug, Gegenprobe {len(hit)}/{len(KEYS)}, "
       f"GLB {'bytegleich' if same else 'abweichend'}: Arm-Paket geprüft")
 for b in bad[:20]:

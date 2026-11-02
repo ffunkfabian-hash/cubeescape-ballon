@@ -31,26 +31,28 @@ Ein Arm besteht aus **starren Teilen**, die je an genau einem **Segment** hänge
    (jeder Segmentknoten trägt seine Teile <S>_<teil> als Kinder)
 ```
 
-| Segment | Teil des Arms | Eltern | Gelenk | Achsen | Länge (mm) | Teile | Dreiecke R |
-|---|---|---|---|---|---|---|---|
-| `upper` | Oberarm | `arm` | Schulter (ball) | x, y, z | 320.0 | 2 | 484 |
-| `fore` | Unterarm mit Ellbogen | `upper` | Ellbogen (ball) | x, y, z | 300.0 | 12 | 2584 |
-| `hand` | Hand mit Kardanblock | `fore` | Handgelenk: Kardan in der Stulpe, Hand dreht frei (ball) | x, y, z | 87.4 | 8 | 1164 |
-| `f0_0` | Zeigefinger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 30.9 | 3 | 480 |
-| `f0_1` | Zeigefinger, Glied 2 | `f0_0` | Fingergelenk (hinge) | x | 24.6 | 3 | 496 |
-| `f0_2` | Zeigefinger, Glied 3 | `f0_1` | Fingergelenk (hinge) | x | 20.0 | 3 | 496 |
-| `f1_0` | Mittelfinger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 32.8 | 3 | 468 |
-| `f1_1` | Mittelfinger, Glied 2 | `f1_0` | Fingergelenk (hinge) | x | 26.0 | 3 | 480 |
-| `f1_2` | Mittelfinger, Glied 3 | `f1_1` | Fingergelenk (hinge) | x | 21.2 | 3 | 496 |
-| `f2_0` | Ringfinger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 30.9 | 3 | 480 |
-| `f2_1` | Ringfinger, Glied 2 | `f2_0` | Fingergelenk (hinge) | x | 24.6 | 3 | 496 |
-| `f2_2` | Ringfinger, Glied 3 | `f2_1` | Fingergelenk (hinge) | x | 20.0 | 3 | 496 |
-| `f3_0` | kleiner Finger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 26.0 | 3 | 480 |
-| `f3_1` | kleiner Finger, Glied 2 | `f3_0` | Fingergelenk (hinge) | x | 20.6 | 3 | 496 |
-| `f3_2` | kleiner Finger, Glied 3 | `f3_1` | Fingergelenk (hinge) | x | 16.8 | 3 | 496 |
-| `t_0` | Daumen, Glied 1 | `hand` | Daumensattel (saddle) | y, x | 32.8 | 3 | 468 |
-| `t_1` | Daumen, Glied 2 | `t_0` | Daumengelenk (hinge) | x | 25.5 | 3 | 480 |
-| `t_2` | Daumen, Glied 3 | `t_1` | Daumengelenk (hinge) | x | 20.0 | 3 | 496 |
+length_m = Gelenkabstand bis zum nächsten Glied aus robot_arm.py (Rig-Konstante, keine Messung); mesh_bounds_mm = Hüllquader des exportierten Netzes im Segmentrahmen (gemessen, nach den Fasen).
+
+| Segment | Teil des Arms | Eltern | Gelenk | Achsen | Gelenkabstand (mm, Rig) | Netz X × Y × Z (mm, gemessen R) | Teile | Dreiecke R |
+|---|---|---|---|---|---|---|---|---|
+| `upper` | Oberarm | `arm` | Schulter (ball) | x, y, z | 320.0 | 138.0 × 124.2 × 280.0 | 2 | 484 |
+| `fore` | Unterarm mit Ellbogen | `upper` | Ellbogen (ball) | x, y, z | 300.0 | 128.8 × 116.6 × 342.0 | 12 | 2584 |
+| `hand` | Hand mit Kardanblock | `fore` | Handgelenk: Kardan in der Stulpe, Hand dreht frei (ball) | x, y, z | 87.4 | 102.2 × 59.4 × 103.4 | 8 | 1164 |
+| `f0_0` | Zeigefinger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 30.9 | 18.2 × 24.7 × 35.9 | 3 | 480 |
+| `f0_1` | Zeigefinger, Glied 2 | `f0_0` | Fingergelenk (hinge) | x | 24.6 | 18.2 × 24.7 × 29.6 | 3 | 496 |
+| `f0_2` | Zeigefinger, Glied 3 | `f0_1` | Fingergelenk (hinge) | x | 20.0 | 18.2 × 24.7 × 25.0 | 3 | 496 |
+| `f1_0` | Mittelfinger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 32.8 | 18.2 × 24.6 × 37.8 | 3 | 468 |
+| `f1_1` | Mittelfinger, Glied 2 | `f1_0` | Fingergelenk (hinge) | x | 26.0 | 18.2 × 24.7 × 31.0 | 3 | 480 |
+| `f1_2` | Mittelfinger, Glied 3 | `f1_1` | Fingergelenk (hinge) | x | 21.2 | 18.2 × 24.7 × 26.2 | 3 | 496 |
+| `f2_0` | Ringfinger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 30.9 | 18.2 × 24.7 × 35.9 | 3 | 480 |
+| `f2_1` | Ringfinger, Glied 2 | `f2_0` | Fingergelenk (hinge) | x | 24.6 | 18.2 × 24.7 × 29.6 | 3 | 496 |
+| `f2_2` | Ringfinger, Glied 3 | `f2_1` | Fingergelenk (hinge) | x | 20.0 | 18.2 × 24.7 × 25.0 | 3 | 496 |
+| `f3_0` | kleiner Finger, Glied 1 | `hand` | Fingergelenk (hinge) | x | 26.0 | 18.2 × 24.7 × 31.0 | 3 | 480 |
+| `f3_1` | kleiner Finger, Glied 2 | `f3_0` | Fingergelenk (hinge) | x | 20.6 | 18.2 × 24.7 × 25.6 | 3 | 496 |
+| `f3_2` | kleiner Finger, Glied 3 | `f3_1` | Fingergelenk (hinge) | x | 16.8 | 18.2 × 24.6 × 21.8 | 3 | 496 |
+| `t_0` | Daumen, Glied 1 | `hand` | Daumensattel (saddle) | y, x | 32.8 | 21.2 × 26.6 × 38.4 | 3 | 468 |
+| `t_1` | Daumen, Glied 2 | `t_0` | Daumengelenk (hinge) | x | 25.5 | 21.2 × 26.7 × 31.1 | 3 | 480 |
+| `t_2` | Daumen, Glied 3 | `t_1` | Daumengelenk (hinge) | x | 20.0 | 21.2 × 26.7 × 25.6 | 3 | 496 |
 
 **Schulter, Ellbogen, Handgelenk** sind keine eigenen Segmente. Die Schulter ist die Wurzel `<S>_arm`. Die Ellbogenteile (`elbow`, `elbow_disc`, `elbow_ring`, `elbow_hub`) liegen im Ursprung von `fore`, der Kardanblock (`wrist_block`, `wrist_pin`) im Ursprung von `hand`.
 

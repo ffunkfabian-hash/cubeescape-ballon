@@ -216,6 +216,7 @@ def manifest(measured):
     for seg in RA.SEGMENTS:
         par, _, _ = C['R'][seg]
         segs.append(dict(id=seg, de=segment_de(seg), parent=par or 'arm', joint=joint(seg), length_m=r6(length_m(seg)),
+                         mesh_bounds_mm={s: measured['bounds'][s][seg] for s in SIDES},
                          rest={s: dict(at_m=r6(C[s][seg][1]), rot_wxyz=r6(C[s][seg][2]), world_m=r6(Wr[s][seg][0]),
                                          world_wxyz=r6(quat(Wr[s][seg][1]))) for s in SIDES},
                          parts=[p[0] for p in P if p[2] == seg],
@@ -225,6 +226,8 @@ def manifest(measured):
         format=FORMAT, set=SET, generated_by='tools/export_arms.py', rig_version=RA.RIG_VERSION,
         de='Ego-Arme BASIC (Roboterarm v3): starre Teile je Segment, ohne Skinning; zwei Seiten R/L',
         units=dict(length='m', angle='deg', source_mm='robot_arm.py rechnet in mm, das Paket in m'),
+        lengths_de='length_m = Gelenkabstand bis zum nächsten Glied aus robot_arm.py (Rig-Konstante, keine Messung); '
+                   'mesh_bounds_mm = Hüllquader des exportierten Netzes im Segmentrahmen (gemessen, nach den Fasen)',
         axes=dict(space='Blender, rechtshändig: rechts −X, vorn −Y, oben +Z (wie der Ego-Kameraraum in ego.json)',
                   segment='Ursprung im Gelenk am Segmentanfang, +Z entlang des Segments, +Y Panzerseite/Handrücken, −Y Handfläche, '
                           '+X Daumenseite der rechten Hand (links gespiegelt: Daumen auf −X)',
@@ -294,11 +297,14 @@ def readme(M):
          '         ├─ <S>_f3_0 → f3_1 → f3_2                        kleiner Finger',
          '         └─ <S>_t_0 → t_1 → t_2 → <S>_Socket_ThumbTip     Daumen',
          '   (jeder Segmentknoten trägt seine Teile <S>_<teil> als Kinder)', '```', '',
-         '| Segment | Teil des Arms | Eltern | Gelenk | Achsen | Länge (mm) | Teile | Dreiecke R |', '|---|---|---|---|---|---|---|---|']
+         M['lengths_de'] + '.', '',
+         '| Segment | Teil des Arms | Eltern | Gelenk | Achsen | Gelenkabstand (mm, Rig) | Netz X × Y × Z (mm, gemessen R) | Teile | '
+         'Dreiecke R |', '|---|---|---|---|---|---|---|---|---|']
     for s in M['segments']:
         J = s['joint']
         L.append(f"| `{s['id']}` | {s['de']} | `{s['parent']}` | {J['de']} ({J['type']}) | {', '.join(J['axes'])} | "
-                 f"{s['length_m'] * 1000:.1f} | {len(s['parts'])} | {s['triangles']['R']} |")
+                 f"{s['length_m'] * 1000:.1f} | " + ' × '.join(f'{b - a:.1f}' for a, b in zip(*s['mesh_bounds_mm']['R'])) +
+                 f" | {len(s['parts'])} | {s['triangles']['R']} |")
     L += ['', '**Schulter, Ellbogen, Handgelenk** sind keine eigenen Segmente. Die Schulter ist die Wurzel `<S>_arm`. Die '
           'Ellbogenteile (`elbow`, `elbow_disc`, `elbow_ring`, `elbow_hub`) liegen im Ursprung von `fore`, der Kardanblock '
           '(`wrist_block`, `wrist_pin`) im Ursprung von `hand`.', '',
@@ -368,6 +374,7 @@ def readme(M):
 
 def measured_from(M):
     return dict(triangles={s: {x['id']: x['triangles'][s] for x in M['segments']} for s in SIDES},
+                bounds={s: {x['id']: x['mesh_bounds_mm'][s] for x in M['segments']} for s in SIDES},
                 glb={k: M['files']['glb'][k] for k in ('sha256', 'bytes')})
 
 
@@ -451,18 +458,24 @@ def build(materials=True):
     return out
 
 
-def triangles(arms):
+def measure(arms):
+    """Dreiecke und Netzmaße (Hüllquader im Segmentrahmen, mm, nach den Fasen) je Seite und Segment."""
     import bpy
     dg = bpy.context.evaluated_depsgraph_get()
-    T = {}
+    T, B = {}, {}
     for side, (_root, segs, pieces, _a) in arms.items():
         T[side] = {s: 0 for s in RA.SEGMENTS}
+        P = {s: [] for s in RA.SEGMENTS}
         for ob in pieces.values():
             me = ob.evaluated_get(dg).to_mesh()
             me.calc_loop_triangles()
-            T[side][ob.parent.name[2:]] += len(me.loop_triangles)
+            seg = ob.parent.name[2:]
+            T[side][seg] += len(me.loop_triangles)
+            P[seg] += [ob.matrix_basis @ v.co for v in me.vertices]          # Teile liegen im Segmentrahmen (matrix_basis = 1)
             ob.evaluated_get(dg).to_mesh_clear()
-    return T
+        B[side] = {s: [[round(min(p[i] for p in P[s]) * 1000, 1) + 0.0 for i in range(3)],
+                       [round(max(p[i] for p in P[s]) * 1000, 1) + 0.0 for i in range(3)]] for s in RA.SEGMENTS}
+    return T, B
 
 
 def export_files(dst):
@@ -470,7 +483,7 @@ def export_files(dst):
     import bpy
     os.makedirs(dst, exist_ok=True)
     arms = build()
-    T = triangles(arms)
+    T, B = measure(arms)
     glb = os.path.join(dst, 'arms.glb')
     bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', use_selection=False, export_apply=True, export_yup=True,
                               export_materials='EXPORT', export_cameras=False, export_lights=False, export_extras=False,
@@ -481,7 +494,7 @@ def export_files(dst):
                              bake_anim=False, apply_unit_scale=True, apply_scale_options='FBX_SCALE_ALL', bake_space_transform=False,
                              axis_forward='-Z', axis_up='Y', path_mode='STRIP', embed_textures=False)
     body = open(glb, 'rb').read()
-    return dict(triangles=T, glb=dict(sha256=hashlib.sha256(body).hexdigest(), bytes=len(body)))
+    return dict(triangles=T, bounds=B, glb=dict(sha256=hashlib.sha256(body).hexdigest(), bytes=len(body)))
 
 
 SHEET = [('beide Arme, vorn oben', (-0.75, -1.55, 0.85), (0.0, -0.45, 0.0), 40),
