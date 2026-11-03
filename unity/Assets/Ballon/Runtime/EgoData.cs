@@ -1,5 +1,5 @@
-// Ego-Daten im Format ballon-ego/10 (Salve und Bahnstufe je Klasse, Werkzeug mit Portalen, 0.22), erzeugt von tools/export_unity.py (nicht
-// von Hand pflegen); ballon-ego/9 (0.20), /8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
+// Ego-Daten im Format ballon-ego/11 (Formgen-Varianten mit eigenem Ordner dir und Herkunft origin, 0.41), erzeugt von tools/export_unity.py (nicht
+// von Hand pflegen); ballon-ego/10 (0.22), /9 (0.20), /8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
 // nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -385,6 +385,8 @@ namespace Ballon.Ego
     [Serializable] public class TexStore { public string kind, ext, de; public int size; }
     [Serializable] public class WeaponTextures { public Atlas weapon; public Skin[] skins; public TexStore[] store; public float limit_mb; }
 
+    /// <summary>Herkunft einer Variante (11, 0.41): Formgen-Paket unter Generated/&lt;dir&gt;, Grundtyp (Haltungen, Griffe, Gameplay geerbt).</summary>
+    [Serializable] public class EgoOrigin { public string kind, id, package, base_module, base_id, skin, blender, bake, points, gameplay; public int package_format; }
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
     [Serializable] public class MeshBounds { public string de; public MeshBound[] objects; }
 
@@ -411,8 +413,18 @@ namespace Ballon.Ego
         [NonSerialized] public string atlas = "weapon", reference = "ego_reference.json";
         [NonSerialized] public int slot;            // Platz in weapons[] (Taste slot + 1)
         [NonSerialized] public WeaponTextures weaponTextures;   // je Waffe mit Ablage (store, limit_mb; 9); /7: null
+        [NonSerialized] public string dir = "";     // 11: Ordner der Waffe unter Generated (leer = BALLONs Waffe; Formgen/<ID> = Paket)
+        [NonSerialized] public EgoOrigin origin;    // 11: Herkunft einer Formgen-Variante; BALLONs Waffen: null
 
-        public const string Format = "ballon-ego/10";    // 10: gameplay.burst_shots/burst_rpm/path_up_h/muzzle_flash/portals/ring_turn_s, weapon.live.ring, Klassen ohne Zielen/Nachladen (0.22)
+        /// <summary>Formgen-Variante (11): eigener Ordner, keine Blender-Referenz.</summary>
+        public bool IsVariant => !string.IsNullOrEmpty(dir);
+        /// <summary>Pfad unter Generated: FBX und Manifest liegen in dir (sonst direkt in Generated).</summary>
+        public string AssetPath(string file) => IsVariant ? $"{dir}/{file}" : file;
+        /// <summary>Pfad einer Waffentextur unter Generated: Textures/ bzw. &lt;dir&gt;/textures/ (Formgen-Paket).</summary>
+        public string TexturePath(string file) => IsVariant ? $"{dir}/textures/{file}" : $"Textures/{file}";
+
+        public const string Format = "ballon-ego/11";    // 11: weapons[].dir/origin (Formgen-Varianten unter Generated/Formgen/<ID>/, 0.41)
+        public const string Format10 = "ballon-ego/10";  // 10: gameplay.burst_shots/burst_rpm/path_up_h/muzzle_flash/portals/ring_turn_s, weapon.live.ring, Klassen ohne Zielen/Nachladen (0.22)
         public const string Format9 = "ballon-ego/9";    // 9: gameplay.fire_mode, parts[].ads_hide, motion.ads_hide, textures.store/limit_mb (0.20)
         public const string Format8 = "ballon-ego/8";    // 8: weapons[] je Waffe (gameplay, weapon mit live, poses, grips, actions, profile, Atlanten, Netzgrenzen, Referenz), gemeinsam Bewegung, Kamera, Arme, Rollen (0.18)
         public const string FormatLegacy = "ballon-ego/7";   // 7: motion.flash, motion.eject, weapon.eject, Rollen flash_* (0.16); 6: motion.recoil (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch (0.15); 5: gameplay.weapon_type/world_zoom/zoom_table/hip (0.13); 4: secondary.aim_freq_hz/aim_zeta (0.10); 3: spec statt mask, skins (0.7.1/0.7.2); 2: Atlanten, AgX-LUT (0.7); ältere neu exportieren
@@ -447,8 +459,9 @@ namespace Ballon.Ego
                 f.Index();
                 return new[] { f };
             }
-            if (fmt != Format && fmt != Format9 && fmt != Format8)
-                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format9}, {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
+            if (fmt != Format && fmt != Format10 && fmt != Format9 && fmt != Format8)
+                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format10}, {Format9}, {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
+            bool ten = fmt == Format || fmt == Format10;    // ab /10: Felder der Salve, Bahnstufe, Kick
             var s = JsonUtility.FromJson<EgoFile8>(json);
             if (s.weapons == null || s.weapons.Length == 0) throw new FormatException("ego.json: weapons leer");
             var axes = ParseAxes(json);
@@ -467,19 +480,22 @@ namespace Ballon.Ego
                                                                             weapon = e.textures?.weapon, skins = e.textures?.skins },
                     weaponTextures = e.textures,
                     toUnity = axes, profile = e.profile, atlas = e.atlas, reference = e.reference, slot = k,
+                    dir = e.dir ?? "", origin = string.IsNullOrEmpty(e.origin?.kind) ? null : e.origin,   // /10 und älter: leer (Migration 11)
                 };
+                if (f.IsVariant && fmt != Format)
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) mit dir {e.dir} in {fmt} (erst {Format})");
                 if (f.weapon == null || f.weapon.live == null || (string.IsNullOrEmpty(f.weapon.live.trigger) && !f.gameplay.Draw))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");      // Bogen (0.33 P4): ohne Abzug
                 if (fmt != Format8 && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.fire_mode oder motion.ads_hide ({fmt})");
-                if (fmt == Format && ((f.gameplay.kick <= 0 && !f.gameplay.Beam) || f.gameplay.recover_hz <= 0))   // Dauerstrahl (0.33): Kick 0
-                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.kick oder recover_hz ({Format})");
-                if (fmt == Format && f.gameplay.Charge != (f.gameplay.charge_s > 0))
+                if (ten && ((f.gameplay.kick <= 0 && !f.gameplay.Beam) || f.gameplay.recover_hz <= 0))   // Dauerstrahl (0.33): Kick 0
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne gameplay.kick oder recover_hz ({fmt})");
+                if (ten && f.gameplay.Charge != (f.gameplay.charge_s > 0))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu charge_s {f.gameplay.charge_s}");
-                if (fmt == Format && f.gameplay.Burst != (f.gameplay.fire_mode == "burst" || f.gameplay.fire_mode == "charge_burst"))
+                if (ten && f.gameplay.Burst != (f.gameplay.fire_mode == "burst" || f.gameplay.fire_mode == "charge_burst"))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) Feuerart {f.gameplay.fire_mode} passt nicht zu burst_shots {f.gameplay.burst_shots}");
                 if (fmt == Format8) Migrate9(f);
-                if (fmt != Format) Migrate10(f);
+                if (!ten) Migrate10(f);
                 f.Index();
                 res[k] = f;
             }
@@ -514,7 +530,8 @@ namespace Ballon.Ego
         [Serializable]
         class EgoWeaponEntry
         {
-            public string id, atlas, reference;
+            public string id, atlas, reference, dir;     // dir (11): Ordner unter Generated, fehlt = BALLONs Waffe
+            public EgoOrigin origin;                     // 11: Herkunft (Formgen), fehlt bei BALLONs Waffen
             public EgoProfile profile;
             public EgoGameplay gameplay;
             public EgoWeapon weapon;

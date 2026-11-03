@@ -1,7 +1,7 @@
 {
   "name": "cubeescape-ballon",
-  "version": "0.40.0",
-  "version_name": "Brace",
+  "version": "0.41.0",
+  "version_name": "Intake",
   "check": {
     "quick": [
       [

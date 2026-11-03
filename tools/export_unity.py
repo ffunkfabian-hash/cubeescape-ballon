@@ -8,6 +8,8 @@ Ego-Daten als JSON (`ballon-ego/8`).
         (wie BALLON_EXPORT_DATA_ONLY=1 je Waffe); geänderte gemeinsame Formquellen backen alles neu.
   python3 tools/export_unity.py --check   → ego.json passt zu den Python-Daten (ohne Blender, Teil von ./check), Waffentexturen nach TEXTURE_STORE
   python3 tools/export_unity.py --store-textures → Waffenatlanten und Skins im vorhandenen ego.json nach TEXTURE_STORE ablegen (0.20, ohne Backen)
+  python3 tools/export_unity.py --formgen → Formgen-Varianten aus Generated/Formgen/<ID>/ in ego.json eintragen (0.41, ohne Blender;
+        tools/formgen_import.py). Eintrag je Variante: Grundtyp aus dem Paket, Haltungen/Griffe/Gameplay geerbt, Pfade relativ zu dir.
 
 Alle Werte stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z), wie tools/ego_build.py rechnet; die Laufzeit in C#
 rechnet dort und wandelt erst am Ende nach Unity. Die Umrechnung steht **einmal** hier (`AXES`) und wird von Unity gelesen und
@@ -25,8 +27,9 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
+from basic import variant as VA  # noqa: E402
 
-FORMAT = 'ballon-ego/10'   # 10 (0.39.1 ergänzt, ohne neues Format: motion.recoil/gameplay.recoil.support_still_dip – fehlt = 0, die Stützhand folgt dem Unterschwingen wie bis 0.39; Unity liest es ab 0.39.1); 10 (0.39 ergänzt, ohne neues Format: gameplay.fx pellet_impact/charge_*, motion.payload.surfaces/charge_glow, motion.payload.impacts[].hole_k, motion.payload.decal.min_life_s – fehlt = leer bzw. 0, Verhalten wie 0.38 (Form des Ladeleuchtens: Werte von 0.39); Unity liest sie ab 0.39); 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/11'   # 11 (0.41 „Intake“): weapons[].dir (Ordner unter Generated, leer = BALLONs eigene Waffe) und weapons[].origin (Herkunft einer Formgen-Variante, fehlt bei BALLONs Waffen), Formgen-Pakete unter Generated/Formgen/<ID>/ (tools/formgen_import.py); Unity liest /10 weiter (dir leer); 10 (0.39.1 ergänzt, ohne neues Format: motion.recoil/gameplay.recoil.support_still_dip – fehlt = 0, die Stützhand folgt dem Unterschwingen wie bis 0.39; Unity liest es ab 0.39.1); 10 (0.39 ergänzt, ohne neues Format: gameplay.fx pellet_impact/charge_*, motion.payload.surfaces/charge_glow, motion.payload.impacts[].hole_k, motion.payload.decal.min_life_s – fehlt = leer bzw. 0, Verhalten wie 0.38 (Form des Ladeleuchtens: Werte von 0.39); Unity liest sie ab 0.39); 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 # Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 … (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
 # 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“, Impuls BASIC-02 und Portalkanone BASIC-T01 seit 0.22 „Volley“, Handfeuerwaffe BASIC-04
 # und Seitenwaffe BASIC-05 seit 0.33 „Armory“ P1, Scharfschütze BASIC-09, Spurgewehr BASIC-12 und MG BASIC-15 seit P2: Tasten 8, 9, 0;
@@ -172,6 +175,7 @@ def kit_materials():
 
 
 def weapon_data(W, live):
+    W = VA.resolve(W)                               # 0.41: Weltpunkte aus POINTS (Varianten: verschoben mit ihren Teilen)
     parts = []
     for p in W.PARTS:
         mv = p.get('move')
@@ -280,12 +284,14 @@ def flash_data():
                 flame_role=F['tongues']['role'], src=F['src'])
 
 
-def charge_span(wid, part, muzzle):
+def charge_span(wid, part, muzzle, spec=None):
     """Ladeleuchten (0.39, ego.PAYLOAD charge_part): Spanne des Teils auf der Kernachse durch Socket_Muzzle (Blender-Meter wie die
-    Anker; charge_a hinten, charge_b vorn) und sein Durchmesser charge_ring_m, gemessen aus der Spec (data/specs). Ohne Teil: Nullen."""
+    Anker; charge_a hinten, charge_b vorn) und sein Durchmesser charge_ring_m, gemessen aus der Spec (data/specs, für Varianten die Spec
+    des Pakets). Ohne Teil: Nullen."""
     if not part:
         return dict(charge_a=[0.0, 0.0, 0.0], charge_b=[0.0, 0.0, 0.0], charge_ring_m=0.0)
-    spec = json.load(open(os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json'), encoding='utf-8'))
+    if spec is None:
+        spec = json.load(open(os.path.join(ROOT, 'data', 'specs', f'{wid}.spec.json'), encoding='utf-8'))
     b = next((q['bounds_m'] for q in spec['parts'] if q['id'] == part), None)
     if b is None:
         raise KeyError(f'{wid}: charge_part {part} fehlt in der Spec')
@@ -308,10 +314,14 @@ def sha_files(paths):
     return [dict(path=p, sha256=hashlib.sha256(open(os.path.join(ROOT, p), 'rb').read()).hexdigest()) for p in paths]
 
 
-def weapon_entry(W):
-    """Ein Eintrag von weapons[] (ohne textures/mesh_bounds, die schreibt der Blender-Teil): Ego-Profil der Klasse (ego.profile)."""
+def weapon_entry(W, atlas_key=None, spec=None, weapon=None):
+    """Ein Eintrag von weapons[] (ohne textures/mesh_bounds, die schreibt der Blender-Teil): Ego-Profil der Klasse (ego.profile).
+    0.41: auch für ein fremdes Modul oder einen Datensatz (basic/variant.as_module) ohne Eintrag in WEAPONS – atlas_key = Name des
+    Atlas (sonst ATLAS_KEY bzw. weapon_<Waffe>), spec = Spec der Variante (Ladeleuchten; sonst data/specs), weapon = fertiger weapon-Block
+    (Formgen-Paket ohne Datensatz; sonst aus W)."""
+    W = VA.resolve(W)
     P = EG.profile(W)
-    weapon = weapon_data(W, P['live'])
+    weapon = weapon or weapon_data(W, P['live'])
     wid = weapon['id']
     poses = []
     for k, Q in P['poses'].items():
@@ -324,9 +334,9 @@ def weapon_entry(W):
     profile = dict(type=P['type'], src=P['src'], poses=sorted(C['poses']), frames=[dict(action=k, frames=r6(v)) for k, v in C['frames'].items()],
                    frames_src=P['frames_src'])
     fx = {k: (r6(v) if isinstance(v, float) else v) for k, v in EG.payload(P['type']).items()}   # 0.34: Wirkung der Klasse
-    fx.update(charge_span(wid, fx['charge_part'], W.ANCHORS['Socket_Muzzle']['at']))                # 0.39: Ladeleuchten
+    fx.update(charge_span(wid, fx['charge_part'], W.ANCHORS['Socket_Muzzle']['at'], spec))          # 0.39: Ladeleuchten
     return dict(id=wid, profile=profile, gameplay=dict(gameplay(P['type'], P['gameplay']), fire_mode=P['fire_mode'], fx=fx), weapon=weapon, poses=poses, grips=grips,
-                actions=[action(k, A) for k, A in P['actions'].items()], atlas=ATLAS_KEY.get(wid, f'weapon_{wid}'),
+                actions=[action(k, A) for k, A in P['actions'].items()], atlas=atlas_key or ATLAS_KEY.get(wid, f'weapon_{wid}'),
                 reference=f'ego_reference_{wid}.json',
                 sources=dict(files=sha_files(weapon_files(W)), parts_sha256=parts_sha(W)))
 
@@ -334,8 +344,11 @@ def weapon_entry(W):
 def data():
     Ws = [importlib.import_module(f'basic.{m}') for m in WEAPONS]
     entries = [weapon_entry(W) for W in Ws]
+    from tools import formgen_import as FG       # 0.41: Formgen-Varianten unter Generated/Formgen/<ID>/ hinter BALLONs Waffen
+    variants = FG.entries(EU=sys.modules[__name__])
+    entries += variants
     roles = kit_materials()
-    for W in Ws:                                    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, 0.17: kit.py liegt im Quellenhash;
+    for W in Ws + [importlib.import_module(v['origin']['base_module']) for v in variants]:                                    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, 0.17: kit.py liegt im Quellenhash;
         for R in (getattr(W, 'PORTAL_ROLES', {}), getattr(W, 'CHARGE_ROLES', {})):   # Ladekern der Energiewaffen CHARGE_ROLES, 0.33 P3)
             roles.update({k: v for k, v in R.items() if k not in roles})
         for M in (getattr(W, 'energy_roles', None), getattr(W, 'metal_roles', None)):   # 0.33 P4: Rollenmodule, die das Waffenmodul nur
@@ -391,6 +404,25 @@ def write_json(path, obj):
 
 
 MOTION_SOURCES = {'basic/arms/ego.py', 'tools/ego_build.py', 'tools/export_unity.py'}   # dürfen sich im Datenexport ändern
+# Formquellen-Änderungen, die nachweislich nichts am Bau ändern (0.41): {Pfad: [(SHA-256 vorher, nachher, Beleg)]}. Nur genau dieser
+# Übergang zählt nicht als Formänderung; jede weitere Änderung der Datei backt wieder alles (Richter 0.10).
+NEUTRAL_EDITS = {
+    'tools/blender_build.py': [('81d5b02d55747b71285dd9d1b1066a6b12a6f6658ae89c776c4ecb919dc26f12',
+                                'ea42dd1b9e5cc7cb8a585913488c57c0aed795d88dff7560e7859776d3769749',
+                                '0.41: main(W=…, base=…, argv=…) statt Modulname; GLB und Spec aller 16 Spielwaffen bytegleich zu 0.40 '
+                                '(docs/versions/0.41-intake.md › Bytegleich)')],
+}
+
+
+def neutral_edit(path, was, now):
+    """Führt eine Kette aus NEUTRAL_EDITS von SHA was nach now?"""
+    seen = set()
+    while was != now and was not in seen:
+        seen.add(was)
+        was = next((b for a, b, _ in NEUTRAL_EDITS.get(path, ()) if a == was), None)
+        if was is None:
+            return False
+    return was == now
 BAKED = ('textures', 'mesh_bounds')                  # schreibt nur der Blender-Teil (Atlanten, Netzgrenzen)
 
 
@@ -425,16 +457,18 @@ def export_plan(D, old):
     wenn die Netzgrenzen in Blender gleich bleiben (Richter 0.16: Grenzen allein beweisen keine gleiche Geometrie, darum zusätzlich der
     Bauteil-Entwurf); 'full': backen. Geänderte gemeinsame Formquellen backen alles (Richter 0.10: sonst meldet --check „aktuell“, während
     FBX und Atlanten veraltet sind)."""
-    ids = [e['id'] for e in D['weapons']]
+    own = [e for e in D['weapons'] if 'origin' not in e]   # 0.41: Formgen-Varianten bringen Atlas und FBX im Paket mit
+    ids = [e['id'] for e in own]
     if old is None:
         return True, {i: 'full' for i in ids}, {'arms': 'kein ego.json mit Atlanten'}
     fmt, shared, _, _, ents = old
-    changed = [f['path'] for f in D['sources']['files'] if f['path'] not in MOTION_SOURCES and shared.get(f['path']) != f['sha256']]
+    changed = [f['path'] for f in D['sources']['files'] if f['path'] not in MOTION_SOURCES and shared.get(f['path']) != f['sha256']
+               and not neutral_edit(f['path'], shared.get(f['path']), f['sha256'])]
     if changed:
         why = 'Form- oder Materialquellen geändert: ' + ', '.join(changed)
         return True, {i: 'full' for i in ids}, dict({i: why for i in ids}, arms=why)
     plan, why = {}, {}
-    for e in D['weapons']:
+    for e in own:
         o = ents.get(e['id'])
         if o is None:
             plan[e['id']], why[e['id']] = 'full', 'neu (kein Eintrag mit Atlanten im letzten Export)'
@@ -585,6 +619,28 @@ def store_textures(tex, tex_dir):
     return T
 
 
+def formgen_main():
+    """--formgen (0.41): Formgen-Varianten (Generated/Formgen/<ID>/) und Rollen im vorhandenen ego.json erneuern, ohne Blender. Nur
+    zulässig, wenn BALLONs eigener Teil aktuell ist (sonst voller Export); Pakete selbst bleiben unverändert."""
+    p = os.path.join(DST, 'ego.json')
+    cur = json.load(open(p, encoding='utf-8'))
+    new = json.loads(json.dumps(data(), ensure_ascii=False))
+    own_cur = [e for e in cur['weapons'] if 'origin' not in e]
+    own_new = [e for e in new['weapons'] if 'origin' not in e]
+    stale = [k for k in new if k not in ('weapons', 'roles') and cur.get(k) != new[k]]
+    if [e['id'] for e in own_cur] != [e['id'] for e in own_new]:
+        stale.append('weapons (Liste)')
+    stale += [e['id'] for e, c in zip(own_new, own_cur) if any(c.get(k) != v for k, v in e.items())]
+    if stale:
+        print('ego.json: BALLONs Teil veraltet (' + ', '.join(stale[:8]) + ') – voller Export (Blender) statt --formgen')
+        return 1
+    cur['weapons'] = own_cur + [e for e in new['weapons'] if 'origin' in e]
+    cur['roles'] = new['roles']
+    write_json(p, cur)
+    print('ego.json: Formgen-Varianten ' + (', '.join(e['id'] for e in cur['weapons'] if 'origin' in e) or 'keine'))
+    return 0
+
+
 def texture_files(tex):
     """Alle Dateien einer Waffe (Atlas und Skins, ohne Doppelte)."""
     fs = [tex['weapon'][k] for k in ('albedo', 'spec', 'normal', 'ao')]
@@ -599,6 +655,8 @@ def store_main():
     D = json.load(open(p, encoding='utf-8'))
     tex_dir = os.path.join(DST, 'Textures')
     for e in D['weapons']:
+        if 'origin' in e:                           # Formgen-Paket (0.41): Ablage macht Formgen (gleiche TEXTURE_STORE), BALLON ändert nichts
+            continue
         before = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in texture_files(e['textures']))
         e['textures'] = store_textures(e['textures'], tex_dir)
         after = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in texture_files(e['textures']))
@@ -607,16 +665,22 @@ def store_main():
     return 0
 
 
+def entry_tex_dir(e):
+    """Texturordner eines Eintrags: Generated/Textures für BALLONs Waffen, Generated/<dir>/textures für Formgen-Pakete (0.41)."""
+    return os.path.join(DST, e['dir'], 'textures') if e.get('dir') else os.path.join(DST, 'Textures')
+
+
 def texture_problems(D, tex_dir=None, store=None):
     """Abweichungen der abgelegten Waffentexturen von TEXTURE_STORE: je Datei (Atlas und Skins) Endung, Kantenlänge, 8 bit (AO ein Kanal),
-    Summe je Waffe ≤ limit_mb. tex_dir/store: für tools/test_texture_store.py."""
+    Summe je Waffe ≤ limit_mb. tex_dir/store: für tools/test_texture_store.py (sonst je Eintrag entry_tex_dir)."""
     bad = []
-    tex_dir = tex_dir or os.path.join(DST, 'Textures')
     R = store or TEXTURE_STORE
+    fixed = tex_dir
     for e in D.get('weapons', []):
         T = e.get('textures')
         if not T:
             continue
+        tex_dir = fixed or entry_tex_dir(e)
         files = [(k, T['weapon'][k]) for k in ('albedo', 'spec', 'normal', 'ao')]
         files += [(k, s[k]) for s in T.get('skins', []) for k in ('albedo', 'spec')]
         seen = set()
@@ -674,7 +738,7 @@ def check():
     for e in new['weapons']:
         c = cw.get(e['id'], {})
         diff += [f"{e['id']}.{k}" for k in list(e) + list(BAKED) if k not in c or (k in e and c[k] != e[k])]
-        if not os.path.exists(os.path.join(DST, e['reference'])):
+        if e['reference'] and not os.path.exists(os.path.join(DST, e['reference'])):   # Varianten (0.41): ohne Blender-Referenz
             diff.append(e['reference'])
     if any(k not in cur for k in BAKED):
         diff.append('textures/mesh_bounds (Arme)')
@@ -687,7 +751,7 @@ def check():
     if diff:
         print('ego.json veraltet (' + ', '.join(diff[:8]) + '): Export neu ausführen')
         return 1
-    print(f"unity: ego.json aktuell ({len(new['weapons'])} Waffen: " +
+    print(f"unity: ego.json aktuell ({len(new['weapons'])} Waffen, davon {sum('origin' in e for e in new['weapons'])} Formgen-Varianten: " +
           ', '.join(f"{e['id']} {len(e['actions'])} Aktionen/{len(e['weapon']['parts'])} Teile" for e in new['weapons']) +
           f"; {len(new['arm']['pieces'])} Armteile)")
     return 0
@@ -770,38 +834,61 @@ def export_fbx(path, obs):
                              axis_forward='-Z', axis_up='Y', path_mode='STRIP', embed_textures=False)
 
 
-def bake_weapon(sc, e, tex_dir, gpu):
-    """Atlas der Waffe (kit.aaa_nodes) und Skins (kit.SKINS: Farbe und Glanz je Skin neu, Normale und AO wie Standard; nur bei Bedarf,
-    wants_skins), FBX."""
+# Arme im Waffenatlas (0.41 „Intake“, Formgen-Befund 0.6): bis 0.40 lag beim Backen die ganze Ego-Szene vor – rest_pose setzt alle
+# Armsegmente in den Ursprung (Socket_Hand), mitten in den Griff. Deren AO-Abdrücke sind keine Griffhaltung, sondern ein Bake-Fehler, und
+# sie liegen auch an Stellen, die in anderen Haltungen frei sind. Regel für beide Wege (BALLON und Formgen): der Waffenatlas wird ohne Arme
+# gebacken (arms=False); Kontaktschatten der Hände entstehen im Bild (Cycles-Render, in Unity nicht gebacken). Die Atlanten von BALLONs 16
+# Waffen bleiben bis zu ihrem nächsten vollen Bake wie gebacken (export_plan 'reuse'); arms=True backt wie bis 0.40.
+ARMS_IN_ATLAS = False
+
+
+def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms=ARMS_IN_ATLAS, objs=None, rest=None, size=4096,
+                samples=None):
+    """Atlas einer Waffe (kit.aaa_nodes) und Skins (kit.SKINS: Farbe und Glanz je Skin neu, Normale und AO wie Standard), FBX. Ohne
+    Ego-Szene (0.41): root = Wurzelobjekt der Waffe (kit.build), tex_dir/fbx = Zielordner bzw. -datei (fbx None: kein FBX), skins =
+    True (alle kit.SKINS), False (nur Standard) oder Liste von Namen, arms = andere Netze der Szene (Arme) beim Backen sichtbar lassen
+    (ARMS_IN_ATLAS), objs = {Teil-ID: Objekt} für kit.set_mode (sonst die Kinder von root), rest = Aufruf vor dem FBX-Export (Ego-Szene:
+    Ruhelage). Gibt textures (weapon, skins) zurück; Ablage nach TEXTURE_STORE macht store_textures."""
+    import bpy
     from tools import bake_unity as BK
     from basic import kit
-    wobs = [sc.root] + list(sc.root.children_recursive)
+    wobs = [root] + list(root.children_recursive)
     meshes = [o for o in wobs if o.type == 'MESH']
+    objs = objs or {o.name: o for o in wobs if o is not root}
     BK.apply_modifiers(meshes)
     # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, in kit.MATERIALS erst beim Import des Moduls registriert) gehören wie die
     # übrigen Leucht- und Glasrollen nicht in den Atlas; bake_unity.SKIP_ROLES entstand vorher (0.22, sonst lagen Kern A/B im Atlas)
     BK.SKIP_ROLES |= BK._skip_roles()
     bake = [o for o in meshes if BK.bakeable(o)]
     BK.unwrap(bake)
-    key = e['atlas']
-    files = BK.bake_atlas(bake, key, 4096, tex_dir, gpu=gpu)
-    atlas = dict(size=4096, objects=sorted(o.name for o in bake), **files)
-    print(f'[export_unity] {e["id"]}: Atlas {key}, {len(bake)} Objekte, 4096²', flush=True)
-    skins = [dict(name='standard', de=kit.SKINS['standard']['de'], kind=kit.SKINS['standard']['kind'],
-                  albedo=atlas['albedo'], spec=atlas['spec'])]
-    for skin, S in kit.SKINS.items():
-        if skin == 'standard' or not wants_skins(e['id']):
-            continue
-        kit.SKIN['name'] = skin
-        kit.set_mode(sc.objs, 'aaa')
-        f = BK.bake_atlas(bake, f'{key}_{skin}', 4096, tex_dir, gpu=gpu, color_only=True)
-        skins.append(dict(name=skin, de=S['de'], kind=S['kind'], **f))
-        print(f'[export_unity] {e["id"]}: Skin {skin}', flush=True)
-    kit.SKIN['name'] = 'standard'
-    kit.set_mode(sc.objs, 'aaa')
-    rest_pose(sc)
-    export_fbx(os.path.join(DST, e['weapon']['fbx']), wobs)
-    return dict(weapon=atlas, skins=skins)
+    hidden = [] if arms else [o for o in bpy.context.scene.objects if o.type == 'MESH' and o not in wobs and not o.hide_render]
+    for o in hidden:                               # ohne Arme: übrige Netze (Ego-Arme) verdecken nichts
+        o.hide_render = True
+    kw = dict(samples=samples) if samples else {}
+    try:
+        files = BK.bake_atlas(bake, atlas_key, size, tex_dir, gpu=gpu, **kw)
+        atlas = dict(size=size, objects=sorted(o.name for o in bake), **files)
+        print(f'[export_unity] {atlas_key}: {len(bake)} Objekte, {size}², Arme {"im" if arms else "nicht im"} Atlas'
+              f'{f" ({len(hidden)} Netze ausgeblendet)" if hidden else ""}', flush=True)
+        out = [dict(name='standard', de=kit.SKINS['standard']['de'], kind=kit.SKINS['standard']['kind'],
+                    albedo=atlas['albedo'], spec=atlas['spec'])]
+        want = [k for k in kit.SKINS if k != 'standard' and (skins is True or (not isinstance(skins, bool) and k in skins))]
+        for skin in want:
+            kit.SKIN['name'] = skin
+            kit.set_mode(objs, 'aaa')
+            f = BK.bake_atlas(bake, f'{atlas_key}_{skin}', size, tex_dir, gpu=gpu, color_only=True, **kw)
+            out.append(dict(name=skin, de=kit.SKINS[skin]['de'], kind=kit.SKINS[skin]['kind'], **f))
+            print(f'[export_unity] {atlas_key}: Skin {skin}', flush=True)
+    finally:
+        for o in hidden:
+            o.hide_render = False
+        kit.SKIN['name'] = 'standard'
+        kit.set_mode(objs, 'aaa')
+    if rest:
+        rest()
+    if fbx:
+        export_fbx(fbx, wobs)
+    return dict(weapon=atlas, skins=out)
 
 
 def bake_arms(sc, tex_dir, gpu):
@@ -870,7 +957,8 @@ def blender_main():
             o = old[4][e['id']]
             e['textures'], e['mesh_bounds'] = o['textures'], o['mesh_bounds']
         else:
-            e['textures'] = bake_weapon(sc, e, tex_dir, gpu)
+            e['textures'] = bake_weapon(sc.root, tex_dir, e['atlas'], fbx=os.path.join(DST, e['weapon']['fbx']), skins=wants_skins(e['id']),
+                                        gpu=gpu, objs=sc.objs, rest=lambda: rest_pose(sc))
             e['mesh_bounds'] = dict(de='Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)',
                                     objects=[b for k, b in mesh_bounds().items() if k in ids])
             tri = sum(b['tris'] for b in e['mesh_bounds']['objects'])
@@ -886,7 +974,7 @@ def blender_main():
     for f in ('ego_reference.json', 'ego_reference.json.meta'):      # bis 0.17 eine Referenz für die Pilotwaffe
         if os.path.exists(os.path.join(DST, f)):
             os.remove(os.path.join(DST, f))
-    print(f"[export_unity] ego.json {FORMAT}: " + ', '.join(f"{e['id']} {plan[e['id']]}" for e in D['weapons']) +
+    print(f"[export_unity] ego.json {FORMAT}: " + ', '.join(f"{e['id']} {plan.get(e['id'], 'Formgen-Paket')}" for e in D['weapons']) +
           f"; Arme {'gebacken' if arms_new else 'übernommen'} → {DST}", flush=True)
 
 
@@ -899,4 +987,5 @@ if __name__ == '__main__':
     if IN_BLENDER:
         blender_main()
     else:
-        sys.exit(check() if '--check' in sys.argv else store_main() if '--store-textures' in sys.argv else (print(__doc__) or 0))
+        sys.exit(check() if '--check' in sys.argv else store_main() if '--store-textures' in sys.argv else
+                 formgen_main() if '--formgen' in sys.argv else (print(__doc__) or 0))

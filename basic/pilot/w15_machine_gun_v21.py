@@ -36,6 +36,7 @@ from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, g
                           R_MID, R_SMALL, R_FINE)
 from basic.common import achteck
 from basic.weapons import w15_machine_gun as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Dauerlauf v2.1', nick='Familie v2.1',
             summary='Maschinengewehr mit Zuführdeckel, seitlichem Munitionskasten, sichtbarem Gurt und Visier H6 L (Stil v2.1).')
@@ -285,6 +286,8 @@ EGO_GRIPS = {
     'cover':   dict(part='feed_cover', contact=(COVER[0] + 12, COVER[3] + 0.5, 12), palm=(0.0, -1.0, 0.0), fingers=(1.0, 0.0, -0.2),
                     fingers_pose='pinch', src='E hinten auf dem Zuführdeckel am Deckelriegel (Socket_FeedCover), hebt den Deckel an'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='receiver', links='receiver', grip='grip', support='handguard_grip'))
 # Abzug, Verschluss, Auswurfklappe im laufenden Feuer; 0.34 „Payload“: Gurtvorschub je Schuss (index), Gurt von unten leer (rounds:
 # Satz i sichtbar, solange mehr als i Patronen im Kasten sind, Satz 0 = oberste Patrone), Zählzellen nach dem Anteil (fill)
 EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover', index=['belt'],

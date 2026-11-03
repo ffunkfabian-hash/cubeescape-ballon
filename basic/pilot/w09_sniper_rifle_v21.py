@@ -33,6 +33,7 @@ Formprinzipien abgeleitet aus den Bildreferenzen.
 from basic.common import part, prof, box, cyl, cut_box, rail, rifle_mag, grip_v21, stock_s1, R_MID, R_SMALL
 from basic.common import lang
 from basic.weapons import w09_sniper_rifle as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Weitschuss v2.1', nick='Familie v2.1',
             summary='Repetier-Scharfschützengewehr mit langer Creme-Haube, freiem Lauf und Zielfernrohr Z3 (Stil v2.1).')
@@ -168,6 +169,8 @@ EGO_GRIPS = {
     'charge':  dict(part='bolt_knob', contact=(KNOB[0], KNOB[1], 47), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Kammerknopf links (Socket_Bolt), die Stützhand hebt, zieht und schiebt den Stängel'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='receiver', grip='grip', support='handguard_grip'))
 EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss; Verschluss und Stängel bewegt fire_cycle
 ACTIONS = {k: dict(A, view=(0.85, -0.2, 0.5)) for k, A in V1.ACTIONS.items()}     # von links: Stängel links (stilhandbuch § 9)
 EXPLODE = {'sight': (0, 130, 0), 'ammo': (30, -140, 0), 'stock': (-120, 0, 0), 'barrel': (200, 0, 0), 'support': (60, -60, 0),

@@ -37,6 +37,7 @@ Status: Maße entworfen (Toolgen-Bezug 0,606 m; gemessen siehe spec.json), Formp
 import math
 
 from basic.common import part, prof, cyl, cut_box, grip_v21, assemblies, R_BODY, R_MID, R_SMALL, R_FINE
+from basic.variant import collect
 
 PORTAL_ROLES = {   # emit_only: beleuchtete Grundfarbe wirkt pastellig; Cyan schwächer, sonst bleicht AgX es zu Hellblau (Runde 3)
     'portal_a': dict(color='#1AD9FF', rough=0.3, metal=0.0, emit=0.7, emit_only=True, de='Portal A Cyan (Kern, leuchtend; Cube Escape)'),
@@ -175,5 +176,7 @@ EGO_GRIPS = {
                     src='E links am Vordergriff unter der Unterlippe (foregrip f 138–178, Breite 26; Socket_SupportHand 158/20), Faust um den '
                         'Griff wie an der MP (ego.FINGER_POSES foregrip, Nutzerwahl 0.18)'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(None, EGO_GRIPS, dict(grip='grip', support='foregrip'))
 # Live-Teile: Abzug und Emitterring (dreht je Schuss um 120°, Laufzeit); kein Verschluss, keine Auswurfklappe
 EGO_LIVE = dict(trigger='trigger', bolt='', port='', ring='emitter_ring')

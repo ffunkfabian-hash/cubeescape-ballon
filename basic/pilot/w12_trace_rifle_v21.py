@@ -32,6 +32,7 @@ Status: Maße entworfen (Länge kürzer als v1, an Familie 10 angelehnt; gemesse
 from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, grip_v21, R_MID, R_SMALL, R_FINE)
 from basic.common import zinken
 from basic.weapons import w12_trace_rifle as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Leitstrahl v2.1', nick='Familie v2.1',
             summary='Spurgewehr mit freiem Fokusrohr unter auskragender Haube, Fokusscheibe, Einteilkörper und Visier H3 (Stil v2.1).')
@@ -201,3 +202,5 @@ EGO_GRIPS = {
 # Abzug je Schuss; Fokuslinse und Scheibenmitte leuchten, solange der Strahl läuft (Feuerart continuous_beam, Bewegung glow 0 → 1)
 EGO_LIVE = dict(trigger='trigger', bolt='', port='', glow=('focus_lens', 'disc_lens'))
 EJECT = None    # Energiewaffe: keine Hülse (Daten statt Sonderlogik; check: Energiezelle BEC-1 → EJECT None)
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(grip='grip', support='tube_grip'))

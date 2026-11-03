@@ -46,6 +46,7 @@ from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, g
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Schellen ohne feine Kratzer)
 from basic.common import entfernung, side_mount
 from basic.weapons import w14_rocket_launcher as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Schulterrohr v2.1', nick='Familie v2.1',
             summary='Raketenwerfer mit dickem Startrohr, schlankem Heckrohr, Sichtfenster, Heckklappe und Visier W2 „Entfernung“ (Stil v2.1).')
@@ -225,6 +226,8 @@ EGO_GRIPS = {
 }
 EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss
 EJECT = None    # hülsenlos: die Rakete verlässt das Rohr ganz (Daten statt Sonderlogik; check: Teil mit caseless → EJECT None)
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(grip='grip', support='foregrip', charge='tube'))
 ACTIONS = {
     'fire': dict(de='Abschuss', frames=12, step=1, keys={'trigger': [(0, 0), (2, 1), (6, 0)],
                                                          'ready_light': [(0, 1), (2, 1), (4, 0), (12, 0)]},

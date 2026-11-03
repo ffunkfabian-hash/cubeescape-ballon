@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.41.0 „Intake“ – Formgen-Varianten in Unity spielbar (Branch `claude/ballon-0.41-intake`)
+
+- Nutzerentscheid 242 (02.11.2026): Varianten aus Formgen v2 laufen über BALLONs Kit, Bake und Export. Neu `basic/variant.py`
+  (`as_module`: Waffe aus Datensatz + Grundmodul; `POINTS`), `blender_build.main(W=…, base=…, argv=…)`, `export_unity.weapon_entry(W,
+  atlas_key, spec, weapon)` für fremde Module, `bake_weapon(root, tex_dir, atlas_key, fbx, skins, gpu, arms, …)` ohne Ego-Szene mit
+  Zielordner. GLB und Spec aller 16 Spielwaffen bytegleich zu 0.40; FBX und Atlanten unverändert (nicht neu gebacken).
+- Weltpunkte mit Teilbezug: Auswurf, Gurtglied und alle Griffkontakte stehen in jedem Spielmodul als `POINTS` (Form wie `ANCHORS`),
+  wandern mit, wenn ein Generator Teile dehnt (`tools/test_points.py`: 56 Punkte mitgewandert, Gegenprobe ohne `POINTS` rot).
+- Handschatten: `rest_pose` legte vor dem Waffen-Bake alle Armsegmente in Socket_Hand (AO-Abdrücke im Griff). Regel für BALLON und
+  Formgen: Waffenatlas ohne Arme (`ARMS_IN_ATLAS = False`); BALLONs 16 Atlanten bleiben bis zum nächsten vollen Bake.
+- Formgen-Pakete unter `unity/Assets/Ballon/Generated/Formgen/<ID>/` (`tools/formgen_import.py`, `export_unity.py --formgen`), Einträge in
+  `ego.json` (Format `ballon-ego/11`: `dir`, `origin`; Unity liest `/10` weiter), Unity-Import mit Material, Knotenlagen, Symbol und Platz
+  in der Waffenauswahl. Probe: BD01 und BG01 (Formgen 0.6, 63aa173) gebacken, eingelesen und spielbar. Vertrag
+  [docs/formgen-schnittstelle.md](docs/formgen-schnittstelle.md), Bericht [docs/versions/0.41-intake.md](docs/versions/0.41-intake.md).
+
 ## 0.40.0 „Brace“ – Ego-Arme: drei Renders und das Arm-Paket `ballon-arms/1` (Branch `claude/ballon-0.40-brace`)
 
 - Nutzerwunsch 02.11.2026: Renders der Ego-Arme und ein Aufbau als Paket. Neu `packages/ego-arms/` aus `tools/export_arms.py`

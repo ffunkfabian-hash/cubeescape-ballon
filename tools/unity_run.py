@@ -6,7 +6,8 @@
   python3 tools/unity_run.py build      → macOS-Entwicklungsbuild unity/Build/BallonFirstfeel.app
   python3 tools/unity_run.py capture    → Ablauf als PNG-Folge aus der Build, MP4 720p mit Markern
   python3 tools/unity_run.py compare [n] → Standbilder hip/ads/reload/inspect_r aus der Build, Vergleich mit Blender (SSIM/PSNR); n = Waffe
-      (Taste, 0.18; Blender-Stills aus BALLON_BLENDER_STILLS, sonst <EV>/blender_out/<Waffe>/ego/stills)
+      (Taste, 0.18; Blender-Stills aus BALLON_BLENDER_STILLS, sonst <EV>/blender_out/<Waffe>/ego/stills; Formgen-Varianten 17, 18 …:
+      Stills mit tools/ego_variant.py, 0.41)
   python3 tools/unity_run.py sway|treffer → Belege Pendeln bzw. Schuss-Ring/Treffer-X (MP4, Kontaktbogen, feedback.csv)
   python3 tools/unity_run.py huefte    → Beleg Hüft-Fadenkreuz (0.13): Hüfte, Feuer, Zielen, Sprint, Nachladen (MP4, feedback.csv)
   python3 tools/unity_run.py sprint|wechsel|rueckstoss → Belege 0.15: Sprint-Hub und Sprint → Zielen, Waffenwechsel, Rückstoß im Zielen
@@ -155,16 +156,25 @@ DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen
          'fuellstand': 'BALLON 0.34 Payload · Unity · MG (Glieder, Gurt, Zählfenster) → Granatwerfer (Kammern) → Handfeuerwaffe (Trommel, Hülsen)',
          'holdfast': 'BALLON 0.36 Holdfast · Unity · Hüfte Automatik/Impuls/Scout, Handfeuerwaffe Schuss, Raketenwerfer Zielen, Bogen Spannen/Zielen',
          'scatter': 'BALLON 0.39 Scatter · Unity · Schrot auf Metall: Lochgruppe je Schuss (12 Löcher, 2 Bursts), Hüfte und Zielen',
+         'intake': 'BALLON 0.41 Intake · Unity · Formgen-Variante: Hüftfeuer bis leer (Hülsen am Auswurf), Nachladen, Zielen mit Feuerstoß',
          'ladung': 'BALLON 0.39 Scatter · Unity · Fusion: Ladeleuchten am Lauf – Hüfte (Salve, Abbruch), Zielen (Salve)'}
 WEAPONS = {1: 'BASIC-01-v2.1', 2: 'BASIC-06-v2.1', 3: 'BASIC-03-v2.1', 4: 'BASIC-02-v2.1', 5: 'BASIC-T01-v2.1', 6: 'BASIC-04-v2.1',
            7: 'BASIC-05-v2.1', 8: 'BASIC-09-v2.1', 9: 'BASIC-12-v2.1', 10: 'BASIC-15-v2.1', 11: 'BASIC-08-v2.1', 12: 'BASIC-10-v2.1',
            13: 'BASIC-11-v2.1', 14: 'BASIC-07-v2.1', 15: 'BASIC-13-v2.1', 16: 'BASIC-14-v2.1'}   # Waffe n → ID (tools/export_unity.WEAPONS;
-# 10 = Taste 0, 11–16 ohne Taste: Waffenmenü)
+# 10 = Taste 0, 11–16 ohne Taste: Waffenmenü). 0.41: dahinter die Formgen-Varianten aus ego.json (17, 18 … nur im Menü)
+try:
+    WEAPONS.update({i + 1: e['id'] for i, e in enumerate(json.load(open(os.path.join(PROJ, 'Assets', 'Ballon', 'Generated', 'ego.json'),
+                                                                        encoding='utf-8'))['weapons']) if i + 1 > 16})
+except (OSError, ValueError, KeyError):
+    pass
 
 
 def capture(scene=None, demo=None):
     extra = os.environ.get('BALLON_CAPTURE_EXTRA', '').split()   # Messläufe: z. B. "-ballonFps 60 -ballonKey 1" (eigener Ordner, _mess)
-    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '') + ('_mess' if extra else '')
+    wk = os.environ.get('BALLON_CAPTURE_WEAPON')                   # 0.41: Waffe n (z. B. 18 = Formgen-Variante), eigener Ordner _w<n>
+    mess = '_mess' if extra else ''
+    d = os.path.join(EV, 'capture' if not scene else f'capture_{scene}') + (f'_{demo}' if demo else '') + mess + (f'_w{wk}' if wk else '')
+    extra += ['-ballonWeapon', wk] if wk else []
     shutil.rmtree(d, ignore_errors=True)
     face = os.environ.get('BALLON_CAPTURE_FACE')                   # 0.39: in der Szene vor diesen Collider stellen (scatter)
     rc = player(['-ballonCapture', d] + (['-ballonScene', scene] if scene else []) + (['-ballonDemo', demo] if demo else [])
@@ -195,7 +205,7 @@ def capture(scene=None, demo=None):
         if i <= until and cur:
             cmd += ['-gravity', 'NorthEast', '-fill', '#FFB070', '-pointsize', '22', '-annotate', '+20+34', '› ' + cur.split(' › ')[-1]]
         subprocess.run(cmd + [os.path.join(lab, f'{i:04d}.png')], check=True)
-    stem = ('gefuehl' if demo == 'feel' else demo or '') + ('_mess' if extra else '')
+    stem = ('gefuehl' if demo == 'feel' else demo or '') + mess + (f'_w{wk}' if wk else '')
     out = os.path.join(EV, f'{stem}_{scene or "parcours"}.mp4' if demo else 'firstfeel_ablauf.mp4' if not scene else f'firstfeel_{scene}.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'), '-vf', 'format=yuv420p',
                     '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', out], check=True)

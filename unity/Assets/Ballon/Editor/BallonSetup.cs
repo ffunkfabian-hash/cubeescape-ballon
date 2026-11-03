@@ -33,7 +33,7 @@ namespace Ballon.Ego.Editor
                 li.wrapMode = TextureWrapMode.Clamp;
                 return;
             }
-            if (!assetPath.StartsWith("Assets/Ballon/Generated/Textures/")) return;
+            if (!assetPath.StartsWith("Assets/Ballon/Generated/Textures/") && !BallonSetup.IsVariantTexture(assetPath)) return;
             var ti = (TextureImporter)assetImporter;
             var f = Path.GetFileNameWithoutExtension(assetPath);
             ti.maxTextureSize = 4096;
@@ -70,10 +70,18 @@ namespace Ballon.Ego.Editor
         void OnPostprocessModel(GameObject g)
         {
             if (!assetPath.StartsWith("Assets/Ballon/Generated/")) return;
-            var json = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(assetPath), "ego.json");
+            if (assetPath.StartsWith("Assets/Ballon/Generated/Scenes/")) return;      // Szenen setzen ihre Lagen selbst (SceneLoader)
+            var json = BallonSetup.Gen + "/ego.json";                                  // 0.41: auch für Formgen-Pakete unter Generated/Formgen/<ID>/
             if (!System.IO.File.Exists(json)) return;
             var all = EgoFile.ParseAll(System.IO.File.ReadAllText(json));
-            var D = System.Array.Find(all, d => d.weapon.fbx == System.IO.Path.GetFileName(assetPath)) ?? all[0];   // Waffe dieses FBX (Arme: beliebig)
+            var rel = assetPath.Substring(BallonSetup.Gen.Length + 1);
+            var D = System.Array.Find(all, d => d.AssetPath(d.weapon.fbx) == rel);      // Waffe dieses FBX
+            if (D == null && rel != "arms.fbx")
+            {
+                Debug.LogWarning($"[Ballon] {assetPath}: kein Eintrag in ego.json (Formgen-Paket ohne Export? tools/export_unity.py --formgen) – Knoten unverändert");
+                return;
+            }
+            D = D ?? all[0];                                                           // Arme: beliebige Waffe (gemeinsamer Teil)
             var at = new Dictionary<string, Vector3>();       // Lage im Waffenrahmen (Blender, m)
             foreach (var p in D.weapon.parts) at[p.id] = BMath.V(p.rest);
             foreach (var a in D.weapon.anchors) at[a.id] = BMath.V(a.pos);
@@ -104,6 +112,10 @@ namespace Ballon.Ego.Editor
         public const string Settings = "Assets/Ballon/Settings";
         public const string ScenePath = "Assets/Ballon/Scenes/Firstfeel.unity";
         public const string BuildPath = "Build/BallonFirstfeel.app";
+        public const string FormgenDir = Gen + "/Formgen/";            // 0.41: Formgen-Pakete (tools/formgen_import.py)
+
+        /// <summary>Atlas eines Formgen-Pakets: Generated/Formgen/&lt;ID&gt;/textures/*.</summary>
+        public static bool IsVariantTexture(string path) => path.StartsWith(FormgenDir) && path.Contains("/textures/");
 
         public static void Configure(ModelImporter mi)
         {
@@ -135,7 +147,7 @@ namespace Ballon.Ego.Editor
             Pipeline();
             Layer();
             Player();
-            var fbx = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json")).Select(d => d.weapon.fbx).Append("arms.fbx");   // je Waffe (0.18)
+            var fbx = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json")).Select(d => d.AssetPath(d.weapon.fbx)).Append("arms.fbx");   // je Waffe (0.18), Formgen-Pakete in ihrem Ordner (0.41)
             foreach (var f in fbx)
             {
                 var mi = (ModelImporter)AssetImporter.GetAtPath($"{Gen}/{f}");
@@ -383,11 +395,12 @@ namespace Ballon.Ego.Editor
                 }
                 res["Role_" + r.role] = m;
             }
-            var atl = all.Select(d => (d.atlas, d.textures.weapon)).Append(("arms", D.textures.arms));          // 0.7: gebackene Atlanten, 0.18 je Waffe
-            foreach (var (key, A) in atl)
+            // 0.7: gebackene Atlanten, 0.18 je Waffe; 0.41: Formgen-Pakete mit eigenem Texturordner (EgoFile.TexturePath)
+            var atl = all.Select(d => (d.atlas, d.textures.weapon, (System.Func<string, string>)d.TexturePath)).Append(("arms", D.textures.arms, f => $"Textures/{f}"));
+            foreach (var (key, A, path) in atl)
             {
                 var m = Lit("Atlas_" + key, Color.white, 1f, 0f);
-                Texture2D T(string f) => AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                Texture2D T(string f) => Need($"{Gen}/{path(f)}");
                 m.SetTexture("_BaseMap", T(A.albedo));                 // Diffusfarbe = Grundfarbe · (1 − Metall)
                 m.SetFloat("_WorkflowMode", 0f);                         // Spezular: Spiegelfarbe je Pixel wie Blender
                 m.EnableKeyword("_SPECULAR_SETUP");
@@ -413,8 +426,8 @@ namespace Ballon.Ego.Editor
                     var path = $"{Gen}/Materials/{at}_{sk.name}.mat";
                     var old = AssetDatabase.LoadAssetAtPath<Material>(path);
                     if (old != null) { old.CopyPropertiesFromMaterial(m); m = old; } else { m.name = $"{at}_{sk.name}"; AssetDatabase.CreateAsset(m, path); }
-                    m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.albedo}"));
-                    m.SetTexture("_SpecGlossMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{sk.spec}"));
+                    m.SetTexture("_BaseMap", Need($"{Gen}/{d.TexturePath(sk.albedo)}"));
+                    m.SetTexture("_SpecGlossMap", Need($"{Gen}/{d.TexturePath(sk.spec)}"));
                     EditorUtility.SetDirty(m);
                     res[$"Skin_{d.atlas}_{sk.name}"] = m;
                 }
@@ -489,10 +502,19 @@ namespace Ballon.Ego.Editor
             return res;
         }
 
-        /// <summary>Waffensymbol (0.33 Ziel 2, tools/make_icons.py) als GUI-Textur ohne Mipmaps; fehlt es, bleibt das HUD ohne Symbol.</summary>
-        static Texture2D Icon(string id)
+        /// <summary>Textur, die es geben muss (Atlas, Skin): fehlt sie, bricht der Aufbau mit dem Pfad ab statt still ohne Karte.</summary>
+        static Texture2D Need(string path)
         {
-            var path = $"{Gen}/Icons/{id}.png";
+            var t = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (t == null) throw new FileNotFoundException($"[Ballon] Textur fehlt: {path}");
+            return t;
+        }
+
+        /// <summary>Waffensymbol (0.33 Ziel 2, tools/make_icons.py) als GUI-Textur ohne Mipmaps; fehlt es, bleibt das HUD ohne Symbol.
+        /// Formgen-Varianten (0.41): Symbol aus dem FBX (VariantIcon), gleiche Form wie die Silhouetten-Symbole.</summary>
+        static Texture2D Icon(EgoFile d)
+        {
+            var path = d.IsVariant ? VariantIcon(d) : $"{Gen}/Icons/{d.weapon.id}.png";
             if (AssetImporter.GetAtPath(path) is TextureImporter ti && (ti.textureType != TextureImporterType.GUI || ti.mipmapEnabled))
             {
                 ti.textureType = TextureImporterType.GUI;
@@ -504,6 +526,102 @@ namespace Ballon.Ego.Editor
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
+        public const int IconLength = 320, IconBorder = 4;       // wie tools/make_icons.py: Silhouetten auf 320 px Länge normiert, 4 px Rand
+
+        /// <summary>Symbol einer Formgen-Variante (0.41): Seitenansicht des FBX (Mündung rechts) als weiße Silhouette mit Alpha, auf
+        /// IconLength normiert, um 1 px verdickt, knapp beschnitten mit IconBorder Rand – wie make_icons.py aus data/silhouettes.json, aber
+        /// aus den Dreiecken gerastert (ohne Kamera, gleiche Bytes bei gleichem Netz). Nach Generated/Icons/&lt;ID&gt;.png; neu nur, wenn sich
+        /// das FBX ändert (SHA-256 in Icons/formgen_icons.json).</summary>
+        static string VariantIcon(EgoFile d)
+        {
+            var path = $"{Gen}/Icons/{d.weapon.id}.png";
+            var fbx = $"{Gen}/{d.AssetPath(d.weapon.fbx)}";
+            var metaPath = $"{Gen}/Icons/formgen_icons.json";
+            string sha;
+            using (var h = System.Security.Cryptography.SHA256.Create())
+                sha = System.BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(fbx))).Replace("-", "").ToLowerInvariant();
+            var meta = File.Exists(metaPath) ? File.ReadAllText(metaPath) : "";
+            var line = $"\"{d.weapon.id}\": \"{sha}\"";
+            if (File.Exists(path) && meta.Contains(line)) return path;
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(fbx);
+            var png = SilhouettePng(model);
+            Directory.CreateDirectory($"{Gen}/Icons");
+            File.WriteAllBytes(path, png);
+            var lines = meta.Split('\n').Where(l => l.Contains(": \"") && !l.Contains($"\"{d.weapon.id}\":")).Select(l => l.Trim().TrimEnd(','))
+                .Append(line).OrderBy(l => l, System.StringComparer.Ordinal).ToList();
+            File.WriteAllText(metaPath, "{\n " + string.Join(",\n ", lines) + "\n}\n");
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            Debug.Log($"[Ballon] Symbol {path} aus {fbx}");
+            return path;
+        }
+
+        /// <summary>Weiße Silhouette (RGBA-PNG) der Seitenansicht eines Modells: Unity z (vorn) nach rechts, y nach oben.</summary>
+        public static byte[] SilhouettePng(GameObject model)
+        {
+            var root = model.transform.worldToLocalMatrix;
+            var tris = new List<Vector2>();
+            foreach (var mf in model.GetComponentsInChildren<MeshFilter>(true))
+            {
+                var m = mf.sharedMesh;
+                if (m == null) continue;
+                var M = root * mf.transform.localToWorldMatrix;
+                var v = m.vertices;
+                var idx = m.triangles;
+                for (int i = 0; i < idx.Length; i++)
+                {
+                    var p = M.MultiplyPoint3x4(v[idx[i]]);
+                    tris.Add(new Vector2(p.z, p.y));
+                }
+            }
+            if (tris.Count == 0) throw new System.InvalidOperationException($"[Ballon] {model.name}: keine Dreiecke für das Symbol");
+            float x0 = tris.Min(p => p.x), x1 = tris.Max(p => p.x), y0 = tris.Min(p => p.y), y1 = tris.Max(p => p.y);
+            float k = (IconLength - 1) / (x1 - x0);
+            int w = IconLength, hgt = Mathf.CeilToInt((y1 - y0) * k) + 1;
+            var px = new bool[w, hgt];
+            for (int t = 0; t + 2 < tris.Count; t += 3)        // Dreiecke rastern (Pixelmitte im Dreieck), y nach unten
+            {
+                var a = Map(tris[t]); var b = Map(tris[t + 1]); var c = Map(tris[t + 2]);
+                int ia = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(a.x, Mathf.Min(b.x, c.x)))), ib = Mathf.Min(w - 1, Mathf.CeilToInt(Mathf.Max(a.x, Mathf.Max(b.x, c.x))));
+                int ja = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(a.y, Mathf.Min(b.y, c.y)))), jb = Mathf.Min(hgt - 1, Mathf.CeilToInt(Mathf.Max(a.y, Mathf.Max(b.y, c.y))));
+                float area = Edge(a, b, c);
+                if (Mathf.Abs(area) < 1e-9f)
+                {
+                    px[Mathf.Clamp(Mathf.RoundToInt(a.x), 0, w - 1), Mathf.Clamp(Mathf.RoundToInt(a.y), 0, hgt - 1)] = true;   // entartet: ein Punkt
+                    continue;
+                }
+                for (int i = ia; i <= ib; i++)
+                    for (int j = ja; j <= jb; j++)
+                    {
+                        var q = new Vector2(i, j);
+                        float e0 = Edge(b, c, q) / area, e1 = Edge(c, a, q) / area, e2 = Edge(a, b, q) / area;
+                        if (e0 >= -1e-4f && e1 >= -1e-4f && e2 >= -1e-4f) px[i, j] = true;
+                    }
+            }
+            Vector2 Map(Vector2 p) => new Vector2((p.x - x0) * k, (y1 - p.y) * k);
+            // um 1 px verdicken (Kreuz, wie ImageMagick Dilate Disk:1), dann knapp beschneiden und Rand
+            var thick = new bool[w, hgt];
+            for (int i = 0; i < w; i++)
+                for (int j = 0; j < hgt; j++)
+                    thick[i, j] = px[i, j] || (i > 0 && px[i - 1, j]) || (i < w - 1 && px[i + 1, j]) || (j > 0 && px[i, j - 1]) || (j < hgt - 1 && px[i, j + 1]);
+            int minI = w, maxI = -1, minJ = hgt, maxJ = -1;
+            for (int i = 0; i < w; i++)
+                for (int j = 0; j < hgt; j++)
+                    if (thick[i, j]) { minI = Mathf.Min(minI, i); maxI = Mathf.Max(maxI, i); minJ = Mathf.Min(minJ, j); maxJ = Mathf.Max(maxJ, j); }
+            int tw = maxI - minI + 1 + 2 * IconBorder, th = maxJ - minJ + 1 + 2 * IconBorder;
+            var tex = new Texture2D(tw, th, TextureFormat.RGBA32, false);
+            var cols = new Color32[tw * th];
+            for (int i = minI; i <= maxI; i++)
+                for (int j = minJ; j <= maxJ; j++)
+                    if (thick[i, j]) cols[(th - 1 - (j - minJ + IconBorder)) * tw + (i - minI + IconBorder)] = new Color32(255, 255, 255, 255);
+            tex.SetPixels32(cols);
+            tex.Apply();
+            var png = tex.EncodeToPNG();
+            Object.DestroyImmediate(tex);
+            return png;
+        }
+
+        static float Edge(Vector2 a, Vector2 b, Vector2 p) => (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+
         static void Scene(Dictionary<string, Material> mats)
         {
             var sc = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -514,9 +632,9 @@ namespace Ballon.Ego.Editor
             b.weapons = all.Select(d => new Bootstrap.WeaponAssets
             {
                 id = d.weapon.id,
-                model = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.weapon.fbx}"),
+                model = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.AssetPath(d.weapon.fbx)}"),
                 skins = d.textures.skins.Select(sk => mats[$"Skin_{d.atlas}_{sk.name}"]).ToArray(),
-                icon = Icon(d.weapon.id),
+                icon = Icon(d),
             }).ToArray();
             b.armsModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/arms.fbx");
             b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")).Select(kv => kv.Value).ToArray();

@@ -31,6 +31,7 @@ import math
 from basic.common import part, prof, box, cyl, cut_box, grip_v21, R_BODY, R_MID, R_SMALL, R_FINE
 from basic.common import klammer
 from basic.weapons import w04_hand_cannon as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Trommel v2.1', nick='Familie v2.1',
             summary='Revolver mit freistehender, kannelierter Trommel auf Kran, Kastenunterlauf und Kimme/Korn K1 (Stil v2.1).')
@@ -135,6 +136,8 @@ EGO_GRIPS = {
     'charge':  dict(part='cylinder_latch', contact=(4, 62, FR_W / 2 + 3.5), palm=(0.0, 0.0, -1.0), fingers=(0.6, 0.8, 0.0),
                     fingers_pose='pinch', src='E am Trommelriegel links (Daumen der Stützhand)'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(grip='grip', support='grip'))
 # Abzug, Hahn (zuckt beim Schuss, Spannabzug), keine Auswurfklappe; index (0.34): die Trommel dreht nach jedem Schuss eine Kammer weiter
 EGO_LIVE = dict(trigger='trigger', bolt='hammer', port='', index=['cylinder'])
 ACTIONS = {k: dict(A) for k, A in V1.ACTIONS.items()}

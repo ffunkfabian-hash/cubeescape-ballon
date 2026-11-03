@@ -32,6 +32,7 @@ from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, g
 from basic.common import boegen
 from basic.pilot.energy_roles import CHARGE_ROLES  # noqa: F401  (registriert die Rolle charge_core in Blender)
 from basic.weapons import w10_fusion_rifle as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Glutkern v2.1', nick='Familie v2.1',
             summary='Fusionsgewehr mit offener Ladekammer (Spulenringe um den Glutkern), Schlitz-Emitter und Visier F1 (Stil v2.1).')
@@ -180,5 +181,7 @@ EGO_GRIPS = {
     'charge':  dict(part='cell_release', contact=(76, 54, 23.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Zellenhalter links (kein Ladehebel; vom Nachladen nicht genutzt, leer wie taktisch)'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(grip='grip', support='handguard_grip'))
 # Abzug je Ladung; Glutkern und Ladebalken leuchten mit der Ladung (Feuerart charge_burst, Bewegung glow 0 → 1)
 EGO_LIVE = dict(trigger='trigger', bolt='', port='', glow=('ember_core', 'sight_emitter'))
