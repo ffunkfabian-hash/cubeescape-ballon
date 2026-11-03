@@ -705,9 +705,23 @@ def texture_problems(D, tex_dir=None, store=None):
         if composed and not T.get('skin_masks'):
             bad.append(f"{e['id']}: zusammengesetzte Skins ohne skin_masks (tools/skin_masks.py)")
         M = T.get('skin_masks') or {}
+        if M:                                       # Richter 0.42: Pflichtfelder, Rollen und Bildform der Masken
+            miss = [k for k in ('a', 'b', 'c', 'p', 'roles') if not M.get(k)]
+            if miss:
+                bad.append(f"{e['id']}: skin_masks ohne {', '.join(miss)}")
+            elif len(M['roles']) > 254:
+                bad.append(f"{e['id']}: skin_masks mit {len(M['roles'])} Rollen (8-bit-Index)")
         for k in ('a', 'b', 'c', 'p'):
-            if k in M and not os.path.exists(os.path.join(tex_dir, M[k])):
+            if not M.get(k):
+                continue
+            mp = os.path.join(tex_dir, M[k])
+            if not os.path.exists(mp):
                 bad.append(f"{e['id']}: fehlt {M[k]}")
+            elif HAS_MAGICK:
+                w, z, ch = _identify(mp)
+                want = M.get('pattern_size' if k == 'p' else 'size')
+                if z != 8 or (want and w != want) or ch.endswith('a'):          # srgba, graya: Alpha
+                    bad.append(f"{e['id']} skin_masks {M[k]}: {w}² {z} bit {ch} statt {want}² 8 bit ohne Alpha")
         files += [(k, f) for k, f in composed if os.path.exists(os.path.join(tex_dir, f))]   # lokal (unity_run.py setup), im Repo nicht
         seen = set()
         for k, f in files:

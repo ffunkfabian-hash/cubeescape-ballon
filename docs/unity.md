@@ -471,13 +471,13 @@ Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blen
   - Materialfarben sind in Unity Gamma-Werte: lineare Werte über `SetColor(farbe.gamma)` setzen.
 - **Messung:** `compare` schreibt SSIM, PSNR und Helligkeit je Pose nach `compare/metrics.json`.
 
-## Skins (0.7.2)
+## Skins (0.7.2, seit 0.42 aus Masken)
 
-Die acht Waffen-Skins aus `kit.SKINS` sind gebacken: Standard, Nachtschicht, Polar, Kobalt, Wüste, Tarnung, Gebraucht und
-Eloxal.
+Die acht Waffen-Skins aus `kit.SKINS`: Standard, Nachtschicht, Polar, Kobalt, Wüste, Tarnung, Gebraucht und Eloxal. Bis 0.42 war jeder
+Skin eine eigene gebackene Farb- und Glanzkarte (≈ 2 min je Skin auf der GPU); seit 0.42 entstehen sie aus Skin-Masken (unten).
 
-- **Backen:** Je Skin entstehen eine Farbkarte (Diffus) und eine Glanzkarte (Spiegelfarbe plus Glätte) der Waffe, etwa 2 min
-  je Skin auf der GPU. Normale und AO teilen sich alle Skins, weil Form und UVs gleich sind.
+- **Karten:** Je Skin eine Farbkarte (Diffus) und eine Glanzkarte (Spiegelfarbe plus Glätte) der Waffe. Normale und AO teilen sich alle
+  Skins, weil Form und UVs gleich sind.
 - **Arme:** bleiben im Standard; ein Waffen-Skin färbt die Roboterarme nicht.
 - **Im Spiel:** Taste K schaltet durch, die Anzeige nennt den Skin (`EgoPlayer.SetSkin`).
 - **Farbe statt Weiß (0.42 „Quickslot“):** alle 16 Spielwaffen haben die acht Skins. Jede Waffe startet mit ihrem farbigen Standard-Skin
@@ -497,7 +497,8 @@ Eloxal.
   Blender, dunkle Skins (Nachtschicht, Kobalt) wirken heller. Das ist dieselbe Restabweichung wie unter Grenzen (keine
   Abschattung der Spiegelung).
 
-Zeiten des Exports mit Backen: Waffe 3 min, Arme 0,5 min, 7 Skins 15 min, gesamt ≈ 20 min ohne Wartezeit an der GPU-Sperre.
+Zeiten des Exports mit Backen (0.42): Waffe 3 min, Arme 0,5 min, Skin-Masken ≈ 4 min (vier Bakes), dazu lokal das Zusammensetzen der
+sieben Skins ≈ 1 min je Waffe (ohne GPU). Bis 0.41 kosteten die sieben gebackenen Skins 15 min je Waffe.
 
 ## Viewmodel-Bildwinkel (A9, 0.32)
 

@@ -63,6 +63,27 @@ def main():
             store['limit_mb'] = 1e-6
             if not any('MB >' in b for b in XU.texture_problems(D, d, store)):
                 err.append('Grenze nicht erkannt')
+            store['limit_mb'] = 1e6
+            # 0.42 (Richter): zusammengesetzte Skins brauchen vollständige Skin-Masken (RGB 8 bit ohne Alpha, Kantenlänge laut Eintrag)
+            for f in ('m_a.png', 'm_b.png', 'm_c.png'):
+                make(os.path.join(d, f), 16)
+            subprocess.run(['magick', '-size', '8x8', 'xc:gray50', '-depth', '8', os.path.join(d, 'm_p.png')], check=True)
+            T2 = json.loads(json.dumps(T))
+            T2['skins'].append(dict(name='y', albedo='w_y_albedo.jpg', spec='w_y_spec.png', composed=True))
+            D2 = dict(weapons=[dict(id='T', textures=T2)])
+            if not any('ohne skin_masks' in b for b in XU.texture_problems(D2, d, store)):
+                err.append('zusammengesetzte Skins ohne Masken nicht erkannt')
+            T2['skin_masks'] = dict(roles=['shell'])
+            if not any('skin_masks ohne a, b, c, p' in b for b in XU.texture_problems(D2, d, store)):
+                err.append('unvollständige Skin-Masken nicht erkannt')
+            T2['skin_masks'] = dict(a='m_a.png', b='m_b.png', c='m_c.png', p='m_p.png', roles=['shell'], size=16, pattern_size=8)
+            bad = XU.texture_problems(D2, d, store)
+            if bad:
+                err.append('vollständige Skin-Masken (Skin-Bild fehlt lokal, erlaubt): ' + '; '.join(bad))
+            subprocess.run(['magick', '-size', '16x16', 'plasma:', '-depth', '8', '-alpha', 'set', '-channel', 'A', '-evaluate', 'set', '50%',
+                            '+channel', os.path.join(d, 'm_b.png')], check=True)   # echtes Alpha (deckendes lässt PNG weg)
+            if not any('m_b.png' in b for b in XU.texture_problems(D2, d, store)):
+                err.append('Skin-Maske mit Alpha nicht erkannt')
     finally:
         XU.TEXTURE_STORE = old
     print('\n'.join(err) if err else 'test_texture_store: Ablage und Prüfung in Ordnung')

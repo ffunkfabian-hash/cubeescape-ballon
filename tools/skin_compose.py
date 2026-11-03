@@ -92,8 +92,11 @@ def compose_one(e, D, tex_dir, skins_def, force=False):
     todo = [s for s in T['skins'] if s['name'] != 'standard']
     stamp = os.path.join(tex_dir, f".skin_compose_{e['atlas']}.json")
     srcs = [T['weapon']['albedo'], T['weapon']['spec'], M['a'], M['b'], M['c'], M['p']]
-    key = dict(version=VERSION, src={f: os.path.getmtime(os.path.join(tex_dir, f)) for f in srcs},
-               skins={s['name']: skins_def[s['name']] for s in todo})
+    tab = tables(M['roles'], D)
+    key = dict(version=VERSION, src={f: os.path.getmtime(os.path.join(tex_dir, f)) for f in srcs},   # alle Eingaben (Richter 0.42):
+               skins={s['name']: skins_def[s['name']] for s in todo}, masks=M,                       # Bilder, Skins, Masken-Eintrag,
+               roles=[{k: (v.tolist() if hasattr(v, 'tolist') else v) for k, v in r.items()} for r in tab[1:]])   # Rollenwerte
+
     if not force and os.path.exists(stamp) and json.load(open(stamp)) == json.loads(json.dumps(key)) and \
             all(os.path.exists(os.path.join(tex_dir, s[k])) for s in todo for k in ('albedo', 'spec')):
         return {}
@@ -110,7 +113,6 @@ def compose_one(e, D, tex_dir, skins_def, force=False):
     wear_m = {'standard': (a[..., 0], a[..., 1]), 'nacht': (b[..., 0], b[..., 1]), 'gebraucht': (c[..., 0], c[..., 1])}
     g0, s = a[..., 2], b[..., 2]
     m0 = wear_m['standard'][0]
-    tab = tables(M['roles'], D)
     lut = lambda f, d=0.0: np.array([d] + [f(r) for r in tab[1:]], np.float32)[role]   # noqa: E731
     C0 = np.array([np.zeros(3, np.float32)] + [r['C'] for r in tab[1:]], np.float32)[role]
     metal0, rough0, f0 = lut(lambda r: r['metal']), lut(lambda r: r['rough']), lut(lambda r: F0_SCALE * r['spec'])
@@ -179,7 +181,7 @@ def compose_one(e, D, tex_dir, skins_def, force=False):
 def compare(e, tex_dir, ref_dir):
     """Zusammengesetzte Skins gegen gebackene (ref_dir, gleiche Dateinamen): mittlere Abweichung (0–255) und PSNR je Karte, nur Atlas-Texel."""
     T = e['textures']
-    role = read(os.path.join(tex_dir, T['skin_masks']['b']), 1024, nearest=True)[..., 1] > 0
+    role = read(os.path.join(tex_dir, T['skin_masks']['c']), 1024, nearest=True)[..., 2] > 0    # Rolle (Richter 0.42: nicht Maske b)
     res = {}
     for sk in T['skins']:
         if sk['name'] == 'standard':
