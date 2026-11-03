@@ -169,6 +169,17 @@ namespace Ballon.Ego.Tests
                 Assert.IsFalse(st.Load(L, All.Length, out _, out _), "kaputte Datei: Standard");
             }
             finally { File.Delete(path); }
+            // relativer Dateiname (-ballonLoadout loadout.json): absolut aufgelöst, Speichern und Laden gehen
+            var rel = $"ballon_loadout_rel_{System.Guid.NewGuid():N}.json";
+            var rs = new LoadoutStore(rel);
+            try
+            {
+                Assert.IsTrue(Path.IsPathRooted(rs.path), rs.path);
+                rs.Save(L, new Hotbar(L.DefaultSlots()), new string[All.Length]);
+                Assert.IsTrue(rs.Load(L, All.Length, out var rslots, out _), "relativer Pfad gespeichert und gelesen");
+                CollectionAssert.AreEqual(L.DefaultSlots(), rslots);
+            }
+            finally { File.Delete(rs.path); }
         }
 
         [Test]

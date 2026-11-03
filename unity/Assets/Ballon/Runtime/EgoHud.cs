@@ -186,7 +186,8 @@ namespace Ballon.Ego
         [Serializable] public class FileData { public string format; public string[] slots; public SkinEntry[] skins; }
 
         public readonly string path;
-        public LoadoutStore(string path) { this.path = path; }
+        /// <summary>path absolut aufgelöst (Richter 0.42: „-ballonLoadout loadout.json“ hatte keinen Ordner, CreateDirectory warf).</summary>
+        public LoadoutStore(string path) { this.path = string.IsNullOrEmpty(path) ? path : Path.GetFullPath(path); }
 
         /// <summary>Datei lesen: Plätze (Index je Platz, −1 leer/unbekannt) und Skin-Namen je Waffe (null = Standard). false ohne Datei oder
         /// bei falschem Format (dann bleibt die Standardbelegung; eine kaputte Datei meldet eine Warnung).</summary>

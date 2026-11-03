@@ -73,7 +73,8 @@ namespace Ballon.Ego.Tests
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
             Assert.IsNull(Bootstrap.Store(new[] { "BALLON", "-ballonCapture", "x" }), "Aufnahmen und Messungen speichern nichts");
-            Assert.AreEqual("x.json", Bootstrap.Store(new[] { "BALLON", "-ballonLoadout", "x.json" })?.path, "eigene Datei");
+            var own = Bootstrap.Store(new[] { "BALLON", "-ballonLoadout", "x.json" })?.path;
+            Assert.That(own != null && Path.IsPathRooted(own) && own.EndsWith("x.json"), $"eigene Datei, absolut: {own}");
             var bar = p.hotbar;
             CollectionAssert.AreEqual(p.layout.DefaultSlots(), bar.slots, "Standardleiste");
             foreach (int key in new[] { 3, 5, 9, 1 })
