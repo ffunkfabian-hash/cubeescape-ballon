@@ -9,14 +9,15 @@ bleibt die Referenz.** Unity rechnet die Bewegung live in C# aus denselben Daten
 
 ```bash
 BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
-    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + Skins (nur SKIN_WEAPONS, 0.33) + AgX-LUT + ego.json + Referenz (≈ 7 min je neue Waffe ohne Skins, 28 mit; absoluter Pfad: ce lock wechselt das Verzeichnis)
-# Skins einer Waffe nachbacken: ID in export_unity.SKIN_WEAPONS eintragen (der Plan backt sie dann neu) oder einmalig BALLON_BAKE_SKINS=all
+    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + Skin-Masken (0.42) + AgX-LUT + ego.json + Referenz (≈ 7 min je neue Waffe + 4 min Masken; absoluter Pfad: ce lock wechselt das Verzeichnis)
+BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
+    -P "$PWD/tools/skin_masks.py" [-- BASIC-09-v2.1 …]   # nur Skin-Masken vorhandener Atlanten (UVs aus dem FBX, ≈ 4 min je Waffe)
 BASIC_OUT=~/Library/Caches/CubeEscapeBallon/unity/blender_out ~/Claude/cubeescape-nexogen/ce lock gpu -- \
     /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P "$PWD/tools/ego_build.py" -- --stills --gpu   # frische Blender-Stills
 BALLON_EXPORT_DATA_ONLY=1 ~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b \
     --factory-startup -P "$PWD/tools/export_unity.py"   # nur Bewegung/Daten geändert: ego.json + Referenz, ohne Backen (2 s, keine GPU-Sperre)
 python3 tools/export_unity.py --check       # ego.json passt zu den Daten und zu den Quellen (SHA-256), läuft in ./check
-python3 tools/unity_run.py setup            # URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
+python3 tools/unity_run.py setup            # Skin-Karten aus Masken (tools/skin_compose.py, 0.42), dann URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
 python3 tools/unity_run.py test             # EditMode + PlayMode
 python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (Entwicklungsbuild)
 python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + Kontaktbogen
@@ -479,11 +480,17 @@ Eloxal.
   je Skin auf der GPU. Normale und AO teilen sich alle Skins, weil Form und UVs gleich sind.
 - **Arme:** bleiben im Standard; ein Waffen-Skin färbt die Roboterarme nicht.
 - **Im Spiel:** Taste K schaltet durch, die Anzeige nennt den Skin (`EgoPlayer.SetSkin`).
-- **Farbe statt Weiß (0.42 „Quickslot“):** alle 16 Spielwaffen haben die acht Skins (`export_unity.SKIN_WEAPONS`; bis 0.41 nur die
-  ersten sieben). Jede Waffe startet mit ihrem farbigen Standard-Skin je Klasse (`basic/loadout.DEFAULT_SKIN` → `ego.json › hud.default_skin`:
-  Kobalt, Nachtschicht, Tarnung, Wüste, Eloxal – Polar und Gebraucht sind hell bzw. creme), Formgen-Varianten mit dem Skin ihrer Linie.
-  Die Wahl mit K bleibt je Waffe gespeichert. Vergleich mit Blender im Skin: `tools/ego_skin.py` rendert die Stills,
-  `python3 tools/unity_run.py compare <n> -ballonSkin <skin>` (sonst vergleicht `compare` weiter im Standard).
+- **Farbe statt Weiß (0.42 „Quickslot“):** alle 16 Spielwaffen haben die acht Skins. Jede Waffe startet mit ihrem farbigen Standard-Skin
+  je Klasse (`basic/loadout.DEFAULT_SKIN` → `ego.json › hud.default_skin`: Kobalt, Nachtschicht, Tarnung, Wüste, Eloxal – Polar und
+  Gebraucht sind hell bzw. creme), Formgen-Varianten mit dem Skin ihrer Linie. Die Wahl mit K bleibt je Waffe gespeichert. Vergleich mit
+  Blender im Skin: `tools/ego_skin.py` rendert die Stills, `python3 tools/unity_run.py compare <n> -ballonSkin <skin>`.
+- **Skin-Masken statt Skin-Bildern (0.42, Entscheid 247 A):** im Repo liegt je Waffe nur der Standard-Atlas und vier Masken
+  (`textures.skin_masks`, [`tools/skin_masks.py`](../tools/skin_masks.py): E[m] und E[m²] des Abriebs in drei Stufen, Schmutz, Kratzer,
+  Rolle, Tarnmuster; 2048², zusammen ≈ 5 MB statt ≈ 28 MB für sieben Skins). [`tools/skin_compose.py`](../tools/skin_compose.py) setzt
+  daraus jeden Skin mit der Mischkette von `kit.aaa_nodes` zusammen (Erwartungswerte über die Bake-Samples, Standard + Unterschied der
+  Modelle) und legt ihn wie einen gebackenen ab (JPG 92 %, Glanz 2048²); `unity_run.py setup` macht das vor dem Unity-Import, nur für
+  geänderte Waffen. Die Skin-Bilder sind gitignoriert, ihre `.meta` bleiben (stabile GUIDs). Abweichung zu gebackenen Skins: Bericht
+  [0.42](versions/0.42-quickslot.md).
 - **Beleg:** `python3 tools/unity_run.py skins` erzeugt einen Kontaktbogen (hip und inspect_l je Skin) in
   `…/unity/firstfeel_skins.png`.
 - **Grenze:** In der Haltung inspect_l zeigen die Seitenflächen direkt zur Kamera. Dort glänzen dunkle Flächen stärker als in

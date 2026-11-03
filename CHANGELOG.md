@@ -8,8 +8,10 @@
 - Leiste 1–9 unten (`Hotbar`, `HudLayout`, `LoadoutStore` in `Runtime/EgoHud.cs`): Tasten 1–9 ziehen die Waffe des Platzes über den
   bestehenden Wechsel; belegen in der Übersicht mit der Zahl (Tastatur-Weg fürs Trackpad) oder durch Ziehen mit der Maus; Belegung und
   Skin je Waffe bleiben über Neustarts (`loadout.json`, `ballon-loadout/1`). Bis 0.41: 1–9, 0 = Waffe 1–10 nach `ego.json`.
-- Farben statt Weiß: alle 16 Spielwaffen mit den acht Skins (`SKIN_WEAPONS`, neun Waffen nachgebacken, ihre Atlanten dabei ohne Arme
-  wie seit 0.41 die Regel), jede startet mit ihrem farbigen Standard-Skin je Klasse, Formgen-Varianten mit dem Skin ihrer Linie.
+- Farben statt Weiß: alle 16 Spielwaffen mit den acht Skins, jede startet mit ihrem farbigen Standard-Skin je Klasse, Formgen-Varianten
+  mit dem Skin ihrer Linie. Entscheid 247 A: keine Skin-Bilder im Repo – je Waffe Skin-Masken (`tools/skin_masks.py`, E[m]/E[m²] des
+  Abriebs, Schmutz, Kratzer, Rolle, Tarnmuster), die Skin-Karten setzt `tools/skin_compose.py` lokal bei `unity_run.py setup` zusammen
+  (gitignoriert). Damit sind auch die Skin-Bilder der sieben Waffen aus 0.33–0.41 aus dem Repo.
 - Belege und Vergleich: `tools/unity_run.py hud` (Übersicht und Leiste im Fenster 1470 × 956), `tools/ego_skin.py` + `compare -ballonSkin`.
   Bericht [docs/versions/0.42-quickslot.md](docs/versions/0.42-quickslot.md).
 

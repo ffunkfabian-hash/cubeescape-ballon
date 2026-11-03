@@ -29,6 +29,7 @@
   python3 tools/unity_run.py aufwaermen → Shader-Zustände für das Aufwärmen aufzeichnen (0.38): Ruckelmessung mit -ballonGscRecord,
       Sammlung nach Assets/Ballon/Warmup/, in die Szene, neue Build (nach Änderungen an Shadern, Materialien, Effekten)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
+  python3 tools/unity_run.py skins-compose → nur die Skin-Karten aus den Masken zusammensetzen (setup macht es zuerst, 0.42)
   python3 tools/unity_run.py hud        → Beleg 0.42: Waffenübersicht (Standbild) und Leiste 1–9 (MP4) mit Anzeige, Fenster 1470 × 956
   python3 tools/unity_run.py fov        → Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
 """
@@ -61,6 +62,24 @@ def locked(cmd, log=None):
         if bad:
             print(''.join(bad[:20]))
     return r.returncode
+
+
+def blender_python():
+    """Python von Blender (numpy, OpenImageIO) für tools/skin_compose.py; BALLON_BLENDER_PY überschreibt."""
+    p = os.environ.get('BALLON_BLENDER_PY')
+    if p:
+        return p
+    found = sorted(glob.glob('/Applications/Blender.app/Contents/Resources/*/python/bin/python3.*'))
+    return found[-1] if found else None
+
+
+def compose_skins():
+    """0.42 (Entscheid 247 A): Skin-Karten aus den Skin-Masken zusammensetzen, bevor Unity sie importiert (nur geänderte Waffen)."""
+    py = blender_python()
+    if not py:
+        print('Skins: Blender-Python fehlt (BALLON_BLENDER_PY) – Skin-Karten nicht zusammengesetzt')
+        return 1
+    return subprocess.run([py, os.path.join(ROOT, 'tools', 'skin_compose.py')]).returncode
 
 
 def editor(method, name):
@@ -399,8 +418,8 @@ def compare(extra=(), weapon=1):
 if __name__ == '__main__':
     os.makedirs(EV, exist_ok=True)
     a = sys.argv[1] if len(sys.argv) > 1 else ''
-    if a == 'setup':
-        sys.exit(editor('Ballon.Ego.Editor.BallonSetup.Run', 'setup'))
+    if a == 'setup':                       # 0.42: zuerst die Skin-Karten (lokal, nicht im Repo), dann Unity
+        sys.exit(compose_skins() or editor('Ballon.Ego.Editor.BallonSetup.Run', 'setup'))
     if a == 'build':
         sys.exit(editor('Ballon.Ego.Editor.BallonSetup.BuildMac', 'build'))
     if a == 'test':
@@ -409,6 +428,8 @@ if __name__ == '__main__':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
     if a in DEMOS:            # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13); Sprint, Wechsel, Rückstoß (0.15); Feuer (0.16)
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
+    if a == 'skins-compose':
+        sys.exit(compose_skins())
     if a == 'hud':            # Beleg 0.42: Übersicht (Standbild) und Leiste (MP4) mit Anzeige, 1470 × 956
         sys.exit(hud())
     if a == 'fov':            # Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
@@ -445,7 +466,7 @@ if __name__ == '__main__':
         out = os.path.join(EV, 'firstfeel_skins.png')
         tiles = [x for f in files for x in ('-label', os.path.basename(f)[3:-4].replace('_', ' · '), f)]
         subprocess.run(['magick', 'montage', *tiles, '-tile', '4x', '-geometry', '480x270+3+3', '-pointsize', '13',
-                        '-background', '#9EA4AC', '-title', 'BALLON · Waffen-Skins in Unity (gebacken aus kit.SKINS)', out], check=True)
+                        '-background', '#9EA4AC', '-title', 'BALLON · Waffen-Skins in Unity (kit.SKINS, seit 0.42 aus Skin-Masken zusammengesetzt)', out], check=True)
         print('Skins →', out)
         sys.exit(0)
     if a == 'bench':
