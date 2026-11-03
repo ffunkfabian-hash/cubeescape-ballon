@@ -22,14 +22,16 @@ import json
 import math
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 from basic import variant as VA  # noqa: E402
+from basic import loadout as LO  # noqa: E402
 
-FORMAT = 'ballon-ego/11'   # 11 (0.41 „Intake“): weapons[].dir (Ordner unter Generated, leer = BALLONs eigene Waffe) und weapons[].origin (Herkunft einer Formgen-Variante, fehlt bei BALLONs Waffen), Formgen-Pakete unter Generated/Formgen/<ID>/ (tools/formgen_import.py); Unity liest /10 weiter (dir leer); 10 (0.39.1 ergänzt, ohne neues Format: motion.recoil/gameplay.recoil.support_still_dip – fehlt = 0, die Stützhand folgt dem Unterschwingen wie bis 0.39; Unity liest es ab 0.39.1); 10 (0.39 ergänzt, ohne neues Format: gameplay.fx pellet_impact/charge_*, motion.payload.surfaces/charge_glow, motion.payload.impacts[].hole_k, motion.payload.decal.min_life_s – fehlt = leer bzw. 0, Verhalten wie 0.38 (Form des Ladeleuchtens: Werte von 0.39); Unity liest sie ab 0.39); 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/12'   # 12 (0.42 „Quickslot“): hud (Kategorien, Leiste 1–9, Standard-Skin je Klasse aus basic/loadout.py); Unity liest /11 weiter (ohne hud: eine Kategorie, Leiste nach ego.json); 11 (0.41 „Intake“): weapons[].dir (Ordner unter Generated, leer = BALLONs eigene Waffe) und weapons[].origin (Herkunft einer Formgen-Variante, fehlt bei BALLONs Waffen), Formgen-Pakete unter Generated/Formgen/<ID>/ (tools/formgen_import.py); Unity liest /10 weiter (dir leer); 10 (0.39.1 ergänzt, ohne neues Format: motion.recoil/gameplay.recoil.support_still_dip – fehlt = 0, die Stützhand folgt dem Unterschwingen wie bis 0.39; Unity liest es ab 0.39.1); 10 (0.39 ergänzt, ohne neues Format: gameplay.fx pellet_impact/charge_*, motion.payload.surfaces/charge_glow, motion.payload.impacts[].hole_k, motion.payload.decal.min_life_s – fehlt = leer bzw. 0, Verhalten wie 0.38 (Form des Ladeleuchtens: Werte von 0.39); Unity liest sie ab 0.39); 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 # Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 … (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
 # 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“, Impuls BASIC-02 und Portalkanone BASIC-T01 seit 0.22 „Volley“, Handfeuerwaffe BASIC-04
 # und Seitenwaffe BASIC-05 seit 0.33 „Armory“ P1, Scharfschütze BASIC-09, Spurgewehr BASIC-12 und MG BASIC-15 seit P2: Tasten 8, 9, 0;
@@ -57,14 +59,21 @@ TEXTURE_STORE = dict(
     ao=dict(size=2048, ext='png', de='AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)'),
     limit_mb=50.0,
     de='Grenze je Waffe ≈ ¼ von BASIC-06 vorher (191 MB); Unity-Test Texturen_je_Waffe_unter_der_Grenze und export_unity.py --check')
-# Skins nur bei Bedarf (0.33 „Armory“ P2, Nutzer 30.10.2026: „wenn wir Zeit sparen können und es sinnvoll ist auf jedenfall aufnehmen“): neue
-# Waffen backen zuerst nur den Atlas (5 Backaufrufe ≈ 7 min statt 26 ≈ 28 min auf dem M5); Skins (kit.SKINS, je 3 Aufrufe) nur für die
-# Waffen in SKIN_WEAPONS oder mit BALLON_BAKE_SKINS=all. Ohne Skins enthält textures.skins nur 'standard' (Taste K schaltet nichts um).
-SKIN_WEAPONS = {'BASIC-01-v2.1', 'BASIC-06-v2.1', 'BASIC-03-v2.1', 'BASIC-02-v2.1', 'BASIC-T01-v2.1', 'BASIC-04-v2.1', 'BASIC-05-v2.1'}
+# Skins (0.42 „Quickslot“, Entscheid 247 A): keine Farb- und Glanzkarten je Skin mehr im Repo (bis 0.42 ≈ 4 MB je Skin und Waffe,
+# 0.33–0.41 nur für sieben Waffen gebacken). Je Waffe backt tools/skin_masks.py einmal Masken (textures.skin_masks); tools/skin_compose.py
+# setzt jeden Skin aus kit.SKINS lokal zusammen (unity_run.py setup), Dateinamen wie gebackene Skins. textures.skins nennt alle Skins.
+SKIN_FILES_COMPOSED = True
 
 
-def wants_skins(wid):
-    return wid in SKIN_WEAPONS or os.environ.get('BALLON_BAKE_SKINS') == 'all'
+def skin_entries(atlas, weapon_atlas):
+    """textures.skins einer BALLON-Waffe: standard = Atlas, übrige aus kit.SKINS mit den Dateinamen der Zusammensetzung."""
+    S = kit_literal('SKINS')
+    out = [dict(name='standard', de=S['standard']['de'], kind=S['standard']['kind'], albedo=weapon_atlas['albedo'], spec=weapon_atlas['spec'])]
+    for k, v in S.items():
+        if k != 'standard':
+            out.append(dict(name=k, de=v['de'], kind=v['kind'], albedo=f'{atlas}_{k}_albedo.jpg', spec=f'{atlas}_{k}_spec.png',
+                            composed=True))
+    return out
 
 
 MM = 0.001
@@ -169,8 +178,13 @@ def action(name, A):
 
 def kit_materials():
     """Materialrollen aus basic/kit.py (MATERIALS ist ein Literal; kit selbst braucht bpy)."""
+    return kit_literal('MATERIALS')
+
+
+def kit_literal(name):
+    """Ein Literal aus basic/kit.py ohne bpy (MATERIALS, SKINS)."""
     tree = ast.parse(open(os.path.join(ROOT, 'basic', 'kit.py'), encoding='utf-8').read())
-    node = next(n for n in tree.body if isinstance(n, ast.Assign) and getattr(n.targets[0], 'id', '') == 'MATERIALS')
+    node = next(n for n in tree.body if isinstance(n, ast.Assign) and getattr(n.targets[0], 'id', '') == name)
     return eval(compile(ast.Expression(node.value), 'kit.py', 'eval'), {'__builtins__': {}, 'dict': dict})
 
 
@@ -394,8 +408,9 @@ def data():
                             rough=roles[r]['rough'], metal=roles[r]['metal'], alpha=roles[r].get('alpha', 1.0),
                             emit=roles[r].get('emit', 0.0), emit_only=bool(roles[r].get('emit_only')), spec=roles[r].get('spec', 0.5),
                             no_coat=bool(roles[r].get('no_coat')),
+                            **({'skin_as': roles[r]['skin_as']} if roles[r].get('skin_as') else {}),   # 0.42: Skin-Gruppe (skin_compose)
                             de=roles[r]['de']) for r in used + sorted(EG.FLASH['roles'])],
-                weapons=entries)
+                hud=LO.hud_data([e['profile']['type'] for e in entries], kit_literal('SKINS')), weapons=entries)
 
 
 def write_json(path, obj):
@@ -478,9 +493,6 @@ def export_plan(D, old):
             continue
         was = {f['path']: f['sha256'] for f in o['sources']['files']}
         diff = [f['path'] for f in e['sources']['files'] if was.get(f['path']) != f['sha256']]
-        if wants_skins(e['id']) and len(o['textures'].get('skins', [])) < 2:
-            plan[e['id']], why[e['id']] = 'full', 'Skins verlangt (SKIN_WEAPONS oder BALLON_BAKE_SKINS=all), bisher nur Atlas'
-            continue
         if not diff:
             plan[e['id']] = 'reuse'
             continue
@@ -615,7 +627,8 @@ def store_textures(tex, tex_dir):
     for k in ('albedo', 'spec', 'normal', 'ao'):
         T['weapon'][k] = put(T['weapon'][k], k)
     for s in T.get('skins', []):
-        s['albedo'], s['spec'] = put(s['albedo'], 'albedo'), put(s['spec'], 'spec')
+        if not s.get('composed'):                   # 0.42: zusammengesetzte Skins entstehen schon in der Ablage (skin_compose)
+            s['albedo'], s['spec'] = put(s['albedo'], 'albedo'), put(s['spec'], 'spec')
     T['store'] = [dict(kind=k, size=TEXTURE_STORE[k]['size'], ext=TEXTURE_STORE[k]['ext'], de=TEXTURE_STORE[k]['de'])
                   for k in ('albedo', 'spec', 'normal', 'ao')]
     T['limit_mb'] = TEXTURE_STORE['limit_mb']
@@ -645,10 +658,13 @@ def formgen_main():
 
 
 def texture_files(tex):
-    """Alle Dateien einer Waffe (Atlas und Skins, ohne Doppelte)."""
+    """Alle Dateien einer Waffe im Repo (Atlas, gebackene Skins, Skin-Masken; ohne Doppelte und ohne lokal zusammengesetzte Skins)."""
     fs = [tex['weapon'][k] for k in ('albedo', 'spec', 'normal', 'ao')]
     for s in tex.get('skins', []):
-        fs += [s['albedo'], s['spec']]
+        if not s.get('composed'):
+            fs += [s['albedo'], s['spec']]
+    M = tex.get('skin_masks') or {}
+    fs += [M[k] for k in ('a', 'b', 'c', 'p') if k in M]
     return sorted(set(fs))
 
 
@@ -685,7 +701,33 @@ def texture_problems(D, tex_dir=None, store=None):
             continue
         tex_dir = fixed or entry_tex_dir(e)
         files = [(k, T['weapon'][k]) for k in ('albedo', 'spec', 'normal', 'ao')]
-        files += [(k, s[k]) for s in T.get('skins', []) for k in ('albedo', 'spec')]
+        files += [(k, s[k]) for s in T.get('skins', []) for k in ('albedo', 'spec') if not s.get('composed')]
+        composed = [(k, s[k]) for s in T.get('skins', []) for k in ('albedo', 'spec') if s.get('composed')]
+        if composed and not T.get('skin_masks'):
+            bad.append(f"{e['id']}: zusammengesetzte Skins ohne skin_masks (tools/skin_masks.py)")
+        M = T.get('skin_masks') or {}
+        if M:                                       # Richter 0.42: Pflichtfelder, Rollen und Bildform der Masken
+            miss = [k for k in ('a', 'b', 'c', 'p', 'roles') if not M.get(k)]
+            if miss:
+                bad.append(f"{e['id']}: skin_masks ohne {', '.join(miss)}")
+            elif len(M['roles']) > 254:
+                bad.append(f"{e['id']}: skin_masks mit {len(M['roles'])} Rollen (8-bit-Index)")
+        for k in ('a', 'b', 'c', 'p'):
+            if not M.get(k):
+                continue
+            mp = os.path.join(tex_dir, M[k])
+            if not os.path.exists(mp):
+                bad.append(f"{e['id']}: fehlt {M[k]}")
+            elif HAS_MAGICK:                        # Richter 0.42: a/b/c drei Farbkanäle, p ein Kanal, quadratisch, 8 bit, ohne Alpha
+                out = subprocess.run(['magick', 'identify', '-format', '%w %h %z %[channels]\n', mp], capture_output=True, text=True,
+                                     check=True).stdout.split('\n')[0].split()
+                w, h, z, ch = int(out[0]), int(out[1]), int(out[2]), out[3]
+                want = M.get('pattern_size' if k == 'p' else 'size')
+                gray = ch.endswith('gray')
+                if z != 8 or w != h or (want and w != want) or ch.endswith('a') or gray != (k == 'p'):
+                    bad.append(f"{e['id']} skin_masks {M[k]}: {w}×{h} {z} bit {ch} statt {want}² 8 bit "
+                               f"{'ein Kanal' if k == 'p' else 'drei Kanäle'} ohne Alpha")
+        files += [(k, f) for k, f in composed if os.path.exists(os.path.join(tex_dir, f))]   # lokal (unity_run.py setup), im Repo nicht
         seen = set()
         for k, f in files:
             if f in seen:
@@ -702,7 +744,8 @@ def texture_problems(D, tex_dir=None, store=None):
                     bad.append(f"{e['id']} {k} {f}: {w}² {z} bit {ch} statt {R[k]['size']}² 8 bit")
         if any(b.startswith(f"{e['id']}: fehlt") for b in bad):
             continue
-        mb = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in seen if os.path.exists(os.path.join(tex_dir, f))) / 1e6
+        mb = sum(os.path.getsize(os.path.join(tex_dir, f)) for f in seen if os.path.exists(os.path.join(tex_dir, f))) / 1e6   # was das
+        # Spiel lädt (Atlas und Skins); die Skin-Masken nutzt nur skin_compose
         if mb > R['limit_mb']:
             bad.append(f"{e['id']}: Texturen {mb:.1f} MB > {R['limit_mb']:g} MB")
     return bad
@@ -843,6 +886,10 @@ def export_fbx(path, obs):
 # gebacken (arms=False); Kontaktschatten der Hände entstehen im Bild (Cycles-Render, in Unity nicht gebacken). Die Atlanten von BALLONs 16
 # Waffen bleiben bis zu ihrem nächsten vollen Bake wie gebacken (export_plan 'reuse'); arms=True backt wie bis 0.40.
 ARMS_IN_ATLAS = False
+# Atlanten ohne Angabe textures.weapon.arms sind vor 0.41 gebacken, also mit Armen in der Szene (alle 16 Spielwaffen, Stand 0.42): Skin-Masken
+# (tools/skin_masks.py) backen sie ebenso, damit der Schmutz in Vertiefungen zum Standard-Atlas passt. Neue Bakes schreiben arms mit.
+def atlas_with_arms(e):
+    return e['textures']['weapon'].get('arms', True)
 
 
 def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms=ARMS_IN_ATLAS, objs=None, rest=None, size=4096,
@@ -870,7 +917,7 @@ def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms
     kw = dict(samples=samples) if samples else {}
     try:
         files = BK.bake_atlas(bake, atlas_key, size, tex_dir, gpu=gpu, **kw)
-        atlas = dict(size=size, objects=sorted(o.name for o in bake), **files)
+        atlas = dict(size=size, objects=sorted(o.name for o in bake), arms=bool(arms), **files)
         print(f'[export_unity] {atlas_key}: {len(bake)} Objekte, {size}², Arme {"im" if arms else "nicht im"} Atlas'
               f'{f" ({len(hidden)} Netze ausgeblendet)" if hidden else ""}', flush=True)
         out = [dict(name='standard', de=kit.SKINS['standard']['de'], kind=kit.SKINS['standard']['kind'],
@@ -960,12 +1007,15 @@ def blender_main():
             o = old[4][e['id']]
             e['textures'], e['mesh_bounds'] = o['textures'], o['mesh_bounds']
         else:
-            e['textures'] = bake_weapon(sc.root, tex_dir, e['atlas'], fbx=os.path.join(DST, e['weapon']['fbx']), skins=wants_skins(e['id']),
+            e['textures'] = bake_weapon(sc.root, tex_dir, e['atlas'], fbx=os.path.join(DST, e['weapon']['fbx']), skins=False,
                                         gpu=gpu, objs=sc.objs, rest=lambda: rest_pose(sc))
             e['mesh_bounds'] = dict(de='Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)',
                                     objects=[b for k, b in mesh_bounds().items() if k in ids])
             tri = sum(b['tris'] for b in e['mesh_bounds']['objects'])
             print(f"[export_unity] {e['id']}: {len(e['mesh_bounds']['objects'])} Netze ({tri} Dreiecke) → {e['weapon']['fbx']}", flush=True)
+        e['textures']['skins'] = skin_entries(e['atlas'], e['textures']['weapon'])   # 0.42: alle Skins, zusammengesetzt aus Masken
+        if how != 'reuse':
+            e['textures'].pop('skin_masks', None)                 # neue UVs: Masken neu (unten, nach dem FBX)
         e['textures'] = store_textures(e['textures'], tex_dir)      # 0.20: Ablage je Kanal (97 A), auch für übernommene Atlanten
         if i == 0 and arms_new:                # Arme sind für alle Waffen gleich: einmal in der Szene der ersten Waffe
             shared_tex = dict(de='Gebackene Atlanten (kit.aaa_nodes, Skin standard) und AgX-LUT; nicht gebacken: Glas, Leuchtteile',
@@ -974,6 +1024,11 @@ def blender_main():
                               objects=[b for k, b in mesh_bounds().items() if k not in ids])
     D['textures'], D['mesh_bounds'] = shared_tex, arm_bounds
     write_json(os.path.join(DST, 'ego.json'), D)
+    from tools import skin_masks as SM                     # 0.42: Masken für neu gebackene Atlanten (UVs aus dem gerade geschriebenen FBX)
+    for m, e in zip(WEAPONS, D['weapons']):
+        if 'skin_masks' not in e['textures']:
+            e['textures']['skin_masks'] = SM.masks_for(m, e, tex_dir, gpu, arms=atlas_with_arms(e))
+            write_json(os.path.join(DST, 'ego.json'), D)
     for f in ('ego_reference.json', 'ego_reference.json.meta'):      # bis 0.17 eine Referenz für die Pilotwaffe
         if os.path.exists(os.path.join(DST, f)):
             os.remove(os.path.join(DST, f))

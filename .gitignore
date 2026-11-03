@@ -4,3 +4,21 @@ __pycache__/
 .DS_Store
 .claude/
 report.md
+
+# 0.42 „Quickslot“ (Entscheid 247 A): Skin-Karten entstehen lokal aus den Skin-Masken (tools/skin_compose.py bei
+# `python3 tools/unity_run.py setup`), nicht im Repo; ihre .meta bleiben im Repo (stabile GUIDs der Skin-Materialien).
+unity/Assets/Ballon/Generated/Textures/*_nacht_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_nacht_spec.png
+unity/Assets/Ballon/Generated/Textures/*_polar_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_polar_spec.png
+unity/Assets/Ballon/Generated/Textures/*_kobalt_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_kobalt_spec.png
+unity/Assets/Ballon/Generated/Textures/*_wueste_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_wueste_spec.png
+unity/Assets/Ballon/Generated/Textures/*_tarnung_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_tarnung_spec.png
+unity/Assets/Ballon/Generated/Textures/*_gebraucht_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_gebraucht_spec.png
+unity/Assets/Ballon/Generated/Textures/*_eloxal_albedo.jpg
+unity/Assets/Ballon/Generated/Textures/*_eloxal_spec.png
+unity/Assets/Ballon/Generated/Textures/.skin_compose_*.json

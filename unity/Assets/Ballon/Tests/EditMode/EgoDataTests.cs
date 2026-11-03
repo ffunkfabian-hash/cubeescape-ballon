@@ -189,7 +189,7 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/6\"}"));          // 0.15: ohne Mündungsfeuer und Hülsen
             StringAssert.Contains("neu exportieren", ex.Message);
-            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/12\"}"));         // unbekannt (neuer als der Leser; /11 seit 0.41)
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/13\"}"));         // unbekannt (neuer als der Leser; /12 seit 0.42)
             StringAssert.Contains("neu exportieren", ex.Message);
         }
 

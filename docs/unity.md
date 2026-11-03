@@ -9,14 +9,15 @@ bleibt die Referenz.** Unity rechnet die Bewegung live in C# aus denselben Daten
 
 ```bash
 BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
-    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + Skins (nur SKIN_WEAPONS, 0.33) + AgX-LUT + ego.json + Referenz (≈ 7 min je neue Waffe ohne Skins, 28 mit; absoluter Pfad: ce lock wechselt das Verzeichnis)
-# Skins einer Waffe nachbacken: ID in export_unity.SKIN_WEAPONS eintragen (der Plan backt sie dann neu) oder einmalig BALLON_BAKE_SKINS=all
+    -P "$PWD/tools/export_unity.py"         # FBX + Atlanten + Skin-Masken (0.42) + AgX-LUT + ego.json + Referenz (≈ 7 min je neue Waffe + 4 min Masken; absoluter Pfad: ce lock wechselt das Verzeichnis)
+BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup \
+    -P "$PWD/tools/skin_masks.py" [-- BASIC-09-v2.1 …]   # nur Skin-Masken vorhandener Atlanten (UVs aus dem FBX, ≈ 4 min je Waffe)
 BASIC_OUT=~/Library/Caches/CubeEscapeBallon/unity/blender_out ~/Claude/cubeescape-nexogen/ce lock gpu -- \
     /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P "$PWD/tools/ego_build.py" -- --stills --gpu   # frische Blender-Stills
 BALLON_EXPORT_DATA_ONLY=1 ~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b \
     --factory-startup -P "$PWD/tools/export_unity.py"   # nur Bewegung/Daten geändert: ego.json + Referenz, ohne Backen (2 s, keine GPU-Sperre)
 python3 tools/export_unity.py --check       # ego.json passt zu den Daten und zu den Quellen (SHA-256), läuft in ./check
-python3 tools/unity_run.py setup            # URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
+python3 tools/unity_run.py setup            # Skin-Karten aus Masken (tools/skin_compose.py, 0.42), dann URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
 python3 tools/unity_run.py test             # EditMode + PlayMode
 python3 tools/unity_run.py build            # unity/Build/BallonFirstfeel.app (Entwicklungsbuild)
 python3 tools/unity_run.py capture          # MP4 des Ablaufs (720p, 30 fps) + Kontaktbogen
@@ -66,11 +67,11 @@ danach `setup` (Materialien, Szene) und `test`. In einem neuen Git-Worktree zuer
 | rechte Maustaste | zielen (Weltzoom der Klasse aus `ego.json › gameplay.world_zoom`, Automatik 1,9 – vorher fest 1,35, Scout 2,0; Viewmodel bleibt bei 75° horizontal; der Zoom folgt dem Modell, 1d). Scout: Zielfernrohr nach Visier-Standard 3 – eine Kamera, das Okular wächst heran, dann sind Okular, Rohr und Türme aus (`motion.ads_hide`) und das Objektiv zeigt das gezoomte Weltbild mit dem Absehen `chevron`. Portalkanone (0.22): kein Zielen – Portal B (Orange), Ring 120° gegen den Uhrzeigersinn; Waffen ohne Aktion `aim_in` zielen nicht (Daten, keine Abfrage nach der Waffen-ID) |
 | R | nachladen: taktisch bei Restmunition, sonst leer (mit Durchladen); Portalkanone ohne Magazin (`gameplay.magazine` 0): unbegrenzt, kein Nachladen, Anzeige „∞“ |
 | F | betrachten; Feuer, Zielen, Nachladen oder Sprint brechen ab |
-| 1 – 0 | Waffe wählen (0.18, Taste 3 seit 0.20, 4/5 seit 0.22, 6–0 seit 0.33; Tasten nach der Reihenfolge in `ego.json`): 1 Automatik BASIC-01, 2 Maschinenpistole BASIC-06, 3 Scout BASIC-03, 4 Impulsgewehr BASIC-02, 5 Portalkanone BASIC-T01, 6 Handfeuerwaffe BASIC-04, 7 Seitenwaffe BASIC-05, 8 Scharfschütze BASIC-09, 9 Spurgewehr BASIC-12, 0 MG BASIC-15; Schrotflinte, Fusion, lineare Fusion, Bogen, Granatwerfer und Raketenwerfer (Waffe 11–16) über das Waffenmenü – wegstecken (0,27 s, beim Nachladen `reload_to_switch`), leere Sicht ≈ 0,13 s, die andere Waffe ziehen (6.1 A); die Taste der aktiven Waffe zieht sie, wenn sie weggesteckt ist. Jede Waffe behält ihre Munition. Bis 0.17: 1 ziehen, 2 wegstecken |
-| Tab, Mausrad | Waffenmenü (0.33): Tab oder Mausrad öffnet (das Rad markiert gleich die nächste bzw. vorige Waffe), Mausrad und Pfeiltasten bewegen im Raster 4 × 4, Enter oder Linksklick wählt (wie eine Zifferntaste), Esc oder Tab schließt ohne Wahl; offen schießt, zielt und blickt nichts, Laufen bleibt; beim gespannten Bogen entspannt das Menü ohne Schuss. HUD unten rechts: Symbol, Klasse, Munition |
+| 1 – 9 | Leiste (0.42 „Quickslot“): die Waffe des Platzes ziehen – wegstecken (0,27 s, beim Nachladen `reload_to_switch`), leere Sicht ≈ 0,13 s, die andere Waffe ziehen (6.1 A); die Taste der aktiven Waffe zieht sie, wenn sie weggesteckt ist; leerer Platz: nichts. Standardbelegung aus `ego.json › hud.hotbar` (Klassen, [`basic/loadout.py`](../basic/loadout.py)): 1 Automatik, 2 Impuls, 3 Handfeuerwaffe, 4 Scout, 5 Portalkanone, 6 Schrot, 7 Scharfschütze, 8 Fusion, 9 Raketenwerfer. Belegung und Skins bleiben über Neustarts (`loadout.json` im Ordner `Application.persistentDataPath`, Format `ballon-loadout/1`). Jede Waffe behält ihre Munition. Bis 0.41: 1–9, 0 = Waffe 1–10 nach `ego.json`; Ziffernblock 1–9 wirkt wie die Zahlenreihe |
+| Tab, Mausrad | Waffenübersicht (0.33, Kategorien seit 0.42): Spalten Primär · Spezial · Schwer mit Werkzeug darunter (Kategorie aus der Klasse, `ego.json › hud.categories`; Formgen-Varianten unter ihrem Grundtyp mit Kennung), je Waffe Symbol, Klasse, Modell bzw. Variante, Skin und ihr Platz auf der Leiste. Pfeile hoch/runter in der Spalte, links/rechts in die Nachbarspalte, Mausrad in Lesereihenfolge; Enter oder Klick rüstet aus; **1–9 legt die markierte Waffe auf diesen Platz** (Tastatur-Weg fürs Trackpad), mit der Maus auf einen Platz der Leiste ziehen ebenso; eine Waffe, die schon auf einem Platz liegt, tauscht ihn. Esc oder Tab schließt. Offen ist der Mauszeiger frei, nichts schießt, zielt oder blickt, Laufen bleibt; beim gespannten Bogen entspannt die Übersicht ohne Schuss |
 | Feuerarten (0.33) | Repetierer (Scharfschütze): nach jedem Schuss Kammerstängel; Pumpe (Schrotflinte): pumpen, Nachladen je Patrone, ein Zug am Abzug bricht ab; Dauerstrahl (Spurgewehr); Aufladen (Fusion: Salve, lineare Fusion: Schuss) – Loslassen vorher bricht ab; Granatwerfer: Trommel dreht je Schuss, Nachladen je Kammer; Raketenwerfer: Magazin 1, nach dem Schuss sofort nachladen; Bogen: linke Maustaste halten spannt (0,6 s), gespannt mit Rechtsklick zielen und zurück, Loslassen löst (halb gespannt schwach, im Zielen zugleich aus dem Zielen), R entspannt ohne Schuss, kein Magazin |
-| Q | zur nächsten Waffe wechseln (wie Taste 1–0, reihum: 1 → 2 → … → 16 → 1; mit nur einer Waffe in `ego.json` wegstecken und dieselbe ziehen, 0.15); mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
-| K | Waffen-Skin weiterschalten |
+| Q | zur nächsten Waffe wechseln (reihum nach `ego.json`: 1 → 2 → … → 18 → 1; mit nur einer Waffe in `ego.json` wegstecken und dieselbe ziehen, 0.15); mit gehaltenem Zielen direkt ins Visier (`draw_aim`) |
+| K | Waffen-Skin weiterschalten (alle Skins der Waffe); 0.42: jede Waffe startet mit ihrem farbigen Standard-Skin (`hud.default_skin` je Klasse, Formgen-Varianten mit dem Skin ihrer Linie), die Wahl mit K bleibt je Waffe gespeichert |
 | L | Szene wechseln: Parcours → Szene 1 → … → Parcours (nur wenn Szenen exportiert sind, siehe „Szenen und Parcours“) |
 | N | nächste Lichtszene der gezeigten Szene (Tag → Nacht → …); im grauen Parcours ohne Wirkung |
 | T | zurück zum Startpunkt der Szene, ein laufender Lauf wird verworfen; ein Lauf startet auch beim erneuten Durchschreiten des Starts |
@@ -101,7 +102,10 @@ sonst neues Format); `export_unity.py --check` (in `./check`) hält sie gleich m
 | Editor | `Editor/BallonSetup.cs` | Importeinstellungen, Knotenlagen aus `ego.json`, URP, Materialien, Szene, Build |
 | Tests | `Tests/EditMode`, `Tests/PlayMode` | siehe unten |
 
-**Format.** `ego.json` hat das Format `ballon-ego/10` (`EgoFile.Format`). `EgoFile.ParseAll` liest `/9`, `/8` und `/7` weiter. Die Stufen:
+**Format.** `ego.json` hat das Format `ballon-ego/12` (`EgoFile.Format`). `EgoFile.ParseAll` liest `/11` bis `/7` weiter. Die Stufen:
+- 12 (0.42): `hud` aus [`basic/loadout.py`](../basic/loadout.py) – `categories` (id, de, Farbe, Klassen), `hotbar` (neun Klassen der
+  Standardleiste), `default_skin` (Skin je Klasse). `/11` ohne `hud`: eine Kategorie „Waffen“, Leiste = Waffen 1–9, Skin standard.
+- 11 (0.41): `weapons[].dir` und `origin` (Formgen-Varianten unter `Generated/Formgen/<ID>/`).
 - 2 (0.7): Texturen, AgX-LUT, `emit_only`;
 - 3 (0.7.1/0.7.2): Spiegelkarte `spec` statt `mask`, `textures.skins`;
 - 4 (0.10): `motion.secondary.aim_freq_hz` und `aim_zeta`. Aktionen, die im Zielen enden (`ego.ends_in_ads`: `aim_in`,
@@ -224,6 +228,8 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 
 | Test | prüft |
 |---|---|
+| `Kategorien_aus_den_Daten`, `Altes_Format_11_ohne_hud_eine_Kategorie`, `Standardleiste_aus_Klassen`, `Standard_Skin_farbig_statt_standard`, `Leiste_belegen_und_tauschen`, `Leiste_und_Skins_speichern_und_laden`, `Uebersicht_Tastatur_und_Maus` (EditMode, 0.42) | Kategorie jeder Waffe aus `hud.categories` über die Klasse (Reihenfolge der Daten, jede Waffe genau einmal, Varianten direkt unter dem Grundtyp mit Kennung, Werkzeug unter Schwer, ≤ 9 Zeilen je Spalte); `/11` ohne `hud`: eine Kategorie, Leiste 1–9 wie bisher; Standardleiste = Klassen aus `hud.hotbar`, BALLONs Waffen vor Varianten; Standard-Skin jeder BALLON-Waffe ≠ standard/polar/gebraucht und gebacken, Varianten mit dem Skin der Linie, Nachbarn in Übersicht und Leiste verschieden; Tausch beim Belegen; Datei `ballon-loadout/1` mit IDs, unbekannte ID und Doppelbelegung, falsches Format und kaputte Datei → Standard mit Warnung; Pfeile (Spalte, Nachbarspalte, Umlauf), Mausrad in Lesereihenfolge, Zahl belegt ohne zu schließen, Ziehen auf einen Platz, daneben loslassen, Klick rüstet aus |
+| `Leiste_Taste_waehlt_die_Waffe_des_Platzes`, `Uebersicht_Zahl_legt_Waffe_auf_Platz`, `Uebersicht_Ziehen_auf_die_Leiste`, `Standard_Skins_beim_Start`, `Leiste_und_Skin_bleiben_ueber_Neustart`, `Kein_GC_Speicher_bei_Leiste_und_Uebersicht` (PlayMode, 0.42) | Tasten 3/5/9/1 ziehen die Waffe des Platzes über den Wechsel (holster, draw); Tab → Pfeile → 9 legt die markierte Waffe auf Platz 9 (Übersicht bleibt offen, kein Wechsel), danach zieht 9 sie; Maus: Zelle drücken, über die Leiste ziehen, über Platz 3 loslassen (Waffe einmal auf der Leiste), Klick rüstet aus; jede Waffe startet mit ihrem Standard-Skin (Material); K und Belegung gespeichert, „Neustart“ (InitLoadout) stellt beides her, ungewählte Waffen bleiben beim Standard; Wechsel über alle Plätze und Übersicht ohne GC-Speicher |
 | `Granatwerfer_Granate_fliegt_im_Bogen_und_explodiert`, `Raketenwerfer_Rakete_gerade_mit_Rauchspur_und_Explosion` (PlayMode, 0.34) | Start an der Mündung (Bildlage), Geschwindigkeit, Fallkurve bzw. gerade Bahn, Rauch aus dem Lauf, Rauchspur; Explosion mit Ring, Licht, Brandfleck, Funken, Rauch; Flug und Partikel ohne Speicher je Bild |
 | `Spurgewehr_Dauerstrahl_vom_Lauf_zum_Einschlag`, `Fusion_Salve_aus_Bolzen`, `Lineare_Fusion_ein_scharfer_Strahl`, `Bogen_Pfeil_loest_fliegt_und_steckt` (PlayMode, 0.34) | Strahl von der Mündung (± 1 % des Bilds) bis zur Wand, Mündungslicht; ein Bolzen je Strahl, Einschlag bei Ankunft; Strahl `beam_s`; Pfeil fliegt, steckt `stick_s` |
 | `Schrot_Lochgruppe_je_Schuss_im_Kegel`, `Einschlag_Funken_Staub_Loch_und_Ausblenden` (PlayMode, 0.34/0.39) | Schrot (0.39, Entscheid 211 B): je Schuss jede Kugel ein Einschlag mit Loch (≥ 9, im Kegel, als Gruppe), zwei dichte Bursts, ein Treffer je Schuss; Gegenprobe Stand 0.38 rot (1 Einschlag, 1 Loch). Je Kugelklasse Funken, Staub, Loch (Stil bullet/heavy), Ausblenden nach `life_s`, Pool-Obergrenze |
@@ -465,22 +471,34 @@ Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blen
   - Materialfarben sind in Unity Gamma-Werte: lineare Werte über `SetColor(farbe.gamma)` setzen.
 - **Messung:** `compare` schreibt SSIM, PSNR und Helligkeit je Pose nach `compare/metrics.json`.
 
-## Skins (0.7.2)
+## Skins (0.7.2, seit 0.42 aus Masken)
 
-Die acht Waffen-Skins aus `kit.SKINS` sind gebacken: Standard, Nachtschicht, Polar, Kobalt, Wüste, Tarnung, Gebraucht und
-Eloxal.
+Die acht Waffen-Skins aus `kit.SKINS`: Standard, Nachtschicht, Polar, Kobalt, Wüste, Tarnung, Gebraucht und Eloxal. Bis 0.42 war jeder
+Skin eine eigene gebackene Farb- und Glanzkarte (≈ 2 min je Skin auf der GPU); seit 0.42 entstehen sie aus Skin-Masken (unten).
 
-- **Backen:** Je Skin entstehen eine Farbkarte (Diffus) und eine Glanzkarte (Spiegelfarbe plus Glätte) der Waffe, etwa 2 min
-  je Skin auf der GPU. Normale und AO teilen sich alle Skins, weil Form und UVs gleich sind.
+- **Karten:** Je Skin eine Farbkarte (Diffus) und eine Glanzkarte (Spiegelfarbe plus Glätte) der Waffe. Normale und AO teilen sich alle
+  Skins, weil Form und UVs gleich sind.
 - **Arme:** bleiben im Standard; ein Waffen-Skin färbt die Roboterarme nicht.
 - **Im Spiel:** Taste K schaltet durch, die Anzeige nennt den Skin (`EgoPlayer.SetSkin`).
+- **Farbe statt Weiß (0.42 „Quickslot“):** alle 16 Spielwaffen haben die acht Skins. Jede Waffe startet mit ihrem farbigen Standard-Skin
+  je Klasse (`basic/loadout.DEFAULT_SKIN` → `ego.json › hud.default_skin`: Kobalt, Nachtschicht, Tarnung, Wüste, Eloxal – Polar und
+  Gebraucht sind hell bzw. creme), Formgen-Varianten mit dem Skin ihrer Linie. Die Wahl mit K bleibt je Waffe gespeichert. Vergleich mit
+  Blender im Skin: `tools/ego_skin.py` rendert die Stills, `python3 tools/unity_run.py compare <n> -ballonSkin <skin>`.
+- **Skin-Masken statt Skin-Bildern (0.42, Entscheid 247 A):** im Repo liegt je Waffe nur der Standard-Atlas und vier Masken
+  (`textures.skin_masks`, [`tools/skin_masks.py`](../tools/skin_masks.py): E[m] und E[m²] des Abriebs in drei Stufen, Schmutz, Kratzer,
+  Rolle, Tarnmuster; 2048², zusammen ≈ 5 MB statt ≈ 28 MB für sieben Skins). [`tools/skin_compose.py`](../tools/skin_compose.py) setzt
+  daraus jeden Skin mit der Mischkette von `kit.aaa_nodes` zusammen (Erwartungswerte über die Bake-Samples, Standard + Unterschied der
+  Modelle) und legt ihn wie einen gebackenen ab (JPG 92 %, Glanz 2048²); `unity_run.py setup` macht das vor dem Unity-Import, nur für
+  geänderte Waffen. Die Skin-Bilder sind gitignoriert, ihre `.meta` bleiben (stabile GUIDs). Abweichung zu gebackenen Skins: Bericht
+  [0.42](versions/0.42-quickslot.md).
 - **Beleg:** `python3 tools/unity_run.py skins` erzeugt einen Kontaktbogen (hip und inspect_l je Skin) in
   `…/unity/firstfeel_skins.png`.
 - **Grenze:** In der Haltung inspect_l zeigen die Seitenflächen direkt zur Kamera. Dort glänzen dunkle Flächen stärker als in
   Blender, dunkle Skins (Nachtschicht, Kobalt) wirken heller. Das ist dieselbe Restabweichung wie unter Grenzen (keine
   Abschattung der Spiegelung).
 
-Zeiten des Exports mit Backen: Waffe 3 min, Arme 0,5 min, 7 Skins 15 min, gesamt ≈ 20 min ohne Wartezeit an der GPU-Sperre.
+Zeiten des Exports mit Backen (0.42): Waffe 3 min, Arme 0,5 min, Skin-Masken ≈ 4 min (vier Bakes), dazu lokal das Zusammensetzen der
+sieben Skins ≈ 1 min je Waffe (ohne GPU). Bis 0.41 kosteten die sieben gebackenen Skins 15 min je Waffe.
 
 ## Viewmodel-Bildwinkel (A9, 0.32)
 

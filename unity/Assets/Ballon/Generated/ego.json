@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/11",
+ "format": "ballon-ego/12",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der gemeinsamen Generatorquellen beim Export (je Waffe: weapons[].sources); --check meldet auch reine Formänderungen",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "80f545c1be9a6d0050bfc7030fbabfb39ab5bd31eae87d0ba6d8185c0de1a685"
+    "sha256": "a9472cd6a02069cdee462b47c6a50d661b3f68609e1cce67875df1a898a57c96"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1513,6 +1513,7 @@
    "emit_only": false,
    "spec": 0.5,
    "no_coat": false,
+   "skin_as": "anodized",
    "de": "Eloxiert, rund (ohne feine Kratzer)"
   },
   {
@@ -1552,6 +1553,7 @@
    "emit_only": false,
    "spec": 0.5,
    "no_coat": false,
+   "skin_as": "anodized",
    "de": "Visier eloxiert (Abrieb für dünne Teile)"
   },
   {
@@ -1620,6 +1622,142 @@
    "de": "Mündungsfeuer Seitenflammen (Familienfarbe Cyan, reine Emission)"
   }
  ],
+ "hud": {
+  "categories": [
+   {
+    "id": "primary",
+    "de": "Primär",
+    "color": "#E8ECEF",
+    "classes": [
+     "auto_rifle",
+     "pulse_rifle",
+     "scout_rifle",
+     "hand_cannon",
+     "sidearm",
+     "submachine_gun",
+     "combat_bow"
+    ]
+   },
+   {
+    "id": "special",
+    "de": "Spezial",
+    "color": "#6FD68C",
+    "classes": [
+     "shotgun",
+     "sniper_rifle",
+     "fusion_rifle",
+     "grenade_launcher",
+     "trace_rifle"
+    ]
+   },
+   {
+    "id": "heavy",
+    "de": "Schwer",
+    "color": "#B48CF2",
+    "classes": [
+     "rocket_launcher",
+     "machine_gun",
+     "linear_fusion_rifle",
+     "sword",
+     "glaive"
+    ]
+   },
+   {
+    "id": "tool",
+    "de": "Werkzeug",
+    "color": "#5FD3E0",
+    "classes": [
+     "portal_cannon"
+    ]
+   }
+  ],
+  "hotbar": [
+   "auto_rifle",
+   "pulse_rifle",
+   "hand_cannon",
+   "scout_rifle",
+   "portal_cannon",
+   "shotgun",
+   "sniper_rifle",
+   "fusion_rifle",
+   "rocket_launcher"
+  ],
+  "default_skin": [
+   {
+    "type": "auto_rifle",
+    "skin": "kobalt"
+   },
+   {
+    "type": "submachine_gun",
+    "skin": "nacht"
+   },
+   {
+    "type": "scout_rifle",
+    "skin": "tarnung"
+   },
+   {
+    "type": "pulse_rifle",
+    "skin": "wueste"
+   },
+   {
+    "type": "hand_cannon",
+    "skin": "eloxal"
+   },
+   {
+    "type": "sidearm",
+    "skin": "kobalt"
+   },
+   {
+    "type": "combat_bow",
+    "skin": "wueste"
+   },
+   {
+    "type": "sniper_rifle",
+    "skin": "tarnung"
+   },
+   {
+    "type": "trace_rifle",
+    "skin": "wueste"
+   },
+   {
+    "type": "shotgun",
+    "skin": "eloxal"
+   },
+   {
+    "type": "fusion_rifle",
+    "skin": "kobalt"
+   },
+   {
+    "type": "grenade_launcher",
+    "skin": "nacht"
+   },
+   {
+    "type": "machine_gun",
+    "skin": "tarnung"
+   },
+   {
+    "type": "linear_fusion_rifle",
+    "skin": "kobalt"
+   },
+   {
+    "type": "rocket_launcher",
+    "skin": "wueste"
+   },
+   {
+    "type": "sword",
+    "skin": "nacht"
+   },
+   {
+    "type": "glaive",
+    "skin": "eloxal"
+   },
+   {
+    "type": "portal_cannon",
+    "skin": "nacht"
+   }
+  ],
+  "src": "Nutzer 03.11.2026 (Testbuild 0.41): Kategorien, Leiste 1–9, Farben statt Weiß; Kategorien nach Destiny (Primär/Spezial/Schwer), Portalkanone als Werkzeug; Standard-Skins E (gut unterscheidbar, aus kit.SKINS)"
+ },
  "weapons": [
   {
    "id": "BASIC-01-v2.1",
@@ -7825,49 +7963,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_nacht_albedo.jpg",
-      "spec": "weapon_nacht_spec.png"
+      "spec": "weapon_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_polar_albedo.jpg",
-      "spec": "weapon_polar_spec.png"
+      "spec": "weapon_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_kobalt_albedo.jpg",
-      "spec": "weapon_kobalt_spec.png"
+      "spec": "weapon_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_wueste_albedo.jpg",
-      "spec": "weapon_wueste_spec.png"
+      "spec": "weapon_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_tarnung_albedo.jpg",
-      "spec": "weapon_tarnung_spec.png"
+      "spec": "weapon_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_gebraucht_albedo.jpg",
-      "spec": "weapon_gebraucht_spec.png"
+      "spec": "weapon_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_eloxal_albedo.jpg",
-      "spec": "weapon_eloxal_spec.png"
+      "spec": "weapon_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -7896,7 +8041,30 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_skinmask_a.png",
+     "b": "weapon_skinmask_b.png",
+     "c": "weapon_skinmask_c.png",
+     "p": "weapon_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -14573,49 +14741,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-06-v2.1_nacht_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_nacht_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-06-v2.1_polar_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_polar_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-06-v2.1_kobalt_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_kobalt_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-06-v2.1_wueste_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_wueste_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_BASIC-06-v2.1_tarnung_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_tarnung_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_BASIC-06-v2.1_gebraucht_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_gebraucht_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_BASIC-06-v2.1_eloxal_albedo.jpg",
-      "spec": "weapon_BASIC-06-v2.1_eloxal_spec.png"
+      "spec": "weapon_BASIC-06-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -14644,7 +14819,30 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-06-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-06-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-06-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-06-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -21236,49 +21434,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-03-v2.1_nacht_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_nacht_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-03-v2.1_polar_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_polar_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-03-v2.1_kobalt_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_kobalt_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-03-v2.1_wueste_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_wueste_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_BASIC-03-v2.1_tarnung_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_tarnung_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_BASIC-03-v2.1_gebraucht_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_gebraucht_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_BASIC-03-v2.1_eloxal_albedo.jpg",
-      "spec": "weapon_BASIC-03-v2.1_eloxal_spec.png"
+      "spec": "weapon_BASIC-03-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -21307,7 +21512,30 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-03-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-03-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-03-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-03-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -27885,49 +28113,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-02-v2.1_nacht_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_nacht_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-02-v2.1_polar_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_polar_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-02-v2.1_kobalt_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_kobalt_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-02-v2.1_wueste_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_wueste_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_BASIC-02-v2.1_tarnung_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_tarnung_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_BASIC-02-v2.1_gebraucht_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_gebraucht_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_BASIC-02-v2.1_eloxal_albedo.jpg",
-      "spec": "weapon_BASIC-02-v2.1_eloxal_spec.png"
+      "spec": "weapon_BASIC-02-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -27956,7 +28191,30 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-02-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-02-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-02-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-02-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -31726,49 +31984,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-T01-v2.1_nacht_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_nacht_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-T01-v2.1_polar_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_polar_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-T01-v2.1_kobalt_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_kobalt_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-T01-v2.1_wueste_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_wueste_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_BASIC-T01-v2.1_tarnung_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_tarnung_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_BASIC-T01-v2.1_gebraucht_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_gebraucht_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_BASIC-T01-v2.1_eloxal_albedo.jpg",
-      "spec": "weapon_BASIC-T01-v2.1_eloxal_spec.png"
+      "spec": "weapon_BASIC-T01-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -31797,7 +32062,27 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-T01-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-T01-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-T01-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-T01-v2.1_skinmask_p.png",
+     "roles": [
+      "anodized",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -37172,49 +37457,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-04-v2.1_nacht_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_nacht_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-04-v2.1_polar_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_polar_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-04-v2.1_kobalt_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_kobalt_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-04-v2.1_wueste_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_wueste_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_BASIC-04-v2.1_tarnung_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_tarnung_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_BASIC-04-v2.1_gebraucht_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_gebraucht_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_BASIC-04-v2.1_eloxal_albedo.jpg",
-      "spec": "weapon_BASIC-04-v2.1_eloxal_spec.png"
+      "spec": "weapon_BASIC-04-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -37243,7 +37535,28 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-04-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-04-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-04-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-04-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -42502,49 +42815,56 @@
       "de": "Nachtschicht",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-05-v2.1_nacht_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_nacht_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_nacht_spec.png",
+      "composed": true
      },
      {
       "name": "polar",
       "de": "Polar",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-05-v2.1_polar_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_polar_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_polar_spec.png",
+      "composed": true
      },
      {
       "name": "kobalt",
       "de": "Kobalt",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-05-v2.1_kobalt_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_kobalt_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_kobalt_spec.png",
+      "composed": true
      },
      {
       "name": "wueste",
       "de": "Wüste",
       "kind": "Farbe",
       "albedo": "weapon_BASIC-05-v2.1_wueste_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_wueste_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_wueste_spec.png",
+      "composed": true
      },
      {
       "name": "tarnung",
       "de": "Tarnung",
       "kind": "Textur",
       "albedo": "weapon_BASIC-05-v2.1_tarnung_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_tarnung_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_tarnung_spec.png",
+      "composed": true
      },
      {
       "name": "gebraucht",
       "de": "Gebraucht",
       "kind": "Textur",
       "albedo": "weapon_BASIC-05-v2.1_gebraucht_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_gebraucht_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_gebraucht_spec.png",
+      "composed": true
      },
      {
       "name": "eloxal",
       "de": "Eloxal",
       "kind": "Textur",
       "albedo": "weapon_BASIC-05-v2.1_eloxal_albedo.jpg",
-      "spec": "weapon_BASIC-05-v2.1_eloxal_spec.png"
+      "spec": "weapon_BASIC-05-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -42573,7 +42893,29 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-05-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-05-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-05-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-05-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -49152,6 +49494,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-09-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-09-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-09-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-09-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-09-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -49180,7 +49578,29 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-09-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-09-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-09-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-09-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -55213,6 +55633,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-12-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-12-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-12-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-12-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-12-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -55241,7 +55717,29 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-12-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-12-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-12-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-12-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -62941,6 +63439,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-15-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-15-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-15-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-15-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-15-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -62969,7 +63523,30 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-15-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-15-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-15-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-15-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -70133,6 +70710,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-08-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-08-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-08-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-08-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-08-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -70161,7 +70794,29 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-08-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-08-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-08-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-08-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -75993,6 +76648,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-10-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-10-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-10-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-10-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-10-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -76021,7 +76732,29 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-10-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-10-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-10-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-10-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -82138,6 +82871,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-11-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-11-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-11-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-11-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-11-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -82166,7 +82955,29 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-11-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-11-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-11-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-11-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -88790,6 +89601,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-07-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-07-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-07-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-07-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-07-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -88818,7 +89685,28 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-07-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-07-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-07-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-07-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "graphite",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "string",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -96054,6 +96942,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-13-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-13-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-13-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-13-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-13-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -96082,7 +97026,31 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-13-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-13-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-13-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-13-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "brass",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "ring_anod",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
@@ -102604,6 +103572,62 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-14-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-14-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_nacht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_polar_spec.png",
+      "composed": true
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_kobalt_spec.png",
+      "composed": true
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_wueste_spec.png",
+      "composed": true
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-14-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_tarnung_spec.png",
+      "composed": true
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-14-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_gebraucht_spec.png",
+      "composed": true
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-14-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_eloxal_spec.png",
+      "composed": true
      }
     ],
     "store": [
@@ -102632,7 +103656,30 @@
       "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)"
      }
     ],
-    "limit_mb": 50.0
+    "limit_mb": 50.0,
+    "skin_masks": {
+     "a": "weapon_BASIC-14-v2.1_skinmask_a.png",
+     "b": "weapon_BASIC-14-v2.1_skinmask_b.png",
+     "c": "weapon_BASIC-14-v2.1_skinmask_c.png",
+     "p": "weapon_BASIC-14-v2.1_skinmask_p.png",
+     "roles": [
+      "accent",
+      "anodized",
+      "dark_metal",
+      "decal",
+      "graphite",
+      "metal",
+      "ring_anod",
+      "rubber",
+      "shell",
+      "sight_anod",
+      "trim"
+     ],
+     "size": 2048,
+     "pattern_size": 2048,
+     "arms": true,
+     "de": "Skin-Masken (tools/skin_masks.py): a = E[m], E[m²] Standard, E[g]; b = E[m], E[m²] Nachtschicht, Kratzer s; c = E[m], E[m²] Gebraucht, Rolle (Index/255 in roles, 0 = leer); p = Tarnmuster"
+    }
    },
    "mesh_bounds": {
     "de": "Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)",
