@@ -22,6 +22,7 @@ import json
 import math
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -717,11 +718,15 @@ def texture_problems(D, tex_dir=None, store=None):
             mp = os.path.join(tex_dir, M[k])
             if not os.path.exists(mp):
                 bad.append(f"{e['id']}: fehlt {M[k]}")
-            elif HAS_MAGICK:
-                w, z, ch = _identify(mp)
+            elif HAS_MAGICK:                        # Richter 0.42: a/b/c drei Farbkanäle, p ein Kanal, quadratisch, 8 bit, ohne Alpha
+                out = subprocess.run(['magick', 'identify', '-format', '%w %h %z %[channels]\n', mp], capture_output=True, text=True,
+                                     check=True).stdout.split('\n')[0].split()
+                w, h, z, ch = int(out[0]), int(out[1]), int(out[2]), out[3]
                 want = M.get('pattern_size' if k == 'p' else 'size')
-                if z != 8 or (want and w != want) or ch.endswith('a'):          # srgba, graya: Alpha
-                    bad.append(f"{e['id']} skin_masks {M[k]}: {w}² {z} bit {ch} statt {want}² 8 bit ohne Alpha")
+                gray = ch.endswith('gray')
+                if z != 8 or w != h or (want and w != want) or ch.endswith('a') or gray != (k == 'p'):
+                    bad.append(f"{e['id']} skin_masks {M[k]}: {w}×{h} {z} bit {ch} statt {want}² 8 bit "
+                               f"{'ein Kanal' if k == 'p' else 'drei Kanäle'} ohne Alpha")
         files += [(k, f) for k, f in composed if os.path.exists(os.path.join(tex_dir, f))]   # lokal (unity_run.py setup), im Repo nicht
         seen = set()
         for k, f in files:

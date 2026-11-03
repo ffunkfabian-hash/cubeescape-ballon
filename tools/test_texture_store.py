@@ -84,6 +84,17 @@ def main():
                             '+channel', os.path.join(d, 'm_b.png')], check=True)   # echtes Alpha (deckendes lässt PNG weg)
             if not any('m_b.png' in b for b in XU.texture_problems(D2, d, store)):
                 err.append('Skin-Maske mit Alpha nicht erkannt')
+            make(os.path.join(d, 'm_b.png'), 16)
+            subprocess.run(['magick', '-size', '16x16', 'xc:gray50', '-depth', '8', os.path.join(d, 'm_a.png')], check=True)
+            if not any('m_a.png' in b for b in XU.texture_problems(D2, d, store)):
+                err.append('Skin-Maske a als Graustufen nicht erkannt')
+            make(os.path.join(d, 'm_a.png'), 16)
+            subprocess.run(['magick', '-size', '16x8', 'plasma:', '-depth', '8', os.path.join(d, 'm_c.png')], check=True)
+            if not any('m_c.png' in b for b in XU.texture_problems(D2, d, store)):
+                err.append('rechteckige Skin-Maske nicht erkannt')
+            make(os.path.join(d, 'm_c.png'), 16)
+            if XU.texture_problems(D2, d, store):
+                err.append('wiederhergestellte Skin-Masken: ' + '; '.join(XU.texture_problems(D2, d, store)))
     finally:
         XU.TEXTURE_STORE = old
     print('\n'.join(err) if err else 'test_texture_store: Ablage und Prüfung in Ordnung')
