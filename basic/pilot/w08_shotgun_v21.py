@@ -32,6 +32,7 @@ Formprinzipien abgeleitet aus den Bildreferenzen.
 from basic.common import part, prof, box, cyl, cut_box, rail, grip_v21, stock_s1, R_MID, R_SMALL, R_FINE
 from basic.common import hoerner
 from basic.weapons import w08_shotgun as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Streuer v2.1', nick='Familie v2.1',
             summary='Vorderschaftrepetierflinte mit Lüftungsschiene, dickem Lauf über dem Röhrenmagazin und Kimme/Korn K2 (Stil v2.1).')
@@ -170,4 +171,6 @@ EGO_GRIPS = {
     'charge':  dict(part='pump_release', contact=(74, 62, LO_W / 2 + 2.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Pumpenriegel links (vom Nachladen nicht genutzt)'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='upper', grip='grip'))
 EGO_LIVE = dict(trigger='trigger', bolt='', port='')     # nur der Abzug je Schuss; Pumpe und Verschluss bewegt fire_cycle

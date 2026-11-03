@@ -31,6 +31,7 @@ Status: Maße entworfen (Länge an Toolgen-Bezug 1,00 m angelehnt), Formprinzipi
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
                           grip_v21, scope_tropfen, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w03_scout_rifle as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Fernblick v2.1', nick='Familie v2.1',
             summary='Schlankes halbautomatisches Präzisionsgewehr mit Zielfernrohr (Stil v2.1).')
@@ -205,6 +206,8 @@ EGO_GRIPS = {
     'charge':  dict(part='charging_handle', contact=(-77, 109, 25.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Ladehebel links (Socket_Charge), wie die Pilotwaffe'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='receiver', grip='grip', support='handguard_grip'))
 EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer
 ACTIONS = {
     'fire_semi': dict(de='Einzelschuss (Verschluss, Ladeanzeige)', frames=12, step=1, keys={

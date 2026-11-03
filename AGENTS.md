@@ -23,7 +23,9 @@ Schlichtheitsbudget, Materialrollen, Skins, Baukasten, Arbeitsablauf.
 - **Status ehrlich führen:** Entwurf, visuell geprüft, exportiert, im Spiel angebunden sind verschiedene Zustände. Matrixfelder nie leer.
 - **Schwere Läufe** (Renderings, Bildfolgen) nur mit Sperre: `~/Claude/cubeescape-nexogen/ce lock gpu -- …` (mit `--gpu`) bzw. `ce lock blender`.
 - **Belege außerhalb des Repos:** `~/Library/Caches/CubeEscapeBallon/`.
-- **Nicht hier:** Formgen-Blätter, Toolgen-Assets/Clips, Cube-Escape-Code. Diese Repos nur lesen.
+- **Nicht hier:** Formgen-Blätter, Toolgen-Assets/Clips, Cube-Escape-Code. Diese Repos nur lesen. Ausnahme seit 0.41: Formgen-Pakete
+  liegen entpackt unter `unity/Assets/Ballon/Generated/Formgen/<ID>/` (Formgens Ausgabe, nicht von Hand ändern; Vertrag
+  [docs/formgen-schnittstelle.md](docs/formgen-schnittstelle.md)).
 - **Zurückgestellt bleibt zurückgestellt:** Einträge in [docs/erweiterungen.md](docs/erweiterungen.md) nicht ohne Auftrag bauen.
 - Commit, Push, Remote, Tag, Release nur auf Wunsch des Nutzers; nie auf `main` committen.
 - **Unity folgt Blender so nah wie möglich** (Nutzerwunsch 24.10.2026, dauerhaft). Das gilt für Form, Bewegung, Material,

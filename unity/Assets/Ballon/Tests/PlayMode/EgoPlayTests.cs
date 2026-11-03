@@ -1198,8 +1198,10 @@ namespace Ballon.Ego.Tests
         public IEnumerator Wechsel_mit_Tasten_1_2_im_Spieler()
         {
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
-            Assert.AreEqual(16, p.loadouts.Length, "sechzehn Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone, 0.33: Handfeuerwaffe, "
+            var sv = Object.FindAnyObjectByType<Bootstrap>().Solvers;
+            Assert.AreEqual(16, sv.Count(x => !x.D.IsVariant), "sechzehn BALLON-Waffen in der Szene (0.20: Scout, 0.22: Impuls, Portalkanone, 0.33: Handfeuerwaffe, "
                                                   + "Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion, Bogen, Granatwerfer, Raketenwerfer)");
+            Assert.AreEqual(sv.Length, p.loadouts.Length, "alle Waffen samt Formgen-Varianten (0.41) im Spieler");
             p.UseWeapon(0);
             p.C.ReadyNow();
             p.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f);
@@ -2731,10 +2733,10 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Waffenmenue_waehlt_und_wechselt()
         {
-            var all = Object.FindAnyObjectByType<Bootstrap>().Solvers.Select(x => x.D).ToArray();
+            var all = Object.FindAnyObjectByType<Bootstrap>().Solvers.Select(x => x.D).Where(d => !d.IsVariant).ToArray();   // 0.41: ohne Varianten
             var A = new EgoArsenal(all.Select(d => new EgoController(new EgoSolver(d))).ToArray());
             var M = new EgoMenu(A.C.Length);
-            Assert.AreEqual(16, M.count, "alle Waffen im Menü");
+            Assert.AreEqual(16, M.count, "alle BALLON-Waffen im Menü");
             Assert.AreEqual(4, M.Rows, "Raster 4 × 4");
             A.C[0].ReadyNow();
             A.Tick(Dt, Idle);
@@ -2787,6 +2789,89 @@ namespace Ballon.Ego.Tests
             for (int t = 0; t < 90 && (A.Switching || A.Current.Busy); t++) A.Tick(Dt, Idle);
             Assert.AreEqual(0, A.Active);
             Assert.AreEqual(0, A.C[15].ammo, "Rakete nicht geladen (Abbruch vor MagIn)");
+        }
+
+        // ---------------------------------------------------------------- Formgen-Varianten 0.41 „Intake“
+        /// <summary>0.41: beide Formgen-Varianten spielbar wie BALLONs Waffen (Grundtyp geerbt): Hüfte, Zielen mit dem Augenpunkt der Variante auf
+        /// der Kameraachse, Schuss mit Mündungsfeuer an ihrem Socket_Muzzle (gedehnt bzw. gestaucht), Hülse am Auswurf (Waffe im Schussbild ·
+        /// weapon.eject.pos), Nachladen bis zum vollen Magazin.</summary>
+        [Test]
+        public void Formgen_Varianten_Huefte_Zielen_Schuss_Nachladen()
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            var vs = b.Solvers.Select(x => x.D).Where(d => d.IsVariant).ToArray();
+            Assert.GreaterOrEqual(vs.Length, 2, "Probe: BD01 und BG01");
+            foreach (var v in vs)
+            {
+                var id = v.weapon.id;
+                var c = new EgoController(new EgoSolver(v));
+                c.ReadyNow();
+                c.Tick(Dt, Idle);
+                Assert.AreEqual(EgoController.Stance.Hip, c.CurrentStance, $"{id}: Hüfte");
+                Run(c, new EgoIntent { grounded = true, aim = true }, 0.8f);
+                Assert.AreEqual(EgoController.Stance.Ads, c.CurrentStance, $"{id}: Zielen");
+                var eye = c.output.weapon.MultiplyPoint3x4(BMath.V(v.Anchor("Socket_Eye").pos));
+                Assert.That(new Vector2(eye.x, eye.z).magnitude, Is.LessThan(0.004f), $"{id}: Auge {eye:F4} auf der Kameraachse");
+                Run(c, Idle, 0.8f);
+                Assert.AreEqual(EgoController.Stance.Hip, c.CurrentStance, $"{id}: zurück in die Hüfte");
+                // Schuss: Blitz am Socket_Muzzle der Variante, Hülse beginnt am Auswurf
+                long s0 = c.shots;
+                float flashErr = -1, shellErr = -1;
+                for (int t = 0; t < 40 && (flashErr < 0 || shellErr < 0); t++)
+                {
+                    var o = c.Tick(Dt, FireIntent(true));
+                    if (o.flashOn && flashErr < 0)
+                        flashErr = Vector3.Distance(BMath.Pos(o.flash), o.weapon.MultiplyPoint3x4(BMath.V(v.Anchor("Socket_Muzzle").pos)));
+                    if (o.shellCount > 0 && shellErr < 0)
+                        shellErr = Vector3.Distance(BMath.Pos(o.shells[0]), o.weapon.MultiplyPoint3x4(BMath.V(v.weapon.eject.pos)));
+                }
+                Run(c, Idle, 0.3f);
+                Assert.Greater(c.shots, s0, $"{id}: Schuss");
+                TestContext.WriteLine($"{id}: Blitz {flashErr * 1000:0.0} mm vom Socket_Muzzle, erste Hülse {shellErr * 1000:0.0} mm vom Auswurf " +
+                                      $"(Mündung {v.Anchor("Socket_Muzzle").pos[1]:0.000} m)");
+                Assert.That(flashErr, Is.InRange(0f, 0.001f), $"{id}: Blitz am Socket_Muzzle");
+                Assert.That(shellErr, Is.InRange(0f, 0.03f), $"{id}: erste Hülse am Auswurf (≤ 30 mm, ein Bild Flug)");
+                // Nachladen
+                c.ammo = 0;
+                c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+                Assert.AreEqual("reload_empty", c.ActionName, $"{id}: leer → Nachladen");
+                for (int t = 0; t < 300 && c.ActionName.StartsWith("reload"); t++) c.Tick(Dt, Idle);
+                Assert.AreEqual(v.gameplay.magazine, c.ammo, $"{id}: Magazin voll");
+            }
+        }
+
+        /// <summary>0.41 Prüfpunkt: beide Varianten stehen in der Waffenauswahl hinter BALLONs 16 Waffen (Taste 17, 18 im Menü), mit Modell,
+        /// Symbol und Skin; die Wahl wechselt wie bei jeder Waffe.</summary>
+        [Test]
+        public void Formgen_Varianten_in_der_Waffenauswahl()
+        {
+            var b = Object.FindAnyObjectByType<Bootstrap>();
+            var all = b.Solvers.Select(x => x.D).ToArray();
+            var vi = Enumerable.Range(0, all.Length).Where(i => all[i].IsVariant).ToArray();
+            Assert.GreaterOrEqual(vi.Length, 2);
+            Assert.AreEqual(all.Length - vi.Length, vi[0], "Varianten nach BALLONs Waffen");
+            foreach (var i in vi)
+            {
+                Assert.AreEqual(all[i].weapon.id, b.weapons[i].id, "Modell zur Variante");
+                Assert.IsNotNull(b.weapons[i].model, $"{all[i].weapon.id}: Modell");
+                Assert.IsNotNull(b.weapons[i].icon, $"{all[i].weapon.id}: Symbol");
+                Assert.AreEqual(1, b.weapons[i].skins.Length, $"{all[i].weapon.id}: ein Skin (der Linie)");
+            }
+            var A = new EgoArsenal(all.Select(d => new EgoController(new EgoSolver(d))).ToArray());
+            var M = new EgoMenu(A.C.Length);
+            Assert.AreEqual(all.Length, M.count, "alle Waffen im Menü");
+            A.C[0].ReadyNow();
+            A.Tick(Dt, Idle);
+            foreach (var i in vi)
+            {
+                M.Step(new MenuInput { toggle = true }, A.Active);
+                for (int k = 0; k < 40 && M.Index != i; k++) M.Step(new MenuInput { wheel = 1 }, A.Active);
+                int pick = M.Step(new MenuInput { confirm = true }, A.Active);
+                Assert.AreEqual(i + 1, pick, $"Menü wählt {all[i].weapon.id}");
+                A.Tick(Dt, Idle, pick);
+                for (int t = 0; t < 120 && (A.Switching || A.Current.Busy); t++) A.Tick(Dt, Idle);
+                Assert.AreEqual(i, A.Active, $"{all[i].weapon.id} aktiv");
+            }
         }
 
         /// <summary>Abbruchpfade (Richter 0.33, 4a/4b): (1) Waffenwechsel beim gespannten Bogen steckt ohne Schuss weg, Sehne und Pfeil

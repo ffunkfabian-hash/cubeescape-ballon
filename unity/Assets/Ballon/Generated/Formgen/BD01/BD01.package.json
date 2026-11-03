@@ -1,0 +1,3591 @@
+{
+ "axes": {
+  "de": "Unity = M · Blender; Blender-Kameraraum rechts −X, vorn −Y, oben +Z → Unity rechts +X, oben +Y, vorn +Z",
+  "to_unity": [
+   [
+    -1,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    1
+   ],
+   [
+    0,
+    -1,
+    0
+   ]
+  ]
+ },
+ "bake": {
+  "atlas": 4096,
+  "device": "gpu",
+  "note": "ohne Ego-Arme in der Szene; sonst wie tools/export_unity.bake_weapon",
+  "samples": 64
+ },
+ "ballon": {
+  "module": "basic.pilot.w01_auto_rifle_v21",
+  "parts_sha256": "9230d366a4450e3e498ba3a85ddaa666ee1efd8774a8ae7e27b952a628544f0b",
+  "weapon_id": "BASIC-01-v2.1"
+ },
+ "blender": "5.2.2 LTS",
+ "ego_profile_error": null,
+ "fbx": "BD01.fbx",
+ "format": "formgenv2/weapon-package",
+ "format_version": 1,
+ "id": "BD01",
+ "mesh_bounds": {
+  "objects": [
+   {
+    "max": [
+     0.022,
+     0.12,
+     0.14
+    ],
+    "min": [
+     -0.022,
+     -0.198,
+     0.087
+    ],
+    "name": "upper",
+    "tris": 1358
+   },
+   {
+    "max": [
+     0.021,
+     0.12,
+     0.086
+    ],
+    "min": [
+     -0.021,
+     -0.186,
+     0.02
+    ],
+    "name": "lower",
+    "tris": 676
+   },
+   {
+    "max": [
+     0.0218,
+     0.094,
+     0.11
+    ],
+    "min": [
+     0.0206,
+     0.012,
+     0.096
+    ],
+    "name": "side_panel_l",
+    "tris": 108
+   },
+   {
+    "max": [
+     -0.0206,
+     0.094,
+     0.11
+    ],
+    "min": [
+     -0.0218,
+     0.012,
+     0.096
+    ],
+    "name": "side_panel_r",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.0226,
+     0.091545,
+     0.108545
+    ],
+    "min": [
+     -0.0226,
+     0.014455,
+     0.097455
+    ],
+    "name": "panel_screws",
+    "tris": 1888
+   },
+   {
+    "max": [
+     0.022,
+     0.099477,
+     0.081477
+    ],
+    "min": [
+     -0.022,
+     -0.165477,
+     0.074523
+    ],
+    "name": "takedown_pins",
+    "tris": 976
+   },
+   {
+    "max": [
+     0.02445,
+     -0.058,
+     0.136
+    ],
+    "min": [
+     0.02195,
+     -0.194,
+     0.09
+    ],
+    "name": "armor_l",
+    "tris": 192
+   },
+   {
+    "max": [
+     -0.02195,
+     -0.09,
+     0.136
+    ],
+    "min": [
+     -0.02445,
+     -0.194,
+     0.09
+    ],
+    "name": "armor_r",
+    "tris": 192
+   },
+   {
+    "max": [
+     0.0252,
+     -0.064261,
+     0.127739
+    ],
+    "min": [
+     -0.0252,
+     -0.187739,
+     0.094261
+    ],
+    "name": "armor_screws",
+    "tris": 1368
+   },
+   {
+    "max": [
+     0.02,
+     -0.052,
+     0.146
+    ],
+    "min": [
+     -0.02,
+     -0.473352,
+     0.120242
+    ],
+    "name": "top_shroud",
+    "tris": 676
+   },
+   {
+    "max": [
+     0.014,
+     -0.448,
+     0.12
+    ],
+    "min": [
+     -0.014,
+     -0.46,
+     0.092
+    ],
+    "name": "shroud_bracket",
+    "tris": 480
+   },
+   {
+    "max": [
+     0.006,
+     -0.448,
+     0.128
+    ],
+    "min": [
+     -0.006,
+     -0.46,
+     0.118
+    ],
+    "name": "shroud_web",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.02,
+     -0.25,
+     0.14625
+    ],
+    "min": [
+     -0.02,
+     -0.294,
+     0.1459
+    ],
+    "name": "chevron_top",
+    "tris": 40
+   },
+   {
+    "max": [
+     0.0203,
+     -0.25,
+     0.1455
+    ],
+    "min": [
+     -0.0203,
+     -0.294,
+     0.1265
+    ],
+    "name": "chevron_side",
+    "tris": 48
+   },
+   {
+    "max": [
+     0.02017,
+     -0.41202,
+     0.137955
+    ],
+    "min": [
+     0.01993,
+     -0.439625,
+     0.134455
+    ],
+    "name": "text_l",
+    "tris": 2184
+   },
+   {
+    "max": [
+     0.019,
+     0.112,
+     0.139
+    ],
+    "min": [
+     -0.019,
+     0.036,
+     0.134
+    ],
+    "name": "top_cover",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.0195,
+     0.04,
+     0.1396
+    ],
+    "min": [
+     -0.0195,
+     0.035,
+     0.134
+    ],
+    "name": "top_cover_trim",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.0196,
+     -0.01965,
+     0.11635
+    ],
+    "min": [
+     0.0175,
+     -0.04035,
+     0.09565
+    ],
+    "name": "core_glow",
+    "tris": 124
+   },
+   {
+    "max": [
+     0.021,
+     -0.01965,
+     0.11635
+    ],
+    "min": [
+     0.0204,
+     -0.04035,
+     0.09565
+    ],
+    "name": "core_lens",
+    "tris": 124
+   },
+   {
+    "max": [
+     0.0242,
+     -0.01557,
+     0.12043
+    ],
+    "min": [
+     0.0214,
+     -0.04443,
+     0.09157
+    ],
+    "name": "core_ring",
+    "tris": 768
+   },
+   {
+    "max": [
+     0.0238,
+     0.048,
+     0.124
+    ],
+    "min": [
+     0.0214,
+     0.014,
+     0.1125
+    ],
+    "name": "counter_bezel",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.0241,
+     0.044,
+     0.122
+    ],
+    "min": [
+     0.0231,
+     0.018,
+     0.1145
+    ],
+    "name": "ammo_counter",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.0025,
+     0.004938,
+     0.004938
+    ],
+    "min": [
+     -0.002,
+     -0.004938,
+     -0.004938
+    ],
+    "name": "mag_release",
+    "tris": 236
+   },
+   {
+    "max": [
+     0.0215,
+     -0.080165,
+     0.021
+    ],
+    "min": [
+     -0.0215,
+     -0.143835,
+     0.0175
+    ],
+    "name": "mag_well",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.013,
+     0.06,
+     0.011
+    ],
+    "min": [
+     -0.013,
+     -0.062,
+     -0.011
+    ],
+    "name": "bolt_carrier",
+    "tris": 220
+   },
+   {
+    "max": [
+     0.0012,
+     0.031,
+     0.026
+    ],
+    "min": [
+     -0.0004,
+     -0.031,
+     0.0
+    ],
+    "name": "port_cover",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.011,
+     0.03,
+     0.143
+    ],
+    "min": [
+     -0.011,
+     -0.05,
+     0.1345
+    ],
+    "name": "rail",
+    "tris": 836
+   },
+   {
+    "max": [
+     0.0115,
+     0.023,
+     0.006
+    ],
+    "min": [
+     -0.0115,
+     -0.023,
+     0.0005
+    ],
+    "name": "sight_mount",
+    "tris": 216
+   },
+   {
+    "max": [
+     0.0133,
+     -0.006,
+     0.146585
+    ],
+    "min": [
+     0.0115,
+     -0.027692,
+     0.1438
+    ],
+    "name": "sight_clamp",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.008,
+     0.005,
+     0.155
+    ],
+    "min": [
+     -0.008,
+     -0.024,
+     0.1485
+    ],
+    "name": "sight_body",
+    "tris": 164
+   },
+   {
+    "max": [
+     0.0146,
+     -0.023295,
+     0.1586
+    ],
+    "min": [
+     -0.0146,
+     -0.0406,
+     0.1485
+    ],
+    "name": "sight_base",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.0146,
+     -0.028044,
+     0.181
+    ],
+    "min": [
+     -0.0146,
+     -0.04,
+     0.1581
+    ],
+    "name": "sight_frame",
+    "tris": 324
+   },
+   {
+    "max": [
+     0.0146,
+     -0.0396,
+     0.1807
+    ],
+    "min": [
+     -0.0146,
+     -0.0406,
+     0.1577
+    ],
+    "name": "sight_frame_trim",
+    "tris": 480
+   },
+   {
+    "max": [
+     0.013,
+     -0.034,
+     0.179
+    ],
+    "min": [
+     -0.013,
+     -0.0348,
+     0.159
+    ],
+    "name": "sight_glass",
+    "tris": 12
+   },
+   {
+    "max": [
+     0.003,
+     -0.0095,
+     0.1544
+    ],
+    "min": [
+     -0.003,
+     -0.0115,
+     0.1526
+    ],
+    "name": "sight_emitter",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.001238,
+     -0.03395,
+     0.170238
+    ],
+    "min": [
+     -0.001238,
+     -0.034,
+     0.167762
+    ],
+    "name": "sight_reticle",
+    "tris": 652
+   },
+   {
+    "max": [
+     -0.0075,
+     -0.015646,
+     0.153154
+    ],
+    "min": [
+     -0.01,
+     -0.020354,
+     0.148446
+    ],
+    "name": "sight_knob_w",
+    "tris": 188
+   },
+   {
+    "max": [
+     0.01,
+     -0.014861,
+     0.153939
+    ],
+    "min": [
+     0.0075,
+     -0.021139,
+     0.147661
+    ],
+    "name": "sight_battery",
+    "tris": 188
+   },
+   {
+    "max": [
+     0.015,
+     0.042149,
+     0.042
+    ],
+    "min": [
+     -0.015,
+     -0.030776,
+     -0.076
+    ],
+    "name": "grip",
+    "tris": 360
+   },
+   {
+    "max": [
+     0.0035,
+     0.001832,
+     0.002
+    ],
+    "min": [
+     -0.0035,
+     -0.006,
+     -0.023806
+    ],
+    "name": "trigger",
+    "tris": 132
+   },
+   {
+    "max": [
+     0.006,
+     -0.025666,
+     0.043
+    ],
+    "min": [
+     -0.006,
+     -0.083254,
+     0.008
+    ],
+    "name": "trigger_guard",
+    "tris": 164
+   },
+   {
+    "max": [
+     0.016,
+     0.042462,
+     -0.073
+    ],
+    "min": [
+     -0.016,
+     -0.003853,
+     -0.079
+    ],
+    "name": "grip_cap",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.024,
+     0.004,
+     0.004
+    ],
+    "min": [
+     0.021,
+     -0.016,
+     -0.004
+    ],
+    "name": "selector",
+    "tris": 132
+   },
+   {
+    "max": [
+     -0.021,
+     0.004,
+     0.004
+    ],
+    "min": [
+     -0.024,
+     -0.016,
+     -0.004
+    ],
+    "name": "selector_r",
+    "tris": 132
+   },
+   {
+    "max": [
+     0.0045,
+     0.0,
+     0.006
+    ],
+    "min": [
+     -0.0045,
+     -0.03,
+     -0.006
+    ],
+    "name": "charging_handle",
+    "tris": 164
+   },
+   {
+    "max": [
+     0.012,
+     0.019766,
+     0.002749
+    ],
+    "min": [
+     -0.012,
+     -0.051378,
+     -0.141697
+    ],
+    "name": "magazine",
+    "tris": 1048
+   },
+   {
+    "max": [
+     0.0135,
+     -0.118404,
+     -0.064312
+    ],
+    "min": [
+     -0.0135,
+     -0.165744,
+     -0.078495
+    ],
+    "name": "magazine_base",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.004414,
+     -0.092,
+     0.079414
+    ],
+    "min": [
+     -0.004414,
+     -0.122,
+     0.070586
+    ],
+    "name": "magazine_round",
+    "tris": 188
+   },
+   {
+    "max": [
+     0.0125,
+     -0.116673,
+     -0.056397
+    ],
+    "min": [
+     -0.0125,
+     -0.159898,
+     -0.068792
+    ],
+    "name": "mag_band",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.011,
+     -0.092255,
+     0.078146
+    ],
+    "min": [
+     -0.011,
+     -0.123803,
+     0.069815
+    ],
+    "name": "mag_lips",
+    "tris": 216
+   },
+   {
+    "max": [
+     0.00825,
+     -0.099895,
+     0.034666
+    ],
+    "min": [
+     -0.00625,
+     -0.13936,
+     -0.005607
+    ],
+    "name": "mag_rounds",
+    "tris": 1220
+   },
+   {
+    "max": [
+     0.023,
+     -0.199,
+     0.1245
+    ],
+    "min": [
+     -0.023,
+     -0.362,
+     0.064
+    ],
+    "name": "handguard",
+    "tris": 808
+   },
+   {
+    "max": [
+     0.019,
+     -0.222,
+     0.066
+    ],
+    "min": [
+     -0.019,
+     -0.298,
+     0.0605
+    ],
+    "name": "handguard_grip",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.017,
+     -0.362,
+     0.124
+    ],
+    "min": [
+     -0.017,
+     -0.372,
+     0.088
+    ],
+    "name": "handguard_cap",
+    "tris": 480
+   },
+   {
+    "max": [
+     0.0238,
+     -0.204261,
+     0.113739
+    ],
+    "min": [
+     -0.0238,
+     -0.349545,
+     0.072261
+    ],
+    "name": "handguard_screws",
+    "tris": 1352
+   },
+   {
+    "max": [
+     0.014872,
+     -0.388,
+     0.120872
+    ],
+    "min": [
+     -0.014872,
+     -0.419,
+     0.091128
+    ],
+    "name": "heatsink",
+    "tris": 1136
+   },
+   {
+    "max": [
+     0.003091,
+     -0.362,
+     0.092091
+    ],
+    "min": [
+     -0.003091,
+     -0.452,
+     0.085909
+    ],
+    "name": "gas_piston",
+    "tris": 268
+   },
+   {
+    "max": [
+     0.009914,
+     -0.15,
+     0.115914
+    ],
+    "min": [
+     -0.009914,
+     -0.609592,
+     0.096086
+    ],
+    "name": "barrel",
+    "tris": 828
+   },
+   {
+    "max": [
+     0.01,
+     -0.452,
+     0.117
+    ],
+    "min": [
+     -0.01,
+     -0.466,
+     0.082
+    ],
+    "name": "gas_block",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.015773,
+     -0.601592,
+     0.121706
+    ],
+    "min": [
+     -0.015773,
+     -0.665592,
+     0.09026
+    ],
+    "name": "muzzle",
+    "tris": 3472
+   },
+   {
+    "max": [
+     0.01432,
+     -0.663592,
+     0.12032
+    ],
+    "min": [
+     -0.01432,
+     -0.669592,
+     0.09168
+    ],
+    "name": "muzzle_crown",
+    "tris": 448
+   },
+   {
+    "max": [
+     0.015863,
+     -0.186,
+     0.121863
+    ],
+    "min": [
+     -0.015863,
+     -0.194,
+     0.090137
+    ],
+    "name": "barrel_nut",
+    "tris": 284
+   },
+   {
+    "max": [
+     0.015,
+     0.131,
+     0.126
+    ],
+    "min": [
+     -0.015,
+     0.119,
+     0.084
+    ],
+    "name": "stock_joint",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.016359,
+     0.146,
+     0.124359
+    ],
+    "min": [
+     -0.016359,
+     0.138,
+     0.091641
+    ],
+    "name": "stock_ring",
+    "tris": 284
+   },
+   {
+    "max": [
+     0.014,
+     0.212,
+     0.122
+    ],
+    "min": [
+     -0.014,
+     0.13,
+     0.094
+    ],
+    "name": "stock_spine",
+    "tris": 720
+   },
+   {
+    "max": [
+     0.018,
+     0.284,
+     0.129857
+    ],
+    "min": [
+     -0.018,
+     0.206,
+     0.023629
+    ],
+    "name": "stock",
+    "tris": 308
+   },
+   {
+    "max": [
+     0.00642,
+     0.246,
+     0.08842
+    ],
+    "min": [
+     -0.00642,
+     0.214,
+     0.07558
+    ],
+    "name": "buffer_body",
+    "tris": 236
+   },
+   {
+    "max": [
+     0.002942,
+     0.276,
+     0.084942
+    ],
+    "min": [
+     -0.002942,
+     0.244,
+     0.079058
+    ],
+    "name": "buffer_rod",
+    "tris": 188
+   },
+   {
+    "max": [
+     0.013,
+     0.266,
+     0.138
+    ],
+    "min": [
+     -0.013,
+     0.2,
+     0.13
+    ],
+    "name": "cheek_rest",
+    "tris": 108
+   },
+   {
+    "max": [
+     0.003091,
+     0.255091,
+     0.131
+    ],
+    "min": [
+     -0.003091,
+     0.210909,
+     0.124
+    ],
+    "name": "cheek_posts",
+    "tris": 440
+   },
+   {
+    "max": [
+     0.02,
+     0.299,
+     0.133772
+    ],
+    "min": [
+     -0.02,
+     0.283,
+     0.018228
+    ],
+    "name": "butt_pad",
+    "tris": 804
+   },
+   {
+    "max": [
+     0.025995,
+     0.200656,
+     0.111873
+    ],
+    "min": [
+     0.012612,
+     0.102635,
+     0.085095
+    ],
+    "name": "stock_cable",
+    "tris": 976
+   },
+   {
+    "max": [
+     0.02515,
+     -0.0988,
+     0.1145
+    ],
+    "min": [
+     0.02415,
+     -0.1532,
+     0.1115
+    ],
+    "name": "glow_line_1",
+    "tris": 108
+   }
+  ],
+  "triangles": 33558
+ },
+ "origin": "Socket_Hand",
+ "roles": {
+  "ammo_counter": "energy",
+  "armor_l": "shell",
+  "armor_r": "shell",
+  "armor_screws": "trim",
+  "barrel": "metal",
+  "barrel_nut": "trim",
+  "bolt_carrier": "metal",
+  "buffer_body": "anodized",
+  "buffer_rod": "trim",
+  "butt_pad": "rubber",
+  "charging_handle": "accent",
+  "cheek_posts": "trim",
+  "cheek_rest": "rubber",
+  "chevron_side": "accent",
+  "chevron_top": "accent",
+  "core_glow": "energy",
+  "core_lens": "glass",
+  "core_ring": "trim",
+  "counter_bezel": "anodized",
+  "gas_block": "dark_metal",
+  "gas_piston": "metal",
+  "glow_line_1": "energy",
+  "grip": "rubber",
+  "grip_cap": "anodized",
+  "handguard": "graphite",
+  "handguard_cap": "anodized",
+  "handguard_grip": "rubber",
+  "handguard_screws": "trim",
+  "heatsink": "dark_metal",
+  "lower": "graphite",
+  "mag_band": "metal",
+  "mag_lips": "metal",
+  "mag_release": "accent",
+  "mag_rounds": "brass",
+  "mag_well": "trim",
+  "magazine": "shell",
+  "magazine_base": "anodized",
+  "magazine_round": "brass",
+  "muzzle": "anodized",
+  "muzzle_crown": "trim",
+  "panel_screws": "trim",
+  "port_cover": "anodized",
+  "rail": "anodized",
+  "selector": "accent",
+  "selector_r": "accent",
+  "shroud_bracket": "anodized",
+  "shroud_web": "anodized",
+  "side_panel_l": "anodized",
+  "side_panel_r": "anodized",
+  "sight_base": "sight_anod",
+  "sight_battery": "sight_anod",
+  "sight_body": "sight_anod",
+  "sight_clamp": "accent",
+  "sight_emitter": "energy",
+  "sight_frame": "sight_anod",
+  "sight_frame_trim": "trim",
+  "sight_glass": "glass",
+  "sight_knob_w": "trim",
+  "sight_mount": "sight_anod",
+  "sight_reticle": "reticle_cyan",
+  "stock": "shell",
+  "stock_cable": "rubber",
+  "stock_joint": "dark_metal",
+  "stock_ring": "trim",
+  "stock_spine": "anodized",
+  "takedown_pins": "metal",
+  "text_l": "decal",
+  "top_cover": "shell",
+  "top_cover_trim": "trim",
+  "top_shroud": "shell",
+  "trigger": "metal",
+  "trigger_guard": "anodized",
+  "upper": "shell"
+ },
+ "skin": "eloxal",
+ "textures": {
+  "limit_mb": 50.0,
+  "skins": [
+   {
+    "albedo": "BD01_albedo.jpg",
+    "de": "Eloxal",
+    "kind": "Textur",
+    "name": "eloxal",
+    "spec": "BD01_spec.png"
+   }
+  ],
+  "store": [
+   {
+    "de": "Diffusfarbe: volle Kantenlänge (Schrift, Kanten, Sprenkel), JPG Qualität 92 ohne Farbunterabtastung (4:4:4)",
+    "ext": "jpg",
+    "kind": "albedo",
+    "size": 4096
+   },
+   {
+    "de": "Spiegelfarbe mit Glätte im Alpha: halbe Kantenlänge (linear verkleinert), PNG 8 bit RGBA – JPG trägt kein Alpha",
+    "ext": "png",
+    "kind": "spec",
+    "size": 2048
+   },
+   {
+    "de": "Normale: volle Kantenlänge, PNG 8 bit statt 16 (verlustarm: Unity speichert Normalen mit 8 bit je Kanal)",
+    "ext": "png",
+    "kind": "normal",
+    "size": 4096
+   },
+   {
+    "de": "AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)",
+    "ext": "png",
+    "kind": "ao",
+    "size": 2048
+   }
+  ],
+  "weapon": {
+   "albedo": "BD01_albedo.jpg",
+   "ao": "BD01_ao.png",
+   "normal": "BD01_normal.png",
+   "objects": [
+    "armor_l",
+    "armor_r",
+    "armor_screws",
+    "barrel",
+    "barrel_nut",
+    "bolt_carrier",
+    "buffer_body",
+    "buffer_rod",
+    "butt_pad",
+    "charging_handle",
+    "cheek_posts",
+    "cheek_rest",
+    "chevron_side",
+    "chevron_top",
+    "core_ring",
+    "counter_bezel",
+    "gas_block",
+    "gas_piston",
+    "grip",
+    "grip_cap",
+    "handguard",
+    "handguard_cap",
+    "handguard_grip",
+    "handguard_screws",
+    "heatsink",
+    "lower",
+    "mag_band",
+    "mag_lips",
+    "mag_release",
+    "mag_rounds",
+    "mag_well",
+    "magazine",
+    "magazine_base",
+    "magazine_round",
+    "muzzle",
+    "muzzle_crown",
+    "panel_screws",
+    "port_cover",
+    "rail",
+    "selector",
+    "selector_r",
+    "shroud_bracket",
+    "shroud_web",
+    "side_panel_l",
+    "side_panel_r",
+    "sight_base",
+    "sight_battery",
+    "sight_body",
+    "sight_clamp",
+    "sight_frame",
+    "sight_frame_trim",
+    "sight_knob_w",
+    "sight_mount",
+    "stock",
+    "stock_cable",
+    "stock_joint",
+    "stock_ring",
+    "stock_spine",
+    "takedown_pins",
+    "text_l",
+    "top_cover",
+    "top_cover_trim",
+    "top_shroud",
+    "trigger",
+    "trigger_guard",
+    "upper"
+   ],
+   "size": 4096,
+   "spec": "BD01_spec.png"
+  }
+ },
+ "units": "m",
+ "weapon": {
+  "anchors": [
+   {
+    "id": "Socket_Hand",
+    "part": "grip",
+    "pos": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "id": "Socket_SupportHand",
+    "part": "handguard",
+    "pos": [
+     0.0,
+     -0.282,
+     0.095
+    ]
+   },
+   {
+    "id": "Socket_Muzzle",
+    "part": "muzzle_crown",
+    "pos": [
+     0.0,
+     -0.669592,
+     0.106
+    ]
+   },
+   {
+    "id": "Socket_MagWell",
+    "part": "mag_well",
+    "pos": [
+     0.0,
+     -0.108,
+     0.07
+    ]
+   },
+   {
+    "id": "Socket_Charge",
+    "part": "charging_handle",
+    "pos": [
+     0.027,
+     0.083,
+     0.121
+    ]
+   },
+   {
+    "id": "Socket_Sight",
+    "part": "sight_body",
+    "pos": [
+     0.0,
+     0.005,
+     0.169
+    ]
+   },
+   {
+    "id": "Socket_Reticle",
+    "part": "sight_glass",
+    "pos": [
+     0.0,
+     -0.0344,
+     0.169
+    ]
+   },
+   {
+    "id": "Socket_Eye",
+    "part": "sight_frame",
+    "pos": [
+     0.0,
+     0.0556,
+     0.169
+    ]
+   }
+  ],
+  "eject": {
+   "case": "rifle",
+   "dir": [
+    -0.894427,
+    -0.268328,
+    0.357771
+   ],
+   "enabled": true,
+   "life_k": 1.0,
+   "links": {
+    "case": "",
+    "dir": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "enabled": false,
+    "pos": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "src": "kein Gliederauswurf",
+    "tris": [],
+    "verts": []
+   },
+   "on": "shot",
+   "part": "",
+   "pos": [
+    -0.02,
+    -0.053,
+    0.108
+   ],
+   "ring_m": 0.0,
+   "ring_n": 0,
+   "speed_k": 1.0,
+   "src": "E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn",
+   "tris": [
+    0,
+    3,
+    2,
+    1,
+    14,
+    15,
+    2,
+    3,
+    15,
+    2,
+    15,
+    14,
+    0,
+    4,
+    3,
+    1,
+    15,
+    16,
+    3,
+    4,
+    16,
+    3,
+    16,
+    15,
+    0,
+    5,
+    4,
+    1,
+    16,
+    17,
+    4,
+    5,
+    17,
+    4,
+    17,
+    16,
+    0,
+    6,
+    5,
+    1,
+    17,
+    18,
+    5,
+    6,
+    18,
+    5,
+    18,
+    17,
+    0,
+    7,
+    6,
+    1,
+    18,
+    19,
+    6,
+    7,
+    19,
+    6,
+    19,
+    18,
+    0,
+    8,
+    7,
+    1,
+    19,
+    20,
+    7,
+    8,
+    20,
+    7,
+    20,
+    19,
+    0,
+    9,
+    8,
+    1,
+    20,
+    21,
+    8,
+    9,
+    21,
+    8,
+    21,
+    20,
+    0,
+    10,
+    9,
+    1,
+    21,
+    22,
+    9,
+    10,
+    22,
+    9,
+    22,
+    21,
+    0,
+    11,
+    10,
+    1,
+    22,
+    23,
+    10,
+    11,
+    23,
+    10,
+    23,
+    22,
+    0,
+    12,
+    11,
+    1,
+    23,
+    24,
+    11,
+    12,
+    24,
+    11,
+    24,
+    23,
+    0,
+    13,
+    12,
+    1,
+    24,
+    25,
+    12,
+    13,
+    25,
+    12,
+    25,
+    24,
+    0,
+    2,
+    13,
+    1,
+    25,
+    14,
+    13,
+    2,
+    14,
+    13,
+    14,
+    25
+   ],
+   "verts": [
+    -0.021,
+    0.0,
+    0.0,
+    0.021,
+    0.0,
+    0.0,
+    -0.021,
+    -0.0048,
+    0.0,
+    -0.021,
+    -0.004157,
+    0.0024,
+    -0.021,
+    -0.0024,
+    0.004157,
+    -0.021,
+    0.0,
+    0.0048,
+    -0.021,
+    0.0024,
+    0.004157,
+    -0.021,
+    0.004157,
+    0.0024,
+    -0.021,
+    0.0048,
+    0.0,
+    -0.021,
+    0.004157,
+    -0.0024,
+    -0.021,
+    0.0024,
+    -0.004157,
+    -0.021,
+    0.0,
+    -0.0048,
+    -0.021,
+    -0.0024,
+    -0.004157,
+    -0.021,
+    -0.004157,
+    -0.0024,
+    0.021,
+    -0.0048,
+    0.0,
+    0.021,
+    -0.004157,
+    0.0024,
+    0.021,
+    -0.0024,
+    0.004157,
+    0.021,
+    0.0,
+    0.0048,
+    0.021,
+    0.0024,
+    0.004157,
+    0.021,
+    0.004157,
+    0.0024,
+    0.021,
+    0.0048,
+    0.0,
+    0.021,
+    0.004157,
+    -0.0024,
+    0.021,
+    0.0024,
+    -0.004157,
+    0.021,
+    0.0,
+    -0.0048,
+    0.021,
+    -0.0024,
+    -0.004157,
+    0.021,
+    -0.004157,
+    -0.0024
+   ]
+  },
+  "fbx": "BASIC-01-v2.1.fbx",
+  "id": "BASIC-01-v2.1",
+  "live": {
+   "bolt": "bolt_carrier",
+   "fill": [],
+   "glow": [],
+   "index": [],
+   "port": "port_cover",
+   "ring": "",
+   "rounds": {
+    "barrel": 0,
+    "drum": "",
+    "gate": 0,
+    "mode": "",
+    "sets": []
+   },
+   "trigger": "trigger"
+  },
+  "name": "Formstudie 01 v2.1",
+  "parts": [
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "upper",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "lower",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "graphite"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "side_panel_l",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "side_panel_r",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "panel_screws",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "takedown_pins",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "armor_l",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "armor_r",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "armor_screws",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "top_shroud",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "shroud_bracket",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "shroud_web",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "chevron_top",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "chevron_side",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "text_l",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "decal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "top_cover",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "top_cover_trim",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "core_glow",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "energy"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "core_lens",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "glass"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "core_ring",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "counter_bezel",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "ammo_counter",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "energy"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "mag_release",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "translate",
+     "vec": [
+      -0.0025,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.021,
+     -0.074,
+     0.06
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "mag_well",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "mechanism",
+    "id": "bolt_carrier",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "translate",
+     "vec": [
+      0.0,
+      0.042,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     -0.02,
+     0.108
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "mechanism",
+    "id": "port_cover",
+    "move": {
+     "a0": 0.0,
+     "a1": 75.0,
+     "axis": [
+      0.0,
+      -1.0,
+      0.0
+     ],
+     "kind": "rotate",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     -0.023,
+     -0.053,
+     0.095
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "rail",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_mount",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "translate",
+     "vec": [
+      0.0,
+      0.0,
+      0.07
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     -0.017,
+     0.143
+    ],
+    "role": "sight_anod"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_clamp",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_body",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "sight_anod"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_base",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "sight_anod"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_frame",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "sight_anod"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_frame_trim",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_glass",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "glass"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_emitter",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "energy"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_reticle",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "reticle_cyan"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_knob_w",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "sight",
+    "id": "sight_battery",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "sight_mount",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "sight_anod"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "grip",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "rubber"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "trigger",
+    "move": {
+     "a0": 0.0,
+     "a1": -12.0,
+     "axis": [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     "kind": "rotate",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     -0.045254,
+     0.039
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "trigger_guard",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "grip_cap",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "selector",
+    "move": {
+     "a0": 0.0,
+     "a1": 90.0,
+     "axis": [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     "kind": "rotate",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     -0.008,
+     0.07
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "grip_controls",
+    "id": "selector_r",
+    "move": {
+     "a0": 0.0,
+     "a1": 90.0,
+     "axis": [
+      -1.0,
+      0.0,
+      0.0
+     ],
+     "kind": "rotate",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     -0.008,
+     0.07
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "mechanism",
+    "id": "charging_handle",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "translate",
+     "vec": [
+      0.0,
+      0.06,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0225,
+     0.096,
+     0.121
+    ],
+    "role": "accent"
+   },
+   {
+    "ads_hide": false,
+    "asm": "ammo",
+    "id": "magazine",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "translate",
+     "vec": [
+      0.0,
+      -0.0223,
+      -0.1584
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     -0.108,
+     0.072
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "ammo",
+    "id": "magazine_base",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "magazine",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "ammo",
+    "id": "magazine_round",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "magazine",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "brass"
+   },
+   {
+    "ads_hide": false,
+    "asm": "ammo",
+    "id": "mag_band",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "magazine",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "ammo",
+    "id": "mag_lips",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "magazine",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "ammo",
+    "id": "mag_rounds",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "magazine",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "brass"
+   },
+   {
+    "ads_hide": false,
+    "asm": "support",
+    "id": "handguard",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "graphite"
+   },
+   {
+    "ads_hide": false,
+    "asm": "support",
+    "id": "handguard_grip",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "rubber"
+   },
+   {
+    "ads_hide": false,
+    "asm": "support",
+    "id": "handguard_cap",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "support",
+    "id": "handguard_screws",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "heatsink",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "dark_metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "gas_piston",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "barrel",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "gas_block",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "dark_metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "muzzle",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "muzzle_crown",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "barrel",
+    "id": "barrel_nut",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "stock_joint",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "dark_metal"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "stock_ring",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "stock_spine",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "stock",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "shell"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "buffer_body",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "anodized"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "buffer_rod",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "cheek_rest",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "rubber"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "cheek_posts",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "trim"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "butt_pad",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "rubber"
+   },
+   {
+    "ads_hide": false,
+    "asm": "stock",
+    "id": "stock_cable",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "none",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "rubber"
+   },
+   {
+    "ads_hide": false,
+    "asm": "receiver",
+    "id": "glow_line_1",
+    "move": {
+     "a0": 0.0,
+     "a1": 0.0,
+     "axis": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "kind": "glow",
+     "vec": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "parent": "armor_l",
+    "rest": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "role": "energy"
+   }
+  ],
+  "root": "BASIC-01",
+  "type_de": "Automatikgewehr"
+ }
+}

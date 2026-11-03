@@ -1614,8 +1614,9 @@ def profile(W):
     """Ego-Daten einer Waffe aus ihrer Klasse (CLASSES[META['type']]) und ihren Modul-Feldern: dict(type, poses, actions, grips, live,
     gameplay, src). Die Pilotwaffe ohne EGO_GRIPS/EGO_LIVE nutzt GRIPS und LIVE; ein Typ ohne Eintrag in CLASSES hat kein Ego-Profil."""
     wid = weapon_id(W)
-    if wid in _PROFILES:
-        return _PROFILES[wid]
+    hit = _PROFILES.get(wid)
+    if hit is not None and hit[0] is W:            # 0.41: je Modulobjekt – eine Variante (basic/variant.as_module) trägt dieselbe ID
+        return hit[1]
     t = W.META['type']
     if t not in CLASSES:
         raise KeyError(f'{wid}: Waffentyp {t} hat kein Ego-Profil (ego.CLASSES)')
@@ -1739,5 +1740,5 @@ def profile(W):
              hands_swap=bool(C.get('hands', {}).get('swap')),     # Bogenhand links (0.33 P4)
              ads_hide=tuple(dict.fromkeys(tuple(C.get('ads_hide', {}).get('parts', ())) +   # je Klasse (0.33 P4, Bogen)
                                           (ads_strip_parts(W, C) if 'ads' in poses else ()))))   # Zielbild wie Destiny (0.35, 193 B)
-    _PROFILES[wid] = P
+    _PROFILES[wid] = (W, P)
     return P

@@ -480,6 +480,13 @@ for _m in _XU.WEAPONS:              # jede spielbare Waffe mit Visier (0.18; Wer
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_unity.py'), '--check'], capture_output=True, text=True)
 if r.returncode:
     fail('Unity-Daten: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))
+# 0.41 „Intake“: Weltpunkte mit Teilbezug wandern beim Dehnen mit (Gegenprobe ohne POINTS rot), Formgen-Pakete einlesen
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_points.py')], capture_output=True, text=True)
+if r.returncode or 'Weltpunkte geprüft' not in r.stdout:
+    fail('Weltpunkte: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln)[:600] + r.stderr[-300:])
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_formgen_import.py')], capture_output=True, text=True)
+if r.returncode or 'Formgen-Einlesen geprüft' not in r.stdout:
+    fail('Formgen-Einlesen: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln)[:600] + r.stderr[-300:])
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_arms.py'), '--check'], capture_output=True, text=True)   # 0.40 Arm-Paket
 if r.returncode:
     fail('Arm-Paket: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))

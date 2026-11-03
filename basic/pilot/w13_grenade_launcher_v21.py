@@ -42,6 +42,7 @@ from basic.common import (part, prof, box, cyl, cut_box, screws, mirror, rail, g
 from basic.pilot import metal_roles  # noqa: F401  Rolle ring_anod (Trommel ohne feine Kratzer)
 from basic.common import d_linse
 from basic.weapons import w13_grenade_launcher as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Trommel v2.1', nick='Familie v2.1', type_de='Granatwerfer (Trommel)',
             type_en='Grenade Launcher (drum)', ammo='heavy', fire='semi_auto',
@@ -254,6 +255,8 @@ EGO_GRIPS = {
     'charge':  dict(contact=(34, 126, W_REC / 2 + 4), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0), fingers_pose='pinch',
                     src='E wie gate (vom Nachladen nicht genutzt)'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='load_gate', grip='grip', support='forend', gate='receiver', charge='receiver'))
 # Live-Teile: nur der Abzug je Schuss; die Trommel dreht fire_cycle. rounds (0.34 „Payload“): Füllstand je Kammer in Kammerfolge ANG
 # (k = 0 Laufachse, 5 Ladekammer); Unity verfolgt, welche Kammer geladen ist (Schuss leert die Laufkammer, ShellIn füllt die Ladekammer,
 # die Trommel trägt den Zustand mit, sobald sie nach fire_cycle bzw. dem Laden zurückspringt) und blendet Kopf und Zünderring leerer

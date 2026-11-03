@@ -49,10 +49,12 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Format_und_Umfang()
         {
-            Assert.AreEqual(Playable.Length, All.Length, "spielbare Waffen (0.33 P3: Automatik, MP, Scout, Impuls, Portalkanone, "
+            var own = All.Where(d => !d.IsVariant).ToArray();          // 0.41: Formgen-Varianten folgen nach BALLONs Waffen
+            Assert.AreEqual(Playable.Length, own.Length, "spielbare Waffen (0.33 P3: Automatik, MP, Scout, Impuls, Portalkanone, "
                                                          + "Handfeuerwaffe, Seitenwaffe, Scharfschütze, Spurgewehr, MG, Schrotflinte, Fusion, lineare Fusion, Bogen, Granatwerfer, Raketenwerfer)");
-            CollectionAssert.AreEqual(Playable.Select(p => p.id).ToArray(), All.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3 …");
-            CollectionAssert.AreEqual(Playable.Select(p => p.fire).ToArray(), All.Select(d => d.gameplay.fire_mode).ToArray(),
+            CollectionAssert.AreEqual(Playable.Select(p => p.id).ToArray(), own.Select(d => d.weapon.id).ToArray(), "Taste 1, 2, 3 …");
+            Assert.That(All.Take(own.Length).All(d => !d.IsVariant), "Varianten erst nach BALLONs Waffen (Tasten bleiben)");
+            CollectionAssert.AreEqual(Playable.Select(p => p.fire).ToArray(), own.Select(d => d.gameplay.fire_mode).ToArray(),
                                       "Feuerart aus der Spec (Spannabzug der Trommel als Einzelfeuer, Gurt als Dauerfeuer: ego.FIRE_ALIAS)");
             Assert.GreaterOrEqual(D.weapon.parts.Length, 70, "Waffenteile (Pilot v2.1)");
             foreach (var d in All) Umfang(d);
@@ -187,7 +189,7 @@ namespace Ballon.Ego.Tests
             StringAssert.Contains("neu exportieren", ex.Message);
             ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/6\"}"));          // 0.15: ohne Mündungsfeuer und Hülsen
             StringAssert.Contains("neu exportieren", ex.Message);
-            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/11\"}"));         // unbekannt (neuer als der Leser; /10 seit 0.22)
+            ex = Assert.Throws<FormatException>(() => EgoFile.Parse("{\"format\":\"ballon-ego/12\"}"));         // unbekannt (neuer als der Leser; /11 seit 0.41)
             StringAssert.Contains("neu exportieren", ex.Message);
         }
 
@@ -498,6 +500,79 @@ namespace Ballon.Ego.Tests
             o.gameplay.zoom_in_min_s = n.gameplay.zoom_in_min_s;
         }
 
+        // ---------------------------------------------------------------- Formgen-Varianten 0.41 „Intake“
+        /// <summary>0.41 Formatwechsel /10 → /11: der Leser liest die Datei von main (0.40 „Brace“, erste Waffe, Kopie
+        /// Tests/EditMode/Data/ego_v10.json) weiter; ohne dir und origin ist jede Waffe BALLONs eigene (Pfade wie bisher), Inhalt Feld für Feld
+        /// gleich der heutigen Automatik. Ein /10 mit dir (Variante) wird abgelehnt, weil ein alter Leser den Ordner nicht kennt.</summary>
+        [Test]
+        public void Altes_Format_10_wird_gelesen_ohne_Ordner()
+        {
+            var json = File.ReadAllText("Assets/Ballon/Tests/EditMode/Data/ego_v10.json");
+            var old = EgoFile.ParseAll(json);
+            Assert.AreEqual(1, old.Length);
+            var o = old[0];
+            Assert.AreEqual(EgoFile.Format10, o.format);
+            Assert.IsFalse(o.IsVariant, "/10: kein Ordner");
+            Assert.IsNull(o.origin, "/10: keine Herkunft");
+            Assert.AreEqual("BASIC-01-v2.1.fbx", o.AssetPath(o.weapon.fbx));
+            Assert.AreEqual("Textures/weapon_albedo.jpg", o.TexturePath("weapon_albedo.jpg"));
+            string J(object x) => JsonUtility.ToJson(x);
+            foreach (var (a, b, what) in new (object, object, string)[] { (o.weapon, D.weapon, "Teile"), (o.gameplay, D.gameplay, "Spielwerte"),
+                         (o.profile, D.profile, "Profil"), (o.motion, D.motion, "Bewegung") })
+                Assert.AreEqual(J(a), J(b), $"/10 → /11: {what} unverändert");
+            CollectionAssert.AreEqual(o.grips.Select(J), D.grips.Select(J), "Griffe");
+            CollectionAssert.AreEqual(o.actions.Select(J), D.actions.Select(J), "Aktionen");
+            var bad = json.Replace("\"atlas\": \"weapon\"", "\"atlas\": \"weapon\", \"dir\": \"Formgen/BX01\"");
+            Assert.AreNotEqual(json, bad, "Prüfdatei: Feld atlas gefunden");
+            Assert.Throws<FormatException>(() => EgoFile.ParseAll(bad), "/10 mit dir");
+        }
+
+        /// <summary>0.41: Formgen-Pakete (Generated/Formgen/&lt;ID&gt;/, tools/formgen_import.py) stehen in ego.json hinter BALLONs Waffen – mit Ordner,
+        /// Herkunft und Grundtyp; Haltungen, Aktionen, Klassenprofil, Spielwerte und Bewegung sind vom Grundtyp geerbt (Tabelle f: vorerst),
+        /// FBX, Atlas (Material Atlas_formgen_&lt;ID&gt;) und Symbol kommen aus dem Paket bzw. dem Editor-Import. Die Lage des Auswurfs liegt am Teil
+        /// seines Weltpunkts (Gehäuse), die Mündung am Anker der Variante.</summary>
+        [Test]
+        public void Formgen_Varianten_eingelesen()
+        {
+            var vs = All.Where(d => d.IsVariant).ToArray();
+            var folders = Directory.Exists($"{Gen}/Formgen") ? Directory.GetDirectories($"{Gen}/Formgen").Select(Path.GetFileName)
+                .Where(id => File.Exists($"{Gen}/Formgen/{id}/{id}.package.json")).OrderBy(x => x, StringComparer.Ordinal).ToArray() : new string[0];
+            CollectionAssert.AreEqual(folders, vs.Select(d => d.weapon.id).ToArray(), "je Paketordner eine Variante (sortiert)");
+            string J(object x) => JsonUtility.ToJson(x);
+            foreach (var v in vs)
+            {
+                var id = v.weapon.id;
+                Assert.AreEqual($"Formgen/{id}", v.dir, id);
+                Assert.AreEqual("formgen", v.origin?.kind, id);
+                Assert.AreEqual(id, v.origin.id);
+                var b = All.Single(d => !d.IsVariant && d.weapon.id == v.origin.base_id);
+                Assert.AreEqual(b.gameplay.weapon_type, v.gameplay.weapon_type, $"{id}: Klasse des Grundtyps");
+                Assert.AreEqual(J(b.profile), J(v.profile), $"{id}: Klassenprofil geerbt");
+                CollectionAssert.AreEqual(b.poses.Select(J), v.poses.Select(J), $"{id}: Haltungen geerbt");
+                CollectionAssert.AreEqual(b.actions.Select(J), v.actions.Select(J), $"{id}: Aktionen geerbt");
+                Assert.AreEqual(J(b.motion), J(v.motion), $"{id}: Bewegung gemeinsam");
+                Assert.AreEqual(b.gameplay.rpm, v.gameplay.rpm, $"{id}: Kadenz geerbt");
+                Assert.AreEqual(b.gameplay.magazine, v.gameplay.magazine, $"{id}: Magazin geerbt");
+                Assert.AreEqual($"formgen_{id}", v.atlas);
+                Assert.IsTrue(string.IsNullOrEmpty(v.reference), $"{id}: keine Blender-Referenz");
+                Assert.IsNotNull(AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{v.AssetPath(v.weapon.fbx)}"), $"{id}: FBX");
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{v.atlas}.mat");
+                Assert.IsNotNull(m, $"{id}: Material");
+                Assert.AreEqual(Path.GetFileNameWithoutExtension(v.textures.weapon.albedo), m.GetTexture("_BaseMap").name, $"{id}: Atlas aus dem Paket");
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Icons/{id}.png");
+                Assert.IsNotNull(icon, $"{id}: Symbol");
+                Assert.AreEqual(BallonSetupIconWidth, icon.width, $"{id}: Symbol auf {BallonSetupIconWidth} px wie die Silhouetten-Symbole");
+                // Weltpunkte: Auswurf am Teil seines Weltpunkts (Paket ohne Datensatz: Teil unverändert geprüft), Mündung am eigenen Anker
+                Assert.IsTrue(v.weapon.eject.enabled == b.weapon.eject.enabled, $"{id}: Auswurf wie der Grundtyp");
+                var muzzle = v.weapon.anchors.Single(a => a.id == "Socket_Muzzle");
+                var bm = b.weapon.anchors.Single(a => a.id == "Socket_Muzzle");
+                TestContext.WriteLine($"{id}: Mündung {muzzle.pos[1]:0.000} m (Grundtyp {bm.pos[1]:0.000} m), Auswurf {string.Join(", ", v.weapon.eject.pos)}");
+                Assert.AreEqual(muzzle.part, bm.part, $"{id}: Mündung am selben Teil");
+            }
+        }
+
+        const int BallonSetupIconWidth = 320 + 2 * 4;   // BallonSetup.IconLength + 2 · IconBorder (wie tools/make_icons.py)
+
         // ---------------------------------------------------------------- Impuls BASIC-02 und Portalkanone BASIC-T01 0.22 (Schritt 6)
         /// <summary>0.22 Formatwechsel /9 → /10: der Leser liest die Datei von main (0.21 „Ironsight“, Kopie Tests/EditMode/Data/ego_v9.json)
         /// weiter und setzt Salve, Bahnstufe, Mündungsfeuer und Portale wie bisher (keine Salve, gemeinsame Bahnstufe, mit Blitz, ohne Portale).
@@ -746,14 +821,14 @@ namespace Ballon.Ego.Tests
                 Assert.That(T.limit_mb, Is.InRange(1f, 50f), "Grenze ≤ 50 MB je Waffe");
                 var files = new HashSet<string> { T.weapon.albedo, T.weapon.spec, T.weapon.normal, T.weapon.ao };
                 foreach (var s in T.skins) { files.Add(s.albedo); files.Add(s.spec); }
-                long bytes = files.Sum(f => new FileInfo($"{Gen}/Textures/{f}").Length);
+                long bytes = files.Sum(f => new FileInfo($"{Gen}/{d.TexturePath(f)}").Length);   // 0.41: Formgen-Pakete in ihrem Ordner
                 TestContext.WriteLine($"{d.weapon.id}: {files.Count} Dateien, {bytes / 1e6:0.0} MB (Grenze {T.limit_mb} MB)");
                 Assert.LessOrEqual(bytes / 1e6, T.limit_mb, $"{d.weapon.id}: Texturen über der Grenze");
                 foreach (var st in T.store)
                 {
                     string f = st.kind == "albedo" ? T.weapon.albedo : st.kind == "spec" ? T.weapon.spec : st.kind == "normal" ? T.weapon.normal : T.weapon.ao;
                     StringAssert.EndsWith("." + st.ext, f, $"{d.weapon.id} {st.kind}");
-                    var tex = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                    var tex = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/{d.TexturePath(f)}");
                     Assert.IsNotNull(tex, f);
                     Assert.AreEqual(st.size, tex.width, $"{f}: Kantenlänge");
                 }
@@ -1283,7 +1358,7 @@ namespace Ballon.Ego.Tests
         {
             var bounds = D.mesh_bounds.objects.ToDictionary(o => o.name);
             int n = 0;
-            foreach (var f in new[] { D.weapon.fbx, D.arm.fbx })
+            foreach (var f in new[] { D.AssetPath(D.weapon.fbx), D.arm.fbx })
             {
                 var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{f}");
                 Assert.IsNotNull(go, f);
@@ -1311,9 +1386,9 @@ namespace Ballon.Ego.Tests
         {
             foreach (var d in All)
             {
-                var mi = (ModelImporter)AssetImporter.GetAtPath($"{Gen}/{d.weapon.fbx}");
+                var mi = (ModelImporter)AssetImporter.GetAtPath($"{Gen}/{d.AssetPath(d.weapon.fbx)}");
                 Assert.AreEqual(ModelImporterNormals.Import, mi.importNormals, d.weapon.fbx);
-                var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.weapon.fbx}");
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.AssetPath(d.weapon.fbx)}");
                 var mf = go.GetComponentsInChildren<MeshFilter>(true).First(m => m.name == "grip");
                 var (soft, flat, dev) = NormalShares(mf.sharedMesh);
                 TestContext.WriteLine($"{d.weapon.id} Griff: weich {soft:P0}, flach {flat:P0}, neben geglättet {dev:P0}");
@@ -1359,7 +1434,7 @@ namespace Ballon.Ego.Tests
 
         static void FbxRest(EgoFile D)
         {
-            var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{D.weapon.fbx}");
+            var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{D.AssetPath(D.weapon.fbx)}");
             var all = go.GetComponentsInChildren<Transform>(true).ToDictionary(t => t.name);
             var root = all[D.weapon.root];
             Assert.That(root.localPosition.magnitude, Is.LessThan(1e-6f), "Wurzel im Ursprung");
@@ -1395,13 +1470,14 @@ namespace Ballon.Ego.Tests
         {
             Assert.IsNotNull(D.textures?.weapon, "textures fehlt (Export mit Backen)");
             int n = 0;
-            foreach (var (fbx, A) in new[] { (D.weapon.fbx, D.textures.weapon), (D.arm.fbx, D.textures.arms) })
+            var wfbx = D.AssetPath(D.weapon.fbx);
+            foreach (var (fbx, A) in new[] { (wfbx, D.textures.weapon), (D.arm.fbx, D.textures.arms) })
             {
                 foreach (var (kind, f) in new[] { ("albedo", A.albedo), ("spec", A.spec), ("normal", A.normal), ("ao", A.ao) })
                 {
-                    var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                    var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/{(fbx == wfbx ? D.TexturePath(f) : "Textures/" + f)}");
                     Assert.IsNotNull(t, f);
-                    Assert.AreEqual(fbx == D.weapon.fbx ? Stored(D, kind) : A.size, t.width, f);   // Waffe: Ablage je Kanal (0.20), Arme: Backgröße
+                    Assert.AreEqual(fbx == wfbx ? Stored(D, kind) : A.size, t.width, f);   // Waffe: Ablage je Kanal (0.20), Arme: Backgröße
                 }
                 var baked = new HashSet<string>(A.objects);
                 var go = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{fbx}");
@@ -1413,7 +1489,7 @@ namespace Ballon.Ego.Tests
                     Assert.IsTrue(uv.All(u => u.x >= -1e-3f && u.x <= 1.001f && u.y >= -1e-3f && u.y <= 1.001f), $"{mf.name}: UV im Atlas");
                     n++;
                 }
-                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{(fbx == D.weapon.fbx ? D.atlas : "arms")}.mat");
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Gen}/Materials/Atlas_{(fbx == wfbx ? D.atlas : "arms")}.mat");
                 Assert.IsNotNull(m.GetTexture("_BaseMap"));
                 Assert.IsNotNull(m.GetTexture("_SpecGlossMap"));
                 Assert.AreEqual(0f, m.GetFloat("_WorkflowMode"), "Spezular-Modus");
@@ -1445,7 +1521,7 @@ namespace Ballon.Ego.Tests
                 Assert.IsTrue(names.Add(s.name), s.name);
                 foreach (var (kind, f) in new[] { ("albedo", s.albedo), ("spec", s.spec) })
                 {
-                    var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/Textures/{f}");
+                    var t = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Gen}/{D.TexturePath(f)}");
                     Assert.IsNotNull(t, f);
                     Assert.AreEqual(Stored(D, kind), t.width, f);
                 }
@@ -1653,7 +1729,8 @@ namespace Ballon.Ego.Tests
         [Test]
         public void Gleich_wie_Blender_Referenz()
         {
-            foreach (var d in All) Referenz(d);
+            foreach (var d in All.Where(x => !x.IsVariant)) Referenz(d);   // 0.41: Formgen-Varianten ohne Blender-Referenz (reference leer)
+            Assert.That(All.Where(x => x.IsVariant).All(x => string.IsNullOrEmpty(x.reference)), "Varianten nennen keine Referenz");
         }
 
         static void Referenz(EgoFile D)

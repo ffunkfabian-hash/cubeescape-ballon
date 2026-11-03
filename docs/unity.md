@@ -529,6 +529,25 @@ SSIM 0,9991 / PSNR 40,0 dB (0,2 % Pixel geändert), BASIC-06 0,9994 / 40,2 dB, S
 0,9983; Kanten, Schrift und Sprenkel im Ausschnitt nicht unterscheidbar. Im Zielen (SSIM 0,990 / 0,992) liegt der Unterschied nur im Glas:
 Glasmaterial und gezeichnetes Absehen (siehe unten), nicht die Texturen. Beleg `~/Library/Caches/CubeEscapeBallon/spotter/texturen_vorher_nachher.png`.
 
+## Formgen-Varianten (0.41 „Intake“)
+
+Varianten aus Formgen v2 (BALLON-Piloten als Grundform, acht Linien × 17 Typen) sind spielbar wie BALLONs Waffen: dasselbe Kit, derselbe
+Bake (Formgen ruft BALLONs Code), derselbe Export. Vertrag und Schnittstellen: [formgen-schnittstelle.md](formgen-schnittstelle.md).
+
+- **Ordner:** `Generated/Formgen/<ID>/` mit Formgens Paket (Manifest, FBX, `textures/`, Spec, GLB); BALLON ändert dort nichts.
+- **Einlesen:** `python3 tools/export_unity.py --formgen` (oder der nächste volle Export) → Eintrag in `ego.json › weapons[]` hinter den
+  16 BALLON-Waffen (Format `ballon-ego/11`: `dir`, `origin`; `/10` liest Unity weiter). Haltungen, Griffe, Aktionen und Gameplay erbt die
+  Variante vom Grundtyp; Teile, Anker, Auswurf, Atlas und FBX sind ihre eigenen. `--check` (und damit `./check`) prüft die Einträge
+  gegen die Pakete.
+- **Unity (`BallonSetup`):** FBX-Knotenlagen aus `ego.json` (auch im Unterordner), Texturimport wie `Generated/Textures`, Material
+  `Atlas_formgen_<ID>`, Symbol `Icons/<ID>.png` aus dem FBX gerastert (Seitenansicht, 320 px Länge wie `tools/make_icons.py`; neu nur bei
+  geändertem FBX, `Icons/formgen_icons.json`), Platz in der Waffenauswahl ab 17 (nur Menü, keine Zifferntaste).
+- **Vergleich mit Blender:** `tools/ego_variant.py` rendert die Ego-Stills der Variante (Datensatz + Grundmodul, Skin der Linie an der
+  Waffe), danach `BALLON_BLENDER_STILLS=<…>/ego/stills python3 tools/unity_run.py compare 17` (bzw. 18).
+- **Tests:** EditMode `Altes_Format_10_wird_gelesen_ohne_Ordner`, `Formgen_Varianten_eingelesen`; PlayMode
+  `Formgen_Varianten_Huefte_Zielen_Schuss_Nachladen`, `Formgen_Varianten_in_der_Waffenauswahl`; Python `tools/test_formgen_import.py`,
+  `tools/test_points.py`.
+
 ## Grenzen
 
 Entscheidung des Nutzers (25.10.2026): Die Restabweichungen bleiben so. „Lassen wir es so wie es ist. Das ist ok.“

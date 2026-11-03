@@ -53,6 +53,7 @@ from basic.pilot import energy_roles  # noqa: F401  (Leuchtrollen pin_glow, draw
 from basic.common import pins, side_mount, PINS_SIZES, PINS_LINE
 from basic.reticles import SIGHT
 from basic.weapons import w07_combat_bow as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Sehnenzug v2.1', nick='Familie v2.1',
             summary='Compound-Kampfbogen mit Sichtfenster im Mittelstück, gespaltenen Wurfarmen, Rollen und Pinvisier B1 (Stil v2.1).')
@@ -232,3 +233,5 @@ EGO_GRIPS = {
 }
 EGO_LIVE = dict(trigger='', bolt='', port='')     # kein Abzug, kein Verschluss: Auszug und Lösen laufen als Klassenaktionen
 EJECT = None       # Bogen: kein Magazin, kein Hülsenauswurf (Daten statt Sonderlogik; check: fire 'draw_release' → EJECT None)
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(grip='grip', nock='string_top'))

@@ -21,6 +21,7 @@ Gegründet mit **0.1.0 „First Light“** (24.10.2026) · öffentliches Repo (S
 | `basic/` | Entwurf als Python-Daten (`weapons/wNN_*.py`), Bausteine (`common.py`), Blender-Baukasten (`kit.py`), Matrixregeln (`matrix.py`) |
 | [docs/unity.md](docs/unity.md) | Unity-Spürtest 0.4: Pilotwaffe mit Armen aus der Ego-Perspektive spielen, Export, Tests, Build |
 | `unity/` | Unity-6-Projekt (URP, Input System), Ego-Laufzeit in C# aus `basic/arms/ego.py` |
+| [docs/formgen-schnittstelle.md](docs/formgen-schnittstelle.md) | Formgen-Varianten spielbar (0.41): Schnittstellen im Baukasten, Weltpunkte `POINTS`, Paketordner `Generated/Formgen/<ID>/` |
 | [packages/ego-arms/](packages/ego-arms/README.md) | Arm-Paket `ballon-arms/1`: die Ego-Arme als GLB/FBX mit Manifest für andere Abnehmer (erzeugt, 0.40) |
 | `tools/` | Bau, Blätter, Clips, Kontaktbögen, Doku, Prüfung, Unity-Export (`export_unity.py`, `unity_run.py`) |
 

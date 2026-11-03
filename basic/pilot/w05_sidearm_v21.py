@@ -30,6 +30,7 @@ import math
 from basic.common import part, prof, box, cyl, cut_box, grip_v21, R_BODY, R_MID, R_SMALL, R_FINE
 from basic.common import klammer
 from basic.weapons import w05_sidearm as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Seitenwaffe v2.1', nick='Familie v2.1',
             summary='Kompakte Schlittenpistole mit hohem Creme-Schlitten, Magazin im Griff und Kimme/Korn K1 (Stil v2.1).')
@@ -133,6 +134,8 @@ EGO_GRIPS = {
     'charge':  dict(part='slide', contact=(-8, 75, SL_W / 2 + 0.5), palm=(0.0, 0.0, -1.0), fingers=(0.2, 0.98, 0.0),
                     fingers_pose='pinch', src='E hinten links am Schlitten (Schlittenkappe), zieht den Schlitten zum Durchladen zurück'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='slide', grip='grip', support='grip'))
 EGO_LIVE = dict(trigger='trigger', bolt='slide', port='')      # Abzug, Schlitten läuft je Schuss zurück; keine Auswurfklappe
 ACTIONS = {k: dict(A) for k, A in V1.ACTIONS.items()}
 EXPLODE = {'sight': (0, 90, 0), 'ammo': (0, -140, 0), 'barrel': (0, 0, -70), 'grip_controls': (-10, -80, 0), 'mechanism': (0, 60, 0),

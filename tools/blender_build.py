@@ -1,6 +1,8 @@
 """Baut eine BASIC-Waffe in Blender, schreibt Modell, Spec und Ansichten.
 
   blender -b --factory-startup -P tools/blender_build.py -- w01_auto_rifle [--views] [--motion] [--samples 24]
+  aus Python (0.41): blender_build.main(W=<Modul oder Datensatz>, base=<Grundmodul>, argv=['--views', …]) – ohne Modulnamen, z. B. für
+  Formgen-Varianten (basic/variant.as_module)
 
 Ausgabe (außerhalb des Repos, siehe tools/paths.py): <OUT>/<id>/
   <id>.blend, <id>.glb       Modell (Hierarchie Waffe → Baugruppe → Bauteil, Anker als Empties)
@@ -34,9 +36,10 @@ EXPLODE = {'sight': (0, 95, 0), 'ammo': (25, -120, 0), 'stock': (-90, 0, 0), 'ba
            'support': (55, 0, 0), 'grip_controls': (-10, -70, 0), 'mechanism': (0, 0, 70), 'receiver': (0, 0, 0)}
 
 
-def args():
-    a = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
-    o = dict(weapon=a[0], views='--views' in a, motion='--motion' in a, samples=24, res=1600, only=None, gpu='--gpu' in a,
+def args(a=None):
+    if a is None:
+        a = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
+    o = dict(weapon=a[0] if a and not a[0].startswith('--') else None, views='--views' in a, motion='--motion' in a, samples=24, res=1600, only=None, gpu='--gpu' in a,
              aaa='--aaa' in a, skins=[], bloom='--bloom' in a, bg='mid', tag='')
     if '--bg' in a:
         o['bg'] = a[a.index('--bg') + 1]
@@ -421,9 +424,16 @@ def set_visible(objs, keep):
         ob.hide_render = pid not in keep
 
 
-def main():
-    o = args()
-    W = importlib.import_module(f'basic.{o["weapon"]}' if '.' in o['weapon'] else f'basic.weapons.{o["weapon"]}')
+def main(W=None, base=None, argv=None):
+    """Waffe bauen und ausgeben. W (0.41): Waffenmodul oder Datensatz (dict mit META, PARTS, ASSEMBLIES, ANCHORS …; fehlende Felder vom
+    Grundmodul base, basic/variant.as_module) statt des Modulnamens; argv = Optionen wie nach '--' (ohne W: aus sys.argv)."""
+    if W is None:
+        o = args(argv)
+        W = importlib.import_module(f'basic.{o["weapon"]}' if '.' in o['weapon'] else f'basic.weapons.{o["weapon"]}')
+    else:
+        from basic import variant
+        o = args(argv or [])
+        W = variant.as_module(W, base)
     wid = W.META['id'] + (f"-{W.META['variant']}" if W.META.get('variant') else '')
     base_mode = 'aaa' if o['aaa'] else 'color'
     global VDIR

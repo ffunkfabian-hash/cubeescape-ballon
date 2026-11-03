@@ -28,6 +28,7 @@ import math
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
                           grip_v21, holo_pille, stock_s1, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w06_submachine_gun as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Kurzläufer v2.1', nick='Familie v2.1',
             summary='Kompakte Maschinenpistole mit Magazin im Griff, Bügel-Vordergriff und Kastenvorbau (Stil v2.1).')
@@ -160,6 +161,8 @@ EGO_GRIPS = {
     'charge':  dict(part='charging_handle', contact=(-60, 88, 28), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Ladehebel links (Socket_Charge), wie die Pilotwaffe'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='upper', grip='grip', support='foregrip'))
 EGO_LIVE = dict(trigger='trigger', bolt='bolt', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer
 ACTIONS = {
     'fire_auto': dict(de='Dauerfeuer (Verschluss, Auswurfklappe)', frames=24, step=1, keys={

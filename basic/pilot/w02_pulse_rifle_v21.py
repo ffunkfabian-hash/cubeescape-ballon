@@ -26,6 +26,7 @@ Status: Maße entworfen (Länge an Toolgen-Bezug 0,862 m angelehnt), Formprinzip
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, selector, charging_handle, cut_box, screws, mirror,
                           grip_v21, holo_kasten, R_BODY, R_MID, R_SMALL, R_FINE)
 from basic.weapons import w02_pulse_rifle as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Impuls v2.1', nick='Familie v2.1',
             summary='Impulsgewehr mit Dreier-Salve, geschlossener Impulskammer und Holo-Visier (Stil v2.1).')
@@ -210,4 +211,6 @@ EGO_GRIPS = {
     'charge':  dict(part='charging_handle', contact=(-75, 114, 27.5), palm=(0.0, 0.0, -1.0), fingers=(0.45, 0.9, 0.0),
                     fingers_pose='pinch', src='E am Ladehebel links (Socket_Charge), wie die Pilotwaffe'),
 }
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, EGO_GRIPS, dict(eject='upper', grip='grip', support='handguard_grip'))
 EGO_LIVE = dict(trigger='trigger', bolt='bolt_carrier', port='port_cover')     # Abzug, Verschluss, Auswurfklappe im laufenden Feuer

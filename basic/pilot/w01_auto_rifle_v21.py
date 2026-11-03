@@ -15,6 +15,7 @@ import math
 from basic.common import (part, prof, box, cyl, rot, rail, rifle_mag, grip_rifle, selector, charging_handle, reflex_sight_v21,
                           R_BODY, R_MID, R_SMALL, R_FINE, R_SOFT)
 from basic.weapons import w01_auto_rifle as V1
+from basic.variant import collect
 
 META = dict(V1.META, variant='v2.1', name='Formstudie 01 v2.1', nick='Pilot AAA',
             summary='Automatikgewehr mit Destiny-Detaildichte und PBR-Materialien (Pilot).')
@@ -270,6 +271,8 @@ ANCHORS['Socket_Muzzle'] = dict(at=(616, BORE, 0), part='muzzle_crown')
 # Anker (der stünde als Knoten im FBX). Waffen ohne Hülsen (Energie) haben kein Feld EJECT.
 EJECT = dict(at=(53, 108, -20), dir=(0.3, 0.4, -1.0), case='rifle',
              src='E: Auswurffenster rechts am Oberen Gehäuse (port_cover), Hülse nach rechts, etwas hoch und vorn')
+# Weltpunkte mit Teilbezug (0.41 „Intake“, basic/variant.py): wandern mit, wenn ein Generator Teile dehnt oder tauscht
+POINTS = collect(EJECT, None, dict(eject='upper', grip='grip', support='handguard_grip'))
 ACTIONS = {
     'fire_auto': dict(de='Dauerfeuer (Verschluss sichtbar)', frames=30, step=1, keys={
         'trigger': [(0, 0), (3, 1), (27, 1), (30, 0)], 'port_cover': [(0, 0), (4, 1), (30, 1)],
