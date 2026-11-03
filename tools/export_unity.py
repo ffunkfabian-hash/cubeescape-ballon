@@ -28,8 +28,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from basic.arms import robot_arm as RA, ego as EG  # noqa: E402
 from basic import variant as VA  # noqa: E402
+from basic import loadout as LO  # noqa: E402
 
-FORMAT = 'ballon-ego/11'   # 11 (0.41 „Intake“): weapons[].dir (Ordner unter Generated, leer = BALLONs eigene Waffe) und weapons[].origin (Herkunft einer Formgen-Variante, fehlt bei BALLONs Waffen), Formgen-Pakete unter Generated/Formgen/<ID>/ (tools/formgen_import.py); Unity liest /10 weiter (dir leer); 10 (0.39.1 ergänzt, ohne neues Format: motion.recoil/gameplay.recoil.support_still_dip – fehlt = 0, die Stützhand folgt dem Unterschwingen wie bis 0.39; Unity liest es ab 0.39.1); 10 (0.39 ergänzt, ohne neues Format: gameplay.fx pellet_impact/charge_*, motion.payload.surfaces/charge_glow, motion.payload.impacts[].hole_k, motion.payload.decal.min_life_s – fehlt = leer bzw. 0, Verhalten wie 0.38 (Form des Ladeleuchtens: Werte von 0.39); Unity liest sie ab 0.39); 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
+FORMAT = 'ballon-ego/12'   # 12 (0.42 „Quickslot“): hud (Kategorien, Leiste 1–9, Standard-Skin je Klasse aus basic/loadout.py); Unity liest /11 weiter (ohne hud: eine Kategorie, Leiste nach ego.json); 11 (0.41 „Intake“): weapons[].dir (Ordner unter Generated, leer = BALLONs eigene Waffe) und weapons[].origin (Herkunft einer Formgen-Variante, fehlt bei BALLONs Waffen), Formgen-Pakete unter Generated/Formgen/<ID>/ (tools/formgen_import.py); Unity liest /10 weiter (dir leer); 10 (0.39.1 ergänzt, ohne neues Format: motion.recoil/gameplay.recoil.support_still_dip – fehlt = 0, die Stützhand folgt dem Unterschwingen wie bis 0.39; Unity liest es ab 0.39.1); 10 (0.39 ergänzt, ohne neues Format: gameplay.fx pellet_impact/charge_*, motion.payload.surfaces/charge_glow, motion.payload.impacts[].hole_k, motion.payload.decal.min_life_s – fehlt = leer bzw. 0, Verhalten wie 0.38 (Form des Ladeleuchtens: Werte von 0.39); Unity liest sie ab 0.39); 10 (0.36 ergänzt, ohne neues Format: gameplay.zoom_in_min_s, gameplay.hip.shown_in, gameplay.hip.spread.charge_from, motion.recoil/gameplay.recoil.support_still – fehlt = 0 bzw. leer, Verhalten wie 0.35; Unity liest sie ab 0.36); 10 (0.33 ergänzt, ohne neues Format: weapon.live.glow, fehlt = leer; P3: gameplay.charge_s/charge_fade_s, 0 = ohne Aufladen); 10 (0.22): gameplay.burst_shots/burst_rpm (Salve je Klasse; Salvenlänge aus META fire) statt motion.recoil.burst_*, gameplay.path_up_h (Bahnstufe je Schuss je Klasse), gameplay.muzzle_flash, gameplay.portals/ring_turn_s und weapon.live.ring (Werkzeug), gameplay.sight 'none' ohne Visier; Klassen ohne Zielen/Nachladen lassen diese Aktionen und Haltungen weg; 9 (0.20): gameplay.fire_mode (Feuerart aus META fire), gameplay.zoom_start, roles[].no_coat (Linse im Rohr), weapon.parts[].ads_hide und motion.ads_hide (Zielfernrohr: Teile im Zielen aus), weapons[].textures.store/limit_mb (Ablage je Kanal); 8 (0.18): weapons[] je spielbarer Waffe (gameplay, weapon mit live, poses, grips, actions, profile, textures, mesh_bounds, sources, reference), gemeinsam motion/camera/arm/finger_poses/roles/textures(arms, lut)/mesh_bounds(arms); 7 (0.16): motion.flash (Mündungsfeuer), motion.eject und weapon.eject (Hülsen), Rollen flash_*; 6 (0.15): motion.recoil neu (Bahn, Kamera, Modellkick, Erholung, Salven, Streuung) und motion.switch; 5 (0.13): gameplay.weapon_type/world_zoom/zoom_table/hip (Weltzoom je Klasse, Hüft-Fadenkreuz); 4 (0.10): secondary.aim_freq_hz/aim_zeta (Zielen ohne Überschwingen); 3 (0.7.1/0.7.2): Spiegelkarte spec statt mask, textures.skins; 2 (0.7): Atlanten, AgX-LUT. Ältere neu erzeugen
 # Spielbare Waffen in Unity, Reihenfolge = Taste 1, 2, 3 … (Entscheidungsliste Schritt 6: Ego-Übertrag je Klasse; BASIC-06 Nutzerwahl
 # 26.10.2026, BASIC-03 Scout seit 0.20 „Spotter“, Impuls BASIC-02 und Portalkanone BASIC-T01 seit 0.22 „Volley“, Handfeuerwaffe BASIC-04
 # und Seitenwaffe BASIC-05 seit 0.33 „Armory“ P1, Scharfschütze BASIC-09, Spurgewehr BASIC-12 und MG BASIC-15 seit P2: Tasten 8, 9, 0;
@@ -60,7 +61,11 @@ TEXTURE_STORE = dict(
 # Skins nur bei Bedarf (0.33 „Armory“ P2, Nutzer 30.10.2026: „wenn wir Zeit sparen können und es sinnvoll ist auf jedenfall aufnehmen“): neue
 # Waffen backen zuerst nur den Atlas (5 Backaufrufe ≈ 7 min statt 26 ≈ 28 min auf dem M5); Skins (kit.SKINS, je 3 Aufrufe) nur für die
 # Waffen in SKIN_WEAPONS oder mit BALLON_BAKE_SKINS=all. Ohne Skins enthält textures.skins nur 'standard' (Taste K schaltet nichts um).
-SKIN_WEAPONS = {'BASIC-01-v2.1', 'BASIC-06-v2.1', 'BASIC-03-v2.1', 'BASIC-02-v2.1', 'BASIC-T01-v2.1', 'BASIC-04-v2.1', 'BASIC-05-v2.1'}
+# 0.42 „Quickslot“ (Nutzer 03.11.2026: „die Waffen mit Farben anstelle von Weiß sehen“): alle Spielwaffen mit Skins, jede startet mit
+# ihrem farbigen Standard (basic/loadout.DEFAULT_SKIN); bis 0.41 nur die ersten sieben.
+SKIN_WEAPONS = {'BASIC-01-v2.1', 'BASIC-06-v2.1', 'BASIC-03-v2.1', 'BASIC-02-v2.1', 'BASIC-T01-v2.1', 'BASIC-04-v2.1', 'BASIC-05-v2.1',
+                'BASIC-09-v2.1', 'BASIC-12-v2.1', 'BASIC-15-v2.1', 'BASIC-08-v2.1', 'BASIC-10-v2.1', 'BASIC-11-v2.1', 'BASIC-07-v2.1',
+                'BASIC-13-v2.1', 'BASIC-14-v2.1'}
 
 
 def wants_skins(wid):
@@ -169,8 +174,13 @@ def action(name, A):
 
 def kit_materials():
     """Materialrollen aus basic/kit.py (MATERIALS ist ein Literal; kit selbst braucht bpy)."""
+    return kit_literal('MATERIALS')
+
+
+def kit_literal(name):
+    """Ein Literal aus basic/kit.py ohne bpy (MATERIALS, SKINS)."""
     tree = ast.parse(open(os.path.join(ROOT, 'basic', 'kit.py'), encoding='utf-8').read())
-    node = next(n for n in tree.body if isinstance(n, ast.Assign) and getattr(n.targets[0], 'id', '') == 'MATERIALS')
+    node = next(n for n in tree.body if isinstance(n, ast.Assign) and getattr(n.targets[0], 'id', '') == name)
     return eval(compile(ast.Expression(node.value), 'kit.py', 'eval'), {'__builtins__': {}, 'dict': dict})
 
 
@@ -395,7 +405,7 @@ def data():
                             emit=roles[r].get('emit', 0.0), emit_only=bool(roles[r].get('emit_only')), spec=roles[r].get('spec', 0.5),
                             no_coat=bool(roles[r].get('no_coat')),
                             de=roles[r]['de']) for r in used + sorted(EG.FLASH['roles'])],
-                weapons=entries)
+                hud=LO.hud_data([e['profile']['type'] for e in entries], kit_literal('SKINS')), weapons=entries)
 
 
 def write_json(path, obj):

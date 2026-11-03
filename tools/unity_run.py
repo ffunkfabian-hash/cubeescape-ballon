@@ -29,6 +29,7 @@
   python3 tools/unity_run.py aufwaermen → Shader-Zustände für das Aufwärmen aufzeichnen (0.38): Ruckelmessung mit -ballonGscRecord,
       Sammlung nach Assets/Ballon/Warmup/, in die Szene, neue Build (nach Änderungen an Shadern, Materialien, Effekten)
   python3 tools/unity_run.py skins      → Kontaktbogen aller Waffen-Skins (hip, inspect_l) aus der Build
+  python3 tools/unity_run.py hud        → Beleg 0.42: Waffenübersicht (Standbild) und Leiste 1–9 (MP4) mit Anzeige, Fenster 1470 × 956
   python3 tools/unity_run.py fov        → Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
 """
 import glob
@@ -131,12 +132,58 @@ def cold_cleanup(app, bid):
         os.remove(prefs)
 
 
-def player(args, log):
+def player(args, log, size=(1280, 720)):
     exe = os.path.join(APP, 'Contents', 'MacOS', 'BALLON Firstfeel')
     if not os.path.exists(exe):
         print('Build fehlt: python3 tools/unity_run.py build')
         return 1
-    return locked([exe, '-screen-width', '1280', '-screen-height', '720', '-screen-fullscreen', '0', '-logFile', log] + args, log)
+    return locked([exe, '-screen-width', str(size[0]), '-screen-height', str(size[1]), '-screen-fullscreen', '0', '-logFile', log] + args, log)
+
+
+HUD_TITLE = {'uebersicht': 'BALLON 0.42 Quickslot · Unity · Waffenübersicht (Tab): Primär · Spezial · Schwer/Werkzeug, Leiste 1–9',
+             'quickslot': 'BALLON 0.42 Quickslot · Unity · Tab → Pfeile → MG markieren → 9 legt es auf Platz 9 → Esc → 9 · 1 · 6 wechseln'}
+
+
+def hud(size=(1470, 956)):
+    """Beleg 0.42: Bildschirmbilder mit Anzeige (Übersicht und Leiste liegen in OnGUI, nicht in der Render-Textur) im Fenster 1470 × 956 –
+    Standbild der offenen Übersicht und MP4 „Waffe auf Platz legen, 1–9 wechseln“ (720p) mit Kontaktbogen."""
+    out = {}
+    for demo in ('uebersicht', 'quickslot'):
+        d = os.path.join(EV, f'hud_{demo}')
+        shutil.rmtree(d, ignore_errors=True)
+        rc = player(['-ballonHud', d, '-ballonHudDemo', demo], os.path.join(EV, f'hud_{demo}.log'), size)
+        frames = sorted(glob.glob(os.path.join(d, '[0-9]*.png')))
+        if rc or not frames:
+            print('Anzeige-Aufnahme fehlgeschlagen', demo, rc)
+            return 1
+        out[demo] = (d, frames)
+    d, frames = out['uebersicht']
+    still = os.path.join(EV, 'quickslot_uebersicht.png')
+    shutil.copyfile(frames[-1], still)
+    small = os.path.join(EV, 'quickslot_uebersicht_klein.png')
+    subprocess.run(['magick', still, '-resize', '50%', small], check=True)
+    print('Standbild →', still, subprocess.run(['magick', 'identify', '-format', '%w × %h', still], capture_output=True, text=True).stdout)
+    d, frames = out['quickslot']
+    rows = [ln.strip().split(',', 4) for ln in open(os.path.join(d, 'frames.csv'), encoding='utf-8')]
+    lab = os.path.join(d, '_lab')
+    os.makedirs(lab, exist_ok=True)
+    for i, p in enumerate(frames):
+        _, wid, act, menu, slots = rows[i] if i < len(rows) else (i, '', '', '', '')
+        subprocess.run(['magick', p, '-resize', 'x720', '-font', FONT, '-fill', '#F2F3F4', '-stroke', '#00000060', '-pointsize', '18',
+                        '-annotate', '+16+30', HUD_TITLE['quickslot'], '-pointsize', '15', '-annotate', '+16+52',
+                        f'Bild {i} · {i * 1000 / 30:.0f} ms · {wid} · {act}' + (' · Übersicht offen' if menu != '-1' else ''),
+                        os.path.join(lab, f'{i:04d}.png')], check=True)
+    mp4 = os.path.join(EV, 'quickslot_leiste.mp4')
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', '30', '-i', os.path.join(lab, '%04d.png'),
+                    '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p', '-c:v', 'libx264', '-crf', '20', '-movflags', '+faststart', mp4],
+                   check=True)
+    shutil.rmtree(lab)
+    pick = [round(k * (len(frames) - 1) / 11) for k in range(12)]
+    sheet = os.path.join(EV, 'quickslot_leiste.png')
+    subprocess.run(['magick', 'montage', *[x for f in pick for x in ('-label', f'Bild {f}', frames[f])], '-tile', '4x',
+                    '-geometry', '490x319+3+3', '-pointsize', '12', '-background', '#9EA4AC', '-title', HUD_TITLE['quickslot'], sheet], check=True)
+    print(f'{len(frames)} Bilder ({len(frames) / 30:.1f} s) → {mp4}\nKontaktbogen → {sheet}')
+    return 0
 
 
 DEMOS = {'feel': 'BALLON 0.10 Stride · Unity · BASIC-01 v2.1 · Sprint, Zielen, Sprint → Zielen',
@@ -362,6 +409,8 @@ if __name__ == '__main__':
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None))
     if a in DEMOS:            # Sprint und Visier-Anflug (0.10); Pendeln, Rückmeldung (unity-abgleich); Hüft-Fadenkreuz (0.13); Sprint, Wechsel, Rückstoß (0.15); Feuer (0.16)
         sys.exit(capture(sys.argv[2] if len(sys.argv) > 2 else None, demo=a))
+    if a == 'hud':            # Beleg 0.42: Übersicht (Standbild) und Leiste (MP4) mit Anzeige, 1470 × 956
+        sys.exit(hud())
     if a == 'fov':            # Beleg A9 (0.32): Hüfte/Zielen bei Welt 60/75/100°, Wand 12 cm vor dem Auge
         d = os.path.join(EV, 'fov_shots')
         shutil.rmtree(d, ignore_errors=True)

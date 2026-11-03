@@ -1,5 +1,5 @@
-// Ego-Daten im Format ballon-ego/11 (Formgen-Varianten mit eigenem Ordner dir und Herkunft origin, 0.41), erzeugt von tools/export_unity.py (nicht
-// von Hand pflegen); ballon-ego/10 (0.22), /9 (0.20), /8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
+// Ego-Daten im Format ballon-ego/12 (hud: Kategorien, Leiste 1–9, Standard-Skins, 0.42), erzeugt von tools/export_unity.py (nicht
+// von Hand pflegen); ballon-ego/11 (Formgen-Varianten mit eigenem Ordner dir und Herkunft origin, 0.41), /10 (0.22), /9 (0.20), /8 (0.18) und /7 (bis 0.17, eine Waffe) liest EgoFile.ParseAll weiter. Alle Vektoren stehen im Blender-Kameraraum (Meter, rechts −X, vorn −Y, oben +Z); Umrechnung
 // nach Unity: axes.to_unity.
 using System;
 using System.Collections.Generic;
@@ -388,6 +388,12 @@ namespace Ballon.Ego
     /// <summary>Herkunft einer Variante (11, 0.41): Formgen-Paket unter Generated/&lt;dir&gt;, Grundtyp (Haltungen, Griffe, Gameplay geerbt).</summary>
     [Serializable] public class EgoOrigin { public string kind, id, package, base_module, base_id, skin, blender, bake, points, gameplay; public int package_format; }
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
+
+    /// <summary>Waffenübersicht und Leiste (12, 0.42 „Quickslot“, basic/loadout.py): Kategorien mit ihren Klassen (profile.type), Standardbelegung
+    /// der Leiste als Klassen, farbiger Standard-Skin je Klasse. Keine Waffen-IDs.</summary>
+    [Serializable] public class HudCategory { public string id, de, color; public string[] classes; }
+    [Serializable] public class HudSkin { public string type, skin; }
+    [Serializable] public class EgoHudData { public HudCategory[] categories; public string[] hotbar; public HudSkin[] default_skin; public string src; }
     [Serializable] public class MeshBounds { public string de; public MeshBound[] objects; }
 
     [Serializable]
@@ -415,6 +421,7 @@ namespace Ballon.Ego
         [NonSerialized] public WeaponTextures weaponTextures;   // je Waffe mit Ablage (store, limit_mb; 9); /7: null
         [NonSerialized] public string dir = "";     // 11: Ordner der Waffe unter Generated (leer = BALLONs Waffe; Formgen/<ID> = Paket)
         [NonSerialized] public EgoOrigin origin;    // 11: Herkunft einer Formgen-Variante; BALLONs Waffen: null
+        [NonSerialized] public EgoHudData hud;      // 12: gemeinsam für alle Waffen (Übersicht, Leiste, Standard-Skins); /11 und älter: null
 
         /// <summary>Formgen-Variante (11): eigener Ordner, keine Blender-Referenz.</summary>
         public bool IsVariant => !string.IsNullOrEmpty(dir);
@@ -423,7 +430,8 @@ namespace Ballon.Ego
         /// <summary>Pfad einer Waffentextur unter Generated: Textures/ bzw. &lt;dir&gt;/textures/ (Formgen-Paket).</summary>
         public string TexturePath(string file) => IsVariant ? $"{dir}/textures/{file}" : $"Textures/{file}";
 
-        public const string Format = "ballon-ego/11";    // 11: weapons[].dir/origin (Formgen-Varianten unter Generated/Formgen/<ID>/, 0.41)
+        public const string Format = "ballon-ego/12";    // 12: hud (Kategorien, Leiste 1–9, Standard-Skin je Klasse, 0.42)
+        public const string Format11 = "ballon-ego/11";  // 11: weapons[].dir/origin (Formgen-Varianten unter Generated/Formgen/<ID>/, 0.41)
         public const string Format10 = "ballon-ego/10";  // 10: gameplay.burst_shots/burst_rpm/path_up_h/muzzle_flash/portals/ring_turn_s, weapon.live.ring, Klassen ohne Zielen/Nachladen (0.22)
         public const string Format9 = "ballon-ego/9";    // 9: gameplay.fire_mode, parts[].ads_hide, motion.ads_hide, textures.store/limit_mb (0.20)
         public const string Format8 = "ballon-ego/8";    // 8: weapons[] je Waffe (gameplay, weapon mit live, poses, grips, actions, profile, Atlanten, Netzgrenzen, Referenz), gemeinsam Bewegung, Kamera, Arme, Rollen (0.18)
@@ -459,12 +467,16 @@ namespace Ballon.Ego
                 f.Index();
                 return new[] { f };
             }
-            if (fmt != Format && fmt != Format10 && fmt != Format9 && fmt != Format8)
-                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format10}, {Format9}, {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
-            bool ten = fmt == Format || fmt == Format10;    // ab /10: Felder der Salve, Bahnstufe, Kick
+            if (fmt != Format && fmt != Format11 && fmt != Format10 && fmt != Format9 && fmt != Format8)
+                throw new FormatException($"ego.json: Format {fmt ?? "leer"} statt {Format} (oder {Format11}, {Format10}, {Format9}, {Format8}, {FormatLegacy}) – neu exportieren (tools/export_unity.py)");
+            bool ten = fmt == Format || fmt == Format11 || fmt == Format10;    // ab /10: Felder der Salve, Bahnstufe, Kick
+            bool eleven = fmt == Format || fmt == Format11;                    // ab /11: Formgen-Varianten
             var s = JsonUtility.FromJson<EgoFile8>(json);
             if (s.weapons == null || s.weapons.Length == 0) throw new FormatException("ego.json: weapons leer");
             var axes = ParseAxes(json);
+            if (fmt == Format && (s.hud?.categories == null || s.hud.categories.Length == 0 || s.hud.hotbar == null || s.hud.hotbar.Length != 9))
+                throw new FormatException($"ego.json: hud ohne Kategorien oder ohne neun Plätze der Leiste ({fmt})");
+            var hud = fmt == Format ? s.hud : null;
             var res = new EgoFile[s.weapons.Length];
             for (int k = 0; k < res.Length; k++)
             {
@@ -481,9 +493,10 @@ namespace Ballon.Ego
                     weaponTextures = e.textures,
                     toUnity = axes, profile = e.profile, atlas = e.atlas, reference = e.reference, slot = k,
                     dir = e.dir ?? "", origin = string.IsNullOrEmpty(e.origin?.kind) ? null : e.origin,   // /10 und älter: leer (Migration 11)
+                    hud = hud,
                 };
-                if (f.IsVariant && fmt != Format)
-                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) mit dir {e.dir} in {fmt} (erst {Format})");
+                if (f.IsVariant && !eleven)
+                    throw new FormatException($"ego.json: weapons[{k}] ({e.id}) mit dir {e.dir} in {fmt} (erst {Format11})");
                 if (f.weapon == null || f.weapon.live == null || (string.IsNullOrEmpty(f.weapon.live.trigger) && !f.gameplay.Draw))
                     throw new FormatException($"ego.json: weapons[{k}] ({e.id}) ohne weapon.live");      // Bogen (0.33 P4): ohne Abzug
                 if (fmt != Format8 && (string.IsNullOrEmpty(f.gameplay.fire_mode) || f.motion.ads_hide == null || f.motion.ads_hide.eye_m <= 0))
@@ -554,6 +567,7 @@ namespace Ballon.Ego
             public EgoRole[] roles;
             public EgoTextures textures;              // gemeinsam: arms, lut
             public MeshBounds mesh_bounds;            // gemeinsam: Armteile
+            public EgoHudData hud;                    // 12: Übersicht, Leiste, Standard-Skins
             public EgoWeaponEntry[] weapons;
         }
 

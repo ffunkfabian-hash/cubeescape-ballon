@@ -1797,13 +1797,15 @@ namespace Ballon.Ego.Tests
             var p = Object.FindAnyObjectByType<Bootstrap>().Player;
             Assert.AreEqual(8, p.skins.Length);
             var arm = p.rig.SegR("hand").GetComponentInChildren<Renderer>().sharedMaterial;
-            var before = p.rig.WeaponAtlasMaterial;
-            p.SetSkin(3);
+            int start = p.skin;                                  // 0.42: farbiger Standard-Skin der Klasse (Kobalt), nicht mehr 0
+            Assert.AreSame(p.skins[start], p.rig.WeaponAtlasMaterial);
+            p.SetSkin(start + 1);
             yield return null;
-            Assert.AreSame(p.skins[3], p.rig.WeaponAtlasMaterial, "Waffe trägt den Skin");
+            Assert.AreSame(p.skins[start + 1], p.rig.WeaponAtlasMaterial, "Waffe trägt den Skin");
             Assert.AreSame(arm, p.rig.SegR("hand").GetComponentInChildren<Renderer>().sharedMaterial, "Arme bleiben");
             p.SetSkin(0);
-            Assert.AreSame(before, p.rig.WeaponAtlasMaterial);
+            Assert.AreSame(p.skins[0], p.rig.WeaponAtlasMaterial, "standard bleibt erreichbar (K)");
+            p.SetSkin(start);
         }
 
         /// <summary>Frage 4.3 A (Visier-Standard 3 §6): Schuss-Ring 2 % H nur im Zielen für genau ein Bild, Treffer-X 4,5 % H mindestens

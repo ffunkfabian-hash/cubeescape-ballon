@@ -1,5 +1,5 @@
 {
- "format": "ballon-ego/11",
+ "format": "ballon-ego/12",
  "generated_by": "tools/export_unity.py",
  "sources": {
   "de": "SHA-256 der gemeinsamen Generatorquellen beim Export (je Waffe: weapons[].sources); --check meldet auch reine Formänderungen",
@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "80f545c1be9a6d0050bfc7030fbabfb39ab5bd31eae87d0ba6d8185c0de1a685"
+    "sha256": "a1f041086b483f4cb9849888bad0332343cc4cda1792428d9dda72014e347ad6"
    },
    {
     "path": "tools/bake_unity.py",
@@ -1620,6 +1620,142 @@
    "de": "Mündungsfeuer Seitenflammen (Familienfarbe Cyan, reine Emission)"
   }
  ],
+ "hud": {
+  "categories": [
+   {
+    "id": "primary",
+    "de": "Primär",
+    "color": "#E8ECEF",
+    "classes": [
+     "auto_rifle",
+     "pulse_rifle",
+     "scout_rifle",
+     "hand_cannon",
+     "sidearm",
+     "submachine_gun",
+     "combat_bow"
+    ]
+   },
+   {
+    "id": "special",
+    "de": "Spezial",
+    "color": "#6FD68C",
+    "classes": [
+     "shotgun",
+     "sniper_rifle",
+     "fusion_rifle",
+     "grenade_launcher",
+     "trace_rifle"
+    ]
+   },
+   {
+    "id": "heavy",
+    "de": "Schwer",
+    "color": "#B48CF2",
+    "classes": [
+     "rocket_launcher",
+     "machine_gun",
+     "linear_fusion_rifle",
+     "sword",
+     "glaive"
+    ]
+   },
+   {
+    "id": "tool",
+    "de": "Werkzeug",
+    "color": "#5FD3E0",
+    "classes": [
+     "portal_cannon"
+    ]
+   }
+  ],
+  "hotbar": [
+   "auto_rifle",
+   "pulse_rifle",
+   "hand_cannon",
+   "scout_rifle",
+   "portal_cannon",
+   "shotgun",
+   "sniper_rifle",
+   "fusion_rifle",
+   "rocket_launcher"
+  ],
+  "default_skin": [
+   {
+    "type": "auto_rifle",
+    "skin": "kobalt"
+   },
+   {
+    "type": "submachine_gun",
+    "skin": "nacht"
+   },
+   {
+    "type": "scout_rifle",
+    "skin": "tarnung"
+   },
+   {
+    "type": "pulse_rifle",
+    "skin": "wueste"
+   },
+   {
+    "type": "hand_cannon",
+    "skin": "eloxal"
+   },
+   {
+    "type": "sidearm",
+    "skin": "kobalt"
+   },
+   {
+    "type": "combat_bow",
+    "skin": "wueste"
+   },
+   {
+    "type": "sniper_rifle",
+    "skin": "tarnung"
+   },
+   {
+    "type": "trace_rifle",
+    "skin": "wueste"
+   },
+   {
+    "type": "shotgun",
+    "skin": "eloxal"
+   },
+   {
+    "type": "fusion_rifle",
+    "skin": "kobalt"
+   },
+   {
+    "type": "grenade_launcher",
+    "skin": "nacht"
+   },
+   {
+    "type": "machine_gun",
+    "skin": "tarnung"
+   },
+   {
+    "type": "linear_fusion_rifle",
+    "skin": "kobalt"
+   },
+   {
+    "type": "rocket_launcher",
+    "skin": "wueste"
+   },
+   {
+    "type": "sword",
+    "skin": "nacht"
+   },
+   {
+    "type": "glaive",
+    "skin": "eloxal"
+   },
+   {
+    "type": "portal_cannon",
+    "skin": "nacht"
+   }
+  ],
+  "src": "Nutzer 03.11.2026 (Testbuild 0.41): Kategorien, Leiste 1–9, Farben statt Weiß; Kategorien nach Destiny (Primär/Spezial/Schwer), Portalkanone als Werkzeug; Standard-Skins E (gut unterscheidbar, aus kit.SKINS)"
+ },
  "weapons": [
   {
    "id": "BASIC-01-v2.1",
@@ -49152,6 +49288,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-09-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-09-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-09-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-09-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-09-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-09-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-09-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -55213,6 +55398,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-12-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-12-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-12-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-12-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-12-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-12-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-12-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -62941,6 +63175,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-15-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-15-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-15-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-15-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-15-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-15-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-15-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -70133,6 +70416,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-08-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-08-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-08-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-08-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-08-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-08-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-08-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -75993,6 +76325,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-10-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-10-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-10-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-10-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-10-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-10-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-10-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -82138,6 +82519,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-11-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-11-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-11-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-11-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-11-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-11-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-11-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -88790,6 +89220,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-07-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-07-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-07-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-07-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-07-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-07-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-07-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -96054,6 +96533,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-13-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-13-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-13-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-13-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-13-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-13-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-13-v2.1_eloxal_spec.png"
      }
     ],
     "store": [
@@ -102604,6 +103132,55 @@
       "kind": "Farbe",
       "albedo": "weapon_BASIC-14-v2.1_albedo.jpg",
       "spec": "weapon_BASIC-14-v2.1_spec.png"
+     },
+     {
+      "name": "nacht",
+      "de": "Nachtschicht",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_nacht_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_nacht_spec.png"
+     },
+     {
+      "name": "polar",
+      "de": "Polar",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_polar_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_polar_spec.png"
+     },
+     {
+      "name": "kobalt",
+      "de": "Kobalt",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_kobalt_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_kobalt_spec.png"
+     },
+     {
+      "name": "wueste",
+      "de": "Wüste",
+      "kind": "Farbe",
+      "albedo": "weapon_BASIC-14-v2.1_wueste_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_wueste_spec.png"
+     },
+     {
+      "name": "tarnung",
+      "de": "Tarnung",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-14-v2.1_tarnung_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_tarnung_spec.png"
+     },
+     {
+      "name": "gebraucht",
+      "de": "Gebraucht",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-14-v2.1_gebraucht_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_gebraucht_spec.png"
+     },
+     {
+      "name": "eloxal",
+      "de": "Eloxal",
+      "kind": "Textur",
+      "albedo": "weapon_BASIC-14-v2.1_eloxal_albedo.jpg",
+      "spec": "weapon_BASIC-14-v2.1_eloxal_spec.png"
      }
     ],
     "store": [

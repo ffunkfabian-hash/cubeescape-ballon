@@ -1,6 +1,9 @@
 // Einstieg der Szene „Firstfeel“: liest ego.json, baut Licht, Parcours und Spielfigur. Befehlszeile der Build:
 //   -ballonCapture <Ordner>   Ablauf Zielen → Feuerstoß → leeres Nachladen → Betrachten als PNG-Folge (1280 × 720, 30 fps)
-//   -ballonCompare <Ordner>   Standbilder hip/ads (1600 × 900) im Studiolicht für den Vergleich mit Blender
+//   -ballonCompare <Ordner>   Standbilder hip/ads (1600 × 900) im Studiolicht für den Vergleich mit Blender (-ballonSkin <Name>: mit diesem
+//                             Skin statt standard, 0.42)
+//   -ballonHud <Ordner>       Bildschirmbilder mit Anzeige (Übersicht, Leiste; -ballonHudDemo uebersicht|quickslot, 0.42)
+//   -ballonLoadout <Datei>    Leiste und Skins aus/in dieser Datei (sonst persistentDataPath/loadout.json; Batch und Aufnahmen: keine)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -87,8 +90,9 @@ namespace Ballon.Ego
             {
                 Player.loadouts[k].skins = weapons[k].skins;
                 Player.loadouts[k].icon = weapons[k].icon;
-                Player.loadouts[k].skinNames = Solvers[k].D.textures?.skins?.Select(s => s.de).ToArray();
+                Player.loadouts[k].skinNames = Enumerable.Range(0, Solvers[k].D.textures?.skins?.Length ?? 0).Select(i => Player.layout.SkinLabel(k, i)).ToArray();   // 0.42: Variante „Eloxal“ statt „Skin der Linie: Eloxal“
             }
+            Player.InitLoadout(Store(Environment.GetCommandLineArgs()));   // 0.42: Leiste und farbige Standard-Skins (bzw. gespeichert)
             if (int.TryParse(Arg(Environment.GetCommandLineArgs(), "-ballonWeapon") ?? "", out var wk) && wk >= 1 && wk <= Solvers.Length)
                 Player.UseWeapon(wk - 1);                    // Aufnahme/Vergleich mit Waffe wk (Taste wk)
             Player.range = Range;
@@ -104,6 +108,8 @@ namespace Ballon.Ego
             if (shotDir != null) { StartCoroutine(SceneShots(shotDir)); return; }
             string fovDir = Arg(args, "-ballonFovShots");
             if (fovDir != null) { StartCoroutine(FovShots(fovDir)); return; }
+            string hudDir = Arg(args, "-ballonHud");
+            if (hudDir != null) { StartCoroutine(HudCapture(hudDir, Arg(args, "-ballonHudDemo") ?? "quickslot")); return; }
             string skinsDir = Arg(args, "-ballonSkins");
             if (skinsDir != null) { StartCoroutine(SkinSheet(skinsDir)); return; }
             string courseDir = Arg(args, "-ballonCourse");
@@ -335,6 +341,16 @@ namespace Ballon.Ego
             if (k.lKey.wasPressedThisFrame && _scenes.Count > 0) NextScene();
             if (k.nKey.wasPressedThisFrame) NextLighting();
             if (k.tKey.wasPressedThisFrame) ResetToStart();
+        }
+
+        /// <summary>0.42: Speicher für Leiste und Skins – -ballonLoadout &lt;Datei&gt;, sonst persistentDataPath/loadout.json; im Batch (Tests) und
+        /// bei Aufnahmen und Messungen (-ballon…) keiner: sie starten reproduzierbar mit der Standardbelegung und den Standard-Skins.</summary>
+        public static LoadoutStore Store(string[] a)
+        {
+            var p = Arg(a, "-ballonLoadout");
+            if (p != null) return new LoadoutStore(p);
+            if (Application.isBatchMode || Array.Exists(a, x => x.StartsWith("-ballon", StringComparison.Ordinal))) return null;
+            return new LoadoutStore(Path.Combine(Application.persistentDataPath, "loadout.json"));
         }
 
         static string Arg(string[] a, string k)
@@ -746,6 +762,62 @@ namespace Ballon.Ego
 
         int _f0;
 
+        /// <summary>Beleg 0.42 (Quickslot): Übersicht öffnen, mit den Pfeilen ins Schwere, MG markieren (Standbild).</summary>
+        public static ScriptedInput OverviewScript() => new ScriptedInput()
+            .Add(0.0f, 0.6f)
+            .Add(0.6f, 0.9f, press: "menu")
+            .Add(1.0f, 1.1f, press: "menu_right")
+            .Add(1.3f, 1.4f, press: "menu_right")
+            .Add(1.6f, 1.7f, press: "menu_down")
+            .Add(1.7f, 2.4f);
+
+        /// <summary>Beleg 0.42 (Quickslot, Tastatur-Weg wie am Trackpad): Übersicht öffnen, MG markieren, Taste 9 legt es auf Platz 9, Esc;
+        /// dann 9 (MG ziehen, Feuerstoß), 1 (Automatik), 6 (Schrot) – der Wechsel läuft wie seit 0.18 (wegstecken, leere Sicht, ziehen).</summary>
+        public static ScriptedInput QuickslotScript() => new ScriptedInput()
+            .Add(0.0f, 0.8f)
+            .Add(0.8f, 0.9f, press: "menu")
+            .Add(1.4f, 1.5f, press: "menu_right")
+            .Add(1.8f, 1.9f, press: "menu_right")
+            .Add(2.2f, 2.3f, press: "menu_down")
+            .Add(2.9f, 3.0f, press: "slot9")
+            .Add(3.7f, 3.8f, press: "menu_esc")
+            .Add(4.3f, 4.4f, press: "slot9")
+            .Add(5.9f, 6.5f, hold: "fire")
+            .Add(7.0f, 7.1f, press: "slot1")
+            .Add(8.6f, 8.7f, press: "slot6")
+            .Add(8.7f, 10.4f);
+
+        /// <summary>Bildschirmbilder mit Anzeige (0.42): das OnGUI-HUD liegt nicht in der Render-Textur, darum ScreenCapture nach jedem Bild
+        /// (Fenstergröße aus -screen-width/-height, Beleg 1470 × 956). Feste Schritte über deltaOverride; frames.csv: aktive Waffe, Leiste.</summary>
+        IEnumerator HudCapture(string dir, string demo)
+        {
+            Directory.CreateDirectory(dir);
+            var script = demo == "uebersicht" ? OverviewScript() : QuickslotScript();
+            foreach (var c in Player.arsenal.C) c.ammo = c.magSize;
+            Player.C.ReadyNow();
+            Player.Teleport(new Vector3(0f, 0.01f, 1.6f), 0f, 0.8f);
+            Player.input = new ScriptedInput().Add(0, 1);               // im Vorlauf keine echte Maus (Trackpad-Scrollen öffnete die Übersicht)
+            for (int k = 0; k < 3; k++) yield return null;              // Sonde und Fenster bereit
+            Player.menu.Close();
+            Player.input = script;
+            const float dt = 1f / 30f;
+            Player.deltaOverride = () => dt;
+            int n = Mathf.CeilToInt(script.Duration / dt);
+            var lines = new List<string>();
+            for (int i = 0; i < n; i++)
+            {
+                yield return new WaitForEndOfFrame();
+                var t = ScreenCapture.CaptureScreenshotAsTexture();
+                File.WriteAllBytes(Path.Combine(dir, $"{i:0000}.png"), t.EncodeToPNG());
+                Destroy(t);
+                lines.Add($"{i},{Player.C.S.D.weapon.id},{Player.C.ActionName},{(Player.menu.IsOpen ? Player.menu.Index : -1)}," +
+                          string.Join(" ", Player.hotbar.slots.Select(w => w >= 0 ? Solvers[w].D.weapon.id : "-")));
+            }
+            File.WriteAllLines(Path.Combine(dir, "frames.csv"), lines);
+            Debug.Log($"[Ballon] Anzeige: {n} Bilder ({Screen.width} × {Screen.height}) in {dir}");
+            Application.Quit();
+        }
+
         /// <summary>Vorführlauf durch den Parcours der Szene (RouteRunner), 1280 × 720 bei 30 Bildern/s; je Bild Laufzeit, Kontrollpunkte
         /// und Treffer in frames.csv (für die Beschriftung in unity_run.py course).</summary>
         IEnumerator CourseCapture(string dir, string scene, string lighting)
@@ -1102,6 +1174,10 @@ namespace Ballon.Ego
             cam.targetTexture = rt;
             cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
             var tex = new Texture2D(1600, 900, TextureFormat.RGB24, false);
+            string skin = Arg(Environment.GetCommandLineArgs(), "-ballonSkin") ?? "standard";   // 0.42: Blender-Stills im Standard (ego_build)
+            int si = Player.layout.SkinIndex(Player.arsenal.Active, skin);                      // oder mit Skin (tools/ego_skin.py)
+            if (si < 0) Debug.LogWarning($"[Ballon] Skin {skin} für {D.weapon.id} nicht gebacken – Vergleich im Standard");
+            Player.SetSkin(Mathf.Max(0, si));
             foreach (var pose in new[] { "hip", "ads", "reload", "inspect_r" })
             {
                 if (!D.HasPose(pose)) continue;     // Werkzeug ohne Zielen und Nachladen (0.22)

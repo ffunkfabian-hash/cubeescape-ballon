@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 0.42.0 „Quickslot“ – Waffenübersicht nach Kategorien, Leiste 1–9, farbige Standard-Skins (Branch `claude/ballon-0.42-quickslot`)
+
+- Nutzerwunsch 03.11.2026 (Testbuild 0.41): Waffenübersicht (Tab) in Spalten Primär · Spezial · Schwer/Werkzeug nach dem Destiny-Prinzip,
+  Kategorie aus der Klasse (`basic/loadout.py` → `ego.json › hud`, Format `ballon-ego/12`; `/11` wird weiter gelesen), Formgen-Varianten
+  unter ihrem Grundtyp mit Kennung; je Eintrag Symbol, Klasse, Modell/Variante, Skin und Platz auf der Leiste.
+- Leiste 1–9 unten (`Hotbar`, `HudLayout`, `LoadoutStore` in `Runtime/EgoHud.cs`): Tasten 1–9 ziehen die Waffe des Platzes über den
+  bestehenden Wechsel; belegen in der Übersicht mit der Zahl (Tastatur-Weg fürs Trackpad) oder durch Ziehen mit der Maus; Belegung und
+  Skin je Waffe bleiben über Neustarts (`loadout.json`, `ballon-loadout/1`). Bis 0.41: 1–9, 0 = Waffe 1–10 nach `ego.json`.
+- Farben statt Weiß: alle 16 Spielwaffen mit den acht Skins (`SKIN_WEAPONS`, neun Waffen nachgebacken, ihre Atlanten dabei ohne Arme
+  wie seit 0.41 die Regel), jede startet mit ihrem farbigen Standard-Skin je Klasse, Formgen-Varianten mit dem Skin ihrer Linie.
+- Belege und Vergleich: `tools/unity_run.py hud` (Übersicht und Leiste im Fenster 1470 × 956), `tools/ego_skin.py` + `compare -ballonSkin`.
+  Bericht [docs/versions/0.42-quickslot.md](docs/versions/0.42-quickslot.md).
+
 ## 0.41.0 „Intake“ – Formgen-Varianten in Unity spielbar (Branch `claude/ballon-0.41-intake`)
 
 - Nutzerentscheid 242 (02.11.2026): Varianten aus Formgen v2 laufen über BALLONs Kit, Bake und Export. Neu `basic/variant.py`
