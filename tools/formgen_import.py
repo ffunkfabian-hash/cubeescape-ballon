@@ -120,6 +120,9 @@ def entry(folder, EU=None):
             raise PackageError(f'{sid}: Bauteil-Hash des Datensatzes passt nicht zum Manifest (FBX aus anderem Stand)')
         weapon = None
         points = 'Datensatz des Pakets mit POINTS' if own_points else 'Grundform (Datensatz ohne POINTS; Teile der Punkte unverändert geprüft)'
+        bad = VA.problems(W) if own_points else []     # Richter 0.41: POINTS vollständig, Teilbezüge vorhanden (kein halber Satz)
+        if bad:
+            raise PackageError(f'{sid}: Weltpunkte im Datensatz unvollständig: ' + '; '.join(bad))
     else:
         anchors = {a['id']: dict(at=_author(a['pos']), part=a['part']) for a in M['weapon']['anchors']}
         W = VA.as_module(dict(ANCHORS=anchors), base_mod, name=f'basic.variant.{sid}')

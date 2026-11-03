@@ -3,7 +3,7 @@
 1. Echte Pakete unter Generated/Formgen/<ID>/ (falls vorhanden): Eintrag entsteht, dir = Formgen/<ID>, keine Blender-Referenz, FBX und
    Texturen im Paket, Haltungen/Aktionen/Gameplay/Profil gleich dem BALLON-Grundtyp (vorerst geerbt), Atlas formgen_<ID>, Skin standard.
 2. Erfundenes Paket 2 mit Datensatz (BASIC-01-v2.1, Teil `upper` samt Auswurf 25 mm nach vorn): Auswurf im Eintrag mitgewandert;
-   falscher Bauteil-Hash wird abgelehnt.
+   falscher Bauteil-Hash und unvollständige POINTS (Punkt fehlt, Teil fehlt) werden abgelehnt.
 3. Paket 1 ohne Datensatz, Teil eines Weltpunkts verändert (Netzgrenzen von `upper` in der Spec verschoben): abgelehnt, weil die
    Weltpunkte der Grundform dann nicht mehr stimmen. Unbekanntes Format, fehlende Texturen: abgelehnt.
 """
@@ -99,6 +99,15 @@ def main():
         M['ballon']['parts_sha256'] = '0' * 64
         json.dump(M, open(os.path.join(d, 'BX02.package.json'), 'w'))
         expect_error(bad, 'falscher Bauteil-Hash', lambda: FG.entry(d))
+        # Datensatz mit unvollständigen POINTS (ein Punkt fehlt, ein Teilbezug zeigt ins Leere): abgelehnt statt Grundform-Punkte
+        for label, edit in (('POINTS ohne grip.mag', lambda P: P.pop('grip.mag')),
+                            ('POINTS mit fehlendem Teil', lambda P: P['grip.support'].update(part='kein_teil'))):
+            m2 = dict(ANCHORS=copy.deepcopy(W.ANCHORS), POINTS=copy.deepcopy(W.POINTS))
+            edit(m2['POINTS'])
+            sid = 'BX0' + ('7' if 'ohne' in label else '8')
+            msg = expect_error(bad, label, lambda: FG.entry(fake_package(tmp, sid, W, model=m2)))
+            if msg and 'Weltpunkte' not in msg:
+                bad.append(f'{label}: Meldung nennt die Weltpunkte nicht ({msg})')
         # 3. Paket ohne Datensatz mit verändertem Teil eines Weltpunkts
         spec = json.load(open(os.path.join(ROOT, 'data', 'specs', 'BASIC-01-v2.1.spec.json'), encoding='utf-8'))
         for p in spec['parts']:

@@ -348,7 +348,8 @@ def data():
     variants = FG.entries(EU=sys.modules[__name__])
     entries += variants
     roles = kit_materials()
-    for W in Ws + [importlib.import_module(v['origin']['base_module']) for v in variants]:                                    # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, 0.17: kit.py liegt im Quellenhash;
+    bases = [importlib.import_module(v['origin']['base_module']) for v in variants]
+    for W in Ws + bases:                            # Leuchtrollen aus dem Modul (Portalkanone PORTAL_ROLES, 0.17: kit.py liegt im Quellenhash;
         for R in (getattr(W, 'PORTAL_ROLES', {}), getattr(W, 'CHARGE_ROLES', {})):   # Ladekern der Energiewaffen CHARGE_ROLES, 0.33 P3)
             roles.update({k: v for k, v in R.items() if k not in roles})
         for M in (getattr(W, 'energy_roles', None), getattr(W, 'metal_roles', None)):   # 0.33 P4: Rollenmodule, die das Waffenmodul nur
@@ -410,7 +411,7 @@ NEUTRAL_EDITS = {
     'tools/blender_build.py': [('81d5b02d55747b71285dd9d1b1066a6b12a6f6658ae89c776c4ecb919dc26f12',
                                 'ea42dd1b9e5cc7cb8a585913488c57c0aed795d88dff7560e7859776d3769749',
                                 '0.41: main(W=…, base=…, argv=…) statt Modulname; GLB und Spec aller 16 Spielwaffen bytegleich zu 0.40 '
-                                '(docs/versions/0.41-intake.md › Bytegleich)')],
+                                '(docs/versions/0.41-intake.md › Schnittstellen)')],
 }
 
 
@@ -423,6 +424,8 @@ def neutral_edit(path, was, now):
         if was is None:
             return False
     return was == now
+
+
 BAKED = ('textures', 'mesh_bounds')                  # schreibt nur der Blender-Teil (Atlanten, Netzgrenzen)
 
 

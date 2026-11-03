@@ -30,7 +30,7 @@
    },
    {
     "path": "tools/export_unity.py",
-    "sha256": "51b26b1b6ad471d4329292b279f4785237162185d5b73e2a2c2c7123dbdd9c7e"
+    "sha256": "80f545c1be9a6d0050bfc7030fbabfb39ab5bd31eae87d0ba6d8185c0de1a685"
    },
    {
     "path": "tools/bake_unity.py",
