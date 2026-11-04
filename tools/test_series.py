@@ -66,7 +66,9 @@ with tempfile.TemporaryDirectory() as t:
     ok(SP.export_source(p) != a, 'bake_weapon fehlt im Bake-Schlüssel')
 fav = dict(bake=dict(size=2048, device='gpu'), favorites=['BJ01'])
 ok(SP.bake_of(fav, 'BJ01')['size'] == 4096 and SP.bake_of(fav, 'BK01')['size'] == 2048 and fav['bake']['size'] == 2048, 'Favoriten 4096², andere wie bake')
-ok(set(SP.code_files()) == set(SP.CODE_FILES) | {'export_unity'}, 'Bake-Code unvollständig')
+ok(set(SP.code_files()) == set(SP.CODE_FILES) | {'export_unity', 'scene_build'}, 'Bake-Code unvollständig')
+ok('tools/skin_masks.py' in SP.CODE_FILES, 'Masken (_freeze) im Schlüssel')
+ok(set(SP.export_source(os.path.join(ROOT, 'tools', 'scene_build.py'), SP.SCENE_PARTS)) == set(SP.SCENE_PARTS), 'Entrauscher (_denoise) im Schlüssel')
 have = SP.export_source(os.path.join(ROOT, 'tools', 'export_unity.py'))
 ok(set(have) == set(SP.EXPORT_PARTS), f'Teile fehlen in export_unity: {set(SP.EXPORT_PARTS) - set(have)}')
 

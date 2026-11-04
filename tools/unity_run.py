@@ -414,9 +414,10 @@ def compare(extra=(), weapon=1):
               f"SSIM (Ausschnitt) {m.get('vm_ssim_box')}, Helligkeit {m.get('vm_lum_unity')} / {m.get('vm_lum_blender')}")
         tiles += ['-label', f'{pose} · Blender (Cycles)', b, '-label', f"{pose} · Unity (URP) · SSIM {m['ssim']}", u,
                   '-label', f'{pose} · Blender-Kanten über Unity', edge]
-    sheet = os.path.join(EV, 'firstfeel_vergleich.png' if weapon == 1 else f'firstfeel_vergleich_{WEAPONS[weapon]}.png')
+    label = WEAPONS.get(weapon, f'Waffe {weapon}')       # Serien stehen nicht in WEAPONS (lokal, je Stand andere Plätze)
+    sheet = os.path.join(EV, 'firstfeel_vergleich.png' if weapon == 1 else f"firstfeel_vergleich_{label.replace(' ', '_')}.png")
     subprocess.run(['magick', 'montage', *tiles, '-tile', '3x', '-geometry', '600x338+3+3', '-pointsize', '14', '-background', '#9EA4AC',
-                    '-title', f'BALLON · {WEAPONS[weapon]} · Standbildvergleich Blender gegen Unity (gleiche Haltung, Kamera 75° horizontal)', sheet],
+                    '-title', f'BALLON · {label} · Standbildvergleich Blender gegen Unity (gleiche Haltung, Kamera 75° horizontal)', sheet],
                    check=True)
     json.dump(mets, open(os.path.join(d, 'metrics.json'), 'w'), indent=1)
     print('Vergleich →', sheet)

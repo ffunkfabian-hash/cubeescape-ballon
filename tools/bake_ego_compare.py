@@ -1,9 +1,10 @@
 """Alter gegen neuer Bake in der Ego-Ansicht (0.43 „Kiln“): dieselbe Waffe mehrfach gebacken und nebeneinander in einer Build, Standbilder aus Unity, Kennzahlen.
 
   python3 tools/bake_ego_compare.py bake [Ordner mit altem BALLON-Stand] [QB,QC]   (unter `ce lock gpu`) → Pakete im Cache
-  python3 tools/bake_ego_compare.py install → Vergleichswaffen in Generated/FormgenSeries und ego_series.json; danach `unity_run.py setup` und `build`
+  python3 tools/bake_ego_compare.py install → Vergleichswaffen in Generated/FormgenSeries und ego_series.json; danach `BALLON_NO_SERIES=1 python3 tools/unity_run.py setup` und `build` (ohne die Umgebungsvariable räumt setup die Vergleichswaffen wieder weg)
   python3 tools/bake_ego_compare.py shots   → Standbilder Hüfte und Zielen je Waffe (1470 × 956), Tabelle und Kontaktbogen nach <EV>/kiln/ego/
   python3 tools/bake_ego_compare.py remove  → Vergleichswaffen wieder entfernen (danach setup und build)
+  python3 tools/bake_ego_compare.py serie   → eine Serienwaffe je Linie gegen frische Blender-Stills (tools/ego_variant.py, `unity_run.compare`) nach <EV>/kiln/serie/
 
 Waffen: BA01 (Formgen-Linie A = BASIC-01 unverändert) und BJ01. Je Waffe QA.. = heutiger Bake (Stand vor 0.43: 4096², 64 Samples), QB.. = neu (Albedo 2048², Normale 4096²), QC.. = neu 4096².
 Nichts davon gelangt ins Repo (Ordner FormgenSeries).
@@ -22,6 +23,7 @@ EV = os.environ.get('BALLON_KILN_EVIDENCE', os.path.expanduser('~/Library/Caches
 KINDS = (('QA', 'alt 4096² / 64', 4096, 64), ('QB', 'neu Albedo 2048²', 2048, None), ('QC', 'neu 4096²', 4096, None))
 SHEETS = (('BA01', '01'), ('BJ01', '02'))
 SIZE = '1470x956'
+REFERENCE = ('BJ01', 'BK04', 'BL09', 'BM14')           # je Linie eine Waffe, verschiedene Grundtypen
 
 
 def jobs():
@@ -76,6 +78,32 @@ def remove():
     print('entfernt:', ', '.join(ids))
 
 
+def serie():
+    """Blender-Abgleich der Serien (AGENTS.md: sichtbare Unity-Änderungen gegen frische Blender-Stills): braucht den fertigen Build."""
+    import glob
+    p = SP.pin()
+    plan = {j['id']: j for j in SP.plan_jobs(p, SP.source(p))}
+    D = json.load(open(SP.OUT_JSON, encoding='utf-8'))
+    index = {e['id']: k + 1 for k, e in enumerate(D['weapons'])}
+    for sid in REFERENCE:
+        out = os.path.join(EV, 'serie', sid)
+        os.makedirs(out, exist_ok=True)
+        skin = os.path.join(out, 'skin.json')
+        json.dump(plan[sid]['skin_def'], open(skin, 'w', encoding='utf-8'), ensure_ascii=False)
+        rc = subprocess.run([os.path.expanduser('~/Claude/cubeescape-nexogen/ce'), 'lock', 'gpu', '--what', f'BALLON Stills {sid}', '--', SP.BLENDER, '-b', '--factory-startup',
+                             '-P', os.path.join(SP.ROOT, 'tools', 'ego_variant.py'), '--', os.path.join(SP.DST, sid), '--skin-def', skin, '--gpu'],
+                            env=dict(os.environ, BASIC_OUT=out), capture_output=True, text=True)
+        stills = glob.glob(os.path.join(out, '*', 'ego', 'stills'))
+        if rc.returncode or not stills:
+            print(f'{sid}: Blender-Stills fehlgeschlagen', rc.stdout[-800:], rc.stderr[-400:])
+            return 1
+        os.environ['BALLON_BLENDER_STILLS'] = stills[0]
+        print(f'== {sid} (Waffe {index[sid]})', flush=True)
+        if UR.compare((), index[sid]):
+            return 1
+    return 0
+
+
 def shots():
     D = json.load(open(SP.OUT_JSON, encoding='utf-8'))
     index = {e['id']: k + 1 for k, e in enumerate(D['weapons'])}
@@ -117,5 +145,7 @@ if __name__ == '__main__':
         globals()[cmd]()
     elif cmd == 'shots':
         sys.exit(shots())
+    elif cmd == 'serie':
+        sys.exit(serie())
     else:
         print(__doc__)

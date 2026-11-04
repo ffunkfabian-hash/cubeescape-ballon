@@ -904,7 +904,7 @@ def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms
     Ego-Szene (0.41): root = Wurzelobjekt der Waffe (kit.build), tex_dir/fbx = Zielordner bzw. -datei (fbx None: kein FBX), skins =
     True (alle kit.SKINS), False (nur Standard) oder Liste von Namen, arms = andere Netze der Szene (Arme) beim Backen sichtbar lassen
     (ARMS_IN_ATLAS), objs = {Teil-ID: Objekt} für kit.set_mode (sonst die Kinder von root), rest = Aufruf vor dem FBX-Export (Ego-Szene:
-    Ruhelage), size = Albedo und Normale (2048 oder 4096, Favoriten; AO, Spec bleiben bake_unity.SETTINGS['data_size']), settings = Abweichungen von
+    Ruhelage), size = Albedo (2048 oder 4096, Favoriten; Normale mindestens bake_unity.SETTINGS['normal_size'], AO, Spec bleiben ['data_size']), settings = Abweichungen von
     bake_unity.SETTINGS. Gibt textures (weapon, skins) zurück; Ablage nach TEXTURE_STORE macht store_textures."""
     import bpy
     from tools import bake_unity as BK

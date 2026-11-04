@@ -36,8 +36,9 @@ CE = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
 PACKAGE_VERSION = 2
 # BALLON-Code, der das Paket bestimmt. export_unity.py nur mit den Funktionen des Backens: sein übriger Inhalt (Datenexport) ändert sich oft und
 # geht beim Einlesen ohnehin mit dem heutigen Stand in den Eintrag ein, er soll nicht 60 Waffen neu backen.
-CODE_FILES = ('basic/kit.py', 'basic/common.py', 'basic/variant.py', 'tools/bake_unity.py', 'tools/blender_build.py')
+CODE_FILES = ('basic/kit.py', 'basic/common.py', 'basic/variant.py', 'tools/bake_unity.py', 'tools/blender_build.py', 'tools/skin_masks.py')
 EXPORT_PARTS = ('TEXTURE_STORE', 'bake_weapon', 'store_texture', 'store_textures', 'export_fbx', 'parts_sha', '_identify')
+SCENE_PARTS = ('Denoiser',)                        # scene_build.py: nur der Entrauscher des AO, der Rest ist Szene
 
 DRIVER = r'''
 import json, sys
@@ -114,20 +115,21 @@ def plan_jobs(p, src):
     return jobs
 
 
-def export_source(path):
-    """Quelltext der Teile von export_unity.py, die das Paket bestimmen."""
+def export_source(path, parts=EXPORT_PARTS):
+    """Quelltext der Teile einer Datei, die das Paket bestimmen (export_unity.py, scene_build.py)."""
     text = open(path, encoding='utf-8').read()
     out = {}
     for n in ast.parse(text).body:
         name = getattr(n, 'name', None) or (n.targets[0].id if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None)
-        if name in EXPORT_PARTS:
+        if name in parts:
             out[name] = ast.get_source_segment(text, n)
     return out
 
 
 def code_files(root=ROOT):
     return {**{f: hashlib.sha256(open(os.path.join(root, f), 'rb').read()).hexdigest() for f in CODE_FILES},
-            'export_unity': hashlib.sha256(json.dumps(export_source(os.path.join(root, 'tools', 'export_unity.py')), sort_keys=True).encode()).hexdigest()}
+            'export_unity': hashlib.sha256(json.dumps(export_source(os.path.join(root, 'tools', 'export_unity.py')), sort_keys=True).encode()).hexdigest(),
+            'scene_build': hashlib.sha256(json.dumps(export_source(os.path.join(root, 'tools', 'scene_build.py'), SCENE_PARTS), sort_keys=True).encode()).hexdigest()}
 
 
 def blender_version():

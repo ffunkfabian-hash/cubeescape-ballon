@@ -586,7 +586,8 @@ Die vier Serien aus Formgen v2 sind spielbar, ohne dass Serien-Dateien ins Repo 
 - **Farben:** Die Farbe der Linie ist direkt in den Atlas gebacken (Formgens `skin_def`), nicht über Skin-Masken: exakt wie Formgens Blatt und ohne
   zweiten Durchlauf. Taste K zeigt bei Serienwaffen deshalb nur den Skin der Linie. Leuchtfarben kommen weiter aus den gemeinsamen `Role_`-Materialien.
 - **Durchfaller** nennt `setup` am Ende und `Resources/ego_series.json › series › failed` hält sie fest; nichts wird still ausgelassen.
-- **Tests:** Python `tools/test_series.py`, `tools/test_bake_settings.py`; EditMode `SeriesTests`; PlayMode `SeriesPlayTests`.
+- **Vergleich mit Blender:** `python3 tools/bake_ego_compare.py serie` rendert je Linie eine Waffe in Blender (`tools/ego_variant.py --skin-def`) und vergleicht sie mit Unity.
+- **Tests:** Python `tools/test_series.py`, `tools/test_bake_settings.py`; EditMode `SeriesTests`; PlayMode `SeriesPlayTests`, `Serien_verhalten_sich_wie_ihr_Grundtyp`.
 
 ## Grenzen
 
