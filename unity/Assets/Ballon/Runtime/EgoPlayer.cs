@@ -718,7 +718,7 @@ namespace Ballon.Ego
                 for (int k = 0; k < n; k++)
                 {
                     var D = arsenal.C[k].S.D;
-                    _menuLabels[k] = string.IsNullOrEmpty(D.weapon.type_de) ? D.weapon.name : D.weapon.type_de;   // Klasse statt Modellname
+                    _menuLabels[k] = layout.Title(k);                                // Klasse statt Modellname
                     _menuKeys[k] = k < 10 ? ((k + 1) % 10).ToString() : "";          // Taste 1 … 9, 0; weitere nur im Menü
                 }
             }
@@ -786,7 +786,7 @@ namespace Ballon.Ego
             for (int k = 0; k < HudLayout.Slots; k++) _slotRects[k] = new Rect(x + k * (sw + sg), y, sw, sh);
             var L = layout;
             int nc = L.columns.Length;
-            float colGap = 0.025f * H, cw = Mathf.Min(0.45f * H, (W - 0.08f * H - (nc - 1) * colGap) / nc);
+            float colGap = HudLayout.ColumnGap(H, nc), cw = HudLayout.ColumnWidth(W, H, nc);
             float ch = RowH * H, rg = RowGap * H, hh = HeadH * H, maxH = 0;
             var heads = new List<(int cat, int col, float y)>();
             var colY = new float[nc][];
@@ -812,6 +812,7 @@ namespace Ballon.Ego
             _cellRects = new Rect[arsenal.C.Length];
             _nameFont = new int[arsenal.C.Length];
             _subFont = new int[arsenal.C.Length];
+            _cellSkin = null;                                     // Unterzeile hängt an der Kartenbreite (MenuCard.TwoLines)
             _cellKeyed = new bool[arsenal.C.Length];
             for (int c = 0; c < nc; c++)
                 for (int r = 0; r < L.columns[c].Length; r++)
@@ -877,11 +878,11 @@ namespace Ballon.Ego
         void HudStyles()
         {
             Styles();
-            if (_cellName != null && _cellName.fontSize == Mathf.RoundToInt(0.019f * _fontH)) return;
+            if (_cellName != null && _cellName.fontSize == Mathf.RoundToInt(MenuCard.NameFont * _fontH)) return;
             int h = _fontH;
-            _cellName = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.019f * h), fontStyle = FontStyle.Bold, alignment = TextAnchor.LowerLeft, wordWrap = false, clipping = TextClipping.Clip };
+            _cellName = MenuCard.NameStyle(GUI.skin.label, h);
             _cellName.normal.textColor = Color.white;
-            _cellSubStyle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.0155f * h), alignment = TextAnchor.UpperLeft, wordWrap = false, clipping = TextClipping.Clip };
+            _cellSubStyle = MenuCard.SubStyle(GUI.skin.label, h);
             _cellSubStyle.normal.textColor = MenuDim;
             _headStyle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.02f * h), fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
             _slotKey = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(0.017f * h), fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperLeft };
@@ -902,27 +903,16 @@ namespace Ballon.Ego
             {
                 _cellSkin[k] = loadouts[k].skin;
                 _subFont[k] = 0;
-                var sk = layout.SkinLabel(k, loadouts[k].skin);
-                _cellSub[k] = sk.Length > 0 ? $"{layout.Subtitle(k)} · {sk}" : layout.Subtitle(k);
+                _cellSub[k] = layout.CardSub(k, loadouts[k].skin, MenuCard.TwoLines(_cellRects[k], layout.RowUnits(k) < 1f, Screen.height));
             }
             return _cellSub[k];
         }
 
-        /// <summary>Beschriftung, die eher kleiner wird als abgeschnitten (0.43: bei sechs Spalten). Die Größe je Zelle wird einmal ermittelt (sizes[k], 0 = neu).</summary>
+        /// <summary>Beschriftung in der Größe aus MenuCard.Fit, je Zelle einmal ermittelt (sizes[k], 0 = neu).</summary>
         void FitLabel(Rect r, string s, GUIStyle st, int[] sizes, int k)
         {
             int full = st.fontSize;
-            if (sizes[k] == 0)
-            {
-                var c = new GUIContent(s);
-                int size = full, min = Mathf.RoundToInt(0.6f * full);
-                for (; size > min; size--)
-                {
-                    st.fontSize = size;
-                    if (st.CalcSize(c).x <= r.width) break;
-                }
-                sizes[k] = size;
-            }
+            if (sizes[k] == 0) sizes[k] = MenuCard.Fit(st, s, r, Screen.height);
             st.fontSize = sizes[k];
             GUI.Label(r, s, st);
             st.fontSize = full;
@@ -958,31 +948,24 @@ namespace Ballon.Ego
             for (int k = 0; k < _cellRects.Length; k++)
             {
                 var r = _cellRects[k];
-                bool sel = k == menu.Index, variant = L.RowUnits(k) < 1f, narrow = r.width < 0.3f * H;   // schmal: viele Spalten (Serien), kleinere Symbole
+                bool sel = k == menu.Index, variant = L.RowUnits(k) < 1f;
                 var cat = L.categories[L.categoryOf[k]];
-                float ix = variant ? r.x + 0.028f * H : r.x + 0.014f * H, iw = (variant ? (narrow ? 0.16f : 0.2f) : (narrow ? 0.22f : 0.29f)) * r.width;   // Varianten eingerückt
-                float tx = variant && narrow ? ix + iw + 0.006f * H : r.x + 0.014f * H + (narrow ? 0.24f : 0.31f) * r.width;
                 if (paint)
                 {
                     Fill(r, sel ? MenuSel : MenuCell);
                     Fill(new Rect(r.x, r.y, Mathf.Max(2, 0.004f * H), r.height), cat.color);       // Kategoriefarbe
                     if (sel) Frame(r, e, MenuEdge);
                     if (k == arsenal.Active) Fill(new Rect(r.xMax - 0.018f * H, r.y + 0.01f * H, 0.008f * H, 0.008f * H), MenuEdge);   // aktive Waffe
-                    DrawIcon(new Rect(ix, r.y + 0.1f * r.height, iw, 0.8f * r.height), loadouts[k].icon, sel ? Color.white : MenuDim);
+                    DrawIcon(new Rect(MenuCard.IconX(r, variant, H), r.y + 0.1f * r.height, MenuCard.IconW(r, variant, H), 0.8f * r.height), loadouts[k].icon, sel ? Color.white : MenuDim);
                 }
                 int sl = hotbar.SlotOf(k);
-                float keyW = (sl >= 0 ? 0.034f : 0.006f) * H;
                 if (_cellKeyed[k] != sl >= 0)
                 {
                     _cellKeyed[k] = sl >= 0;
                     _subFont[k] = 0;                                  // Platz für die Taste geändert: Größe neu ermitteln
                 }
-                if (variant) FitLabel(new Rect(tx, r.y, r.xMax - tx - keyW, r.height), CellSub(k), _cellSubStyle, _subFont, k);   // eine Zeile: Kennung und Skin
-                else
-                {
-                    FitLabel(new Rect(tx, r.y, r.xMax - tx - 0.02f * H, r.height * 0.52f), _menuLabels[k], _cellName, _nameFont, k);
-                    FitLabel(new Rect(tx, r.y + r.height * 0.54f, r.xMax - tx - keyW, r.height * 0.46f), CellSub(k), _cellSubStyle, _subFont, k);
-                }
+                if (!variant) FitLabel(MenuCard.NameRect(r, H), _menuLabels[k], _cellName, _nameFont, k);
+                FitLabel(MenuCard.SubRect(r, variant, sl >= 0, H), CellSub(k), _cellSubStyle, _subFont, k);   // Variante: eine Zeile mit Kennung und Skin
                 if (sl >= 0) GUI.Label(new Rect(r.xMax - 0.03f * H, r.y + (variant ? 0f : r.height * 0.42f), 0.03f * H, 0.03f * H), SlotKeys[sl], _menuKey);
             }
             if (menu.Dragging >= 0 && paint)                          // gezogene Waffe folgt dem Zeiger

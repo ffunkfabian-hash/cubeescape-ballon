@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.43.1 Patch „uebersicht-text“ – Waffenübersicht bei sechs Spalten ohne abgeschnittene Texte (Branch `claude/ballon-patch-uebersicht-text`)
+
+- Sechs Spalten machten die Karten halb so breit, `FitLabel` hielt bei 60 % der Schrift an und schnitt still ab. Schmale Karten: engerer Spaltenabstand, kleinere Symbole, Modell und Skin untereinander; Rechnung in `MenuCard` (`Runtime/EgoHud.cs`).
+- `MenuTextTests` misst alle Waffen, Skins und Tastenplätze bei 1470 × 956, 1280 × 720 und 1920 × 1080 gegen ihre Rechtecke (mindestens 11 px bei 956p). `OnGUI` läuft im Batchmode nicht, gemessen wird über `MenuCard`.
+
 ## 0.43.0 „Kiln“ – Bake rund 5× schneller, Serien J–M spielbar ohne Dateien im Repo (Branch `claude/ballon-0.43-kiln`)
 
 - `tools/bake_unity.py`: Teile vor dem Backen zu einem Objekt (Objektkoordinaten `ballon_co`, Teil `ballon_part`), Abrieb und Schmutz einmal in Masken
