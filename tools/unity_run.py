@@ -82,6 +82,14 @@ def compose_skins():
     return subprocess.run([py, os.path.join(ROOT, 'tools', 'skin_compose.py')]).returncode
 
 
+def series():
+    """0.43: Design-Serien aus Formgen v2 lokal backen und einrichten (tools/series_packages.py, gitignoriert); BALLON_NO_SERIES=1: ohne."""
+    if os.environ.get('BALLON_NO_SERIES') == '1':
+        print('Serien: übersprungen (BALLON_NO_SERIES=1)')
+        return 0
+    return subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'series_packages.py')]).returncode
+
+
 def editor(method, name):
     log = os.path.join(EV, f'{name}.log')
     return locked([UNITY, '-batchmode', '-quit', '-projectPath', PROJ, '-executeMethod', method, '-logFile', log], log)
@@ -159,8 +167,8 @@ def player(args, log, size=(1280, 720)):
     return locked([exe, '-screen-width', str(size[0]), '-screen-height', str(size[1]), '-screen-fullscreen', '0', '-logFile', log] + args, log)
 
 
-HUD_TITLE = {'uebersicht': 'BALLON 0.42 Quickslot · Unity · Waffenübersicht (Tab): Primär · Spezial · Schwer/Werkzeug, Leiste 1–9',
-             'quickslot': 'BALLON 0.42 Quickslot · Unity · Tab → Pfeile → MG markieren → 9 legt es auf Platz 9 → Esc → 9 · 1 · 6 wechseln'}
+HUD_TITLE = {'uebersicht': 'BALLON 0.43 Kiln · Unity · Waffenübersicht (Tab) mit Serien J–M unter dem Grundtyp, Leiste 1–9',
+             'quickslot': 'BALLON 0.43 Kiln · Unity · Tab → Pfeile → Waffe markieren → 9 legt sie auf Platz 9 → Esc → 9 · 1 · 6 wechseln'}
 
 
 def hud(size=(1470, 956)):
@@ -418,8 +426,8 @@ def compare(extra=(), weapon=1):
 if __name__ == '__main__':
     os.makedirs(EV, exist_ok=True)
     a = sys.argv[1] if len(sys.argv) > 1 else ''
-    if a == 'setup':                       # 0.42: zuerst die Skin-Karten (lokal, nicht im Repo), dann Unity
-        sys.exit(compose_skins() or editor('Ballon.Ego.Editor.BallonSetup.Run', 'setup'))
+    if a == 'setup':                       # 0.42: zuerst die Skin-Karten (lokal, nicht im Repo), 0.43: die Serien, dann Unity
+        sys.exit(compose_skins() or series() or editor('Ballon.Ego.Editor.BallonSetup.Run', 'setup'))
     if a == 'build':
         sys.exit(editor('Ballon.Ego.Editor.BallonSetup.BuildMac', 'build'))
     if a == 'test':

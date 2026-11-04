@@ -521,7 +521,8 @@ Waffe und Arme immer mit dem Bezugsbildwinkel von Visier-Standard 3, unabhängig
 **Entscheidung 97 A** (Nutzer, 26.10.2026: „A“): Ego-Waffentexturen und Skins kleiner speichern – halbe Kantenlänge und/oder JPG bzw.
 stärker komprimiertes PNG je Kanal, Normal-Map verlustarm, Ziel ≈ ¼ der Größe je Waffe, ohne sichtbaren Verlust im Ego-Bild.
 
-**Regel** (`tools/export_unity.TEXTURE_STORE`, aus der Exporteinstellung, nicht von Hand): gebacken wird weiter mit 4096²
+**Regel** (`tools/export_unity.TEXTURE_STORE`, aus der Exporteinstellung, nicht von Hand; seit 0.43 ist das die Obergrenze: Bakes mit 2048²
+werden nicht hochskaliert, Einstellungen siehe [versions/0.43-kiln.md](versions/0.43-kiln.md)): gebacken wird mit 4096²
 (`tools/bake_unity.py`), gespeichert wird je Kanal
 
 | Kanal | Ablage | Grund |
@@ -565,6 +566,27 @@ Bake (Formgen ruft BALLONs Code), derselbe Export. Vertrag und Schnittstellen: [
 - **Tests:** EditMode `Altes_Format_10_wird_gelesen_ohne_Ordner`, `Formgen_Varianten_eingelesen`; PlayMode
   `Formgen_Varianten_Huefte_Zielen_Schuss_Nachladen`, `Formgen_Varianten_in_der_Waffenauswahl`; Python `tools/test_formgen_import.py`,
   `tools/test_points.py`.
+
+## Design-Serien J–M (0.43 „Kiln“)
+
+Die vier Serien aus Formgen v2 sind spielbar, ohne dass Serien-Dateien ins Repo kommen. Bericht: [versions/0.43-kiln.md](versions/0.43-kiln.md).
+
+- **Pin:** [`data/formgen_series.json`](../data/formgen_series.json) nennt Repo, vollen Commit, Linien und Bake (Albedo 2048², Normale 4096², GPU) und `favorites` (IDs mit Albedo 4096²). Neue Serien oder
+  ein neuer Formgen-Stand: nur diese Datei ändern.
+- **`tools/unity_run.py setup`** ruft vor Unity [`tools/series_packages.py`](../tools/series_packages.py): liest Formgens Plan am gepinnten
+  Commit (Git-Archiv, die Arbeitskopie von Formgen bleibt unberührt), bäckt fehlende Waffen unter `ce lock gpu` in den Inhalts-Cache
+  `~/Library/Caches/CubeEscapeBallon/series/pk/<Schlüssel>/` und legt sie nach `Generated/FormgenSeries/<ID>/` (gitignoriert). Der Schlüssel
+  enthält Datensatz, Modul, Skin, Bake-Einstellungen, BALLONs Baucode, Blender-Version und Formgens Bauskript: ein zweites `setup` backt nichts.
+  `BALLON_NO_SERIES=1` lässt den Schritt aus; `python3 tools/series_packages.py --status` zeigt den Stand ohne zu backen.
+- **Unity:** Die Szene im Repo bleibt die mit den festen Waffen. Serien kommen zur Laufzeit aus `Resources/ego_series.json` (ganzes `ego.json`
+  plus Serienwaffen) und `Resources/BallonSeries.asset` (`SeriesAssets`: Waffen und Rollenmaterialien); `Bootstrap` lädt beides, wenn es da ist.
+  Ohne Serien (frische Kopie ohne `setup`) läuft das Spiel wie 0.42.
+- **Übersicht (Tab):** Varianten stehen als niedrige, eingerückte Zeilen unter dem Grundtyp (`VariantRow` 0,4 Zeilen), ein Grundtyp bleibt mit
+  seinen Varianten in einer Spalte; Untertitel „Serie J · BJ01“. Die Leiste 1–9 belegt man wie bisher.
+- **Farben:** Die Farbe der Linie ist direkt in den Atlas gebacken (Formgens `skin_def`), nicht über Skin-Masken: exakt wie Formgens Blatt und ohne
+  zweiten Durchlauf. Taste K zeigt bei Serienwaffen deshalb nur den Skin der Linie. Leuchtfarben kommen weiter aus den gemeinsamen `Role_`-Materialien.
+- **Durchfaller** nennt `setup` am Ende und `Resources/ego_series.json › series › failed` hält sie fest; nichts wird still ausgelassen.
+- **Tests:** Python `tools/test_series.py`, `tools/test_bake_settings.py`; EditMode `SeriesTests`; PlayMode `SeriesPlayTests`.
 
 ## Grenzen
 

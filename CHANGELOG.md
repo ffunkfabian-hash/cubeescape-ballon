@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.43.0 „Kiln“ – Bake rund 5× schneller, Serien J–M spielbar ohne Dateien im Repo (Branch `claude/ballon-0.43-kiln`)
+
+- `tools/bake_unity.py`: Teile vor dem Backen zu einem Objekt (Objektkoordinaten `ballon_co`, Teil `ballon_part`), Abrieb und Schmutz einmal in Masken
+  eingefroren, Spec, Glätte und AO in 2048², Normale 4 Samples, AO 32 Samples + OIDN; `SETTINGS`, Quelle `data/bake_settings.json` mit Grenzwerten je Karte.
+  10 Waffen plus Wiederholung: 3807 s → 780 s. Albedo 2048² oder 4096² per Schalter, Normale fest 4096² (2048² ist beim Zielen sichtbar fleckig).
+- Serien J–M aus Formgen v2: `tools/series_packages.py` holt Datensätze am Pin (`data/formgen_series.json`), bäckt in einen Inhalts-Cache und richtet
+  sie gitignoriert ein (`unity_run.py setup`, zweiter Lauf ohne Backen). Unity lädt sie zur Laufzeit (`SeriesAssets`, `ego_series.json`), die Szene im Repo
+  bleibt. 57 von 68 spielbar; 8 Nahkampfwaffen ohne Ego-Profil, BJ10, BK10, BL10 ohne Leuchtbewegung am Visier.
+- Waffenübersicht: Serien als niedrige Zeilen unter dem Grundtyp, Schrift passt sich der Spaltenbreite an.
+- Neu: `tools/bake_bench.py`, `tools/bake_compare.py`, `tools/bake_ego_compare.py`. Die 16 Atlanten im Repo sind nicht neu gebacken.
+  Bericht [docs/versions/0.43-kiln.md](docs/versions/0.43-kiln.md).
+
 ## 0.42.0 „Quickslot“ – Waffenübersicht nach Kategorien, Leiste 1–9, farbige Standard-Skins (Branch `claude/ballon-0.42-quickslot`)
 
 - Nutzerwunsch 03.11.2026 (Testbuild 0.41): Waffenübersicht (Tab) in Spalten Primär · Spezial · Schwer/Werkzeug nach dem Destiny-Prinzip,

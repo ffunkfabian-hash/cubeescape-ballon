@@ -427,6 +427,12 @@ NEUTRAL_EDITS = {
                                 'ea42dd1b9e5cc7cb8a585913488c57c0aed795d88dff7560e7859776d3769749',
                                 '0.41: main(W=…, base=…, argv=…) statt Modulname; GLB und Spec aller 16 Spielwaffen bytegleich zu 0.40 '
                                 '(docs/versions/0.41-intake.md › Schnittstellen)')],
+    # 0.43: kein neutraler Bau, sondern ein bewusster Übergang: der neue Bake gilt ab dem nächsten vollen Bake. Die 16 Atlanten im Repo bleiben
+    # bis dahin die von 0.42 (Nutzerauftrag 0.43 d), damit Skin-Masken und Bild unverändert und keine neuen Binärdateien im Diff sind.
+    'tools/bake_unity.py': [('4eaafdb72c7f8a9b76bb5fd7b69da6c85b8c5f40efb34d33b20e5f66c0034d3f',
+                             'e8558c5a07353bed8e7a80f0d98bc099151dbee6846a013f4aff2ee3377203a6',
+                             '0.43: schnellerer Bake, Atlanten im Repo nicht neu gebacken; Referenz und Grenzwerte data/bake_settings.json '
+                             '(docs/versions/0.43-kiln.md › Neue Referenz)')],
 }
 
 
@@ -589,7 +595,7 @@ def store_texture(tex_dir, name, kind):
     src = os.path.join(tex_dir, name)
     if ext[1:] == R['ext']:
         w, z, ch = _identify(src)
-        if w == R['size'] and z == 8 and (kind != 'ao' or ch.startswith('gray')):
+        if w <= R['size'] and z == 8 and (kind != 'ao' or ch.startswith('gray')):
             return dst
     elif not os.path.exists(src):
         if os.path.exists(os.path.join(tex_dir, dst)):     # schon abgelegt (Datenexport nach der Umstellung)
@@ -599,7 +605,7 @@ def store_texture(tex_dir, name, kind):
     cmd = ['magick', src]
     if kind == 'ao':
         cmd += ['-channel', 'R', '-separate', '+channel']       # Graukeil: R = G = B, ohne Farbraumumrechnung (lineare Daten)
-    if R['size'] != w:
+    if R['size'] < w:                                            # nie vergrößern (0.43: Atlanten in 2048²)
         lin = kind in ('albedo', 'spec')                         # Farben in linearem Licht verkleinern (Alpha bleibt linear)
         cmd += (['-colorspace', 'RGB'] if lin else []) + ['-filter', 'Lanczos', '-resize', f"{R['size']}x{R['size']}"] + \
             (['-colorspace', 'sRGB'] if lin else [])
@@ -893,12 +899,13 @@ def atlas_with_arms(e):
 
 
 def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms=ARMS_IN_ATLAS, objs=None, rest=None, size=4096,
-                samples=None):
+                samples=None, settings=None):
     """Atlas einer Waffe (kit.aaa_nodes) und Skins (kit.SKINS: Farbe und Glanz je Skin neu, Normale und AO wie Standard), FBX. Ohne
     Ego-Szene (0.41): root = Wurzelobjekt der Waffe (kit.build), tex_dir/fbx = Zielordner bzw. -datei (fbx None: kein FBX), skins =
     True (alle kit.SKINS), False (nur Standard) oder Liste von Namen, arms = andere Netze der Szene (Arme) beim Backen sichtbar lassen
     (ARMS_IN_ATLAS), objs = {Teil-ID: Objekt} für kit.set_mode (sonst die Kinder von root), rest = Aufruf vor dem FBX-Export (Ego-Szene:
-    Ruhelage). Gibt textures (weapon, skins) zurück; Ablage nach TEXTURE_STORE macht store_textures."""
+    Ruhelage), size = Albedo und Normale (2048 oder 4096, Favoriten; AO, Spec bleiben bake_unity.SETTINGS['data_size']), settings = Abweichungen von
+    bake_unity.SETTINGS. Gibt textures (weapon, skins) zurück; Ablage nach TEXTURE_STORE macht store_textures."""
     import bpy
     from tools import bake_unity as BK
     from basic import kit
@@ -914,7 +921,7 @@ def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms
     hidden = [] if arms else [o for o in bpy.context.scene.objects if o.type == 'MESH' and o not in wobs and not o.hide_render]
     for o in hidden:                               # ohne Arme: übrige Netze (Ego-Arme) verdecken nichts
         o.hide_render = True
-    kw = dict(samples=samples) if samples else {}
+    kw = dict(samples=samples, settings=settings)
     try:
         files = BK.bake_atlas(bake, atlas_key, size, tex_dir, gpu=gpu, **kw)
         atlas = dict(size=size, objects=sorted(o.name for o in bake), arms=bool(arms), **files)
@@ -959,7 +966,7 @@ def bake_arms(sc, tex_dir, gpu):
         for i, e in enumerate(sc.arms[s][0].values()):
             e.matrix_world = Matrix.Translation((i * 0.5, si * 1.0, 0.0))
     bpy.context.view_layer.update()
-    files = BK.bake_atlas(bake, 'arms', 2048, tex_dir, gpu=gpu, join_all=True)
+    files = BK.bake_atlas(bake, 'arms', 2048, tex_dir, gpu=gpu, join_all=True, settings=dict(normal_size=2048))
     rest_pose(sc)
     export_fbx(os.path.join(DST, 'arms.fbx'), aobs)
     print(f'[export_unity] Atlas arms: {len(bake)} Objekte, 2048²', flush=True)

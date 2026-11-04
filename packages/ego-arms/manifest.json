@@ -2509,15 +2509,15 @@
   "files": {
    "basecolor": {
     "path": "textures/arms_basecolor.png",
-    "sha256": "d5ad687aaf800c0115e83610e81c9be0fa6aaed19985f52415fcade4b53052bb",
-    "bytes": 1953775,
+    "sha256": "c47de5d1f2bc738f6f6fa3bc647012c6fb2fa0a73c9e44f09e9a11dd6eb3f885",
+    "bytes": 1953867,
     "colorspace": "sRGB",
     "de": "Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz)"
    },
    "orm": {
     "path": "textures/arms_orm.png",
-    "sha256": "abcc08f540b2640a04e9b28d7444d9a2f6ebcd7ee696956d34e07aecb24576ab",
-    "bytes": 3573649,
+    "sha256": "da15ea8c2d89e7f4e01db2b4e40c0f7e2924beab901fd5a032d39ae8581cc791",
+    "bytes": 3573652,
     "colorspace": "linear",
     "de": "R Verdeckung, G Rauheit, B Metall"
    },
@@ -2533,7 +2533,7 @@
    "size": 2048,
    "samples": 64,
    "device": "GPU (Metal)",
-   "seconds": 27,
+   "seconds": 28,
    "sources": [
     {
      "path": "unity/Assets/Ballon/Generated/arms.fbx",
@@ -2552,7 +2552,7 @@
      "sha256": "fbd7abe868662634a98046e09c5d86753cce16b12a6e6be4c4d81ac9d959dbcf"
     }
    ],
-   "material_sha256": "20b3652c32a26e2bd7da2576e9b5ca45fe5f7d8c9f5f2d162a73f00a917dc47f",
+   "material_sha256": "3065ee566e84ebc51de9f9b4adf5aebd72b1fdf6258e011cf25c9f7d39b92b5e",
    "albedo_check": {
     "texels": 2632809,
     "mean": 2.07,
@@ -3051,8 +3051,8 @@
  "files": {
   "glb": {
    "path": "arms.glb",
-   "sha256": "da3d2261d811138fcf6632d50785febf6cea92bcbe737e1b41fb8daff43e3c37",
-   "bytes": 9858192
+   "sha256": "9d25384700089641a2de777bac91f7d301b78c5750c6c0573d7b6b5b3fc1b0e6",
+   "bytes": 9858284
   },
   "fbx": {
    "path": "arms.fbx",

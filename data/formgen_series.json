@@ -1,0 +1,9 @@
+{
+  "de": "Pin der Design-Serien aus Formgen v2 (0.43 „Kiln“): tools/series_packages.py holt daraus die Datensätze und bäckt sie lokal; nichts davon liegt im Repo.",
+  "repo": "~/Claude/cubeescape-formgenv2",
+  "commit": "8486994733f9a7a77f407214321cee7b4121ead6",
+  "version": "0.8 „Hallmark“",
+  "lines": ["J", "K", "L", "M"],
+  "bake": {"size": 2048, "device": "gpu"},
+  "favorites": []
+}

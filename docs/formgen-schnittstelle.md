@@ -67,9 +67,24 @@ FBX und Texturen relativ dazu), `origin` (Herkunft: Paket, Grundtyp, Skin, Weltp
 vorerst). Unity (`BallonSetup`) legt Material `Atlas_formgen_<ID>`, Knotenlagen aus `ego.json`, das Symbol `Icons/<ID>.png` (aus dem FBX
 gerastert, Seitenansicht wie `tools/make_icons.py`) und den Platz in der Waffenauswahl (Menü, ab 17) an.
 
+## 4a. Serien lokal statt im Repo (ab 0.43 „Kiln“)
+
+Die Serien J–M liegen nicht unter `Generated/Formgen/` und nicht in Git. BALLON holt die Pakete selbst: `tools/series_packages.py` liest Formgens
+Plan (`formgen.asset`) am Commit aus [`data/formgen_series.json`](../data/formgen_series.json), ruft Formgens `asset_build.py` mit BALLONs eigenem
+Stand als `snapshot` und bäckt mit den Einstellungen aus [`data/bake_settings.json`](../data/bake_settings.json) in einen Inhalts-Cache.
+Der Pfad `Generated/FormgenSeries/<ID>/` hat denselben Aufbau wie in Abschnitt 4 und läuft durch dieselbe Prüfung (`formgen_import.entry`); der
+Eintrag trägt zusätzlich `origin.series` und `origin.series_name`.
+
+**Für Formgen wichtig:** Die neuen Bake-Einstellungen wirken bei Formgen erst, wenn Formgen seinen BALLON-Pin (heute fe4a5dc) auf einen Stand ab 0.43
+hebt. Aufruf und Rückgabe von `bake_weapon` bleiben verträglich (`size`, `samples`, neu optional `settings`); `samples` überschreibt nur die
+Zufallsmasken. Formgens eigenes `asset_build.py` musste dafür nicht geändert werden.
+
 ## 5. Offen
 
 - **Tabelle e:** Piloten für BASIC-16/17 (Schwert, Glefe) – ohne Pilot bleibt dort die Formstudie; kein Ego-Profil, kein Paket-Eintrag.
+- BASIC-16/17 der Serien J–M: kein Ego-Profil (`ego.CLASSES`), 8 Blätter nicht spielbar.
+- BJ10, BK10, BL10: Formgen setzt ein Visier ein, dessen `sight_emitter` keine Bewegung `glow` hat; `EGO_LIVE` der Grundform verlangt sie. Abhilfe
+  bei Formgen (Bewegung übernehmen) oder im Grundmodul; BALLON lehnt das Paket bewusst ab, statt die Prüfung aufzuweichen.
 - **Tabelle f:** Gameplay je Variante – vorerst geerbt; Felder im Datensatz wären der nächste Schritt (dann neues Format).
 - Formgen 0.6 bewegt `POINTS` noch nicht und liefert kein `model`; bis dahin nur Varianten, deren Weltpunkt-Teile unverändert sind.
 - Blender-Referenz (`ego_reference_*.json`) und Clips je Variante gibt es nicht; die Haltungen sind die des Grundtyps.

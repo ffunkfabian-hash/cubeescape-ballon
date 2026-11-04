@@ -490,6 +490,12 @@ if r.returncode or 'Formgen-Einlesen geprüft' not in r.stdout:
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_loadout.py')], capture_output=True, text=True)   # 0.42 Quickslot
 if r.returncode or 'Leistendaten geprüft' not in r.stdout:
     fail('Leistendaten: ' + ' | '.join(ln for ln in r.stdout.splitlines() if 'FEHLER' in ln)[:600] + r.stderr[-300:])
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_series.py')], capture_output=True, text=True)   # 0.43 Kiln
+if r.returncode or 'Serien: Pin' not in r.stdout:
+    fail('Serien: ' + ' | '.join(ln for ln in r.stdout.splitlines() if '✗' in ln)[:600] + r.stderr[-300:])
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'test_bake_settings.py')], capture_output=True, text=True)   # 0.43 Kiln
+if r.returncode or 'Bake-Einstellungen geprüft' not in r.stdout:
+    fail('Bake-Einstellungen: ' + ' | '.join(ln for ln in r.stdout.splitlines() if '✗' in ln)[:600] + r.stderr[-300:])
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'export_arms.py'), '--check'], capture_output=True, text=True)   # 0.40 Arm-Paket
 if r.returncode:
     fail('Arm-Paket: ' + (r.stdout.strip() or r.stderr.strip()[-300:]))

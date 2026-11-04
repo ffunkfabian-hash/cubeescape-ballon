@@ -2801,7 +2801,7 @@ namespace Ballon.Ego.Tests
         public void Formgen_Varianten_Huefte_Zielen_Schuss_Nachladen()
         {
             var b = Object.FindAnyObjectByType<Bootstrap>();
-            var vs = b.Solvers.Select(x => x.D).Where(d => d.IsVariant).ToArray();
+            var vs = b.Solvers.Select(x => x.D).Where(d => d.IsVariant && string.IsNullOrEmpty(d.origin?.series)).ToArray();   // Serien: Serien_verhalten_sich_wie_ihr_Grundtyp
             Assert.GreaterOrEqual(vs.Length, 2, "Probe: BD01 und BG01");
             foreach (var v in vs)
             {
@@ -2840,6 +2840,55 @@ namespace Ballon.Ego.Tests
                 for (int t = 0; t < 300 && c.ActionName.StartsWith("reload"); t++) c.Tick(Dt, Idle);
                 Assert.AreEqual(v.gameplay.magazine, c.ammo, $"{id}: Magazin voll");
             }
+        }
+
+        (float flash, float shell, long shots, string reload, int ammo) FireProbe(EgoFile v)
+        {
+            var c = new EgoController(new EgoSolver(v));
+            c.ReadyNow();
+            c.Tick(Dt, Idle);
+            long s0 = c.shots;
+            float flash = -1, shell = -1;
+            for (int t = 0; t < 180 && (flash < 0 || shell < 0); t++)      // Laden und Spannen eingeschlossen
+            {
+                var o = c.Tick(Dt, FireIntent(true));
+                if (o.flashOn && flash < 0)
+                    flash = Vector3.Distance(BMath.Pos(o.flash), o.weapon.MultiplyPoint3x4(BMath.V(v.Anchor("Socket_Muzzle").pos)));
+                if (o.shellCount > 0 && shell < 0)
+                    shell = Vector3.Distance(BMath.Pos(o.shells[0]), o.weapon.MultiplyPoint3x4(BMath.V(v.weapon.eject.pos)));
+            }
+            Run(c, Idle, 0.5f);
+            long shots = c.shots - s0;
+            c.ammo = 0;
+            c.Tick(Dt, new EgoIntent { grounded = true, fire = true });
+            string reload = c.ActionName;
+            for (int t = 0; t < 600 && c.ActionName.StartsWith("reload"); t++) c.Tick(Dt, Idle);
+            return (flash, shell, shots, reload, c.ammo);
+        }
+
+        /// <summary>0.43: Jede lokale Serienwaffe verhält sich wie ihr Grundtyp: Blitz und Hülse an den eigenen Punkten, wo der Grundtyp sie hat (eine Trommel wirft
+        /// beim Schuss nichts aus), derselbe Nachladeablauf, volles Magazin. Ohne lokale Serien: ignoriert.</summary>
+        [Test]
+        public void Serien_verhalten_sich_wie_ihr_Grundtyp()
+        {
+            var all = Object.FindAnyObjectByType<Bootstrap>().Solvers.Select(x => x.D).ToArray();
+            var series = all.Where(d => !string.IsNullOrEmpty(d.origin?.series)).ToArray();
+            if (series.Length == 0) Assert.Ignore("keine lokalen Serien (python3 tools/unity_run.py setup)");
+            foreach (var v in series)
+            {
+                var id = v.weapon.id;
+                var grund = all.First(d => d.weapon.id == v.origin.base_id);
+                var a = FireProbe(grund);
+                var e = FireProbe(v);
+                Assert.AreEqual(a.flash >= 0, e.flash >= 0, $"{id}: Blitz wie {grund.weapon.id}");
+                Assert.AreEqual(a.shell >= 0, e.shell >= 0, $"{id}: Hülse beim Schuss wie {grund.weapon.id}");
+                Assert.AreEqual(a.shots > 0, e.shots > 0, $"{id}: Schuss wie {grund.weapon.id}");
+                Assert.AreEqual(a.reload, e.reload, $"{id}: Nachladen wie {grund.weapon.id}");
+                Assert.AreEqual(a.ammo, e.ammo, $"{id}: Magazin wie {grund.weapon.id}");
+                if (e.flash >= 0) Assert.That(e.flash, Is.LessThanOrEqualTo(0.001f), $"{id}: Blitz am Socket_Muzzle");
+                if (e.shell >= 0) Assert.That(e.shell, Is.LessThanOrEqualTo(0.03f), $"{id}: Hülse am Auswurf");
+            }
+            TestContext.WriteLine($"{series.Length} Serienwaffen verhalten sich wie ihr Grundtyp");
         }
 
         /// <summary>0.41 Prüfpunkt: beide Varianten stehen in der Waffenauswahl hinter BALLONs 16 Waffen (Taste 17, 18 im Menü), mit Modell,
