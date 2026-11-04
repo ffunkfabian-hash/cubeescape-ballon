@@ -746,7 +746,8 @@ def texture_problems(D, tex_dir=None, store=None):
                 bad.append(f"{e['id']}: fehlt {f}")
             elif HAS_MAGICK:                        # Kantenlänge und Bittiefe brauchen ImageMagick (PR-Check auf Linux ohne: nur Mac)
                 w, z, ch = _identify(p)
-                if w != R[k]['size'] or z != 8 or (k == 'ao' and not ch.startswith('gray')):
+                half = k == 'albedo' and 2 * w == R[k]['size']   # 0.43: Albedo wahlweise halb so groß (Schalter size von bake_weapon)
+                if (w != R[k]['size'] and not half) or z != 8 or (k == 'ao' and not ch.startswith('gray')):
                     bad.append(f"{e['id']} {k} {f}: {w}² {z} bit {ch} statt {R[k]['size']}² 8 bit")
         if any(b.startswith(f"{e['id']}: fehlt") for b in bad):
             continue

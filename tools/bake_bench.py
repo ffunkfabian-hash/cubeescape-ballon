@@ -1,7 +1,7 @@
 """Bake messen (0.43 „Kiln“): Zeit je Karte und Schritt für eine Waffe, Reihe mehrerer Waffen am Stück (Drosselung des lüfterlosen Macs).
 
 Äußerer Lauf (Python, unter `ce lock gpu`, eine frische Blender-Instanz je Waffe wie Formgens Bake):
-  python3 tools/bake_bench.py run --tag base --kit <Ordner mit basic/, tools/> --modules pilot.w01_auto_rifle_v21,… [--size 4096] [--opts '{…}']
+  python3 tools/bake_bench.py run --tag base --kit <Ordner mit basic/, tools/> --modules pilot.w01_auto_rifle_v21,… [--bake '{"size":4096,"settings":{…}}'] [--cpu]
 Ergebnis: <EV>/kiln/bench/<tag>/<nn>_<Waffe>/timing.json (Schritte in s) und <tag>/summary.csv. --kit: gepinnter Stand für vorher/nachher.
 Innerer Lauf (Blender): blender -b --factory-startup -P tools/bake_bench.py -- <job.json>
 Geplant wie der Formgen-Weg: blender_build.main, setup_render(aaa, mid), export_unity.bake_weapon(arms=False), store_textures. Die Zeiten
@@ -96,11 +96,14 @@ def outer(argv):
         os.makedirs(out, exist_ok=True)
         path = os.path.join(out, 'job.json')
         json.dump(dict(kit=a.kit, module=m, id=name, out=out, gpu=not a.cpu, bake=json.loads(a.bake)), open(path, 'w', encoding='utf-8'))
+        timing = os.path.join(out, 'timing.json')
+        if os.path.exists(timing):                     # alter Lauf desselben Tags gilt nicht als Erfolg
+            os.remove(timing)
         t = time.time()
         with open(os.path.join(out, 'blender.log'), 'w', encoding='utf-8') as log:
-            r = subprocess.run([BLENDER, '-b', '--factory-startup', '-P', os.path.abspath(__file__), '--', path], stdout=log, stderr=subprocess.STDOUT)
+            r = subprocess.run([BLENDER, '-b', '--factory-startup', '--python-exit-code', '1', '-P', os.path.abspath(__file__), '--', path], stdout=log, stderr=subprocess.STDOUT)
         wall = time.time() - t
-        ok = r.returncode == 0 and os.path.exists(os.path.join(out, 'timing.json'))
+        ok = r.returncode == 0 and os.path.exists(timing)
         rows.append(dict(i=i, weapon=name, wall_s=round(wall, 1), since_start_s=round(time.time() - t_run), ok=ok, therm=therm()))
         print(f"[{a.tag}] {i:02d} {name}: {wall:.0f} s {'ok' if ok else 'FEHLER'} (seit Start {rows[-1]['since_start_s']} s)", flush=True)
         if not ok:
