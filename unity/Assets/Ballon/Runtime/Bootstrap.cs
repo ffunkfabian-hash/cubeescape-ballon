@@ -54,7 +54,13 @@ namespace Ballon.Ego
             ShaderWarmup.Begin(shaderWarmup);                // zuerst: übersetzt auf Arbeitsthreads, während die Welt entsteht
             Application.targetFrameRate = 120;
             QualitySettings.vSyncCount = 1;
-            var all = EgoFile.ParseAll(egoJson.text);
+            var series = Resources.Load<SeriesAssets>(SeriesAssets.ResourceName);      // 0.43: lokale Serien (unity_run.py setup), sonst null
+            var all = EgoFile.ParseAll(series != null ? series.egoJson.text : egoJson.text);
+            if (series != null)
+            {
+                weapons = weapons.Concat(series.weapons).ToArray();
+                roleMaterials = roleMaterials.Concat(series.atlases).ToArray();
+            }
             int nw = Mathf.Min(all.Length, weapons?.Length ?? 0);
             if (nw < all.Length) Debug.LogWarning($"[Ballon] {all.Length} Waffen in ego.json, {nw} Modelle in der Szene – python3 tools/unity_run.py setup");
             Solvers = all.Take(Mathf.Max(1, nw)).Select(d => new EgoSolver(d)).ToArray();
@@ -1170,10 +1176,13 @@ namespace Ballon.Ego
             StudioLike(cam);
             yield return null;                      // Reflexionssonde rendern lassen
             yield return null;
-            var rt = HdrTarget(1600, 900, 8);
+            int cw = 1600, ch = 900;                // 0.43: -ballonCompareSize 1470x956 (Ego-Vergleich zweier Bakes im Spielfenster)
+            var size = Arg(Environment.GetCommandLineArgs(), "-ballonCompareSize")?.Split('x');
+            if (size != null && size.Length == 2) { cw = int.Parse(size[0]); ch = int.Parse(size[1]); }
+            var rt = HdrTarget(cw, ch, 8);
             cam.targetTexture = rt;
-            cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, 16f / 9f);
-            var tex = new Texture2D(1600, 900, TextureFormat.RGB24, false);
+            cam.fieldOfView = Player.viewCam.fieldOfView = Camera.HorizontalToVerticalFieldOfView(D.camera.h_fov_deg, (float)cw / ch);
+            var tex = new Texture2D(cw, ch, TextureFormat.RGB24, false);
             string skin = Arg(Environment.GetCommandLineArgs(), "-ballonSkin") ?? "standard";   // 0.42: Blender-Stills im Standard (ego_build)
             int si = Player.layout.SkinIndex(Player.arsenal.Active, skin);                      // oder mit Skin (tools/ego_skin.py)
             if (si < 0) Debug.LogWarning($"[Ballon] Skin {skin} für {D.weapon.id} nicht gebacken – Vergleich im Standard");

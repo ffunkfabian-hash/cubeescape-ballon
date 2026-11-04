@@ -22,3 +22,7 @@ unity/Assets/Ballon/Generated/Textures/*_gebraucht_spec.png
 unity/Assets/Ballon/Generated/Textures/*_eloxal_albedo.jpg
 unity/Assets/Ballon/Generated/Textures/*_eloxal_spec.png
 unity/Assets/Ballon/Generated/Textures/.skin_compose_*.json
+
+# 0.43 „Kiln“: Design-Serien aus Formgen v2 entstehen lokal (tools/series_packages.py bei `python3 tools/unity_run.py setup`), nicht im Repo.
+unity/Assets/Ballon/Generated/FormgenSeries/
+unity/Assets/Ballon/Generated/FormgenSeries.meta

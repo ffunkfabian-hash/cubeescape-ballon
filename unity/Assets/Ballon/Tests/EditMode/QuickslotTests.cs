@@ -47,7 +47,7 @@ namespace Ballon.Ego.Tests
             }
             Assert.GreaterOrEqual(L.columns.Length, 3, "Primär | Spezial | Schwer + Werkzeug (lange Spalten geteilt)");
             Assert.AreEqual(L.categories[0].weapons[0], L.columns[0][0], "erste Spalte beginnt mit Primär");
-            Assert.That(L.columns.All(c => c.Length <= HudLayout.MaxRows));
+            Assert.That(L.columns.All(c => c.Sum(L.RowUnits) <= HudLayout.MaxRows));
             var tools = L.categories.Where((c, i) => i >= 3).SelectMany(c => c.weapons);
             int heavyCol = System.Array.FindIndex(L.columns, c => c.Contains(L.categories[2].weapons[0]));
             Assert.That(tools.All(w => L.columns.Skip(heavyCol).Any(c => c.Contains(w))), "Werkzeug unter Schwer");
@@ -64,7 +64,7 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual("Waffen", L.categories[0].de);
             CollectionAssert.AreEqual(Enumerable.Range(0, 9).ToArray(), L.DefaultSlots(), "Leiste wie bis 0.41: Waffen 1–9");
             Assert.AreEqual("standard", L.DefaultSkin(0), "ohne Daten: Standard");
-            Assert.That(L.columns.All(c => c.Length <= HudLayout.MaxRows), "lange Spalte geteilt");
+            Assert.That(L.columns.All(c => c.Sum(L.RowUnits) <= HudLayout.MaxRows), "lange Spalte geteilt");
         }
 
         [Test]

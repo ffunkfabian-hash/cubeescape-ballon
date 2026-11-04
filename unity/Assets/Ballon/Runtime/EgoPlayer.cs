@@ -771,6 +771,8 @@ namespace Ballon.Ego
         int[] _cellSkin;
         string[] _cellSub;
         GUIStyle _cellName, _cellSubStyle, _headStyle, _slotKey;
+        int[] _nameFont, _subFont;
+        bool[] _cellKeyed;
 
         /// <summary>Rechtecke der Übersicht und der Leiste für die aktuelle Bildgröße (Bildpunkte, Ursprung oben links).</summary>
         void Layout()
@@ -802,15 +804,18 @@ namespace Ballon.Ego
                         cy += hh;
                     }
                     colY[c][r] = cy;
-                    cy += ch + rg;
+                    cy += ch * L.RowUnits(w) + rg;
                 }
                 maxH = Mathf.Max(maxH, cy);
             }
             float tw = nc * cw + (nc - 1) * colGap, x0 = (W - tw) / 2, y0 = Mathf.Max(0.1f * H, y - 0.035f * H - maxH);
             _cellRects = new Rect[arsenal.C.Length];
+            _nameFont = new int[arsenal.C.Length];
+            _subFont = new int[arsenal.C.Length];
+            _cellKeyed = new bool[arsenal.C.Length];
             for (int c = 0; c < nc; c++)
                 for (int r = 0; r < L.columns[c].Length; r++)
-                    _cellRects[L.columns[c][r]] = new Rect(x0 + c * (cw + colGap), y0 + colY[c][r], cw, ch);
+                    _cellRects[L.columns[c][r]] = new Rect(x0 + c * (cw + colGap), y0 + colY[c][r], cw, ch * L.RowUnits(L.columns[c][r]));
             _headRects = new Rect[heads.Count];
             _headCats = new int[heads.Count];
             for (int k = 0; k < heads.Count; k++)
@@ -896,10 +901,31 @@ namespace Ballon.Ego
             if (_cellSkin[k] != loadouts[k].skin)
             {
                 _cellSkin[k] = loadouts[k].skin;
+                _subFont[k] = 0;
                 var sk = layout.SkinLabel(k, loadouts[k].skin);
                 _cellSub[k] = sk.Length > 0 ? $"{layout.Subtitle(k)} · {sk}" : layout.Subtitle(k);
             }
             return _cellSub[k];
+        }
+
+        /// <summary>Beschriftung, die eher kleiner wird als abgeschnitten (0.43: bei sechs Spalten). Die Größe je Zelle wird einmal ermittelt (sizes[k], 0 = neu).</summary>
+        void FitLabel(Rect r, string s, GUIStyle st, int[] sizes, int k)
+        {
+            int full = st.fontSize;
+            if (sizes[k] == 0)
+            {
+                var c = new GUIContent(s);
+                int size = full, min = Mathf.RoundToInt(0.6f * full);
+                for (; size > min; size--)
+                {
+                    st.fontSize = size;
+                    if (st.CalcSize(c).x <= r.width) break;
+                }
+                sizes[k] = size;
+            }
+            st.fontSize = sizes[k];
+            GUI.Label(r, s, st);
+            st.fontSize = full;
         }
 
         void DrawIcon(Rect r, Texture2D ic, Color c)
@@ -932,22 +958,32 @@ namespace Ballon.Ego
             for (int k = 0; k < _cellRects.Length; k++)
             {
                 var r = _cellRects[k];
-                bool sel = k == menu.Index;
+                bool sel = k == menu.Index, variant = L.RowUnits(k) < 1f, narrow = r.width < 0.3f * H;   // schmal: viele Spalten (Serien), kleinere Symbole
                 var cat = L.categories[L.categoryOf[k]];
+                float ix = variant ? r.x + 0.028f * H : r.x + 0.014f * H, iw = (variant ? (narrow ? 0.16f : 0.2f) : (narrow ? 0.22f : 0.29f)) * r.width;   // Varianten eingerückt
+                float tx = variant && narrow ? ix + iw + 0.006f * H : r.x + 0.014f * H + (narrow ? 0.24f : 0.31f) * r.width;
                 if (paint)
                 {
                     Fill(r, sel ? MenuSel : MenuCell);
                     Fill(new Rect(r.x, r.y, Mathf.Max(2, 0.004f * H), r.height), cat.color);       // Kategoriefarbe
                     if (sel) Frame(r, e, MenuEdge);
                     if (k == arsenal.Active) Fill(new Rect(r.xMax - 0.018f * H, r.y + 0.01f * H, 0.008f * H, 0.008f * H), MenuEdge);   // aktive Waffe
-                    DrawIcon(new Rect(r.x + 0.014f * H, r.y + 0.1f * r.height, 0.29f * r.width, 0.8f * r.height), loadouts[k].icon,
-                             sel ? Color.white : MenuDim);
+                    DrawIcon(new Rect(ix, r.y + 0.1f * r.height, iw, 0.8f * r.height), loadouts[k].icon, sel ? Color.white : MenuDim);
                 }
-                float tx = r.x + 0.014f * H + 0.31f * r.width, tw = r.xMax - tx - 0.034f * H;
-                GUI.Label(new Rect(tx, r.y, tw, r.height * 0.52f), _menuLabels[k], _cellName);
-                GUI.Label(new Rect(tx, r.y + r.height * 0.54f, tw, r.height * 0.46f), CellSub(k), _cellSubStyle);
                 int sl = hotbar.SlotOf(k);
-                if (sl >= 0) GUI.Label(new Rect(r.xMax - 0.03f * H, r.y + r.height * 0.42f, 0.03f * H, 0.03f * H), SlotKeys[sl], _menuKey);
+                float keyW = (sl >= 0 ? 0.034f : 0.006f) * H;
+                if (_cellKeyed[k] != sl >= 0)
+                {
+                    _cellKeyed[k] = sl >= 0;
+                    _subFont[k] = 0;                                  // Platz für die Taste geändert: Größe neu ermitteln
+                }
+                if (variant) FitLabel(new Rect(tx, r.y, r.xMax - tx - keyW, r.height), CellSub(k), _cellSubStyle, _subFont, k);   // eine Zeile: Kennung und Skin
+                else
+                {
+                    FitLabel(new Rect(tx, r.y, r.xMax - tx - 0.02f * H, r.height * 0.52f), _menuLabels[k], _cellName, _nameFont, k);
+                    FitLabel(new Rect(tx, r.y + r.height * 0.54f, r.xMax - tx - keyW, r.height * 0.46f), CellSub(k), _cellSubStyle, _subFont, k);
+                }
+                if (sl >= 0) GUI.Label(new Rect(r.xMax - 0.03f * H, r.y + (variant ? 0f : r.height * 0.42f), 0.03f * H, 0.03f * H), SlotKeys[sl], _menuKey);
             }
             if (menu.Dragging >= 0 && paint)                          // gezogene Waffe folgt dem Zeiger
             {

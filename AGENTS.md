@@ -22,6 +22,7 @@ Schlichtheitsbudget, Materialrollen, Skins, Baukasten, Arbeitsablauf.
 - **Maße nur aus dem Modell:** Blätter und Doku nennen ausschließlich gemessene Werte aus `spec.json`.
 - **Status ehrlich führen:** Entwurf, visuell geprüft, exportiert, im Spiel angebunden sind verschiedene Zustände. Matrixfelder nie leer.
 - **Schwere Läufe** (Renderings, Bildfolgen) nur mit Sperre: `~/Claude/cubeescape-nexogen/ce lock gpu -- …` (mit `--gpu`) bzw. `ce lock blender`.
+- **Erst Muster, dann Masse:** Vor jedem Lauf über viele Waffen (Serien, Voll-Bake) die Einstellung an zwei, drei Waffen in der Ego-Ansicht abnehmen, Hüfte und Zielen, nicht nur je Karte. Große Läufe möglichst über Nacht ([Lehre 0.43](docs/LESSONS.md)).
 - **Belege außerhalb des Repos:** `~/Library/Caches/CubeEscapeBallon/`.
 - **Nicht hier:** Formgen-Blätter, Toolgen-Assets/Clips, Cube-Escape-Code. Diese Repos nur lesen. Ausnahme seit 0.41: Formgen-Pakete
   liegen entpackt unter `unity/Assets/Ballon/Generated/Formgen/<ID>/` (Formgens Ausgabe, nicht von Hand ändern; Vertrag

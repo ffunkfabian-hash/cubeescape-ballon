@@ -136,6 +136,36 @@ def _channel(N, L, b, channel, target):
     return extra
 
 
+CO_ATTR, PART_ATTR = 'ballon_co', 'ballon_part'         # zusammengefügte Kopie: Objektkoordinaten und Teil je Punkt (_joined)
+
+
+def _object_coords(mats):
+    """Muster aus `Texture Coordinate › Object` auf CO_ATTR umhängen: in der zusammengefügten Kopie ist der Objektraum der Waffenraum, die Muster
+    verschobener Teile lägen sonst anders als im Render. Gibt den Rückweg zurück (restore_coords)."""
+    undo = []
+    for m in mats:
+        nt = m.node_tree
+        for tc in [n for n in nt.nodes if n.type == 'TEX_COORD']:
+            links = list(tc.outputs['Object'].links)
+            if not links:
+                continue
+            at = nt.nodes.new('ShaderNodeAttribute')
+            at.attribute_type = 'GEOMETRY'
+            at.attribute_name = CO_ATTR
+            ends = [l.to_socket for l in links]
+            for e in ends:
+                nt.links.new(at.outputs['Vector'], e)
+            undo.append((nt, at, tc, ends))
+    return undo
+
+
+def restore_coords(undo):
+    for nt, at, tc, ends in undo:
+        for e in ends:
+            nt.links.new(tc.outputs['Object'], e)
+        nt.nodes.remove(at)
+
+
 def _bake(obs, mats, image, kind, samples, channel=None, margin=8):
     """Backt `kind` (EMIT mit Kanal albedo/rough/metal, NORMAL, AO) für alle Objekte in `image`."""
     undo = []
@@ -182,10 +212,11 @@ def _bake(obs, mats, image, kind, samples, channel=None, margin=8):
         nt.nodes.remove(tex)
 
 
-def _joined(obs, join_all=False):
-    """Teile ohne eigene Verschiebung (Objektraum = Waffenraum) als eine Kopie zusammenfügen: Cycles backt je Objekt über den
-    ganzen Atlas, eine Kopie statt 60 Teilen spart ein Vielfaches (gemessen 3× schon bei 4 Teilen). Rauschmuster im Objektraum
-    bleiben gleich, weil sich deren Koordinaten nicht ändern; verschobene Teile (Drehpunkte) backen einzeln."""
+def _joined(obs, join_all=True):
+    """Alle Teile als eine Kopie zusammenfügen: Cycles backt je Objekt über den ganzen Atlas, eine Kopie statt 60 Teilen spart ein
+    Vielfaches. Bis 0.42 blieben verschobene Teile (Drehpunkte) einzeln, weil ihr Objektraum die Rauschmuster trägt; seit 0.43 trägt das
+    Attribut CO_ATTR je Punkt die alten Objektkoordinaten (_object_coords hängt die Muster beim Backen darauf um), PART_ATTR den Index des
+    Teils. join_all=False backt wie bis 0.42 (Vergleich)."""
     from mathutils import Matrix
     same = list(obs) if join_all else [o for o in obs if o.matrix_world == Matrix.Identity(4)]
     rest = [o for o in obs if o not in same]
@@ -194,13 +225,18 @@ def _joined(obs, join_all=False):
     for o in bpy.context.view_layer.objects:
         o.select_set(False)
     cps = []
-    for o in same:
+    for i, o in enumerate(same):
         c = o.copy()
         c.data = o.data.copy()
         mw = o.matrix_world.copy()
         c.parent = None
         bpy.context.scene.collection.objects.link(c)
-        c.data.transform(mw)                  # Lage ins Netz (join_all: auseinandergelegte Armsegmente)
+        n = len(c.data.vertices)
+        co = np.empty(n * 3, np.float32)
+        c.data.vertices.foreach_get('co', co)
+        c.data.attributes.new(CO_ATTR, 'FLOAT_VECTOR', 'POINT').data.foreach_set('vector', co)
+        c.data.attributes.new(PART_ATTR, 'INT', 'POINT').data.foreach_set('value', np.full(n, i, np.int32))
+        c.data.transform(mw)                  # Lage ins Netz (Drehpunkte, auseinandergelegte Armsegmente)
         c.matrix_world = Matrix.Identity(4)
         c.select_set(True)
         cps.append(c)
@@ -213,9 +249,88 @@ def _joined(obs, join_all=False):
     return [j] + rest, j
 
 
-def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False, color_only=False):
-    """Backt den Atlas `name` für `obs` und schreibt <name>_albedo/_spec/_normal/_ao.png nach out_dir. 64 Samples: der Kantenabrieb
-    (Bevel-Knoten) ist ein Zufallsverfahren und krisselt bei 12."""
+# Bake-Einstellungen (0.43 „Kiln“, Messung und Grenzwerte: docs/versions/0.43-kiln.md). size von bake_atlas gilt für Albedo, normal_size ist die Untergrenze der
+# Normalen (2048² wirkt beim Zielen fleckig, Albedo nicht), data_size gilt für Spec, Glätte und AO (TEXTURE_STORE legt sie ohnehin in 2048² ab). rand_samples: Abrieb (Bevel) und Schmutz (AO-Knoten) sind Zufallsverfahren, sie werden
+# einmal in eine Maske gebacken (_freeze); danach sind Albedo, Spec und Glätte ohne Lichtweg und ohne Rauschen, emit_samples glättet nur noch die
+# feinen Muster. 0 = Zufallsknoten in jedem Durchgang wie bis 0.42 (plain_samples). AO in 2048² rauscht bei gleichen Samples sichtbar mehr als die aus 4096²
+# verkleinerte Karte bis 0.42, darum OIDN (ao_denoise).
+SETTINGS = dict(data_size=2048, normal_size=4096, rand_samples=64, emit_samples=16, plain_samples=64, normal_samples=4, ao_samples=32, ao_denoise=True)
+
+
+def _freeze(obs, mats, size, name, samples):
+    """Abrieb- und Schmutzmaske je Material einmal backen und in den Materialien an Stelle der Zufallsknoten einsetzen. Gibt (Bild, Rückweg)."""
+    from tools import skin_masks as SM
+    chains = {m: SM.chain(m) for m in mats}
+    if not any('m' in c or 'g' in c for c in chains.values()):
+        return None, []
+    im = _image(f'{name}_rand', size, False)
+    SM.bake_rgb(obs, mats, im, {m: (c.get('m', 0.0), c.get('g', 0.0), 0.0) for m, c in chains.items()}, samples)
+    undo = []
+    for m, c in chains.items():
+        keys = [k for k in ('m', 'g') if k in c]
+        if not keys:
+            continue
+        nt = m.node_tree
+        tex = nt.nodes.new('ShaderNodeTexImage')
+        tex.image = im
+        tex.interpolation = 'Closest'
+        sep = nt.nodes.new('ShaderNodeSeparateColor')
+        nt.links.new(tex.outputs['Color'], sep.inputs[0])
+        back = []
+        for i, k in enumerate(('m', 'g')):
+            if k in c:
+                ends = [l.to_socket for l in c[k].links]
+                for e in ends:
+                    nt.links.new(sep.outputs[i], e)
+                back.append((c[k], ends))
+        undo.append((nt, tex, sep, back))
+    return im, undo
+
+
+def _thaw(im, undo):
+    for nt, tex, sep, back in undo:
+        for src, ends in back:
+            for e in ends:
+                nt.links.new(src, e)
+        nt.nodes.remove(tex)
+        nt.nodes.remove(sep)
+    if im:
+        bpy.data.images.remove(im)
+
+
+def _denoise(im, size, out_dir):
+    """OIDN über den Kompositor (scene_build.Denoiser, ohne Führung: eine AO-Karte hat keine eigene Albedo). Atlasränder bleiben durch den Rand der Inseln
+    getrennt."""
+    import time
+    from tools.scene_build import Denoiser
+    t0 = time.time()
+    d = Denoiser(out_dir)
+    d.src.image = im
+    tree = d.sc.compositing_node_group
+    for n in (d.alb, d.nrm):
+        tree.nodes.remove(n)
+    d.alb = d.nrm = None
+    d.sc.render.resolution_x = d.sc.render.resolution_y = size
+    bpy.ops.render.render(write_still=True, scene=d.sc.name)
+    r = bpy.data.images.load(d.path, check_existing=False)
+    px = np.empty(size * size * 4, np.float32)
+    r.pixels.foreach_get(px)
+    bpy.data.images.remove(r)
+    im.pixels.foreach_set(px)
+    os.remove(d.path)
+    bpy.data.node_groups.remove(tree)
+    bpy.data.scenes.remove(d.sc)
+    print(f'[bake_unity] {im.name} OIDN: {time.time() - t0:.1f} s', flush=True)
+
+
+def bake_atlas(obs, name, size, out_dir, gpu=False, samples=None, join_all=True, color_only=False, settings=None):
+    """Backt den Atlas `name` für `obs` und schreibt <name>_albedo/_spec/_normal/_ao.png nach out_dir. size: Albedo (Schalter 2048/4096),
+    settings: Abweichungen von SETTINGS, samples: rand_samples (Aufrufer von früher: der Kantenabrieb krisselt bei 12)."""
+    S = dict(SETTINGS, **(settings or {}))
+    if samples:
+        S['rand_samples'] = samples
+    data = min(size, S['data_size'])
+    nsize = max(size, S['normal_size'])                          # Normale nie unter normal_size: bei 2048² wird Relief nah am Auge beim Zielen fleckig
     sc = bpy.context.scene
     sc.render.engine = 'CYCLES'
     if gpu:
@@ -231,21 +346,27 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False, 
         sc.world.light_settings.distance = 0.03          # AO-Reichweite 3 cm (Viewmodel-Maßstab)
     obs, tmp = _joined(obs, join_all)
     mats = {s.material for o in obs for s in o.material_slots if s.material}
+    coords = _object_coords(mats) if tmp is not None and join_all else []
     res = {}
     import time
     t0 = time.time()
+    rand, frozen = _freeze(obs, mats, size, name, S['rand_samples']) if S['rand_samples'] else (None, [])
+    emit = S['emit_samples'] if rand else S['plain_samples']
     al = _image(f'{name}_albedo', size, True)                  # Diffusfarbe (Spezular-Modell), sRGB
-    _bake(obs, mats, al, 'EMIT', samples, 'diffuse')
-    sp = _image(f'{name}_spec', size, True, alpha=True)          # Spiegelfarbe F0 (sRGB), Alpha = Glätte
-    _bake(obs, mats, sp, 'EMIT', samples, 'spec')
-    ro = _image(f'{name}_rough', size, False)
-    _bake(obs, mats, ro, 'EMIT', samples, 'rough')
+    _bake(obs, mats, al, 'EMIT', emit, 'diffuse')
+    sp = _image(f'{name}_spec', data, True, alpha=True)          # Spiegelfarbe F0 (sRGB), Alpha = Glätte
+    _bake(obs, mats, sp, 'EMIT', emit, 'spec')
+    ro = _image(f'{name}_rough', data, False)
+    _bake(obs, mats, ro, 'EMIT', emit, 'rough')
+    _thaw(rand, frozen)
     if not color_only:                                           # Skins: Normale und AO sind für alle gleich (gleiche Form, gleiche UVs)
-        nm = _image(f'{name}_normal', size, False)
-        _bake(obs, mats, nm, 'NORMAL', 4)
-        ao = _image(f'{name}_ao', size, False)
-        _bake(obs, mats, ao, 'AO', 32)
-    n = size * size * 4
+        nm = _image(f'{name}_normal', nsize, False)
+        _bake(obs, mats, nm, 'NORMAL', S['normal_samples'])
+        ao = _image(f'{name}_ao', data, False)
+        _bake(obs, mats, ao, 'AO', S['ao_samples'])
+        if S['ao_denoise']:
+            _denoise(ao, data, out_dir)
+    n = data * data * 4
     r, px = np.empty(n, np.float32), np.empty(n, np.float32)
     ro.pixels.foreach_get(r)
     sp.pixels.foreach_get(px)
@@ -257,19 +378,20 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=64, join_all=False, 
         im.file_format = 'PNG'
         if key in ('albedo', 'spec'):
             im.save()
-        else:                                            # lineare Daten unverändert (16 bit; Non-Color wird nicht transformiert)
+        else:                                            # lineare Daten unverändert (16 bit; Non-Color kennt keine Ansichtstransformation, tools/test_bake_settings)
             sc.render.image_settings.file_format = 'PNG'
             sc.render.image_settings.color_depth = '16'
             sc.render.image_settings.color_mode = 'RGB'
             im.save_render(path, scene=sc)
         res[key] = os.path.basename(path)
     bpy.data.images.remove(ro)
+    restore_coords(coords)
     if tmp is not None:
         for nm in tmp.get('ballon_hidden', []):
             if nm in bpy.data.objects:
                 bpy.data.objects[nm].hide_render = False
         bpy.data.objects.remove(tmp)
-    print(f'[bake_unity] {name}: {len(obs)} Backobjekte, {size}², {time.time() - t0:.0f} s', flush=True)
+    print(f'[bake_unity] {name}: {len(obs)} Backobjekte, {size}² (Normale {nsize}², Daten {data}²), {time.time() - t0:.0f} s', flush=True)
     return res
 
 

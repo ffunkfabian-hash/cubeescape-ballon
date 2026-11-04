@@ -71,7 +71,7 @@ namespace Ballon.Ego.Editor
         {
             if (!assetPath.StartsWith("Assets/Ballon/Generated/")) return;
             if (assetPath.StartsWith("Assets/Ballon/Generated/Scenes/")) return;      // Szenen setzen ihre Lagen selbst (SceneLoader)
-            var json = BallonSetup.Gen + "/ego.json";                                  // 0.41: auch für Formgen-Pakete unter Generated/Formgen/<ID>/
+            var json = BallonSetup.EgoJson;                                            // 0.41: auch für Formgen-Pakete unter Generated/Formgen/<ID>/; 0.43: Serien
             if (!System.IO.File.Exists(json)) return;
             var all = EgoFile.ParseAll(System.IO.File.ReadAllText(json));
             var rel = assetPath.Substring(BallonSetup.Gen.Length + 1);
@@ -113,9 +113,17 @@ namespace Ballon.Ego.Editor
         public const string ScenePath = "Assets/Ballon/Scenes/Firstfeel.unity";
         public const string BuildPath = "Build/BallonFirstfeel.app";
         public const string FormgenDir = Gen + "/Formgen/";            // 0.41: Formgen-Pakete (tools/formgen_import.py)
+        // 0.43 „Kiln“: Design-Serien aus Formgen v2, lokal erzeugt (tools/series_packages.py bei `unity_run.py setup`), nicht im Repo. Alles
+        // Lokale liegt unter diesem einen gitignorierten Ordner, die Szene kennt die Serien nicht: sie kommen zur Laufzeit über SeriesAssets.
+        public const string SeriesDir = Gen + "/FormgenSeries/";
+        public const string SeriesJson = SeriesDir + "Resources/ego_series.json";
+        public const string SeriesAsset = SeriesDir + "Resources/" + SeriesAssets.ResourceName + ".asset";
+        /// <summary>ego.json samt Serien, wenn sie lokal erzeugt sind (gleiche Form wie ego.json, Serien hinter den übrigen Waffen).</summary>
+        public static string EgoJson => File.Exists(SeriesJson) ? SeriesJson : $"{Gen}/ego.json";
+        public static bool IsSeries(EgoFile d) => d.dir.StartsWith("FormgenSeries/");
 
-        /// <summary>Atlas eines Formgen-Pakets: Generated/Formgen/&lt;ID&gt;/textures/*.</summary>
-        public static bool IsVariantTexture(string path) => path.StartsWith(FormgenDir) && path.Contains("/textures/");
+        /// <summary>Atlas eines Formgen-Pakets: Generated/Formgen/&lt;ID&gt;/textures/* bzw. Generated/FormgenSeries/&lt;ID&gt;/textures/*.</summary>
+        public static bool IsVariantTexture(string path) => (path.StartsWith(FormgenDir) || path.StartsWith(SeriesDir)) && path.Contains("/textures/");
 
         public static void Configure(ModelImporter mi)
         {
@@ -147,7 +155,7 @@ namespace Ballon.Ego.Editor
             Pipeline();
             Layer();
             Player();
-            var fbx = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json")).Select(d => d.AssetPath(d.weapon.fbx)).Append("arms.fbx");   // je Waffe (0.18), Formgen-Pakete in ihrem Ordner (0.41)
+            var fbx = EgoFile.ParseAll(File.ReadAllText(EgoJson)).Select(d => d.AssetPath(d.weapon.fbx)).Append("arms.fbx");   // je Waffe (0.18), Formgen-Pakete in ihrem Ordner (0.41)
             foreach (var f in fbx)
             {
                 var mi = (ModelImporter)AssetImporter.GetAtPath($"{Gen}/{f}");
@@ -294,9 +302,9 @@ namespace Ballon.Ego.Editor
             return c;
         }
 
-        static Material Lit(string name, Color c, float smooth, float metal)
+        static Material Lit(string name, Color c, float smooth, float metal, string dir = Gen + "/Materials")
         {
-            var path = $"{Gen}/Materials/{name}.mat";
+            var path = $"{dir}/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (m == null)
             {
@@ -364,9 +372,11 @@ namespace Ballon.Ego.Editor
         /// <summary>URP Lit je Materialrolle aus ego.json (Farbe im AAA-Modus, Rauheit → Glätte, Metall), dazu Parcours-Materialien.</summary>
         static Dictionary<string, Material> Materials()
         {
-            var all = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json"));
+            var all = EgoFile.ParseAll(File.ReadAllText(EgoJson));
             var D = all[0];
             var res = new Dictionary<string, Material>();
+            var series = new HashSet<string>(all.Where(IsSeries).Select(d => d.atlas));
+            if (series.Count > 0) Directory.CreateDirectory(SeriesDir + "Materials");
             foreach (var r in D.roles)
             {
                 var m = Lit("Role_" + r.role, Hex(r.aaa_color), 1f - r.rough, r.metal);
@@ -399,7 +409,7 @@ namespace Ballon.Ego.Editor
             var atl = all.Select(d => (d.atlas, d.textures.weapon, (System.Func<string, string>)d.TexturePath)).Append(("arms", D.textures.arms, f => $"Textures/{f}"));
             foreach (var (key, A, path) in atl)
             {
-                var m = Lit("Atlas_" + key, Color.white, 1f, 0f);
+                var m = series.Contains(key) ? Lit("Atlas_" + key, Color.white, 1f, 0f, SeriesDir + "Materials") : Lit("Atlas_" + key, Color.white, 1f, 0f);
                 Texture2D T(string f) => Need($"{Gen}/{path(f)}");
                 m.SetTexture("_BaseMap", T(A.albedo));                 // Diffusfarbe = Grundfarbe · (1 − Metall)
                 m.SetFloat("_WorkflowMode", 0f);                         // Spezular: Spiegelfarbe je Pixel wie Blender
@@ -514,7 +524,7 @@ namespace Ballon.Ego.Editor
         /// Formgen-Varianten (0.41): Symbol aus dem FBX (VariantIcon), gleiche Form wie die Silhouetten-Symbole.</summary>
         static Texture2D Icon(EgoFile d)
         {
-            var path = d.IsVariant ? VariantIcon(d) : $"{Gen}/Icons/{d.weapon.id}.png";
+            var path = d.IsVariant ? VariantIcon(d) : $"{Gen}/Icons/{d.weapon.id}.png";   // Serien (0.43): Symbole unter FormgenSeries/Icons
             if (AssetImporter.GetAtPath(path) is TextureImporter ti && (ti.textureType != TextureImporterType.GUI || ti.mipmapEnabled))
             {
                 ti.textureType = TextureImporterType.GUI;
@@ -534,9 +544,10 @@ namespace Ballon.Ego.Editor
         /// das FBX ändert (SHA-256 in Icons/formgen_icons.json).</summary>
         static string VariantIcon(EgoFile d)
         {
-            var path = $"{Gen}/Icons/{d.weapon.id}.png";
+            var dir = IsSeries(d) ? SeriesDir + "Icons" : $"{Gen}/Icons";
+            var path = $"{dir}/{d.weapon.id}.png";
             var fbx = $"{Gen}/{d.AssetPath(d.weapon.fbx)}";
-            var metaPath = $"{Gen}/Icons/formgen_icons.json";
+            var metaPath = $"{dir}/formgen_icons.json";
             string sha;
             using (var h = System.Security.Cryptography.SHA256.Create())
                 sha = System.BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(fbx))).Replace("-", "").ToLowerInvariant();
@@ -545,7 +556,7 @@ namespace Ballon.Ego.Editor
             if (File.Exists(path) && meta.Contains(line)) return path;
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(fbx);
             var png = SilhouettePng(model);
-            Directory.CreateDirectory($"{Gen}/Icons");
+            Directory.CreateDirectory(dir);
             File.WriteAllBytes(path, png);
             var lines = meta.Split('\n').Where(l => l.Contains(": \"") && !l.Contains($"\"{d.weapon.id}\":")).Select(l => l.Trim().TrimEnd(','))
                 .Append(line).OrderBy(l => l, System.StringComparer.Ordinal).ToList();
@@ -628,16 +639,19 @@ namespace Ballon.Ego.Editor
             var go = new GameObject("Firstfeel");
             var b = go.AddComponent<Bootstrap>();
             b.egoJson = AssetDatabase.LoadAssetAtPath<TextAsset>($"{Gen}/ego.json");
-            var all = EgoFile.ParseAll(File.ReadAllText($"{Gen}/ego.json"));
-            b.weapons = all.Select(d => new Bootstrap.WeaponAssets
+            var all = EgoFile.ParseAll(File.ReadAllText(EgoJson));
+            Bootstrap.WeaponAssets Assets(EgoFile d) => new Bootstrap.WeaponAssets
             {
                 id = d.weapon.id,
                 model = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/{d.AssetPath(d.weapon.fbx)}"),
                 skins = d.textures.skins.Select(sk => mats[$"Skin_{d.atlas}_{sk.name}"]).ToArray(),
                 icon = Icon(d),
-            }).ToArray();
+            };
+            b.weapons = all.Where(d => !IsSeries(d)).Select(Assets).ToArray();
+            Series(all.Where(IsSeries).ToArray(), Assets, mats);
+            var seriesAtlas = new HashSet<string>(all.Where(IsSeries).Select(d => "Atlas_" + d.atlas));
             b.armsModel = AssetDatabase.LoadAssetAtPath<GameObject>($"{Gen}/arms.fbx");
-            b.roleMaterials = mats.Where(kv => kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")).Select(kv => kv.Value).ToArray();
+            b.roleMaterials = mats.Where(kv => (kv.Key.StartsWith("Role_") || kv.Key.StartsWith("Atlas_")) && !seriesAtlas.Contains(kv.Key)).Select(kv => kv.Value).ToArray();
             b.backdrop = mats["backdrop"];
             b.floor = mats["floor"];
             b.wall = mats["wall"];
@@ -661,6 +675,25 @@ namespace Ballon.Ego.Editor
             Debug.Log($"[Ballon] {scenes.Count} Szene(n) in {ScenePath}: {string.Join(", ", scenes.Select(x => x.json.name))}");
             EditorSceneManager.SaveScene(sc, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
+        }
+
+        /// <summary>Serien (0.43): Modelle, Materialien und Daten in ein lokales Asset unter Resources – die Szene im Repo bleibt unverändert,
+        /// Bootstrap lädt das Asset, wenn es da ist. Ohne Serien nichts anlegen.</summary>
+        static void Series(EgoFile[] series, System.Func<EgoFile, Bootstrap.WeaponAssets> assets, Dictionary<string, Material> mats)
+        {
+            if (series.Length == 0) { AssetDatabase.DeleteAsset(SeriesAsset); return; }
+            AssetDatabase.ImportAsset(SeriesJson, ImportAssetOptions.ForceSynchronousImport);
+            var s = AssetDatabase.LoadAssetAtPath<SeriesAssets>(SeriesAsset);
+            if (s == null)
+            {
+                s = ScriptableObject.CreateInstance<SeriesAssets>();
+                AssetDatabase.CreateAsset(s, SeriesAsset);
+            }
+            s.egoJson = AssetDatabase.LoadAssetAtPath<TextAsset>(SeriesJson);
+            s.weapons = series.Select(assets).ToArray();
+            s.atlases = series.Select(d => mats["Atlas_" + d.atlas]).ToArray();
+            EditorUtility.SetDirty(s);
+            Debug.Log($"[Ballon] Serien: {series.Length} Waffen in {SeriesAsset}");
         }
 
         /// <summary>Aufgezeichnete Shader-Zustände (tools/unity_run.py aufwaermen); fehlen sie, startet die Build ohne Aufwärmen.</summary>

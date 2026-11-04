@@ -1,0 +1,12 @@
+{
+  "de": "Gewählte Bake-Einstellungen (0.43 „Kiln“), gemessen an BASIC-01 und BJ01: docs/versions/0.43-kiln.md. Änderung nur mit neuer Messung; tools/test_bake_settings.py vergleicht mit bake_unity.SETTINGS.",
+  "settings": {"data_size": 2048, "normal_size": 4096, "rand_samples": 64, "emit_samples": 16, "plain_samples": 64, "normal_samples": 4, "ao_samples": 32, "ao_denoise": true},
+  "size_default": 4096,
+  "size_choices": [2048, 4096],
+  "limits_de": "Untergrenze SSIM und Obergrenze mittlere Abweichung (0–255) je Karte gegen den Bake vor 0.43 (4096², 64 Samples), auf den Inseln, bei 2048²; Schlüssel 2048 und 4096 = Größe der Albedo. ego_vm_ssim: Untergrenze im Ego-Bild (Viewmodel, Hüfte und Zielen, 1470 × 956), mit tools/bake_ego_compare.py shots. Gemessen an BA01 und BJ01, schlechtester Wert mit kleiner Reserve; Begründung je Karte: docs/versions/0.43-kiln.md › Grenzwerte. Prüfen: tools/bake_compare.py --limits.",
+  "limits": {
+    "ego_vm_ssim": 0.98,
+    "2048": {"albedo": {"ssim": 0.96, "mean": 2.0}, "spec_rgb": {"ssim": 0.99, "mean": 1.0}, "gloss": {"ssim": 0.99, "mean": 1.0}, "normal": {"ssim": 0.999, "mean": 0.1}, "ao": {"ssim": 0.92, "mean": 3.0}},
+    "4096": {"albedo": {"ssim": 0.99, "mean": 1.5}, "spec_rgb": {"ssim": 0.99, "mean": 1.0}, "gloss": {"ssim": 0.99, "mean": 1.0}, "normal": {"ssim": 0.999, "mean": 0.1}, "ao": {"ssim": 0.92, "mean": 3.0}}
+  }
+}

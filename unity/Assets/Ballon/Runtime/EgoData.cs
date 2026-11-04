@@ -386,7 +386,7 @@ namespace Ballon.Ego
     [Serializable] public class WeaponTextures { public Atlas weapon; public Skin[] skins; public TexStore[] store; public float limit_mb; }
 
     /// <summary>Herkunft einer Variante (11, 0.41): Formgen-Paket unter Generated/&lt;dir&gt;, Grundtyp (Haltungen, Griffe, Gameplay geerbt).</summary>
-    [Serializable] public class EgoOrigin { public string kind, id, package, base_module, base_id, skin, blender, bake, points, gameplay; public int package_format; }
+    [Serializable] public class EgoOrigin { public string kind, id, package, base_module, base_id, skin, blender, bake, points, gameplay, series, series_name; public int package_format; }
     [Serializable] public class MeshBound { public string name; public float[] min, max; public int tris; }
 
     /// <summary>Waffenübersicht und Leiste (12, 0.42 „Quickslot“, basic/loadout.py): Kategorien mit ihren Klassen (profile.type), Standardbelegung

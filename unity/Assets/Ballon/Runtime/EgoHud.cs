@@ -24,10 +24,12 @@ namespace Ballon.Ego
         public readonly Category[] categories;
         /// <summary>Kategorie je Waffe (Index in categories).</summary>
         public readonly int[] categoryOf;
-        /// <summary>Spalten der Übersicht (Waffenindizes von oben nach unten): Primär, Spezial, Schwer mit Werkzeug und Weiteren darunter; eine
-        /// Spalte mit mehr als MaxRows Waffen wird geteilt (künftige Formgen-Varianten).</summary>
+        /// <summary>Spalten der Übersicht (Waffenindizes von oben nach unten): Primär, Spezial, Schwer mit Werkzeug und Weiteren darunter. Eine
+        /// Spalte fasst MaxRows Zeilen Höhe; Varianten sind niedrige Zeilen (VariantRow) unter ihrem Grundtyp (0.43: 60 Serienwaffen), ein
+        /// Grundtyp bleibt mit seinen Varianten in einer Spalte, solange er hineinpasst.</summary>
         public readonly int[][] columns;
         public const int MaxRows = 9;
+        public const float VariantRow = 0.4f;
         readonly EgoFile[] _d;
 
         public HudLayout(EgoFile[] d)
@@ -62,10 +64,45 @@ namespace Ballon.Ego
             {
                 var col = new List<int>(categories[c].weapons);
                 if (c == 2) for (int k = 3; k < categories.Length; k++) col.AddRange(categories[k].weapons);   // Werkzeug unter Schwer
-                for (int r = 0; r < col.Count; r += MaxRows) cols.Add(col.GetRange(r, Mathf.Min(MaxRows, col.Count - r)).ToArray());
+                Split(col, cols);
                 if (c == 2) break;
             }
             columns = cols.ToArray();
+        }
+
+        /// <summary>Höhe der Zeile von Waffe i in Zeilen eines Grundtyps.</summary>
+        public float RowUnits(int i) => _d[i].IsVariant ? VariantRow : 1f;
+
+        void Split(List<int> col, List<int[]> cols)
+        {
+            var cur = new List<int>();
+            float used = 0;
+            for (int i = 0; i < col.Count;)
+            {
+                int end = i + 1;                                    // Gruppe: Grundtyp und die Varianten dahinter
+                while (end < col.Count && _d[col[end]].IsVariant) end++;
+                float h = 0;
+                for (int k = i; k < end; k++) h += RowUnits(col[k]);
+                if (cur.Count > 0 && used + h > MaxRows)
+                {
+                    cols.Add(cur.ToArray());
+                    cur = new List<int>();
+                    used = 0;
+                }
+                for (int k = i; k < end; k++)                       // Gruppe höher als die Spalte: mitten in der Gruppe teilen
+                {
+                    if (used + RowUnits(col[k]) > MaxRows)
+                    {
+                        cols.Add(cur.ToArray());
+                        cur = new List<int>();
+                        used = 0;
+                    }
+                    cur.Add(col[k]);
+                    used += RowUnits(col[k]);
+                }
+                i = end;
+            }
+            if (cur.Count > 0) cols.Add(cur.ToArray());
         }
 
         /// <summary>Waffen in der Lesereihenfolge der Übersicht (Spalte für Spalte): Mausrad und Tests.</summary>
@@ -136,8 +173,9 @@ namespace Ballon.Ego
             return c >= 0 ? de.Substring(c + 2) : de;
         }
 
-        /// <summary>Zeile unter dem Klassennamen: Modellname bzw. „Variante BD01“ (Formgen).</summary>
-        public string Subtitle(int i) => _d[i].IsVariant ? $"Variante {_d[i].weapon.id}" : _d[i].weapon.name;
+        /// <summary>Zeile unter dem Klassennamen: Modellname, „Variante BD01“ (Formgen) bzw. „Serie J · BJ01“ (Design-Serie, 0.43).</summary>
+        public string Subtitle(int i) => !_d[i].IsVariant ? _d[i].weapon.name
+            : string.IsNullOrEmpty(_d[i].origin?.series) ? $"Variante {_d[i].weapon.id}" : $"Serie {_d[i].origin.series} · {_d[i].weapon.id}";
 
         public string Id(int i) => _d[i].weapon.id;
     }

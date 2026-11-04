@@ -50,6 +50,15 @@ def main():
                 err.append('nach der Ablage: ' + '; '.join(bad))
             if os.path.exists(os.path.join(d, 'w_albedo.png')) or not T['weapon']['albedo'].endswith('.jpg'):
                 err.append('albedo nicht als JPG abgelegt')
+            al = os.path.join(d, T['weapon']['albedo'])         # 0.43: Albedo halb so groß gilt, ein Viertel nicht
+            keep = open(al, 'rb').read()
+            subprocess.run(['magick', al, '-resize', '50%', al], check=True)
+            if XU.texture_problems(D, d, store):
+                err.append('Albedo mit halber Kantenlänge abgelehnt')
+            subprocess.run(['magick', al, '-resize', '50%', al], check=True)
+            if not any('albedo' in b for b in XU.texture_problems(D, d, store)):
+                err.append('Albedo mit Viertel-Kantenlänge nicht erkannt')
+            open(al, 'wb').write(keep)
             if T != XU.store_textures(T, d):
                 err.append('zweite Ablage ändert etwas (nicht wiederholbar)')
             make(os.path.join(d, 'w_spec.png'), 64, alpha=True)        # falsche Kantenlänge
