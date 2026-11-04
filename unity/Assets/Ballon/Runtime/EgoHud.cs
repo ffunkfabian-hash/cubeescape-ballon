@@ -173,11 +173,78 @@ namespace Ballon.Ego
             return c >= 0 ? de.Substring(c + 2) : de;
         }
 
+        /// <summary>Name der Karte: die Klasse, ohne Klasse der Modellname.</summary>
+        public string Title(int i) => string.IsNullOrEmpty(_d[i].weapon.type_de) ? _d[i].weapon.name : _d[i].weapon.type_de;
+
+        /// <summary>Unterzeile der Karte mit Skin k: „Modell · Skin“, auf schmalen Karten Modell und Skin untereinander (twoLines).</summary>
+        public string CardSub(int i, int k, bool twoLines)
+        {
+            var sk = SkinLabel(i, k);
+            return sk.Length == 0 ? Subtitle(i) : Subtitle(i) + (twoLines ? "\n" : " · ") + sk;
+        }
+
+        /// <summary>Abstand der Spalten: bei den sechs Spalten der Serien (0.43) enger, der Platz geht an die Karten.</summary>
+        public static float ColumnGap(float H, int columns) => (columns > 3 ? 0.016f : 0.025f) * H;
+
+        /// <summary>Breite einer Spalte der Übersicht im Bild W × H.</summary>
+        public static float ColumnWidth(float W, float H, int columns) =>
+            Mathf.Min(0.45f * H, (W - 0.08f * H - (columns - 1) * ColumnGap(H, columns)) / columns);
+
         /// <summary>Zeile unter dem Klassennamen: Modellname, „Variante BD01“ (Formgen) bzw. „Serie J · BJ01“ (Design-Serie, 0.43).</summary>
         public string Subtitle(int i) => !_d[i].IsVariant ? _d[i].weapon.name
             : string.IsNullOrEmpty(_d[i].origin?.series) ? $"Variante {_d[i].weapon.id}" : $"Serie {_d[i].origin.series} · {_d[i].weapon.id}";
 
         public string Id(int i) => _d[i].weapon.id;
+    }
+
+    /// <summary>Texte einer Karte der Übersicht: Stelle, Stil und Größe als reine Rechnung, damit Zeichnen (OnGUI) und Test (Batchmode, dort läuft
+    /// kein OnGUI) dieselben Zahlen nutzen. Schmale Karten (viele Spalten): kleinere Symbole, Modell und Skin untereinander. Die Stile haben keinen
+    /// Innenabstand, sie messen also mit und ohne GUI.skin gleich.</summary>
+    public static class MenuCard
+    {
+        public const float NameFont = 0.019f, SubFont = 0.0155f, MinFont = 0.0115f;   // Anteile der Bildhöhe; MinFont: darunter kaum lesbar
+
+        public static bool Narrow(Rect r, float H) => r.width < 0.3f * H;
+        public static bool TwoLines(Rect r, bool variant, float H) => !variant && Narrow(r, H);
+        public static float IconX(Rect r, bool variant, float H) => r.x + (variant ? (Narrow(r, H) ? 0.02f : 0.028f) : 0.014f) * H;   // Varianten eingerückt
+        public static float IconW(Rect r, bool variant, float H) => (Narrow(r, H) ? (variant ? 0.14f : 0.2f) : (variant ? 0.2f : 0.29f)) * r.width;
+
+        static float TextX(Rect r, bool variant, float H) => variant && Narrow(r, H)
+            ? IconX(r, true, H) + IconW(r, true, H) + 0.006f * H : r.x + 0.014f * H + (Narrow(r, H) ? 0.22f : 0.31f) * r.width;
+
+        public static Rect NameRect(Rect r, float H)
+        {
+            float x = TextX(r, false, H);
+            return new Rect(x, r.y, r.xMax - x - 0.02f * H, r.height * (Narrow(r, H) ? 0.46f : 0.52f));
+        }
+
+        /// <summary>Unterzeile; keyed: rechts liegt die Taste des Platzes auf der Leiste.</summary>
+        public static Rect SubRect(Rect r, bool variant, bool keyed, float H)
+        {
+            float x = TextX(r, variant, H), w = r.xMax - x - (keyed ? 0.031f : 0.006f) * H, top = (variant ? 0.12f : Narrow(r, H) ? 0.47f : 0.54f) * r.height;
+            return new Rect(x, r.y + top, w, r.height - top);
+        }
+
+        public static GUIStyle NameStyle(GUIStyle label, int h) => new GUIStyle(label)
+        { fontSize = Mathf.RoundToInt(NameFont * h), fontStyle = FontStyle.Bold, alignment = TextAnchor.LowerLeft, wordWrap = false, clipping = TextClipping.Clip, padding = new RectOffset() };
+
+        public static GUIStyle SubStyle(GUIStyle label, int h) => new GUIStyle(label)
+        { fontSize = Mathf.RoundToInt(SubFont * h), alignment = TextAnchor.UpperLeft, wordWrap = false, clipping = TextClipping.Clip, padding = new RectOffset() };
+
+        /// <summary>Größte Schrift bis zur Größe des Stils, in der s in r passt; passt es auch in MinFont nicht, MinFont (der Test fängt das).</summary>
+        public static int Fit(GUIStyle st, string s, Rect r, float H)
+        {
+            int full = st.fontSize, size = full, min = Mathf.Min(full, Mathf.RoundToInt(MinFont * H));
+            var c = new GUIContent(s);
+            for (; size > min; size--)
+            {
+                st.fontSize = size;
+                var z = st.CalcSize(c);
+                if (z.x <= r.width && z.y <= r.height) break;
+            }
+            st.fontSize = full;
+            return size;
+        }
     }
 
     /// <summary>Leiste mit neun Plätzen (Tasten 1–9). Eine Waffe liegt höchstens auf einem Platz: wer sie auf einen anderen Platz legt,
