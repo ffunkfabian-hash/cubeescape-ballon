@@ -4,6 +4,5 @@
   "commit": "8486994733f9a7a77f407214321cee7b4121ead6",
   "version": "0.8 „Hallmark“",
   "lines": ["J", "K", "L", "M"],
-  "bake": {"size": 2048, "device": "gpu"},
-  "favorites": []
+  "bake": {"size": 4096, "device": "gpu"}
 }

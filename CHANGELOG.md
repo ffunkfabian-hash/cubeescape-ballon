@@ -4,7 +4,7 @@
 
 - `tools/bake_unity.py`: Teile vor dem Backen zu einem Objekt (Objektkoordinaten `ballon_co`, Teil `ballon_part`), Abrieb und Schmutz einmal in Masken
   eingefroren, Spec, Glätte und AO in 2048², Normale 4 Samples, AO 32 Samples + OIDN; `SETTINGS`, Quelle `data/bake_settings.json` mit Grenzwerten je Karte.
-  10 Waffen plus Wiederholung: 3807 s → 780 s. Albedo 2048² oder 4096² per Schalter, Normale fest 4096² (2048² ist beim Zielen sichtbar fleckig).
+  10 Waffen plus Wiederholung: 3807 s → 1014 s. Standard Albedo und Normale 4096²; Albedo 2048² per Schalter, Normale fest 4096² (2048² ist beim Zielen sichtbar fleckig).
 - Serien J–M aus Formgen v2: `tools/series_packages.py` holt Datensätze am Pin (`data/formgen_series.json`), bäckt in einen Inhalts-Cache und richtet
   sie gitignoriert ein (`unity_run.py setup`, zweiter Lauf ohne Backen). Unity lädt sie zur Laufzeit (`SeriesAssets`, `ego_series.json`), die Szene im Repo
   bleibt. 57 von 68 spielbar; 8 Nahkampfwaffen ohne Ego-Profil, BJ10, BK10, BL10 ohne Leuchtbewegung am Visier.

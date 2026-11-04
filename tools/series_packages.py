@@ -136,11 +136,6 @@ def blender_version():
     return subprocess.run([BLENDER, '--version'], capture_output=True, text=True, check=True).stdout.splitlines()[0].strip()
 
 
-def bake_of(p, sid):
-    """Bake-Einstellung eines Blatts: Favoriten aus dem Pin (`favorites`) backen Albedo in 4096², alle anderen wie `bake`."""
-    return dict(p['bake'], size=4096) if sid in p.get('favorites', ()) else p['bake']
-
-
 def job_key(job, bake, code, blender, script_sha, module_sha):
     """Inhaltsschlüssel eines Pakets. Keine Commits, keine Zeit: gleiche Eingaben = gleicher Schlüssel."""
     data = dict(model=job['model'], module=job['module'], module_sha=module_sha, skin=job['skin'], skin_def=job.get('skin_def'), bake=bake, code=code,
@@ -259,7 +254,7 @@ def prepare(jobs, p, code, blender, script_sha):
         if why:
             failed.append(dict(id=j['id'], step='Ego-Profil', reason=why))
             continue
-        keys[j['id']] = job_key(j, bake_of(p, j['id']), code, blender, script_sha, module_hash(j['module']))
+        keys[j['id']] = job_key(j, p['bake'], code, blender, script_sha, module_hash(j['module']))
         if not cached(keys[j['id']]):
             todo.append(j)
     return failed, keys, todo
@@ -270,10 +265,10 @@ def bake_all(todo, keys, p, script, baker=bake_one):
     log = os.path.join(CACHE, 'bake_log.csv')
     for i, j in enumerate(todo):
         try:
-            s = baker(j, keys[j['id']], bake_of(p, j['id']), script)
+            s = baker(j, keys[j['id']], p['bake'], script)
             print(f"[{i + 1}/{len(todo)}] {j['id']}: {s:.0f} s", flush=True)
             with open(log, 'a') as fh:
-                fh.write(f"{time.strftime('%F %T')},{j['id']},{s:.1f},{bake_of(p, j['id'])['size']}\n")
+                fh.write(f"{time.strftime('%F %T')},{j['id']},{s:.1f},{p['bake']['size']}\n")
         except SeriesError as e:
             print(f"[{i + 1}/{len(todo)}] {j['id']}: FEHLER {e}", flush=True)
 

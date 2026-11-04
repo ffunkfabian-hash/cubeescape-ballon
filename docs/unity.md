@@ -571,7 +571,7 @@ Bake (Formgen ruft BALLONs Code), derselbe Export. Vertrag und Schnittstellen: [
 
 Die vier Serien aus Formgen v2 sind spielbar, ohne dass Serien-Dateien ins Repo kommen. Bericht: [versions/0.43-kiln.md](versions/0.43-kiln.md).
 
-- **Pin:** [`data/formgen_series.json`](../data/formgen_series.json) nennt Repo, vollen Commit, Linien und Bake (Albedo 2048², Normale 4096², GPU) und `favorites` (IDs mit Albedo 4096²). Neue Serien oder
+- **Pin:** [`data/formgen_series.json`](../data/formgen_series.json) nennt Repo, vollen Commit, Linien und Bake (Albedo und Normale 4096², GPU). Neue Serien oder
   ein neuer Formgen-Stand: nur diese Datei ändern.
 - **`tools/unity_run.py setup`** ruft vor Unity [`tools/series_packages.py`](../tools/series_packages.py): liest Formgens Plan am gepinnten
   Commit (Git-Archiv, die Arbeitskopie von Formgen bleibt unberührt), bäckt fehlende Waffen unter `ce lock gpu` in den Inhalts-Cache

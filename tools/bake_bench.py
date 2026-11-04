@@ -1,7 +1,7 @@
 """Bake messen (0.43 „Kiln“): Zeit je Karte und Schritt für eine Waffe, Reihe mehrerer Waffen am Stück (Drosselung des lüfterlosen Macs).
 
 Äußerer Lauf (Python, unter `ce lock gpu`, eine frische Blender-Instanz je Waffe wie Formgens Bake):
-  python3 tools/bake_bench.py run --tag base --kit <Ordner mit basic/, tools/> --modules pilot.w01_auto_rifle_v21,… [--bake '{"size":4096,"settings":{…}}'] [--cpu]
+  python3 tools/bake_bench.py run --tag base --kit <Ordner mit basic/, tools/> --modules pilot.w01_auto_rifle_v21,… [--bake '{"size":4096,"settings":{…}}'] [--opt OFF] [--cpu]
 Ergebnis: <EV>/kiln/bench/<tag>/<nn>_<Waffe>/timing.json (Schritte in s) und <tag>/summary.csv. --kit: gepinnter Stand für vorher/nachher.
 Innerer Lauf (Blender): blender -b --factory-startup -P tools/bake_bench.py -- <job.json>
 Geplant wie der Formgen-Weg: blender_build.main, setup_render(aaa, mid), export_unity.bake_weapon(arms=False), store_textures. Die Zeiten
@@ -57,6 +57,8 @@ def inner():
     root = bpy.data.objects[W.META['id']]
     t = time.time()
     BB.setup_render(854, 1, gpu=job['gpu'], aaa=True, bloom=False, bg='mid')
+    if job.get('opt'):                                 # Cycles: FULL, INTERSECT oder OFF (0.43: Metal-Übersetzung gegen Bake-Zeit)
+        bpy.context.preferences.addons['cycles'].preferences.kernel_optimization_level = job['opt']
     kit.set_mode(objs, 'aaa')
     steps.append(('setup_render', round(time.time() - t, 2)))
     tex_dir = os.path.join(out, 'textures')
@@ -85,6 +87,7 @@ def outer(argv):
     p.add_argument('--modules', required=True)
     p.add_argument('--bake', default='{}', help='JSON: Argumente für bake_weapon (size, samples, …)')
     p.add_argument('--cpu', action='store_true')
+    p.add_argument('--opt', default='', help='Cycles kernel_optimization_level')
     a = p.parse_args(argv)
     base = os.path.join(EV, 'bench', a.tag)
     os.makedirs(base, exist_ok=True)
@@ -95,7 +98,7 @@ def outer(argv):
         out = os.path.join(base, f'{i:02d}_{name}')
         os.makedirs(out, exist_ok=True)
         path = os.path.join(out, 'job.json')
-        json.dump(dict(kit=a.kit, module=m, id=name, out=out, gpu=not a.cpu, bake=json.loads(a.bake)), open(path, 'w', encoding='utf-8'))
+        json.dump(dict(kit=a.kit, module=m, id=name, out=out, gpu=not a.cpu, opt=a.opt, bake=json.loads(a.bake)), open(path, 'w', encoding='utf-8'))
         timing = os.path.join(out, 'timing.json')
         if os.path.exists(timing):                     # alter Lauf desselben Tags gilt nicht als Erfolg
             os.remove(timing)
