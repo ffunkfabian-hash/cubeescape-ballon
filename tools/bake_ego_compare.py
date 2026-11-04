@@ -81,16 +81,18 @@ def remove():
 def serie():
     """Blender-Abgleich der Serien (AGENTS.md: sichtbare Unity-Änderungen gegen frische Blender-Stills): braucht den fertigen Build."""
     import glob
+    import shutil
     p = SP.pin()
     plan = {j['id']: j for j in SP.plan_jobs(p, SP.source(p))}
     D = json.load(open(SP.OUT_JSON, encoding='utf-8'))
     index = {e['id']: k + 1 for k, e in enumerate(D['weapons'])}
     for sid in REFERENCE:
         out = os.path.join(EV, 'serie', sid)
+        shutil.rmtree(out, ignore_errors=True)         # nur frische Stills zählen
         os.makedirs(out, exist_ok=True)
         skin = os.path.join(out, 'skin.json')
         json.dump(plan[sid]['skin_def'], open(skin, 'w', encoding='utf-8'), ensure_ascii=False)
-        rc = subprocess.run([os.path.expanduser('~/Claude/cubeescape-nexogen/ce'), 'lock', 'gpu', '--what', f'BALLON Stills {sid}', '--', SP.BLENDER, '-b', '--factory-startup',
+        rc = subprocess.run([os.path.expanduser('~/Claude/cubeescape-nexogen/ce'), 'lock', 'gpu', '--what', f'BALLON Stills {sid}', '--', SP.BLENDER, '-b', '--factory-startup', '--python-exit-code', '1',
                              '-P', os.path.join(SP.ROOT, 'tools', 'ego_variant.py'), '--', os.path.join(SP.DST, sid), '--skin-def', skin, '--gpu'],
                             env=dict(os.environ, BASIC_OUT=out), capture_output=True, text=True)
         stills = glob.glob(os.path.join(out, '*', 'ego', 'stills'))
