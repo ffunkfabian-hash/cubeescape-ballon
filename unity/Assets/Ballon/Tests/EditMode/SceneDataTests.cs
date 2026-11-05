@@ -194,6 +194,7 @@ namespace Ballon.Ego.Tests
             Assert.AreEqual(SceneConvert.Intensity("spot", 100f), SceneConvert.Intensity("point", 100f), 1e-6f);
             Assert.AreEqual(3f / Mathf.PI, SceneConvert.Intensity("sun", 3f), 1e-6f, "Sonne S/π");
             Assert.AreEqual(800f / (Mathf.PI * 1.5f * 1.5f), SceneConvert.Radiance(800f, 1.5f), 1e-3f, "Strahldichte P/(π·A)");
+            Assert.AreEqual(0f, SceneConvert.ProbeEmit, "Lichtflächen in der Sonde nur zum Messen: sie doppeln den Glanz der Spots");
             Near(Vector3.down, SceneConvert.Point(f.lightings[0].lights[0].dir), "Strahler leuchtet nach unten");
             var c = SceneConvert.Linear("#808080");
             Assert.AreEqual(0.2159f, c.r, 1e-3f, "sRGB 0x80 linear");

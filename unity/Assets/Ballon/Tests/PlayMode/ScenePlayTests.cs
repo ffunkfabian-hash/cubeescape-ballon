@@ -280,7 +280,9 @@ namespace Ballon.Ego.Tests
             var oldInput = p.input;
             Idle(p);
             int n0 = b.SceneCount;
+            SceneConvert.ProbeEmit = 1f;                                 // Messpfad -ballonEmitScale 1: Lichtflächen in der Sonde
             int idx = AddAndShow(out var f, out var atlases);
+            SceneConvert.ProbeEmit = 0f;
             Assert.AreEqual(n0 + 1, b.SceneCount);
             try
             {
@@ -457,6 +459,7 @@ namespace Ballon.Ego.Tests
             {
                 yield return null;
                 var L = b.LoadedSceneAt(idx);
+                foreach (var g in L.lightings) Assert.AreEqual(0, g.emitters.Count, "Standard: keine Lichtfläche in der Sonde, der Spot trägt den Glanz");
                 var umg = L.root.Find("Umgebung");
                 int childCount = L.root.childCount, renderers = umg.GetComponentsInChildren<Renderer>(true).Length;
                 var zm0 = L.zoneMats[0];

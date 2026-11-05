@@ -22,7 +22,7 @@
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "c1f8cb10974743d1f59ea93affc756975b3de80f5056e1f05b27b91b50d9be66"
+    "sha256": "00e82f6c9a436bdd56fc250559384a64cfd8d3a3de2888080f4cce5cab97ac28"
    },
    {
     "path": "tools/blender_build.py",

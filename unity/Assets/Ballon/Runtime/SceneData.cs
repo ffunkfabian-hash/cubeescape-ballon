@@ -367,6 +367,10 @@ namespace Ballon.Ego
             }
         }
 
+        /// <summary>Anteil der Lichtflächen in der Reflexionssonde, nur zum Messen (-ballonEmitScale). Standard 0: Die Spotlichter tragen den Glanz
+        /// der Flächenlichter schon, Lichtflächen in der Sonde zählen ihn doppelt (Messung 31 Bilder: docs/unity.md › Studio).</summary>
+        public static float ProbeEmit = 0f;
+
         /// <summary>Strahldichte einer Lichtfläche (Kantenlänge size_m) für die Reflexionssonde: P / (π · A).</summary>
         public static float Radiance(float powerW, float sizeM) => powerW / (Mathf.PI * sizeM * sizeM);
     }

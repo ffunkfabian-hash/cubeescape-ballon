@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.44.1 Patch „ego-helligkeit“ – Unity-Spiegelung nicht mehr doppelt (Branch `claude/ballon-patch-ego-helligkeit`)
+
+- Studio und Hangar legen keine Lichtflächen mehr in die Reflexionssonde: die Spots tragen den Glanz schon. Viewmodel gegen Blender, 31 Bilder: Abweichung 0,121 → 0,085, Helligkeit +0,090 → +0,016, Bake unverändert.
+- `BALLON_STILL_SIZE` für `tools/ego_build.py`: Blender-Stills in der Größe von `-ballonCompareSize`.
+
 ## 0.44.0 „Lodestar“ – alle 18 festen Waffen auf dem Bake von 0.43, ohne Handabdrücke (Branch `claude/ballon-0.44-lodestar`)
 
 - Die 16 eigenen Waffen sind mit dem Bake von 0.43 neu gebacken (Albedo und Normale 4096², ohne Arme in der Szene), Skin-Masken ebenso. Die falschen Handabdrücke im AO sind weg.

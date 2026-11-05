@@ -4,7 +4,7 @@
 //     Material seiner Zone; die UVs sind für alle Lichtszenen gleich, Umschalten tauscht nur die Texturen.
 //   - Kollision aus „colliders“ (BoxCollider), nicht aus dem FBX.
 //   - Je Lichtszene eine Gruppe Lichter, die nur das Viewmodel beleuchten (Light.cullingMask); Flächenlichter erscheinen zusätzlich
-//     als leuchtende Flächen auf der Ebene StudioEmitLayer, die nur die Reflexionssonde sieht (Strahldichte P / (π · A)).
+//     nur zum Messen (SceneConvert.ProbeEmit) als leuchtende Flächen auf der Ebene StudioEmitLayer, die nur die Reflexionssonde sieht (P / (π · A)).
 //     Alle Gruppen entstehen beim Laden (ausgeschaltet), Umschalten schaltet nur um.
 //   - Parcours: Zielscheiben an „course.targets“ (Mitte, Normale, Radius), Auslöse-Logik in CourseRun, Wegmarken entlang „route“.
 // Umgebungslicht, Himmel, Sonde und Spieler setzt Bootstrap (ShowScene, ShowLighting), weil sie den Zustand der ganzen Szene betreffen.
@@ -237,14 +237,14 @@ namespace Ballon.Ego
                 default: l.type = LightType.Spot; l.spotAngle = 150f; l.innerSpotAngle = 60f; l.range = 60f; break;   // Fläche wie StudioLike
             }
             L.lights.Add(l);
-            if (s.kind != "area" || emit == null) return;
+            if (s.kind != "area" || emit == null || SceneConvert.ProbeEmit <= 0f) return;   // Standard: keine Lichtfläche, der Spot trägt den Glanz
             // Spiegelbild der Lichtfläche für die Reflexionssonde: leuchtende Fläche, Strahldichte P / (π · A)
             var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
             Object.Destroy(q.GetComponent<Collider>());
             q.name = "Lichtfläche " + s.name;
             q.layer = Bootstrap.StudioEmitLayer;
             var m = new Material(emit) { name = "Lichtfläche " + s.name };
-            m.SetColor("_BaseColor", SceneConvert.Gamma(lin, SceneConvert.Radiance(s.power_w, s.size_m)));   // Materialfarben sind Gamma-Werte
+            m.SetColor("_BaseColor", SceneConvert.Gamma(lin, SceneConvert.ProbeEmit * SceneConvert.Radiance(s.power_w, s.size_m)));   // Materialfarben sind Gamma-Werte
             var r = q.GetComponent<Renderer>();
             r.sharedMaterial = m;
             r.shadowCastingMode = ShadowCastingMode.Off;

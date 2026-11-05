@@ -107,7 +107,7 @@ namespace Ballon.Ego
             string cap = Arg(args, "-ballonCapture"), cmp = Arg(args, "-ballonCompare");
             if (Array.IndexOf(args, "-ballonMenu") >= 0) Player.menu.Open(Player.arsenal.Active);   // Sichtprüfung Waffenmenü (0.33 Ziel 2)
             if (float.TryParse(Arg(args, "-ballonStudioScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var ss)) studioScale = ss;
-            if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) emitScale = es;
+            if (float.TryParse(Arg(args, "-ballonEmitScale") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var es)) SceneConvert.ProbeEmit = es;
             if (float.TryParse(Arg(args, "-ballonFov") ?? "", System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var fov))
                 Player.worldHFovDeg = Mathf.Clamp(fov, EgoPlayer.WorldFovMinDeg, EgoPlayer.WorldFovMaxDeg);   // Welt-Bildwinkel (A9); Viewmodel bleibt 75°
             string shotDir = Arg(args, "-ballonSceneShots");
@@ -305,7 +305,7 @@ namespace Ballon.Ego
             Probe.size = L.bounds.size + Vector3.one * 2f;
             Probe.resolution = 256;
             Probe.hdr = true;
-            Probe.cullingMask = ~(1 << ViewmodelLayer);              // unbeleuchtete Umgebung plus Lichtflächen
+            Probe.cullingMask = ~(1 << ViewmodelLayer);              // unbeleuchtete Umgebung (Lichtflächen nur zum Messen)
             Player.SetScene(SceneName(i), L.targets, L.course);
             ApplyLighting(e, Mathf.Clamp(e.lighting, 0, e.data.lightings.Length - 1));
             Player.Teleport(L.spawnPos, L.spawnYaw, 0);
@@ -1078,7 +1078,6 @@ namespace Ballon.Ego
 
         /// <summary>Lichtmaßstab: Unity-Intensität = studioScale · P / π² aus der Blender-Leistung P (W) eines Flächenlichts.</summary>
         [NonSerialized] public float studioScale = 1f;    // nicht in der Szene speichern: der Code-Wert gilt
-        [NonSerialized] public float emitScale = 1f;      // Anteil der Lichtflächen in der Sonde: 1 = Blender-Strahldichte; Messreihe 0/0,25/0,5/1 bestätigt 1
 
         static Color Lin(string hex)
         {
@@ -1106,7 +1105,7 @@ namespace Ballon.Ego
             foreach (var (nm, p, watt, hex) in lights)
             {
                 // Spiegelbild des Flächenlichts: leuchtende Fläche mit Strahldichte P / (π · A), nur für die Reflexionssonde sichtbar
-                if (backdrop != null)
+                if (backdrop != null && SceneConvert.ProbeEmit > 0f)   // nur zum Messen: der Spot trägt den Glanz schon
                 {
                     float a = sizes[nm];
                     var e = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -1114,7 +1113,7 @@ namespace Ballon.Ego
                     e.name = "Studio Fläche " + nm;
                     e.layer = StudioEmitLayer;
                     var em = new Material(backdrop);
-                    var c = Lin(hex) * (emitScale * studioScale * watt / (Mathf.PI * a * a));
+                    var c = Lin(hex) * (SceneConvert.ProbeEmit * studioScale * watt / (Mathf.PI * a * a));
                     em.SetColor("_BaseColor", new Color(c.r, c.g, c.b, 1).gamma);   // Materialfarben sind Gamma-Werte (Unity linearisiert)
                     e.GetComponent<Renderer>().sharedMaterial = em;
                     e.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -1154,7 +1153,7 @@ namespace Ballon.Ego
                 q.transform.localPosition = new Vector3(0, 0, d);
                 q.transform.localScale = new Vector3(hgt * 16f / 9f, hgt, 1);
             }
-            // Umgebung für Spiegelungen wie Blenders Nicht-Kamerastrahlen: einheitlich + die Lichtflächen
+            // Umgebung für Spiegelungen wie Blenders Nicht-Kamerastrahlen: einheitlich, den Glanz der Lichter tragen die Spots
             Probe.transform.position = Player.head.position;
             Probe.resolution = 512;
             Probe.size = new Vector3(20, 20, 20);
