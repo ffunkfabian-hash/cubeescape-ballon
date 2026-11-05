@@ -1,9 +1,14 @@
 # CHANGELOG
 
-## 0.44.1 Patch „kern-sweep“ – Regeln an Kern 1.26 angeglichen (Branch `claude/ballon-patch-kern-sweep`)
+## 0.44.2 Patch „kern-sweep“ – Regeln an Kern 1.26 angeglichen (Branch `claude/ballon-patch-kern-sweep`)
 
 - `AGENTS.md`: harter Kern 1–8, Kopien globaler Regeln entfernt; `docs/LESSONS.md` auf wiederkehrende Fallen gekürzt, Rest unverändert in `docs/LESSONS-lang.md`.
 - `.ce-repo.json`: Werkzeugstand 0.35.0, `core_paths` (Arm-Paket) und `docs.changelog`.
+
+## 0.44.1 Patch „ego-helligkeit“ – Unity-Spiegelung nicht mehr doppelt (Branch `claude/ballon-patch-ego-helligkeit`)
+
+- Studio und Hangar legen keine Lichtflächen mehr in die Reflexionssonde: die Spots tragen den Glanz schon. Viewmodel gegen Blender, 31 Bilder: Abweichung 0,121 → 0,085, Helligkeit +0,090 → +0,016, Bake unverändert. Die Lichtszene Nacht behält die Lichtflächen und damit das Bild von 0.44 (Entscheid des Nutzers).
+- `BALLON_STILL_SIZE` für `tools/ego_build.py`: Blender-Stills in der Größe von `-ballonCompareSize`.
 
 ## 0.44.0 „Lodestar“ – alle 18 festen Waffen auf dem Bake von 0.43, ohne Handabdrücke (Branch `claude/ballon-0.44-lodestar`)
 
