@@ -25,6 +25,7 @@ EV = os.environ.get('BALLON_KILN_EVIDENCE', os.path.expanduser('~/Library/Caches
 KINDS = (('QA', 'alt 4096² / 64', 4096, 64), ('QB', 'neu Albedo 2048²', 2048, None), ('QC', 'neu 4096²', 4096, None))
 SHEETS = (('BA01', '01'), ('BJ01', '02'))
 SIZE = '1470x956'
+NO_ADS = {'BASIC-T01-v2.1'}
 REFERENCE = ('BJ01', 'BK04', 'BL09', 'BM14')           # je Linie eine Waffe, verschiedene Grundtypen
 
 
@@ -151,6 +152,11 @@ def own_weapons(only=''):
     return [w for w in all_ if not want or w[0] in want]
 
 
+def own_poses(sid):
+    """Haltungen im Vergleich. Nur die Portalkanone hat kein Zielen; fehlt sonst ein Bild, bricht der Vergleich ab, statt still weniger zu prüfen."""
+    return ('hip',) if sid in NO_ADS else ('hip', 'ads')
+
+
 def own_shots(tag, only=''):
     base = os.path.join(EV, 'ego_eigene', tag)
     os.makedirs(base, exist_ok=True)
@@ -166,10 +172,8 @@ def own_compare(before, after, only=''):
     root = os.path.join(EV, 'ego_eigene')
     table, tiles = {}, []
     for sid, _ in own_weapons(only):
-        for pose in ('hip', 'ads'):
+        for pose in own_poses(sid):
             old, new = (os.path.join(root, t, sid, f'{pose}_unity.png') for t in (before, after))
-            if not os.path.exists(old) and not os.path.exists(new):      # Portalkanone: kein Zielen
-                continue
             m = table[f'{sid} {pose}'] = UR.metrics(new, old, os.path.join(root, before, sid, f'{pose}_mask.png'))
             print(f"{sid} {pose}: SSIM {m['ssim']} | Viewmodel Abweichung {m.get('vm_mae')}, SSIM {m.get('vm_ssim_box')}, Helligkeit {m.get('vm_lum_unity')} / {m.get('vm_lum_blender')}", flush=True)
             tiles += ['-label', f'{sid} {pose} · {before}', old, '-label', f'{sid} {pose} · {after}', new]

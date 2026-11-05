@@ -152,6 +152,20 @@ try:
 except SystemExit:
     pass
 
+# 0.44: Vergleich der festen Waffen: fehlende Bilder brechen ab, nur die Portalkanone hat kein Zielen
+from tools import bake_ego_compare as BC  # noqa: E402
+ok(BC.own_poses('BASIC-T01-v2.1') == ('hip',) and BC.own_poses('BASIC-01-v2.1') == ('hip', 'ads'), 'Haltungen im Vergleich')
+with tempfile.TemporaryDirectory() as t:
+    BC.EV = t
+    was = BC.own_weapons
+    BC.own_weapons = lambda only='': [('BASIC-01-v2.1', 1)]
+    try:
+        BC.own_compare('a', 'b')
+        bad.append('Vergleich ohne Bilder meldet Erfolg')
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pass
+    BC.own_weapons = was
+
 print(f'Serien: {len(bad)} Fehler' if bad else 'Serien: Pin, Inhalts-Cache (zweiter Lauf ohne Backen), nichts im Repo – geprüft')
 for b in bad:
     print('  ✗', b)
