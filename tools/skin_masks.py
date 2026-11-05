@@ -59,7 +59,7 @@ def chain(m):
     return out
 
 
-def bake_rgb(obs, mats, image, values, samples=64):
+def bake_rgb(obs, mats, image, values, samples=64, margin=8):
     """Emission (R, G, B) = values[material] (je Eintrag Socket oder Zahl) in image backen."""
     import bpy
     undo = []
@@ -96,7 +96,7 @@ def bake_rgb(obs, mats, image, values, samples=64):
     sc = bpy.context.scene
     sc.cycles.samples = samples
     t0 = time.time()
-    bpy.ops.object.bake(type='EMIT', margin=8, use_clear=True)
+    bpy.ops.object.bake(type='EMIT', margin=margin, use_clear=True)
     print(f'[skin_masks] {image.name}: {time.time() - t0:.0f} s', flush=True)
     for m, tex, cc, em, out, old, extra in undo:
         nt = m.node_tree

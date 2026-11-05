@@ -274,34 +274,46 @@ def drop_view(a):
         bpy.data.objects.remove(a)
 
 
+def island_mask(o, size, name, margin):
+    """Boolesches size²-Feld: UV-Inseln von o (weißer Emissionsdurchgang), margin Pixel Rand."""
+    from tools import skin_masks as SM
+    img = _image(name, size, False)
+    ms = {s.material for s in o.material_slots if s.material}
+    SM.bake_rgb([o], ms, img, {x: (1.0, 1.0, 1.0) for x in ms}, 1, margin)
+    q = np.empty(size * size * 4, np.float32)
+    img.pixels.foreach_get(q)
+    bpy.data.images.remove(img)
+    return q[0::4] > 0.5
+
+
 def bake_views(run, image, tmp, a):
     """run(obs, image) backt in image. Mit `a` (joined_without): zweiter Durchgang ohne ads_hide-Teile als Verdecker, übernommen wird er
     auf den Inseln der übrigen Teile (Maske aus einem weißen Emissionsdurchgang, gleicher Rand), sonst der Durchgang mit allem."""
     run([tmp], image)
     if a is None:
         return
-    from tools import skin_masks as SM
     size = image.size[0]
     im2 = _image(image.name + '_noads', size, False)
-    mk = _image(image.name + '_noadsmask', size, False)
     tmp.hide_render, a.hide_render = True, False
     try:
         run([a], im2)
-        mats = {s.material for s in a.material_slots if s.material}
-        SM.bake_rgb([a], mats, mk, {m: (1.0, 1.0, 1.0) for m in mats}, 1)
+        keep_m = island_mask(a, size, image.name + '_noadsmask', 8)       # übrige Teile samt Bake-Rand
+        keep_0 = island_mask(a, size, image.name + '_noadsk0', 0)
+        tmp.hide_render, a.hide_render = False, True
+        all_0 = island_mask(tmp, size, image.name + '_noadsa0', 0)
     finally:
         tmp.hide_render, a.hide_render = False, True
+    ads_0 = all_0 & ~keep_0                                     # Inseln der ads_hide-Teile: nie überschreiben (Rand der anderen reicht nicht hinein)
+    mask = (keep_m & ~ads_0).astype(np.float32)
     n = size * size * 4
-    p1, p2, m = (np.empty(n, np.float32) for _ in range(3))
+    p1, p2 = (np.empty(n, np.float32) for _ in range(2))
     image.pixels.foreach_get(p1)
     im2.pixels.foreach_get(p2)
-    mk.pixels.foreach_get(m)
-    m = (m > 0.5).astype(np.float32)
+    m = np.repeat(mask, 4)
     m[3::4] = 1.0
     p2[3::4] = p1[3::4]
     image.pixels.foreach_set(p1 * (1.0 - m) + p2 * m)
     bpy.data.images.remove(im2)
-    bpy.data.images.remove(mk)
 
 
 # Bake-Einstellungen (0.43 „Kiln“, Messung und Grenzwerte: docs/versions/0.43-kiln.md). size von bake_atlas gilt für Albedo, normal_size ist die Untergrenze der

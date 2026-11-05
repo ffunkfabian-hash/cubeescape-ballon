@@ -104,6 +104,17 @@ def main():
     ok(len(r) == 4 and (ads > 0.02).mean() > 0.8 * (base > 0.02).mean(), 'ads: Inseln bleiben belegt')
     ok(ads.mean() >= base.mean() - 1e-3 and np.abs(ads - base).max() > 0.01, f'ads: AO ändert sich nur hellwärts ({base.mean():.3f} → {ads.mean():.3f})')
 
+    # Inseln der ads_hide-Teile bleiben vom zweiten Durchgang unberührt (Rand der übrigen Teile reicht nicht hinein)
+    hid_obs = [o for o in bake if o.name in hid]
+    isl = np.zeros(64 * 64, bool)
+    for o in hid_obs:
+        isl |= BK.island_mask(o, 64, 'isl', 0)
+    other = ~isl & (base > 0.02)
+    ok(isl.any(), 'ads: Inseln der ausgeblendeten Teile gefunden')
+    dh = np.abs(ads - base)[isl].mean() if isl.any() else 0.0
+    do = np.abs(ads - base)[other].mean() if other.any() else 0.0
+    ok(dh < 0.03, f'ads: Inseln der ausgeblendeten Teile unverändert (mittlere Abweichung {dh:.4f}, übrige {do:.4f})')
+
     # Datenkarten: keine Ansichtstransformation beim Speichern, auch unter AgX
     sc = bpy.context.scene
     vt, lk = sc.view_settings.view_transform, sc.view_settings.look
