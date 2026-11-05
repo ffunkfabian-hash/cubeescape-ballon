@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## 0.44.3 Patch „rohrende-bake“ – BASIC-14 Rohrende im Zielen (Branch `claude/agitated-matsumoto-691f6d`)
+## 0.45 „Lantern“ – BASIC-14 Rohrende im Zielen (Branch `claude/agitated-matsumoto-691f6d`)
 
 - Der Bake lässt `ads_hide`-Teile (z. B. `tube_cone`) als Verdecker weg: AO und Schmutz der hinteren Stirnfläche des Startrohrs stimmen, die dunklen Ringe im Zielen entfallen. Alle 16 Waffen und die Arme neu gebacken; Unity zeigt das Rohrende weiß wie Blender.
+- Die Übernahme schützt die Inseln der `ads_hide`-Teile (Bake-Rand reicht nicht hinein); Test in `tools/test_bake_blender.py`.
 - Serienpakete (60) sind durch die Änderung an `tools/bake_unity.py` ungültig und werden in einem Folgeauftrag neu gebacken.
 
 ## 0.44.2 Patch „kern-sweep“ – Regeln an Kern 1.26 angeglichen (Branch `claude/ballon-patch-kern-sweep`)
