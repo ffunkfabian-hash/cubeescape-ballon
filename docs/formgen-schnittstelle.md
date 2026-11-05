@@ -47,8 +47,11 @@ Formgen entpackt ein Bake-Paket direkt nach `unity/Assets/Ballon/Generated/Formg
 Generated/Formgen/<ID>/<ID>.package.json   formgenv2/weapon-package, format_version 1 (0.6) oder 2 (mit model)
 Generated/Formgen/<ID>/<ID>.fbx            FBX wie export_unity.export_fbx (Wurzel = META id, Teile, Anker)
 Generated/Formgen/<ID>/textures/<ID>_albedo.jpg, _spec.png, _normal.png, _ao.png   nach TEXTURE_STORE
-Generated/Formgen/<ID>/<ID>.spec.json, <ID>.glb
+Generated/Formgen/<ID>/<ID>.spec.json, <ID>.glb   GLB nur bei Formgens eigenem --unpack
 ```
+
+Seit 0.44 entstehen BD01 und BG01 wie die Serien: `python3 tools/series_packages.py --fixed BD01,BG01` backt am Pin mit BALLONs heutigem Stand
+(Format 2, ohne GLB, `.meta` bleiben), danach `python3 tools/export_unity.py --formgen`.
 
 Einlesen: `python3 tools/export_unity.py --formgen` (ohne Blender; nur wenn BALLONs eigener Teil von `ego.json` aktuell ist) oder der
 nächste volle Export. `tools/formgen_import.py` prüft das Paket (Format, ID = Ordner, FBX/Spec/Texturen vorhanden, Grundmodul = Manifest)

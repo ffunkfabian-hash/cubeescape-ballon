@@ -1,7 +1,7 @@
 {
   "name": "cubeescape-ballon",
-  "version": "0.43.0",
-  "version_name": "Kiln",
+  "version": "0.44.0",
+  "version_name": "Lodestar",
   "check": {
     "quick": [
       [
@@ -14,7 +14,8 @@
     "agent_sections": [
       "Was hier liegt",
       "Regeln"
-    ]
+    ],
+    "changelog": "CHANGELOG.md"
   },
   "coordination": {
     "repo": "ffunkfabian-hash/cubeescape-nexogen",

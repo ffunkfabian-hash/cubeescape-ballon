@@ -109,11 +109,78 @@ with tempfile.TemporaryDirectory() as t:
     k2 = SP.job_key(new, P['bake'], dict(code), 'B', 's', '')
     baker(new, k2, None, None)
     ok(SP.install(new, k2) is True and open(meta).read() == 'guid: 1', 'neues Paket: .meta muss bleiben (GUIDs)')
+    # 0.44: leerer Cache, Paket liegt schon in Unity: kein Neubau; ohne passenden Stempel wie bisher backen
+    cache_was, SP.CACHE = SP.CACHE, os.path.join(t, 'leer')
+    stamp = open(os.path.join(SP.DST, 'BJ01', '.series_key')).read().strip()
+    other = dict(jobs[0], skin='anders')
+    fail3, keys3, todo3 = SP.prepare([other], dict(P), dict(code), 'B', 's')
+    ok(todo3 and not SP.installed('BJ01', keys3['BJ01']), 'fremder Stempel zählt als Treffer')
+    ok(SP.installed('BJ01', stamp) and not SP.cached(stamp), 'Stempel ohne Cache nicht erkannt')
+    open(os.path.join(SP.DST, 'BJ01', '.series_key'), 'w').write(keys3['BJ01'] + '\n')
+    ok(SP.prepare([other], dict(P), dict(code), 'B', 's')[2] == [], 'leerer Cache backt Eingerichtetes neu')
+    open(os.path.join(SP.DST, 'BJ01', '.series_key'), 'w').write(stamp + '\n')
+    SP.CACHE = cache_was
+    # 0.44: feste Varianten: .meta bleiben, kein Stempel im Repo, ohne Bake nichts einrichten
+    fixed = os.path.join(t, 'fixed')
+    os.makedirs(os.path.join(fixed, 'BJ01'))
+    open(os.path.join(fixed, 'BJ01', 'x.txt.meta'), 'w').write('guid: 2')
+    open(os.path.join(fixed, 'BJ01', 'alt.glb'), 'w').write('alt')
+    open(os.path.join(fixed, 'BJ01', 'alt.glb.meta'), 'w').write('guid: 3')
+    SP.FIXED = fixed
+    SP.install_fixed([jobs[0]], {'BJ01': keys['BJ01']}, [])
+    ok(sorted(os.listdir(os.path.join(fixed, 'BJ01'))) == ['x.txt', 'x.txt.meta'] and open(os.path.join(fixed, 'BJ01', 'x.txt.meta')).read() == 'guid: 2',
+       'feste Variante: .meta, Stempel oder Altes falsch')
+    try:
+        SP.install_fixed([jobs[0], jobs[3]], keys, [])
+        bad.append('feste Variante ohne Bake eingerichtet')
+    except SP.SeriesError:
+        pass
     ok(SP.remove_stale({'BJ01'}) == [] and SP.remove_stale(set()) == ['BJ01'], 'Veraltetes nicht entfernt')
     D = SP.merged_ego([dict(id='BJ01', dir='FormgenSeries/BJ01')], [dict(id='BJ16', step='Ego-Profil', reason='Formstudie')], P)
     ok([e['id'] for e in D['weapons']][:len(ego['weapons'])] == [e['id'] for e in ego['weapons']] and D['weapons'][-1]['id'] == 'BJ01', 'Serien hinter den festen Waffen')
     ok(D['series']['failed'][0]['id'] == 'BJ16' and D['format'] == ego['format'], 'Durchgefallene in ego_series.json')
     SP.not_playable = real
+
+# 0.44: BALLON_EXPORT_FORCE backt nur die Genannten, Tippfehler stoppen
+from tools import export_unity as EU  # noqa: E402
+plan, why = EU.force_full({'A': 'reuse', 'B': 'reuse'}, {}, 'B')
+ok(plan == {'A': 'reuse', 'B': 'full'} and list(why) == ['B'], f'Erzwingen {plan}')
+ok(EU.force_full({'A': 'reuse'}, {}, '') == ({'A': 'reuse'}, {}), 'Erzwingen ohne Angabe')
+try:
+    EU.force_full({'A': 'reuse'}, {}, 'X')
+    bad.append('unbekannte Waffe still übergangen')
+except SystemExit:
+    pass
+
+# 0.44: Vergleich der festen Waffen: Haltungen aus den Daten, fehlende Bilder brechen ab
+from tools import bake_ego_compare as BC  # noqa: E402
+ok(BC.own_poses(dict(actions=[dict(name='fire_a')])) == ('hip',) and BC.own_poses(dict(actions=[dict(name='aim_in')])) == ('hip', 'ads'), 'Haltungen im Vergleich')
+own = {w[0]: w[2] for w in BC.own_weapons()}
+ok(own['BASIC-T01-v2.1'] == ('hip',) and own['BASIC-01-v2.1'] == ('hip', 'ads') and len(own) >= 18, f'Haltungen aus ego.json: {len(own)}')
+import shutil  # noqa: E402
+if shutil.which('magick'):
+    with tempfile.TemporaryDirectory() as t:
+        BC.EV = t
+        was = BC.own_weapons
+        BC.own_weapons = lambda only='': [('BASIC-01-v2.1', 1, ('hip',))]
+        try:
+            BC.own_compare('a', 'b')
+            bad.append('Vergleich ohne Bilder meldet Erfolg')
+        except subprocess.CalledProcessError as e:
+            ok(any('hip_unity.png' in str(x) for x in e.cmd), f'anderer Fehler als das fehlende Bild: {e.cmd}')
+        # Erfolgsfall und Grenze: gleiche Bilder bestehen, ein verändertes Viewmodel fällt unter ego_vm_ssim
+        for tag, extra in (('a', []), ('b', []), ('c', ['-fill', 'black', '-draw', 'rectangle 40,40 90,90'])):
+            d = os.path.join(t, 'ego_eigene', tag, 'BASIC-01-v2.1')
+            os.makedirs(d)
+            subprocess.run(['magick', '-size', '128x128', 'gradient:gray60-gray90', *extra, os.path.join(d, 'hip_unity.png')], check=True)
+            subprocess.run(['magick', '-size', '128x128', 'xc:white', os.path.join(d, 'hip_mask.png')], check=True)
+        ok(BC.own_compare('a', 'b') == 0, 'gleiche Bilder fallen durch')
+        ok(BC.own_compare('a', 'c') == 1, 'verändertes Viewmodel besteht die Grenze')
+        BC.own_weapons = was
+elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux ohne ImageMagick 7: wie test_texture_store
+    print('Hinweis: magick fehlt im PR-Check – Bildvergleich in test_series nur auf dem Mac')
+else:
+    bad.append('magick (ImageMagick 7) fehlt')
 
 print(f'Serien: {len(bad)} Fehler' if bad else 'Serien: Pin, Inhalts-Cache (zweiter Lauf ohne Backen), nichts im Repo – geprüft')
 for b in bad:

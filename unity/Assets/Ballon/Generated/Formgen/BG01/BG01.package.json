@@ -20,10 +20,11 @@
   ]
  },
  "bake": {
+  "arms": false,
   "atlas": 4096,
   "device": "gpu",
-  "note": "ohne Ego-Arme in der Szene; sonst wie tools/export_unity.bake_weapon",
-  "samples": 64
+  "note": "tools/export_unity.bake_weapon ohne Ego-Szene, Atlas ohne Arme (BALLON 0.41)",
+  "samples": null
  },
  "ballon": {
   "module": "basic.pilot.w01_auto_rifle_v21",
@@ -34,7 +35,7 @@
  "ego_profile_error": null,
  "fbx": "BG01.fbx",
  "format": "formgenv2/weapon-package",
- "format_version": 1,
+ "format_version": 2,
  "id": "BG01",
  "mesh_bounds": {
   "objects": [
@@ -1007,6 +1008,4885 @@
   ],
   "triangles": 29210
  },
+ "model": {
+  "ACTIONS": {
+   "fire_auto": {
+    "de": "Dauerfeuer (Verschluss sichtbar)",
+    "events": [
+     [
+      3,
+      "shot"
+     ],
+     [
+      7,
+      "shot"
+     ],
+     [
+      11,
+      "shot"
+     ],
+     [
+      15,
+      "shot"
+     ],
+     [
+      19,
+      "shot"
+     ]
+    ],
+    "frames": 30,
+    "keys": {
+     "bolt_carrier": [
+      [
+       0,
+       0
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       7,
+       0
+      ],
+      [
+       9,
+       1
+      ],
+      [
+       11,
+       0
+      ],
+      [
+       13,
+       1
+      ],
+      [
+       15,
+       0
+      ],
+      [
+       17,
+       1
+      ],
+      [
+       19,
+       0
+      ],
+      [
+       21,
+       1
+      ],
+      [
+       23,
+       0
+      ]
+     ],
+     "port_cover": [
+      [
+       0,
+       0
+      ],
+      [
+       4,
+       1
+      ],
+      [
+       30,
+       1
+      ]
+     ],
+     "trigger": [
+      [
+       0,
+       0
+      ],
+      [
+       3,
+       1
+      ],
+      [
+       27,
+       1
+      ],
+      [
+       30,
+       0
+      ]
+     ]
+    },
+    "step": 1,
+    "view": [
+     -0.85,
+     -0.25,
+     0.45
+    ]
+   },
+   "reload_empty": {
+    "de": "Nachladen aus leerem Zustand",
+    "events": [
+     [
+      18,
+      "mag_out"
+     ],
+     [
+      50,
+      "mag_seated"
+     ],
+     [
+      66,
+      "charge"
+     ],
+     [
+      72,
+      "ready"
+     ]
+    ],
+    "frames": 84,
+    "keys": {
+     "charging_handle": [
+      [
+       0,
+       0
+      ],
+      [
+       58,
+       0
+      ],
+      [
+       66,
+       1
+      ],
+      [
+       72,
+       0
+      ]
+     ],
+     "mag_release": [
+      [
+       0,
+       0
+      ],
+      [
+       6,
+       1
+      ],
+      [
+       14,
+       0
+      ]
+     ],
+     "magazine": [
+      [
+       0,
+       0
+      ],
+      [
+       6,
+       0
+      ],
+      [
+       18,
+       1
+      ],
+      [
+       34,
+       1
+      ],
+      [
+       50,
+       0
+      ]
+     ],
+     "port_cover": [
+      [
+       0,
+       1
+      ],
+      [
+       84,
+       1
+      ]
+     ]
+    }
+   }
+  },
+  "ANCHORS": {
+   "Socket_Charge": {
+    "at": [
+     -83,
+     121,
+     27
+    ],
+    "note": "Griffpunkt Ladehebel für die Stützhand",
+    "part": "charging_handle"
+   },
+   "Socket_Eye": {
+    "at": [
+     -55.6,
+     169.0,
+     0
+    ],
+    "note": "Augenpunkt beim Zielen (Visier-Standard: 90 mm hinter dem Glas)",
+    "part": "sight_frame",
+    "sight_type": "reflex",
+    "std": true
+   },
+   "Socket_Hand": {
+    "at": [
+     0,
+     0,
+     0
+    ],
+    "note": "Haupthand, auf der Griffachse",
+    "part": "grip"
+   },
+   "Socket_MagWell": {
+    "at": [
+     108,
+     70,
+     0
+    ],
+    "note": "Einrastpunkt Magazin (Schnittstelle BMW-R)",
+    "part": "mag_well"
+   },
+   "Socket_Muzzle": {
+    "at": [
+     530.9184,
+     106,
+     0
+    ],
+    "part": "muzzle_crown"
+   },
+   "Socket_Reticle": {
+    "at": [
+     34.4,
+     169.0,
+     0
+    ],
+    "part": "sight_glass"
+   },
+   "Socket_Sight": {
+    "at": [
+     -5.0,
+     169.0,
+     0
+    ],
+    "part": "sight_body"
+   },
+   "Socket_SupportHand": {
+    "at": [
+     282,
+     95,
+     0
+    ],
+    "note": "Mitte Handschutz, Stützhand umgreift",
+    "part": "handguard"
+   }
+  },
+  "ASSEMBLIES": [
+   {
+    "de": "Hauptgehäuse",
+    "en": "Receiver",
+    "id": "receiver"
+   },
+   {
+    "de": "Lauf",
+    "en": "Barrel",
+    "id": "barrel"
+   },
+   {
+    "de": "Munitionsversorgung",
+    "en": "Ammunition feed",
+    "id": "ammo"
+   },
+   {
+    "de": "Visier",
+    "en": "Sight",
+    "id": "sight"
+   },
+   {
+    "de": "Griff und Bedienung",
+    "en": "Grip and controls",
+    "id": "grip_controls"
+   },
+   {
+    "de": "Stützbereich",
+    "en": "Support",
+    "id": "support"
+   },
+   {
+    "de": "Schaft",
+    "en": "Stock",
+    "id": "stock"
+   },
+   {
+    "de": "Bewegliche Mechanik",
+    "en": "Moving mechanism",
+    "id": "mechanism"
+   }
+  ],
+  "META": {
+   "ammo": "primary",
+   "fire": "full_auto",
+   "id": "BASIC-01",
+   "inspired_by": "Formgen KG02 „Kantenläufer“ (Variante G)",
+   "name": "Formstudie 01 v2.1",
+   "nick": "Pilot AAA",
+   "num": "01",
+   "reference_length_m": 0.934,
+   "reference_length_source": "Toolgen 0.13 assault_rifle (Formgen KG02 spec units)",
+   "summary": "Automatikgewehr mit Destiny-Detaildichte und PBR-Materialien (Pilot).",
+   "type": "auto_rifle",
+   "type_de": "Automatikgewehr",
+   "type_en": "Auto Rifle",
+   "variant": "v2.1"
+  },
+  "PARTS": [
+   {
+    "asm": "receiver",
+    "attach": "mit Unterem Gehäuse über zwei Querbolzen (fest)",
+    "bevel": 5.0,
+    "cuts": [
+     {
+      "f0": 22,
+      "f1": 84,
+      "shape": "box",
+      "u0": 95,
+      "u1": 121,
+      "w": 18,
+      "x": -22
+     },
+     {
+      "f0": -100,
+      "f1": -56,
+      "shape": "box",
+      "u0": 116,
+      "u1": 125,
+      "w": 10,
+      "x": 22
+     },
+     {
+      "f0": -96,
+      "f1": -10,
+      "shape": "box",
+      "u0": 94,
+      "u1": 112,
+      "w": 3.0,
+      "x": 22.6
+     },
+     {
+      "f0": -96,
+      "f1": -10,
+      "shape": "box",
+      "u0": 94,
+      "u1": 112,
+      "w": 3.0,
+      "x": -22.6
+     },
+     {
+      "a0": 18.5,
+      "a1": 26,
+      "axis": "x",
+      "c": [
+       30,
+       106
+      ],
+      "r": 10.5,
+      "segs": 32,
+      "shape": "cyl"
+     },
+     {
+      "f0": 110,
+      "f1": 111,
+      "shape": "box",
+      "u0": 139,
+      "u1": 145,
+      "w": 60,
+      "x": 0.0
+     },
+     {
+      "f0": 110,
+      "f1": 111,
+      "shape": "box",
+      "u0": 87,
+      "u1": 140,
+      "w": 2,
+      "x": 22.5
+     },
+     {
+      "f0": 110,
+      "f1": 111,
+      "shape": "box",
+      "u0": 87,
+      "u1": 140,
+      "w": 2,
+      "x": -22.5
+     }
+    ],
+    "de": "Oberes Gehäuse",
+    "en": "Upper receiver",
+    "func": "Tragkörper für Lauf, Verschluss und Schiene",
+    "id": "upper",
+    "mat": "shell",
+    "pts": [
+     [
+      -120,
+      87
+     ],
+     [
+      190,
+      87
+     ],
+     [
+      198,
+      95
+     ],
+     [
+      198,
+      128
+     ],
+     [
+      186,
+      140
+     ],
+     [
+      52,
+      140
+     ],
+     [
+      40,
+      135
+     ],
+     [
+      -108,
+      135
+     ],
+     [
+      -120,
+      125
+     ]
+    ],
+    "shape": "prof",
+    "w": 44
+   },
+   {
+    "asm": "receiver",
+    "attach": "unter dem Oberen Gehäuse, Fuge 1 mm; Magazintrichter angeformt",
+    "bevel": 5.0,
+    "cuts": [
+     {
+      "f0": -104,
+      "f1": -70,
+      "shape": "box",
+      "u0": 66,
+      "u1": 80,
+      "w": 4.0,
+      "x": 21.5
+     },
+     {
+      "f0": -104,
+      "f1": -70,
+      "shape": "box",
+      "u0": 66,
+      "u1": 80,
+      "w": 4.0,
+      "x": -21.5
+     },
+     {
+      "f0": 150,
+      "f1": 170,
+      "shape": "box",
+      "u0": 72,
+      "u1": 82,
+      "w": 4.0,
+      "x": 21.5
+     },
+     {
+      "f0": 150,
+      "f1": 170,
+      "shape": "box",
+      "u0": 72,
+      "u1": 82,
+      "w": 4.0,
+      "x": -21.5
+     }
+    ],
+    "de": "Unteres Gehäuse",
+    "en": "Lower receiver",
+    "func": "Griffmodul, Abzugsgruppe, Magazinschacht",
+    "id": "lower",
+    "mat": "graphite",
+    "pts": [
+     [
+      -120,
+      64
+     ],
+     [
+      -64,
+      42
+     ],
+     [
+      70,
+      42
+     ],
+     [
+      78,
+      30
+     ],
+     [
+      82,
+      20
+     ],
+     [
+      142,
+      20
+     ],
+     [
+      148,
+      30
+     ],
+     [
+      186,
+      66
+     ],
+     [
+      186,
+      86
+     ],
+     [
+      -120,
+      86
+     ]
+    ],
+    "shape": "prof",
+    "w": 42
+   },
+   {
+    "asm": "receiver",
+    "attach": "in die Mulde geschraubt (4 Schrauben)",
+    "bevel": 0.8,
+    "de": "Seitenpaneel links",
+    "en": "Side panel left",
+    "f0": -94,
+    "f1": -12,
+    "func": "Wartungsdeckel über der Mechanik",
+    "id": "side_panel_l",
+    "mat": "anodized",
+    "shape": "box",
+    "u0": 96,
+    "u1": 110,
+    "w": 1.2,
+    "x": 21.2
+   },
+   {
+    "asm": "receiver",
+    "attach": "in die Mulde geschraubt (4 Schrauben)",
+    "bevel": 0.8,
+    "de": "Seitenpaneel rechts",
+    "en": "Side panel right",
+    "f0": -94,
+    "f1": -12,
+    "func": "Wartungsdeckel über der Mechanik",
+    "id": "side_panel_r",
+    "mat": "anodized",
+    "shape": "box",
+    "u0": 96,
+    "u1": 110,
+    "w": 1.2,
+    "x": -21.2
+   },
+   {
+    "asm": "receiver",
+    "attach": "in den Paneelen",
+    "bevel": 0.2,
+    "de": "Paneelschrauben",
+    "en": "Panel screws",
+    "func": "Halten die Seitenpaneele",
+    "id": "panel_screws",
+    "items": [
+     {
+      "a0": 21.2,
+      "a1": 22.6,
+      "axis": "x",
+      "c": [
+       -90,
+       99
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 21.2,
+      "a1": 22.6,
+      "axis": "x",
+      "c": [
+       -90,
+       107
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 21.2,
+      "a1": 22.6,
+      "axis": "x",
+      "c": [
+       -16,
+       99
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 21.2,
+      "a1": 22.6,
+      "axis": "x",
+      "c": [
+       -16,
+       107
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -21.2,
+      "a1": -22.6,
+      "axis": "x",
+      "c": [
+       -90,
+       99
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -21.2,
+      "a1": -22.6,
+      "axis": "x",
+      "c": [
+       -90,
+       107
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -21.2,
+      "a1": -22.6,
+      "axis": "x",
+      "c": [
+       -16,
+       99
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -21.2,
+      "a1": -22.6,
+      "axis": "x",
+      "c": [
+       -16,
+       107
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     }
+    ],
+    "mat": "trim",
+    "shape": "multi"
+   },
+   {
+    "asm": "receiver",
+    "attach": "quer durch das Gehäuse (lösbar)",
+    "bevel": 0.4,
+    "de": "Querbolzen",
+    "en": "Takedown pins",
+    "func": "Verbinden Ober- und Unterteil",
+    "id": "takedown_pins",
+    "items": [
+     {
+      "a0": 20.4,
+      "a1": 22.0,
+      "axis": "x",
+      "c": [
+       -96,
+       78
+      ],
+      "r": 3.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 20.4,
+      "a1": 22.0,
+      "axis": "x",
+      "c": [
+       162,
+       78
+      ],
+      "r": 3.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -20.4,
+      "a1": -22.0,
+      "axis": "x",
+      "c": [
+       -96,
+       78
+      ],
+      "r": 3.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -20.4,
+      "a1": -22.0,
+      "axis": "x",
+      "c": [
+       162,
+       78
+      ],
+      "r": 3.6,
+      "segs": 12,
+      "shape": "cyl"
+     }
+    ],
+    "mat": "metal",
+    "shape": "multi"
+   },
+   {
+    "asm": "receiver",
+    "attach": "mit drei Schrauben aufgesetzt, Stufe 2,5 mm",
+    "bevel": 1.5,
+    "de": "Seitenpanzer links",
+    "en": "Side armor left",
+    "func": "Zweite Schicht über Lauflager und Gasweg",
+    "id": "armor_l",
+    "mat": "shell",
+    "pts": [
+     [
+      58,
+      90
+     ],
+     [
+      176,
+      90
+     ],
+     [
+      194,
+      104
+     ],
+     [
+      194,
+      126
+     ],
+     [
+      182,
+      136
+     ],
+     [
+      72,
+      136
+     ],
+     [
+      58,
+      122
+     ]
+    ],
+    "shape": "prof",
+    "w": 2.5,
+    "x": 23.2
+   },
+   {
+    "asm": "receiver",
+    "attach": "mit drei Schrauben aufgesetzt, Stufe 2,5 mm",
+    "bevel": 1.5,
+    "de": "Seitenpanzer rechts",
+    "en": "Side armor right",
+    "func": "Zweite Schicht über Lauflager und Gasweg",
+    "id": "armor_r",
+    "mat": "shell",
+    "pts": [
+     [
+      90,
+      90
+     ],
+     [
+      176,
+      90
+     ],
+     [
+      194,
+      104
+     ],
+     [
+      194,
+      126
+     ],
+     [
+      182,
+      136
+     ],
+     [
+      100,
+      136
+     ],
+     [
+      90,
+      122
+     ]
+    ],
+    "shape": "prof",
+    "w": 2.5,
+    "x": -23.2
+   },
+   {
+    "asm": "receiver",
+    "attach": "in den Panzerplatten",
+    "bevel": 0.2,
+    "de": "Panzerschrauben",
+    "en": "Armor screws",
+    "func": "Halten die Seitenpanzer",
+    "id": "armor_screws",
+    "items": [
+     {
+      "a0": 23.799999999999997,
+      "a1": 25.2,
+      "axis": "x",
+      "c": [
+       66,
+       96
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 23.799999999999997,
+      "a1": 25.2,
+      "axis": "x",
+      "c": [
+       186,
+       98
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 23.799999999999997,
+      "a1": 25.2,
+      "axis": "x",
+      "c": [
+       186,
+       126
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -23.799999999999997,
+      "a1": -25.2,
+      "axis": "x",
+      "c": [
+       98,
+       96
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -23.799999999999997,
+      "a1": -25.2,
+      "axis": "x",
+      "c": [
+       186,
+       98
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -23.799999999999997,
+      "a1": -25.2,
+      "axis": "x",
+      "c": [
+       186,
+       126
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     }
+    ],
+    "mat": "trim",
+    "shape": "multi"
+   },
+   {
+    "asm": "receiver",
+    "attach": "auf das Obere Gehäuse geschraubt",
+    "bevel": 1.5,
+    "cuts": [
+     {
+      "f0": 100,
+      "f1": 112,
+      "shape": "box",
+      "u0": 143,
+      "u1": 150,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 122,
+      "f1": 134,
+      "shape": "box",
+      "u0": 143,
+      "u1": 150,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 144,
+      "f1": 156,
+      "shape": "box",
+      "u0": 143,
+      "u1": 150,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 166,
+      "f1": 178,
+      "shape": "box",
+      "u0": 143,
+      "u1": 150,
+      "w": 30,
+      "x": 0.0
+     }
+    ],
+    "de": "Laufhaube",
+    "en": "Top shroud",
+    "func": "Lange Haube über Lauflager und Lauf; kragt frei aus, darunter offener Laufraum",
+    "id": "top_shroud",
+    "mat": "shell",
+    "pts": [
+     [
+      52,
+      139
+     ],
+     [
+      196,
+      139
+     ],
+     [
+      204,
+      126
+     ],
+     [
+      440,
+      126
+     ],
+     [
+      468,
+      120
+     ],
+     [
+      474,
+      124
+     ],
+     [
+      462,
+      138
+     ],
+     [
+      300,
+      146
+     ],
+     [
+      64,
+      146
+     ],
+     [
+      52,
+      142
+     ]
+    ],
+    "shape": "prof",
+    "w": 40
+   },
+   {
+    "asm": "barrel",
+    "attach": "um den Lauf geklemmt",
+    "bevel": 1.5,
+    "cu": 106,
+    "de": "Haubenstütze",
+    "en": "Shroud bracket",
+    "f0": 448,
+    "f1": 460,
+    "func": "Stützt die Haube am Lauf",
+    "id": "shroud_bracket",
+    "ih": 21,
+    "iw": 21,
+    "mat": "anodized",
+    "oh": 28,
+    "ow": 28,
+    "r_in": 10,
+    "r_out": 6,
+    "shape": "frame"
+   },
+   {
+    "asm": "barrel",
+    "attach": "zwischen Stütze und Haube",
+    "bevel": 0.8,
+    "de": "Haubensteg",
+    "en": "Shroud web",
+    "f0": 448,
+    "f1": 460,
+    "func": "Verbindet Stütze und Haube",
+    "id": "shroud_web",
+    "mat": "anodized",
+    "shape": "box",
+    "u0": 118,
+    "u1": 128,
+    "w": 12
+   },
+   {
+    "asm": "receiver",
+    "attach": "lackiert",
+    "bevel": 0,
+    "de": "Chevronband oben",
+    "en": "Chevron band top",
+    "func": "Lackiertes Band (einziges Grafikelement)",
+    "id": "chevron_top",
+    "items": [
+     {
+      "pts": [
+       [
+        250,
+        -20
+       ],
+       [
+        262,
+        -20
+       ],
+       [
+        276,
+        0
+       ],
+       [
+        262,
+        20
+       ],
+       [
+        250,
+        20
+       ],
+       [
+        264,
+        0
+       ]
+      ],
+      "shape": "plan",
+      "u0": 145.9,
+      "u1": 146.25
+     },
+     {
+      "pts": [
+       [
+        268,
+        -20
+       ],
+       [
+        280,
+        -20
+       ],
+       [
+        294,
+        0
+       ],
+       [
+        280,
+        20
+       ],
+       [
+        268,
+        20
+       ],
+       [
+        282,
+        0
+       ]
+      ],
+      "shape": "plan",
+      "u0": 145.9,
+      "u1": 146.25
+     }
+    ],
+    "mat": "accent",
+    "shape": "multi"
+   },
+   {
+    "asm": "receiver",
+    "attach": "lackiert",
+    "bevel": 0,
+    "de": "Chevronband Seiten",
+    "en": "Chevron band sides",
+    "func": "Band läuft über die Seiten",
+    "id": "chevron_side",
+    "items": [
+     {
+      "pts": [
+       [
+        264,
+        126.5
+       ],
+       [
+        276,
+        126.5
+       ],
+       [
+        262,
+        145.5
+       ],
+       [
+        250,
+        145.5
+       ]
+      ],
+      "shape": "prof",
+      "w": 0.3,
+      "x": 20.15
+     },
+     {
+      "pts": [
+       [
+        264,
+        126.5
+       ],
+       [
+        276,
+        126.5
+       ],
+       [
+        262,
+        145.5
+       ],
+       [
+        250,
+        145.5
+       ]
+      ],
+      "shape": "prof",
+      "w": 0.3,
+      "x": -20.15
+     },
+     {
+      "pts": [
+       [
+        282,
+        126.5
+       ],
+       [
+        294,
+        126.5
+       ],
+       [
+        280,
+        145.5
+       ],
+       [
+        268,
+        145.5
+       ]
+      ],
+      "shape": "prof",
+      "w": 0.3,
+      "x": 20.15
+     },
+     {
+      "pts": [
+       [
+        282,
+        126.5
+       ],
+       [
+        294,
+        126.5
+       ],
+       [
+        280,
+        145.5
+       ],
+       [
+        268,
+        145.5
+       ]
+      ],
+      "shape": "prof",
+      "w": 0.3,
+      "x": -20.15
+     }
+    ],
+    "mat": "accent",
+    "shape": "multi"
+   },
+   {
+    "asm": "receiver",
+    "attach": "aufgedruckt",
+    "bevel": 0,
+    "de": "Schriftzug",
+    "depth": 0.12,
+    "en": "Lettering",
+    "f": 440,
+    "func": "Kennung „BASIC AR-01“ (einzige Schrift)",
+    "id": "text_l",
+    "mat": "decal",
+    "shape": "text",
+    "side": 1,
+    "size": 5.0,
+    "text": "BASIC  AR-01",
+    "u": 134.5,
+    "x": 20.05
+   },
+   {
+    "asm": "receiver",
+    "attach": "auf das Obere Gehäuse gesetzt, Stufe 3 mm",
+    "bevel": 1.5,
+    "de": "Deckplatte",
+    "en": "Top cover",
+    "f0": -112,
+    "f1": -36,
+    "func": "Staubschutz über dem Verschluss; zweite Schicht",
+    "id": "top_cover",
+    "mat": "shell",
+    "shape": "box",
+    "u0": 134,
+    "u1": 139,
+    "w": 38
+   },
+   {
+    "asm": "receiver",
+    "attach": "vorn an der Deckplatte",
+    "bevel": 0.4,
+    "de": "Deckplatten-Kante",
+    "en": "Top cover trim",
+    "f0": -40,
+    "f1": -35,
+    "func": "Blanke Zierkante der Deckplatte",
+    "id": "top_cover_trim",
+    "mat": "trim",
+    "shape": "box",
+    "u0": 134,
+    "u1": 139.6,
+    "w": 39
+   },
+   {
+    "a0": 17.5,
+    "a1": 19.6,
+    "asm": "receiver",
+    "attach": "hinter dem Kernfenster",
+    "axis": "x",
+    "bevel": 0,
+    "c": [
+     30,
+     106
+    ],
+    "de": "Energiekern",
+    "en": "Energy core",
+    "func": "Leuchtender Kern der Antriebszelle (Blickfang)",
+    "id": "core_glow",
+    "mat": "energy",
+    "r": 10.4,
+    "segs": 32,
+    "shape": "cyl"
+   },
+   {
+    "a0": 20.4,
+    "a1": 21.0,
+    "asm": "receiver",
+    "attach": "im Kernfenster",
+    "axis": "x",
+    "bevel": 0,
+    "c": [
+     30,
+     106
+    ],
+    "de": "Kernglas",
+    "en": "Core lens",
+    "func": "Schützt den Kern",
+    "id": "core_lens",
+    "mat": "glass",
+    "r": 10.4,
+    "segs": 32,
+    "shape": "cyl"
+   },
+   {
+    "a0": 21.4,
+    "a1": 24.2,
+    "asm": "receiver",
+    "attach": "um das Kernfenster geschraubt",
+    "axis": "x",
+    "bevel": 0.6,
+    "c": [
+     30,
+     106
+    ],
+    "de": "Kernring",
+    "en": "Core ring",
+    "func": "Fasst das Kernfenster",
+    "id": "core_ring",
+    "mat": "trim",
+    "r": 14.5,
+    "r_in": 10.2,
+    "segs": 32,
+    "shape": "cyl"
+   },
+   {
+    "asm": "receiver",
+    "attach": "auf das Obere Gehäuse geschraubt",
+    "bevel": 0.6,
+    "de": "Anzeigenrahmen",
+    "en": "Counter bezel",
+    "f0": -48,
+    "f1": -14,
+    "func": "Fasst die Munitionsanzeige",
+    "id": "counter_bezel",
+    "mat": "anodized",
+    "shape": "box",
+    "u0": 112.5,
+    "u1": 124,
+    "w": 2.4,
+    "x": 22.6
+   },
+   {
+    "asm": "receiver",
+    "attach": "im Anzeigenrahmen",
+    "bevel": 0.2,
+    "de": "Munitionsanzeige",
+    "en": "Ammo counter",
+    "f0": -44,
+    "f1": -18,
+    "func": "Füllstand; zurückhaltendes Leuchtfeld",
+    "id": "ammo_counter",
+    "mat": "energy",
+    "shape": "box",
+    "u0": 114.5,
+    "u1": 122,
+    "w": 1.0,
+    "x": 23.6
+   },
+   {
+    "a0": 19,
+    "a1": 23.5,
+    "asm": "grip_controls",
+    "attach": "Druckknopf links",
+    "axis": "x",
+    "bevel": 0.8,
+    "c": [
+     74,
+     60
+    ],
+    "de": "Magazinhalter",
+    "en": "Magazine release",
+    "func": "Löst das Magazin",
+    "id": "mag_release",
+    "mat": "accent",
+    "move": {
+     "event": "reload",
+     "kind": "translate",
+     "pivot": [
+      74,
+      60,
+      21
+     ],
+     "vector_mm": [
+      0,
+      0,
+      -2.5
+     ]
+    },
+    "r": 5,
+    "segs": 20,
+    "shape": "cyl"
+   },
+   {
+    "asm": "receiver",
+    "attach": "unten am Trichter des Unterteils",
+    "bevel": 0.6,
+    "de": "Schachtlippe",
+    "en": "Magazine well lip",
+    "func": "Blanke Einführkante des Magazintrichters",
+    "id": "mag_well",
+    "iface": "BMW-R",
+    "mat": "trim",
+    "pts": [
+     [
+      81,
+      17.5
+     ],
+     [
+      143,
+      17.5
+     ],
+     [
+      144,
+      21
+     ],
+     [
+      80,
+      21
+     ]
+    ],
+    "shape": "prof",
+    "w": 43
+   },
+   {
+    "asm": "mechanism",
+    "attach": "im Oberen Gehäuse geführt",
+    "bevel": 1.5,
+    "cuts": [
+     {
+      "f0": 30,
+      "f1": 76,
+      "shape": "box",
+      "u0": 104,
+      "u1": 112,
+      "w": 4,
+      "x": -13
+     }
+    ],
+    "de": "Verschlussträger",
+    "en": "Bolt carrier",
+    "f0": -40,
+    "f1": 82,
+    "func": "Lädt und verriegelt; läuft beim Schuss zurück",
+    "id": "bolt_carrier",
+    "mat": "metal",
+    "move": {
+     "event": "fire",
+     "kind": "translate",
+     "pivot": [
+      20,
+      108,
+      0
+     ],
+     "vector_mm": [
+      -42,
+      0,
+      0
+     ]
+    },
+    "shape": "box",
+    "u0": 97,
+    "u1": 119,
+    "w": 26
+   },
+   {
+    "asm": "mechanism",
+    "attach": "Scharnier an der Unterkante",
+    "bevel": 0.8,
+    "de": "Auswurfklappe",
+    "en": "Ejection port cover",
+    "func": "Deckt das Auswurffenster ab",
+    "id": "port_cover",
+    "mat": "anodized",
+    "move": {
+     "axis": "f",
+     "event": "fire",
+     "expect": [
+      [
+       53,
+       121,
+       -23
+      ],
+      [
+       0,
+       0,
+       -1
+      ]
+     ],
+     "kind": "rotate",
+     "pivot": [
+      53,
+      95,
+      -23
+     ],
+     "range_deg": [
+      0,
+      75
+     ]
+    },
+    "pts": [
+     [
+      22,
+      95
+     ],
+     [
+      84,
+      95
+     ],
+     [
+      84,
+      121
+     ],
+     [
+      22,
+      121
+     ]
+    ],
+    "shape": "prof",
+    "w": 1.6,
+    "x": -22.6
+   },
+   {
+    "asm": "receiver",
+    "attach": "auf Oberem Gehäuse (fest)",
+    "bevel": 1.5,
+    "cuts": [
+     {
+      "f0": -24,
+      "f1": -18,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": -12,
+      "f1": -6,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 0,
+      "f1": 6,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 12,
+      "f1": 18,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 24,
+      "f1": 30,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 36,
+      "f1": 42,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "f0": 48,
+      "f1": 54,
+      "shape": "box",
+      "u0": 139,
+      "u1": 144,
+      "w": 30,
+      "x": 0.0
+     }
+    ],
+    "de": "Schiene",
+    "en": "Top rail",
+    "f0": -30,
+    "f1": 50,
+    "func": "Aufnahme für Visiere (BRI-22)",
+    "id": "rail",
+    "iface": "BRI-22",
+    "mat": "anodized",
+    "shape": "box",
+    "u0": 134.5,
+    "u1": 143,
+    "w": 22
+   },
+   {
+    "asm": "sight",
+    "attach": "Klemmung auf Schiene (lösbar)",
+    "bevel": 1.5,
+    "de": "Visier-Klemmfuß",
+    "en": "Sight mount",
+    "func": "Klemmt das Visier auf die Schiene BRI-22; gestuftes Trapez",
+    "id": "sight_mount",
+    "iface": "BRI-22",
+    "items": [
+     {
+      "f0": -6.0,
+      "f1": 40.0,
+      "shape": "box",
+      "u0": 143.5,
+      "u1": 146.5,
+      "w": 23
+     },
+     {
+      "f0": -4.0,
+      "f1": 38.0,
+      "shape": "box",
+      "u0": 146,
+      "u1": 149,
+      "w": 18
+     }
+    ],
+    "mat": "sight_anod",
+    "move": {
+     "event": "swap_sight",
+     "kind": "translate",
+     "pivot": [
+      17.0,
+      143,
+      0
+     ],
+     "removable": true,
+     "vector_mm": [
+      0,
+      70,
+      0
+     ]
+    },
+    "shape": "multi"
+   },
+   {
+    "asm": "sight",
+    "attach": "Drehachse links am Klemmfuß",
+    "bevel": 0.8,
+    "de": "Klemmhebel",
+    "en": "Clamp lever",
+    "func": "Spannt den Klemmfuß werkzeuglos",
+    "id": "sight_clamp",
+    "mat": "accent",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      6.0,
+      143.8
+     ],
+     [
+      26.0,
+      143.8
+     ],
+     [
+      28.0,
+      146.2
+     ],
+     [
+      6.0,
+      146.6
+     ]
+    ],
+    "shape": "prof",
+    "w": 1.8,
+    "x": 12.4
+   },
+   {
+    "asm": "sight",
+    "attach": "auf Klemmfuß (fest)",
+    "bevel": 1.5,
+    "de": "Visiergehäuse",
+    "en": "Sight housing",
+    "func": "Trägt Emitter und Batterie; flach, hinten",
+    "id": "sight_body",
+    "mat": "sight_anod",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      -5.0,
+      148.5
+     ],
+     [
+      24.0,
+      148.5
+     ],
+     [
+      24.0,
+      152.5
+     ],
+     [
+      12.0,
+      152.5
+     ],
+     [
+      8.0,
+      155
+     ],
+     [
+      -5.0,
+      155
+     ]
+    ],
+    "shape": "prof",
+    "w": 16
+   },
+   {
+    "asm": "sight",
+    "attach": "auf Klemmfuß (fest)",
+    "bevel": 0.8,
+    "de": "Haubensockel",
+    "en": "Hood base",
+    "func": "Trägt Haube und Glas bis zur Fensterunterkante; trapezförmig verjüngt, Anzeigen unter der Visierlinie",
+    "id": "sight_base",
+    "mat": "sight_anod",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      23.0,
+      148.5
+     ],
+     [
+      40.6,
+      148.5
+     ],
+     [
+      40.6,
+      159.1
+     ],
+     [
+      27.0,
+      159.1
+     ]
+    ],
+    "shape": "prof",
+    "w": 22.0
+   },
+   {
+    "a0": -7.5,
+    "a1": -10,
+    "asm": "sight",
+    "attach": "rechts am Gehäuse",
+    "axis": "x",
+    "bevel": 0.8,
+    "c": [
+     18.0,
+     150.8
+    ],
+    "de": "Seitenverstellung",
+    "en": "Windage knob",
+    "func": "Verstellt das Absehen seitlich",
+    "id": "sight_knob_w",
+    "mat": "trim",
+    "parent_part": "sight_mount",
+    "r": 2.4,
+    "segs": 16,
+    "shape": "cyl"
+   },
+   {
+    "a0": 7.5,
+    "a1": 10,
+    "asm": "sight",
+    "attach": "links am Gehäuse (schraubbar)",
+    "axis": "x",
+    "bevel": 0.8,
+    "c": [
+     18.0,
+     150.8
+    ],
+    "de": "Batteriedeckel",
+    "en": "Battery cap",
+    "func": "Batteriefach links",
+    "id": "sight_battery",
+    "mat": "sight_anod",
+    "parent_part": "sight_mount",
+    "r": 3.2,
+    "segs": 16,
+    "shape": "cyl"
+   },
+   {
+    "asm": "sight",
+    "attach": "vorn im Emitterblock",
+    "bevel": 0.3,
+    "de": "Emitter",
+    "en": "Reticle emitter",
+    "f0": 9.5,
+    "f1": 11.5,
+    "func": "Leuchtfenster des Absehen-Projektors (unter der Visierlinie)",
+    "id": "sight_emitter",
+    "mat": "energy",
+    "parent_part": "sight_mount",
+    "shape": "box",
+    "u0": 152.6,
+    "u1": 154.4,
+    "w": 6
+   },
+   {
+    "asm": "sight",
+    "attach": "auf dem Haubensockel (fest)",
+    "bevel": 0.4,
+    "cu": 169.0,
+    "cuts": [],
+    "de": "Zinke links",
+    "en": "Tine left",
+    "f0": 28.0,
+    "f1": 40.0,
+    "func": "Seitenplatte 15° nach außen, oben offen",
+    "id": "sight_frame",
+    "mat": "sight_anod",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      8.0,
+      -9.9
+     ],
+     [
+      11.0,
+      -9.9
+     ],
+     [
+      15.502061910457147,
+      12.5
+     ],
+     [
+      13.600138121810463,
+      11.0
+     ]
+    ],
+    "shape": "xprof"
+   },
+   {
+    "asm": "sight",
+    "attach": "auf dem Haubensockel (fest)",
+    "bevel": 0.4,
+    "cu": 169.0,
+    "cuts": [],
+    "de": "Zinke rechts",
+    "en": "Tine right",
+    "f0": 28.0,
+    "f1": 40.0,
+    "func": "Seitenplatte 15° nach außen, oben offen",
+    "id": "sight_frame_r",
+    "mat": "sight_anod",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      -8.0,
+      -9.9
+     ],
+     [
+      -11.0,
+      -9.9
+     ],
+     [
+      -15.502061910457147,
+      12.5
+     ],
+     [
+      -13.600138121810463,
+      11.0
+     ]
+    ],
+    "shape": "xprof"
+   },
+   {
+    "asm": "sight",
+    "attach": "auf dem Haubensockel (fest)",
+    "bevel": 0.2,
+    "cu": 169.0,
+    "cuts": [],
+    "de": "Zinkenkante links",
+    "en": "Tine trim left",
+    "f0": 39.6,
+    "f1": 40.6,
+    "func": "Blanke Stirnkante",
+    "id": "sight_frame_trim",
+    "mat": "trim",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      8.0,
+      -9.9
+     ],
+     [
+      11.0,
+      -9.9
+     ],
+     [
+      15.502061910457147,
+      12.5
+     ],
+     [
+      13.600138121810463,
+      11.0
+     ]
+    ],
+    "shape": "xprof"
+   },
+   {
+    "asm": "sight",
+    "attach": "auf dem Haubensockel (fest)",
+    "bevel": 0.2,
+    "cu": 169.0,
+    "cuts": [],
+    "de": "Zinkenkante rechts",
+    "en": "Tine trim right",
+    "f0": 39.6,
+    "f1": 40.6,
+    "func": "Blanke Stirnkante",
+    "id": "sight_frame_trim_r",
+    "mat": "trim",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      -8.0,
+      -9.9
+     ],
+     [
+      -11.0,
+      -9.9
+     ],
+     [
+      -15.502061910457147,
+      12.5
+     ],
+     [
+      -13.600138121810463,
+      11.0
+     ]
+    ],
+    "shape": "xprof"
+   },
+   {
+    "a0": 25.27924528301887,
+    "a1": 26.27924528301887,
+    "asm": "sight",
+    "attach": "in der Sockelrückseite",
+    "axis": "f",
+    "bevel": 0,
+    "c": [
+     155.6,
+     0
+    ],
+    "de": "Emitterpunkt",
+    "en": "Emitter pip",
+    "func": "Leuchtpunkt zum Auge (Visier bereit)",
+    "id": "sight_status",
+    "mat": "energy",
+    "parent_part": "sight_mount",
+    "r": 0.9,
+    "segs": 16,
+    "shape": "cyl"
+   },
+   {
+    "asm": "sight",
+    "attach": "in der Haube (fest)",
+    "bevel": 0,
+    "cu": 169.0,
+    "cuts": [],
+    "de": "Visierglas",
+    "en": "Sight glass",
+    "f0": 34.0,
+    "f1": 34.8,
+    "func": "Reflexscheibe ohne Spiegelung; das Absehen liegt flach darauf",
+    "id": "sight_glass",
+    "mat": "glass_scope",
+    "parent_part": "sight_mount",
+    "pts": [
+     [
+      7.8,
+      -9.5
+     ],
+     [
+      12.89103465619133,
+      9.5
+     ],
+     [
+      -12.89103465619133,
+      9.5
+     ],
+     [
+      -7.8,
+      -9.5
+     ]
+    ],
+    "shape": "xprof"
+   },
+   {
+    "asm": "sight",
+    "attach": "flach auf der Glasebene",
+    "bevel": 0,
+    "de": "Absehen Ring mit Punkt",
+    "drawn": {
+     "dist_mm": 89.6,
+     "kind": "ring_dot",
+     "share_h": 0.032
+    },
+    "en": "Reticle Ring and dot",
+    "func": "Zielpunkt im Glas: Ring mit Punkt gezeichnet (Hüftform der Klasse, Cyan, vom Emitter projiziert)",
+    "id": "sight_reticle",
+    "items": [
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        1.046992357201749,
+        0.0
+       ],
+       [
+        1.2375449662124673,
+        0.0
+       ],
+       [
+        1.2269575974703766,
+        0.16153203214080575
+       ],
+       [
+        1.038035192445327,
+        0.1366599256690404
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        1.038035192445327,
+        0.1366599256690404
+       ],
+       [
+        1.2269575974703766,
+        0.16153203214080575
+       ],
+       [
+        1.1953766440586546,
+        0.3203002064265421
+       ],
+       [
+        1.0113169577484387,
+        0.270981562120594
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        1.0113169577484387,
+        0.270981562120594
+       ],
+       [
+        1.1953766440586546,
+        0.3203002064265421
+       ],
+       [
+        1.1433424648460704,
+        0.4735879553763261
+       ],
+       [
+        0.967294809514442,
+        0.4006666289139814
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.967294809514442,
+        0.4006666289139814
+       ],
+       [
+        1.1433424648460704,
+        0.4735879553763261
+       ],
+       [
+        1.0717453790655516,
+        0.6187724831062336
+       ],
+       [
+        0.9067219789048659,
+        0.5234961786008744
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.9067219789048659,
+        0.5234961786008744
+       ],
+       [
+        1.0717453790655516,
+        0.6187724831062336
+       ],
+       [
+        0.9818104327052647,
+        0.7533696420940506
+       ],
+       [
+        0.8306348838454016,
+        0.6373685635313456
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.8306348838454016,
+        0.6373685635313456
+       ],
+       [
+        0.9818104327052647,
+        0.7533696420940506
+       ],
+       [
+        0.8750764376321125,
+        0.8750764376321124
+       ],
+       [
+        0.7403353956278448,
+        0.7403353956278447
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.7403353956278448,
+        0.7403353956278447
+       ],
+       [
+        0.8750764376321125,
+        0.8750764376321124
+       ],
+       [
+        0.7533696420940506,
+        0.9818104327052647
+       ],
+       [
+        0.6373685635313456,
+        0.8306348838454016
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.6373685635313456,
+        0.8306348838454016
+       ],
+       [
+        0.7533696420940506,
+        0.9818104327052647
+       ],
+       [
+        0.6187724831062338,
+        1.0717453790655516
+       ],
+       [
+        0.5234961786008746,
+        0.9067219789048658
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.5234961786008746,
+        0.9067219789048658
+       ],
+       [
+        0.6187724831062338,
+        1.0717453790655516
+       ],
+       [
+        0.47358795537632614,
+        1.1433424648460704
+       ],
+       [
+        0.40066662891398147,
+        0.967294809514442
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.40066662891398147,
+        0.967294809514442
+       ],
+       [
+        0.47358795537632614,
+        1.1433424648460704
+       ],
+       [
+        0.3203002064265421,
+        1.1953766440586546
+       ],
+       [
+        0.270981562120594,
+        1.0113169577484387
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.270981562120594,
+        1.0113169577484387
+       ],
+       [
+        0.3203002064265421,
+        1.1953766440586546
+       ],
+       [
+        0.16153203214080591,
+        1.2269575974703766
+       ],
+       [
+        0.13665992566904053,
+        1.038035192445327
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.13665992566904053,
+        1.038035192445327
+       ],
+       [
+        0.16153203214080591,
+        1.2269575974703766
+       ],
+       [
+        7.577777408365088e-17,
+        1.2375449662124673
+       ],
+       [
+        6.410979194894321e-17,
+        1.046992357201749
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        6.410979194894321e-17,
+        1.046992357201749
+       ],
+       [
+        7.577777408365088e-17,
+        1.2375449662124673
+       ],
+       [
+        -0.16153203214080578,
+        1.2269575974703766
+       ],
+       [
+        -0.13665992566904042,
+        1.038035192445327
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.13665992566904042,
+        1.038035192445327
+       ],
+       [
+        -0.16153203214080578,
+        1.2269575974703766
+       ],
+       [
+        -0.32030020642654194,
+        1.1953766440586546
+       ],
+       [
+        -0.2709815621205939,
+        1.0113169577484387
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.2709815621205939,
+        1.0113169577484387
+       ],
+       [
+        -0.32030020642654194,
+        1.1953766440586546
+       ],
+       [
+        -0.4735879553763257,
+        1.1433424648460706
+       ],
+       [
+        -0.40066662891398114,
+        0.9672948095144421
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.40066662891398114,
+        0.9672948095144421
+       ],
+       [
+        -0.4735879553763257,
+        1.1433424648460706
+       ],
+       [
+        -0.6187724831062335,
+        1.0717453790655516
+       ],
+       [
+        -0.5234961786008743,
+        0.9067219789048659
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.5234961786008743,
+        0.9067219789048659
+       ],
+       [
+        -0.6187724831062335,
+        1.0717453790655516
+       ],
+       [
+        -0.7533696420940506,
+        0.9818104327052647
+       ],
+       [
+        -0.6373685635313456,
+        0.8306348838454016
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.6373685635313456,
+        0.8306348838454016
+       ],
+       [
+        -0.7533696420940506,
+        0.9818104327052647
+       ],
+       [
+        -0.8750764376321124,
+        0.8750764376321125
+       ],
+       [
+        -0.7403353956278447,
+        0.7403353956278448
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.7403353956278447,
+        0.7403353956278448
+       ],
+       [
+        -0.8750764376321124,
+        0.8750764376321125
+       ],
+       [
+        -0.9818104327052646,
+        0.7533696420940508
+       ],
+       [
+        -0.8306348838454015,
+        0.6373685635313459
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.8306348838454015,
+        0.6373685635313459
+       ],
+       [
+        -0.9818104327052646,
+        0.7533696420940508
+       ],
+       [
+        -1.0717453790655516,
+        0.6187724831062336
+       ],
+       [
+        -0.9067219789048659,
+        0.5234961786008744
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.9067219789048659,
+        0.5234961786008744
+       ],
+       [
+        -1.0717453790655516,
+        0.6187724831062336
+       ],
+       [
+        -1.1433424648460704,
+        0.4735879553763262
+       ],
+       [
+        -0.967294809514442,
+        0.4006666289139815
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.967294809514442,
+        0.4006666289139815
+       ],
+       [
+        -1.1433424648460704,
+        0.4735879553763262
+       ],
+       [
+        -1.1953766440586544,
+        0.32030020642654244
+       ],
+       [
+        -1.0113169577484387,
+        0.27098156212059427
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -1.0113169577484387,
+        0.27098156212059427
+       ],
+       [
+        -1.1953766440586544,
+        0.32030020642654244
+       ],
+       [
+        -1.2269575974703766,
+        0.16153203214080625
+       ],
+       [
+        -1.038035192445327,
+        0.1366599256690408
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -1.038035192445327,
+        0.1366599256690408
+       ],
+       [
+        -1.2269575974703766,
+        0.16153203214080625
+       ],
+       [
+        -1.2375449662124673,
+        1.5155554816730176e-16
+       ],
+       [
+        -1.046992357201749,
+        1.2821958389788641e-16
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -1.046992357201749,
+        1.2821958389788641e-16
+       ],
+       [
+        -1.2375449662124673,
+        1.5155554816730176e-16
+       ],
+       [
+        -1.2269575974703766,
+        -0.16153203214080597
+       ],
+       [
+        -1.038035192445327,
+        -0.1366599256690406
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -1.038035192445327,
+        -0.1366599256690406
+       ],
+       [
+        -1.2269575974703766,
+        -0.16153203214080597
+       ],
+       [
+        -1.1953766440586546,
+        -0.32030020642654217
+       ],
+       [
+        -1.0113169577484387,
+        -0.27098156212059404
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -1.0113169577484387,
+        -0.27098156212059404
+       ],
+       [
+        -1.1953766440586546,
+        -0.32030020642654217
+       ],
+       [
+        -1.1433424648460706,
+        -0.4735879553763259
+       ],
+       [
+        -0.9672948095144421,
+        -0.4006666289139813
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.9672948095144421,
+        -0.4006666289139813
+       ],
+       [
+        -1.1433424648460706,
+        -0.4735879553763259
+       ],
+       [
+        -1.0717453790655518,
+        -0.6187724831062335
+       ],
+       [
+        -0.906721978904866,
+        -0.5234961786008743
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.906721978904866,
+        -0.5234961786008743
+       ],
+       [
+        -1.0717453790655518,
+        -0.6187724831062335
+       ],
+       [
+        -0.9818104327052647,
+        -0.7533696420940506
+       ],
+       [
+        -0.8306348838454016,
+        -0.6373685635313456
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.8306348838454016,
+        -0.6373685635313456
+       ],
+       [
+        -0.9818104327052647,
+        -0.7533696420940506
+       ],
+       [
+        -0.875076437632113,
+        -0.875076437632112
+       ],
+       [
+        -0.7403353956278451,
+        -0.7403353956278443
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.7403353956278451,
+        -0.7403353956278443
+       ],
+       [
+        -0.875076437632113,
+        -0.875076437632112
+       ],
+       [
+        -0.7533696420940508,
+        -0.9818104327052645
+       ],
+       [
+        -0.6373685635313459,
+        -0.8306348838454014
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.6373685635313459,
+        -0.8306348838454014
+       ],
+       [
+        -0.7533696420940508,
+        -0.9818104327052645
+       ],
+       [
+        -0.6187724831062342,
+        -1.0717453790655511
+       ],
+       [
+        -0.5234961786008749,
+        -0.9067219789048656
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.5234961786008749,
+        -0.9067219789048656
+       ],
+       [
+        -0.6187724831062342,
+        -1.0717453790655511
+       ],
+       [
+        -0.4735879553763257,
+        -1.1433424648460706
+       ],
+       [
+        -0.40066662891398114,
+        -0.9672948095144421
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.40066662891398114,
+        -0.9672948095144421
+       ],
+       [
+        -0.4735879553763257,
+        -1.1433424648460706
+       ],
+       [
+        -0.32030020642654194,
+        -1.1953766440586546
+       ],
+       [
+        -0.2709815621205939,
+        -1.0113169577484387
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.2709815621205939,
+        -1.0113169577484387
+       ],
+       [
+        -0.32030020642654194,
+        -1.1953766440586546
+       ],
+       [
+        -0.1615320321408058,
+        -1.2269575974703766
+       ],
+       [
+        -0.13665992566904045,
+        -1.038035192445327
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -0.13665992566904045,
+        -1.038035192445327
+       ],
+       [
+        -0.1615320321408058,
+        -1.2269575974703766
+       ],
+       [
+        -2.273333222509526e-16,
+        -1.2375449662124673
+       ],
+       [
+        -1.923293758468296e-16,
+        -1.046992357201749
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        -1.923293758468296e-16,
+        -1.046992357201749
+       ],
+       [
+        -2.273333222509526e-16,
+        -1.2375449662124673
+       ],
+       [
+        0.16153203214080536,
+        -1.2269575974703766
+       ],
+       [
+        0.13665992566904006,
+        -1.038035192445327
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.13665992566904006,
+        -1.038035192445327
+       ],
+       [
+        0.16153203214080536,
+        -1.2269575974703766
+       ],
+       [
+        0.32030020642654156,
+        -1.1953766440586548
+       ],
+       [
+        0.2709815621205935,
+        -1.0113169577484389
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.2709815621205935,
+        -1.0113169577484389
+       ],
+       [
+        0.32030020642654156,
+        -1.1953766440586548
+       ],
+       [
+        0.4735879553763253,
+        -1.1433424648460708
+       ],
+       [
+        0.4006666289139808,
+        -0.9672948095144422
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.4006666289139808,
+        -0.9672948095144422
+       ],
+       [
+        0.4735879553763253,
+        -1.1433424648460708
+       ],
+       [
+        0.6187724831062338,
+        -1.0717453790655516
+       ],
+       [
+        0.5234961786008746,
+        -0.9067219789048658
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.5234961786008746,
+        -0.9067219789048658
+       ],
+       [
+        0.6187724831062338,
+        -1.0717453790655516
+       ],
+       [
+        0.7533696420940496,
+        -0.9818104327052655
+       ],
+       [
+        0.6373685635313449,
+        -0.8306348838454022
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.6373685635313449,
+        -0.8306348838454022
+       ],
+       [
+        0.7533696420940496,
+        -0.9818104327052655
+       ],
+       [
+        0.8750764376321123,
+        -0.8750764376321127
+       ],
+       [
+        0.7403353956278446,
+        -0.7403353956278449
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.7403353956278446,
+        -0.7403353956278449
+       ],
+       [
+        0.8750764376321123,
+        -0.8750764376321127
+       ],
+       [
+        0.9818104327052645,
+        -0.7533696420940508
+       ],
+       [
+        0.8306348838454014,
+        -0.6373685635313459
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.8306348838454014,
+        -0.6373685635313459
+       ],
+       [
+        0.9818104327052645,
+        -0.7533696420940508
+       ],
+       [
+        1.0717453790655511,
+        -0.6187724831062342
+       ],
+       [
+        0.9067219789048656,
+        -0.5234961786008749
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.9067219789048656,
+        -0.5234961786008749
+       ],
+       [
+        1.0717453790655511,
+        -0.6187724831062342
+       ],
+       [
+        1.1433424648460706,
+        -0.4735879553763258
+       ],
+       [
+        0.9672948095144421,
+        -0.4006666289139812
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.9672948095144421,
+        -0.4006666289139812
+       ],
+       [
+        1.1433424648460706,
+        -0.4735879553763258
+       ],
+       [
+        1.1953766440586544,
+        -0.3203002064265431
+       ],
+       [
+        1.0113169577484384,
+        -0.2709815621205948
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        1.0113169577484384,
+        -0.2709815621205948
+       ],
+       [
+        1.1953766440586544,
+        -0.3203002064265431
+       ],
+       [
+        1.2269575974703766,
+        -0.1615320321408059
+       ],
+       [
+        1.038035192445327,
+        -0.1366599256690405
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        1.038035192445327,
+        -0.1366599256690405
+       ],
+       [
+        1.2269575974703766,
+        -0.1615320321408059
+       ],
+       [
+        1.2375449662124673,
+        -3.031110963346035e-16
+       ],
+       [
+        1.046992357201749,
+        -2.5643916779577283e-16
+       ]
+      ],
+      "shape": "xprof"
+     },
+     {
+      "cu": 169.0,
+      "f0": 33.95,
+      "f1": 34.0,
+      "pts": [
+       [
+        0.27640598230126173,
+        0.0
+       ],
+       [
+        0.26287771061057785,
+        0.0854141458779908
+       ],
+       [
+        0.22361713702862168,
+        0.162467360042096
+       ],
+       [
+        0.162467360042096,
+        0.22361713702862168
+       ],
+       [
+        0.08541414587799082,
+        0.26287771061057785
+       ],
+       [
+        1.6924985074521007e-17,
+        0.27640598230126173
+       ],
+       [
+        -0.08541414587799079,
+        0.26287771061057785
+       ],
+       [
+        -0.16246736004209597,
+        0.22361713702862168
+       ],
+       [
+        -0.22361713702862165,
+        0.16246736004209603
+       ],
+       [
+        -0.26287771061057785,
+        0.08541414587799084
+       ],
+       [
+        -0.27640598230126173,
+        3.3849970149042015e-17
+       ],
+       [
+        -0.26287771061057785,
+        -0.08541414587799077
+       ],
+       [
+        -0.22361713702862168,
+        -0.16246736004209597
+       ],
+       [
+        -0.16246736004209603,
+        -0.22361713702862165
+       ],
+       [
+        -0.08541414587799086,
+        -0.26287771061057785
+       ],
+       [
+        -5.077495522356302e-17,
+        -0.27640598230126173
+       ],
+       [
+        0.08541414587799076,
+        -0.26287771061057785
+       ],
+       [
+        0.16246736004209594,
+        -0.2236171370286217
+       ],
+       [
+        0.22361713702862165,
+        -0.16246736004209605
+       ],
+       [
+        0.26287771061057785,
+        -0.08541414587799089
+       ]
+      ],
+      "shape": "xprof"
+     }
+    ],
+    "mat": "reticle_cyan",
+    "parent_part": "sight_mount",
+    "shape": "multi"
+   },
+   {
+    "asm": "grip_controls",
+    "attach": "mit Unterem Gehäuse verschraubt (fest)",
+    "bevel": 6.5,
+    "de": "Pistolengriff",
+    "en": "Pistol grip",
+    "func": "Haupthand hält die Waffe; trägt Socket_Hand",
+    "id": "grip",
+    "iface": "BGM-1",
+    "mat": "rubber",
+    "pts": [
+     [
+      -8.746133917892847,
+      42
+     ],
+     [
+      -19.784609690826528,
+      12
+     ],
+     [
+      -31.8948822334847,
+      -22
+     ],
+     [
+      -35.93335800641838,
+      -52
+     ],
+     [
+      -42.14874831559185,
+      -64
+     ],
+     [
+      -41.82824023990308,
+      -74
+     ],
+     [
+      -32.364138624765324,
+      -76
+     ],
+     [
+      -4.364138624765324,
+      -76
+     ],
+     [
+      4.2435565298214115,
+      -70
+     ],
+     [
+      1.923048454132637,
+      -60
+     ],
+     [
+      7.602540378443866,
+      -50
+     ],
+     [
+      6.282032302755091,
+      -40
+     ],
+     [
+      12.961524227066318,
+      -30
+     ],
+     [
+      11.641016151377546,
+      -20
+     ],
+     [
+      18.856406460551018,
+      -8
+     ],
+     [
+      24.287187078897965,
+      16
+     ],
+     [
+      32.25386608210715,
+      42
+     ]
+    ],
+    "shape": "prof",
+    "w": 30
+   },
+   {
+    "asm": "grip_controls",
+    "attach": "Drehpunkt im Unteren Gehäuse",
+    "bevel": 0.8,
+    "de": "Abzug",
+    "en": "Trigger",
+    "func": "Feuer auslösen (Zeigefinger)",
+    "id": "trigger",
+    "mat": "metal",
+    "move": {
+     "axis": "x",
+     "event": "fire",
+     "expect": [
+      [
+       46.25386608210715,
+       16,
+       0
+      ],
+      [
+       -1,
+       0,
+       0
+      ]
+     ],
+     "kind": "rotate",
+     "pivot": [
+      45.25386608210715,
+      39,
+      0
+     ],
+     "range_deg": [
+      0,
+      -12
+     ]
+    },
+    "pts": [
+     [
+      43.25386608210715,
+      41
+     ],
+     [
+      49.25386608210715,
+      41
+     ],
+     [
+      51.25386608210715,
+      26
+     ],
+     [
+      48.25386608210715,
+      15
+     ],
+     [
+      44.25386608210715,
+      16
+     ],
+     [
+      46.25386608210715,
+      27
+     ]
+    ],
+    "shape": "prof",
+    "w": 7
+   },
+   {
+    "asm": "grip_controls",
+    "attach": "Griff vorn und Unteres Gehäuse (fest)",
+    "bevel": 1.5,
+    "de": "Abzugsbügel",
+    "en": "Trigger guard",
+    "func": "Schützt den Abzug, Fingerfreiraum ≥ 22 mm",
+    "id": "trigger_guard",
+    "mat": "anodized",
+    "pts": [
+     [
+      25.25386608210715,
+      8
+     ],
+     [
+      83.25386608210715,
+      8
+     ],
+     [
+      83.25386608210715,
+      43
+     ],
+     [
+      76.25386608210715,
+      43
+     ],
+     [
+      76.25386608210715,
+      15
+     ],
+     [
+      27.25386608210715,
+      15
+     ]
+    ],
+    "shape": "prof",
+    "w": 12
+   },
+   {
+    "asm": "grip_controls",
+    "attach": "unten auf den Griff geschraubt",
+    "bevel": 1.5,
+    "de": "Griffboden",
+    "en": "Grip cap",
+    "func": "Ausgestellter Abschluss; schützt den Griff",
+    "id": "grip_cap",
+    "mat": "anodized",
+    "pts": [
+     [
+      -42.56029104747196,
+      -73
+     ],
+     [
+      4.4397089525280435,
+      -73
+     ],
+     [
+      0.8320137979413076,
+      -79
+     ],
+     [
+      -42.16798620205869,
+      -79
+     ]
+    ],
+    "shape": "prof",
+    "w": 32
+   },
+   {
+    "asm": "grip_controls",
+    "attach": "Achse quer im Unteren Gehäuse",
+    "bevel": 0.8,
+    "de": "Feuerwahlhebel",
+    "en": "Fire selector",
+    "func": "Sichern / Feuer, mit dem Daumen der Haupthand",
+    "id": "selector",
+    "mat": "accent",
+    "move": {
+     "axis": "x",
+     "event": "safety",
+     "kind": "rotate",
+     "pivot": [
+      8,
+      70,
+      0
+     ],
+     "range_deg": [
+      0,
+      90
+     ]
+    },
+    "pts": [
+     [
+      4,
+      66
+     ],
+     [
+      12,
+      66
+     ],
+     [
+      24,
+      68
+     ],
+     [
+      24,
+      72
+     ],
+     [
+      12,
+      74
+     ],
+     [
+      4,
+      74
+     ]
+    ],
+    "shape": "prof",
+    "w": 3,
+    "x": 22.5
+   },
+   {
+    "asm": "grip_controls",
+    "attach": "Achse quer im Unteren Gehäuse",
+    "bevel": 0.8,
+    "de": "Feuerwahlhebel rechts",
+    "en": "Fire selector right",
+    "func": "Sichern / Feuer, mit dem Daumen der Haupthand",
+    "id": "selector_r",
+    "mat": "accent",
+    "move": {
+     "axis": "x",
+     "event": "safety",
+     "kind": "rotate",
+     "pivot": [
+      8,
+      70,
+      0
+     ],
+     "range_deg": [
+      0,
+      90
+     ]
+    },
+    "pts": [
+     [
+      4,
+      66
+     ],
+     [
+      12,
+      66
+     ],
+     [
+      24,
+      68
+     ],
+     [
+      24,
+      72
+     ],
+     [
+      12,
+      74
+     ],
+     [
+      4,
+      74
+     ]
+    ],
+    "shape": "prof",
+    "w": 3,
+    "x": -22.5
+   },
+   {
+    "asm": "mechanism",
+    "attach": "in Längsnut links (gleitet)",
+    "bevel": 1.5,
+    "de": "Ladehebel",
+    "en": "Charging handle",
+    "func": "Verschluss spannen (Stützhand zieht nach hinten)",
+    "id": "charging_handle",
+    "mat": "accent",
+    "move": {
+     "event": "charge",
+     "kind": "translate",
+     "pivot": [
+      -96,
+      121,
+      22.5
+     ],
+     "vector_mm": [
+      -60,
+      0,
+      0
+     ]
+    },
+    "pts": [
+     [
+      -96,
+      115
+     ],
+     [
+      -70,
+      115
+     ],
+     [
+      -66,
+      119
+     ],
+     [
+      -66,
+      123
+     ],
+     [
+      -70,
+      127
+     ],
+     [
+      -96,
+      127
+     ]
+    ],
+    "shape": "prof",
+    "w": 9,
+    "x": 22.5
+   },
+   {
+    "asm": "ammo",
+    "attach": "rastet im Magazinschacht ein (lösbar, Magazinhalter)",
+    "bevel": 3.0,
+    "cuts": [
+     {
+      "pts": [
+       [
+        109.9850883472898,
+        -12.546530118277829
+       ],
+       [
+        139.6931304095369,
+        -8.371337089475858
+       ],
+       [
+        139.38694958742477,
+        -6.192747338244402
+       ],
+       [
+        109.67890752517766,
+        -10.367940367046373
+       ]
+      ],
+      "shape": "prof",
+      "w": 3,
+      "x": 12
+     },
+     {
+      "pts": [
+       [
+        109.9850883472898,
+        -12.546530118277829
+       ],
+       [
+        139.6931304095369,
+        -8.371337089475858
+       ],
+       [
+        139.38694958742477,
+        -6.192747338244402
+       ],
+       [
+        109.67890752517766,
+        -10.367940367046373
+       ]
+      ],
+      "shape": "prof",
+      "w": 3,
+      "x": -12
+     },
+     {
+      "pts": [
+       [
+        113.43512039343467,
+        -26.19924575002328
+       ],
+       [
+        143.14316245568176,
+        -22.02405272122131
+       ],
+       [
+        142.83698163356962,
+        -19.845462969989853
+       ],
+       [
+        113.12893957132252,
+        -24.020655998791824
+       ]
+      ],
+      "shape": "prof",
+      "w": 3,
+      "x": 12
+     },
+     {
+      "pts": [
+       [
+        113.43512039343467,
+        -26.19924575002328
+       ],
+       [
+        143.14316245568176,
+        -22.02405272122131
+       ],
+       [
+        142.83698163356962,
+        -19.845462969989853
+       ],
+       [
+        113.12893957132252,
+        -24.020655998791824
+       ]
+      ],
+      "shape": "prof",
+      "w": 3,
+      "x": -12
+     },
+     {
+      "pts": [
+       [
+        117.1161691523032,
+        -39.81949410013236
+       ],
+       [
+        146.82421121455033,
+        -35.64430107133039
+       ],
+       [
+        146.5180303924382,
+        -33.46571132009893
+       ],
+       [
+        116.80998833019105,
+        -37.640904348900904
+       ]
+      ],
+      "shape": "prof",
+      "w": 3,
+      "x": 12
+     },
+     {
+      "pts": [
+       [
+        117.1161691523032,
+        -39.81949410013236
+       ],
+       [
+        146.82421121455033,
+        -35.64430107133039
+       ],
+       [
+        146.5180303924382,
+        -33.46571132009893
+       ],
+       [
+        116.80998833019105,
+        -37.640904348900904
+       ]
+      ],
+      "shape": "prof",
+      "w": 3,
+      "x": -12
+     },
+     {
+      "pts": [
+       [
+        106.21742342219534,
+        33.37602744412692
+       ],
+       [
+        109.71968280562058,
+        15.69134159588264
+       ],
+       [
+        113.60382695905844,
+        -1.939673848023915
+       ],
+       [
+        131.4286521964067,
+        0.5654419692572645
+       ],
+       [
+        127.54450804296884,
+        18.19645741316382
+       ],
+       [
+        124.0422486595436,
+        35.881143261408084
+       ]
+      ],
+      "shape": "prof",
+      "w": 8,
+      "x": 10
+     }
+    ],
+    "de": "Magazin (gekrümmt)",
+    "en": "Magazine",
+    "func": "Hält die Patronen; leicht gekrümmt; entnehmbar",
+    "id": "magazine",
+    "iface": "BMW-R",
+    "mat": "shell",
+    "move": {
+     "event": "reload",
+     "kind": "translate",
+     "note": "Entnahme entlang der Magazinachse nach unten; Schacht nach unten offen",
+     "pivot": [
+      108.0,
+      72,
+      0
+     ],
+     "removable": true,
+     "vector_mm": [
+      22.3,
+      -158.4,
+      0
+     ]
+    },
+    "pts": [
+     [
+      88.1946386251686,
+      69.21653798079869
+     ],
+     [
+      93.25165008504644,
+      37.6127722718737
+     ],
+     [
+      99.08874905742182,
+      8.138295858133262
+     ],
+     [
+      105.98663905761006,
+      -21.187096099113546
+     ],
+     [
+      113.94532008561112,
+      -50.36340359986673
+     ],
+     [
+      119.84043578639672,
+      -69.73145056898352
+     ],
+     [
+      159.45115853605955,
+      -64.1645265305809
+     ],
+     [
+      153.55604283527393,
+      -44.79647956146411
+     ],
+     [
+      145.59736180727288,
+      -15.620172060710928
+     ],
+     [
+      138.69947180708465,
+      13.70521989653588
+     ],
+     [
+      132.86237283470925,
+      43.17969631027632
+     ],
+     [
+      127.8053613748314,
+      74.78346201920131
+     ]
+    ],
+    "shape": "prof",
+    "w": 24
+   },
+   {
+    "asm": "ammo",
+    "attach": "am Magazin (fest)",
+    "bevel": 1.5,
+    "de": "Magazinboden",
+    "en": "Magazine base plate",
+    "func": "Greifkante zum Herausziehen",
+    "id": "magazine_base",
+    "mat": "anodized",
+    "parent_part": "magazine",
+    "pts": [
+     [
+      117.92948619939361,
+      -70.50493080527443
+     ],
+     [
+      163.48181736150585,
+      -64.10296816111142
+     ],
+     [
+      166.2188475754122,
+      -72.30183801665162
+     ],
+     [
+      120.66651641329996,
+      -78.70380066081462
+     ]
+    ],
+    "shape": "prof",
+    "w": 27
+   },
+   {
+    "a0": 92,
+    "a1": 122,
+    "asm": "ammo",
+    "attach": "im Magazin",
+    "axis": "f",
+    "bevel": 0.8,
+    "c": [
+     75,
+     0
+    ],
+    "de": "Oberste Patrone",
+    "en": "Top round",
+    "func": "Zeigt den Ladezustand im Schacht",
+    "id": "magazine_round",
+    "mat": "brass",
+    "parent_part": "magazine",
+    "r": 4.5,
+    "segs": 16,
+    "shape": "cyl"
+   },
+   {
+    "asm": "ammo",
+    "attach": "am Magazin",
+    "bevel": 0.8,
+    "de": "Bodenband",
+    "en": "Base band",
+    "func": "Metallband über dem Magazinboden; Greifkante",
+    "id": "mag_band",
+    "mat": "metal",
+    "parent_part": "magazine",
+    "pts": [
+     [
+      116.43554591585755,
+      -62.13135605330987
+     ],
+     [
+      158.02680480300353,
+      -56.28608581298711
+     ],
+     [
+      160.13547358113493,
+      -63.05852475042798
+     ],
+     [
+      118.54421469398898,
+      -68.90379499075073
+     ]
+    ],
+    "shape": "prof",
+    "w": 25
+   },
+   {
+    "asm": "ammo",
+    "attach": "oben am Magazin",
+    "bevel": 0.3,
+    "de": "Zuführlippen",
+    "en": "Feed lips",
+    "func": "Halten die oberste Patrone; im Schacht verborgen",
+    "id": "mag_lips",
+    "items": [
+     {
+      "pts": [
+       [
+        92.15571090013488,
+        69.77323038463895
+       ],
+       [
+        123.84428909986512,
+        74.22676961536105
+       ],
+       [
+        123.28759669602486,
+        78.18784189032733
+       ],
+       [
+        95.56009077126089,
+        74.2909950634455
+       ]
+      ],
+      "shape": "prof",
+      "w": 2,
+      "x": 10
+     },
+     {
+      "pts": [
+       [
+        92.15571090013488,
+        69.77323038463895
+       ],
+       [
+        123.84428909986512,
+        74.22676961536105
+       ],
+       [
+        123.28759669602486,
+        78.18784189032733
+       ],
+       [
+        95.56009077126089,
+        74.2909950634455
+       ]
+      ],
+      "shape": "prof",
+      "w": 2,
+      "x": -10
+     }
+    ],
+    "mat": "metal",
+    "parent_part": "magazine",
+    "shape": "multi"
+   },
+   {
+    "asm": "ammo",
+    "attach": "im Magazin",
+    "bevel": 0.3,
+    "de": "Patronen im Fenster",
+    "en": "Visible rounds",
+    "func": "Zeigt den Füllstand",
+    "id": "mag_rounds",
+    "items": [
+     {
+      "a0": 99.89457737883775,
+      "a1": 127.89457737883775,
+      "axis": "f",
+      "c": [
+       30.415670779257724,
+       -2
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 106.87222469013093,
+      "a1": 134.87222469013093,
+      "axis": "f",
+      "c": [
+       25.94324626504524,
+       4
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 102.00102480582639,
+      "a1": 130.00102480582638,
+      "axis": "f",
+      "c": [
+       19.80557487570234,
+       -2
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 109.04741137572184,
+      "a1": 137.04741137572182,
+      "axis": "f",
+      "c": [
+       15.342811034270632,
+       4
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 104.24495075001958,
+      "a1": 132.2449507500196,
+      "axis": "f",
+      "c": [
+       9.214800317708523,
+       -2
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 111.3600765785173,
+      "a1": 139.3600765785173,
+      "axis": "f",
+      "c": [
+       4.761697149057596,
+       4
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 106.62635521141732,
+      "a1": 134.62635521141732,
+      "axis": "f",
+      "c": [
+       -1.356652894723723,
+       -2
+      ],
+      "r": 4.4,
+      "segs": 12,
+      "shape": "cyl"
+     }
+    ],
+    "mat": "brass",
+    "parent_part": "magazine",
+    "shape": "multi",
+    "smooth": true
+   },
+   {
+    "asm": "support",
+    "attach": "am Oberen Gehäuse verschraubt, Fuge 1 mm",
+    "bevel": 5.0,
+    "cuts": [
+     {
+      "f0": 240,
+      "f1": 268,
+      "shape": "box",
+      "u0": 92,
+      "u1": 110,
+      "w": 12,
+      "x": 22
+     },
+     {
+      "f0": 240,
+      "f1": 268,
+      "shape": "box",
+      "u0": 92,
+      "u1": 110,
+      "w": 12,
+      "x": -22
+     },
+     {
+      "f0": 280,
+      "f1": 308,
+      "shape": "box",
+      "u0": 92,
+      "u1": 110,
+      "w": 12,
+      "x": 22
+     },
+     {
+      "f0": 280,
+      "f1": 308,
+      "shape": "box",
+      "u0": 92,
+      "u1": 110,
+      "w": 12,
+      "x": -22
+     },
+     {
+      "f0": 199,
+      "f1": 352,
+      "shape": "box",
+      "u0": 74,
+      "u1": 114,
+      "w": 30,
+      "x": 0.0
+     },
+     {
+      "pts": [
+       [
+        300,
+        50
+       ],
+       [
+        380,
+        50
+       ],
+       [
+        380,
+        83
+       ],
+       [
+        362,
+        83
+       ]
+      ],
+      "shape": "prof",
+      "w": 60
+     },
+     {
+      "pts": [
+       [
+        190,
+        140
+       ],
+       [
+        214,
+        140
+       ],
+       [
+        214,
+        124.6
+       ],
+       [
+        199,
+        117
+       ]
+      ],
+      "shape": "prof",
+      "w": 60
+     }
+    ],
+    "de": "Handschutz",
+    "en": "Handguard",
+    "func": "Griffbereich der Stützhand; nach vorn verjüngt, unter der Haube angeschmiegt",
+    "id": "handguard",
+    "mat": "graphite",
+    "pts": [
+     [
+      199,
+      -23
+     ],
+     [
+      300,
+      -23
+     ],
+     [
+      362,
+      -18
+     ],
+     [
+      362,
+      18
+     ],
+     [
+      300,
+      23
+     ],
+     [
+      199,
+      23
+     ]
+    ],
+    "shape": "plan",
+    "u0": 64,
+    "u1": 124.5
+   },
+   {
+    "asm": "support",
+    "attach": "unten auf den Handschutz geklebt",
+    "bevel": 1.5,
+    "de": "Griffpolster",
+    "en": "Grip pad",
+    "func": "Rutschfeste Zone für die Stützhand",
+    "id": "handguard_grip",
+    "mat": "rubber",
+    "pts": [
+     [
+      222,
+      60.5
+     ],
+     [
+      298,
+      60.5
+     ],
+     [
+      298,
+      66
+     ],
+     [
+      222,
+      66
+     ]
+    ],
+    "shape": "prof",
+    "w": 38
+   },
+   {
+    "asm": "support",
+    "attach": "auf das Handschutzende gesteckt",
+    "bevel": 1.5,
+    "cu": 106,
+    "de": "Handschutzkappe",
+    "en": "Handguard end cap",
+    "f0": 362,
+    "f1": 372,
+    "func": "Stirnabschluss mit Laufdurchtritt",
+    "id": "handguard_cap",
+    "ih": 26,
+    "iw": 26,
+    "mat": "anodized",
+    "oh": 36,
+    "ow": 34,
+    "r_in": 12,
+    "r_out": 8,
+    "shape": "frame"
+   },
+   {
+    "asm": "support",
+    "attach": "seitlich",
+    "bevel": 0.2,
+    "de": "Handschutzschrauben",
+    "en": "Handguard screws",
+    "func": "Halten den Handschutz",
+    "id": "handguard_screws",
+    "items": [
+     {
+      "a0": 22.4,
+      "a1": 23.8,
+      "axis": "x",
+      "c": [
+       206,
+       74
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 22.4,
+      "a1": 23.8,
+      "axis": "x",
+      "c": [
+       206,
+       112
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -22.4,
+      "a1": -23.8,
+      "axis": "x",
+      "c": [
+       206,
+       74
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -22.4,
+      "a1": -23.8,
+      "axis": "x",
+      "c": [
+       206,
+       112
+      ],
+      "r": 1.8,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": 18.2,
+      "a1": 19.6,
+      "axis": "x",
+      "c": [
+       348,
+       88
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     },
+     {
+      "a0": -18.2,
+      "a1": -19.6,
+      "axis": "x",
+      "c": [
+       348,
+       88
+      ],
+      "r": 1.6,
+      "segs": 12,
+      "shape": "cyl"
+     }
+    ],
+    "mat": "trim",
+    "shape": "multi"
+   },
+   {
+    "asm": "barrel",
+    "attach": "auf den Lauf gepresst",
+    "bevel": 0.4,
+    "de": "Kühlrippen",
+    "en": "Heat sink",
+    "func": "Führt Laufwärme ab; im offenen Laufraum",
+    "id": "heatsink",
+    "items": [
+     {
+      "a0": 388,
+      "a1": 392,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 15,
+      "segs": 24,
+      "shape": "cyl"
+     },
+     {
+      "a0": 397,
+      "a1": 401,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 15,
+      "segs": 24,
+      "shape": "cyl"
+     },
+     {
+      "a0": 406,
+      "a1": 410,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 15,
+      "segs": 24,
+      "shape": "cyl"
+     },
+     {
+      "a0": 415,
+      "a1": 419,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 15,
+      "segs": 24,
+      "shape": "cyl"
+     }
+    ],
+    "mat": "dark_metal",
+    "shape": "multi",
+    "smooth": true
+   },
+   {
+    "a0": 362,
+    "a1": 452,
+    "asm": "barrel",
+    "attach": "im Gasblock geführt",
+    "axis": "f",
+    "bevel": 0.8,
+    "c": [
+     89,
+     0
+    ],
+    "de": "Gaskolben",
+    "en": "Gas piston",
+    "func": "Überträgt Treibgasdruck; unter dem Lauf sichtbar",
+    "id": "gas_piston",
+    "mat": "metal",
+    "r": 3.2,
+    "segs": 12,
+    "shape": "cyl"
+   },
+   {
+    "a0": 150,
+    "a1": 491.7184,
+    "asm": "barrel",
+    "attach": "im Oberen Gehäuse verschraubt",
+    "axis": "f",
+    "bevel": 0.8,
+    "c": [
+     106,
+     0
+    ],
+    "cuts": [
+     {
+      "f0": 440,
+      "f1": 470.7184,
+      "shape": "box",
+      "u0": 104.5,
+      "u1": 107.5,
+      "w": 4,
+      "x": 10
+     },
+     {
+      "f0": 440,
+      "f1": 470.7184,
+      "shape": "box",
+      "u0": 104.5,
+      "u1": 107.5,
+      "w": 4,
+      "x": -10
+     },
+     {
+      "f0": 440,
+      "f1": 470.7184,
+      "shape": "box",
+      "u0": 114.6,
+      "u1": 118,
+      "w": 3,
+      "x": 0.0
+     },
+     {
+      "f0": 440,
+      "f1": 470.7184,
+      "shape": "box",
+      "u0": 94,
+      "u1": 97.4,
+      "w": 3,
+      "x": 0.0
+     }
+    ],
+    "de": "Lauf",
+    "en": "Barrel",
+    "func": "Führt das Geschoss; kanneliert",
+    "id": "barrel",
+    "mat": "metal",
+    "r": 10,
+    "segs": 24,
+    "shape": "cyl"
+   },
+   {
+    "asm": "barrel",
+    "attach": "auf den Lauf geklemmt",
+    "bevel": 1.5,
+    "de": "Gasblock",
+    "en": "Gas block",
+    "f0": 452,
+    "f1": 466,
+    "func": "Verbindet Lauf und Gaskolben",
+    "id": "gas_block",
+    "mat": "dark_metal",
+    "shape": "box",
+    "u0": 82,
+    "u1": 117,
+    "w": 20
+   },
+   {
+    "a0": 483.7184,
+    "a1": 526.9184,
+    "asm": "barrel",
+    "attach": "auf Laufende geschraubt (lösbar)",
+    "axis": "f",
+    "bevel": 1.5,
+    "c": [
+     106,
+     0
+    ],
+    "cuts": [
+     {
+      "f0": 511.7184,
+      "f1": 495.9184,
+      "shape": "box",
+      "u0": 112,
+      "u1": 128,
+      "w": 14,
+      "x": 0.0
+     },
+     {
+      "f0": 499.9184,
+      "f1": 504.9184,
+      "shape": "box",
+      "u0": 112,
+      "u1": 128,
+      "w": 14,
+      "x": 0.0
+     },
+     {
+      "f0": 508.9184,
+      "f1": 513.9184,
+      "shape": "box",
+      "u0": 112,
+      "u1": 128,
+      "w": 14,
+      "x": 0.0
+     },
+     {
+      "f0": 515.7184,
+      "f1": 514.9184,
+      "shape": "box",
+      "u0": 102,
+      "u1": 110,
+      "w": 44,
+      "x": 0.0
+     },
+     {
+      "a0": 487.7184,
+      "a1": 489.3184,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 19,
+      "r_in": 16.4,
+      "segs": 8,
+      "shape": "cyl"
+     },
+     {
+      "a0": 491.7184,
+      "a1": 493.3184,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 19,
+      "r_in": 16.4,
+      "segs": 8,
+      "shape": "cyl"
+     },
+     {
+      "a0": 495.7184,
+      "a1": 497.3184,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 19,
+      "r_in": 16.4,
+      "segs": 8,
+      "shape": "cyl"
+     },
+     {
+      "a0": 499.7184,
+      "a1": 501.3184,
+      "axis": "f",
+      "c": [
+       106,
+       0
+      ],
+      "r": 19,
+      "r_in": 16.4,
+      "segs": 8,
+      "shape": "cyl"
+     }
+    ],
+    "de": "Kompensator",
+    "en": "Compensator",
+    "func": "Mündungsteil mit Schlitzen und Rändel; Socket_Muzzle",
+    "id": "muzzle",
+    "iface": "BMZ-15",
+    "mat": "anodized",
+    "r": 17,
+    "r_in": 5.5,
+    "segs": 8,
+    "shape": "cyl"
+   },
+   {
+    "a0": 524.9184,
+    "a1": 530.9184,
+    "asm": "barrel",
+    "attach": "vorn am Kompensator",
+    "axis": "f",
+    "bevel": 0.6,
+    "c": [
+     106,
+     0
+    ],
+    "de": "Mündungskrone",
+    "en": "Muzzle crown",
+    "func": "Blanke Stirnkante",
+    "id": "muzzle_crown",
+    "mat": "trim",
+    "r": 15.5,
+    "r_in": 6,
+    "segs": 8,
+    "shape": "cyl"
+   },
+   {
+    "a0": 186,
+    "a1": 194,
+    "asm": "barrel",
+    "attach": "am Gehäuseende vorn",
+    "axis": "f",
+    "bevel": 0.6,
+    "c": [
+     106,
+     0
+    ],
+    "de": "Laufmutter",
+    "en": "Barrel nut",
+    "func": "Spannt den Lauf im Gehäuse",
+    "id": "barrel_nut",
+    "mat": "trim",
+    "r": 16,
+    "segs": 24,
+    "shape": "cyl"
+   },
+   {
+    "asm": "stock",
+    "attach": "Steckverbindung am Gehäuseende (fest)",
+    "bevel": 1.5,
+    "de": "Schaftverbindung",
+    "en": "Stock joint",
+    "f0": -131,
+    "f1": -119,
+    "func": "Verbindet Schaft und Gehäuse; Verriegelung",
+    "id": "stock_joint",
+    "mat": "dark_metal",
+    "shape": "box",
+    "u0": 84,
+    "u1": 126,
+    "w": 30
+   },
+   {
+    "asm": "stock",
+    "attach": "in der Schaftverbindung (fest)",
+    "bevel": 3.0,
+    "de": "Schaftrohr",
+    "en": "Stock spine",
+    "f0": -195.256,
+    "f1": -130,
+    "func": "Trägt die Schulterstütze in Linie mit dem Lauf",
+    "id": "stock_spine",
+    "mat": "graphite",
+    "shape": "box",
+    "u0": 94,
+    "u1": 122,
+    "w": 28
+   },
+   {
+    "asm": "stock",
+    "attach": "auf dem Schaftrohr (fest)",
+    "bevel": 5.0,
+    "de": "Schulterstütze",
+    "en": "Buttstock",
+    "func": "Anlage an der Schulter, Wangenauflage oben",
+    "id": "stock",
+    "mat": "shell",
+    "pts": [
+     [
+      -190.348,
+      92
+     ],
+     [
+      -190.348,
+      128
+     ],
+     [
+      -247.608,
+      130
+     ],
+     [
+      -254.152,
+      124
+     ],
+     [
+      -254.152,
+      28
+     ],
+     [
+      -244.336,
+      22
+     ]
+    ],
+    "shape": "prof",
+    "w": 36
+   },
+   {
+    "asm": "stock",
+    "attach": "auf das Schaftende gesteckt (fest)",
+    "bevel": 3.0,
+    "de": "Schaftkappe",
+    "en": "Butt pad",
+    "func": "Rutschfeste Anlage an der Schulter",
+    "id": "butt_pad",
+    "mat": "graphite",
+    "pts": [
+     [
+      -253.334,
+      18
+     ],
+     [
+      -253.334,
+      134
+     ],
+     [
+      -263.96799999999996,
+      132
+     ],
+     [
+      -266.422,
+      120
+     ],
+     [
+      -266.422,
+      26
+     ],
+     [
+      -263.96799999999996,
+      20
+     ]
+    ],
+    "shape": "prof",
+    "w": 40
+   }
+  ],
+  "POINTS": {
+   "eject": {
+    "at": [
+     53,
+     108,
+     -20
+    ],
+    "part": "upper"
+   },
+   "grip.charge": {
+    "at": [
+     -84,
+     112,
+     30
+    ],
+    "part": "charging_handle"
+   },
+   "grip.grip": {
+    "at": [
+     -3,
+     -6,
+     -16.5
+    ],
+    "part": "grip"
+   },
+   "grip.mag": {
+    "at": [
+     114,
+     -18,
+     13.5
+    ],
+    "part": "magazine"
+   },
+   "grip.support": {
+    "at": [
+     278,
+     61.5,
+     -2
+    ],
+    "part": "handguard_grip"
+   }
+  }
+ },
  "origin": "Socket_Hand",
  "roles": {
   "ammo_counter": "energy",
@@ -1120,6 +6000,7 @@
   "weapon": {
    "albedo": "BG01_albedo.jpg",
    "ao": "BG01_ao.png",
+   "arms": false,
    "normal": "BG01_normal.png",
    "objects": [
     "armor_l",
