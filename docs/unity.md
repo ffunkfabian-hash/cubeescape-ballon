@@ -328,7 +328,7 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
 - **Umschalten der Szene:** Gebaut wird eine Szene beim ersten Zeigen und bleibt danach (ausgeschaltet) im Speicher. Die Anzeige nennt
   Szene und Licht („Szene Hangar (L)   Licht Tag (N)“). Den Text baut sie nur bei Änderung neu (kein GC je Bild, Test).
 - **Umschalten der Lichtszene (N):** tauscht nur die Atlanten der Zonenmaterialien (`_BaseMap`, `_BaseColor`), die Gruppe der Viewmodel-
-  Lichter samt Lichtflächen, Umgebungslicht, Himmel (Kamerahintergrund und Sondenhintergrund) und rendert die Reflexionssonde neu.
+  Lichter (bei Nacht samt Lichtflächen), Umgebungslicht, Himmel (Kamerahintergrund und Sondenhintergrund) und rendert die Reflexionssonde neu.
   Geometrie, Collider, Materialinstanzen, Zielscheiben und Lauf bleiben unberührt. Alle Lichtgruppen entstehen beim Laden der Szene
   (ausgeschaltet), so kostet das Umschalten selbst nur ein paar Materialeigenschaften und eine Sonde; je Bild fällt danach kein Speicher an
   (Test). Die zuletzt gezeigte Lichtszene einer Szene bleibt beim Szenenwechsel erhalten.
@@ -354,7 +354,7 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
 
   P/(4π²) für Spot und Punkt ist aus der Strahlstärke P/(4π) von Cycles abgeleitet (nicht gemessen, anders als P/π² für Flächen).
 - **Reflexionssonde:** Wird beim Wechsel der Szene und der Lichtszene neu gerendert (256², HDR, auf Augenhöhe am Start, Größe =
-  Umgebung + 2 m). Sie sieht die unbeleuchtete Umgebung plus die Lichtflächen der aktiven Lichtszene, nicht das Viewmodel.
+  Umgebung + 2 m). Sie sieht die unbeleuchtete Umgebung, nicht das Viewmodel und keine Lichtflächen (den Glanz tragen die Spots, siehe Studio). Ausnahme ist die Lichtszene Nacht: Sie behält die Lichtflächen (`SceneConvert.ProbeShare`, Entscheid des Nutzers 05.11.2026 am Bild: „neu Tag gefällt mir gut und 0.44 nacht gefällt mir gut“), ohne sie wird die Waffe fast schwarz. Das ist Geschmack, nicht gegen Blender gemessen.
 - **Zielscheiben:** `course.targets`: Mitte `pos`, Ringseite entlang `normal` (waagerecht gedreht), Radius `radius`. Der Pfosten reicht von
   der Scheibe bis zur Oberkante des höchsten Colliders darunter (sonst 1,45 m). Zusätzlich wie in 0.8 `targets` (Schießstand ohne
   Strecke: Pfosten 1,45 m, Radius nach Entfernung 0,30 / 0,45 / 0,60 m, Anzeige führt die Treffer je Entfernung).
@@ -467,7 +467,10 @@ Grundsatz (AGENTS.md): Unity folgt der Blender-Vorlage so nah wie möglich, Blen
     wirft bei Lichtern dieser Größe kaum Schatten, die Kontaktschatten stecken im AO.
   - Der Hintergrundverlauf entspricht `BACKDROPS['mid']`.
   - Die Umgebung ist #8C96A3 × 0,45.
-  - Die Lichtflächen liegen mit voller Blender-Strahldichte P/(π·A) in der Reflexionssonde (Messreihe 0 / 0,25 / 0,5 / 1).
+  - Die Sonde zeigt nur die einheitliche Umgebung. Den Glanz der Flächenlichter tragen die Spots: Lichtflächen in der Sonde zählten ihn seit 0.7 doppelt
+    (Patch ego-helligkeit; `SceneConvert.ProbeEmit`, zum Messen `-ballonEmitScale <Anteil>`). Reihe über 31 Bilder, 1470 × 956, Viewmodel gegen Blender (mit schwarzen Flächen statt ohne):
+    Anteil 1 / 0,5 / 0,25 / 0 → Abweichung 0,121 / 0,099 / 0,088 / 0,087, Helligkeit +0,090 / +0,059 / +0,039 / +0,013. Die Reihe aus 0.7 (Wert 1) maß PSNR des ganzen Bildes.
+  - Größe wie Unity: `BALLON_STILL_SIZE=1470x956` für `tools/ego_build.py` (auch über `ego_skin.py`, `ego_variant.py`), passend zu `-ballonCompareSize 1470x956`.
   - Gerendert wird in ein HDR-Ziel (`Bootstrap.HdrTarget`), weil URP das Zielformat für den Zwischenpuffer übernimmt.
   - Materialfarben sind in Unity Gamma-Werte: lineare Werte über `SetColor(farbe.gamma)` setzen.
 - **Messung:** `compare` schreibt SSIM, PSNR und Helligkeit je Pose nach `compare/metrics.json`.
@@ -494,9 +497,7 @@ Skin eine eigene gebackene Farb- und Glanzkarte (≈ 2 min je Skin auf der GPU);
   [0.42](versions/0.42-quickslot.md).
 - **Beleg:** `python3 tools/unity_run.py skins` erzeugt einen Kontaktbogen (hip und inspect_l je Skin) in
   `…/unity/firstfeel_skins.png`.
-- **Grenze:** In der Haltung inspect_l zeigen die Seitenflächen direkt zur Kamera. Dort glänzen dunkle Flächen stärker als in
-  Blender, dunkle Skins (Nachtschicht, Kobalt) wirken heller. Das ist dieselbe Restabweichung wie unter Grenzen (keine
-  Abschattung der Spiegelung).
+- **Grenze:** Dunkle Skins wirkten heller als in Blender, weil die Lichtflächen in der Sonde den Glanz doppelt zählten; das ist behoben (siehe Studio). Im Zielen bleibt ein kleiner Überschuss, siehe Grenzen.
 
 Zeiten des Exports mit Backen (0.42): Waffe 3 min, Arme 0,5 min, Skin-Masken ≈ 4 min (vier Bakes), dazu lokal das Zusammensetzen der
 sieben Skins ≈ 1 min je Waffe (ohne GPU). Bis 0.41 kosteten die sieben gebackenen Skins 15 min je Waffe.
@@ -597,9 +598,8 @@ Entscheidung des Nutzers (25.10.2026): Die Restabweichungen bleiben so. „Lasse
 Ganz 1:1 geht es nicht, weil Unity in Echtzeit rastert, während Cycles Licht verfolgt. Gemessen über Waffe und Armen bleibt eine
 mittlere Abweichung von etwa 0,08, die SSIM im Ausschnitt liegt bei 0,86–0,89 (Bericht 0.7). Was bleibt:
 
-- **Dunkle Teile zu hell:** Schwarzes Gehäuseunterteil und eloxierte Platte sind etwas heller. Die Reflexionssonde kennt keine
-  Abschattung durch Waffe und Arm.
-  - Möglich: Spiegelung über das gebackene AO abdunkeln.
+- **Im Zielen etwas zu hell:** Nach dem Wegfall der doppelten Spiegelung liegt die Hüfte im Mittel bei −0,004, das Zielen bei +0,036 (BASIC-09 +0,115, BASIC-11 +0,101, BASIC-14 −0,066). Ursache nicht untersucht.
+  - Die Spiegelung über das gebackene AO abzudunkeln geht nicht weiter: URP Lit multipliziert Umgebungslicht und Sonde schon mit dem AO (`GlobalIllumination`); nur direktes Licht bleibt davon frei.
 - **Glas dunkel:** Glasring und Fenster wirken dunkel statt hellblau, denn Glas hat keine Durchlässigkeit und keinen Klarlack.
   - Möglich: ein eigener Glas-Shader mit Fresnel.
 - **Creme kühler:** Indirektes Licht (Mehrfachstreuung) fehlt, Unity hat nur einheitliches Umgebungslicht.
