@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.44.0 „Lodestar“ – alle 18 festen Waffen auf dem Bake von 0.43, ohne Handabdrücke (Branch `claude/ballon-0.44-lodestar`)
+
+- Die 16 eigenen Waffen sind mit dem Bake von 0.43 neu gebacken (Albedo und Normale 4096², ohne Arme in der Szene), Skin-Masken ebenso. Die falschen Handabdrücke im AO sind weg.
+  Alle 35 Ego-Bilder werden heller (im Mittel +0,022, höchstens +0,077), Unity rückt damit etwas weiter von Blender weg; Entscheid des Nutzers: Bake behalten.
+- BD01 und BG01 kommen als Paket Format 2 vom Formgen-Pin (`tools/series_packages.py --fixed`), Form unverändert, GLB entfällt.
+- `BALLON_EXPORT_FORCE=<Waffen>` backt einzelne Waffen neu, `tools/bake_ego_compare.py eigene|eigene-vergleich` vergleicht die festen Waffen vorher und nachher.
+- `setup` zählt eingerichtete Serien mit passendem `.series_key` als Cache-Treffer: leerer Cache backt nicht mehr 60 Waffen neu.
+- `limit_mb` 50 → 55 MB (Entscheid des Nutzers: BASIC-12 lag bei 50,5 MB), `NEUTRAL_EDITS` für `tools/bake_unity.py` entfernt. Cycles-Stufen geprüft: `FULL` bleibt.
+
 ## 0.43.1 Patch „uebersicht-text“ – Waffenübersicht bei sechs Spalten ohne abgeschnittene Texte (Branch `claude/ballon-patch-uebersicht-text`)
 
 - Sechs Spalten machten die Karten halb so breit, `FitLabel` hielt bei 60 % der Schrift an und schnitt still ab. Schmale Karten: engerer Spaltenabstand, kleinere Symbole, Modell und Skin untereinander; Rechnung in `MenuCard` (`Runtime/EgoHud.cs`).

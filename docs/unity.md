@@ -16,6 +16,7 @@ BASIC_OUT=~/Library/Caches/CubeEscapeBallon/unity/blender_out ~/Claude/cubeescap
     /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P "$PWD/tools/ego_build.py" -- --stills --gpu   # frische Blender-Stills
 BALLON_EXPORT_DATA_ONLY=1 ~/Claude/cubeescape-nexogen/ce lock blender -- /Applications/Blender.app/Contents/MacOS/Blender -b \
     --factory-startup -P "$PWD/tools/export_unity.py"   # nur Bewegung/Daten geändert: ego.json + Referenz, ohne Backen (2 s, keine GPU-Sperre)
+BALLON_EXPORT_FORCE=BASIC-01-v2.1,… BALLON_BAKE_GPU=1 ~/Claude/cubeescape-nexogen/ce lock gpu -- … -P "$PWD/tools/export_unity.py"   # 0.44: nur diese Waffen neu backen, die übrigen und die Arme bleiben; in Gruppen von 4–5, ego.json entsteht erst am Laufende
 python3 tools/export_unity.py --check       # ego.json passt zu den Daten und zu den Quellen (SHA-256), läuft in ./check
 python3 tools/unity_run.py setup            # Skin-Karten aus Masken (tools/skin_compose.py, 0.42), dann URP, Ebene „Viewmodel“, Input System, Materialien je Rolle, Szene
 python3 tools/unity_run.py test             # EditMode + PlayMode
@@ -280,7 +281,7 @@ Atmen im Zielen. Alle sind entworfen. Weltzoom, Streuung und Hochziehen des Blic
 | `Altes_Format_8_wird_gelesen_Automatik_und_MP_unveraendert` (EditMode, 0.20) | `ballon-ego/9`; die Datei von main (0.19, Kopie `Tests/EditMode/Data/ego_v8.json`) wird gelesen (Dauerfeuer, `eye_m` 0), Automatik und MP sind in `/9` Feld für Feld gleich (Haltungen, Griffe, Aktionen, Spielwerte, Teile, Profil, Bewegung ohne `ads_hide`); seit 0.21 mit `Visier_0_21` (nur benannte Felder normiert: Visierrolle anodized → sight_anod; MP: Haube/Haubenkante entfallen, Scheibe glass_scope, Augenpunkt an der Scheibe) und `Visier_v3` (neue H2-Teile der MP), Netzgrenzen ohne das flache Absehen |
 | `Werte_des_Scouts`, `Hueftlage_des_Scouts_im_Band` (EditMode, 0.20) | Klassenwerte Scout aus `ego.CLASSES`: Einzelfeuer aus der Spec, 180/min, Magazin 15, Weltzoom 2,0, Hüftform `cross`, `aim_in` 7 / `aim_out` 5 Bilder, Schussbilder 2/12/22, Hüfte und Sprint wie die Automatik, übrige Aktionen gleich, sieben Teile mit `ads_hide`; Hüfte: Mündung x 54–59 / y 60–71 %, Okularende 7–34 pp rechts, Kontur bis zum Rand |
 | `Zielfernrohr_Oeffnung_und_Teile_im_Zielen`, `Einzelfeuer_im_Clip_ein_Zug_je_Schuss` (EditMode, 0.20) | Zielen: lichte Öffnung (Objektivlinse) 20–26 % B bei 90 mm und 75°, Absehen auf der Mitte, `ads_hide`-Teile aus, in der Hüfte da, `aim_in` schaltet einmal um; Clip: Scout je Schuss ein Zug am Abzug, Automatik/MP einer je Salve |
-| `Texturen_je_Waffe_unter_der_Grenze` (EditMode, 0.20) | je Waffe Atlas + Skins ≤ `limit_mb` (50 MB), Endung und Kantenlänge je Kanal nach `TEXTURE_STORE`, wie Unity importiert |
+| `Texturen_je_Waffe_unter_der_Grenze` (EditMode, 0.20) | je Waffe Atlas + Skins ≤ `limit_mb` (55 MB, bis 0.43 50 MB), Endung und Kantenlänge je Kanal nach `TEXTURE_STORE`, wie Unity importiert |
 | `Gleich_wie_Blender_Referenz` (0.20 erweitert) | dazu je Stichprobe `ads_hidden` (Zielfernrohr-Teile aus/an) gleich wie Blender, für alle drei Waffen |
 | `Einzelfeuer_feuert_genau_einmal_je_Klick`, `Wechsel_1_3_2_mit_leerer_Sicht_ohne_Munitionsverlust` (PlayMode, 0.20) | Scout: gehaltener Abzug = 1 Schuss, 5 Klicks = 5, zwei Klicks im Abstand 0,1 s = 2 Schüsse im Abstand 60/180 s; Automatik und MP 12 Schuss/s; Tasten 1 → 3 → 2 → 1: leere Sicht 0,1–0,2 s, erstes neues Bild `draw` der gewählten Waffe, Munition je Waffe bleibt |
 | `Altes_Format_9_wird_gelesen_drei_Waffen_unveraendert`, `Werte_des_Impulses`, `Werte_der_Portalkanone`, `Hueftlage_des_Impulses_im_Band`, `Hueftlage_der_Portalkanone` (EditMode, 0.22) | `/9` von main (0.21) als Fixture: Automatik, MP, Scout Feld für Feld gleich (Spielwerte, Teile, Profil, Haltungen, Griffe, Aktionen, Bewegung); Impuls: Salve aus der Spec (3), 900/540 pro min, Magazin 36, Bahnstufe 1,33 % H, Weltzoom 2,0, `ring_dot`, `aim_in` 10, Schussbilder in ganzen Salven, Sprint wie die Automatik, eigene Hüfte (Mündung x 54–59 / y 60–71 %); Portalkanone: ohne Zielen/Nachladen/Visier/Blitz/Hülsen/Bahnstufe, Portale A Linksklick Cyan +1 und B Rechtsklick Orange −1, 240/min, 24 m, Ring 120° in 10 Bildern; Hüfte: Achskrone x 54–63 / y 68–76 % (Portal 2), Kerbe im Bild, Stützhand am Vordergriff |
@@ -533,7 +534,7 @@ werden nicht hochskaliert, Einstellungen siehe [versions/0.43-kiln.md](versions/
 | AO `ao` | 2048², PNG 8 bit, ein Kanal (statt 16 bit RGB) | niederfrequent |
 
 Der Export legt neu gebackene Atlanten und Skins so ab und stellt übernommene beim nächsten Lauf um; ohne Blender:
-`python3 tools/export_unity.py --store-textures`. `ego.json` nennt die Regel je Waffe (`textures.store`, `limit_mb` 50 MB ≈ ¼ von
+`python3 tools/export_unity.py --store-textures`. `ego.json` nennt die Regel je Waffe (`textures.store`, `limit_mb` 55 MB seit 0.44, Entscheid des Nutzers: BASIC-12 lag mit dem neuen Bake bei 50,5 MB; davor 50 MB ≈ ¼ von
 BASIC-06 vorher); `export_unity.py --check` (in `./check`) und der EditMode-Test `Texturen_je_Waffe_unter_der_Grenze` prüfen Endung,
 Kantenlänge (wie Unity importiert) und Summe je Waffe. Arme und LUT bleiben unverändert (nicht Teil von 97 A).
 
@@ -577,7 +578,7 @@ Die vier Serien aus Formgen v2 sind spielbar, ohne dass Serien-Dateien ins Repo 
   Commit (Git-Archiv, die Arbeitskopie von Formgen bleibt unberührt), bäckt fehlende Waffen unter `ce lock gpu` in den Inhalts-Cache
   `~/Library/Caches/CubeEscapeBallon/series/pk/<Schlüssel>/` und legt sie nach `Generated/FormgenSeries/<ID>/` (gitignoriert). Der Schlüssel
   enthält Datensatz, Modul, Skin, Bake-Einstellungen, BALLONs Baucode, Blender-Version und Formgens Bauskript: ein zweites `setup` backt nichts.
-  `BALLON_NO_SERIES=1` lässt den Schritt aus; `python3 tools/series_packages.py --status` zeigt den Stand ohne zu backen.
+  Eingerichtete Pakete mit passendem `.series_key` zählen als Treffer (0.44), ein leerer Cache backt sie nicht neu. `BALLON_NO_SERIES=1` lässt den Schritt aus; `python3 tools/series_packages.py --status` zeigt den Stand ohne zu backen.
 - **Unity:** Die Szene im Repo bleibt die mit den festen Waffen. Serien kommen zur Laufzeit aus `Resources/ego_series.json` (ganzes `ego.json`
   plus Serienwaffen) und `Resources/BallonSeries.asset` (`SeriesAssets`: Waffen und Rollenmaterialien); `Bootstrap` lädt beides, wenn es da ist.
   Ohne Serien (frische Kopie ohne `setup`) läuft das Spiel wie 0.42.
