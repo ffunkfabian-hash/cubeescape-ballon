@@ -773,7 +773,8 @@ def main():
     meta = dict(weapon=wid, camera=EG.CAMERA, fps=EG.FPS, poses={}, actions={}, source=RA.SOURCE)
     scn = bpy.context.scene
     if o['stills']:
-        scn.render.resolution_x, scn.render.resolution_y = 1600, 900
+        # BALLON_STILL_SIZE=1470x956: gleiche Größe wie Unity mit -ballonCompareSize (andere Größen ergeben wertlose Kennzahlen)
+        scn.render.resolution_x, scn.render.resolution_y = (int(v) for v in os.environ.get('BALLON_STILL_SIZE', '1600x900').split('x'))
         scn.cycles.samples = max(96, o['samples'])
         for name in [k for k in ('hip', 'ads', 'sprint', 'lowered', 'reload', 'inspect_l', 'inspect_r', 'crouch')
                      if k in sc.P['poses'] and (not o['poses'] or k in o['poses'])]:
