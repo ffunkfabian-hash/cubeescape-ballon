@@ -157,24 +157,30 @@ from tools import bake_ego_compare as BC  # noqa: E402
 ok(BC.own_poses(dict(actions=[dict(name='fire_a')])) == ('hip',) and BC.own_poses(dict(actions=[dict(name='aim_in')])) == ('hip', 'ads'), 'Haltungen im Vergleich')
 own = {w[0]: w[2] for w in BC.own_weapons()}
 ok(own['BASIC-T01-v2.1'] == ('hip',) and own['BASIC-01-v2.1'] == ('hip', 'ads') and len(own) >= 18, f'Haltungen aus ego.json: {len(own)}')
-with tempfile.TemporaryDirectory() as t:
-    BC.EV = t
-    was = BC.own_weapons
-    BC.own_weapons = lambda only='': [('BASIC-01-v2.1', 1, ('hip',))]
-    try:
-        BC.own_compare('a', 'b')
-        bad.append('Vergleich ohne Bilder meldet Erfolg')
-    except subprocess.CalledProcessError as e:
-        ok(any('hip_unity.png' in str(x) for x in e.cmd), f'anderer Fehler als das fehlende Bild: {e.cmd}')
-    # Erfolgsfall und Grenze: gleiche Bilder bestehen, ein verändertes Viewmodel fällt unter ego_vm_ssim
-    for tag, extra in (('a', []), ('b', []), ('c', ['-fill', 'black', '-draw', 'rectangle 40,40 90,90'])):
-        d = os.path.join(t, 'ego_eigene', tag, 'BASIC-01-v2.1')
-        os.makedirs(d)
-        subprocess.run(['magick', '-size', '128x128', 'gradient:gray60-gray90', *extra, os.path.join(d, 'hip_unity.png')], check=True)
-        subprocess.run(['magick', '-size', '128x128', 'xc:white', os.path.join(d, 'hip_mask.png')], check=True)
-    ok(BC.own_compare('a', 'b') == 0, 'gleiche Bilder fallen durch')
-    ok(BC.own_compare('a', 'c') == 1, 'verändertes Viewmodel besteht die Grenze')
-    BC.own_weapons = was
+import shutil  # noqa: E402
+if shutil.which('magick'):
+    with tempfile.TemporaryDirectory() as t:
+        BC.EV = t
+        was = BC.own_weapons
+        BC.own_weapons = lambda only='': [('BASIC-01-v2.1', 1, ('hip',))]
+        try:
+            BC.own_compare('a', 'b')
+            bad.append('Vergleich ohne Bilder meldet Erfolg')
+        except subprocess.CalledProcessError as e:
+            ok(any('hip_unity.png' in str(x) for x in e.cmd), f'anderer Fehler als das fehlende Bild: {e.cmd}')
+        # Erfolgsfall und Grenze: gleiche Bilder bestehen, ein verändertes Viewmodel fällt unter ego_vm_ssim
+        for tag, extra in (('a', []), ('b', []), ('c', ['-fill', 'black', '-draw', 'rectangle 40,40 90,90'])):
+            d = os.path.join(t, 'ego_eigene', tag, 'BASIC-01-v2.1')
+            os.makedirs(d)
+            subprocess.run(['magick', '-size', '128x128', 'gradient:gray60-gray90', *extra, os.path.join(d, 'hip_unity.png')], check=True)
+            subprocess.run(['magick', '-size', '128x128', 'xc:white', os.path.join(d, 'hip_mask.png')], check=True)
+        ok(BC.own_compare('a', 'b') == 0, 'gleiche Bilder fallen durch')
+        ok(BC.own_compare('a', 'c') == 1, 'verändertes Viewmodel besteht die Grenze')
+        BC.own_weapons = was
+elif os.environ.get('GITHUB_ACTIONS') == 'true':   # PR-Check auf Linux ohne ImageMagick 7: wie test_texture_store
+    print('Hinweis: magick fehlt im PR-Check – Bildvergleich in test_series nur auf dem Mac')
+else:
+    bad.append('magick (ImageMagick 7) fehlt')
 
 print(f'Serien: {len(bad)} Fehler' if bad else 'Serien: Pin, Inhalts-Cache (zweiter Lauf ohne Backen), nichts im Repo – geprüft')
 for b in bad:
