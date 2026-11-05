@@ -154,7 +154,7 @@ def own_weapons(only=''):
 
 def own_poses(entry):
     """Haltungen im Vergleich, aus den Daten: Zielen nur mit Aktion aim_in (die Portalkanone hat keine). Fehlt ein Bild, bricht der Vergleich ab, statt still weniger zu prüfen."""
-    return ('hip', 'ads') if 'aim_in' in entry['actions'] else ('hip',)
+    return ('hip', 'ads') if any(a['name'] == 'aim_in' for a in entry['actions']) else ('hip',)
 
 
 def own_shots(tag, only=''):

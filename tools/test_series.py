@@ -154,7 +154,7 @@ except SystemExit:
 
 # 0.44: Vergleich der festen Waffen: Haltungen aus den Daten, fehlende Bilder brechen ab
 from tools import bake_ego_compare as BC  # noqa: E402
-ok(BC.own_poses(dict(actions={'fire_a': 1})) == ('hip',) and BC.own_poses(dict(actions={'aim_in': 1})) == ('hip', 'ads'), 'Haltungen im Vergleich')
+ok(BC.own_poses(dict(actions=[dict(name='fire_a')])) == ('hip',) and BC.own_poses(dict(actions=[dict(name='aim_in')])) == ('hip', 'ads'), 'Haltungen im Vergleich')
 own = {w[0]: w[2] for w in BC.own_weapons()}
 ok(own['BASIC-T01-v2.1'] == ('hip',) and own['BASIC-01-v2.1'] == ('hip', 'ads') and len(own) >= 18, f'Haltungen aus ego.json: {len(own)}')
 with tempfile.TemporaryDirectory() as t:
