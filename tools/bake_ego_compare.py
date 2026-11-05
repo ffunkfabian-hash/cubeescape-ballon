@@ -25,7 +25,6 @@ EV = os.environ.get('BALLON_KILN_EVIDENCE', os.path.expanduser('~/Library/Caches
 KINDS = (('QA', 'alt 4096² / 64', 4096, 64), ('QB', 'neu Albedo 2048²', 2048, None), ('QC', 'neu 4096²', 4096, None))
 SHEETS = (('BA01', '01'), ('BJ01', '02'))
 SIZE = '1470x956'
-NO_ADS = {'BASIC-T01-v2.1'}
 REFERENCE = ('BJ01', 'BK04', 'BL09', 'BM14')           # je Linie eine Waffe, verschiedene Grundtypen
 
 
@@ -143,24 +142,25 @@ def shots():
 
 
 def own_weapons(only=''):
-    """[(ID, Platz in der Build)] der festen Waffen; Serien stehen dahinter und zählen nicht."""
+    """[(ID, Platz in der Build, Haltungen)] der festen Waffen; Serien stehen dahinter und zählen nicht."""
     D = json.load(open(SP.OUT_JSON if os.path.exists(SP.OUT_JSON) else os.path.join(SP.GEN, 'ego.json'), encoding='utf-8'))
-    all_ = [(e['id'], k + 1) for k, e in enumerate(D['weapons']) if not e.get('dir', '').startswith('FormgenSeries/')]
+    all_ = [(e['id'], k + 1, own_poses(e)) for k, e in enumerate(D['weapons']) if not e.get('dir', '').startswith('FormgenSeries/')]
     want = [i for i in only.split(',') if i]
-    if set(want) - {i for i, _ in all_}:
-        raise SystemExit(f'Unbekannt: {sorted(set(want) - {i for i, _ in all_})}')
+    unknown = sorted(set(want) - {w[0] for w in all_})
+    if unknown:
+        raise SystemExit(f'Unbekannt: {unknown}')
     return [w for w in all_ if not want or w[0] in want]
 
 
-def own_poses(sid):
-    """Haltungen im Vergleich. Nur die Portalkanone hat kein Zielen; fehlt sonst ein Bild, bricht der Vergleich ab, statt still weniger zu prüfen."""
-    return ('hip',) if sid in NO_ADS else ('hip', 'ads')
+def own_poses(entry):
+    """Haltungen im Vergleich, aus den Daten: Zielen nur mit Aktion aim_in (die Portalkanone hat keine). Fehlt ein Bild, bricht der Vergleich ab, statt still weniger zu prüfen."""
+    return ('hip', 'ads') if 'aim_in' in entry['actions'] else ('hip',)
 
 
 def own_shots(tag, only=''):
     base = os.path.join(EV, 'ego_eigene', tag)
     os.makedirs(base, exist_ok=True)
-    for sid, nr in own_weapons(only):
+    for sid, nr, _ in own_weapons(only):
         rc = UR.player(['-ballonCompare', os.path.join(base, sid), '-ballonWeapon', str(nr), '-ballonCompareSize', SIZE], os.path.join(base, f'{sid}.log'), (1470, 956))
         print(f'{sid}: Exit {rc}', flush=True)
         if rc:
@@ -171,8 +171,8 @@ def own_shots(tag, only=''):
 def own_compare(before, after, only=''):
     root = os.path.join(EV, 'ego_eigene')
     table, tiles = {}, []
-    for sid, _ in own_weapons(only):
-        for pose in own_poses(sid):
+    for sid, _, poses in own_weapons(only):
+        for pose in poses:
             old, new = (os.path.join(root, t, sid, f'{pose}_unity.png') for t in (before, after))
             m = table[f'{sid} {pose}'] = UR.metrics(new, old, os.path.join(root, before, sid, f'{pose}_mask.png'))
             print(f"{sid} {pose}: SSIM {m['ssim']} | Viewmodel Abweichung {m.get('vm_mae')}, SSIM {m.get('vm_ssim_box')}, Helligkeit {m.get('vm_lum_unity')} / {m.get('vm_lum_blender')}", flush=True)
