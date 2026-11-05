@@ -166,6 +166,14 @@ with tempfile.TemporaryDirectory() as t:
         bad.append('Vergleich ohne Bilder meldet Erfolg')
     except subprocess.CalledProcessError as e:
         ok(any('hip_unity.png' in str(x) for x in e.cmd), f'anderer Fehler als das fehlende Bild: {e.cmd}')
+    # Erfolgsfall und Grenze: gleiche Bilder bestehen, ein verändertes Viewmodel fällt unter ego_vm_ssim
+    for tag, extra in (('a', []), ('b', []), ('c', ['-fill', 'black', '-draw', 'rectangle 40,40 90,90'])):
+        d = os.path.join(t, 'ego_eigene', tag, 'BASIC-01-v2.1')
+        os.makedirs(d)
+        subprocess.run(['magick', '-size', '128x128', 'gradient:gray60-gray90', *extra, os.path.join(d, 'hip_unity.png')], check=True)
+        subprocess.run(['magick', '-size', '128x128', 'xc:white', os.path.join(d, 'hip_mask.png')], check=True)
+    ok(BC.own_compare('a', 'b') == 0, 'gleiche Bilder fallen durch')
+    ok(BC.own_compare('a', 'c') == 1, 'verändertes Viewmodel besteht die Grenze')
     BC.own_weapons = was
 
 print(f'Serien: {len(bad)} Fehler' if bad else 'Serien: Pin, Inhalts-Cache (zweiter Lauf ohne Backen), nichts im Repo – geprüft')
