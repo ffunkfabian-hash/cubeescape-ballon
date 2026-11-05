@@ -4,6 +4,8 @@
   python3 tools/bake_ego_compare.py install → Vergleichswaffen in Generated/FormgenSeries und ego_series.json; danach `BALLON_NO_SERIES=1 python3 tools/unity_run.py setup` und `build` (ohne die Umgebungsvariable räumt setup die Vergleichswaffen wieder weg)
   python3 tools/bake_ego_compare.py shots   → Standbilder Hüfte und Zielen je Waffe (1470 × 956), Tabelle und Kontaktbogen nach <EV>/kiln/ego/
   python3 tools/bake_ego_compare.py remove  → Vergleichswaffen wieder entfernen (danach setup und build)
+  python3 tools/bake_ego_compare.py eigene <Stand> [Waffe,…] → Standbilder Hüfte und Zielen der festen Waffen (BASIC-*, BD01, BG01) nach <EV>/ego_eigene/<Stand>/ (0.44)
+  python3 tools/bake_ego_compare.py eigene-vergleich <vorher> <nachher> [Waffe,…] → Tabelle und Kontaktbogen beider Stände, Viewmodel gegen ego_vm_ssim
   python3 tools/bake_ego_compare.py serie   → eine Serienwaffe je Linie gegen frische Blender-Stills (tools/ego_variant.py, `unity_run.compare`) nach <EV>/kiln/serie/
 
 Waffen: BA01 (Formgen-Linie A = BASIC-01 unverändert) und BJ01. Je Waffe QA.. = heutiger Bake (Stand vor 0.43: 4096², 64 Samples), QB.. = neu (Albedo 2048², Normale 4096²), QC.. = neu 4096².
@@ -139,6 +141,48 @@ def shots():
     return 1 if over else 0
 
 
+def own_weapons(only=''):
+    """[(ID, Platz in der Build)] der festen Waffen; Serien stehen dahinter und zählen nicht."""
+    D = json.load(open(SP.OUT_JSON if os.path.exists(SP.OUT_JSON) else os.path.join(SP.GEN, 'ego.json'), encoding='utf-8'))
+    all_ = [(e['id'], k + 1) for k, e in enumerate(D['weapons']) if not e.get('dir', '').startswith('FormgenSeries/')]
+    want = [i for i in only.split(',') if i]
+    if set(want) - {i for i, _ in all_}:
+        raise SystemExit(f'Unbekannt: {sorted(set(want) - {i for i, _ in all_})}')
+    return [w for w in all_ if not want or w[0] in want]
+
+
+def own_shots(tag, only=''):
+    base = os.path.join(EV, 'ego_eigene', tag)
+    os.makedirs(base, exist_ok=True)
+    for sid, nr in own_weapons(only):
+        rc = UR.player(['-ballonCompare', os.path.join(base, sid), '-ballonWeapon', str(nr), '-ballonCompareSize', SIZE], os.path.join(base, f'{sid}.log'), (1470, 956))
+        print(f'{sid}: Exit {rc}', flush=True)
+        if rc:
+            return rc
+    return 0
+
+
+def own_compare(before, after, only=''):
+    root = os.path.join(EV, 'ego_eigene')
+    table, tiles = {}, []
+    for sid, _ in own_weapons(only):
+        for pose in ('hip', 'ads'):
+            old, new = (os.path.join(root, t, sid, f'{pose}_unity.png') for t in (before, after))
+            if not os.path.exists(old) and not os.path.exists(new):      # Portalkanone: kein Zielen
+                continue
+            m = table[f'{sid} {pose}'] = UR.metrics(new, old, os.path.join(root, before, sid, f'{pose}_mask.png'))
+            print(f"{sid} {pose}: SSIM {m['ssim']} | Viewmodel Abweichung {m.get('vm_mae')}, SSIM {m.get('vm_ssim_box')}, Helligkeit {m.get('vm_lum_unity')} / {m.get('vm_lum_blender')}", flush=True)
+            tiles += ['-label', f'{sid} {pose} · {before}', old, '-label', f'{sid} {pose} · {after}', new]
+    out = os.path.join(root, f'{before}_gegen_{after}')
+    json.dump(table, open(out + '.json', 'w'), ensure_ascii=False, indent=1)
+    low = json.load(open(os.path.join(SP.ROOT, 'data', 'bake_settings.json'), encoding='utf-8'))['limits']['ego_vm_ssim']
+    over = [f"{k}: {m.get('vm_ssim_box')}" for k, m in table.items() if m.get('vm_ssim_box', 0) < low]
+    print(f'Grenzwert Viewmodel-SSIM {low}: ' + ('unterschritten – ' + '; '.join(over) if over else 'eingehalten'))
+    subprocess.run(['magick', 'montage', *tiles, '-tile', '4x', '-geometry', '490x319+2+2', '-pointsize', '12', '-background', '#9EA4AC', out + '.png'], check=True)
+    print('Kontaktbogen →', out + '.png')
+    return 1 if over else 0
+
+
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else ''
     if cmd == 'bake':
@@ -149,5 +193,9 @@ if __name__ == '__main__':
         sys.exit(shots())
     elif cmd == 'serie':
         sys.exit(serie())
+    elif cmd == 'eigene':
+        sys.exit(own_shots(sys.argv[2], *sys.argv[3:4]))
+    elif cmd == 'eigene-vergleich':
+        sys.exit(own_compare(sys.argv[2], sys.argv[3], *sys.argv[4:5]))
     else:
         print(__doc__)

@@ -818,7 +818,7 @@ namespace Ballon.Ego.Tests
                 var T = d.weaponTextures;
                 Assert.IsNotNull(T?.store, $"{d.weapon.id}: Ablage (textures.store) fehlt");
                 Assert.AreEqual(4, T.store.Length);
-                Assert.That(T.limit_mb, Is.InRange(1f, 50f), "Grenze ≤ 50 MB je Waffe");
+                Assert.That(T.limit_mb, Is.InRange(1f, 55f), "Grenze ≤ 55 MB je Waffe (0.44, Nutzerentscheid)");
                 var files = new HashSet<string> { T.weapon.albedo, T.weapon.spec, T.weapon.normal, T.weapon.ao };
                 foreach (var s in T.skins) { files.Add(s.albedo); files.Add(s.spec); }
                 long bytes = files.Sum(f => new FileInfo($"{Gen}/{d.TexturePath(f)}").Length);   // 0.41: Formgen-Pakete in ihrem Ordner

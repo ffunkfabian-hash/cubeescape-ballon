@@ -3,6 +3,7 @@
   python3 tools/series_packages.py            → Datensätze holen, Fehlendes backen (unter `ce lock gpu`), einrichten, ego_series.json schreiben
   python3 tools/series_packages.py --status   → nur zeigen, was im Cache liegt und was gebacken werden müsste (ohne Blender)
   python3 tools/series_packages.py --only BJ01,BK05   → nur diese Blätter (Prüfläufe)
+  python3 tools/series_packages.py --fixed BD01,BG01  → feste Varianten im Repo neu backen, nach Generated/Formgen/<ID>/ (0.44; danach `export_unity.py --formgen`)
   BALLON_NO_SERIES=1: setup ohne Serien.
 
 Weg: `data/formgen_series.json` pinnt Formgen v2 auf einen Commit. Daraus entsteht je Blatt ein Auftrag (Formgens eigener Code aus `git archive`,
@@ -30,6 +31,7 @@ PIN = os.path.join(ROOT, 'data', 'formgen_series.json')
 CACHE = os.environ.get('BALLON_SERIES_CACHE', os.path.expanduser('~/Library/Caches/CubeEscapeBallon/series'))
 GEN = os.path.join(ROOT, 'unity', 'Assets', 'Ballon', 'Generated')
 DST = os.path.join(GEN, 'FormgenSeries')
+FIXED = os.path.join(GEN, 'Formgen')               # feste Varianten (im Repo, 0.41), Paket wie die Serien
 OUT_JSON = os.path.join(DST, 'Resources', 'ego_series.json')
 BLENDER = os.environ.get('BLENDER', '/Applications/Blender.app/Contents/MacOS/Blender')
 CE = os.path.expanduser('~/Claude/cubeescape-nexogen/ce')
@@ -169,6 +171,12 @@ def cached(key):
     return os.path.exists(os.path.join(package_dir(key), '.complete'))
 
 
+def installed(sid, key):
+    """Paket mit diesem Schlüssel schon eingerichtet? Es zählt wie ein Cache-Treffer: ein leerer Cache (0.44) backt nicht neu, was in Unity liegt."""
+    stamp = os.path.join(DST, sid, '.series_key')
+    return os.path.exists(stamp) and open(stamp).read().strip() == key
+
+
 def bake_one(job, key, bake, script, snapshot=ROOT):
     """Ein Paket in den Cache backen (eigene Blender-Instanz). snapshot: BALLON-Stand, der backt (Vergleich: tools/bake_ego_compare.py). Gibt die Zeit in s
     zurück; wirft SeriesError mit dem Ende des Protokolls."""
@@ -199,13 +207,14 @@ def bake_one(job, key, bake, script, snapshot=ROOT):
     return time.time() - t0
 
 
-def install(job, key):
-    """Paket aus dem Cache nach Generated/FormgenSeries/<ID>/ (APFS-Klon); gleicher Schlüssel: nichts anfassen, Unity importiert nicht neu."""
-    dst = os.path.join(DST, job['id'])
+def install(job, key, root=None):
+    """Paket aus dem Cache nach Generated/FormgenSeries/<ID>/ (APFS-Klon); gleicher Schlüssel: nichts anfassen, Unity importiert nicht neu.
+    root: anderer Zielordner ohne Schlüsseldatei (feste Varianten, im Repo)."""
+    dst = os.path.join(root or DST, job['id'])
     stamp = os.path.join(dst, '.series_key')
-    if os.path.exists(stamp) and open(stamp).read().strip() == key:
+    if not root and installed(job['id'], key):
         return False
-    os.makedirs(DST, exist_ok=True)
+    os.makedirs(root or DST, exist_ok=True)
     metas = {}
     if os.path.isdir(dst):                                    # .meta behalten: GUIDs der Materialien bleiben gültig
         for base, _, names in os.walk(dst):
@@ -220,7 +229,8 @@ def install(job, key):
         path = os.path.join(dst, rel)
         if os.path.exists(path[:-5]):
             open(path, 'wb').write(data)
-    open(stamp, 'w').write(key + '\n')
+    if not root:
+        open(stamp, 'w').write(key + '\n')
     return True
 
 
@@ -255,7 +265,7 @@ def prepare(jobs, p, code, blender, script_sha):
             failed.append(dict(id=j['id'], step='Ego-Profil', reason=why))
             continue
         keys[j['id']] = job_key(j, p['bake'], code, blender, script_sha, module_hash(j['module']))
-        if not cached(keys[j['id']]):
+        if not cached(keys[j['id']]) and not installed(j['id'], keys[j['id']]):
             todo.append(j)
     return failed, keys, todo
 
@@ -282,7 +292,7 @@ def install_all(jobs, keys, failed, p, only=False):
         key = keys.get(j['id'])
         if key is None:
             continue
-        if not cached(key):
+        if not cached(key) and not installed(j['id'], key):
             failed.append(dict(id=j['id'], step='Backen', reason='kein Paket im Cache (Protokoll oben)'))
             continue
         changed += install(j, key)
@@ -304,17 +314,31 @@ def install_all(jobs, keys, failed, p, only=False):
     return entries, failed, changed
 
 
+def install_fixed(jobs, keys, failed):
+    """Feste Varianten einrichten: alles oder nichts, ein Paket ohne Bake bleibt wie es ist. Das GLB entfällt mit dem Paket (bake_one), Unity nutzt das FBX."""
+    missing = [f['id'] for f in failed] + [j['id'] for j in jobs if j['id'] in keys and not cached(keys[j['id']])]
+    if missing:
+        raise SeriesError(f'Nicht gebacken, nichts eingerichtet: {missing}')
+    for j in jobs:
+        install(j, keys[j['id']], FIXED)
+        print(f"Feste Variante {j['id']} → {os.path.relpath(os.path.join(FIXED, j['id']), ROOT)}", flush=True)
+    return 0
+
+
 def main(argv=None):
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     a.add_argument('--status', action='store_true')
     a.add_argument('--only', default='')
+    a.add_argument('--fixed', default='', help='feste Varianten neu backen (IDs, Komma)')
     a.add_argument('--bake-only', action='store_true', help='innerer Lauf unter ce lock gpu')
     o = a.parse_args(argv)
     p = pin()
     src = source(p)
+    if o.fixed:
+        p = dict(p, lines=sorted({i[1] for i in o.fixed.split(',')}))
     jobs = plan_jobs(p, src)
-    if o.only:
-        want = set(o.only.split(','))
+    if o.only or o.fixed:
+        want = set((o.only or o.fixed).split(','))
         unknown = want - {j['id'] for j in jobs}
         if unknown:
             raise SeriesError(f'Unbekannte Blätter: {sorted(unknown)}')
@@ -333,9 +357,11 @@ def main(argv=None):
         return 0
     if todo:
         r = subprocess.run([CE, 'lock', 'gpu', '--what', f'BALLON Serien backen ({len(todo)})', '--', sys.executable, os.path.abspath(__file__), '--bake-only'] +
-                           (['--only', o.only] if o.only else []))
+                           (['--only', o.only] if o.only else []) + (['--fixed', o.fixed] if o.fixed else []))
         if r.returncode:
             raise SeriesError(f'Backen: Exit {r.returncode}')
+    if o.fixed:
+        return install_fixed(jobs, keys, failed)
     install_all(jobs, keys, failed, p, only=bool(o.only))
     return 0
 

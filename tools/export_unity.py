@@ -57,7 +57,7 @@ TEXTURE_STORE = dict(
     normal=dict(size=4096, ext='png',
                 de='Normale: volle Kantenlänge, PNG 8 bit statt 16 (verlustarm: Unity speichert Normalen mit 8 bit je Kanal)'),
     ao=dict(size=2048, ext='png', de='AO: halbe Kantenlänge, ein Kanal mit 8 bit (niederfrequent)'),
-    limit_mb=50.0,
+    limit_mb=55.0,
     de='Grenze je Waffe ≈ ¼ von BASIC-06 vorher (191 MB); Unity-Test Texturen_je_Waffe_unter_der_Grenze und export_unity.py --check')
 # Skins (0.42 „Quickslot“, Entscheid 247 A): keine Farb- und Glanzkarten je Skin mehr im Repo (bis 0.42 ≈ 4 MB je Skin und Waffe,
 # 0.33–0.41 nur für sieben Waffen gebacken). Je Waffe backt tools/skin_masks.py einmal Masken (textures.skin_masks); tools/skin_compose.py
@@ -427,12 +427,6 @@ NEUTRAL_EDITS = {
                                 'ea42dd1b9e5cc7cb8a585913488c57c0aed795d88dff7560e7859776d3769749',
                                 '0.41: main(W=…, base=…, argv=…) statt Modulname; GLB und Spec aller 16 Spielwaffen bytegleich zu 0.40 '
                                 '(docs/versions/0.41-intake.md › Schnittstellen)')],
-    # 0.43: kein neutraler Bau, sondern ein bewusster Übergang: der neue Bake gilt ab dem nächsten vollen Bake. Die 16 Atlanten im Repo bleiben
-    # bis dahin die von 0.42 (Nutzerauftrag 0.43 d), damit Skin-Masken und Bild unverändert und keine neuen Binärdateien im Diff sind.
-    'tools/bake_unity.py': [('4eaafdb72c7f8a9b76bb5fd7b69da6c85b8c5f40efb34d33b20e5f66c0034d3f',
-                             'e8558c5a07353bed8e7a80f0d98bc099151dbee6846a013f4aff2ee3377203a6',
-                             '0.43: schnellerer Bake, Atlanten im Repo nicht neu gebacken; Referenz und Grenzwerte data/bake_settings.json '
-                             '(docs/versions/0.43-kiln.md › Neue Referenz)')],
 }
 
 
@@ -508,6 +502,18 @@ def export_plan(D, old):
         else:
             plan[e['id']], why[e['id']] = 'full', f'{", ".join(diff)}: Bauteile geändert (Form, Material oder Bewegung)'
     return False, plan, why
+
+
+def force_full(plan, why, ids=None):
+    """BALLON_EXPORT_FORCE=<Waffe,…> (0.44): diese Waffen voll backen, obwohl sich nichts geändert hat, die übrigen und die Arme bleiben; für neue
+    Bake-Stände, Muster zuerst, dann der Rest. Unbekannte Waffen sind ein Fehler: ein Tippfehler backt sonst still nichts."""
+    ids = [i for i in (os.environ.get('BALLON_EXPORT_FORCE', '') if ids is None else ids).split(',') if i]
+    unknown = sorted(set(ids) - set(plan))
+    if unknown:
+        raise SystemExit(f'BALLON_EXPORT_FORCE: unbekannt {unknown}')
+    for i in ids:
+        plan[i], why[i] = 'full', 'BALLON_EXPORT_FORCE'
+    return plan, why
 
 
 
@@ -890,11 +896,11 @@ def export_fbx(path, obs):
 # Arme im Waffenatlas (0.41 „Intake“, Formgen-Befund 0.6): bis 0.40 lag beim Backen die ganze Ego-Szene vor – rest_pose setzt alle
 # Armsegmente in den Ursprung (Socket_Hand), mitten in den Griff. Deren AO-Abdrücke sind keine Griffhaltung, sondern ein Bake-Fehler, und
 # sie liegen auch an Stellen, die in anderen Haltungen frei sind. Regel für beide Wege (BALLON und Formgen): der Waffenatlas wird ohne Arme
-# gebacken (arms=False); Kontaktschatten der Hände entstehen im Bild (Cycles-Render, in Unity nicht gebacken). Die Atlanten von BALLONs 16
-# Waffen bleiben bis zu ihrem nächsten vollen Bake wie gebacken (export_plan 'reuse'); arms=True backt wie bis 0.40.
+# gebacken (arms=False); Kontaktschatten der Hände entstehen im Bild (Cycles-Render, in Unity nicht gebacken). Seit 0.44 sind BALLONs 16
+# Waffen so gebacken (BALLON_EXPORT_FORCE); arms=True backt wie bis 0.40.
 ARMS_IN_ATLAS = False
-# Atlanten ohne Angabe textures.weapon.arms sind vor 0.41 gebacken, also mit Armen in der Szene (alle 16 Spielwaffen, Stand 0.42): Skin-Masken
-# (tools/skin_masks.py) backen sie ebenso, damit der Schmutz in Vertiefungen zum Standard-Atlas passt. Neue Bakes schreiben arms mit.
+# Atlanten ohne Angabe textures.weapon.arms wären vor 0.41 gebacken, also mit Armen in der Szene (bis 0.43 alle 16 Spielwaffen): Skin-Masken
+# (tools/skin_masks.py) backen sie ebenso, damit der Schmutz in Vertiefungen zum Standard-Atlas passt. Bakes schreiben arms mit.
 def atlas_with_arms(e):
     return e['textures']['weapon'].get('arms', True)
 
@@ -983,6 +989,7 @@ def blender_main():
     D = data()
     old = load_old()
     arms_new, plan, why = export_plan(D, old)
+    plan, why = force_full(plan, why)
     data_only = os.environ.get('BALLON_EXPORT_DATA_ONLY') == '1'
     print('[export_unity] Plan: ' + ', '.join(f'{k} {v}' + (f' ({why[k]})' if k in why else '') for k, v in plan.items()) +
           f"; Arme {'backen' + (' (' + why.get('arms', '') + ')') if arms_new else 'bleiben'}", flush=True)

@@ -2,7 +2,7 @@
 
 Ordnerkonvention: unity/Assets/Ballon/Generated/Formgen/<ID>/ enthält ein Paket, wie Formgen es entpackt
 (`python -m formgen.asset --bake <IDs> --unpack unity/Assets/Ballon/Generated/Formgen`): <ID>.package.json (formgenv2/weapon-package),
-<ID>.fbx, textures/<ID>_albedo.jpg|_spec.png|_normal.png|_ao.png, <ID>.spec.json, <ID>.glb. BALLON ändert dort nichts; der Eintrag
+<ID>.fbx, textures/<ID>_albedo.jpg|_spec.png|_normal.png|_ao.png, <ID>.spec.json (GLB nur in Formgens eigenem Entpacken; `series_packages.py --fixed` lässt es weg, 0.44). BALLON ändert dort nichts; der Eintrag
 entsteht in tools/export_unity.data() (also auch in `--check`) und landet mit dem nächsten Export bzw. `export_unity.py --formgen` in
 ego.json. Der Unity-Import (BallonSetup) liest Pfade relativ zu `dir` (Generated/<dir>).
 
