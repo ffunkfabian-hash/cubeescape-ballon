@@ -371,6 +371,10 @@ namespace Ballon.Ego
         /// der Flächenlichter schon, Lichtflächen in der Sonde zählen ihn doppelt (Messung 31 Bilder: docs/unity.md › Studio).</summary>
         public static float ProbeEmit = 0f;
 
+        /// <summary>Anteil der Lichtflächen je Lichtszene. Nacht behält sie (Entscheid des Nutzers 05.11.2026 am Bild: „0.44 nacht gefällt mir gut“),
+        /// sonst wird die Waffe dort fast schwarz; nicht gegen Blender gemessen, es gibt keine Referenz mit Waffe.</summary>
+        public static float ProbeShare(string lighting) => lighting == "nacht" ? 1f : ProbeEmit;
+
         /// <summary>Strahldichte einer Lichtfläche (Kantenlänge size_m) für die Reflexionssonde: P / (π · A).</summary>
         public static float Radiance(float powerW, float sizeM) => powerW / (Mathf.PI * sizeM * sizeM);
     }

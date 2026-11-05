@@ -57,7 +57,7 @@ gilt dieselbe Umrechnung wie in `ego.json › axes.to_unity`: Unity = (−x, z, 
   erhalten.
 - **Beleuchtung:** Unity beleuchtet die Umgebung nicht, sie trägt ihr Licht im Atlas. Die Lichter dienen nur dem Viewmodel:
   - Flächenlicht mit P/π², Spot und Punktlicht mit P/(4π²), Sonne mit S/π;
-  - keine Lichtflächen in der Reflexionssonde: den Glanz tragen die Spots ([unity.md](unity.md), Studio).
+  - keine Lichtflächen in der Reflexionssonde, den Glanz tragen die Spots; nur die Lichtszene `nacht` behält sie mit P/(π·A) ([unity.md](unity.md)).
 - **Parcours:** Tore und Kontrollpunkte sind achsparallele Auslösequader. Die Zielscheiben baut Unity an `course.targets`:
   Mitte `pos`, Blickrichtung `normal`, Radius `radius`. `route` ist die Strecke für Wegmarken am Boden; `z` ist die Höhe der
   Lauffläche (auf Kisten und Gerüst ungleich 0). Start und Ziel dürfen derselbe Quader sein (Runde): Dann gewinnt das Ziel, sobald alle

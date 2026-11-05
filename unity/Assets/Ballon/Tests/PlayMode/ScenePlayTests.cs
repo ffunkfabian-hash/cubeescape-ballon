@@ -459,7 +459,8 @@ namespace Ballon.Ego.Tests
             {
                 yield return null;
                 var L = b.LoadedSceneAt(idx);
-                foreach (var g in L.lightings) Assert.AreEqual(0, g.emitters.Count, "Standard: keine Lichtfläche in der Sonde, der Spot trägt den Glanz");
+                Assert.AreEqual(0, L.lightings[0].emitters.Count, "Tag: keine Lichtfläche in der Sonde, der Spot trägt den Glanz");
+                Assert.AreEqual(1, L.lightings[1].emitters.Count, "Nacht behält die Lichtfläche (Entscheid des Nutzers)");
                 var umg = L.root.Find("Umgebung");
                 int childCount = L.root.childCount, renderers = umg.GetComponentsInChildren<Renderer>(true).Length;
                 var zm0 = L.zoneMats[0];

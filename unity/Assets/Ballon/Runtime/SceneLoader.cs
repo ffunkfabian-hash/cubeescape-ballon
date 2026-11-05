@@ -4,7 +4,7 @@
 //     Material seiner Zone; die UVs sind für alle Lichtszenen gleich, Umschalten tauscht nur die Texturen.
 //   - Kollision aus „colliders“ (BoxCollider), nicht aus dem FBX.
 //   - Je Lichtszene eine Gruppe Lichter, die nur das Viewmodel beleuchten (Light.cullingMask); Flächenlichter erscheinen zusätzlich
-//     nur zum Messen (SceneConvert.ProbeEmit) als leuchtende Flächen auf der Ebene StudioEmitLayer, die nur die Reflexionssonde sieht (P / (π · A)).
+//     nur in der Lichtszene Nacht und zum Messen (SceneConvert.ProbeShare) als leuchtende Flächen auf der Ebene StudioEmitLayer, die nur die Reflexionssonde sieht (P / (π · A)).
 //     Alle Gruppen entstehen beim Laden (ausgeschaltet), Umschalten schaltet nur um.
 //   - Parcours: Zielscheiben an „course.targets“ (Mitte, Normale, Radius), Auslöse-Logik in CourseRun, Wegmarken entlang „route“.
 // Umgebungslicht, Himmel, Sonde und Spieler setzt Bootstrap (ShowScene, ShowLighting), weil sie den Zustand der ganzen Szene betreffen.
@@ -202,7 +202,7 @@ namespace Ballon.Ego
             var LL = new LoadedLighting { data = s };
             LL.group = new GameObject("Licht " + s.name);
             LL.group.transform.SetParent(L.root, false);
-            foreach (var l in s.lights) AddLight(LL, l, emit);
+            foreach (var l in s.lights) AddLight(LL, l, emit, SceneConvert.ProbeShare(s.name));
             LL.ambientGamma = SceneConvert.Gamma(SceneConvert.Linear(s.ambient.color), s.ambient.strength);
             LL.skyGamma = SceneConvert.Gamma(SceneConvert.Linear(s.sky.color), s.sky.strength);
             LL.atlasTint = SceneConvert.Gamma(Color.white, s.scale);       // Atlas = Licht / scale; Materialfarben sind Gamma-Werte
@@ -210,7 +210,7 @@ namespace Ballon.Ego
             return LL;
         }
 
-        static void AddLight(LoadedLighting L, SceneLight s, Material emit)
+        static void AddLight(LoadedLighting L, SceneLight s, Material emit, float share)
         {
             var lin = SceneConvert.Linear(s.color);
             var pos = SceneConvert.Point(s.pos);
@@ -237,14 +237,14 @@ namespace Ballon.Ego
                 default: l.type = LightType.Spot; l.spotAngle = 150f; l.innerSpotAngle = 60f; l.range = 60f; break;   // Fläche wie StudioLike
             }
             L.lights.Add(l);
-            if (s.kind != "area" || emit == null || SceneConvert.ProbeEmit <= 0f) return;   // Standard: keine Lichtfläche, der Spot trägt den Glanz
+            if (s.kind != "area" || emit == null || share <= 0f) return;   // Standard: keine Lichtfläche, der Spot trägt den Glanz
             // Spiegelbild der Lichtfläche für die Reflexionssonde: leuchtende Fläche, Strahldichte P / (π · A)
             var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
             Object.Destroy(q.GetComponent<Collider>());
             q.name = "Lichtfläche " + s.name;
             q.layer = Bootstrap.StudioEmitLayer;
             var m = new Material(emit) { name = "Lichtfläche " + s.name };
-            m.SetColor("_BaseColor", SceneConvert.Gamma(lin, SceneConvert.ProbeEmit * SceneConvert.Radiance(s.power_w, s.size_m)));   // Materialfarben sind Gamma-Werte
+            m.SetColor("_BaseColor", SceneConvert.Gamma(lin, share * SceneConvert.Radiance(s.power_w, s.size_m)));   // Materialfarben sind Gamma-Werte
             var r = q.GetComponent<Renderer>();
             r.sharedMaterial = m;
             r.shadowCastingMode = ShadowCastingMode.Off;

@@ -328,7 +328,7 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
 - **Umschalten der Szene:** Gebaut wird eine Szene beim ersten Zeigen und bleibt danach (ausgeschaltet) im Speicher. Die Anzeige nennt
   Szene und Licht („Szene Hangar (L)   Licht Tag (N)“). Den Text baut sie nur bei Änderung neu (kein GC je Bild, Test).
 - **Umschalten der Lichtszene (N):** tauscht nur die Atlanten der Zonenmaterialien (`_BaseMap`, `_BaseColor`), die Gruppe der Viewmodel-
-  Lichter, Umgebungslicht, Himmel (Kamerahintergrund und Sondenhintergrund) und rendert die Reflexionssonde neu.
+  Lichter (bei Nacht samt Lichtflächen), Umgebungslicht, Himmel (Kamerahintergrund und Sondenhintergrund) und rendert die Reflexionssonde neu.
   Geometrie, Collider, Materialinstanzen, Zielscheiben und Lauf bleiben unberührt. Alle Lichtgruppen entstehen beim Laden der Szene
   (ausgeschaltet), so kostet das Umschalten selbst nur ein paar Materialeigenschaften und eine Sonde; je Bild fällt danach kein Speicher an
   (Test). Die zuletzt gezeigte Lichtszene einer Szene bleibt beim Szenenwechsel erhalten.
@@ -354,7 +354,7 @@ Lichtszene und Zone ein Lichtatlas (`<name>_<licht>_<zone>.png`). Ältere Dateie
 
   P/(4π²) für Spot und Punkt ist aus der Strahlstärke P/(4π) von Cycles abgeleitet (nicht gemessen, anders als P/π² für Flächen).
 - **Reflexionssonde:** Wird beim Wechsel der Szene und der Lichtszene neu gerendert (256², HDR, auf Augenhöhe am Start, Größe =
-  Umgebung + 2 m). Sie sieht die unbeleuchtete Umgebung, nicht das Viewmodel und keine Lichtflächen (den Glanz tragen die Spots, siehe Studio).
+  Umgebung + 2 m). Sie sieht die unbeleuchtete Umgebung, nicht das Viewmodel und keine Lichtflächen (den Glanz tragen die Spots, siehe Studio). Ausnahme ist die Lichtszene Nacht: Sie behält die Lichtflächen (`SceneConvert.ProbeShare`, Entscheid des Nutzers 05.11.2026 am Bild: „neu Tag gefällt mir gut und 0.44 nacht gefällt mir gut“), ohne sie wird die Waffe fast schwarz. Das ist Geschmack, nicht gegen Blender gemessen.
 - **Zielscheiben:** `course.targets`: Mitte `pos`, Ringseite entlang `normal` (waagerecht gedreht), Radius `radius`. Der Pfosten reicht von
   der Scheibe bis zur Oberkante des höchsten Colliders darunter (sonst 1,45 m). Zusätzlich wie in 0.8 `targets` (Schießstand ohne
   Strecke: Pfosten 1,45 m, Radius nach Entfernung 0,30 / 0,45 / 0,60 m, Anzeige führt die Treffer je Entfernung).
