@@ -224,6 +224,16 @@ def _joined(obs, join_all=True):
         return obs, None
     for o in bpy.context.view_layer.objects:
         o.select_set(False)
+    j = _join_copies(same)
+    for o in same:          # Originale liegen deckungsgleich unter der Kopie: AO sähe sie als Verdeckung (gemessen 0,43 statt 0,64)
+        o.hide_render = True
+    j['ballon_hidden'] = [o.name for o in same]
+    return [j] + rest, j
+
+
+def _join_copies(same):
+    """Kopien von `same` (Lage ins Netz, CO_ATTR, PART_ATTR) zu einem Objekt zusammenfügen."""
+    from mathutils import Matrix
     cps = []
     for i, o in enumerate(same):
         c = o.copy()
@@ -242,11 +252,68 @@ def _joined(obs, join_all=True):
         cps.append(c)
     bpy.context.view_layer.objects.active = cps[0]
     bpy.ops.object.join()
-    j = bpy.context.view_layer.objects.active
-    for o in same:          # Originale liegen deckungsgleich unter der Kopie: AO sähe sie als Verdeckung (gemessen 0,43 statt 0,64)
-        o.hide_render = True
-    j['ballon_hidden'] = [o.name for o in same]
-    return [j] + rest, j
+    return bpy.context.view_layer.objects.active
+
+
+def joined_without(obs, ads):
+    """0.44.1: Kopie aller Teile ohne die `ads_hide`-Teile (Namen in `ads`), unsichtbar für den Lichtweg. Im Zielen fehlen diese Teile,
+    Flächen dahinter (Stirnfläche des Startrohrs hinter dem Kegel, BASIC-14) dürfen beim Backen nicht von ihnen verdeckt sein (AO, Schmutz).
+    None, wenn kein Teil betroffen ist. Aufrufer nach _joined(obs); entfernen mit drop_view."""
+    keep = [o for o in obs if o.name not in ads]
+    if len(keep) == len(obs) or len(keep) < 2:
+        return None
+    for o in bpy.context.view_layer.objects:
+        o.select_set(False)
+    a = _join_copies(keep)
+    a.hide_render = True
+    return a
+
+
+def drop_view(a):
+    if a is not None:
+        bpy.data.objects.remove(a)
+
+
+def island_mask(o, size, name, margin):
+    """Boolesches size²-Feld: UV-Inseln von o (weißer Emissionsdurchgang), margin Pixel Rand."""
+    from tools import skin_masks as SM
+    img = _image(name, size, False)
+    ms = {s.material for s in o.material_slots if s.material}
+    SM.bake_rgb([o], ms, img, {x: (1.0, 1.0, 1.0) for x in ms}, 1, margin)
+    q = np.empty(size * size * 4, np.float32)
+    img.pixels.foreach_get(q)
+    bpy.data.images.remove(img)
+    return q[0::4] > 0.5
+
+
+def bake_views(run, image, tmp, a):
+    """run(obs, image) backt in image. Mit `a` (joined_without): zweiter Durchgang ohne ads_hide-Teile als Verdecker, übernommen wird er
+    auf den Inseln der übrigen Teile (Maske aus einem weißen Emissionsdurchgang, gleicher Rand), sonst der Durchgang mit allem."""
+    run([tmp], image)
+    if a is None:
+        return
+    size = image.size[0]
+    im2 = _image(image.name + '_noads', size, False)
+    tmp.hide_render, a.hide_render = True, False
+    try:
+        run([a], im2)
+        keep_m = island_mask(a, size, image.name + '_noadsmask', 8)       # übrige Teile samt Bake-Rand
+        keep_0 = island_mask(a, size, image.name + '_noadsk0', 0)
+        tmp.hide_render, a.hide_render = False, True
+        all_0 = island_mask(tmp, size, image.name + '_noadsa0', 0)
+    finally:
+        tmp.hide_render, a.hide_render = False, True
+    ads_0 = all_0 & ~keep_0                                     # Inseln der ads_hide-Teile: nie überschreiben (Rand der anderen reicht nicht hinein)
+    mask = (keep_m & ~ads_0).astype(np.float32)
+    n = size * size * 4
+    p1, p2 = (np.empty(n, np.float32) for _ in range(2))
+    image.pixels.foreach_get(p1)
+    im2.pixels.foreach_get(p2)
+    m = np.repeat(mask, 4)
+    m[3::4] = 1.0
+    p2[3::4] = p1[3::4]
+    image.pixels.foreach_set(p1 * (1.0 - m) + p2 * m)
+    bpy.data.images.remove(im2)
 
 
 # Bake-Einstellungen (0.43 „Kiln“, Messung und Grenzwerte: docs/versions/0.43-kiln.md). size von bake_atlas gilt für Albedo, normal_size ist die Untergrenze der
@@ -257,14 +324,18 @@ def _joined(obs, join_all=True):
 SETTINGS = dict(data_size=2048, normal_size=4096, rand_samples=64, emit_samples=16, plain_samples=64, normal_samples=4, ao_samples=32, ao_denoise=True)
 
 
-def _freeze(obs, mats, size, name, samples):
+def _freeze(obs, mats, size, name, samples, tmp=None, noads=None):
     """Abrieb- und Schmutzmaske je Material einmal backen und in den Materialien an Stelle der Zufallsknoten einsetzen. Gibt (Bild, Rückweg)."""
     from tools import skin_masks as SM
     chains = {m: SM.chain(m) for m in mats}
     if not any('m' in c or 'g' in c for c in chains.values()):
         return None, []
     im = _image(f'{name}_rand', size, False)
-    SM.bake_rgb(obs, mats, im, {m: (c.get('m', 0.0), c.get('g', 0.0), 0.0) for m, c in chains.items()}, samples)
+    vals = {m: (c.get('m', 0.0), c.get('g', 0.0), 0.0) for m, c in chains.items()}
+    if noads is None:
+        SM.bake_rgb(obs, mats, im, vals, samples)
+    else:
+        bake_views(lambda o, i: SM.bake_rgb(o, mats, i, vals, samples), im, tmp, noads)
     undo = []
     for m, c in chains.items():
         keys = [k for k in ('m', 'g') if k in c]
@@ -323,9 +394,10 @@ def _denoise(im, size, out_dir):
     print(f'[bake_unity] {im.name} OIDN: {time.time() - t0:.1f} s', flush=True)
 
 
-def bake_atlas(obs, name, size, out_dir, gpu=False, samples=None, join_all=True, color_only=False, settings=None):
+def bake_atlas(obs, name, size, out_dir, gpu=False, samples=None, join_all=True, color_only=False, settings=None, ads=()):
     """Backt den Atlas `name` für `obs` und schreibt <name>_albedo/_spec/_normal/_ao.png nach out_dir. size: Albedo (Schalter 2048/4096),
-    settings: Abweichungen von SETTINGS, samples: rand_samples (Aufrufer von früher: der Kantenabrieb krisselt bei 12)."""
+    settings: Abweichungen von SETTINGS, samples: rand_samples (Aufrufer von früher: der Kantenabrieb krisselt bei 12),
+    ads: Namen der ads_hide-Teile (0.44.1: AO und Schmutz der übrigen Flächen ohne sie als Verdecker, joined_without)."""
     S = dict(SETTINGS, **(settings or {}))
     if samples:
         S['rand_samples'] = samples
@@ -344,13 +416,17 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=None, join_all=True,
     sc.cycles.use_denoising = False
     if sc.world:
         sc.world.light_settings.distance = 0.03          # AO-Reichweite 3 cm (Viewmodel-Maßstab)
+    noads = joined_without(obs, set(ads)) if ads and join_all else None
     obs, tmp = _joined(obs, join_all)
+    if tmp is None:
+        drop_view(noads)
+        noads = None
     mats = {s.material for o in obs for s in o.material_slots if s.material}
     coords = _object_coords(mats) if tmp is not None and join_all else []
     res = {}
     import time
     t0 = time.time()
-    rand, frozen = _freeze(obs, mats, size, name, S['rand_samples']) if S['rand_samples'] else (None, [])
+    rand, frozen = _freeze(obs, mats, size, name, S['rand_samples'], tmp, noads) if S['rand_samples'] else (None, [])
     emit = S['emit_samples'] if rand else S['plain_samples']
     al = _image(f'{name}_albedo', size, True)                  # Diffusfarbe (Spezular-Modell), sRGB
     _bake(obs, mats, al, 'EMIT', emit, 'diffuse')
@@ -363,7 +439,10 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=None, join_all=True,
         nm = _image(f'{name}_normal', nsize, False)
         _bake(obs, mats, nm, 'NORMAL', S['normal_samples'])
         ao = _image(f'{name}_ao', data, False)
-        _bake(obs, mats, ao, 'AO', S['ao_samples'])
+        if noads is None:
+            _bake(obs, mats, ao, 'AO', S['ao_samples'])
+        else:
+            bake_views(lambda o, im: _bake(o, mats, im, 'AO', S['ao_samples']), ao, tmp, noads)
         if S['ao_denoise']:
             _denoise(ao, data, out_dir)
     n = data * data * 4
@@ -386,6 +465,7 @@ def bake_atlas(obs, name, size, out_dir, gpu=False, samples=None, join_all=True,
         res[key] = os.path.basename(path)
     bpy.data.images.remove(ro)
     restore_coords(coords)
+    drop_view(noads)
     if tmp is not None:
         for nm in tmp.get('ballon_hidden', []):
             if nm in bpy.data.objects:

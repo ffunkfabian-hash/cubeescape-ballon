@@ -906,13 +906,13 @@ def atlas_with_arms(e):
 
 
 def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms=ARMS_IN_ATLAS, objs=None, rest=None, size=4096,
-                samples=None, settings=None):
+                samples=None, settings=None, ads=()):
     """Atlas einer Waffe (kit.aaa_nodes) und Skins (kit.SKINS: Farbe und Glanz je Skin neu, Normale und AO wie Standard), FBX. Ohne
     Ego-Szene (0.41): root = Wurzelobjekt der Waffe (kit.build), tex_dir/fbx = Zielordner bzw. -datei (fbx None: kein FBX), skins =
     True (alle kit.SKINS), False (nur Standard) oder Liste von Namen, arms = andere Netze der Szene (Arme) beim Backen sichtbar lassen
     (ARMS_IN_ATLAS), objs = {Teil-ID: Objekt} für kit.set_mode (sonst die Kinder von root), rest = Aufruf vor dem FBX-Export (Ego-Szene:
     Ruhelage), size = Albedo (2048 oder 4096; Normale mindestens bake_unity.SETTINGS['normal_size'], AO, Spec bleiben ['data_size']), settings = Abweichungen von
-    bake_unity.SETTINGS. Gibt textures (weapon, skins) zurück; Ablage nach TEXTURE_STORE macht store_textures."""
+    bake_unity.SETTINGS, ads = Teil-IDs mit ads_hide (0.44.1: sie verdecken beim Backen von AO und Schmutz nicht die übrigen Flächen). Gibt textures (weapon, skins) zurück; Ablage nach TEXTURE_STORE macht store_textures."""
     import bpy
     from tools import bake_unity as BK
     from basic import kit
@@ -928,7 +928,7 @@ def bake_weapon(root, tex_dir, atlas_key, fbx=None, skins=False, gpu=False, arms
     hidden = [] if arms else [o for o in bpy.context.scene.objects if o.type == 'MESH' and o not in wobs and not o.hide_render]
     for o in hidden:                               # ohne Arme: übrige Netze (Ego-Arme) verdecken nichts
         o.hide_render = True
-    kw = dict(samples=samples, settings=settings)
+    kw = dict(samples=samples, settings=settings, ads={objs[i].name for i in ads if i in objs})
     try:
         files = BK.bake_atlas(bake, atlas_key, size, tex_dir, gpu=gpu, **kw)
         atlas = dict(size=size, objects=sorted(o.name for o in bake), arms=bool(arms), **files)
@@ -1023,7 +1023,8 @@ def blender_main():
             e['textures'], e['mesh_bounds'] = o['textures'], o['mesh_bounds']
         else:
             e['textures'] = bake_weapon(sc.root, tex_dir, e['atlas'], fbx=os.path.join(DST, e['weapon']['fbx']), skins=False,
-                                        gpu=gpu, objs=sc.objs, rest=lambda: rest_pose(sc))
+                                        gpu=gpu, objs=sc.objs, rest=lambda: rest_pose(sc),
+                                        ads=[p['id'] for p in e['weapon']['parts'] if p['ads_hide']])
             e['mesh_bounds'] = dict(de='Netzgrenzen je Objekt im eigenen Objektraum (Blender, m, Modifikatoren angewandt)',
                                     objects=[b for k, b in mesh_bounds().items() if k in ids])
             tri = sum(b['tris'] for b in e['mesh_bounds']['objects'])

@@ -2509,22 +2509,22 @@
   "files": {
    "basecolor": {
     "path": "textures/arms_basecolor.png",
-    "sha256": "c47de5d1f2bc738f6f6fa3bc647012c6fb2fa0a73c9e44f09e9a11dd6eb3f885",
-    "bytes": 1953867,
+    "sha256": "b18c66656cb2ece101ade1f092dff0ff119c2039d4941906ae2e6e777da349b4",
+    "bytes": 1953870,
     "colorspace": "sRGB",
     "de": "Grundfarbe (Metall-Rauheit-Modell, mit Abrieb und Schmutz)"
    },
    "orm": {
     "path": "textures/arms_orm.png",
-    "sha256": "da15ea8c2d89e7f4e01db2b4e40c0f7e2924beab901fd5a032d39ae8581cc791",
-    "bytes": 3573652,
+    "sha256": "5edd0c451d8ca56d911a40ffe1bb84013a07cf0387082b37a7ea25d2b14df9c9",
+    "bytes": 3573655,
     "colorspace": "linear",
     "de": "R Verdeckung, G Rauheit, B Metall"
    },
    "normal": {
     "path": "textures/arms_normal.png",
-    "sha256": "dc021668f0aee2ad742eb2e8f3a55ebed52ee5f0a4a4c9c2acf9aadefb4614fe",
-    "bytes": 3267855,
+    "sha256": "dca15afb4382bf76d5acc2bdef38a64b50b2dbd6b1dcf2dd8b5ea49a109077c6",
+    "bytes": 3267344,
     "colorspace": "linear",
     "de": "Normale im Tangentenraum (Unity-Atlas, 8 bit)"
    }
@@ -2533,37 +2533,37 @@
    "size": 2048,
    "samples": 64,
    "device": "GPU (Metal)",
-   "seconds": 28,
+   "seconds": 31,
    "sources": [
     {
      "path": "unity/Assets/Ballon/Generated/arms.fbx",
-     "sha256": "a57b37d554e293b169b5af2756f375fe0cb8ebf4418493dee9a722476f7a496c"
+     "sha256": "179130d918ae320077e5fa84162db3db07b663278f2fcade410cc455e54ca180"
     },
     {
      "path": "unity/Assets/Ballon/Generated/Textures/arms_normal.png",
-     "sha256": "f8b020d4322b43e1eb03d0ecddb792c431de81ac272a350f5c99afcde0c5f4d0"
+     "sha256": "a17ef8bbdce081f5ddc080bfdc0cac6c6d4d89b3c541bac6aeec8f3b2f634e94"
     },
     {
      "path": "unity/Assets/Ballon/Generated/Textures/arms_ao.png",
-     "sha256": "1db824e1bca67cc46a25468fea6f917c881624fcd862b722ab9a67ffc64442b3"
+     "sha256": "664eb199263c06589ba65a2c644cf60f83da35748ef46eb6df6cdf21cfe84368"
     },
     {
      "path": "unity/Assets/Ballon/Generated/Textures/arms_albedo.png",
-     "sha256": "fbd7abe868662634a98046e09c5d86753cce16b12a6e6be4c4d81ac9d959dbcf"
+     "sha256": "3b1d489ed8ad8d1b889eb3d109de469f9c8fd1ad44719ca3874a16fee86e7d8a"
     }
    ],
-   "material_sha256": "3065ee566e84ebc51de9f9b4adf5aebd72b1fdf6258e011cf25c9f7d39b92b5e",
+   "material_sha256": "83660b8446b7500dd99605f1a98c7a274b377310adc388902e96dd34c2010b57",
    "albedo_check": {
     "texels": 2632809,
-    "mean": 2.07,
-    "p99": 22.6,
-    "max": 83.4,
+    "mean": 2.39,
+    "p99": 43.5,
+    "max": 202.4,
     "de": "Grundfarbe · (1 − Metall) gegen den Unity-Diffusatlas, Abweichung je Texel (größter Kanal, 0–255)"
    },
    "ao_check": {
-    "mean": 3.0,
-    "p99": 119.5,
-    "over_30": 0.0256,
+    "mean": 5.5,
+    "p99": 103.5,
+    "over_30": 0.0253,
     "de": "eigene Verdeckung gegen die Unity-AO (0–255)"
    },
    "de": "Grundfarbe, Rauheit, Metall (Emission) und Verdeckung (AO, 32 Samples, 3 cm) aus den kit-AAA-Materialien auf den Unity-UVs, Backszene wie export_unity.bake_arms, aber ohne Waffe (dort steht sie im Ursprung am rechten Oberarm); Normale: Unity-Atlas auf 8 bit"
@@ -3051,8 +3051,8 @@
  "files": {
   "glb": {
    "path": "arms.glb",
-   "sha256": "9d25384700089641a2de777bac91f7d301b78c5750c6c0573d7b6b5b3fc1b0e6",
-   "bytes": 9858284
+   "sha256": "874913c24e42cf51f17a4395195f2b473347cfb504797a56eb6c3353ee3269c0",
+   "bytes": 9857780
   },
   "fbx": {
    "path": "arms.fbx",
@@ -3077,7 +3077,7 @@
    },
    {
     "path": "tools/ego_build.py",
-    "sha256": "c1f8cb10974743d1f59ea93affc756975b3de80f5056e1f05b27b91b50d9be66"
+    "sha256": "00e82f6c9a436bdd56fc250559384a64cfd8d3a3de2888080f4cce5cab97ac28"
    },
    {
     "path": "basic/kit.py",

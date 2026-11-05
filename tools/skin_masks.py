@@ -59,7 +59,7 @@ def chain(m):
     return out
 
 
-def bake_rgb(obs, mats, image, values, samples=64):
+def bake_rgb(obs, mats, image, values, samples=64, margin=8):
     """Emission (R, G, B) = values[material] (je Eintrag Socket oder Zahl) in image backen."""
     import bpy
     undo = []
@@ -96,7 +96,7 @@ def bake_rgb(obs, mats, image, values, samples=64):
     sc = bpy.context.scene
     sc.cycles.samples = samples
     t0 = time.time()
-    bpy.ops.object.bake(type='EMIT', margin=8, use_clear=True)
+    bpy.ops.object.bake(type='EMIT', margin=margin, use_clear=True)
     print(f'[skin_masks] {image.name}: {time.time() - t0:.0f} s', flush=True)
     for m, tex, cc, em, out, old, extra in undo:
         nt = m.node_tree
@@ -201,10 +201,12 @@ def masks_for(module, e, tex_dir, gpu, arms):
     idx = {r: (i + 1) / 255.0 for i, r in enumerate(roles)}
     planes = {}
     tmp = None
+    ads = {sc.objs[p['id']].name for p in e['weapon']['parts'] if p['ads_hide'] and p['id'] in sc.objs}
     try:
         for state in STATES:
             kit.SKIN['name'] = state
             kit.set_mode(sc.objs, 'aaa')
+            noads = BK.joined_without(bake, ads)           # 0.44.1: ads_hide-Teile verdecken nichts (wie bake_atlas)
             obs, tmp = BK._joined(bake)                    # je Stand neu: die Kopie übernimmt die Materialien beim Zusammenfügen
             mats = {sl.material for o in obs for sl in o.material_slots if sl.material}
             if state == 'standard':
@@ -221,7 +223,12 @@ def masks_for(module, e, tex_dir, gpu, arms):
                     'gebraucht': lambda m: (mm(m), sq(m), role[m]),                    # B: Rolle (konstant je Material)
                     'tarnung': lambda m: (ch[m].get('pattern', 0.0), ch[m].get('s', 0.0), 0.0)}[state]
             im = BK._image(f'{atlas}_skinmask_{state}', size, False)
-            bake_rgb(obs, mats, im, {m: pick(m) for m in mats})
+            vals = {m: pick(m) for m in mats}
+            if noads is None:
+                bake_rgb(obs, mats, im, vals)
+            else:
+                BK.bake_views(lambda o, i: bake_rgb(o, mats, i, vals), im, tmp, noads)
+            BK.drop_view(noads)
             px = np.empty(size * size * 4, np.float32)
             im.pixels.foreach_get(px)
             planes[state] = px.reshape(size, size, 4)[::-1]          # Blender: Zeile 0 unten → Bild oben

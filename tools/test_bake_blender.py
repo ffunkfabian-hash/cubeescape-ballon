@@ -89,6 +89,32 @@ def main():
         bpy.data.images.remove(im)
     ok(size == dict(albedo=128, spec=64, normal=256, ao=64), f'Kantenlängen {size}')
 
+    # 0.44.1: ads_hide-Teile verdecken nichts (AO und Schmutz der übrigen Flächen), behalten aber ihre Inseln
+    def ao_of(ads):
+        r = BK.bake_atlas(bake, 'kads', 128, t, settings=dict(data_size=64, normal_size=256, rand_samples=2, emit_samples=1, ao_samples=8, ao_denoise=False), ads=ads)
+        im = bpy.data.images.load(os.path.join(t, r['ao']))
+        a = np.empty(64 * 64 * 4, np.float32)
+        im.pixels.foreach_get(a)
+        bpy.data.images.remove(im)
+        return a.reshape(-1, 4)[:, 0], r
+    base, _ = ao_of(())
+    hid = {o.name for o in bake[:max(1, len(bake) // 3)]}
+    ads, r = ao_of(hid)
+    ok(not any(o.hide_render for o in bake) and not any(o.name.endswith('.001') and o.hide_render for o in bpy.data.objects), 'ads: Originale sichtbar, keine Reste')
+    ok(len(r) == 4 and (ads > 0.02).mean() > 0.8 * (base > 0.02).mean(), 'ads: Inseln bleiben belegt')
+    ok(ads.mean() >= base.mean() - 1e-3 and np.abs(ads - base).max() > 0.01, f'ads: AO ändert sich nur hellwärts ({base.mean():.3f} → {ads.mean():.3f})')
+
+    # Inseln der ads_hide-Teile bleiben vom zweiten Durchgang unberührt (Rand der übrigen Teile reicht nicht hinein)
+    hid_obs = [o for o in bake if o.name in hid]
+    isl = np.zeros(64 * 64, bool)
+    for o in hid_obs:
+        isl |= BK.island_mask(o, 64, 'isl', 0)
+    other = ~isl & (base > 0.02)
+    ok(isl.any(), 'ads: Inseln der ausgeblendeten Teile gefunden')
+    dh = np.abs(ads - base)[isl].mean() if isl.any() else 0.0
+    do = np.abs(ads - base)[other].mean() if other.any() else 0.0
+    ok(dh < 0.03, f'ads: Inseln der ausgeblendeten Teile unverändert (mittlere Abweichung {dh:.4f}, übrige {do:.4f})')
+
     # Datenkarten: keine Ansichtstransformation beim Speichern, auch unter AgX
     sc = bpy.context.scene
     vt, lk = sc.view_settings.view_transform, sc.view_settings.look
