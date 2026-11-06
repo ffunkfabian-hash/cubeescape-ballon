@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.45.4 Patch „pin42“ – Pin auf Agent Tools 0.42.0
+
+- `.ce-repo.json`: Werkzeugstand 0.42.0 (`e1c2ddf`), `./ce` als Lader dieses Stands. Sonst unverändert.
+
 ## 0.45.3 Patch „pin40“ – Pin auf Agent Tools 0.40
 
 - `.ce-repo.json`: Werkzeugstand 0.40.0 (`0b67cb3`), `./ce` als Lader dieses Stands. Sonst unverändert.
