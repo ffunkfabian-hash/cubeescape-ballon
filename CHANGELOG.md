@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.45.1 Patch „runde“ – Trimline-Runde (Branch `claude/ballon-patch-runde`)
+
+- `.ce-repo.json`: Werkzeugstand 0.36.2 (`e85688c`), Version aus dem Changelog gelesen statt als veraltetes Literal; `core_paths` stimmen mit Agent Tools `docs/core-paths.md` überein. `AGENTS.md`/`CLAUDE.md`/`LESSONS.md` waren schon gekürzt (0.44.2), unverändert.
+
 ## 0.45 „Lantern“ – BASIC-14 Rohrende im Zielen (Branch `claude/agitated-matsumoto-691f6d`)
 
 - Der Bake lässt `ads_hide`-Teile (z. B. `tube_cone`) als Verdecker weg: AO und Schmutz der hinteren Stirnfläche des Startrohrs stimmen, die dunklen Ringe im Zielen entfallen. Alle 16 Waffen und die Arme neu gebacken; Unity zeigt das Rohrende weiß wie Blender.
