@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.45.2 Patch „pin37“ – Pin auf Agent Tools 0.37
+
+- `.ce-repo.json`: Werkzeugstand 0.37.0 (`f222344`), `./ce` als Lader dieses Stands; bringt die Pin-Ausnahme in `merge-check` und `./ce verify`. Sonst unverändert.
+
 ## 0.45.1 Patch „runde“ – Trimline-Runde (Branch `claude/ballon-patch-runde`)
 
 - `.ce-repo.json`: Werkzeugstand 0.36.2 (`e85688c`), Version aus dem Changelog gelesen statt als veraltetes Literal; `core_paths` stimmen mit Agent Tools `docs/core-paths.md` überein. `AGENTS.md`/`CLAUDE.md`/`LESSONS.md` waren schon gekürzt (0.44.2), unverändert.
