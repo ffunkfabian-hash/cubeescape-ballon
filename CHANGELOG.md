@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.45.3 Patch „pin40“ – Pin auf Agent Tools 0.40
+
+- `.ce-repo.json`: Werkzeugstand 0.40.0 (`0b67cb3`), `./ce` als Lader dieses Stands. Sonst unverändert.
+
 ## 0.45.2 Patch „pin37“ – Pin auf Agent Tools 0.37
 
 - `.ce-repo.json`: Werkzeugstand 0.37.0 (`f222344`), `./ce` als Lader dieses Stands; bringt die Pin-Ausnahme in `merge-check` und `./ce verify`. Sonst unverändert.
