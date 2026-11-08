@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.45.6 Patch „pin44-1“ – Pin auf Agent Tools 0.44.1
+
+- `.ce-repo.json`: Werkzeugstand 0.44.1 (`d39ccd9`), `./ce` als Lader dieses Stands. Sonst unverändert.
+
 ## 0.45.5 Patch „pin-0431“ – Pin auf Agent Tools 0.43.1
 
 - `.ce-repo.json`: Werkzeugstand 0.43.1 (`8adca7d`), `./ce` als Lader dieses Stands; Postfach per Label `postfach`. Sonst unverändert.
